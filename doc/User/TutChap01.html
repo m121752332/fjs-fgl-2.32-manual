@@ -1,0 +1,236 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Tutorial Overview</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+<p><a href="TutIndex.html">Back to Summary</a></p>
+<hr>
+<h1>Tutorial Chapter 1: Overview</h1>
+<p>Summary:</p>
+<ul>
+	<li><a href="#overview">Overview</a></li>
+	<li><a href="#language">The BDL Language</a></li>
+	<li><a href="#tutorial">The&nbsp; BDL Tutorial</a></li>
+	<li><a href="#database">The Example Database (custdemo)</a></li>
+	<li><a href="#sampledata">The Sample data</a></li>
+</ul>
+<p>See also: <a href="IntroBDL.html">Introduction: BDL Concepts</a></p>
+<hr>
+
+<h2><a name="overview">Overview</a></h2>
+<p>Especially well-suited for large-scale, database-intensive business 
+applications, Genero Business Development Language (<b>BDL)</b> is a <b>
+reliable, easy-to-learn high-level programming language</b> that allows 
+application developers to: </p>
+<ul>
+	<li>express business logic in a clear yet powerful syntax</li>
+	<li>use SQL statements for database access to any of the supported databases</li>
+	<li><a href="Localization.html">localize</a> your application to follow a 
+	specific language or cultural rules</li>
+	<li><a href="FormSpecFiles.html">define user interfaces</a> in an abstract, platform-independent 
+manner</li>
+	<li>define <a href="PresentationStyles.html">Presentation Styles</a> to 
+	customize and standardize the appearance of the interface</li>
+	<li>manipulate the user interface at runtime, as a<a href="DynamicUI.html"> 
+	tree of objects</a>&nbsp; </li>
+</ul>
+<p><b>The separation of business logic, user interface, and deployment provides 
+maximum flexibility</b>. </p>
+<ul>
+	<li>The business logic is written in text files (.4gl 
+source code modules) that interact with separate <a href="FormSpecFiles.html">form files 
+	</a>defining the user interface. </li>
+	<li>Actions defined in the business 
+logic are tied to action views (buttons, menu items, toolbar icons) in the form 
+definition files, and respond to user interaction statements in the source code. 
+	</li>
+	<li>Compiling a form definition file translates it into XML, which is used to 
+display the user interface to various Genero clients running on different 
+platforms.&nbsp; </li>
+</ul>
+<p>You can <b>write once, deploy anywhere</b> - one production release
+    supports all major versions of Unix, Linux, Windows, and Mac OS X.</p>
+<p>Compiling, linking, and deploying BDL applications, and additional resources 
+for developers, are discussed in
+<a href="IntroBDL.html#Compiling">Introduction: BDL Concepts</a>. </p>
+<hr>
+<h2><a name="language">The BDL Language</a></h2>
+<p>The Genero Business Development Language includes:</p>
+<ul>
+	<li><a href="FlowControl.html">Program flow control</a></li>
+	<li><a href="FlowControl.html">Conditional logic</a></li>
+	<li><a href="StaticSql.html">SQL statement support</a></li>
+	<li><a href="Connections.html">Connection management</a></li>
+	<li><a href="Exceptions.html">Error handling</a></li>
+	<li><a href="LocalizedStrings.html">Localized strings</a></li>
+</ul>
+<p> <a href="DynamicSql.html"> Dynamic
+SQL</a> management allows you to execute any SQL statement that is valid for
+    your database version, in addition to those
+    that are included as part of the language. The statement can be hard coded
+or created at runtime, with or without SQL parameters, returning or not
+returning a result set.</p>
+<p>High-level <b>BDL user interaction statements</b> substitute for the many 
+lines of code necessary to implement common business tasks, mediating between 
+the user and the user interface in order to:</p>
+<ul>
+	<li><a href="TutChap03.html">Provide a selection of actions to the user</a> 
+	(MENU)</li>
+	<li><a href="TutChap04.html">Allow the user to enter database search 
+	criteria on a form</a> (CONSTRUCT)</li>
+	<li><a href="TutChap03.html">Display information from database tables</a> 
+	(DISPLAY, DISPLAY ARRAY)</li>
+	<li><a href="TutChap05.html">Allow the user to modify the contents of 
+	database tables</a> (INPUT, INPUT ARRAY)</li>
+</ul>
+<p><a href="MultipleDialogs.html">Multiple dialogs</a> allow a Genero program to 
+handle interactive statements isuch as the above in parallel. </p>
+<p>In addition, <a href="BuiltInClasses.html">built-in classes</a><b> </b>and methods, and
+<a href="BuiltInFunctions.html">built-in functions</a><b> </b> 
+are provided to assist you in your program development.&nbsp; </p>
+<hr>
+<h2><a name="tutorial">The BDL Tutorial</a></h2>
+<p>The chapters in this tutorial describe the basic functionality of Genero BDL. 
+Annotated code examples in each chapter guide you through the steps to implement 
+the features discussed above. In addition, complete source code programs of the 
+examples are available for download, contact you support channel to get the
+links. See 
+the <a href="TutIndex.html">Tutorial Summary</a> for a description of each 
+chapter.</p>
+<p>The example programs interact with an demo database, the <b>custdemo</b> 
+database, containing store and order information for a fictional retail chain.
+</p>
+<p>If you wish to test the example programs on your own system, see <a href="TutIndex.html#testing">Testing the Programs</a> 
+for information about the software and sample data that must be installed and 
+configured. </p>
+<hr>
+<h2><a name="database">The Example Database (custdemo)</a></h2>
+<p>The following SQL statements create the tables for the custdemo database; 
+these statements are in the file <b>custdemo.sql</b> in the Tutorial 
+subdirectory of the documentation.</p>
+<pre>create table customer(
+    store_num     integer not null,
+    store_name    char(20) not null,
+    addr          char(20),
+    addr2         char(20),
+    city          char(15),
+    state         char(2),
+    zipcode       char(5),
+    contact_name  char(30),
+    phone         char(18), 
+    primary key (store_num)
+);
+create table orders(
+    order_num     integer not null,
+    order_date    date not null,
+    store_num     integer not null,
+    fac_code      char(3),
+    ship_instr    char(10),
+    promo         char(1) not null,    
+    primary key (order_num)
+);
+create table factory(
+    fac_code      char(3) not null,
+    fac_name      char(15) not null,
+    primary key (fac_code)
+);
+create table stock(
+    stock_num     integer not null,
+    fac_code      char(3) not null,
+    description   char(15) not null,
+    reg_price     decimal(8,2) not null,
+    promo_price   decimal(8,2),
+    price_updated date,
+    unit          char(4) not null,
+    primary key (stock_num)
+);
+create table items(
+    order_num     integer not null,
+    stock_num     integer not null,
+    quantity      smallint not null,
+    price         decimal(8,2) not null,
+    primary key (order_num, stock_num)
+);
+create table state(
+    state_code char(2) not null,
+    state_name char(15) not null,
+    primary key (state_code)
+);</pre>
+<hr>
+<h2><a name="sampledata">The Sample Data</a></h2>
+<p>The following sample data for the custdemo database is contained in the file
+<b>loadcust.sql</b> in the Tutorial subdirectory of the documentation.</p>
+<h3>Customer table</h3>
+<p>101|Bandy's Hardware|110 Main| |Chicago|IL|60068|Bob Bandy|630-221-9055|<br>
+102|The FIX-IT Shop|65W Elm Street Sqr.| |Madison|WI|65454| |630-34343434|<br>
+103|Hill's Hobby Shop|553 Central Parkway| |Eau Claire|WI|54354|Janice 
+Hilstrom|666-4564564|<br>
+104|Illinois Hardware|123 Main Street| |Peoria|IL|63434|Ramon 
+Aguirra|630-3434334|<br>
+105|Tools and Stuff|645W Center Street| |Dubuque|IA|54654|Lavonne 
+Robinson|630-4533456|<br>
+106|TrueTest Hardware|6123 N. Michigan Ave| |Chicago|IL|60104|Michael 
+Mazukelli|640-3453456|<br>
+202|Fourth Ill Hardware|6123 N. Michigan Ave| |Chicago|IL|60104|Michael 
+Mazukelli|640-3453456|<br>
+203|2nd Hobby Shop|553 Central Parkway| |Eau Claire|WI|54354|Janice 
+Hilstrom|666-4564564|<br>
+204|2nd Hardware|123 Main Street| |Peoria|IL|63434|Ramon Aguirra|630-3434334|<br>
+205|2nd Stuff|645W Center Street| |Dubuque|IA|54654|Lavonne 
+Robinson|630-4533456|<br>
+206|2ndTest Hardware|6123 N. Michigan Ave| |Chicago|IL|60104|Michael 
+Mazukelli|640-3453456|<br>
+302|Third FIX-IT Shop|65W Elm Street Sqr.| |Madison|WI|65454| |630-34343434|<br>
+303|Third Hobby Shop|553 Central Parkway| |Eau Claire|WI|54354|Janice 
+Hilstrom|666-4564564|<br>
+304|Third IL Hardware|123 Main Street| |Peoria|IL|63434|Ramon 
+Aguirra|630-3434334|<br>
+305|Third and Stuff|645W Center Street| |Dubuque|IA|54654|Lavonne 
+Robinson|630-4533456|<br>
+306|Third Hardware|6123 N. Michigan Ave| |Chicago|IL|60104|Michael 
+Mazukelli|640-3453456|</p>
+<h3>Orders table</h3>
+<p>1|04/04/2003|101|ASC|FEDEX|N|<br>
+2|06/06/2006|102|ASC|FEDEX|Y|<br>
+3|06/10/2006|103|PHL|FEDEX|Y|<br>
+4|06/10/2006|104|ASC|FEDEX|Y|<br>
+5|07/06/2006|101|ASC|FEDEX|Y|<br>
+6|07/16/2006|105|ASC|FEDEX|Y|<br>
+7|08/04/2006|104|PHL|FEDEX|Y|<br>
+8|08/16/2006|101|ASC|FEDEX|Y|<br>
+9|08/23/2006|101|ASC|FEDEX|Y|<br>
+10|09/06/2006|106|PHL|FEDEX|Y|</p>
+<h3>Items table</h3>
+<p>1|456|10|5.55|<br>
+1|310|5|12.85|<br>
+1|744|60|250.95|<br>
+2|456|15|5.55|<br>
+2|310|2|12.85|<br>
+3|323|2|0.95|<br>
+4|744|60|250.95|<br>
+4|456|15|5.55|<br>
+5|456|12|5.55|<br>
+5|310|15|12.85|<br>
+5|744|6|250.95|<br>
+6|456|15|5.55|<br>
+6|310|2|12.85|<br>
+7|323|10|0.95|<br>
+8|456|10|5.55|<br>
+8|310|15|12.85|<br>
+9|744|20|250.95|<br>
+10|323|200|0.95|</p>
+<h3>Stock table</h3>
+<p>456|ASC|lightbulbs|5.55|5.0|01/16/2006|ctn|<br>
+310|ASC|sink stoppers|12.85|11.57|06/16/2006|grss|<br>
+323|PHL|bolts|0.95|0.86|01/16/2006|20/b|<br>
+744|ASC|faucets|250.95|225.86|01/16/2006|6/bx|</p>
+<h3>Factory table</h3>
+<p>ASC|Assoc. Std. Co.|<br>
+PHL|Phelps Lighting|</p>
+<h3>State table</h3>
+<p>IL|Illinois|<br>
+IA|Iowa|<br>
+WI|Wisconsin|</p><hr>

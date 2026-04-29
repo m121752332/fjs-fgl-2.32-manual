@@ -1,0 +1,231 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Displaying Messages</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Displaying Messages</a></H1>
+
+<p>Summary:</p>
+
+<ul>
+  <li><a href="#DISPLAY">Displaying Text in Line Mode</a> (<tt>DISPLAY</tt>)</li>
+  <li><a href="#ERROR">Displaying Error Messages</a> (<tt>ERROR</tt>)</li>
+  <li><a href="#MESSAGE">Displaying Application Messages</a> (<tt>MESSAGE</tt>)</li>
+</ul>
+
+
+<HR>
+
+<h3><a name="DISPLAY">DISPLAY</a></h3>
+
+<h4>Purpose:</h4>
+
+<p>The <tt>DISPLAY</tt>  instruction displays text in line mode to the standard
+output channel. </p>
+
+<h4>Syntax:</h4>
+
+<code>DISPLAY <i>expression</i> <u>[,...]</u> </code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>expression</i> is any <a href="Expressions.html">expression</a>
+    supported by the language.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>You can use this instruction to display information to the standard
+output channel.</p>
+
+<p>The values contained in <a href="Variables.html">variables</a> are
+    formatted based on the <a href="DataTypes.html">data type</a> and <a href="EnvironmentVariables.html">environment
+settings</a>.</p>
+
+<h4>Example:</h4>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY</tt> &quot;Today's date is: &quot;, <tt>TODAY</tt>
+<CODE class=linenumber>03</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="ERROR">ERROR</a></h3>
+
+<h4>Purpose:</h4>
+
+<p>The <tt>ERROR</tt> instruction displays an error message to the user. </p>
+
+<h4>Syntax:</h4>
+
+<code>ERROR <i>expression</i> <u>[,...]</u> <u>[</u> ATTRIBUTE ( <i>display-attribute</i> <u>[,...]</u> ) <u>]</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>expression</i> is any <a href="Expressions.html">expression</a>
+    supported by the language.</li>
+  <li><i>display-attribute</i> is an attribute to display the error
+    text. See below.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+
+<p> The <tt>ERROR</tt> instruction displays an error message to the user.</p>
+
+
+<p> In <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a> mode, the error text is displayed in the <u>Error Line</u>
+    of the current <a href="WindowsAndForms.html">window</a>. In <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a>
+mode, the text is displayed in a specific area,
+    depending on the front end configuration.</p>
+
+
+<p> Possible attributes that can be used as <i>display-attribute</i>:</p>
+
+
+<div align="center">
+  <center>
+
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="40%"><b> Attribute</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="40%"><tt>STYLE = <i>string</i></tt></td>
+    <td>The name of a Presentation Style.</td>
+  </tr>
+  <tr>
+    <td width="40%"><tt>BLACK, BLUE, CYAN, GREEN, MAGENTA, RED, WHITE, YELLOW</tt></td>
+    <td>The color of the displayed text.</td>
+  </tr>
+  <tr>
+    <td width="40%"><tt>BOLD, DIM, INVISIBLE, NORMAL</tt></td>
+    <td>The font attribute of the displayed text.</td>
+  </tr>
+  <tr>
+    <td width="40%"><tt>REVERSE, BLINK</tt> (<b><font color="#FF0000">TUI
+Only!</font></b>)<tt>, UNDERLINE</tt></td>
+    <td>The video attribute of the displayed text.</td>
+  </tr>
+</table>
+
+
+  </center>
+</div>
+
+
+<p>When you specify the <tt>STYLE</tt> attribute, you can reference a style
+defined in the <a href="PresentationStyles.html">Presentation Styles</a> file.
+This allows you to display errors or messages with more sophisticated visual
+effects as the regular TTY attributes. Advanced automatic rendering can be
+obtained with <a href="PresentationStyles.html#STYATT_MESSAGE">Message specific
+style attributes</a>. Note that if you want to apply automatically a style to
+all program warnings displayed with the <tt>ERROR</tt> instruction, you can use
+the <b>:error</b> pseudo selector in the style definition.</p>
+
+
+<h4>Example:</h4>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>03</CODE>    <tt>DATABASE</tt> stock
+<CODE class=linenumber>04</CODE>    <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>05</CODE>    <tt>IF</tt> sqlca.sqlcode <tt>THEN</tt>
+<CODE class=linenumber>06</CODE>       <tt>ERROR</tt> &quot;Connection failed (&quot; || sqlca.sqlcode || &quot;)&quot;
+<CODE class=linenumber>07</CODE>    <tt>END IF</tt>
+<CODE class=linenumber>08</CODE> <tt>END MAIN</tt></PRE>
+
+<HR>
+
+<h3><a name="MESSAGE">MESSAGE</a></h3>
+
+<h4>Purpose:</h4>
+
+<p>The <tt>MESSAGE</tt> instruction displays a message to the user. </p>
+
+<h4>Syntax:</h4>
+
+<code>MESSAGE <i>message</i> <u>[,...]</u> <u>[</u> ATTRIBUTE ( <i>display-attribute</i> <u>[,...]</u> ) <u>]</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>expression</i> is any <a href="Expressions.html">expression</a>
+    supported by the language.</li>
+  <li><i>display-attribute</i> is an attribute to display the error
+    text. See below.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>The <tt>MESSAGE</tt> instruction displays a message to the user. </p>
+
+<p>In <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a> mode, the text is displayed in the <u>Comment Line</u>
+    of the current <a href="WindowsAndForms.html">window</a>. In <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a>
+mode, the text is displayed in a specific area,
+    depending on the front end configuration.</p>
+
+<p>Possible attributes that can be used as <i>display-attribute</i>:</p>
+
+<div align="center">
+  <center>
+
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="40%"><b> Attribute</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="40%"><tt>STYLE = <i>string</i></tt></td>
+    <td>The name of a Presentation Style.</td>
+  </tr>
+  <tr>
+    <td width="40%"><tt>BLACK, BLUE, CYAN, GREEN, MAGENTA, RED, WHITE, YELLOW</tt></td>
+    <td>The color of the displayed text.</td>
+  </tr>
+  <tr>
+    <td width="40%"><tt>BOLD, DIM, INVISIBLE, NORMAL</tt></td>
+    <td>The font attribute of the displayed text.</td>
+  </tr>
+  <tr>
+    <td width="40%"><tt>REVERSE, BLINK</tt> (<b><font color="#FF0000">TUI
+Only!</font></b>)<tt>, UNDERLINE</tt></td>
+    <td>The video attribute of the displayed text.</td>
+  </tr>
+</table>
+
+  </center>
+</div>
+
+<p>When you specify the <tt>STYLE</tt> attribute, you can reference a style
+defined in the <a href="PresentationStyles.html">Presentation Styles</a> file.
+This allows you to display errors or messages with more sophisticated visual
+effects as the regular TTY attributes. Advanced automatic rendering can be
+obtained with <a href="PresentationStyles.html#STYATT_MESSAGE">Message specific
+style attributes</a>. Note that if you want to apply automatically a style to
+all program messages displayed with the <tt>MESSAGE</tt> instruction, you can
+use the <b>:message</b> pseudo selector in the style definition.</p>
+
+<h4>Example:</h4>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>03</CODE>    <tt>DATABASE</tt> stock
+<CODE class=linenumber>04</CODE>    <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>05</CODE>    <tt>IF</tt> sqlca.sqlcode <tt>THEN</tt>
+<CODE class=linenumber>06</CODE>       <tt>ERROR</tt> &quot;Connection failed (&quot; || sqlca.sqlcode || &quot;)&quot;
+<CODE class=linenumber>07</CODE>    <tt>ELSE</tt>
+<CODE class=linenumber>08</CODE>       <tt>MESSAGE</tt> &quot;Connected to database.&quot; <tt>ATTRIBUTE</tt> (<tt>STYLE</tt>=&quot;info3&quot;)
+<CODE class=linenumber>09</CODE>    <tt>END IF</tt>
+<CODE class=linenumber>10</CODE> <tt>END MAIN</tt></PRE>
+
+</BODY>
+</HTML>

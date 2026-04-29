@@ -1,0 +1,1704 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Java Interface</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The Java Interface</a></H1>
+<p>Summary:</p>
+
+<ul>
+  <li><a href="#PURPOSE">Purpose of the Java Interface</a></li>
+  <li><a href="#PREREQ">Prerequisites and installation</a></li>
+  <li><a href="#GETTING_STARTED">Getting started with the Java Interface</a>
+    <ul>
+      <li><a href="#IMPORT_JAVA">Import a Java class</a></li>
+      <li><a href="#DEFINE_OBJECT_VARIABLE">Define an object reference variable</a></li>
+      <li><a href="#INSTANTIATE_CLASS">Instantiate a Java class</a></li>
+      <li><a href="#CALL_CLASS_METHOD">Calling a method of a class</a></li>
+      <li><a href="#CALL_OBJECT_METHOD">Calling a method of an object</a></li>
+    </ul>
+  </li>
+  <li><a href="#ADVANCED_PROGRAMMING">Advanced programming</a>
+    <ul>
+      <li><a href="#JNI_OPTIONS">Using JVM options</a></li>
+      <li><a href="#CASE_SENSITIVITY">Case sensitivity with Java</a></li>
+      <li><a href="#METHOD_OVERLOADING">Method overloading in Java</a></li>
+      <li><a href="#JAVA_OBJECTS">Passing Java objects in BDL</a></li>
+      <li><a href="#METHOD_RETURN_AS_OBJECT">Using the method return as an object</a></li>
+      <li><a href="#IGNORABLE_RETURN_VALUE">Ignorable return of Java methods</a></li>
+      <li><a href="#STATIC_FIELDS">Static fields of Java classes</a></li>
+      <li><a href="#MAPPING_TYPES">Mapping BDL and Java types</a></li>
+      <li><a href="#FGL_DATE">Using the BDL DATE type</a></li>
+      <li><a href="#FGL_DATETIME">Using the BDL DATETIME type</a></li>
+      <li><a href="#FGL_INTERVAL">Using the BDL INTERVAL type</a></li>
+      <li><a href="#FGL_DECIMAL">Using the BDL DECIMAL type</a></li>
+      <li><a href="#FGL_BYTE">Using the BDL BYTE type</a></li>
+      <li><a href="#FGL_TEXT">Using the BDL TEXT type</a></li>
+      <li><a href="#FGL_TYPE">Identifying Genero BDL types</a></li>
+      <li><a href="#FGL_RECORD">Using BDL records</a></li>
+      <li><a href="#FGL_FORMAT">Formatting Genero BDL data</a></li>
+      <li><a href="#CHARACTER_SETS">Character set mapping</a></li>
+      <li><a href="#JAVA_ARRAYS">Java Arrays</a></li>
+      <li><a href="#CAST_OPERATOR">The CAST operator</a></li>
+      <li><a href="#INSTANCEOF_OPERATOR">The INSTANCEOF operator</a></li>
+      <li><a href="#EXCEPTION_HANDLING">Exception handling</a></li>
+    </ul>
+  </li>
+  <li><a href="#EXAMPLES">Examples</a>
+    <ul>
+      <li><a href="#EXAMPLE_1">Example 1: Using the regex package</a></li>
+      <li><a href="#EXAMPLE_2">Example 2: Using the Apache POI framework</a></li>
+    </ul>
+  </li>
+</ul>
+
+
+<p><i>See also:</i> <a href="Variables.html">Variables</a>, <a href="Records.html">Records</a>,
+<a href="DataTypes.html">Data Types</a>, <a href="UserTypes.html">User Types</a>,
+<a href="Operators.html">Operators</a>.</p>
+
+
+<HR>
+
+<h3><a name="PURPOSE">Purpose of the Java Interface</a></h3>
+
+<p>Starting with Genero BDL <b>2.20</b>, you can use the <b>Java Interface</b> to
+import Java classes which can be instantiated in the BDL program. With the
+Java Interface, Genero BDL opens the doors to the free huge Java libraries, as well as commercial libraries for specific purposes. The methods of Java objects can be called with Java objects referenced in
+    the BDL program, as well as with native BDL typed values like <a href="DataTypes.html#DT_INTEGER">INTEGER</a>,
+    <a href="DataTypes.html#DT_DECIMAL">DECIMAL</a>, <a href="DataTypes.html#DT_CHAR">CHAR</a>.</p>
+
+
+<h4><a name="JB_IMPOSSIBLE">What is not possible with the Java Interface?</a></h4>
+<ul>
+  <li>To use generic classes of Java like <i>java.util.Vector&lt;E&gt;</i></li>
+  <li>To share database connections between Java and Genero BDL</li>
+  <li>To use Java Graphical Objects in Genero BDL forms</li>
+</ul>
+
+
+<HR>
+
+<h3><a name="PREREQ">Prerequisites and installation</a></h3>
+<h4>Object-Oriented Programming</h4>
+<p>Before starting with the Java Interface, if you are not familiar with Java 
+and Object Oriented Programming, we strongly recommend that you learn more about 
+this language from the different tutorials and courses you can find on the 
+internet.</p>
+<h4>Software requirements</h4>
+<p>In order to use the Java Interface you need the following software, installed 
+and properly configured:</p>
+<ul>
+	<li>a Java
+Development Kit&nbsp;on development sites </li>
+	<li>a Java Runtime Environment on
+production sites </li>
+</ul>
+<p><b><font color="#FF0000">Warning:</font> The minimum required JRE version is
+Java 6.10.</b></p>
+<h4>Short step-by-step procedure to set up
+Java:</h4>
+<ol>
+  <li>Download the latest JDK from your preferred Java provider.<br>
+    On production sites, you only need a Java Runtime Environment (JRE).</li>
+  <li>Install the package on your platform by following the vendor installation
+    notes.</li>
+  <li>Set the PATH environment variable to the directory containing the Java
+    compiler (javac), and to the Java Virtual Machine (java).</li>
+  <li>Configure your environment to let the dynamic linker find the libjvm.so
+    shared library on UNIX or the JVM.DLL on Windows.<br>
+    For example, on a Linux/Intel you add&nbsp; $JRE_HOME/lib/i386/server to LD_LIBRARY_PATH.</li>
+  <li>Set the CLASSPATH or pass the <code>--java-option=-Djava.class.path=&lt;pathlist&gt;</code>
+    <a href="#JNI_OPTIONS">
+    option to fglrun</a> with the directories of the Java packages you want to
+    use.<br>
+    <b><font color="#FF0000">Warning:</font> You must add FGLDIR/lib/fgl.jar to
+the class path in order to compile Java code with BDL specific classes like <a href="#FGL_DECIMAL">com.fourjs.fgl.lang.FglDecimal</a>
+or <a href="#FGL_RECORD">com.fourjs.fgl.lang.FglRecord</a>.</b></li>
+  <li>Try your JDK by compiling a small java sample and executing it.</li>
+</ol>
+
+
+<h4>Platform-specific configuration</h4>
+<p>On some platforms like HP-UX, you must pay attention to additional
+configuration settings in order to use the Java Interface. For more details, see
+<a href="Installation.html#INST_OS_SPECNOTES">Operating System Specific Notes</a> in the installation
+guide.</p>
+
+
+<HR>
+
+
+<h3><a name="GETTING_STARTED">Getting started with the Java Interface</a></h3>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="IMPORT_JAVA">Import a Java class</a></h4>In order to
+use a Java class in the Genero BDL code, you must first import the class with
+the <a href="Programs.html#IMPORT">IMPORT JAVA</a>  instruction:&nbsp;
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT JAVA</tt> java.util.regex.Pattern</PRE>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="DEFINE_OBJECT_VARIABLE">Define an object reference variable</a></h4>
+<p>Before creating a Java object in Genero BDL, you must declare a <a href="Variables.html">program
+variable</a>  to reference the object. The type of the
+variable must be the name of the Java class, and can be fully qualified if
+needed:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>DEFINE</tt> p1 Pattern
+<CODE class=linenumber>02</CODE> <tt>DEFINE</tt> p2 java.util.regex.Pattern</PRE>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="INSTANTIATE_CLASS">Instantiate a Java class</a></h4><p>In Java, you
+can use the <i>new</i> operator to create a new object. The <i>new</i> operator
+does not exist in Genero BDL; you must use <i>&lt;ClassName&gt;.create()</i>
+instead. Assign the return value of the <i>create()</i> method to a program
+variable declared with the Java class name:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>DEFINE</tt> sb StringBuffer
+<CODE class=linenumber>02</CODE> <tt>LET</tt> sb = StringBuffer.create()</PRE>
+
+
+<p>If the Java class constructor uses parameters, you must pass the parameters
+to the <i>create()</i> method:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>LET</tt> sb1 = StringBuffer.create(&quot;abcdef&quot;)   -- Uses StringBuffer(String str) constructor
+<CODE class=linenumber>02</CODE> <tt>LET</tt> sb2 = StringBuffer.create(2048)       -- Uses StringBuffer(int capacity) constructor</PRE>
+
+
+<p>Note that you cannot use a full-qualifier class name when invoking the <i>create()</i>
+method:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>LET</tt> sb = java.lang.StringBuffer.create(&quot;abcdef&quot;)   -- Raises compiler error!</PRE>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="CALL_CLASS_METHOD">Calling a method of a class</a></h4>
+
+
+<p>You can call a class method (static method in Java) without instantiating an object of the class.
+Static method invocation must be prefixed with the class name. In the next
+example, the <i>compile()</i> class method of <i>Pattern</i> class returns a new
+instance of a <i>Pattern</i> object:&nbsp;</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>DEFINE</tt> p Pattern
+<CODE class=linenumber>02</CODE> <tt>LET</tt> p = Pattern.compile(&quot;[,\\s]+&quot;)</PRE>
+
+
+<p>Note that if you define a variable with the same name as a Java class, you
+must fully qualify the class when calling static methods, as shown in the
+following example:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>DEFINE</tt> Pattern Pattern
+<CODE class=linenumber>02</CODE> <tt>DEFINE</tt> Matcher Matcher
+<CODE class=linenumber>03</CODE> <tt>LET</tt> Pattern = java.util.regex.Pattern.compile(&quot;[a-z]+&quot;) -- static method, needs full qualifier
+<CODE class=linenumber>04</CODE> <tt>LET</tt> Matcher = Pattern.matcher(&quot;abcdef&quot;) -- regular instance method, Pattern resolves to variable</PRE>
+
+
+<p>Remember also that BDL variables are case-insensitive (Pattern = pattern).</p>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="CALL_OBJECT_METHOD">Calling a method of an object</a></h4>
+
+
+<p>Once the class has been instantiated as an object, and the object reference
+has been assigned to a variable, you can call a method of the Java object by
+using the variable as the prefix:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>DEFINE</tt> m Matcher
+<CODE class=linenumber>02</CODE> ...
+<CODE class=linenumber>03</CODE> <tt>LET</tt> m = p.matcher(&quot;aaabbb&quot;)
+<CODE class=linenumber>04</CODE> <tt>DISPLAY</tt> m.matches()</PRE>
+
+
+<p>In the above code example, the method in line #3 returns a new object of the class
+<i>java.util.regex.Matcher</i> and the
+method in line #4 returns a <i>boolean</i>.</p>
+
+
+<HR>
+
+
+<h3><a name="ADVANCED_PROGRAMMING">Advanced programming</a></h3>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="JNI_OPTIONS">Using JVM options</a></h4>
+<p>When using the Java interface, you can instruct fglrun or fglcomp to pass Java VM
+specific options during JNI initialization, by using the <code> --java-option</code> command
+line argument.</p>
+
+
+<p>In the next example, fglrun will pass <code>-verbose:gc</code> to the Java Virtual
+Machine:</p>
+
+
+<p><code>    $ fglrun --java-option=-verbose:gc myprog.42r</code></p>
+
+
+<p>You may want to pass the Java class path as command line option to fglrun
+with <code>-Djava.class.path</code> option as in the next example:</p>
+
+
+<p><code>    $ fglrun --java-option=-Djava.class.path=$FGLDIR/lib/fgl.jar:$MYCLASSPATH myprog.42r</code></p>
+
+
+<p><b><font color="#FF0000">Warning:</font> Concerning class path specification,
+the <code>java</code> runtime or <code>javac</code> compiler provide the <code>-cp</code>
+or <code>-classpath</code> options but when loading the JVM library from fglrun
+or fglcomp, only <code>-Djava.class.path</code> option is supported by the JNI
+interface.</b></p>
+
+
+<p>See also the <a href="Tools.html#TL_FGLRUN">fglrun tool options</a>.</p>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="CASE_SENSITIVITY">Case sensitivity with Java</a></h4>
+
+
+<p>Unlike Genero BDL, the Java language is <u>case-sensitive</u>. Therefore,
+when you write the name of a Java package, class or method in a <b>.4gl</b>
+source, it must match the exact name as if you were writing a Java program. The
+Genero <a href="Tools.html#TL_FGLCOMP">fglcomp</a> compiler takes care of this,
+and writes case-sensitive class and method names in the <b>.42m</b> pcode modules.</p><PRE><CODE class=linenumber>01</CODE> <tt>IMPORT JAVA</tt> java.util.regex.Pattern
+<CODE class=linenumber>02</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> p java.util.regex.PATTERN   -- Note the case error
+<CODE class=linenumber>04</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p>If you compile the above code example, fglcomp will raise error <a href="FglErrors.html#-6622"> -6622</a> at line
+3, complaining that the &quot;java/util/PATTERN&quot; name cannot be found.</p>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="METHOD_OVERLOADING">Method overloading in Java</a></h4>
+
+
+<p>The Java language allows <u>method overloading</u>; the parameter count and
+the parameter data types of a method are part of the method identification.
+Thus, the same method name can be used to implement different versions of the
+Java method, taking different parameters:</p><PRE><CODE class=linenumber>01</CODE> <tt>DEFINE</tt> int2 <tt>SMALLINT</tt>, int4 <tt>INTEGER</tt>, flt <tt>FLOAT</tt>
+<CODE class=linenumber>02</CODE> <tt>CALL</tt> myobj.display(int2)       -- invokes method display(short) of the Java class
+<CODE class=linenumber>03</CODE> <tt>CALL</tt> myobj.display(int4)       -- invokes method display(int) of the Java class
+<CODE class=linenumber>04</CODE> <tt>CALL</tt> myobj.display(flt)        -- invokes method display(double) of the Java class
+<CODE class=linenumber>05</CODE> <tt>CALL</tt> myobj.display(int2,int4)  -- invokes method display(short,int) of the Java class</PRE>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="JAVA_OBJECTS">Passing Java objects in BDL</a></h4>
+
+
+<p>As described in the &quot;<a href="#GETTING_STARTED">Getting started with
+Java Interface</a>&quot; section, Java objects must be instantiated and referenced
+by a program variable. The object reference is stored in the variable and can be
+passed as a parameter or returned from a BDL function. Like <a href="BuiltInClasses.html">built-in
+class</a> objects, the Java objects are passed by reference. This means that the
+called function does not get a clone of the object, but rather a handle to the
+original object. The function can then manipulate and modify the original object
+provided by the caller:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT JAVA</tt> java.lang.StringBuffer
+<CODE class=linenumber>02</CODE> 
+<CODE class=linenumber>03</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>04</CODE>   <tt>DEFINE</tt> x java.lang.StringBuffer
+<CODE class=linenumber>05</CODE>   <tt>LET</tt> x = StringBuffer.create()
+<CODE class=linenumber>06</CODE>   <tt>CALL</tt> change(x)
+<CODE class=linenumber>07</CODE>   <tt>DISPLAY</tt> x.toString()
+<CODE class=linenumber>08</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>09</CODE> 
+<CODE class=linenumber>10</CODE> <tt>FUNCTION</tt> change(sb)
+<CODE class=linenumber>11</CODE>   <tt>DEFINE</tt> sb java.lang.StringBuffer
+<CODE class=linenumber>12</CODE>   <tt>CALL</tt> sb.append(&quot;abc&quot;)
+<CODE class=linenumber>13</CODE> <tt>END FUNCTION</tt></PRE>
+
+
+<p>Similarly, Java object references can be returned from BDL functions:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT JAVA</tt> java.lang.StringBuffer
+<CODE class=linenumber>02</CODE> 
+<CODE class=linenumber>03</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>04</CODE>   <tt>DEFINE</tt> x java.lang.StringBuffer
+<CODE class=linenumber>05</CODE>   <tt>LET</tt> x = build()
+<CODE class=linenumber>06</CODE>   <tt>DISPLAY</tt> x.toString()
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>08</CODE> 
+<CODE class=linenumber>09</CODE> <tt>FUNCTION</tt> build()
+<CODE class=linenumber>10</CODE>   <tt>DEFINE</tt> sb java.lang.StringBuffer
+<CODE class=linenumber>11</CODE>   <tt>LET</tt> sb = StringBuffer.create()   -- Creates a new object.
+<CODE class=linenumber>12</CODE>   <tt>CALL</tt> sb.append(&quot;abc&quot;)
+<CODE class=linenumber>13</CODE>   <tt>RETURN</tt> sb  -- Returns the reference to the object, not a copy/clone.
+<CODE class=linenumber>14</CODE> <tt>END FUNCTION</tt></PRE>
+
+
+<p>Like <a href="BuiltInClasses.html">built-in class</a> objects, Java objects
+do not need to be explicitly destroyed; as long as an object is referenced by a
+variable, on the stack or in an expression, it will remain. When the last
+reference to an object is removed, the object is destroyed automatically. The
+next example shows how a unique object can be referenced twice, using two
+variables:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> test()
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> sb1, sb2 java.lang.StringBuffer   -- Declare 2 variables to reference a StringBuffer object
+<CODE class=linenumber>03</CODE>   <tt>LET</tt> sb1 = StringBuffer.create()  -- Create object and assign reference to variable
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> sb2 = sb1    -- Same object is now referenced by 2 variables
+<CODE class=linenumber>05</CODE>   <tt>CALL</tt> sb1.append(&quot;abc&quot;)  -- Object is modified through first variable
+<CODE class=linenumber>06</CODE>   <tt>CALL</tt> sb2.append(&quot;def&quot;)  -- Object is modified through second variable
+<CODE class=linenumber>07</CODE>   <tt>DISPLAY</tt> sb1.toString()   -- Shows content of StringBuffer object
+<CODE class=linenumber>08</CODE>   <tt>DISPLAY</tt> sb2.toString()   -- Same output as previous line 
+<CODE class=linenumber>09</CODE>   <tt>LET</tt> sb1 = <tt>NULL</tt>  -- Object is only referenced by second variable
+<CODE class=linenumber>10</CODE> <tt>END FUNCTION</tt>        -- sb2 removed from stack, object is no longer referenced and is destroyed.</PRE>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="METHOD_RETURN_AS_OBJECT">Using the method return as an object</a></h4>
+
+
+<p>If a Java method returns an object, you can use the method call directly as
+an object reference to call another method:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT JAVA</tt> java.util.regex.Pattern
+<CODE class=linenumber>02</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> p Pattern
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> p = Pattern.compile(&quot;a*b&quot;)
+<CODE class=linenumber>05</CODE>   <tt>IF</tt> p.matcher(&quot;aaaab&quot;).matches() <tt>THEN</tt>
+<CODE class=linenumber>06</CODE>     <tt>DISPLAY</tt> &quot;It matches...&quot;
+<CODE class=linenumber>07</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>08</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p>In line #5, the <i>matcher()</i> method of object <i>p</i> is invoked and
+returns an object of type <i>java.util.regex.Matcher</i>. The object reference returned
+by the <i>matcher()</i> method can be directly used to invoke a method of the <i>
+Matcher</i> object (i.e. <i>matches()</i>), which returns a <i>boolean</i>.</p>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="IGNORABLE_RETURN_VALUE">Ignorable return of Java methods</a></h4>
+
+
+<p>Unlike Genero BDL, Java allows you to ignore the return value of a method (as
+in C/C++):</p>
+
+
+<p><code>StringBuffer sb = new StringBuffer;<br>
+sb.append(&quot;abc&quot;);&nbsp; -- returns a new StringBuffer object but is
+ignored</code></p>
+
+
+<p>Genero BDL allows you to call a Java method and ignore the return value:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT JAVA</tt> java.util.lang.StringBuffer
+<CODE class=linenumber>02</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> sb StringBuffer
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> sb = StringBuffer.create()
+<CODE class=linenumber>05</CODE>   <tt>LET</tt> sb = sb.append(&quot;abc&quot;)
+<CODE class=linenumber>06</CODE>   <tt>CALL</tt> sb.append(&quot;def&quot;)  -- typical usage
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="STATIC_FIELDS">Static fields of Java classes</a></h4>
+
+
+<p>Java classes can have object and class (<i>static</i>) fields. Java <i>static</i>
+class fields can be declared as <i>final</i> (read-only). It is not possible to
+change the object or class fields in BDL even if the field is not declared as <i>static
+final</i>; you can however read from it:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT JAVA</tt> java.lang.Integer
+<CODE class=linenumber>02</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>03</CODE>   <tt>DISPLAY</tt> Integer.MAX_VALUE
+<CODE class=linenumber>04</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="MAPPING_TYPES">Mapping BDL and Java types</a></h4>
+
+
+<p>Java and Genero BDL do not have the same built-in data types. Unlike Genero
+BDL, Java is a strongly typed language: You cannot call a method with a <i>String</i>
+if it was defined to get an <i>int</i> parameter. To call a Java method, <a href="DataTypes.html">Genero
+BDL typed values</a> need to be converted to/from Java native types such as <i>byte</i>, <i>int</i>, <i>short</i>,
+<i>char</i> or data objects such as <i>java.lang.String</i>. If possible, the fglrun runtime
+system will do this conversion implicitly.</p>
+
+
+<p>The <a href="Tools.html#TL_FGLCOMP">fglcomp</a> compiler will raise the error <b>-6606</b>,
+if the BDL data type does not match
+the Java (primitive) type, using Widening Primitive Conversions. For example,
+passing a DECIMAL when a Java <i>double</i> (BDL FLOAT) is expected will fail,
+but passing a SMALLFLOAT (Java <i>float</i>) when a Java <i>double</i> is
+expected will compile and run.</p>
+
+
+<p>Genero has advanced proprietary data types such as <a href="DataTypes.html#DT_DECIMAL">DECIMAL</a>, which do
+not have an equivalent primitive type or class in Java.&nbsp;For such BDL types,
+you need to use a specific Java class provided in the FGLDIR/lib/fgl.jar
+package, like <a href="#FGL_DECIMAL">com.fourjs.fgl.lang.FglDecimal</a>. You can then manipulate the BDL specific value in the
+Java code. For more details about these specific types, see <a href="#FGL_DECIMAL">&quot;Using
+the BDL DECIMAL type&quot;</a>, and similar sections.</p>
+
+
+<p>Genero also implements structured types with <a href="Records.html">RECORDs</a>,
+converted to <a href="#FGL_RECORD">com.fourjs.fgl.lang.FglRecord</a> objects for Java.</p>
+
+
+<p>The <a href="Arrays.html">BDL static and dynamic arrays</a> cannot be used to
+call Java methods. You must use <a href="#JAVA_ARRAYS">Java Arrays</a> instead.</p>
+
+
+<p>Note that in some cases you need to explicitly cast with the new CAST()
+operator. See the <a href="#CAST_OPERATOR">section about CAST() operator</a> for
+more details.</p>
+
+
+<p>The following table shows the implicit conversions done by the Genero runtime
+system when a Java method is called, or when a Java method returns a value or
+object reference:</p>
+
+
+<div align="center">
+  <center>
+
+
+<table border="0" width="80%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="50%"><b><a name="FGL_TO_JAVA_TYPES">Genero Data Type</a></b></td>
+      <td bgcolor="#C0C0C0" width="50%"><b>Java Primitive Type, Standard Class or&nbsp;BDL Java Class</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="50%"><a href="DataTypes.html#DT_CHAR">CHAR</a></td>
+      <td valign="top" width="50%">java.lang.String</td>
+    </tr>
+    <tr>
+      <td valign="top" width="50%"><a href="DataTypes.html#DT_VARCHAR">VARCHAR</a></td>
+      <td valign="top" width="50%">java.lang.String</td>
+    </tr>
+    <tr>
+      <td valign="top" width="50%"><a href="DataTypes.html#DT_STRING">STRING</a> </td>
+      <td valign="top" width="50%">java.lang.String</td>
+    </tr>
+    <tr>
+      <td valign="top" width="50%"><a href="DataTypes.html#DT_DATE">DATE</a></td>
+      <td valign="top" width="50%"><a href="#FGL_DATE">com.fourjs.fgl.lang.FglDate</a></td>
+    </tr>
+    <tr>
+      <td valign="top" width="50%"><a href="DataTypes.html#DT_DATETIME">DATETIME</a></td>
+      <td valign="top" width="50%"><a href="#FGL_DATETIME">com.fourjs.fgl.lang.FglDateTime</a></td>
+    </tr>
+    <tr>
+      <td valign="top" width="50%"><a href="DataTypes.html#DT_INTERVAL">INTERVAL</a></td>
+      <td valign="top" width="50%"><a href="#FGL_INTERVAL">com.fourjs.fgl.lang.FglInterval</a></td>
+    </tr>
+    <tr>
+      <td valign="top" width="50%"><a href="DataTypes.html#DT_BIGINT">BIGINT</a></td>
+      <td valign="top" width="50%">long (64-bit signed integer)</td>
+    </tr>
+    <tr>
+      <td valign="top" width="50%"><a href="DataTypes.html#DT_INTEGER">INTEGER</a></td>
+      <td valign="top" width="50%">int (32-bit signed integer)</td>
+    </tr>
+    <tr>
+      <td valign="top" width="50%"><a href="DataTypes.html#DT_SMALLINT">SMALLINT</a></td>
+      <td valign="top" width="50%">short (16-bit signed integer)</td>
+    </tr>
+    <tr>
+      <td valign="top" width="50%"><a href="DataTypes.html#DT_TINYINT">TINYINT</a></td>
+      <td valign="top" width="50%">tinyint (8-bit signed integer)</td>
+    </tr>
+    <tr>
+      <td valign="top" width="50%"><a href="DataTypes.html#DT_FLOAT">FLOAT</a></td>
+      <td valign="top" width="50%">double (64-bit signed floating point number)</td>
+    </tr>
+  <tr>
+      <td valign="top" width="50%">
+        <p align="left"><a href="DataTypes.html#DT_SMALLFLOAT">SMALLFLOAT</a></p>
+    </td>
+      <td valign="top" width="50%">float (32-bit signed floating point number)</td>
+    </tr>
+    <tr>
+      <td valign="top" width="50%"><a href="DataTypes.html#DT_DECIMAL">DECIMAL</a></td>
+      <td valign="top" width="50%"><a href="#FGL_DECIMAL">com.fourjs.fgl.lang.FglDecimal</a></td>
+    </tr>
+    <tr>
+      <td valign="top" width="50%"><a href="DataTypes.html#DT_MONEY">MONEY</a></td>
+      <td valign="top" width="50%"><a href="#FGL_DECIMAL">com.fourjs.fgl.lang.FglDecimal</a></td>
+    </tr>
+    <tr>
+      <td valign="top" width="50%"><a href="DataTypes.html#DT_BYTE">BYTE</a></td>
+      <td valign="top" width="50%"><a href="#FGL_BYTE">com.fourjs.fgl.lang.FglByte</a></td>
+    </tr>
+    <tr>
+      <td valign="top" width="50%"><a href="DataTypes.html#DT_TEXT">TEXT</a></td>
+      <td valign="top" width="50%"><a href="#FGL_TEXT">com.fourjs.fgl.lang.FglText</a></td>
+    </tr>
+    <tr>
+      <td valign="top" width="50%"><a href="Records.html">RECORD</a></td>
+      <td valign="top" width="50%"><a href="#FGL_RECORD">com.fourjs.fgl.lang.FglRecord</a></td>
+    </tr>
+    <tr>
+      <td valign="top" width="50%"><a href="#JAVA_ARRAYS">Java Array</a></td>
+      <td valign="top" width="50%">Native Java Array</td>
+    </tr>
+    <tr>
+      <td valign="top" width="100%" bgcolor="#FF9999" colspan="2"><b>Unsupported
+        conversions</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="50%"><a href="Arrays.html">Static Array</a></td>
+      <td valign="top" width="50%">N/A</td>
+    </tr>
+    <tr>
+      <td valign="top" width="50%"><a href="Arrays.html">Dynamic Array</a></td>
+      <td valign="top" width="50%">N/A</td>
+    </tr>
+    <tr>
+      <td valign="top" width="50%"><a href="BuiltInClasses.html">Built-in Class Object</a></td>
+      <td valign="top" width="50%">N/A</td>
+    </tr>
+</table>
+
+  </center>
+</div>
+
+
+<HR size="1" color="#C0C0C0">
+
+<h4><a name="FGL_DATE">Using the BDL DATE type</a></h4>
+
+
+<p>The <a href="DataTypes.html#DT_DATE">DATE</a> data type is a time type specific to Genero
+BDL. When calling a Java method with a BDL expression
+evaluating a DATE, the runtime system converts the BDL value to an
+instance of the <b>com.fourjs.fgl.lang.FglDate</b> class implemented in <b>FGLDIR/lib/fgl.jar</b>.
+You can then manipulate the DATE from within the Java code.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> You must add FGLDIR/lib/fgl.jar to
+the class path in order to compile Java code with com.fourjs.fgl.lang.FglDate
+class.</b></p>
+
+
+<p>The com.fourjs.fgl.lang.FglDate class implements following:&nbsp;</p>
+
+
+<table border="0" width="90%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="30%"><b>Method</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code> String toString()</code></td>
+      <td valign="top">Converts the DATE value to a String object representing
+        the date in ISO format:<br>
+        &nbsp;YYYY-MM-DD</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code> static void valueOf(String val)</code></td>
+      <td valign="top">Creates a new FglDate object from a String object
+        representing a date in ISO format.</td>
+    </tr>
+</table>
+
+<p>In the Java code, you can convert the com.fourjs.fgl.lang.FglDate to a <i>java.util.Calendar</i>
+object as in the following example:</p>
+
+
+<p><code>public static void useDate(FglDate d) throws ParseException {<br>
+&nbsp;&nbsp;&nbsp; SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");<br>
+&nbsp;&nbsp;&nbsp; Calendar cal = Calendar.getInstance();<br>
+&nbsp;&nbsp;&nbsp; cal.setTime( sdf.parse(d.toString()) );<br>
+&nbsp;&nbsp;&nbsp; ...<br>
+}</code></p>
+
+
+<p>If you need to create an com.fourjs.fgl.lang.FglDate object in BDL, you can use the
+valueOf() class method as in the following example:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT JAVA</tt> com.fourjs.fgl.lang.FglDate
+<CODE class=linenumber>02</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> d com.fourjs.fgl.lang.FglDate
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> d = FglDate.valueOf(&quot;2008-12-23&quot;)
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY</tt> d.toString()
+<CODE class=linenumber>06</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR size="1" color="#C0C0C0">
+
+<h4><a name="FGL_DATETIME">Using the BDL DATETIME type</a></h4>
+
+
+<p>The <a href="DataTypes.html#DT_DATETIME">DATETIME</a> data type is a time type specific to Genero
+BDL. When calling a Java method with a BDL expression
+evaluating a DATETIME, the runtime system converts the BDL value to an
+instance of the <b>com.fourjs.fgl.lang.FglDateTime</b> class implemented in <b>FGLDIR/lib/fgl.jar</b>.
+You can then manipulate the DATETIME from within the Java code.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> You must add FGLDIR/lib/fgl.jar to
+the class path in order to compile Java code with com.fourjs.fgl.lang.FglDateTime
+class.</b></p>
+
+
+<p>The com.fourjs.fgl.lang.FglDateTime class implements following:</p>
+
+
+<table border="0" width="90%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="30%"><b>Field</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int YEAR</code></td>
+      <td valign="top">Time qualifier for year</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int MONTH</code></td>
+      <td valign="top">Time qualifier for month</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int DAY</code></td>
+      <td valign="top">Time qualifier for day</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int HOUR</code></td>
+      <td valign="top">Time qualifier for hour</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int MINUTE</code></td>
+      <td valign="top">Time qualifier for minute</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int SECOND</code></td>
+      <td valign="top">Time qualifier for second</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int FRACTION</code></td>
+      <td valign="top">Time qualifier for fraction (start qualifier)</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int FRACTION1</code></td>
+      <td valign="top">Time qualifier for fraction(1)&nbsp; (end qualifier)</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int FRACTION2</code></td>
+      <td valign="top">Time qualifier for fraction(2)&nbsp; (end qualifier)</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int FRACTION3</code></td>
+      <td valign="top">Time qualifier for fraction(3)&nbsp; (end qualifier)</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int FRACTION4</code></td>
+      <td valign="top">Time qualifier for fraction(4)&nbsp; (end qualifier)</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int FRACTION5</code></td>
+      <td valign="top">Time qualifier for fraction(5)&nbsp; (end qualifier)</td>
+    </tr>
+    <tr>
+      <td bgcolor="#C0C0C0" width="30%"><b>Method</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>String toString()</code></td>
+      <td valign="top">Converts the DATETIME value to a String object
+        representing a datetime in ISO format.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code> static void valueOf(String val)</code></td>
+      <td valign="top">Creates a new FglDateTime object from a String object
+        representing a datetime value in ISO format:<br>
+        &nbsp; YYYY-MM-DD hh:mm:ss.fff</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code> static void valueOf(String val,<br>
+        &nbsp; int startUnit, int endUnit)</code></td>
+      <td valign="top">Creates a new FglDateTime object from a String object
+        representing a datetime value in ISO format, using the qualifiers passed
+        as parameter.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code> static int encodeTypeQualifier(<br>
+        &nbsp; int startUnit, int endUnit)</code></td>
+      <td valign="top">Returns the encoded type qualifier for a datetime with to
+        datetime qualifiers passed:<br>
+        &nbsp; encoded qualifier = (length * 256) + (startUnit * 16) + endUnit<br>
+        Where <i>length</i> defines the total number of significant digits in
+        this time data.<br>
+        For example, with DATETIME YEAR TO MINUTE:<br>
+        &nbsp; startUnit = YEAR<br>
+        &nbsp; length = 12 (YYYYMMDDhhmm)<br>
+        &nbsp; endUnit = MINUTE</td>
+    </tr>
+</table>
+
+<p>In the Java code, you can convert the com.fourjs.fgl.lang.FglDateTime to a <i>java.util.Calendar</i>
+object as in the following example:</p>
+
+
+<p><code>    public static void useDatetime(FglDateTime dt) throws ParseException {<br>
+&nbsp;&nbsp;&nbsp;        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd
+HH:mm:ss.SSS");<br>
+&nbsp;&nbsp;&nbsp;        Calendar cal = Calendar.getInstance();<br>
+&nbsp;&nbsp;&nbsp; cal.setTime( sdf.parse(dt.toString()) );<br>
+&nbsp;&nbsp;&nbsp; ...<br>
+}</code></p>
+
+
+<p>If you need to create an com.fourjs.fgl.lang.FglDateTime object in BDL, you can use the
+valueOf() class method as in the following example:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT JAVA</tt> com.fourjs.fgl.lang.FglDateTime
+<CODE class=linenumber>02</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> dt com.fourjs.fgl.lang.FglDateTime
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> dt = FglDateTime.valueOf(&quot;2008-12-23 11:22:33.123&quot;)
+<CODE class=linenumber>05</CODE>   <tt>LET</tt> dt = FglDateTime.valueOf(&quot;11:22:33.123&quot;, FglDateTime.HOUR, FglDateTime.FRACTION3)
+<CODE class=linenumber>06</CODE>   <tt>DISPLAY</tt> dt.toString()
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p><b><font color="#FF0000">Warning:</font> The valueOf() method expects a
+string representing a complete datetime specification, from year to
+milliseconds, equivalent to a <a href="DataTypes.html#DT_DATETIME">DATETIME YEAR
+TO FRACTION(3)</a> data type.</b></p>
+
+<HR size="1" color="#C0C0C0">
+
+<h4><a name="FGL_INTERVAL">Using the BDL INTERVAL type</a></h4>
+
+
+<p>The <a href="DataTypes.html#DT_INTERVAL">INTERVAL</a> data type is a time type specific to Genero
+BDL. When calling a Java method with a BDL expression
+evaluating an INTERVAL, the runtime system converts the BDL value to an
+instance of the <b>com.fourjs.fgl.lang.FglInterval</b> class implemented in <b>FGLDIR/lib/fgl.jar</b>.
+You can then manipulate the INTERVAL from within the Java code.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> You must add FGLDIR/lib/fgl.jar to
+the class path in order to compile Java code with com.fourjs.fgl.lang.FglInterval
+class.</b></p>
+
+
+<p>The com.fourjs.fgl.lang.FglInterval class implements following:</p>
+
+
+<table border="0" width="90%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="30%"><b>Field</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int YEAR</code></td>
+      <td valign="top">Time qualifier for year</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int MONTH</code></td>
+      <td valign="top">Time qualifier for month</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int DAY</code></td>
+      <td valign="top">Time qualifier for day</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int HOUR</code></td>
+      <td valign="top">Time qualifier for hour</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int MINUTE</code></td>
+      <td valign="top">Time qualifier for minute</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int SECOND</code></td>
+      <td valign="top">Time qualifier for second</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int FRACTION</code></td>
+      <td valign="top">Time qualifier for fraction (start qualifier)</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int FRACTION1</code></td>
+      <td valign="top">Time qualifier for fraction(1)&nbsp; (end qualifier)</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int FRACTION2</code></td>
+      <td valign="top">Time qualifier for fraction(2)&nbsp; (end qualifier)</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int FRACTION3</code></td>
+      <td valign="top">Time qualifier for fraction(3)&nbsp; (end qualifier)</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int FRACTION4</code></td>
+      <td valign="top">Time qualifier for fraction(4)&nbsp; (end qualifier)</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int FRACTION5</code></td>
+      <td valign="top">Time qualifier for fraction(5)&nbsp; (end qualifier)</td>
+    </tr>
+    <tr>
+      <td bgcolor="#C0C0C0" width="30%"><b>Method</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>String toString()</code></td>
+      <td valign="top">Converts the INTERVAL value to a String object
+        representing an interval in ISO format.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code> static void valueOf(String val)</code></td>
+      <td valign="top">Creates a new FglInterval object from a String object
+        representing an interval value in ISO format:<br>
+        &nbsp; DD hh:mm:ss.fff</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code> static void valueOf(String val,<br>
+        &nbsp; int startUnit, int endUnit)</code></td>
+      <td valign="top">Creates a new FglDateTime object from a String object
+        representing an interval value in ISO format, using the qualifiers and
+        precision passed as parameter.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code> static int encodeTypeQualifier(<br>
+        &nbsp; int startUnit, int length,<br>
+        &nbsp; int endUnit))</code></td>
+      <td valign="top">Returns the encoded type qualifier for an interval with
+        to interval qualifiers and length passed:<br>
+        &nbsp; encoded qualifier = (length * 256) + (startUnit * 16) + endUnit<br>
+        Where <i>length</i> defines the total number of significant digits in
+        this time data.<br>
+        For example, with INTERVAL DAY(5) TO FRACTION3:<br>
+        &nbsp; startUnit = DAY<br>
+        &nbsp; length = 13 (DDDDhhmmssfff)<br>
+        &nbsp; endUnit = FRACTION3</td>
+    </tr>
+</table>
+
+<p>In the Java code, you can pass a com.fourjs.fgl.lang.FglInterval object as in
+the following example:&nbsp;</p>
+
+
+<p><code>    public static void useInterval(FglInterval inv) throws ParseException {<br>
+&nbsp;&nbsp;&nbsp; String s = inv.toString();<br>
+&nbsp;&nbsp;&nbsp; ...<br>
+}</code></p>
+
+
+<p>If you need to create an com.fourjs.fgl.lang.FglInterval object in BDL, you can use the
+valueOf() class method as in the following example:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT JAVA</tt> com.fourjs.fgl.lang.FglInterval
+<CODE class=linenumber>02</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> inv com.fourjs.fgl.lang.FglInterval
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> inv = FglInterval.valueOf(&quot;-510 12:33:45.123&quot;)
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY</tt> inv.toString()
+<CODE class=linenumber>06</CODE> <tt>END MAIN</tt>&nbsp;</PRE>
+
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="FGL_DECIMAL">Using the BDL DECIMAL type</a></h4>
+
+
+<p>The <a href="DataTypes.html#DT_DECIMAL">DECIMAL</a> data type is a precision
+math decimal type specific to Genero BDL. <a href="DataTypes.html#DT_MONEY">MONEY</a>
+is equivalent to <a href="DataTypes.html#DT_DECIMAL">DECIMAL</a>, from an
+internal storage point of view. When calling a Java method with a BDL expression
+evaluating a DECIMAL, the runtime system converts the BDL value to an
+instance of the <b>com.fourjs.fgl.lang.FglDecimal</b> class implemented in <b>FGLDIR/lib/fgl.jar</b>.
+You can then manipulate the DECIMAL from within the Java code.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> You must add FGLDIR/lib/fgl.jar to
+the class path in order to compile Java code with com.fourjs.fgl.lang.FglDecimal
+class.</b></p>
+
+
+<p>The com.fourjs.fgl.lang.FglDecimal class implements following:</p>
+
+
+<table border="0" width="90%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="30%"><b>Method</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>String toString()</code></td>
+      <td valign="top">Converts the DECIMAL value to a String object.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>static void valueOf(String val)</code></td>
+      <td valign="top">Creates a new FglDecimal object from a String object
+        representing a decimal value.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code> static void valueOf(int val)</code></td>
+      <td valign="top">Creates a new FglDecimal object from an <i>int</i> value.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>static int encodeTypeQualifier(<br>
+        &nbsp; int precision, int scale)</code></td>
+      <td valign="top">Returns the encoded type qualifier for this decimal
+        according to precision and scale.<br>
+        encoded qualifier = (precision * 256) + scale<br>
+        Use 255 as scale for floating point decimal.</td>
+    </tr>
+</table>
+
+<p>In the Java code, you can convert the com.fourjs.fgl.lang.FglDecimal to a <i>java.lang.BigDecimal</i>
+ as in following example:&nbsp;</p>
+
+
+<p><code>    public static FglDecimal divide(FglDecimal d1, FglDecimal d2){<br>
+&nbsp;&nbsp;&nbsp; BigDecimal bd1 = new BigDecimal(d1.toString());<br>
+&nbsp;&nbsp;&nbsp; BigDecimal bd2 = new BigDecimal(d2.toString());<br>
+&nbsp;&nbsp;&nbsp; BigDecimal res = bd1.divide(bd2, BigDecimal.ROUND_FLOOR);<br>
+&nbsp;&nbsp;&nbsp; return FglDecimal.valueOf(res.toString());<br>
+    }</code></p>
+
+
+<p>If you need to create an com.fourjs.fgl.lang.FglDecimal object in BDL, you can use the
+valueOf() class method as in the following example:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT JAVA</tt> com.fourjs.fgl.lang.FglDecimal
+<CODE class=linenumber>02</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> jdec com.fourjs.fgl.lang.FglDecimal
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> jdec = FglDecimal.valueOf(&quot;123.45&quot;)
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY</tt> jdec.toString()
+<CODE class=linenumber>06</CODE> <tt>END MAIN</tt></PRE>
+
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="FGL_BYTE">Using the BDL BYTE type</a></h4>
+
+
+<p>The <a href="DataTypes.html#DT_BYTE">BYTE</a> data type is a Binary Large
+Object (blob) handle data
+type specific to Genero BDL. When calling a Java method with a BDL expression
+evaluating a BYTE, the runtime system converts the BDL LOB handle to an
+instance of the <b>com.fourjs.fgl.lang.FglByte</b> class implemented in <b>FGLDIR/lib/fgl.jar</b>.
+You can then manipulate the LOB from within the Java code.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> You must add FGLDIR/lib/fgl.jar to
+the class path in order to compile Java code with com.fourjs.fgl.lang.FglByte
+class.</b></p>
+
+
+<p>The com.fourjs.fgl.lang.FglByte class implements following:</p>
+
+
+<table border="0" width="90%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="30%"><b>Method</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code> String toString()</code></td>
+      <td valign="top">Returns the HEX string representing the binary data.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code> static void valueOf(String val)</code></td>
+      <td valign="top">Creates a new FglByte object from a String object
+        representing the binary data in HEX format.</td>
+    </tr>
+</table>
+
+<p>In the Java code, you can pass a com.fourjs.fgl.lang.FglByte object as in
+the following example:&nbsp;</p>
+
+
+<p><code>    public static void useByte(FglByte b) throws ParseException {<br>
+&nbsp;&nbsp;&nbsp; String s = b.toString();<br>
+&nbsp;&nbsp;&nbsp; ...<br>
+}</code></p>
+
+
+<p>If you need to create an com.fourjs.fgl.lang.FglByte object in BDL, you can use the
+valueOf() class method as in the following example:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT JAVA</tt> com.fourjs.fgl.lang.FglByte
+<CODE class=linenumber>02</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> jbyte com.fourjs.fgl.lang.FglByte
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> jbyte = FglByte.valueOf(&quot;0FA5617BDE&quot;)
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY</tt> jbyte.toString()
+<CODE class=linenumber>06</CODE> <tt>END MAIN</tt></PRE>
+
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="FGL_TEXT">Using the BDL TEXT type</a></h4>
+
+
+<p>The <a href="DataTypes.html#DT_TEXT">TEXT</a> data type is a Text Large
+Object (tlob) handle data
+type specific to Genero BDL. When calling a Java method with a BDL expression
+evaluating a TEXT, the runtime system converts the BDL LOB handle to an
+instance of the <b>com.fourjs.fgl.lang.FglText</b> class implemented in <b>FGLDIR/lib/fgl.jar</b>.
+You can then manipulate the LOB from within the Java code.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> You must add FGLDIR/lib/fgl.jar to
+the class path in order to compile Java code with com.fourjs.fgl.lang.FglText
+class.</b></p>
+
+
+<p>The com.fourjs.fgl.lang.FglText class implements following:</p>
+
+
+<table border="0" width="90%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="30%"><b>Method</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code> String toString()</code></td>
+      <td valign="top">Converts the large text data to a simple String.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code> static void valueOf(String val)</code></td>
+      <td valign="top">Creates a new FglText object from a String.</td>
+    </tr>
+</table>
+
+<p>In the Java code, you can pass a com.fourjs.fgl.lang.FglText object as in
+the following example:&nbsp;</p>
+
+
+<p><code>    public static void useByte(FglText t) throws ParseException {<br>
+&nbsp;&nbsp;&nbsp; String s = t.toString();<br>
+&nbsp;&nbsp;&nbsp; ...<br>
+}</code></p>
+
+
+<p>If you need to create an com.fourjs.fgl.lang.FglText object in BDL, you can use the
+valueOf() class method as in the following example:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT JAVA</tt> com.fourjs.fgl.lang.FglText
+<CODE class=linenumber>02</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> jtext com.fourjs.fgl.lang.FglText
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> jtext = FglText.valueOf(&quot;abcdef..........&quot;)
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY</tt> jtext.toString()
+<CODE class=linenumber>06</CODE> <tt>END MAIN</tt></PRE>
+
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="FGL_TYPE">Identifying Genero BDL data types</a></h4>
+<p>Native Java types and BDL data types are different. To identify BDL types in
+java code, you can use the <b>com.fourjs.fgl.lang.FglTypes</b> class implemented in <b>FGLDIR/lib/fgl.jar</b>.
+You can for example identify the data type of a member of an <a href="#FGL_RECORD">FglRecord
+object</a>.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> You must add FGLDIR/lib/fgl.jar to
+the class path in order to compile Java code with com.fourjs.fgl.lang.FglType
+class.</b></p>
+
+
+<p>The com.fourjs.fgl.lang.FglTypes class implements following:</p>
+
+
+<table border="0" width="90%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="30%"><b>Field</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int BYTE</code></td>
+      <td valign="top">Identifies the BDL <a href="DataTypes.html#DT_BYTE">BYTE</a>
+        data type</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int CHAR</code></td>
+      <td valign="top">Identifies the BDL <a href="DataTypes.html#DT_CHAR">CHAR</a>
+        data type</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int DATE</code></td>
+      <td valign="top">Identifies the BDL <a href="DataTypes.html#DT_DATE">DATE</a>
+        data type</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int DATETIME</code></td>
+      <td valign="top">Identifies the BDL <a href="DataTypes.html#DT_DATETIME">DATETIME</a>
+        data type</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int DECIMAL</code></td>
+      <td valign="top">Identifies the BDL <a href="DataTypes.html#DT_DECIMAL">DECIMAL</a>
+        data type</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int FLOAT</code></td>
+      <td valign="top">Identifies the BDL <a href="DataTypes.html#DT_FLOAT">FLOAT</a>
+        data type</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int INT</code></td>
+      <td valign="top">Identifies the BDL <a href="DataTypes.html#DT_INTEGER">INT</a>
+        data type</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int SMALLFLOAT</code></td>
+      <td valign="top">Identifies the BDL <a href="DataTypes.html#DT_SMALLFLOAT">SMALLFLOAT</a>
+        data type</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int SMALLINT</code></td>
+      <td valign="top">Identifies the BDL <a href="DataTypes.html#DT_SMALLINT">SMALLINT</a>
+        data type</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int VARCHAR</code></td>
+      <td valign="top">Identifies the BDL <a href="DataTypes.html#DT_VARCHAR">VARCHAR</a>
+        data type</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int STRING</code></td>
+      <td valign="top">Identifies the BDL <a href="DataTypes.html#DT_STRING">STRING</a>
+        data type</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int RECORD</code></td>
+      <td valign="top">Identifies a BDL <a href="Records.html">RECORD</a>
+        structure</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>final static int ARRAY</code></td>
+      <td valign="top">Identifies a BDL <a href="Arrays.html">ARRAY</a> object</td>
+    </tr>
+</table>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="FGL_RECORD">Using BDL records</a></h4>
+
+
+<p>BDL supports structured types with the <a href="Records.html">RECORD</a>
+definitions. When passing a RECORD to a Java method, the runtime system converts
+the RECORD to an instance of the <b>com.fourjs.fgl.lang.FglRecord</b> class implemented in <b>FGLDIR/lib/fgl.jar</b>.
+You can then manipulate the RECORD from within the Java code.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> You must add FGLDIR/lib/fgl.jar to
+the class path in order to compile Java code with com.fourjs.fgl.lang.FglRecord
+class.</b></p>
+
+
+<p>When assigning a <a href="Records.html">RECORD</a> to a com.fourjs.fgl.lang.FglRecord, <i>widening
+conversion</i> applies implicitly. But when assigning a com.fourjs.fgl.lang.FglRecord to a
+RECORD, <i>narrowing conversion</i> applies and you must explicitly <a href="#CAST_OPERATOR">CAST</a>
+the original object reference to the type of the RECORD.</p>
+
+
+<p>The com.fourjs.fgl.lang.FglRecord class implements the following:&nbsp;</p>
+
+
+<table border="0" width="90%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="30%"><b>Method</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code> int getFieldCount()</code></td>
+      <td valign="top">Returns the number of record members.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code> String getFieldName(int p)</code></td>
+      <td valign="top">Returns the name of the record member at position <i>p</i>.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>FglTypes getType(int p)</code></td>
+      <td valign="top">Returns the <a href="#FGL_TYPE">FglTypes</a> of the record member at position <i>p</i>.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code> String getTypeName(int p)</code></td>
+      <td valign="top">Returns the string representation of the BDL type of the
+        record member at position <i>p</i>.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>int getTypeQualifier(int p)</code></td>
+      <td valign="top">Returns the encoded type qualifier of the
+        record member at position <i>p</i>.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>int getInt(int p)</code></td>
+      <td valign="top">Returns the int value of the
+        record member at position <i>p</i>.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>int getFloat(int p)</code></td>
+      <td valign="top">Returns the float value of the
+        record member at position <i>p</i>.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>double getDouble(int p)</code></td>
+      <td valign="top">Returns the double value of the
+        record member at position <i>p</i>.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>String getString(int p)</code></td>
+      <td valign="top">Returns the String representation of the value of the
+        record member at position <i>p</i>.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>FglDecimal getDecimal(int p)</code></td>
+      <td valign="top">Returns the <a href="#FGL_DECIMAL">FglDecimal</a> value
+        of the
+        record member at position <i>p</i>.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>FglDate getDate(int p)</code></td>
+      <td valign="top">Returns the <a href="#FGL_DATE">FglDate</a> value of the
+        record member at position <i>p</i>.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>FglDateTime getDateTime(int p)</code></td>
+      <td valign="top">Returns the <a href="#FGL_DATETIME">FglDataTime</a> value
+        of the
+        record member at position <i>p</i>.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>FglInterval getInterval(int p)</code></td>
+      <td valign="top">Returns the <a href="#FGL_INTERVAL">FglInterval</a> value
+        of the
+        record member at position <i>p</i>.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>FglByte getByteBlob(int p)</code></td>
+      <td valign="top">Returns the <a href="#FGL_BYTE">FglByte</a>
+        value of the
+        record member at position <i>p</i>.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>FglText getTextBlob(int p)</code></td>
+      <td valign="top">Returns the <a href="#FGL_TEXT">FglText</a>
+        value of the
+        record member at position <i>p</i>.</td>
+    </tr>
+</table>
+
+<p>In the Java code, use the query methods of the com.fourjs.fgl.lang.FglRecord to identify the
+members of the RECORD:&nbsp;</p>
+
+
+<p><code>    public static void showMemberTypes(FglRecord rec){<br>
+&nbsp;&nbsp;&nbsp; int i;<br>
+&nbsp;&nbsp;&nbsp; int n = rec.getFieldCount();<br>
+&nbsp;&nbsp;&nbsp; for (i = 1; i &lt;= n; i++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.out.println( String.valueOf(i)
++ &quot;:&quot; + rec.getFieldName(i) + &quot; / &quot; + rec.getTypeName(i) );<br>
+    }</code></p>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="FGL_FORMAT">Formatting Genero BDL data</a></h4>
+
+
+<p>To format Genero BDL data types, you can use the <b>com.fourjs.fgl.lang.FglFormat</b> class implemented in <b>FGLDIR/lib/fgl.jar</b>.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> You must add FGLDIR/lib/fgl.jar to
+the class path in order to compile Java code with com.fourjs.fgl.lang.FglFormat
+class.</b></p>
+
+
+<p>The com.fourjs.fgl.lang.FglFormat class provides an interface to the data
+formatting functions of the Genero BDL runtime system. This class is actually an
+equivalent of the <a href="Operators.html#OP_USING">USING operator</a> in the
+BDL language.</p>
+
+
+<p>The com.fourjs.fgl.lang.FglFormat class implements the following:&nbsp;</p>
+
+
+<table border="0" width="90%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="40%"><b>Method</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="40%"><code>static String format(int v, String fmt)</code></td>
+      <td valign="top">Formats the INT value provided as Java int, according to fmt. Here fmt must
+        specify a numeric format with <code>[$@*#&amp;&lt;()+-]</code>
+        characters. See <a href="Operators.html#FORMAT_NUMBERS">USING</a> for
+        more details.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="40%"><code>static String format(double v,&nbsp;String fmt)</code></td>
+      <td valign="top">Formats the FLOAT value provided as Java double, according to fmt. Here fmt must
+        specify a numeric format with <code>[ $ @*#&amp;&lt;()+-. ,]</code>
+        characters. See <a href="Operators.html#FORMAT_NUMBERS">USING</a> for
+        more details.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="40%"><code>static String format(FglDate v, String fmt)</code></td>
+      <td valign="top">Formats the DATE value provided as <a href="#FGL_DATE">FglDate</a>, according to fmt. Here fmt must
+        specify a date format with <code>[mdy]</code> characters. See <a href="Operators.html#FORMAT_DATES">USING</a>
+        for more details.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="40%"><code>static String format(FglDecimal v, String fmt)</code></td>
+      <td valign="top">Formats the DECIMAL value provided as <a href="#FGL_DECIMAL">FglDecimal</a>,
+        according to fmt. Here fmt must
+        specify a numeric format with <code>[ $ @*# $&lt;()+-. ,]</code>
+        characters. See <a href="Operators.html#FORMAT_NUMBERS">USING</a> for
+        more details.</td>
+    </tr>
+</table>
+
+<p>Example of Java code using the com.fourjs.fgl.lang.FglFormat class:&nbsp;</p>
+
+
+<p><code>    public static void formatDecimal(FglDecimal dec){<br>
+&nbsp;&nbsp;&nbsp; System.out.println( FglFormat.format(dec,
+&quot;$#####&amp;.&amp;&amp;&quot; );<br>
+    }</code></p>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="CHARACTER_SETS">Character set mapping</a></h4>
+
+
+<p>A Genero BDL application uses a locale and character set defined by the <a href="Localization.html">LANG/LC_ALL
+environment variables</a>, while Java uses its own charset for the <i>char</i>
+type (16- bit UNICODE). When passing
+character strings to/from Java methods or when assigning BDL strings to <i>
+java.lang.String</i>, the runtime system takes charge of character set conversion.&nbsp;</p>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="JAVA_ARRAYS">Java Arrays</a></h4>
+
+
+<p>Java Arrays and traditional <a href="Arrays.html">BDL static or dynamic
+arrays</a> are different. In order to interface with Java Arrays, the BDL
+language has been extended with a new kind of arrays, called <a href="Arrays.html#JAVA_ARRAY">&quot;Java
+Arrays&quot;</a>. Java Arrays have to be created with a given length. Like
+native Java arrays, the length cannot be changed after the array is created. The Java
+Arrays are passed to Java methods by reference, so
+the elements of the array can be manipulated in Java. On the other hand, Java
+Arrays can be created in Java code and returned to BDL. To create a Java Array
+in BDL you must define a <a href="UserTypes.html">TYPE</a> in order to call the <a href="Arrays.html#JAVA_ARRAY_METHODS">create()</a>
+ type method.</p>
+
+
+<p>The example below shows how to create a Java Array in BDL, to instantiate a
+Java Array of <a href="DataTypes.html#DT_INTEGER">INTEGER</a> elements:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>TYPE</tt> int_array_type <tt>ARRAY </tt>[]<tt> OF INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> ja int_array_type
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> ja = int_array_type.create(100)
+<CODE class=linenumber>05</CODE>   <tt>LET</tt> ja[10] = 123
+<CODE class=linenumber>06</CODE>   <tt>DISPLAY</tt> ja[10], ja[20]
+<CODE class=linenumber>07</CODE>   <tt>DISPLAY</tt> ja.getLength()
+<CODE class=linenumber>08</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p>If you want to create a Java Array of structured BDL <a href="Records.html">RECORD</a>
+elements, you must use the <a href="#FGL_RECORD">com.fourjs.fgl.lang.FglRecord</a> class:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT JAVA</tt> com.fourjs.fgl.lang.FglRecord
+<CODE class=linenumber>02</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>03</CODE>   <tt>TYPE</tt> record_array_type <tt>ARRAY </tt>[]<tt> OF </tt>com.fourjs.fgl.lang.FglRecord
+<CODE class=linenumber>04</CODE>   <tt>DEFINE</tt> ra record_array_type
+<CODE class=linenumber>05</CODE>   <tt>TYPE</tt> r_t <tt>RECORD</tt>
+<CODE class=linenumber>06</CODE>        id <tt>INTEGER</tt>,
+<CODE class=linenumber>07</CODE>        name <tt>VARCHAR</tt>(100)
+<CODE class=linenumber>08</CODE>   <tt>    END RECORD</tt>
+<CODE class=linenumber>09</CODE>   <tt>DEFINE</tt> r r_t
+<CODE class=linenumber>10</CODE>   <tt>LET</tt> ra = record_array_type.create(100)
+<CODE class=linenumber>11</CODE>   <tt>LET</tt> r.id = 123
+<CODE class=linenumber>12</CODE>   <tt>LET</tt> r.name = &quot;McFly&quot;
+<CODE class=linenumber>13</CODE>   <tt>LET</tt> ra[10] = r
+<CODE class=linenumber>14</CODE>   <tt>INITIALIZE</tt> r <tt>TO NULL</tt>
+<CODE class=linenumber>15</CODE>   <tt>LET</tt> r = <tt>CAST</tt> (ra[10] <tt>AS</tt> r_t)
+<CODE class=linenumber>16</CODE>   <tt>DISPLAY </tt>r.*
+<CODE class=linenumber>17</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p>You can also create Java Arrays of Java classes. The next example introspects the <i>java.lang.String</i>
+class by using Java Array of <i>java.lang.reflect.Method</i> to query the list
+of methods from the <i>java.lang.Class</i> object:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT JAVA</tt> java.lang.Class
+<CODE class=linenumber>02</CODE> <tt>IMPORT JAVA</tt> java.lang.reflect.Method
+<CODE class=linenumber>03</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>04</CODE>   <tt>DEFINE</tt> c java.lang.Class
+<CODE class=linenumber>05</CODE>   <tt>DEFINE</tt> ma <tt>ARRAY </tt>[]<tt> OF </tt>java.lang.reflect.Method
+<CODE class=linenumber>06</CODE>   <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<CODE class=linenumber>07</CODE>   <tt>LET</tt> c = Class.forName(&quot;java.lang.String&quot;)
+<CODE class=linenumber>08</CODE>   <tt>LET</tt> ma = c.getMethods()
+<CODE class=linenumber>09</CODE>   <tt>FOR</tt> i = 1 <tt>TO </tt>ma.getLength()
+<CODE class=linenumber>10</CODE>      <tt>DISPLAY</tt> ma[i].toString()
+<CODE class=linenumber>11</CODE>   <tt>END FOR</tt>
+<CODE class=linenumber>12</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p>You can also create Java arrays in Java, to be returned from a Java method
+and assigned to a Java Array variable in BDL:</p>
+
+
+<p><code>    public static int [] createIntegerArray(int size) {<br>
+&nbsp;&nbsp;&nbsp; return new int[size];<br>
+}</code></p>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="CAST_OPERATOR">The CAST operator</a></h4>
+
+
+<p>Important consideration has to be taken when assigning object references to
+different target types or classes. A <i>Widening Reference Conversion</i> occurs
+when an object reference is converted to a superclass that can accommodate any
+possible reference of the original type or class. A <i>Narrowing Reference
+Conversion</i> occurs when an object reference of a superclass is converted to a
+subtype or subclass of the original object reference. For example, in a vehicle
+class hierarchy with <i>Vehicle</i> and <i>Car</i> classes, <i>Car</i> is a
+subclass that inherits from the <i>Vehicle</i> superclass. When assigning a <i>Car</i>
+object reference to a <i>Vehicle</i> variable, <i>Widening Reference Conversion</i>
+takes place. When assigning a <i>Vehicle</i> object reference to a <i>Car</i>
+variable, <i>Narrowing Reference Conversion</i> occurs.</p>
+
+
+<p>In Genero BDL, as in Java, <i>widening conversion</i> does not require
+casts and will not produce compilation or runtime errors, but <i>narrowing
+conversion</i> needs the <a href="Operators.html#OP_CAST">CAST operator</a> to
+convert to the target type or class:</p>
+
+
+<p><code>CAST( <i>object_reference</i> AS <i>type_or_class</i> )</code></p>
+
+
+<p>The next example creates a <i>java.lang.StringBuffer</i> object, and assigns 
+the reference to a <i>java.lang.Object</i> variable (implying <i>Widening
+Reference Conversion</i>); then the <i>Object</i> reference is assigned back to
+the <i>StringBuffer</i> variable (implying <i>Narrowing Reference Conversion</i>
+and CAST operator usage):</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT JAVA</tt> java.lang.Object
+<CODE class=linenumber>02</CODE> <tt>IMPORT JAVA</tt> java.lang.StringBuffer
+<CODE class=linenumber>03</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>04</CODE>   <tt>DEFINE</tt> o java.lang.Object
+<CODE class=linenumber>05</CODE>   <tt>DEFINE</tt> sb java.lang.StringBuffer
+<CODE class=linenumber>06</CODE>   <tt>LET</tt> sb = StringBuffer.create()
+<CODE class=linenumber>07</CODE>   <tt>LET</tt> o = sb                          -- Widening Reference Conversion
+<CODE class=linenumber>08</CODE>   <tt>LET</tt> sb = <tt>CAST</tt>( o <tt>AS </tt>StringBuffer )  -- Narrowing Reference Conversion needs CAST()
+<CODE class=linenumber>09</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="INSTANCEOF_OPERATOR">The INSTANCEOF operator</a></h4>
+
+
+<p>When manipulating an object reference with a variable defined with a
+superclass of the real class used to instantiate the object, you sometimes need 
+to identify the real class of the object. This is possible with the <a href="Operators.html#OP_INSTANCEOF">INSTANCEOF
+operator</a>. This operator checks whether the left operand is an instance of the
+type or class specified by the right operand:</p>
+
+<p><code><i>object_reference</i> INSTANCEOF <i>type_or_class</i></code></p>
+
+<p>The example below creates a <i> java.lang.StringBuffer</i> object, assigns the
+reference to a <i> java.lang.Object</i> variable, and tests whether the class type of the object
+reference is a <i>StringBuffer</i>:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT JAVA</tt> java.lang.Object
+<CODE class=linenumber>02</CODE> <tt>IMPORT JAVA</tt> java.lang.StringBuffer
+<CODE class=linenumber>03</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>04</CODE>   <tt>DEFINE</tt> o java.lang.Object
+<CODE class=linenumber>05</CODE>   <tt>LET</tt> o = StringBuffer.create()
+<CODE class=linenumber>06</CODE>   <tt>DISPLAY </tt>o <tt>INSTANCEOF </tt>StringBuffer    -- Shows 1 (TRUE)
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h4><a name="EXCEPTION_HANDLING">Exception Handling</a></h4>
+<p>BDL code can catch Java exceptions with the Genero BDL <a href="Exceptions.html#TRYCATCH">TRY/CATCH
+block</a>.</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT JAVA</tt> java.lang.StringBuffer
+<CODE class=linenumber>02</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> sb java.lang.StringBuffer
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> sb = StringBuffer.create(&quot;abcdef&quot;)
+<CODE class=linenumber>05</CODE>   <tt>TRY</tt>
+<CODE class=linenumber>06</CODE>      <tt>CALL </tt>sb.deleteCharAt(50)   -- Throws StringIndexOutOfBoundsException
+<CODE class=linenumber>07</CODE>   <tt>CATCH</tt>
+<CODE class=linenumber>08</CODE>      <tt>DISPLAY </tt>&quot;An exception was raised...&quot;
+<CODE class=linenumber>09</CODE>   <tt>END TRY</tt>
+<CODE class=linenumber>10</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+
+<p>You will find more examples in the FGLDIR/demo/JavaInterface directory.</p>
+
+
+<h4><a name="EXAMPLE_1">Example 1:</a> Using the regex package.</h4>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT JAVA</tt> java.util.regex.Pattern
+<CODE class=linenumber>02</CODE> <tt>IMPORT JAVA</tt> java.util.regex.Matcher
+<CODE class=linenumber>03</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>04</CODE>   <tt>DEFINE</tt> p Pattern
+<CODE class=linenumber>05</CODE>   <tt>DEFINE</tt> m Matcher
+<CODE class=linenumber>06</CODE>   <tt>LET</tt> p = Pattern.compile(&quot;[a-z]+,[a-z]+&quot;)
+<CODE class=linenumber>07</CODE>   <tt>DISPLAY</tt> p.pattern()
+<CODE class=linenumber>08</CODE>   <tt>LET</tt> m = p.matcher(&quot;aaa,bbb&quot;)
+<CODE class=linenumber>09</CODE>   <tt>IF</tt> m.matches() <tt>THEN</tt>
+<CODE class=linenumber>10</CODE>     <tt>DISPLAY</tt> &quot;The string matches the pattern...&quot;
+<CODE class=linenumber>11</CODE>   <tt>ELSE</tt>
+<CODE class=linenumber>12</CODE>     <tt>DISPLAY</tt> &quot;The string does not match the pattern...&quot;
+<CODE class=linenumber>13</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>14</CODE> <tt>END MAIN</tt></PRE>
+
+
+<h4><a name="EXAMPLE_2">Example 2:</a> Using the Apache POI framework.</h4>
+
+
+<p>This little example shows how to create an XLS file, using the <a href="http://poi.apache.org">Apache
+POI framework</a>. Note that you must download and install the Apache POI JAR
+file and make the CLASSPATH environment variable point to the POI JAR in order
+to compile and run this example. After execution, you should find a file named
+&quot;itemlist.xls&quot; in the current directory, which can be loaded with
+Microsoft Excel or Open Office Calc:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT JAVA</tt> java.io.FileOutputStream
+<CODE class=linenumber>02</CODE> <tt>IMPORT JAVA</tt> org.apache.poi.hssf.usermodel.HSSFWorkbook
+<CODE class=linenumber>03</CODE> <tt>IMPORT JAVA</tt> org.apache.poi.hssf.usermodel.HSSFSheet
+<CODE class=linenumber>04</CODE> <tt>IMPORT JAVA</tt> org.apache.poi.hssf.usermodel.HSSFRow
+<CODE class=linenumber>05</CODE> <tt>IMPORT JAVA</tt> org.apache.poi.hssf.usermodel.HSSFCell
+<CODE class=linenumber>06</CODE> <tt>IMPORT JAVA</tt> org.apache.poi.hssf.usermodel.HSSFCellStyle
+<CODE class=linenumber>07</CODE> <tt>IMPORT JAVA</tt> org.apache.poi.hssf.usermodel.HSSFFont
+<CODE class=linenumber>08</CODE> <tt>IMPORT JAVA</tt> org.apache.poi.ss.usermodel.IndexedColors
+<CODE class=linenumber>09</CODE>
+<CODE class=linenumber>10</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>11</CODE>     <tt>DEFINE</tt> fo FileOutputStream
+<CODE class=linenumber>12</CODE>     <tt>DEFINE</tt> workbook HSSFWorkbook
+<CODE class=linenumber>13</CODE>     <tt>DEFINE</tt> sheet HSSFSheet
+<CODE class=linenumber>14</CODE>     <tt>DEFINE</tt> row HSSFRow
+<CODE class=linenumber>15</CODE>     <tt>DEFINE</tt> cell HSSFCell
+<CODE class=linenumber>16</CODE>     <tt>DEFINE</tt> style HSSFCellStyle
+<CODE class=linenumber>17</CODE>     <tt>DEFINE</tt> headerFont HSSFFont
+<CODE class=linenumber>18</CODE>     <tt>DEFINE</tt> i, id <tt>INTEGER</tt>, s <tt>STRING</tt>
+<CODE class=linenumber>19</CODE>
+<CODE class=linenumber>20</CODE>     <tt>LET</tt> workbook = HSSFWorkbook.create()
+<CODE class=linenumber>21</CODE>
+<CODE class=linenumber>22</CODE>     <tt>LET</tt> style = workbook.createCellStyle()
+<CODE class=linenumber>23</CODE>     <tt>CALL</tt> style.setAlignment(HSSFCellStyle.ALIGN_CENTER)
+<CODE class=linenumber>24</CODE>     <tt>CALL</tt> style.setFillForegroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex());
+<CODE class=linenumber>25</CODE>     <tt>CALL</tt> style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+<CODE class=linenumber>26</CODE>     <tt>LET</tt> headerFont = workbook.createFont()
+<CODE class=linenumber>27</CODE>     <tt>CALL</tt> headerFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD)
+<CODE class=linenumber>28</CODE>     <tt>CALL</tt> style.setFont(headerFont);
+<CODE class=linenumber>29</CODE>
+<CODE class=linenumber>30</CODE>     <tt>LET</tt> sheet = workbook.createSheet()
+<CODE class=linenumber>31</CODE>
+<CODE class=linenumber>32</CODE>     <tt>LET</tt> row = sheet.createRow(0)
+<CODE class=linenumber>33</CODE>     <tt>LET</tt> cell = row.createCell(0)
+<CODE class=linenumber>34</CODE>     <tt>CALL</tt> cell.setCellValue(&quot;Item Id&quot;)
+<CODE class=linenumber>35</CODE>     <tt>CALL</tt> cell.setCellStyle(style)
+<CODE class=linenumber>36</CODE>     <tt>LET</tt> cell = row.createCell(1)
+<CODE class=linenumber>37</CODE>     <tt>CALL</tt> cell.setCellValue(&quot;Name&quot;)
+<CODE class=linenumber>38</CODE>     <tt>CALL</tt> cell.setCellStyle(style)
+<CODE class=linenumber>39</CODE>
+<CODE class=linenumber>40</CODE>     <tt>FOR</tt> i=1 <tt>TO</tt> 10
+<CODE class=linenumber>41</CODE>         <tt>LET</tt> row = sheet.createRow(i)
+<CODE class=linenumber>42</CODE>         <tt>LET</tt> cell = row.createCell(0)
+<CODE class=linenumber>43</CODE>         <tt>CALL</tt> cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC)
+<CODE class=linenumber>44</CODE>         <tt>LET</tt> id = 100 + i
+<CODE class=linenumber>45</CODE>         <tt>CALL</tt> cell.setCellValue(id)
+<CODE class=linenumber>46</CODE>         <tt>LET</tt> cell = row.createCell(1)
+<CODE class=linenumber>47</CODE>         <tt>LET</tt> s = <tt>SFMT</tt>(&quot;Item #%1&quot;,i)
+<CODE class=linenumber>48</CODE>         <tt>CALL</tt> cell.setCellValue(s)
+<CODE class=linenumber>49</CODE>     <tt>END FOR</tt>
+<CODE class=linenumber>50</CODE>
+<CODE class=linenumber>51</CODE>     <tt>LET</tt> fo = FileOutputStream.create(&quot;itemlist.xls&quot;);
+<CODE class=linenumber>52</CODE>     <tt>CALL</tt> workbook.write(fo);
+<CODE class=linenumber>53</CODE>     <tt>CALL</tt> fo.close();
+<CODE class=linenumber>54</CODE>
+<CODE class=linenumber>55</CODE> <tt>END MAIN</tt></PRE>
+
+
+
+
+
+
+</BODY>
+</HTML>

@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>om.XmlReader</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The XmlReader class</a> </H1>
+
+<p>Summary:</p>
+
+<ul>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#METHODS">Methods</a></li>
+  <li><a href="#USAGE">Usage</a><ul>
+  <li><a href="#createFileReader">Creating an XMLReader object</a></li>
+	<li><a href="#Events">Processing Events</a></li>
+</ul>
+	</li>
+  <li><a href="#EXAMPLES">Examples</a></li>
+</ul>
+<p><i>See also:</i>
+<a href="BuiltInClasses.html">Built-in Classes</a>, <a href="XmlUtils.html">XML
+Utilities</a></p>
+
+<HR>
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+<p>The <b>XmlReader</b> class provides methods to read and process a file
+written in <a href="XmlUtils.html">XML</a>  format, following the <a href="XmlUtils.html">SAX</a> standards. </p>
+
+<h4>Syntax:</h4>
+
+<p><code>om.XmlReader</code></p>
+
+
+<HR>
+
+
+<h3><a name="METHODS">Methods:</a></h3>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#3399FF" colspan="2"><b>Class Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%" valign="top"><b>Name</b></td>
+    <td bgcolor="#C0C0C0" valign="top"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#createFileReader">createFileReader</a>( file </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>    om.XmlReader</code></td>
+    <td valign="top">Creates an XmlReader reading from a file.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#66FFCC" colspan="2" valign="top"><b>Object Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%" valign="top"><b>Name</b></td>
+    <td bgcolor="#C0C0C0" valign="top"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getAttributes">getAttributes</a>( )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>    om.SaxAttributes</code></td>
+    <td valign="top">Returns the attribute list of the current element.&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getCharacters">getCharacters</a>( )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td valign="top">Returns the string value of the current text element.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#skippedEntity">skippedEntity</a>( )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td valign="top">Returns the name of the entity.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getTagName">getTagName</a>( )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td valign="top">Returns the tag name of the current element.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#read">read(</a> )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td valign="top">Reads the next XML fragment and returns the name of the SAX event that
+      occurs. This can be one of <code>StartDocument</code>, <code>StartElement</code>,
+      <code>Characters</code>, <code>EndElement</code>, <code>EndDocument</code>.</td>
+  </tr>
+</table>
+
+
+<HR>
+
+
+<h3><a name="USAGE">Usage:</a></h3>
+
+<p>The processing of the <a href="XmlUtils.html">XML</a> file is streamed-data based; the file is loaded and processed
+sequentially with events. To process element attributes, an XmlReader object must
+cooperate with a <a href="ClassSaxAttributes.html">SaxAttributes</a> object. The XmlReader class can only read from a
+file. To write to a file, you must use the <a href="ClassXmlWriter.html">XmlWriter</a> class.</p>
+
+<h4><a name="createFileReader">Creating an XMLReader object</a></h4>
+<p>First, you must declare a <a href="Variables.html"> variable</a> of type <i>om.XmlReader</i>, and use the <code>om.XmlReader.createFileReader(<i>filename</i>)</code>
+method to create the object; where <i>filename</i> is a
+<a href="Expressions.html#EX_STRING">string expression</a> defining the
+name of the file to be read.</p>
+
+<p>As with the standard <a href="XmlUtils.html">SAX</a> API,
+the <a href="XmlUtils.html">XML</a> file is parsed on the basis of
+events. Once the XmlReader object is created with the <code>om.XmlReader.createFileReader()</code> method, you can successively call the
+<code>read()</code> method to get named events indicating how to parse
+the XML file.</p>
+<h4><a name="Events">Processing Events</a></h4>
+<p>The following events can be returned by the <a name="read"><code>read()</code></a>
+method:</p>
+
+<div align="center">
+  <center>
+  <table border="0" width="90%">
+    <tr>
+      <td width="15%" bgcolor="#C0C0C0" valign="top"><b> Event name</b></td>
+      <td bgcolor="#C0C0C0" width="30%" valign="top"><b>Description</b></td>
+      <td width="30%" bgcolor="#C0C0C0" valign="top"><b>Action</b></td>
+    </tr>
+    <tr>
+      <td width="15%" valign="top"><code>StartDocument</code></td>
+      <td valign="top" width="30%">Beginning of the document</td>
+      <td width="30%" valign="top">Prepare processing (allocate resources)</td>
+    </tr>
+    <tr>
+      <td width="15%" valign="top"><code>StartElement</code></td>
+      <td valign="top" width="30%">Beginning of a node</td>
+      <td width="30%" valign="top">Get current element's tagname or attributes<br>
+        <tt>XmlReader.<a name="getTagName">getTagName</a>()<br>
+        XmlReader.<a name="getAttributes">getAttributes</a>()</tt></td>
+    </tr>
+    <tr>
+      <td width="15%" valign="top"><code>Characters</code></td>
+      <td valign="top" width="30%"> Value of the current element</td>
+      <td width="30%" valign="top">Get current element's value<br>
+        <tt>XmlReader.<a name="getCharacters">getCharacters</a>()</tt></td>
+    </tr>
+    <tr>
+      <td width="15%" valign="top"><code>SkippedEntity</code></td>
+      <td valign="top" width="30%"> Name of the entity</td>
+      <td width="30%" valign="top">Get current element's value<br>
+        <tt>XmlReader.<a name="skippedEntity">skippedEntity</a>()</tt></td>
+    </tr>
+    <tr>
+      <td width="15%" valign="top"><code>EndElement</code></td>
+      <td valign="top" width="30%">Ending of a node</td>
+      <td width="30%" valign="top">Get current element's tagname<br>
+        <tt>XmlReader.getTagName()</tt></td>
+    </tr>
+    <tr>
+      <td width="15%" valign="top"><code>EndDocument</code></td>
+      <td valign="top" width="30%">Ending of the document</td>
+      <td width="30%" valign="top">Finish processing (release&nbsp; resources)</td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<p> To process element attributes, you must declare a <a href="Variables.html">variable</a>
+of type <a href="ClassSaxAttributes.html">SaxAttributes</a>. This object represents a set of attributes of an element. You get an object
+of this class with the <code>getAttributes()</code> method.
+Once created from the XmlReader, the <a href="ClassSaxAttributes.html">SaxAttributes</a> 
+object is automatically updated based on the element currently processed by
+the XmlReader. </p>
+
+<HR>
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+<h4>Example:</h4>
+<PRE><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>    <tt>DEFINE</tt> i, l <tt>INTEGER</tt>
+<code class="linenumber">03</code>    <tt>DEFINE</tt> r om.XmlReader
+<code class="linenumber">04</code>    <tt>DEFINE</tt> e String
+<code class="linenumber">05</code>    <tt>DEFINE</tt> a om.SaxAttributes
+<code class="linenumber">06</code>    <tt>LET</tt> r = om.XmlReader.createFileReader(&quot;myfile.xml&quot;)
+<code class="linenumber">07</code>    <tt>LET</tt> a = r.getAttributes()
+<code class="linenumber">08</code>    <tt>LET</tt> l = 0
+<code class="linenumber">09</code>    <tt>LET</tt> e = r.read()
+<code class="linenumber">10</code>    <tt>WHILE</tt> e <tt>IS NOT NULL</tt>
+<code class="linenumber">11</code>      <tt>CASE</tt> e
+<code class="linenumber">12</code>        <tt>WHEN</tt> &quot;StartDocument&quot;
+<code class="linenumber">13</code>          <tt>DISPLAY</tt> &quot;StartDocument:&quot;
+<code class="linenumber">14</code>        <tt>WHEN</tt> &quot;StartElement&quot;
+<code class="linenumber">15</code>          <tt>LET</tt> l=l+1
+<code class="linenumber">16</code>          <tt>DISPLAY</tt> l <tt>SPACES</tt>, &quot;StartElement:&quot;, r.getTagName()
+<code class="linenumber">17</code>          <tt>FOR</tt> i=1 to a.getLength()
+<code class="linenumber">18</code>            <tt>DISPLAY</tt> l <tt>SPACES</tt>,&quot;  &quot;,
+<code class="linenumber">19</code>              a.getName(i),&quot; = &quot;,
+<code class="linenumber">20</code>              a.getValueByIndex(i)
+<code class="linenumber">21</code>          <tt>END</tt> <tt>FOR</tt>
+<code class="linenumber">22</code>        <tt>WHEN</tt> &quot;Characters&quot;
+<code class="linenumber">23</code>          <tt>DISPLAY</tt> l <tt>SPACES</tt>, &quot;  Characters:'&quot;,r.getCharacters(),&quot;'&quot;
+<code class="linenumber">24</code>        <tt>WHEN</tt> &quot;EndElement&quot;
+<code class="linenumber">25</code>          <tt>DISPLAY</tt> l <tt>SPACES</tt>, &quot;EndElement:&quot;, r.getTagName()
+<code class="linenumber">26</code>          <tt>LET</tt> l=l-1
+<code class="linenumber">27</code>        <tt>WHEN</tt> &quot;EndDocument&quot;
+<code class="linenumber">28</code>          <tt>DISPLAY</tt> &quot;EndDocument:&quot;
+<code class="linenumber">29</code>        <tt>OTHERWISE</tt>
+<code class="linenumber">30</code>          <tt>DISPLAY</tt> &quot;Invalid event: &quot;,e
+<code class="linenumber">31</code>      <tt>END</tt> <tt>CASE</tt>
+<code class="linenumber">32</code>      <tt>LET</tt> e=r.read()
+<code class="linenumber">33</code>    <tt>END WHILE</tt>
+<code class="linenumber">34</code> <tt>END MAIN</tt></PRE>
+
+</BODY>
+</HTML>

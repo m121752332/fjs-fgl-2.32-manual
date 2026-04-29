@@ -1,0 +1,396 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+
+<TITLE>Form Rendering</TITLE>
+<META http-equiv=Content-Type content="text/html" charset=utf-8>
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+
+<HR>
+
+<H1><a name="PAGE_HEADER">Form Rendering</a> </H1>
+<p>Summary:</p>
+<ul>
+  <li><a href="#INTRO">Introduction</a></li>
+  <li><a href="#CHAR_BASED_GRID">A character-based grid</a>
+    <ul>
+      <li><a href="#CBG_CHARSET_USAGE">Character set usage</a></li>
+      <li><a href="#CBG_GRID_RULES">Grid layout rules</a></li>
+      <li><a href="#CBG_SIZE_COMPUTING">Size computing</a></li>
+      <li><a href="#CBG_COMPLEX_EXAMPLE">Complex example</a></li>
+    </ul>
+  </li>
+  <li><a href="#GRID_DEPENDENCIES">Grid dependencies</a>
+    <ul>
+      <li><a href="#GD_LARGE_WIDGETS">A large number of cells for large widgets</a></li>
+      <li><a href="#HBOX_TAGS">HBox Tags</a>
+        <ul>
+          <li><a href="#HT_MECH">Mechanism</a></li>
+          <li><a href="#HT_SPACERS">SpacerItems</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#PACKED_GRID">Packed Grid</a>
+    <ul>
+      <li><a href="#PG_RULE">General rule</a></li>
+      <li><a href="#PG_GROUPS">Group exception</a></li>
+    </ul>
+  </li>
+  <li><a href="#AUTO_HVBOX">Automatic Horizontal and Vertical Boxes</a></li>
+</ul>
+
+<HR>
+
+<h2><a name="INTRO">Introduction</a></h2>
+
+<p>Genero has introduced a form rendering system. Forms are not based on 
+fixed text-mode screen, but can display complex layouts. In order to support
+.per files, the rendering system has to manage a character-based definition,
+which implies very specific graphical rules. This document explains the
+graphical rendering of a .per form.</p>
+
+<HR>
+
+<h2><a name="CHAR_BASED_GRID">A character-based grid</a></h2>
+<p><b><font color="#FF0000">Warning:</font> Scrollgrid and Groups (without <tt>
+gridchildreninparent</tt> attribute) behave the same way as Grids.</b></p>
+<p>The grid container is the most important container - it contains all ‘final’ 
+widgets (fields, buttons…). The .per file defines a form which is character based; each character defines 
+a cell of the grid: </p>
+<pre>GRID
+{
+First Name [fname  ]
+Last Name  [lname  ]
+}
+END </pre>
+
+<p>Above .per file layout specification can be show in a character grid as follows:</p>
+
+<p><img border="0" src="../Images/layout01.png" width="327" height="252"></p>
+
+<p>With a fixed-font based front end, there is no problem, but Genero introduced 
+Windows look and feel and proportional fonts. Objects are then created and added 
+to the grid; each object has a starting position (defined by <TT>posX</tt> and 
+<tt>posY</tt> attributes) and the number of cells taken (<tt>gridwidth</tt>,
+<tt>gridheight</tt> attributes).</p>
+
+<p><img border="0" src="../Images/layout02.png" width="579" height="494"></p>
+
+<HR color="#C0C0C0">
+
+<h3><a name="CBG_GRID_RULES">Grid layout rules</a></h3>
+<p>Front-ends grid layout follows these important rules: </p>
+<ol>
+  <li>Empty lines and empty columns take 0 pixels.</li>
+  <li>The size of a cell depends on the size of the widgets inside the grid.</li>
+  <li>Widget's minimum size is computed via its size attribute.</li>
+  <li>Widget's real size is computed to completely fill the cells in the GRID 
+    (this depends on the <tt>sizepolicy</tt> attribute).</li>
+  <li>A small spacing is applied in non-empty cells.</li>
+  <li>Element position and sizes are computed from the character's width.</li>
+</ol>
+
+<HR color="#C0C0C0">
+
+<h3><a name="CBG_CHARSET_USAGE">Character set usage</a></h3>
+
+<p>The character set used to edit and compile .per form files is defined by the
+<a href="Localization.html">current locale</a>.  Form elements (typically, labels)
+can be written with non-ASCII characters of the current codeset. The next example
+shows a little .per file using labels in the French language:</p>
+
+<pre>GRID
+{
+Numéro de compte: [f001                    ]
+Intérêts:         [f002  ]
+}
+END</pre>
+
+<p>The form element positions and sizes are determined by counting the width of
+characters, rather than the number of bytes identifying the characters in the
+current codeset. This rule can be ignored when using a single-byte character set
+such as ISO-8859-1 or CP-1252, where each character has width of 1 and codepoint
+of 1 byte. But this is important when using a multi-byte character set like BIG5
+or UTF-8.</p>
+
+<p>For example, in the UTF-8 multi-byte codeset, a Chinese ideogram is encoded
+with three bytes, while the visual width of the character is twice the size of a
+latin character. In the next example, the labels with three Chinese characters
+have the same width as the labels using six latin characters. As a result, the
+labels will get the same size (6 cells), and all fields will be aligned properly
+in the GUI form:</p>
+
+<pre>GRID
+{
+&#21501;&#21745;&#21814; [f001  ]   abcdef [f002  ]
+abcdef [f003  ] &#21501;&#21745;&#21814; [f004  ]   
+}
+END</pre>
+
+<p>Note however that it is recommended to write all .per files in ASCII codeset,
+and use <a href="LocalizedStrings.html">Localized Strings</a> to internationalize
+your forms.</p>
+
+<HR color="#C0C0C0">
+
+<h3><a name="CBG_SIZE_COMPUTING">Size computing</a> </h3>
+<p>Each widget's minimum size is computed according to its <tt>size</tt> and <tt>sizepolicy</tt> 
+(rule #3); the size of cells of the grid is then computed (rule #1 and #2), and the 
+widget's size can change to fill the cells (rule #4). </p>
+<table border="0" cellpadding="2" style="border-collapse: collapse" bordercolor="#111111" id="AutoNumber2">
+  <tr>
+    <td><img border="0" src="../Images/layout03.png" width="212" height="134"></td>
+    <td><img border="0" src="../Images/layout04.png" width="251" height="145"></td>
+  </tr>
+</table>
+
+<HR color="#C0C0C0">
+
+<h3><a name="CBG_COMPLEX_EXAMPLE">Complex example</a> </h3>
+<p>This Grid contains several fields. </p>
+<p><img border="0" src="../Images/layout05.png" width="564" height="210"></p>
+<p>For each field, the position and the number of cells is computed by the form 
+compiler. Then the front-end creates the widgets and sets them on the grid. </p>
+<p><img border="0" src="../Images/layout06.png" width="564" height="231"></p>
+<p>Once widgets are on the grid, their minimum size is computed according to 
+their <tt>size</tt> and <tt>sizepolicy</tt> attributes. Then the grid cells are computed. </p>
+<p><img border="0" src="../Images/layout07.png" width="411" height="229"></p>
+<p><img border="0" src="../Images/layout08.png" width="415" height="145"></p>
+<p>You can see that fields k and c are much bigger than expected: </p>
+<ul>
+  <li>Field g and l make columns 33, 34 and 35 bigger than the other, </li>
+  <li>Field f extends columns 25 to 31. </li>
+  <li>As field c has to fill columns 25 to 35, its size grows; the same for field 
+k. </li>
+</ul>
+<p>Some fields are proportionally bigger than others because some parameters are variable, others
+fixed. Field width is computed as follows:
+</p>
+<div align="center">
+  <center>
+<table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" id="AutoNumber3" bgcolor="#FFFFBB">
+  <tr>
+    <td align="center">
+      <p align="center"><br>
+      The width of the content (depending on <tt>sizepolicy</tt> and <tt>sample</tt>, but by default 
+a combination of 'M' and '0'), plus the border.<br>
+      </p>
+ </td>
+  </tr>
+</table>
+  </center>
+</div>
+<p>For example, a field of 1 will be as wide as 2 borders + 1 'M'. A field of 10 will be as wide as 2 borders + 6 'M' + 4 '0'. This means 
+that a field of 1 is far from being 10 times smaller than a field of 10.</p>
+
+<HR>
+
+<h2><a name="GRID_DEPENDENCIES">Grid dependencies</a> </h2>
+<p><a href="#CBG_GRID_RULES">Rule 2</a> (the size of a cell depends on the size of the widgets inside the 
+grid) is useful to keep text-mode alignment: </p>
+<pre>GRID
+{
+  [a      ]
+  [b      ]
+}
+END</pre>
+<p>This .per implies that a and b start at the same position and have the same 
+size, whatever a and b are.</p>
+
+<HR color="#C0C0C0">
+
+<h3><a name="GD_LARGE_WIDGETS">A large number of cells for large widgets</a> </h3>
+<p>This rule could lead to very different results, especially when a large widget 
+is assigned into a small number of cells. </p>
+<p>Example: </p>
+<pre>LAYOUT
+GRID
+{
+[a|b   ][f     ]
+[c|d]   [e     ]
+}
+END
+END
+
+ATTRIBUTES
+CHECKBOX a = formonly.a, TEXT=&quot;A Checkbox&quot;;
+EDIT b = formonly.b;
+EDIT c = formonly.c;
+CHECKBOX d = formonly.d, TEXT=&quot;Another Checkbox&quot;;
+EDIT e = formonly.e;
+EDIT f = formonly.f;
+END</pre>
+
+<p>As seen previously, the grid will be computed regarding characters: </p>
+<p><img border="0" src="../Images/layout09.png" width="272" height="208"></p>
+<p><img border="0" src="../Images/layout10.png" width="439" height="287"></p>
+<p>Then the minimum size of each widget and the layout is computed. Cells (0,1) 
+and (1,3) contain a checkbox; these checkboxes will enlarge columns 1 and 3.</p>
+<p>
+<img border="0" src="../Images/layout11.png" width="391" height="180"></p>
+<p>&nbsp;As 
+Edit &quot;c&quot; is defined to have the same width as checkbox &quot;a&quot;, it will be much 
+larger as expected:&nbsp;</p>
+<p><img border="0" src="../Images/layout12.png" width="400" height="145"></p>
+<p>To avoid this “strange” result, the form designer should assign a realistic 
+number of cells for each object: </p>
+<p><code>GRID <br>
+{ <br>
+[a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |b&nbsp;&nbsp;
+][f &nbsp;&nbsp;&nbsp; ] <br>
+[c|d &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+][e &nbsp;&nbsp;&nbsp; ] <br>
+} </code> </p>
+<p>Even if the LAYOUT section is wider, the result will be smaller: </p>
+<p><img border="0" src="../Images/layout13.png" width="328" height="145"></p>
+
+<HR color="#C0C0C0">
+
+<h3><a name="HBOX_TAGS">HBox Tags</a> </h3>
+
+<HR color="#C0C0C0">
+
+<h4><a name="HT_MECH">Mechanism</a> </h4>
+<p>To get rid of the “character-based” grid, HBox Tags have been 
+introduced. This mechanism defines a “widget container” that will gather the 
+widget horizontally, like the HBOX layout container. All widgets inside this 
+container are no longer dependent on the parent grid: </p>
+<pre>GRID
+{
+[a:b:c   ]
+[d|e|f   ]
+}
+END</pre>
+<p>The notation “:” defines the HBox Tag. A container is created and will 
+contain widgets a, b and c. These widgets won’t be aligned in the Grid: </p>
+<p><img border="0" src="../Images/layout14.png" width="186" height="184"></p>
+<p><img border="0" src="../Images/layout15.png" width="176" height="139"></p>
+<p>This mechanism is useful when you have large widgets in a small number of cells 
+in one row and don’t want to have dependencies: </p>
+<p><img border="0" src="../Images/layout16.png" width="237" height="135"></p>
+<p>If we take the “form3” example again, and modify it with HBox Tags: </p>
+<pre>GRID
+{
+[a:b   ][f     ]
+[c:d   ][e     ]
+}
+END</pre>
+<p><img border="0" src="../Images/layout18.png" width="319" height="145"></p>
+
+<HR color="#C0C0C0">
+
+<h4><a name="HT_SPACERS">Spacer Items in HBox tags</a> </h4>
+<p>HBox tags also introduces the SpacerItems concept: when a grid HBox is created, 
+the content may be smaller than the container: </p>
+<p><img border="0" src="../Images/layout16.png" width="237" height="135"></p>
+<p>Because of the checkbox, the cell 1 is very large, and then the HBox is 
+larger than the three fields. A SpacerItem object is automatically created by the 
+form compiler; the role of the SpacerItem is to take all the free space in the 
+container. Then all the widgets are packed at the left. </p>
+<p>By default, a SpacerItem is created at the right of the container, but the 
+spacer can also be defined in another place: </p>
+<pre>GRID
+{
+[a       :b       :c       ] &lt;- default: spacer on the right
+[ :d     :e       :f       ] &lt;- spacer on the left
+[g       :      :h         ] &lt;- spacer between g and h
+[i: :j: :k      : :l       ] &lt;- multiple spacers (between i and j, j and k, k and l
+}
+END</pre>
+<p><img border="0" src="../Images/layout19.png" width="595" height="150"></p>
+
+<HR>
+
+<h2><a name="PACKED_GRID">Packed Grid</a> </h2>
+
+<HR>
+
+<h3><b><a name="PG_RULE">General rule</a> </b> </h3>
+<p>When you resize a window, the content will either grow with the window or be packed 
+in the top left 
+position. The rule followed by the front-end is that the grid is packed 
+(horizontally / vertically / both) if nothing can grow in that direction. </p>
+<p>The following widgets can grow horizontally: </p>
+<ul>
+  <li>Tables</li>
+  <li> Images (<tt>stretch</tt>=both or <tt>stretch</tt>=<code>x</code>)</li>
+  <li> TextEdits (<tt>stretch</tt>=both or <tt>stretch</tt>=<code>x</code>)</li>
+</ul>
+<p>The following widgets can grow vertically: </p>
+<ul>
+  <li> Tables (without <tt>wantfixedpagesize</tt>)</li>
+  <li> Images (<tt>stretch</tt>=both or <tt>stretch</tt>=<code>y</code>)</li>
+  <li> TextEdits (<tt>stretch</tt>=both or <tt>stretch</tt>=<code>y</code>)</li>
+</ul>
+
+<HR>
+
+<h3><b><a name="PG_GROUPS">Group exception</a></b></h3>
+
+<p>In general, a <tt>GRID</tt> can grow if any object inside the <tt>GRID</tt> can grow.</p>
+
+<p>The exception to this rule: If there is only one <tt>GROUP</tt> (defined without the
+<tt><a href="FSFAttributes.html#FA_GRIDCHILDRENINPARENT">GRIDCHILDRENINPARENT</a></tt> attribute)
+inside a <tt>GRID</tt> and nothing else, the grid can grow.</p>
+
+<p>This exception allows better rendering of a grouped grid:</p>
+<ul>
+  <li>A packed grid:</li>
+</ul>
+<p><img border="0" src="../Images/layout22.png" width="357" height="353"></p>
+<ul>
+  <li>An unpacked grid:</li>
+</ul>
+<p><img border="0" src="../Images/layout21.png" width="358" height="351"></p>
+
+<HR>
+
+<h2><a name="AUTO_HVBOX">Automatic Horizontal and Vertical Boxes</a> </h2>
+
+<p>When using layout tags in a <tt>GRID</tt> container, the <a href="Tools.html#TL_FGLFORM">fglform</a>
+compiler will automatically add HBox or VBox containers with splitter in the following conditions:</p>
+
+
+<ul>
+  <li>HBox is created when two or more stretchable elements are stacked side by
+    side and touch each other (no space between).</li>
+  <li>VBox is created when two or more stretchable elements are stacked
+    vertically and touch each other (no space between).</li>
+</ul>
+<p>Stretchable elements are containers such as <a href="FormSpecFiles.html#FF_ITEMTYPE_TABLE">TABLEs</a>,
+or form items like <a href="FormSpecFiles.html#FF_ITEMTYPE_IMAGE">IMAGEs</a>, <a href="FormSpecFiles.html#FF_ITEMTYPE_TEXTEDIT">TEXTEDITs</a>
+with <a href="FSFAttributes.html#FA_STRETCH">STRETCH attribute</a>.</p>
+<p><b><font color="#FF0000">Warning:</font> No HBox or VBox will be created if
+the elements are in a <a href="FormSpecFiles.html#FF_ITEMTYPE_SCROLLGRID">SCROLLGRID</a>
+ container.</b></p>
+<p>The example below defines two tables stacked vertically, generating a VBox
+with splitter (note that ending tags are omitted):</p>
+<PRE><CODE class=linenumber>01</CODE> <span style="background-color: #FFFF00">&lt;T table1         &gt;</span>
+<CODE class=linenumber>02</CODE> <span style="background-color: #FFFF00">[colA  |colB      ]</span>
+<CODE class=linenumber>03</CODE> <span style="background-color: #FFFF00">[colA  |colB      ]</span>
+<CODE class=linenumber>04</CODE> <span style="background-color: #FFFF00">[colA  |colB      ]</span>
+<CODE class=linenumber>05</CODE> <span style="background-color: #FFFF00">[colA  |colB      ]</span>
+<CODE class=linenumber>06</CODE> <span style="background-color: #FF9933">&lt;T table2         &gt;</span><span style="background-color: #FFFF00">
+</span><CODE class=linenumber>07</CODE> <span style="background-color: #FF9933">[colC  |colD      ]</span>
+<CODE class=linenumber>08</CODE> <span style="background-color: #FF9933">[colC  |colD      ]</span></PRE>
+
+
+<p>Below the layout defines two stretchable <a href="FormSpecFiles.html#FF_ITEMTYPE_TEXTEDIT">TEXTEDITs</a>
+ placed side by side which would generate an automatic HBox with splitter. Note
+that to make both textedits touch you need to use a pipe delimiter in between:</p>
+<PRE><CODE class=linenumber>01</CODE> [<span style="background-color: #FFFF00">textedit1         </span>|<span style="background-color: #66CCFF">textedit2                </span>]
+<CODE class=linenumber>02</CODE> [<span style="background-color: #FFFF00">                  </span>|<span style="background-color: #66CCFF">                         </span>]<span style="background-color: #FFFF00">
+</span><CODE class=linenumber>03</CODE> [<span style="background-color: #FFFF00">                  </span>|<span style="background-color: #66CCFF">                         </span>]<span style="background-color: #FFFF00">
+</span><CODE class=linenumber>04</CODE> [<span style="background-color: #FFFF00">                  </span>|<span style="background-color: #66CCFF">                         </span>]</PRE>
+
+
+<p>For more details, see <a href="FormSpecFiles.html#FF_LAYOUT_TAG">Layout Tags</a>
+in the Form Specification File page.</p>
+
+</BODY>
+</HTML>

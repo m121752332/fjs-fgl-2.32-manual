@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>om.SaxAttributes</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The SaxAttributes class</a> </H1>
+
+<p>Summary:</p>
+
+<ul>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#METHODS">Methods</a></li>
+  <li><a href="#USAGE">Usage</a><ul>
+  <li><a href="#Creating">Creating a SaxAttributes object</a></li>
+	<li><a href="#Returning_the_value">Returning the value of an Attribute</a></li>
+	<li><a href="#getLength">Returning the number of Attributes</a></li>
+	<li><a href="#getName">Returning the name of an Attribute</a></li>
+	<li><a href="#addAttribute">Adding Attributes</a></li>
+	<li><a href="#Removing_attributes">Removing Attributes</a></li>
+	<li><a href="#setAttributes">Replacing the Attributes list</a></li>
+</ul>
+	</li>
+  <li><a href="#EXAMPLES">Examples</a></li>
+</ul>
+<p><i>See also:</i>
+<a href="BuiltInClasses.html">Built-in Classes</a>, <a href="XmlUtils.html">XML
+Utilities</a></p>
+
+<HR>
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+<p> The <b>SaxAttributes</b> class provides methods to manipulate <a href="XmlUtils.html">XML</a>
+element attributes for a SAX driver. </p>
+
+<h4>Syntax:</h4>
+
+<p><code>om.SaxAttributes</code></p>
+
+
+<HR>
+
+
+<h3><a name="METHODS">Methods:</a></h3>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#3399FF" colspan="2"><b>Class Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%" valign="top"><b>Name</b></td>
+    <td bgcolor="#C0C0C0" valign="top"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#copy">copy</a>( src SaxAttributes )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>    om.SaxAttributes</code></td>
+    <td valign="top">Clones an existing SaxAttributes object.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#create">create</a>( )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>    om.SaxAttributes</code></td>
+    <td valign="top">Creates a new, empty SaxAttributes object.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#66FFCC" colspan="2" valign="top"><b>Object Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%" valign="top"><b>Name</b></td>
+    <td bgcolor="#C0C0C0" valign="top"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#addAttribute">addAttribute</a>( n </code><tt>STRING</tt><code>, v </code><tt>STRING</tt><code>
+      )</code></td>
+    <td valign="top">Adds an attribute to the end of the list.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#clear">clear</a>( )</code></td>
+    <td valign="top">Clears the attribute list.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getLength">getLength(</a> )<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td valign="top">Returns the number of attributes in the list.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getName">getName</a>( pos </code><tt>INTEGER</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td valign="top">Returns the name of the attribute at position <i>pos</i>.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getValue">getValue(</a> att </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td valign="top">Returns the value of the attribute identified by the name <i>att</i>.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getValueByIndex">getValuebyIndex</a>( pos </code><tt>INTEGER</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td valign="top">Returns the value of the attribute at position <i>pos</i>.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#removeAttribute">removeAttribute</a>( pos </code><tt>INTEGER</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td valign="top">Removes the attribute at position <i>pos</i>.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#setAttributes">setAttributes</a>( atts om.SaxAttributes )</code></td>
+    <td valign="top">Clears the current attribute list and adds all attributes of <i>atts</i>.&nbsp;</td>
+  </tr>
+</table>
+
+
+<HR>
+
+
+<h3><a name="USAGE">Usage:</a></h3>
+This class provides basic methods to manipulate attributes when processing a SAX
+filter. 
+The SaxAttributes object is a list containing the attributes of the 
+element.<h4><a name="Creating">Creating a SaxAttributes object</a></h4>
+<p>To process element attributes, a SaxAttributes object can
+be used in cooperation with an <a href="ClassXmlReader.html">XmlReader</a> object. You get an instance of SaxAttributes with the
+<code>getAttributes()</code> method.&nbsp; </p>
+<p>The following SaxAttributes Class methods are also provided:</p>
+<p>The <a name="create"><code>om.SaxAttributes.create()</code></a> <tt> </tt>method creates a new, empty 
+SaxAttributes object.&nbsp; </p>
+<p>The <a name="copy"><code>om.SaxAttributes.copy()</code></a> <tt> </tt>method clones an existing 
+SaxAttributes object.&nbsp; </p>
+<h4><a name="Returning_the_value">Returning the value of an attribute</a></h4>
+<p>The <a name="getValue"><code>getValue()</code></a> method returns the value of 
+the attribute specified by name.</p>
+<p>The <a name="getValueByIndex"><code>getValueByIndex()</code></a> method returns 
+the value of the attribute at the specified position.&nbsp; </p>
+<h4><a name="getLength">Returning the number of attributes</a></h4>
+<p>The <code>getLength()</code> method returns the number of attributes in the list.</p>
+<h4><a name="getName">Returning the name of an attribute</a></h4>
+<p>The <code>getName()</code> method returns the name of the attribute at the 
+specified position in the list.</p>
+<h4><a name="addAttribute">Adding attributes</a></h4>
+<p>The <code>addAttribute()</code> method adds a new attribute to the end of the 
+attributes list.&nbsp; </p>
+<h4><a name="Removing_attributes">Removing attributes</a> </h4>
+<p>The <a name="clear"><code>clear()</code></a> method clears the attributes list.</p>
+<p>The <a name="removeAttribute"><code>removeAttribute()</code></a> method removes 
+the attributes at the given position in the list.</p>
+<h4><a name="setAttributes">Replacing the attributes list</a></h4>
+<p>The <code>setAttributes()</code> method clears the current list and adds all the 
+attributes of the specified SaxAttributes object.</p>
+
+
+<HR>
+
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+
+<h4>Example 1:</h4>
+
+<PRE><code class="linenumber">01</code> <tt>FUNCTION</tt> displayAttributes( a )
+<code class="linenumber">02</code>    <tt>DEFINE</tt> a om.SaxAttributes
+<code class="linenumber">03</code>    <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<code class="linenumber">04</code>    <tt>FOR</tt> i=1 to a.getLength()
+<code class="linenumber">05</code>       <tt>DISPLAY</tt> a.getName(i) || &quot;=[&quot; || a.getValueByIndex(i) || &quot;]&quot;
+<code class="linenumber">06</code>    <tt>END</tt> <tt>FOR</tt>
+<code class="linenumber">07</code> <tt>END FUNCTION</tt></PRE>
+
+
+</BODY>
+</HTML>

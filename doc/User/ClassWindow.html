@@ -1,0 +1,257 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>ui.Window</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The Window class</a> </H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#METHODS">Methods</a></li>
+  <li><a href="#USAGE">Usage</a>
+    <ul>
+      <li><a href="#forName">Getting a window by name</a></li>
+      <li><a href="#getCurrent">Getting the current window</a></li>
+      <li><a href="#getForm">Getting the current form of a window</a></li>
+      <li><a href="#getNode">Getting the DOM node of a window</a></li>
+      <li><a href="#findNode">Search for a specific element in a window</a></li>
+      <li><a href="#createForm">Create a new empty form in a window</a></li>
+      <li><a href="#setText">Setting the window title</a></li>
+      <li><a href="#getText">Getting the window title</a></li>
+      <li><a href="#setImage">Setting the window icon</a></li>
+      <li><a href="#getImage">Getting the window icon</a></li>
+    </ul>
+  </li>
+  <li><a href="#EXAMPLES">Examples</a></li>
+</ul>
+
+
+<p>See also: <a href="BuiltInClasses.html">Built-in classes</a>, <a href="WindowsAndForms.html">Windows
+and Forms</a>, <a href="ClassForm.html">Form Class</a></p>
+
+
+<HR>
+
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+<p>The <b>Window</b> class is a <a href="BuiltInClasses.html">built-in
+class</a> providing an interface to the window objects. </p>
+
+
+<h4>Syntax:</h4><code>ui.Window</code>
+
+
+<HR>
+
+
+<h3><a name="METHODS">Methods:</a></h3>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#3399FF" colspan="2"><b>Class Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%" valign="top"><b>Name</b></td>
+    <td bgcolor="#C0C0C0" valign="top"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#forName">forName</a>( name </code><tt>STRING</tt><code> ) <br>
+      &nbsp;&nbsp;</code><tt>RETURNING</tt>  <code>ui.Window</code></td>
+    <td valign="top">Returns a Window object according to the name used in an <a href="WindowsAndForms.html">OPEN
+      WINDOW</a> statement.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getCurrent">getCurrent</a>( )<br>
+      &nbsp;&nbsp;</code><tt>RETURNING</tt>  <code>ui.Window</code></td>
+    <td valign="top">Returns a Window object referencing the <a href="WindowsAndForms.html">current
+      window</a>.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#00FFCC" colspan="2" valign="top"><b>Object Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%" valign="top"><b>Name</b></td>
+    <td bgcolor="#C0C0C0" valign="top"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#findNode">findNode</a>( t </code><tt>STRING</tt><code>, n </code><tt>STRING</tt><code>  )<br>
+      &nbsp;&nbsp;</code><tt>RETURNING</tt>  <code>om.DomNode</code></td>
+    <td valign="top">Returns the first descendant DOM node of type <i>t</i> and matching the name <i>n</i>
+      in the abstract representation of this form object.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#createForm">createForm</a>( n </code><tt>STRING</tt><code> )<br>
+      &nbsp;&nbsp;</code><tt>RETURNING</tt>   <code>ui.Form</code></td>
+    <td valign="top">Creates an empty form and returns the new <a href="ClassForm.html">Form</a> object.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getForm">getForm</a>(  )<br>
+      &nbsp;&nbsp;</code><tt>RETURNING</tt>   <code>ui.Form</code></td>
+    <td valign="top">Returns a <a href="ClassForm.html">Form</a> object to handle the current
+      form.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getNode">getNode</a>(  )<br>
+      &nbsp;&nbsp;</code><tt>RETURNING</tt>  <code>om.DomNode</code></td>
+    <td valign="top">Returns the DOM representation of this Window.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#setText">setText</a>( t </code><tt>STRING</tt><code>  )</code></td>
+    <td valign="top">Sets the title of this window object.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getText">getText</a>(  )<br>
+      &nbsp;&nbsp;</code><tt>RETURNING STRING</tt></td>
+    <td valign="top">Returns the title of this window object.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#setImage">setImage</a>( n </code><tt>STRING</tt><code>  )</code></td>
+    <td valign="top">Sets the image for the icon of this window object.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getImage">getImage</a>(  )<br>
+      &nbsp;&nbsp;</code><tt>RETURNING STRING</tt></td>
+    <td valign="top">Returns the icon image of this window object.</td>
+  </tr>
+</table>
+
+
+<HR>
+
+
+<h3><a name="USAGE">Usage:</a></h3>
+
+<p>Windows are created with the <a href="WindowsAndForms.html">OPEN WINDOW</a>
+instruction, identifying the window by a static handle:</p>
+<pre><code class="linenumber">01 </code><tt>OPEN WINDOW</tt> w1<tt> WITH FORM</tt> &quot;customer&quot;</pre>
+
+
+<h4><a name="forName">Getting a window object by name</a></h4>
+
+
+<p>You can get the window object corresponding to an identifier used in OPEN
+WINDOW with the <code>ui.Window.forName()</code> class method. You must declare a variable of type <code>ui.Window</code> to hold
+the window object reference:</p>
+<pre><code class="linenumber">01 </code><tt>DEFINE</tt> w ui.Window
+<code class="linenumber">02 </code><tt>LET </tt>w = ui.Window.forName(&quot;w1&quot;)</pre>
+
+
+<h4><a name="getCurrent">Getting the current window object</a></h4>
+
+
+<p>The <code>ui.Window.getCurrent()</code>
+class method returns a window object corresponding to the <a href="WindowsAndForms.html">current
+window</a>. You must declare a variable of type <code>ui.Window</code> to hold
+the window object reference:</p>
+<pre><code class="linenumber">01 </code><tt>DEFINE</tt> w ui.Window
+<code class="linenumber">02 </code><tt>LET </tt>w = ui.Window.getCurrent()</pre>
+
+
+<h4><a name="getForm">Getting the current form of a window</a></h4>
+
+
+<p>You can get a <a href="ClassForm.html">ui.Form</a> instance of the current
+form with the <code>getForm()</code> method. This allows you to manipulate form
+elements by program. You can, for example, hide some parts of a form with <a href="ClassForm.html#setElementHidden">setElementHidden()</a>.</p>
+
+
+<h4><a name="getNode">Getting the DOM node of a window</a></h4>
+
+
+<p>The <code>getNode()</code> method returns the DOM node containing the
+abstract representation of the window.</p>
+<h4><a name="findNode">Search for a specific element in the window</a></h4>
+
+
+<p>The <code>findNode()</code> method allows you to search for a specific DOM node
+in the abstract representation of the window content (i.e. the form). You
+search for a child node by giving its type and the name of the element (i.e. the
+tagname and the value of the
+'name' attribute).</p>
+
+
+<h4><a name="createForm">Create a new empty form in a window</a></h4>
+
+
+<p>The <code>createForm()</code> method can be used to create a new empty form.
+The method returns a new <a href="ClassForm.html">ui.Form</a> instance or <a href="Programs.html#PC_NULL">NULL</a>
+if the form name passed as the parameter identifies an existing form used by the
+window.</p>
+
+
+<h4><a name="setText">Setting the window title</a></h4>
+
+
+<p>Use the <code>setText()</code> method to define the title of the window. By
+default, the title of a window is defined by the <a href="FSFAttributes.html#FA_TEXT">TEXT</a>
+attribute of the <a href="FormSpecFiles.html#SECTION_LAYOUT">LAYOUT</a>
+definition in form files.</p>
+
+
+<h4><a name="getText">Getting the window title</a></h4>
+
+
+<p>The <code>getText()</code> method can be used to get the current title of a
+window.</p>
+
+
+<h4><a name="setImage">Setting the window icon</a></h4>
+
+<p>Use the <code>setImage()</code> method to define the image to be used for the
+icon of the window. By default, the icon image of a window is defined by the
+<a href="FSFAttributes.html#FA_IMAGE">IMAGE</a> attribute of the
+<a href="FormSpecFiles.html#SECTION_LAYOUT">LAYOUT</a> definition in form files.</p>
+
+<h4><a name="getImage">Getting the window icon</a></h4>
+
+<p>The <code>getImage()</code> method can be used to get the current icon image
+of a window.</p>
+
+
+<HR>
+
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+<h4>Example 1: Get a window by name and change the title.</h4>
+
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02   </code> <tt>DEFINE</tt> w ui.Window
+<code class="linenumber">03   </code> <tt>OPEN WINDOW</tt> w1<tt> WITH FORM</tt> &quot;customer&quot; <tt>ATTRIBUTE</tt>(<tt>TEXT</tt>=&quot;Unknown&quot;)
+<code class="linenumber">04    </code><tt>LET </tt>w = ui.Window.forName(&quot;w1&quot;)
+<code class="linenumber">05    </code><tt>IF </tt>w <tt>IS NULL THEN EXIT PROGRAM</tt> 1 <tt>END IF</tt>
+<code class="linenumber">06    </code><tt>CALL </tt>w.setText(&quot;Customer&quot;)
+<code class="linenumber">07   </code> <tt>MENU</tt> &quot;Test&quot;
+<code class="linenumber">08      </code> <tt>COMMAND</tt> &quot;exit&quot;<code class="linenumber"></code> <tt>EXIT MENU</tt>
+<code class="linenumber">09   </code> <tt>END MENU</tt>
+<code class="linenumber">10   </code> <tt>CLOSE WINDOW</tt> w1
+<code class="linenumber">11</code> <tt>END MAIN</tt></pre>
+
+
+<h4>Example 2: Get a the current form and hide a groupbox.</h4>
+
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02   </code> <tt>DEFINE</tt> w ui.Window
+<code class="linenumber">03   </code> <tt>DEFINE</tt> f ui.Form
+<code class="linenumber">04   </code> <tt>OPEN WINDOW</tt> w1<tt> WITH FORM</tt> &quot;customer&quot;
+<code class="linenumber">05    </code><tt>LET </tt>w = ui.Window.getCurrent()
+<code class="linenumber">06    </code><tt>IF </tt>w <tt>IS NULL THEN EXIT PROGRAM</tt> 1 <tt>END IF</tt>
+<code class="linenumber">07    </code><tt>LET </tt>f = w.getForm()
+<code class="linenumber">08   </code> <tt>MENU</tt> &quot;Test&quot;
+<code class="linenumber">09      </code> <tt>COMMAND</tt> &quot;hide&quot; <tt>CALL </tt>f.setElementHidden(&quot;gb1&quot;,1)
+<code class="linenumber">10      </code> <tt>COMMAND</tt> &quot;exit&quot; <tt>EXIT MENU</tt>
+<code class="linenumber">11   </code> <tt>END MENU</tt>
+<code class="linenumber">12   </code> <tt>CLOSE WINDOW</tt> w1
+<code class="linenumber">13</code> <tt>END MAIN</tt></pre>
+
+
+</BODY>
+</HTML>

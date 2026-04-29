@@ -1,0 +1,1188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Localization</TITLE>
+<META http-equiv="Content-Type" content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+
+<HR>
+
+<H1><a name="PAGE_HEADER">Localization</a> </H1>
+<p>Summary:</p>
+<ul>
+  <li><a href="#DEFINITION">Localization Support</a></li>
+  <li><a href="#QUICK_GUIDE">Quick guide for locale settings</a></li>
+  <li><a href="#LOCALE_BASICS">Locale and character set basics</a>
+    <ul>
+      <li><a href="#LOCALE_BASICS_WHY">Why do I need to care about the locale and character set?</a></li>
+      <li><a href="#LOCALE_BASICS_DEFINITIONS">Characters, code points, character sets, glyphs and fonts</a></li>
+      <li><a href="#LOCALE_BASICS_ASCII">What is ASCII?</a></li>
+      <li><a href="#LOCALE_BASICS_SBCS">What is a single-byte character set (SBCS)?</a></li>
+      <li><a href="#LOCALE_BASICS_DBCS">What is a double-byte character set (DBCS)?</a></li>
+      <li><a href="#LOCALE_BASICS_MBCS">What is a multi-byte character set (MBCS)?</a></li>
+      <li><a href="#LOCALE_BASICS_UNICODE">What is UNICODE?</a></li>
+      <li><a href="#LOCALE_BASICS_WHEN_UNICODE">When do I need a UNICODE character set?</a></li>
+      <li><a href="#LOCALE_BASICS_WHEN_UNICODE">What is the standard?</a></li>
+      <li><a href="#LOCALE_BASICS_CURRENT_CHAR_SET">What is my current character set?</a></li>
+    </ul>
+  </li>
+  <li><a href="#LOCALE_SETTINGS">Understanding locale settings</a></li>
+  <li><a href="#RUNTIME">Defining the locale (Runtime settings)</a>
+    <ul>
+       <li><a href="#LANGUAGE_SETTINGS">Language Settings</a></li>
+       <li><a href="#NUMERIC_SETTINGS">Numeric and Currency Settings</a></li>
+       <li><a href="#DATETIME_SETTINGS">Date and Time Settings</a></li>
+    </ul>
+  </li>
+  <li><a href="#WRITINGPROGS">Writing Programs</a>
+    <ul>
+      <li><a href="#WP_RT_DV_CHARSET">Runtime character set must match development character set</a></li>
+      <li><a href="#WP_BLS_CLS">Byte length semantics vs. Character length semantics</a></li>
+      <li><a href="#WP_SUBSTRINGS">Avoid complex sub-string expressions</a></li>
+    </ul>
+  </li>
+  <li><a href="#DBCLIENT">Database Client Settings</a></li>
+  <li><a href="#FRONTEND">Front-end Settings</a></li>
+  <li><a href="#RTMSG">Runtime System Messages</a></li>
+  <li><a href="#TRB_CHARMAP_ALIAS">Using the charmap.alias file</a></li>
+  <li><a href="#MING_GUO">Using the Ming Guo date format</a></li>
+  <li><a href="#TROUBLESHOOT">Troubleshooting</a>
+    <ul>
+       <li><a href="#TRB_WINDOWS_LANG">Locale settings (LANG) corrupted on Microsoft platforms</a></li>
+       <li><a href="#TRB_INVCHARS">A form is displayed with invalid characters</a></li>
+       <li><a href="#TRB_CHECKLOCALE">Checking the locale configuration on UNIX platforms</a></li>
+       <li><a href="#TRB_VERIFY">Verifying if the locale is properly supported by the runtime system</a></li>
+       <li><a href="#TRB_LOCALES">How to retrieve the list of available locales on the system</a></li>
+       <li><a href="#TRB_CODESETS">How to retrieve the list of available codesets on the system</a></li>
+    </ul>
+  </li>
+</ul>
+
+
+<p><i>See also:</i>  <a href="LocalizedStrings.html">Localized Strings</a></p>
+
+<HR>
+
+<h3><a name="DEFINITION">Localization support</a></h3>
+
+<p>Localization support allows you to write BDL programs that follow a specific
+language and cultural rules. This includes single and multi-byte character set
+support, language-specific messages, as well as lexical/numeric/currency
+conventions.</p>
+
+<p>Beside the support of a <u>locale</u> specification described in this page,
+the internationalization (I18N) of an application consist to extract and
+centralize all strings of the sources that are subject of translation. Genero
+BDL helps you in this task with the <a href="LocalizedStrings.html">Localized
+Strings</a> feature.&nbsp;</p>
+
+<p>The <u>locale</u> defines the language (for messages), country/territory          
+(for currency symbols, date formats) and code set (character set encoding).
+A BDL program needs to be able to determine its <u>locale</u> and act          
+accordingly, to be portable to different languages and character sets.</p>          
+
+<p><b><font color="#FF0000">Warning:</font> Since character set conversions can          
+be symmetrical (the same <a href="#LOCALE_BASICS_DEFINITIONS">code point</a> can           
+represent different characters in different character sets), an invalid locale
+configuration in one of the components can result in invalid characters in the database.
+Read carefully the sections <a href="#LOCALE_BASICS">&quot;Locale and character set basics&quot;</a>
+and <a href="#LOCALE_SETTINGS">&quot;Understand locale settings&quot;</a>.
+For example, a client application is configured to display glyphs (font) for           
+CP437. If the application gets a 0x82 (130) code point, it displays an é           
+character. Now imagine that the DB client is configured with character set           
+CP1252. In this character set, the cope point 0x82 is actually a curved quote.           
+As a result, if you insert the é char (0x82 in CP437) in the database, it will           
+actually be seen as curved quote (0x82 in CP1252) by the database server. When           
+fetching that curved quote back to the client, the database server returns the           
+0x82 code point, which displays correctly as é on the CP437 client - so you           
+think everything is ok. But if you query the database with another application,           
+configured properly with CP1252 and DB client codeset, you don't see the é, you           
+see a curved quote.</b></p>          
+
+<HR>
+
+<h3><a name="QUICK_GUIDE">Quick guide for locale settings</a></h3>
+<p>Below is a quick step-by-step guide to configure your Genero application
+properly. We still highly recommend that you read the rest of the page for more
+information:</p>
+<ol>
+  <li>Identify the <u>character set used by the program files</u> (this can be <b>42m</b>,          
+    <b>42f</b> or <b><a href="LocalizedStrings.html">42s</a></b> files). The          
+    encoding used by these files is the character set that was configured at          
+    compile time on the development machine. Let's call this the Application          
+    Locale.&nbsp;</li>
+  <li>Set the <a href="#RUNTIME">operating system locale</a> corresponding to the Application          
+    Locale.
+    <ul>
+      <li><u>On a UNIX server</u>, define the LANG (or LC_ALL) environment
+        variable. Use <i>locale -a</i> command to check if the locale exists on
+        the machine. If not, it must be installed. If not set, LANG defaults to
+        POSIX (ASCII).</li>
+      <li><u>On a Windows server</u>, check if the regional settings for
+        non-UNICODE applications match the Genero application locale. If the
+        regional settings do no match, you can define the LANG environment variable
+        with a
+        locale name supported by Microsoft C Runtime Library, such as <i>French_France.1252</i>.</li>
+    </ul>
+  </li>
+  <li>Check the <a href="#TRB_CHARMAP_ALIAS">charmap.alias file in FGLDIR/etc</a> and verify that the name
+    of the Application Locale is mapped to a normalized name. The normalized
+    name will be sent to front-ends to enable charset conversion.</li>
+  <li>Set the <a href="#DBCLIENT">database client software locale</a> with a character set
+    corresponding to the Application Locale. For example, with Informix, this
+    is defined with the CLIENT_LOCALE environment variable. Note that the name
+    of the DB Client Locale will certainly be a little bit different from the
+    Application Locale. But remember the Application and DB Client character
+    sets <b>MUST</b> match. Note the database server locale can be different
+    from the db client locale.</li>
+  <li>Set the <a href="#FRONTEND">front-end software locale and font</a>. By front-end, we mean the
+    program the end user interacts with. This can be a Genero client like GDC or
+    a terminal emulator like Gnome-term, Putty, or a Windows Console. When using
+    a Genero GUI front-end, the front-end character set is fixed by the type of
+    the front end and conversion from/to application character set is automatic,
+    but you may need to select a font different from the system default. If you
+    want to execute a TUI application in a terminal emulator, you must be sure
+    that the terminal is configured to display the correct character set. This
+    is for example defined with the <i>chcp</i> command on Windows, or in the
+    &quot;<i>Set Character Encoding</i>&quot; menu option of a Gnome-term.</li>
+</ol>
+
+<HR>
+
+<h3><a name="LOCALE_BASICS">Locale and character set basics</a></h3>
+
+<p>Before starting with application/database design, configuration and settings,
+you must know some basics concerning language and character sets on computers.
+In this section, we attempt to describe these basics, but we strongly recommend
+you to carefully read the operating system and database server manuals covering
+localization or character set handling. You can also find a lot of information 
+about character sets and character encoding on the internet.</p>
+
+<h4><a name="LOCALE_BASICS_WHY">Why do I need to care about the locale and character set?</a></h4>
+<p>If you don't know what you are doing with character sets, the end          
+user might get strange characters displayed on the screen, and will probably not          
+be able to input non-ASCII characters. In the worst case, as character set          
+conversion can be symmetric for single-byte character sets, the end user might          
+see correct characters on the workstation,&nbsp; but on the back-end you can get          
+invalid characters in the database files. By upgrading to a newer OS, Genero BDL          
+runtime or database system, or if a character set mapping utility was used          
+somewhere in the chain, you can even get mixed character encoding in the          
+database files.&nbsp;</p>          
+
+<h4><a name="LOCALE_BASICS_DEFINITIONS">Characters, code points, character sets, glyphs and fonts</a></h4>          
+<p>In computers, a <u>character</u> is the unit of information corresponding to a          
+symbol of a natural language. This can be a letter, a digit, a punctuation mark,      
+a mathematic or even musical symbol. To represent a character in memory or in a          
+file, computers must encode the character in a specific numeric value called <u>code point</u>.
+This code point uniquely identifies a character in a given <u>character set</u>.          
+Mapping a character to a code point is called <u>character encoding</u>. The same code point          
+might represent a different character in several character sets. The <u>glyph</u>          
+is the graphical representation of the character. In other words, it's the way
+the character is drawn on the screen or on a printer. Computers implement the glyph of characters with <u>fonts</u>,
+by mapping a code point to a bitmap image or drawing instructions based on math formulas or      
+vector graphics.</p>         
+
+<h4><a name="LOCALE_BASICS_ASCII">What is ASCII?</a></h4>          
+<p>ASCII stands for the American Standard Code for Information Interchange. 
+ASCII is a well-known character encoding based on the English alphabet. Characters are encoded 
+in a
+single byte, using the 7 lower bits only. Up to 127 characters, printable and
+not printable (like control characters), are defined in ASCII. Nearly all other
+character sets (using 8 bits or multiple bytes) define the first 127 characters
+as the ASCII character set. Aliases for ASCII include ISO646-US, ANSI_X3.4-1968,
+IBM367, cp367, and more.</p>
+
+<h4><a name="LOCALE_BASICS_SBCS">What is a single-byte character set (SBCS)?</a></h4>
+<p>A single-byte character set defines the encoding for characters on a unique
+byte. The size of a character is always one byte.<br>
+Example of single-byte character sets include ISO-8859-1, MS code page CP1252.<br>
+Genero BDL supports single-byte character sets.</p>
+
+<h4><a name="LOCALE_BASICS_DBCS">What is a double-byte character set (DBCS)?</a></h4>
+<p>A double-byte character set defines the encoding for characters on two bytes.
+The size of a character is always two bytes.<br>
+Example of double-byte character sets include UCS-2, used by SQL Server in NCHAR and
+NVARCHAR columns. Note that UTF-16 is not a (fixed) double-byte character set:
+You can have characters encoded on 2 or 4 bytes. UCS-2 is actually a sub-set of
+UTF-16.</p>
+<p><b><font color="#FF0000">Warning:</font> Genero BDL does not support
+double-byte character sets.</b></p>
+
+<h4><a name="LOCALE_BASICS_MBCS">What is a multi-byte character set (MBCS)?</a></h4>
+<p>A multi-byte character set defines the encoding for characters on a variable 
+number of bytes. The size of a character can be one (usually ASCII chars), two, 
+three or more bytes, depending on the character set.<br> 
+Example of multi-byte character sets are BIG5, EUC-JP, and UTF-8. BIG5 and EUC-JP 
+characters can be one or two bytes long, while UTF-8 characters can be 1, 2, 3 
+or 4 bytes long (usually a maximum of 3 is sufficient).<br> 
+Genero BDL supports multi-byte character sets.</p> 
+
+<h4><a name="LOCALE_BASICS_UNICODE">What is UNICODE?</a></h4>
+<p>UNICODE is a standard specification to map all possible characters to a numeric          
+value, in order to cover all possible languages in a unique character set.          
+UNICODE defines the mapping of characters to integer codes, but it does not define the exact implementation          
+(i.e. encoding) for a character. Several character sets are based on the          
+UNICODE standard, such as UTF-7, UTF-8, UTF-16, UTF-32, UCS-2,&nbsp; and UCS-4. Each of           
+these character sets use a different encoding method. For example, with UTF-8, the     
+letter <b>Æ</b> is encoded with two bytes as 0xC3 and 0xB6, while the same character will be encoded     
+0x00C6          
+with UTF-16.</p>          
+<p><font color="#008000"><b>Tip:</b></font> On a Windows and Linux systems, you can see the
+UNICODE value for characters of a given font by running the &quot;Character
+Map&quot; utility.</p>
+<p><b><font color="#FF0000">Warning:</font> When Microsoft Windows users
+talk about UNICODE, they typically mean UCS-2 or UTF-16, while Unix users 
+typically mean UTF-8.</b></p>
+
+<h4><a name="LOCALE_BASICS_WHEN_UNICODE">When do I need a UNICODE character set?</a></h4>
+<p>With internationalization, people want to use different languages within the
+same application; for example, to have Chinese, Japanese, English, French and
+German addresses of customers in their database. UNICODE is a character encoding
+specification that defines characters for all languages. More and more databases
+will use a UNICODE character set on the database server, because it 
+&quot;standardizes&quot; all
+data from different client applications. If needed, the client application
+can then use a different character set like ISO-8859-1 or BIG5: The database
+software takes care of character set conversions. However, if the end user needs
+to deal with different languages, all components of the system (from database
+back-end to GUI front-end) must work in UNICODE.</p>
+
+<h4><a name="LOCALE_BASICS_STANDARDS">What is the standard?</a></h4>
+<p>At this time, UNICODE tends to be the standard, but
+unfortunately not all platforms/systems use the same UNICODE character set.
+Recent UNIX distributions define UTF-8 as the default character set locale, XML
+files are UTF-8 by default,
+while Microsoft Windows standard is UTF-16 (NTFS) / UCS-2 (SQL Server).</p>
+
+<h4><a name="LOCALE_BASICS_CURRENT_CHAR_SET">What is my current character set?</a></h4>
+<p>On a UNIX box, you have the LANG / LC_ALL environment variables to define the
+locale. Each process / terminal can set its own locale. By default this is
+en_US.utf8 on recent UNIX systems. You can query for available locales with the <i>locale
+-a</i> command. Some systems come with only a few locales installed, you must
+then install an additional package to get more languages. You must also define
+the correct character set in the terminal (xterm or gnome-term), otherwise
+non-ASCII characters will not display properly.</p>
+<p>On Windows platforms, for non-UNICODE (i.e. non-UTF-16/UCS-2) applications, you 
+have ACP and OEMCP code pages. ACP stands for ANSI Code Page and were designed 
+by Microsoft for first GUI applications, while OEMCP defines old code pages for 
+MS/DOS console applications. You can select the default ACP/OEMCP code pages for 
+non-UNICODE application in the language and regional settings panel of Windows
+(make sure you define the settings for <u>non-UNICODE applications</u>, this is
+done in the &quot;Advanced&quot; panel on Windows XP). Code 
+page can be changed in each console window with the <i>chcp</i> command. Note 
+that with Genero, you can use the LANG environment variable on Windows to define 
+the character set to be used by BDL.</p> 
+
+<HR>
+
+<h3><a name="LOCALE_SETTINGS">Understanding locale settings</a></h3>
+
+<p>It is critical to understand how the different components of a BDL process
+handle locale settings. Each component (i.e. runtime system, database client
+software, front-end, terminal) has to be configured properly to get the correct
+character set conversions through the whole chain. The chain starts on the
+end-user workstation with front-end windows and ends in the database storage
+files.</p>
+
+<p>The schema below shows the different components of a BDL process.</p>
+
+<ul>
+  <li>The red rectangles show where character set conversion occurs. Conversion
+    can happen in the front-end side, for C-based Web Services extension and in
+    the database client. No conversion is done by the fglrun runtime system.</li>
+  <li>In the BDL runtime system (fglrun), the locale and code set support is based on the POSIX
+    C runtime libraries driven by the <b>setlocale()</b> standard function. This
+    locale setting is defined by the LC_ALL (or LANG) environment variable. The
+    locale of the runtime system must match the code set of the deployed program
+    modules (42m and 42f files). See <a href="#RUNTIME">Runtime Settings</a> for
+    more details.</li>
+  <li>The terminal (for TUI applications) and the C runtime library are
+    represented in magenta rectangles. These elements will use the locale of the
+    runtime system.</li>
+  <li>The locale of the database client must match the locale of the runtime
+    system. Each database vendor uses it's own locale configuration system.
+    See <a href="#DBCLIENT">Database Client Settings</a> for more details.</li>
+  <li>The database server uses it's own locale settings, which can be different          
+    from the runtime system / db client locale. You can for example store the          
+    data in UTF-8 but have programs using ISO-8859-1.&nbsp;</li>          
+</ul>
+<p align="center"><img border="0" src="../Images/Locale-1.png"></p>
+<p>The typical mistake is to forget to set the database client software locale.          
+Most database servers can't detect that the locale of the db client is invalid          
+and don't raise any error. A character string is just a set of bytes; The same          
+code might represent different characters in different code sets. For example,          
+the Latin letter <b>&eacute</b> with acute (UNICODE: U+00E9) will be encoded as 0xE9/233 in CP1252 but          
+will get the code 0x82/130 in CP437. The codes 233 or 130 are valid characters          
+in both code sets, so if the database uses CP1252, 233 will represent an <b> &eacute</b>          
+and 130 will represent a curved quote. If the client application used CP437, the         
+<b> &eacute</b> will be encoded as 130, stored as curved quotes but are retrieved from          
+the database as is and displayed back as <b> &eacute</b> in the CP437 code page. From          
+the front-end side, you can't see that the character in the database in          
+wrong.&nbsp;</p>
+<p><b><font color="#FF0000">Warning:</font> On recent UNIX systems, the default          
+locale is set to UTF-8. If your application has been developed on an older          
+system, it is probably using a single-byte character set like ISO-8859-1 or          
+CP1252, and program need to be executed in this locale, not in the UTF-8 locale.</b></p>          
+<p>It is important to define / know what is the database server character set
+(i.e. in what code set the characters are stored in the database).</p>
+
+<p>The best way to test if the characters inserted in the database are correct
+is to use the database vendor SQL interpreter and select rows inserted from a
+BDL program. The rows most hold non-ASCII data to check if the code of the
+characters is correct. Some databases support the ASCII() or better, the
+UNICODE() SQL function to check the code of a character. Use such function to
+determine the value of a character in the database field. If the character code does not
+correspond to the expected value in the character set of the database server,
+there is a configuration mistake somewhere.</p>
+
+<p><b><font color="#FF0000">Warning:</font> If you run a BDL application in TUI
+mode (or a batch program doing DISPLAYs), you must properly configure the code
+set in the terminal window (X11 xterm, Windows CMD, putty, etc). If the terminal
+code set does not match the runtime system locale, you will get invalid
+characters displayed on the screen. On Windows platforms, the OEM code page of
+the CMD window can be queried/changed with the chcp command. On a Gnome
+terminal, go to the menu &quot;Terminal&quot; - &quot;Set Character
+Encoding&quot;.</b></p>
+
+<HR>
+
+<h3><a name="DEFINING_LOCALE">Defining the locale</a> (<a name="RUNTIME">Runtime 
+settings</a>)</h3>
+
+<p>This section describes the settings defining the <u>locale</u>, changing the behavior of the
+compilers and runtime system.</p>
+
+<h4><a name="LANGUAGE_SETTINGS">Language Settings</a></h4>
+
+<p>The Genero BDL compilers and runtime system use the standard C library
+functions (<i>setlocale</i>) to handle character sets. The <b>LANG</b>  (or <b>LC_ALL</b>)
+environment variable defines the global settings for the language used by the
+application. The locale settings matters at compile time and at runtime. At
+runtime, the <b>LANG</b> variable changes the behavior of the character handling functions, such as <a href="BuiltInFunctions.html#BF_UPSHIFT">UPSHIFT</a>,
+<a href="BuiltInFunctions.html#BF_DOWNSHIFT">DOWNSHIFT</a>.  
+It also changes the handling of the character strings, which can be single byte
+or multi-byte encoded. Note that an invalid locale setting will cause compilation errors
+if the .4gl or .per source file contains characters that do not exist in the
+encoding defined by the <b>LANG</b> variable.</p>
+
+<p><b><font color="#FF0000">Warning:</font>  On Windows platforms, if you don't
+specify the LANG environment variable, the language and character set defaults
+to the system locale which is defined by the regional settings for non-Unicode
+applications. For example, on a US-English Windows, this defaults to the 1252
+code page. You typically leave the default on Windows platforms (i.e. you should
+not set the LANG variable, except if your application uses a different character
+set as the Windows system locale). On UNIX platforms, you should always define
+LANG or LC_ALL.</b></p>
+
+<p>With the <b>LANG</b>   environment variable (or <b>LC_ALL</b>, on UNIX), you define the <i>language</i>,
+the <i>territory</i>  (aka country) and the <i>codeset</i>  (aka character set
+or code page) to be
+used. The format of the value is normalized as follows, but may be specific on
+some operating systems:&nbsp;</p>
+
+<p><code><i>language</i>_<i>territory</i>.<i>codeset</i></code></p>
+
+<p>For example:</p>
+
+<p><code>$ LANG=en_US.iso88591; export LANG</code></p>
+
+<p><b><font color="#FF0000">Warning:</font> Usually OS vendors define a specific set of values for the <i>language</i>, <i> territory</i> and <i> codeset</i>. For example, on
+a UNIX platform, you typically have the value &quot;en_US.ISO8859-1&quot; for a US English locale, while Microsoft Windows
+requires the &quot;English_USA.1252&quot; value. For more details about supported locales, please refer to the
+OS documentation. On UNIX platforms, you can do a <i>man locale</i> or <i>man
+setlocale</i> to understand how the standard C library defines locale settings.
+For Windows, search in the MSDN library.</b></p>
+
+<p>Note that on Windows platforms, the syntax of the LANG variable is:</p>
+
+<p><code><i>&nbsp; language</i>[_<i>territory</i>[.<i>codeset</i>]]<br>
+| .<i>codeset</i></code></p>
+
+<p>For example:</p>
+
+<p><code>C:\ set LANG=English_USA.1252</code></p>
+
+<p>A list of available locales can be found on UNIX platform by running the <i>locale
+-a</i> command. You may also want to read the man pages of the <i>locale</i>
+command and the <i>setlocale</i> function. On Windows platforms, search the <a href="http://msdn.microsoft.com">MSDN
+documentation</a> for &quot;Language and Country/Region Strings&quot;.</p>
+
+<p>See also <a href="#TROUBLESHOOT">Troubleshooting</a> to learn how to check if
+a locale is properly set, and list the locales installed on your system.</p>
+
+<h4><a name="NUMERIC_SETTINGS">Numeric and Currency Settings</a></h4>
+
+<p>To perform <a href="DataTypes.html#DT_DECIMAL">decimal</a> to/from string
+conversions, the runtime system uses
+the <a href="EnvironmentVariables.html#EV_DBMONEY">DBMONEY</a> or
+<a href="EnvironmentVariables.html#EV_DBFORMAT"> DBFORMAT</a> environment
+variables. These variables define hundreds / decimal separators and currency
+symbols for <a href="DataTypes.html#DT_MONEY">MONEY</a> data types.</p>
+
+<p>Note that the standard C library environment variables <b>LC_MONETARY</b> and <b>LC_NUMERIC
+</b>are
+<u>ignored</u>.</p>
+
+<h4><a name="DATETIME_SETTINGS">Date and Time Settings</a></h4>
+
+<p>To perform <a href="DataTypes.html#DT_DATE">date</a>
+ to/from string
+conversions, the runtime system uses by default the <a href="EnvironmentVariables.html#EV_DBDATE">DBDATE</a>
+environment variable.</p>
+
+<p>When using the <a href="FSFAttributes.html#FA_FORMAT">FORMAT</a>
+field attribute or the <a href="Operators.html#OP_USING">USING</a> operator to
+format <a href="DataTypes.html#DT_DATE">dates</a> with abbreviated day and month names
+- by using <b>ddd</b> / <b>mmm</b>  markers - the system uses English-language
+based texts for the conversion. This means, day (ddd) and month (mmm)
+abbreviations are not localized according to the locale settings, they will
+always be in English.</p>
+
+<p>Note that the standard C library environment variable
+<b>LC_TIME</b> is <u>ignored</u>.</p>
+
+<HR>
+
+<h3><a name="WRITINGPROGS">Writing Programs</a></h3>
+
+<h4><a name="WP_RT_DV_CHARSET">Runtime character set must match development character set</a></h4>
+
+<p>When writing a form or program source file, you use a specific character set.
+This character set depends upon the text editor or operating system settings you are using on the
+development platform. For example, when writing a string constant in a 4gl module, containing
+Arabic characters, you probably use the ISO-8859-6 character set. The character
+set used at runtime (during program execution) must match the character set
+used to write programs.</p>
+
+<p>At runtime, a Genero program can only work in a specific character set.
+However, by using <a href="LocalizedStrings.html">Localized Strings</a>, you can
+start multiple instances of the same compiled program using different locales.
+For a given program instance the character set used by the strings resource
+files must correspond to the locale. Make sure the string identifiers use ASCII
+only.</p>
+
+<h4><a name="WP_BLS_CLS">Byte length semantics vs. Character length semantics</a></h4>
+
+<p>Genero BDL uses byte length semantics: When defining a character data type
+like <a href="DataTypes.html#DT_CHAR">CHAR</a>(n) or <a href="DataTypes.html#DT_VARCHAR">VARCHAR</a>(n),
+n represents as a <u>number of bytes</u>, not a number of characters. In a
+single-byte character set like ISO-8859-1, any character is encoded on a unique
+byte, so the number of bytes equals the number of characters. But in a
+multi-byte character set, encoding requires more that one byte, so the number of
+bytes to store a multi-byte string is bigger as the number of characters. For
+example, in a BIG5 encoding, one Chinese character needs 2 bytes, so if you want
+to hold a BIG5 string with a maximum of 10 Chinese characters, you must define a
+CHAR(20). When using a variable-length encoding like UTF-8, characters can take
+one, two or more bytes, so you need to choose the right average to define CHAR
+or VARCHAR variables.</p>
+
+<p>The definition and length semantics of character data types such as CHAR, VARCHAR, NCHAR and NVARCHAR varies from one database vendor to another. Some use byte length 
+semantics, other use character length semantics, and other support both ways. 
+For example, Informix uses byte length semantics only while with Oracle you can
+define character columns with a number of bytes
+&quot;CHAR(10 BYTE)&quot; or a number of characters &quot;CHAR(10 CHAR)&quot;.
+SQL Server supports non-UCS-2 character sets (Latin1, BIG5) in CHAR/VARCHAR/TEXT columns, 
+using a byte length for the size, while NCHAR/NVARCHAR/NTEXT columns store double-byte UCS-2 
+characters and use char length semantics.</p>
+
+<p>Next table shows the character data type length semantics of database servers
+supported by Genero:</p>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="25%" bgcolor="#C0C0C0" height="18"><b>Database Engine</b></td>
+    <td bgcolor="#C0C0C0"><b>Length semantics in character data
+      types</b></td>
+    <td width="5%" bgcolor="#C0C0C0" height="18"><b>Summary</b></td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top" bgcolor="#CCFFFF">Genero db</td>
+    <td valign="top" bgcolor="#CCFFFF">Uses Byte Length Semantics for the size
+      of character columns.<br>
+      Data is stored in UTF-8 when CHARACTER_SET=UTF-8 configuration parameter
+      is defined.</td>
+    <td width="5%" valign="top" bgcolor="#3366FF"><b><font color="#FFFFFF">BLS</font></b></td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top" bgcolor="#FFFFCC">Oracle</td>
+    <td valign="top" bgcolor="#FFFFCC">Supports both Byte or Character Length Semantics
+      in character type definition, can be defined
+      globally for the database or at column level.<br>
+      Data is stored in database character set for CHAR/VARCHAR columns and in
+      national character set for NCHAR/NVARCHAR columns.</td>
+    <td width="5%" valign="top" bgcolor="#339933"><b><font color="#FFFFFF">BLS/CLS</font></b></td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top" bgcolor="#CCFFFF">Informix</td>
+    <td valign="top" bgcolor="#CCFFFF">Uses Byte Length Semantics for the size
+      of character columns.<br>
+      Data is stored in the database character set defined by DB_LOCALE.</td>
+    <td width="5%" valign="top" bgcolor="#3366FF"><b><font color="#FFFFFF">BLS</font></b></td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top" bgcolor="#FFFFCC">IBM DB2</td>
+    <td valign="top" bgcolor="#FFFFCC">Uses Byte Length Semantics for the size
+      of character columns.<br>
+      Data is stored in the database character set defined by the CODESET of
+      CREATE DATABASE.</td>
+    <td width="5%" valign="top" bgcolor="#3366FF"><b><font color="#FFFFFF">BLS</font></b></td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top" bgcolor="#CCFFFF">Microsoft SQL Server</td>
+    <td valign="top" bgcolor="#CCFFFF"> CHAR/ VARCHAR sizes are specified in
+      bytes; Data is stored in the character set defined by the database
+      collation.<br>
+ NCHAR/ NVARCHAR sizes are specified in characters; Data is stored in UCS-2.<br>
+      See <a href="odiagmsv.html#ODIMSV040">ODI Adaptation Guide</a> for more
+      details.</td>
+    <td width="5%" valign="top" bgcolor="#008000"><b><font color="#FFFFFF">BLS/CLS</font></b></td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top" bgcolor="#FFFFCC">PostgreSQL</td>
+    <td valign="top" bgcolor="#FFFFCC">Uses Character Length Semantics for the
+      size of character columns.<br>
+      Data is stored in the database character set defined by WITH ENCODING of
+      CREATE DATABASE.</td>
+    <td width="5%" valign="top" bgcolor="#6600FF"><b><font color="#FFFFFF">CLS</font></b></td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top" bgcolor="#CCFFFF">MySQL</td>
+    <td valign="top" bgcolor="#CCFFFF">Uses Character Length Semantics for the
+      size of character columns.<br>
+      Data is stored in the server character set defined by a configuration
+      parameter.</td>
+    <td width="5%" valign="top" bgcolor="#6600FF"><b><font color="#FFFFFF">CLS</font></b></td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top" bgcolor="#FFFFCC">Sybase Adaptive Server Enterprise
+      (ASE)</td>
+    <td valign="top" bgcolor="#FFFFCC">
+ CHAR/ VARCHAR sizes are specified in bytes; Data is stored in the db character
+    set.<br>
+    NCHAR/NVARCHAR sizes are specified in characters; Data is stored the db
+    character set.<br>
+    UNICHAR/UNIVARCHAR sizes are specified in characters; Data is stored in
+    UTF-16.<br>
+      See <a href="odiagase.html#ODIASE011">ODI Adaptation Guide</a> for more
+      details.
+    </td>
+    <td width="5%" valign="top" bgcolor="#008000"><b><font color="#FFFFFF">BLS/CLS</font></b></td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top" bgcolor="#CCFFFF">Sybase Adaptive Server Anywhere (ASA)</td>
+    <td valign="top" bgcolor="#CCFFFF"> CHAR/ VARCHAR sizes are can be specified in
+      bytes by default, unless you add the CHAR[ACTER] keyword as part of the
+      length; Data is stored in db character set.<br>
+ NCHAR/ NVARCHAR sizes are specified in characters; Data is stored in UTF-8.</td>
+    <td width="5%" valign="top" bgcolor="#008000"><b><font color="#FFFFFF">BLS/CLS</font></b></td>
+  </tr>
+</table>
+
+<p>Other SQL elements like functions and operators are affected by the length
+semantic. For example, Informix LENGTH() function always returns a number of
+bytes, while Oracle's LENGTH() function returns a number of characters (use
+LENGTHB() to get the number of bytes with Oracle).</p>
+
+<p>It is important to understand properly how the database servers handle
+multi-byte character sets. Check your database server reference manual: In most
+documentations you will find a &quot;Localization&quot; chapter which describes
+those concepts in detail.</p>
+
+<p>For portability, we recommend to use byte length semantic based character
+data types in databases, because this corresponds to the length semantics used
+by Genero BDL (this is important when declaring variables by using
+<a href="Variables.html">DEFINE LIKE</a>, which is based on database schemas).</p>
+
+<h4><a name="WP_SUBSTRINGS">Avoid complex sub-string expressions</a></h4>
+
+<p>Since Genero BDL is using Byte Length Semantics, all character positions in
+strings are actually byte positions. In a multi-byte environment, if you don't
+pay attention to this, you can end up with invalid characters in strings. For
+example if you use the <a href="Operators.html#OP_SUBSTRING">sub-script operator
+[x,y]</a>, you might point to the second or third byte of a multi-byte
+character, while you should always use byte positions of the first byte of a
+character.</p>
+
+<HR>
+
+<h3><a name="DBCLIENT">Database Client Settings</a></h3>
+
+<p>This section describes the settings defining the <u>locale</u> for the database
+client. Each database software has its own client character set configuration.</p>
+
+<p><b><font color="#FF0000">Warning:</font> You must properly configure the
+database client locale in order to send/receive data to the database server,
+according to the locale used by your application. Both database client locale
+and application locale settings must match (you cannot have a database client
+locale in Japanese and a runtime locale in Chinese).</b></p>
+
+<p>Here is the list of environment variables defining the locale used by the
+application, for each supported database client:</p>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="25%" bgcolor="#C0C0C0" height="18"><b>Database Client</b></td>
+    <td bgcolor="#C0C0C0" height="18"><b>Settings</b></td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top" bgcolor="#CCFFFF">Genero db</td>
+    <td valign="top" bgcolor="#CCFFFF">The character set used by the client is defined by the <b>characterset</b>
+      ODBC DSN configuration parameter. If this parameter is not set, it defaults to ASCII.<br>
+      Before version 3.80, the character set was defined by the <b>ANTS_CHARSET</b> environment
+      variable.</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top" bgcolor="#FFFFCC">Oracle</td>
+    <td valign="top" bgcolor="#FFFFCC">The client locale settings can be set with environment variables like
+      <b>NLS_LANG</b>, or
+      after connection, with the ALTER SESSION instruction. By default, the
+      client locale is set from the database server locale.</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top" bgcolor="#CCFFFF">Informix</td>
+    <td valign="top" bgcolor="#CCFFFF">The client locale is defined by the <b> CLIENT_LOCALE</b> environment
+      variable. For backward compatibility, if CLIENT_LOCALE is not defined,
+      other settings are used if defined (DBDATE / DBTIME / GL_DATE /
+      GL_DATETIME, as well as standard LC_* variables).</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top" bgcolor="#FFFFCC">IBM DB2</td>
+    <td valign="top" bgcolor="#FFFFCC"> The client locale is defined by the <b> DB2CODEPAGE</b> profile variable. You must
+      set this variable with the db2set command. If DB2CODEPAGE is not set, DB2 uses
+      the operating system code page on Windows and the LANG environment variable on Unix.</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top" rowspan="3" bgcolor="#CCFFFF">Microsoft SQL Server</td>
+    <td valign="top" bgcolor="#CCFFFF">For <b> MSV</b> and <b> SNC</b> drivers on Windows platforms, the
+      database client locale is defined by the language settings for non-Unicode
+      applications. The current ANSI code page (ACP) is used by the SQL Server
+      client and the Genero runtime system.</td>
+  </tr>
+  <tr>
+    <td valign="top" bgcolor="#CCFFFF">
+      When using the <b> FTM</b> (FreeTDS) driver, the client character
+      set is defined by the <b>client charset</b>
+          parameter in freetds.conf or with the <b>ClientCharset</b>  parameter in
+      the DSN of the odbc.ini file.</td>
+  </tr>
+  <tr>
+    <td valign="top" bgcolor="#CCFFFF">
+      When using the <b> ESM</b> (EasySoft) driver, the client character
+      set is defined by the <b>Client_CSet</b>  parameter in
+      the DSN of the odbc.ini file. When using CHAR/VARCHAR types in the database
+      and when the database collation is different
+      from the client locale, you must also set the Server_CSet parameter to an
+      iconv name corresponding to the database collation. For example, if
+      Client_CSet=BIG5 and the db
+      collation is Chinese_Taiwan_Stroke_BIN, you must set Server_CSet=BIG5HKSCS,
+      otherwise invalid data will be returned from the server.</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top" bgcolor="#FFFFCC">PostgreSQL</td>
+    <td valign="top" bgcolor="#FFFFCC">The client locale can be set with the <b> PGCLIENTENCODING</b> environment
+      variable, with the <i>client_encoding</i> configuration parameter in
+      postgresql.conf, or after connection, with the SET CLIENT_ENCODING instruction.
+      Check the <i>pg_conversion</i> system table for available character set
+      conversions.</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top" bgcolor="#CCFFFF">MySQL</td>
+    <td valign="top" bgcolor="#CCFFFF">The client locale is defined by the <i><b>default-character-set</b></i>
+      option in the configuration file, or after connection, with the SET NAMES
+      and SET CHARACTER SET instructions.</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top" bgcolor="#FFFFCC">Sybase Adaptive Server Enterprise
+      (ASE)</td>
+    <td valign="top" bgcolor="#FFFFCC">
+      By default, the Sybase database client character set is defined by the <b> operating system
+      locale</b> where the database client runs. On Windows, it is the
+      ANSI code page of the login session (can be overwritten by setting the
+      LANG environment variable), on UNIX it is defined by the LC_CTYPE, LC_ALL or LANG environment variable. Note that you may need to edit the
+      $SYBASE/locales/locales.dat file to map the OS locale name to a known Sybase
+      character set.<br>
+      See Sybase ODBC documentation for more details regarding character set
+      configuration.</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top" bgcolor="#CCFFFF">Sybase Adaptive Server Anywhere
+      (ASA)</td>
+    <td valign="top" bgcolor="#CCFFFF">The client locale is defined by the operating <b> system
+      locale</b> where the database client is installed.</td>
+  </tr>
+</table>
+
+<p>See database vendor documentation for more details.</p>
+
+<HR>
+
+<h3><a name="FRONTEND">Front-End Settings</a></h3>
+
+<p> The host operating system on the front-end workstation must be able to handle
+the character set and fonts. For instance, a Western-European Windows is not configured to
+handle Arabic applications. If you start an Arabic application, some graphical
+problems may occur (for instance the title bar won't display Arabic characters,
+but unwanted characters instead).</p>
+
+<p> The GUI front-end software must support the conversion of the runtime system
+character set to/from the character set used internally by the client, and must
+be configured with the correct font to display the characters used by the
+application. For example, the default font for a GDC installed on an English
+Windows system might not be able to display Japanese characters. You must the
+change the font in the GDC configuration panel. Refer to the front-end documentation to
+see how character set conversion and fonts can be configured.</p>
+
+<p> When using a TUI program in a terminal emulator such as Putty, XTerm or even
+the Windows Console, make sure the terminal is configured properly to
+display the characters of the application locale. For example, on a Windows
+Console you can use the <i>chcp</i> command to change the current code page.</p>
+
+<HR>
+
+<h3><a name="RTMSG">Runtime System Messages</a></h3>
+
+<p>Predefined runtime system error messages are stored in the <b>.iem</b> system
+message files. The system message files use the same technique as user defined
+message files (See <a href="MessageFiles.html">Message Files</a>). The default
+message files are located in the <b>FGLDIR/msg/en_US</b> directory (<b>.msg</b>
+sources are provided).</p>
+
+<p>For backward compatibility with Informix 4gl, some of these system error
+messages are used by the runtime system to report a &quot;normal&quot; error
+during a dialog instruction. For example, end users may get the error -1309
+&quot;There are no more rows in the direction you are going&quot; when scrolling
+an a <a href="DisplayArray.html">DISPLAY ARRAY</a> list.</p>
+
+<p> Here are some examples of system messages that can appear during a dialog:</p>
+
+<table border=0 cellpadding=0 width="90%">
+ <tr>
+  <td width="15%" valign=top bgcolor="#C0C0C0">
+  <b>Number</b>
+  </td>
+  <td valign=top bgcolor="#C0C0C0">
+  <b>Description</b>
+  </td>
+ </tr>
+ <tr>
+  <td width="15%" valign=top>
+  -1204
+  </td>
+  <td valign=top>
+  <p>Invalid year in date.</p>
+  </td>
+ </tr>
+ <tr>
+  <td width="15%" valign=top>
+  -1304
+  </td>
+  <td valign=top>
+  <p>Error in
+  field.</p>
+  </td>
+ </tr>
+ <tr>
+  <td width="15%" valign=top>
+  -1305
+  </td>
+  <td valign=top>
+  <p>This field requires an entered value.</p>
+  </td>
+ </tr>
+ <tr>
+  <td width="15%" valign=top>
+  -1306
+  </td>
+  <td valign=top>
+  <p>Please type again for verification.</p>
+  </td>
+ </tr>
+ <tr>
+  <td width="15%" valign=top>
+  -1307
+  </td>
+  <td valign=top>
+  <p>Cannot insert another row - the input array is full.</p>
+  </td>
+ </tr>
+ <tr>
+  <td width="15%" valign=top>
+  -1309
+  </td>
+  <td valign=top>
+  <p>There are no more rows in the direction you are going.</p>
+  </td>
+ </tr>
+ <tr>
+  <td width="15%" valign=top>
+  <i>
+  and more...</i>
+  </td>
+  <td valign=top>
+  </td>
+ </tr>
+</table>
+
+<p> While it is recommended to use <a href="LocalizedStrings.html">Localized
+Strings</a> to internationalize application messages, you will need to
+translated some of the system messages to a specific locale and language, or you
+might just want to customize the English messages.</p>
+
+<p>With this technique, you can deploy multiple message files in different
+languages and locales in the same FGLDIR/msg directory.</p>
+
+<p> To use your own customized system messages, do the following:</p>
+
+<ol>
+  <li>Create a new directory under $FGLDIR/msg, using the same name as your current
+    locale.<br>
+    For example, if <tt>LANG=fr_FR.ISO8859-1</tt>, you must create
+    <tt>$FGLDIR/msg/fr_FR.ISO8859-1</tt>.</li>
+  <li>Copy the original system message source files (.msg) from <tt>$FGLDIR/msg/en_US</tt>
+    to the locale-specific directory.</li>
+  <li>Edit the source files with the <b>.msg</b>  suffix and translate the
+    messages.</li>
+  <li>Re-compile the message files with the <a href="Tools.html#TL_FGLMKMSG">fglmkmsg</a>
+    tool to produce <b>.iem</b> files. Make sure you have set the correct
+    locale!</li>
+  <li>Run a program to check if the new messages are used.&nbsp;</li>          
+</ol>
+
+<h4><font color="#008000">Tips:</font> </h4>
+<ol>
+  <li>You can use the <a href="Tools.html#TL_FGLMKMSG">fglmkmsg</a>
+    tool with the <b>-r</b> option to revert a <b>.iem</b> file to a source <b>.msg</b>
+    file.</li>
+  <li>There is no need to translate all messages of the <b>.msg</b> files: Most
+    of the error messages are unexpected during a program execution and
+    therefore can stay in English. The messages subject of translation can be
+    found in the <b>4glusr.msg</b> and <b>rds.msg</b> files.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font> </h4>
+<ol>
+  <li>The locale can be set with different environment variables (see
+    setlocale manual pages for more details). To identify the locale name, the
+    runtime system first looks for the LC_ALL value, then LC_CTYPE and finally
+    LANG.</li>
+  <li>Pay attention to locale settings when editing message files and compiling
+    with <a href="Tools.html#TL_FGLMKMSG">fglmkmsg</a>: The current locale must
+    match the locale used in the .msg files.</li>
+  <li>The <b>.iem</b> files used at runtime must match the current locale used
+    by programs. This should be automatic, as long as you put the correct files
+    in the corresponding <tt>$FGLDIR/msg/$LANG</tt> directory...</li>
+</ol>
+
+<HR>
+
+<h3><a name="TRB_CHARMAP_ALIAS">Using the charmap.alias file</a></h3>
+
+<p>The name of the codeset can be different from one system to another. The file
+$FGLDIR/etc/charmap.alias is used to provide the translation of the local name to a generic name.
+The generic name is the name sent to the front-end. It is the translated name that appears when the command
+'fglrun -i mbcs' is used.  
+The local codeset name is the value obtained using the system call 'nl_langinfo(CODESET)'.
+You can add more entries to the charmap.alias file according to the need.</p>
+
+<p>An example of locale configuration on HP</p>
+
+<pre class="per">$ export LANG=en_US.iso88591
+$ locale
+LANG=en_US.iso88591
+LC_CTYPE=&quot;en_US.iso88591&quot;
+LC_COLLATE=&quot;en_US.iso88591&quot;
+LC_MONETARY=&quot;en_US.iso88591&quot;
+LC_NUMERIC=&quot;en_US.iso88591&quot;
+LC_TIME=&quot;en_US.iso88591&quot;
+LC_MESSAGES=&quot;en_US.iso88591&quot;
+LC_ALL=
+$ locale charmap
+&quot;iso88591.cm&quot;</pre>
+
+<p>The charmap.alias file contains the following line:</p>
+
+<pre class="per">iso88591 ISO8859-1</pre>
+
+<p>The name sent to the client is ISO-8859-1 instead of iso88591.</p>
+
+<p>The following C program should compile, and outputs the current codeset name.</p>
+
+<pre class="per">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;locale.h&gt;
+#include &lt;langinfo.h&gt;
+int main()
+{
+  setlocale(LC_ALL, &quot;&quot;);
+  printf(&quot;%s\n&quot;, nl_langinfo(CODESET));
+  exit(0);
+}</pre>
+
+<p>With the previous example this program outputs:</p>
+
+<pre class="per">iso88591</pre>
+
+<HR>
+
+<h3><a name="MING_GUO">Using the Ming Guo date format</a></h3>
+<p>The Ming Guo (or Minguo) calendar is still used in some Asian regions like
+Taiwan. This calendar is equivalent to the Gregorian calendar, except that the
+years are numbered with a different base: In the Ming Guo calendar, the first
+year (1) corresponds to the Gregorian year 1912, the year the
+Republic Of China was founded.</p>
+<p>Digit-based year Ming Guo date format can be enabled by adding the C1
+modifier at the end of the value set for the <a href="EnvironmentVariables.html#EV_DBDATE">DBDATE</a>
+environment variable:</p>
+
+    <pre>$ DBDATE=&quot;Y3MD/C1&quot;
+$ export DBDATE</pre>
+
+<p>With the above DBDATE setting, dates will be displayed with a year following
+the Ming Guo calendar, and date input will also be interpreted based on that
+calendar. For example, if the user enters 90/3/24, it is equivalent to an input
+of 2002/3/24 when using the Gregorian calendar. Basically, the runtime system
+will subtract 1912 or add 1912 respectively when displaying or reading date
+values).</p>
+<p>When using the C1 modifier, the possible values for the Yn symbol are Y4, Y3,
+Y2.</p>
+<p>The <a href="Operators.html#OP_MDY">MDY() operator</a> is sensitive to the C1
+modifier usage in DBDATE. For example, if DBDATE=Y3MD/C1, MDY(3,24,1) will build
+a date the corresponds in the Gregorian to MDY(3,24,1912).</p>
+<p>The <a href="Operators.html#OP_USING">USING operator</a> supports the c1
+modifier as well. The c1 modifier must be specified at the end of the format.
+You can for example use the following format string: &quot;yyyy-mm-ddc1&quot;.</p>
+<p>The C2 modifier to use Era names is not supported.</p>
+<p>Unlike Informix 4gl, when using negative years, the minus sign is placed over
+the left-most zero of the year, to avoid miss-aligned dates.</p>
+<p>For example, if DBDATE=Y3MD/C1:</p>
+<pre>MDY(3,2, 1) USING &quot;yyy/mm/ddc1&quot;
+MDY(3,2,-1) USING &quot;yyy/mm/ddc1&quot;</pre>
+
+<p>will align properly as follows:</p>
+<pre>0001/03/02
+-001/03/02</pre>
+
+<p><b><font color="#FF0000">Warning:</font> Front-ends may not support the Ming
+Guo calendar for widgets like <a href="FormSpecFiles.html#FF_ITEMTYPE_DATEEDIT">DATEEDIT</a>.</b></p>
+
+<HR>
+
+<h3><a name="TROUBLESHOOT">Troubleshooting</a></h3>
+
+<h4><a name="TRB_WINDOWS_LANG">Locale settings (LANG) corrupted on Microsoft platforms</a></h4>
+
+<p>  On Microsoft Windows XP / 2000
+platforms, some system updates (Services Pack 2) or Office versions do set the
+LANG environment variable with a value for Microsoft applications (for example
+1033). Such value is not recognized by Genero as a valid locale specification.
+Make sure that the LANG environment variable is properly set in the context of
+Genero applications.</p>
+
+<h4><a name="TRB_INVCHARS">A form is displayed with invalid characters</a></h4>
+
+<p>You may have different codesets on the client workstation and the application server.
+The typical mistake that can happen is the following: You have edited a form-file with the encoding
+CP1253; you compile this form-file on a UNIX-server (encoding ISO-8859-7). 
+When displaying the form, invalid characters will appear. This is usually the
+case when you write your source file under a Windows system (that uses Microsoft
+Code Page encodings), and use a Linux server (that uses ISO codepages).</p>
+
+<p><b><font color="#FF0000">Warning:</font> All source files must be created/edited in the encoding of the server
+(where fglcomp and fglrun will be executed).</b></p>
+
+<h4><a name="TRB_CHECKLOCALE">Checking the locale configuration on Unix platforms</a></h4>
+
+<p>On Unix systems, the <b> locale</b> command without parameters outputs information about the current locale environment.</p>
+
+<p>Once the <b> LANG</b> environment variable is set, check that the locale environment is
+correct:</p>
+
+<pre class="per">$ export LANG=en_US.ISO8859-1
+$ locale
+LANG=en_US.ISO8859-1
+LC_CTYPE=&quot;en_US.ISO8859-1&quot;
+LC_NUMERIC=&quot;en_US.ISO8859-1&quot;
+LC_TIME=&quot;en_US.ISO8859-1&quot;
+LC_COLLATE=&quot;en_US.ISO8859-1&quot;
+LC_MONETARY=&quot;en_US.ISO8859-1&quot;
+LC_MESSAGES=&quot;en_US.ISO8859-1&quot;
+LC_PAPER=&quot;en_US.ISO8859-1&quot;
+LC_NAME=&quot;en_US.ISO8859-1&quot;
+LC_ADDRESS=&quot;en_US.ISO8859-1&quot;
+LC_TELEPHONE=&quot;en_US.ISO8859-1&quot;
+LC_MEASUREMENT=&quot;en_US.ISO8859-1&quot;
+LC_IDENTIFICATION=&quot;en_US.ISO8859-1&quot;
+LC_ALL=</pre>
+
+<p>If the locale environment is not correct, then you should check the value of the following environment variables :
+LC_ALL, LC_CTYPE, LC_NUMERIC, LC_TIME, LC_COLLATE, ... value.</p>
+
+<p>The following examples show the effect of LC_ALL and LC_CTYPE on locale configuration.
+The LC_ALL variable overrides all other LC_....  variables values.</p>
+
+<pre class="per">$ export LANG=en_US.ISO8859-1
+$ export LC_ALL=POSIX
+$ export LC_CTYPE=fr_FR.ISO8859-15
+$ locale
+LANG=en_US.ISO8859-1
+LC_CTYPE=&quot;POSIX&quot;
+LC_NUMERIC=&quot;POSIX&quot;
+LC_TIME=&quot;POSIX&quot;
+LC_COLLATE=&quot;POSIX&quot;
+LC_MONETARY=&quot;POSIX&quot;
+LC_MESSAGES=&quot;POSIX&quot;
+LC_PAPER=&quot;POSIX&quot;
+LC_NAME=&quot;POSIX&quot;
+LC_ADDRESS=&quot;POSIX&quot;
+LC_TELEPHONE=&quot;POSIX&quot;
+LC_MEASUREMENT=&quot;POSIX&quot;
+LC_IDENTIFICATION=&quot;POSIX&quot;
+LC_ALL=POSIX
+$ fglrun -i mbcs
+LANG honored : yes
+Charmap      : ANSI_X3.4-1968
+Multibyte    : no
+Stateless    : yes</pre>
+
+<p>The charset used is the ASCII charset. Clearing the LC_ALL environment
+variable produces the following output:</p>
+
+<pre class="per">$ unset LC_ALL
+$ locale
+LANG=en_US.ISO8859-1
+<i>LC_CTYPE=fr_FR.ISO8859-15</i>
+LC_NUMERIC=&quot;en_US.ISO8859-1&quot;
+LC_TIME=&quot;en_US.ISO8859-1&quot;
+LC_COLLATE=&quot;en_US.ISO8859-1&quot;
+LC_MONETARY=&quot;en_US.ISO8859-1&quot;
+LC_MESSAGES=&quot;en_US.ISO8859-1&quot;
+LC_PAPER=&quot;en_US.ISO8859-1&quot;
+LC_NAME=&quot;en_US.ISO8859-1&quot;
+LC_ADDRESS=&quot;en_US.ISO8859-1&quot;
+LC_TELEPHONE=&quot;en_US.ISO8859-1&quot;
+LC_MEASUREMENT=&quot;en_US.ISO8859-1&quot;
+LC_IDENTIFICATION=&quot;en_US.ISO8859-1&quot;
+LC_ALL=
+$ fglrun -i mbcs
+Error: locale not supported by C library, check LANG.
+$ locale charmap
+ANSI_X3.4-1968</pre>
+
+<p>After clearing the LC_ALL value, the value of the variable LC_CTYPE is used.
+It appears that it is not correct. After clearing this value we get the following output:</p>
+
+<pre class="per">$ unset LC_CTYPE
+$ locale
+LANG=en_US.ISO8859-1
+LC_CTYPE=&quot;en_US.ISO8859-1&quot;
+LC_NUMERIC=&quot;en_US.ISO8859-1&quot;
+LC_TIME=&quot;en_US.ISO8859-1&quot;
+LC_COLLATE=&quot;en_US.ISO8859-1&quot;
+LC_MONETARY=&quot;en_US.ISO8859-1&quot;
+LC_MESSAGES=&quot;en_US.ISO8859-1&quot;
+LC_PAPER=&quot;en_US.ISO8859-1&quot;
+LC_NAME=&quot;en_US.ISO8859-1&quot;
+LC_ADDRESS=&quot;en_US.ISO8859-1&quot;
+LC_TELEPHONE=&quot;en_US.ISO8859-1&quot;
+LC_MEASUREMENT=&quot;en_US.ISO8859-1&quot;
+LC_IDENTIFICATION=&quot;en_US.ISO8859-1&quot;
+LC_ALL=
+$ locale charmap
+ISO-8859-1
+$ fglrun -i mbcs
+LANG honored : yes
+Charmap      : ISO-8859-1
+Multibyte    : no
+Stateless    : yes</pre>
+
+<h4><a name="TRB_VERIFY">Verifying if the locale is properly supported by the 
+runtime system</a></h4>
+
+<p>You can check if the <b>LANG</b> locale is supported properly by using
+the <b>-i mbcs</b> option of the compilers and runner programs:</p>
+
+<pre>$ fglcomp -i mbcs
+LANG honored : yes
+Charmap      : ANSI_X3.4-1968
+Multibyte    : no
+Stateless    : yes</pre>
+
+<p>The lines printed with <b>-i info</b> option indicate if the locale can be
+supported by the operating system libraries. Here is a short description of each
+line:</p>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="25%" bgcolor="#C0C0C0"><b>Verification Parameter</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top">LANG Honored</td>
+    <td valign="top">
+      <p>
+        This line indicates that the current locale configuration has been correctly set.<br>
+        <font color="#FF0000"><i>Check if the indicator shows 'yes'.</i></font>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top">Charmap</td>
+    <td valign="top">This is the name of the character set used by the runtime
+      system.</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top">Multibyte</td>
+    <td valign="top">
+      This line indicates if the character set is multi-byte.<br>
+      <i>Can be 'yes' or 'no'.</i>
+    </td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top">Stateless</td>
+    <td valign="top">
+      A few character sets are using an internal state that can change during
+      the character flow. Only stateless character sets can be supported by
+      Genero.<br>
+      <font color="#FF0000"><i>Check if the indicator shows 'yes'.</i></font>
+    </td>
+  </tr>
+</table>
+
+<h4><a name="TRB_LOCALES">How to retrieve the list of available locales on the
+system</a></h4>
+
+<p>On Unix systems, the locale command with the parameter '-a' writes the names of available locales.</p>
+
+<pre class="per">$ locale -a
+...
+en_US
+en_US.iso885915
+en_US.utf8
+en_ZA
+en_ZA.utf8
+en_ZW
+...</pre>
+
+<h4><a name="TRB_CODESETS">How to retrieve the list of available codesets on the
+system</a></h4>
+
+<p>On Unix systems, the locale command with the parameter '-m' writes the names of available
+codesets.</p>
+
+<pre class="per">$ locale -m
+...
+ISO-8859-1
+ISO-8859-10
+ISO-8859-13
+ISO-8859-14
+ISO-8859-15
+...</pre>
+
+</BODY>
+
+</HTML>
+

@@ -1,0 +1,1225 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Tutorial: Query by Example</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+<p><a href="TutIndex.html">Back to Summary</a></p>
+<hr>
+<h1>Tutorial Chapter 4: Query by Example</h1>
+<p>Summary:</p>
+<ul>
+  <li><a href="#QBE">Implementing Query-by-Example</a>
+    <ul>
+      <li><a href="#CONSTRUCT">CONSTRUCT and STRING variables</a></li>
+      <li><a href="#Preparing">PREPARE Statement</a></li>
+    </ul>
+  </li>
+  <li><a href="#UserCancel">Allowing the User to Cancel the Query</a>
+    <ul>
+      <li><a href="#PredefinedActions">Pre-defined Actions (accept/cancel)</a></li>
+      <li><a href="#DEFERINTERRUPT">DEFER INTERRUPT and INT_FLAG</a></li>
+      <li><a href="#ConditionalLogic">Conditional Logic: IF and CASE</a></li>
+      <li><a href="#QueryProgram">The Query Program</a></li>
+      <li><a href="#Examplecustmain">Example: custmain.4gl</a></li>
+      <li><a href="#Excustquery.4gl">Example: custquery..4gl (function query_cust)</a></li>
+      <li><a href="#get_cust_cnt">Example: custquery.4gl (function get_cust_cnt)</a></li>
+    </ul>
+  </li>
+  <li><a href="#Retrievingdata">Retrieving Data from the Database</a>
+    <ul>
+      <li><a href="#Cursors">Use of Cursors</a></li>
+      <li><a href="#SQLCA.SQLCODE">The SQLCA.SQLCODE</a></li>
+      <li><a href="#cust_select">Example: custquery.4gl (function cust_select)</a></li>
+      <li><a href="#fetch_cust">Example: custquery.4gl (function fetch_cust)</a></li>
+      <li><a href="#fetch_rel_cust">Example: custquery.4gl (function fetch_rel_cust)&nbsp;</a></li>
+      <li><a href="#display_cust">Example: custquery.4gl (function display_cust)</a></li>
+    </ul>
+  </li>
+  <li><a href="#CompileLink">Compiling and Linking a Multiple-module Program</a></li>
+  <li><a href="#ModifyingtheProgram">Modifying the Program to Handle Errors</a>
+    <ul>
+      <li><a href="#WHENEVER"> WHENEVER ERROR statement</a></li>
+      <li><a href="#NegativeSQLCA.SQLCODE">Negative SQLCA.SQLCODE</a></li>
+      <li><a href="#SQLERRMESSAGE">Using SQLERRMESSAGE</a></li>
+      <li><a href="#cleanup">Example: custquery.4gl (function cleanup)</a></li>
+      <li><a href="#CursorError">Error if Cursor is Not Open:</a></li>
+    </ul>
+  </li>
+</ul>
+<hr>
+<p>This program&nbsp; implements query-by-example, using the <a href="#CONSTRUCT"> CONSTRUCT</a> statement
+to allow the user to enter search criteria in a form. The criteria is used to
+build an SQL <a href="StaticSql.html#SS_SELECT">SELECT</a> statement which will retrieve rows from the customer
+database table.&nbsp; A <a href="#Cursors"> SCROLL CURSOR</a> is defined in the program, to allow the user to scroll
+back and forth between the rows of the result set.&nbsp; The <a href="#SQLCA.SQLCODE"> SQLCA.SQLCODE</a> is
+used to test the success of the SQL statements.&nbsp; Handling errors, and allowing the user to cancel the query, is
+illustrated.</p>
+
+
+<h2><img border="0" src="../Images/TUT401.png" width="470" height="234"></h2>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Display on Windows platforms</p>
+<h2><a name="QBE">Implementing Query-by-Example</a></h2>
+<p><a href="Construct.html">Query-by-Example</a> allows users to enter a value or a range of values for one
+or several form fields. Then your program looks up the database rows that
+satisfy the requirements. The BDL statement that makes this possible is <a href="Construct.html">CONSTRUCT</a>.&nbsp;&nbsp;</p>
+<h3>Steps:</h3>
+<ol>
+  <li>Define fields linked to database columns in a <a href="FormSpecFiles.html"> form specification
+    file</a>.</li>
+  <li>Define a <a href="DataTypes.html#DT_STRING">STRING</a> variable in your program to hold the query criteria.</li>
+  <li>Open a window and display the form.</li>
+  <li>Activate the form with the interactive dialog statement <a href="Construct.html">CONSTRUCT</a>,
+    for entry of the query
+    criteria. Control is turned over to the user to enter his criteria.</li>
+  <li>The user enters his criteria in the fields specified in the <a href="Construct.html">CONSTRUCT</a>
+    statement.&nbsp; The <a href="Construct.html">CONSTRUCT</a>
+    statement accepts <a href="Construct.html#QUERY_OPERATORS">logical operators</a> in
+    any of the fields to indicate ranges, comparisons, sets, and partial
+    matches. Using the form in this program, for example, the user can
+    enter a specific value, such as <b> IL</b> in the <b>state</b> field, to retrieve all the
+    rows from the <b> customer</b> table where the <b> state</b> column = <b>IL</b>.&nbsp; Or he can
+    enter relational tests, such as<b> &gt; 103</b>, in the <b> Store #</b> field, to retrieve
+    only those rows where the <b> store_num</b> column is greater than <b>103</b>.</li>
+  <li>After entering his criteria, the user selects OK, to instruct your
+    program to continue with the query, or Cancel to terminate the dialog.<br>
+    In this program, the <a href="InteractionModel.html#CTRLGACTIONS"> action
+views</a>   for accept (OK) and cancel are displayed
+    as buttons on the screen.</li>
+  <li>If the user accepts the dialog, the <a href="Construct.html">CONSTRUCT</a>
+    statement creates a Boolean expression by generating a
+    logical expression for each field with a value and then applying unions (and
+    relations) to the field statements.&nbsp; This expression is stored in the
+    character string that you specified in the <a href="Construct.html">CONSTRUCT</a>
+    statement.</li>
+  <li>You can then use the Boolean expression to create a <a href="DataTypes.html#DT_STRING">STRING</a>
+    variable containing a
+    complete <a href="StaticSql.html#SS_SELECT">SELECT</a> statement.&nbsp; You must supply the WHERE keyword
+    to convert the Boolean expression into a WHERE clause. Make sure that you supply the spaces required to separate
+    the constructed Boolean expression from the other parts of the <a href="StaticSql.html#SS_SELECT">SELECT</a>
+    statement.</li>
+  <li>Execute the statement to retrieve the row(s) from the database table,
+    after preparing it or declaring a cursor for <a href="StaticSql.html#SS_SELECT">SELECT</a>
+    statements that might retrieve more than one row.</li>
+</ol>
+<h3><a name="CONSTRUCT">Using CONSTRUCT and STRING variables</a></h3>
+<p>A basic <a href="Construct.html">CONSTRUCT</a> statement has the following format:</p>
+<pre>     <tt>CONSTRUCT</tt> &lt;variable-name&gt; <tt>ON</tt> &lt;column-list&gt; <tt>FROM</tt> &lt;field-list</pre>
+<p>This statement temporarily binds the specified form fields to database
+columns. It allows you to identify database columns for which the user can enter
+search criteria.&nbsp; Each field and <a href="Construct.html">CONSTRUCT</a>
+corresponding column must be the
+same or compatible data types.&nbsp; You can use the BY NAME clause when the
+fields on the screen form have the same names as the corresponding columns in
+the ON clause. The user can query only the screen fields implied in the BY
+NAME clause.</p>
+<pre>     <tt>CONSTRUCT BY NAME</tt> &lt;variable-name&gt; <tt>ON</tt> &lt;column-list&gt;</pre>
+<p>The runtime system converts the entered criteria into a Boolean SQL
+condition that can appear in the WHERE clause of a <a href="StaticSql.html#SS_SELECT">SELECT</a>
+statement. The variable to hold the query
+condition can be defined as a<b> </b><a href="DataTypes.html#DT_STRING">STRING</a>&nbsp;
+data type.&nbsp;Strings are a variable length, dynamically allocated character
+string data type, without a size limitation. The <a href="DataTypes.html#DT_STRING">STRING</a>
+variable
+can be concatenated, using the double pipe operator (||), with the text required
+to form a complete SQL <a href="StaticSql.html#SS_SELECT">SELECT</a>
+statement. The <a href="Variables.html#VA_LET">LET</a> statement can be used to assign
+a value to the variable. For example:</p>
+<pre>     <tt>DEFINE</tt> where_clause, sqltext <tt>STRING</tt>
+     <tt>CONSTRUCT BY NAME</tt> where_clause <tt>ON</tt> customer.*
+     <tt>LET</tt> sql_text = &quot;<tt>SELECT</tt> COUNT(*) <tt>FROM</tt> customer <tt>WHERE</tt> &quot; || where_clause</pre>
+<pre>   <img border="0" src="../Images/TUT404.png" width="470" height="234"></pre>
+<p>   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Display on Windows Platform</p>
+<p>     In this example the user has entered the criteria <b>&gt; 101</b> in the <b>store_num</b>
+field.&nbsp; The <b>where_clause</b> would be generated as&nbsp;</p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;store_num &gt; 101&quot;</pre>
+<p>     and the complete <b>sql_text</b> would be&nbsp;</p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;SELECT COUNT(*) FROM customer WHERE store_num &gt; 101&quot;</pre>
+<h3><a name="Preparing">Preparing the SQL Statement</a>&nbsp;</h3>
+<p>The
+<a href="DataTypes.html#DT_STRING">STRING</a> created in the
+example is not valid for
+execution.&nbsp; The <a href="DynamicSql.html#DS_PREPARE">PREPARE</a>
+instruction sends the text of the string to the
+database server for parsing, validation, and to generate the execution
+plan.&nbsp; The scope of a prepared SQL statement is the module in which it is declared.</p>
+<pre>     <tt>PREPARE</tt> cust_cnt_stmt <tt>FROM</tt> sql_text</pre>
+<p> A prepared SQL statement can be executed with the <a href="DynamicSql.html#DS_EXECUTE"> EXECUTE</a>
+instruction.&nbsp; </p>
+<pre>     <tt>EXECUTE</tt> cust_cnt_stmt <tt>INTO</tt> cust_cnt</pre>
+<p> Since the SQL statement will only return one row (containing
+the count) the <b>INTO</b> syntax of the <a href="DynamicSql.html#DS_EXECUTE"> EXECUTE</a>
+instruction can be used to store the count in the local variable <b>cust_cnt</b>. 
+(The function&nbsp;<b>cust_select</b>&nbsp; illustrates the
+use of database <a href="#Cursors"> cursors</a> with SQL <a href="StaticSql.html#SS_SELECT">SELECT</a> 
+statements.)</p>
+<p>When a prepared statement is no longer needed, the <a href="DynamicSql.html#DS_FREE">FREE</a>
+instruction will release the resources associated with the statement.</p>
+<pre>     <tt>FREE</tt> cust_cnt_stmt</pre>
+<hr>
+<h2><a name="UserCancel">Allowing the User to Cancel the Query Operation</a></h2>
+<h3><a name="PredefinedActions">Predefined Actions (accept/cancel)</a></h3>
+<p>The language <a href="InteractionModel.html#PREDEFACTIONS">pre-defines some actions</a> and associated names for common
+operations, such as <b>accept</b> or <b>cancel</b>, used during interactive dialogs with the
+user such as <a href="Construct.html">CONSTRUCT</a>.&nbsp;
+You do not have to define these <a href="InteractionModel.html#CTRLGACTIONS">actions</a>
+in the interactive instruction block, the runtime system interprets predefined
+actions. For example, when the <b>accept</b> action is caught, the dialog is
+validated.</p>
+<p> You can define <a href="InteractionModel.html#CTRLGACTIONS">action
+views</a> (such as buttons, toolbar icons, menu items) in your form using these
+pre-defined names; the corresponding action will automatically be attached to the
+view.&nbsp; If you do not define any <a href="InteractionModel.html#CTRLGACTIONS"> action
+views</a> for the actions, default buttons (such
+as OK/Cancel) for these actions will be displayed on the form as appropriate
+when interactive dialog statements are executed.</p>
+<p>When the <a href="Construct.html">CONSTRUCT</a> statement executes, buttons representing
+<b>accept</b> and <b>cancel </b>
+  actions will be displayed by default, allowing the user to validate or cancel the
+  interactive dialog statement. If the user selects Cancel, the <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a>
+is automatically set to <a href="Programs.html#PC_TRUE">TRUE</a>. Once <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a> is set to TRUE, your program must re-set it to
+<a href="Programs.html#PC_TRUE">FALSE</a> to
+detect a new cancellation. You typically set INT_FLAG to FALSE before you start
+a dialog instruction, and you test it just after (or in the AFTER CONSTRUCT /
+AFTER INPUT block) to detect if the dialog was canceled:</p>
+
+
+<div align="left">
+<pre ALIGN="LEFT"><font color="#000000" face="Courier">    </font> <tt>LET</tt> INT_FLAG = FALSE
+     <tt>CONSTRUCT BY NAME</tt> where_part
+        ...
+     <tt>END CONSTRUCT</tt>
+     <tt>IF</tt> INT_FLAG = TRUE <tt>THEN</tt>
+        ...
+     <tt>END IF</tt></pre>
+</div>
+<h3><a name="DEFERINTERRUPT">DEFER INTERRUPT and the INT_FLAG</a></h3>
+<p>The statement <a href="Programs.html#SIGNAL_HANDLING"> DEFER INTERRUPT</a> in your MAIN program block will prevent your
+program from terminating abruptly if a SIGINT signal is received. When
+using a GUI interface,&nbsp;the user can generate an
+interrupt signal if you have an action view named 'interrupt' (the predefined <b>interrupt</b>
+action).&nbsp; If an interrupt event is received, <a href="Programs.html#PC_TRUE">TRUE</a>
+is assigned
+to the built-in global integer variable <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a>.</p>
+<p> It is up to the programmer to
+manage the interruption event (stop or continue with the program), by testing
+the value of <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a> variable.</p>
+<p>Interruption handling is discussed in the report example, in <a href="TutChap09.html">chapter
+9</a>.</p>
+
+
+<h3><a name="ConditionalLogic">Conditional Logic</a></h3>
+<p>Once the CONSTRUCT statement is completed, you must test whether the INT_FLAG
+was set to <a href="Programs.html#PC_TRUE">TRUE</a> (whether the user cancelled the dialog). 
+Genero BDL provides the conditional logic statements <a href="FlowControl.html#FC_IF">IF</a> or
+<a href="FlowControl.html#FC_CASE"> CASE</a> to test a set of conditions. </p>
+<h3><a name="IF">The IF statement</a></h3>
+<pre>     <tt>IF</tt> &lt;<i>condition</i>&gt;&nbsp;<tt>THEN</tt>
+       ....
+     <tt>ELSE</tt>
+       ....
+     <tt>END IF</tt></pre>
+<p><a href="FlowControl.html#FC_IF"> IF</a> statements can be nested. The <tt>ELSE</tt> clause may be omitted.</p>
+<p ALIGN="LEFT">If <i> condition </i> is <a href="Programs.html#PC_TRUE">TRUE</a>,
+the runtime system executes the block of statements following <tt>THEN</tt>, until it reaches either
+the <tt>ELSE</tt> keyword or the <tt>END IF</tt> keywords. Your program resumes execution after<tt> END IF</tt>. If <i>condition</i> is <a href="Programs.html#PC_FALSE">FALSE</a>,
+the runtime system executes the block of statements between <tt>ELSE</tt> and 
+<tt>END IF</tt>.</p>
+<div align="left">
+<pre ALIGN="LEFT"> <tt>IF</tt> (INT_FLAG = TRUE) <tt>THEN</tt>
+       <tt>LET</tt> INT_FLAG = FALSE
+       <tt>LET</tt> cont_ok = FALSE
+     <tt>ELSE</tt>
+       <tt>LET</tt> cont_ok = TRUE
+     <tt>END IF</tt></pre>
+</div>
+<h3><a name="CASE">The CASE statement</a></h3>
+<p>&nbsp;The <a href="FlowControl.html#FC_CASE"> CASE</a> statement specifies statement blocks to be executed
+conditionally, depending on the value of an expression. Unlike <a href="FlowControl.html#FC_IF"> IF</a>
+statements,<tt> CASE</tt> does not restrict the logical flow of control to only two branches.&nbsp;
+Particularly if you have a series of&nbsp; nested <tt>IF</tt>
+statements, the <tt>CASE</tt> statement may be more readable.
+In the previous example, the
+<tt>CASE</tt>  statement could have been
+substituted for the <tt>IF</tt>  statement:</p>
+<pre>     <tt>CASE</tt>
+     <tt>WHEN</tt> (INT_FLAG = TRUE)
+       <tt>LET</tt> INT_FLAG = FALSE
+       <tt>LET</tt> cont_ok = FALSE     
+     <tt>OTHERWISE</tt>
+       <tt>LET</tt> cont_ok = TRUE 
+     <tt>END CASE</tt></pre>
+<p>     Usually, there would be several conditions to check.&nbsp; The following
+statement uses an alternative syntax, since all the conditions check the value
+of <b>var1</b>:</p>
+<pre>     <tt>CASE </tt>var1
+     <tt>WHEN</tt> 100
+      <tt> CALL</tt> routine_100()<tt>
+</tt>     <tt>WHEN</tt> 200
+       <tt>CALL</tt> routine_200()
+     <tt>OTHERWISE</tt>
+       <tt>CALL</tt> error_routine() 
+     <tt>END CASE</tt></pre>
+<p>The first <tt>WHEN</tt> condition in the <a href="FlowControl.html#FC_CASE"> CASE</a>
+statement will be evaluated.&nbsp; If
+the condition is true(<b>var1=100</b>), the statement block is executed and the<tt> CASE</tt> statement is
+exited. If the condition is not true, the next <tt>WHEN</tt> condition will be evaluated,
+and so on through subsequent <tt>WHEN</tt> statements until a condition is found to be
+true, or <tt>OTHERWISE</tt> or <tt>END CASE</tt> is encountered.&nbsp; The <tt>OTHERWISE</tt> clause of the
+<tt>CASE</tt> statement can be used as a catch-all for unanticipated cases.  </p>
+<p>See <a href="FlowControl.html">Flow Control</a> for other examples of <a href="FlowControl.html#FC_IF">IF</a> and 
+<a href="FlowControl.html#FC_CASE">CASE</a> syntax and the additional conditional statement<tt> WHILE</tt>.  </p>
+<hr>
+<h2><a name="QueryProgram">The Query program</a></h2>
+<p>The Query program consists of two modules.&nbsp; The<b> custmain.4gl</b> module must be linked with the
+<b>
+custquery.4gl</b> module in order for the program to be run.&nbsp; The
+line numbers shown in the code are for reference only, and are not a part of the code.</p>
+<hr>
+<h3><a name="Examplecustmain">Example: Module custmain.4gl</a></h3>
+
+
+<p>This module contains the MAIN program block for the query program, and the
+<a href="Menus.html"> MENU</a> that drives the query actions.&nbsp;</p>
+
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="40%" bgcolor="#C0C0C0" valign="top"><b>Module custmain.4gl</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   
+<CODE class=linenumber>03</CODE>   <tt>DEFER</tt> <tt>INTERRUPT</tt>
+<CODE class=linenumber>04</CODE>
+<CODE class=linenumber>05</CODE>   <tt>CONNECT TO</tt> &quot;custdemo&quot;
+<CODE class=linenumber>06</CODE>   <tt>CLOSE WINDOW SCREEN</tt>
+<CODE class=linenumber>07</CODE>   <tt>OPEN WINDOW </tt>w1 <tt>WITH FORM</tt> &quot;custform&quot;
+<CODE class=linenumber>08</CODE>
+<CODE class=linenumber>09</CODE>   <tt>MENU </tt>&quot;Customer&quot;
+<CODE class=linenumber>10</CODE>     <tt>ON ACTION</tt> query
+<CODE class=linenumber>11</CODE>      <tt> CALL</tt> query_cust() 
+<CODE class=linenumber>12</CODE>     <tt>ON ACTION</tt> next <CODE class=linenumber>          
+13</CODE>        <tt>CALL</tt> fetch_rel_cust(1)
+<CODE class=linenumber>14</CODE>     <tt>ON ACTION</tt> previous
+<CODE class=linenumber>15</CODE>       <tt> CALL</tt> fetch_rel_cust(-1)
+<CODE class=linenumber>16</CODE>     <tt>ON ACTION</tt> exit
+<CODE class=linenumber>17</CODE>       <tt>EXIT MENU</tt>
+<CODE class=linenumber>18   </CODE><tt>END MENU
+</tt><CODE class=linenumber>19</CODE><tt>
+</tt><CODE class=linenumber>20</CODE>   <tt>CLOSE WINDOW </tt>w1
+<CODE class=linenumber>21</CODE> 
+<CODE class=linenumber>22</CODE>   <tt>DISCONNECT CURRENT</tt>
+<CODE class=linenumber>23</CODE>
+<CODE class=linenumber>24</CODE> <tt>END MAIN</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+
+
+<ul>
+  <li>Line<b> </b><CODE class=linenumber>01</CODE>  Beginning of the MAIN block.
+    The <a href="Programs.html#DB_SCHEMA">SCHEMA</a>
+ statement is not
+needed since this module does not define any program <a href="Variables.html">variables</a>
+ in terms of a
+database table.</li>
+  <li>Line  <CODE class=linenumber>03</CODE> uses the <a href="#DEFERINTERRUPT"> DEFER INTERRUPT</a> statement to prevent the user from
+terminating the program prematurely by pressing the INTERRUPT key.</li>
+  <li>Line <CODE class=linenumber> 07 </CODE><a href="TutChap03.html#windows">opens a window</a> with the same form that was used in the
+    <a href="TutChap03.html"> Chapter 3</a>
+example.</li>
+  <li>Lines <CODE class=linenumber> 09</CODE> thru <CODE class=linenumber> 18</CODE> 
+    contains the
+<a href="Menus.html"> MENU</a> for the query program.&nbsp; Four actions -
+<b>query</b>, <b>next</b>, <b>previous</b>, and <b> quit</b> - will be displayed as
+  buttons on the form. The <a href="InteractionModel.html#PREDEFACTIONS"> pre-defined actions</a> 
+    accept (OK button) and cancel
+  will automatically be displayed as buttons when the <a href="Construct.html">CONSTRUCT</a>
+  statement is
+  executed.</li>
+  <li>Line <CODE class=linenumber> 11</CODE>  calls the function <b>query_cust</b> in the <b>cust_query.4gl</b>
+  module.</li>
+  <li>Line <CODE class=linenumber> 13</CODE>  calls the function <b>fetch_rel_cust</b> in the <b>cust.query.4gl</b>
+  module.&nbsp; The literal value <b> 1</b> is passed to the function, indicating that
+  the <a href="ResultSets.html#RESULTSET"> cursor</a>  should move forward to the next row.</li>
+  <li>Line <CODE class=linenumber> 15</CODE> calls the function <b>fetch_rel_cust </b>also, but passes the
+  literal value <b>-1</b>, indicating that the <a href="ResultSets.html#RESULTSET"> cursor</a> 
+  should move backwards to retrieve the previous row in the results set.</li>
+  <li>Line <CODE class=linenumber> 17</CODE>   exits the MENU statement.</li>
+  <li>Line <CODE class=linenumber> 20</CODE>  closes the window that was opened.</li>
+  <li>
+    Line <CODE class=linenumber> 22</CODE>  disconnects from the database.</li>
+</ul>
+
+
+<p>
+    There are no further statements so the Query program terminates.</p>
+
+
+<hr>
+<h3><a name="Excustquery.4gl">Example: Module custquery.4gl</a></h3>
+<p>This module of the Query program contains the
+logic for querying the database and displaying the data retrieved.&nbsp; The
+function <b>query_cust</b> is called by the &quot;query&quot; option of the
+<a href="Menus.html"> MENU</a>  in <b>custmain.4gl</b>.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="361" bgcolor="#C0C0C0" valign="top"><b>Module custquery.4gl (and function query_cust)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> -- custquery.4gl
+<CODE class=linenumber>02</CODE>
+<CODE class=linenumber>03</CODE> <tt>SCHEMA</tt> custdemo
+<CODE class=linenumber>04</CODE>
+<CODE class=linenumber>05</CODE> <tt>DEFINE</tt>  mr_custrec <tt>RECORD</tt>
+<CODE class=linenumber>06</CODE>  store_num    <tt>LIKE</tt> customer.store_num,
+<CODE class=linenumber>07</CODE>  store_name   <tt>LIKE</tt> customer.store_name,
+<CODE class=linenumber>08</CODE>  addr         <tt>LIKE</tt> customer.addr,
+<CODE class=linenumber>09</CODE>  addr2        <tt>LIKE</tt> customer.addr2,
+<CODE class=linenumber>10</CODE>  city         <tt>LIKE</tt> customer.city,
+<CODE class=linenumber>11</CODE>  state        <tt>LIKE</tt> customer.state,
+<CODE class=linenumber>12</CODE>  zipcode      <tt>LIKE</tt> customer.zipcode,
+<CODE class=linenumber>13</CODE>  contact_name <tt>LIKE</tt> customer.contact_name,
+<CODE class=linenumber>14  </CODE>phone<CODE class=linenumber>          </CODE><tt>LIKE</tt><CODE class=linenumber> </CODE>customer.phone<CODE class=linenumber>
+15</CODE> <tt>END RECORD</tt>
+<CODE class=linenumber>16</CODE>
+<CODE class=linenumber>17</CODE> <tt>FUNCTION</tt> query_cust()
+<CODE class=linenumber>18</CODE>   <tt>DEFINE</tt> cont_ok      <tt>SMALLINT</tt>,
+<CODE class=linenumber>19</CODE>         cust_cnt     <tt>SMALLINT</tt>,
+<CODE class=linenumber>20</CODE>         where_clause <tt>STRING</tt>
+<CODE class=linenumber>21</CODE>   <tt>MESSAGE</tt> &quot;Enter search criteria&quot;
+<CODE class=linenumber>22</CODE>   <tt>LET</tt> cont_ok = FALSE
+<CODE class=linenumber>23</CODE>
+<CODE class=linenumber>24</CODE>   <tt>LET</tt> INT_FLAG = FALSE
+<CODE class=linenumber>25 </CODE>  <tt>CONSTRUCT BY NAME</tt> where_clause
+<CODE class=linenumber>26</CODE>      <tt>ON</tt> customer.store_num,
+<CODE class=linenumber>27</CODE>         customer.store_name,
+<CODE class=linenumber>28</CODE>         customer.city,
+<CODE class=linenumber>29</CODE>         customer.state,
+<CODE class=linenumber>30</CODE>         customer.zipcode,
+<CODE class=linenumber>31</CODE>         customer.contact_name,
+<CODE class=linenumber>32 </CODE>        customer.phone
+<CODE class=linenumber>33</CODE>
+<CODE class=linenumber>34</CODE>   <tt>IF</tt> (INT_FLAG = TRUE) <tt>THEN</tt>
+<CODE class=linenumber>35</CODE>     <tt>LET</tt> INT_FLAG = FALSE
+<CODE class=linenumber>36</CODE>     <tt>CLEAR FORM</tt>
+<CODE class=linenumber>37</CODE>    <tt> LET</tt> cont_ok = FALSE<tt>
+</tt><CODE class=linenumber>38</CODE>     <tt>MESSAGE</tt> &quot;Canceled by user.&quot;
+<CODE class=linenumber>39</CODE>   <tt>ELSE</tt>      
+<CODE class=linenumber>40</CODE>     <tt>CALL</tt> get_cust_cnt(where_clause)
+<CODE class=linenumber>41</CODE>       <tt>RETURNING</tt> cust_cnt
+<CODE class=linenumber>42</CODE>     <tt>IF</tt> (cust_cnt &gt; 0) <tt>THEN</tt>
+<CODE class=linenumber>43</CODE>       <tt>MESSAGE</tt> cust_cnt <tt>USING </tt>&quot;&lt;&lt;&lt;&lt;&quot;, 
+<CODE class=linenumber>44</CODE>                  &quot; rows found.&quot;
+<CODE class=linenumber>45        </CODE><tt>CALL</tt><CODE class=linenumber> </CODE>cust_select(where_clause)<CODE class=linenumber>
+46          </CODE><tt>RETURNING</tt><CODE class=linenumber> </CODE>cont_ok<CODE class=linenumber>
+47</CODE>    <tt> ELSE</tt>
+<CODE class=linenumber>48 </CODE>      <tt>MESSAGE</tt> &quot;No rows found.&quot;
+<CODE class=linenumber>49</CODE>       <tt>LET </tt>cont_ok = FALSE    
+<CODE class=linenumber>50</CODE>     <tt>END IF</tt>
+<CODE class=linenumber>51 </CODE>  <tt>END IF</tt>
+<CODE class=linenumber>52</CODE>
+<CODE class=linenumber>53</CODE>   <tt>IF </tt>(cont_ok = TRUE) <tt>THEN</tt>
+<CODE class=linenumber>54</CODE>     CALL display_cust()
+<CODE class=linenumber>55</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>56</CODE>
+<CODE class=linenumber>57</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+<ul>
+  <li>Line <CODE class=linenumber> 03</CODE>&nbsp; is required to identify the 
+	<a href="IntroBDL.html#SchemaFiles">database schema file</a>  to be used
+when compiling the module.</li>
+  <li>Lines<CODE class=linenumber> 05 </CODE> thru <CODE class=linenumber> 15</CODE> define a
+<a href="Records.html#DEFINITION"> RECORD</a>, <b>mr_custrec</b>, that is modular in scope, since it is at the
+top of the module and outside any function. The values of this record will be
+available to, and can be set by, any function in this module.</li>
+  <li>Line <CODE class=linenumber>17</CODE>: <b>Function query_cust</b>. This is the beginning of the function <b>query_cust</b>.</li>
+  <li>Line <CODE class=linenumber> 18</CODE> defines <b>cont_ok</b>, a local&nbsp; variable of data type
+<a href="DataTypes.html#DT_SMALLINT">SMALLINT</a>, to be
+used as a flag to indicate whether the query should be continued.&nbsp; The keywords <font FACE="Courier"><a href="Programs.html#PC_TRUE">TRUE</a>
+  </font>and <font FACE="Courier"><a href="Programs.html#PC_FALSE">FALSE</a>
+  </font>are used to set the value of the variable
+  (0=FALSE, &lt;&gt;0=TRUE).</li>
+  <li>Line <CODE class=linenumber> 19</CODE> defines another local <a href="DataTypes.html#DT_SMALLINT">SMALLINT</a> variable, <b>cust_cnt</b>,&nbsp; to
+hold the number of rows returned by the <a href="StaticSql.html#SS_SELECT">SELECT</a>
+statement.</li>
+  <li>Line <CODE class=linenumber> 20</CODE> defines <b>where_clause</b> as a local
+<a href="DataTypes.html#DT_STRING">STRING</a> variable&nbsp; to hold
+the boolean condition resulting from the <a href="Construct.html">CONSTRUCT</a>
+statement.</li>
+  <li>Line <CODE class=linenumber> 21</CODE> displays a message to the user that will remain until it is replaced
+by another <a href="MessageDisplay.html#MESSAGE"> MESSAGE</a> statement.</li>
+  <li>Line <CODE class=linenumber> 22</CODE> sets cont_ok to <font FACE="Courier"><a href="Programs.html#PC_FALSE">FALSE</a></font>, prior to executing the statements of the
+function.</li>
+  <li>Line <CODE class=linenumber> 24</CODE> sets <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a>
+to <font FACE="Courier"><a href="Programs.html#PC_FALSE">FALSE</a></font>.
+    It is common to set this global flag to <font FACE="Courier"><a href="Programs.html#PC_FALSE">FALSE</a>
+  </font>immediately prior to the
+  execution of an interactive dialog, so your program can test whether the user
+  attempted to cancel the dialog.</li>
+  <li>Lines <CODE class=linenumber> 25</CODE> thru <CODE class=linenumber> 32</CODE>:
+    The
+<a href="Construct.html">CONSTRUCT</a> statement lists the database columns for
+which the user may enter search criteria.&nbsp; The program does not permit the user to enter search criteria for the
+  address columns.&nbsp; The BY NAME syntax matches the database columns to form
+  fields having the same name.</li>
+  <li>Line <CODE class=linenumber> 34</CODE> is the beginning of an&nbsp;<a href="FlowControl.html#FC_IF">IF</a>
+statement testing the value of <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a>.&nbsp; This test appears immediately after the
+<a href="Construct.html">CONSTRUCT</a>  statement, to
+test whether the user terminated the <a href="Construct.html">CONSTRUCT</a>
+statement (<a href="Programs.html#PV_INT_FLAG">INT_FLAG</a> would be
+set&nbsp; by the runtime system to <font FACE="Courier"><a href="Programs.html#PC_TRUE">TRUE</a></font>).</li>
+  <li>Lines <CODE class=linenumber> 35</CODE> thru <CODE class=linenumber> 38</CODE>
+    are executed only if the value of <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a>
+is <font FACE="Courier"><a href="Programs.html#PC_TRUE">TRUE</a></font>.&nbsp;
+The <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a> is immediately re-set to
+<font FACE="Courier"><a href="Programs.html#PC_FALSE">FALSE</a></font>, since it is a global variable which
+other parts of your program will test.&nbsp; The form is cleared of any criteria
+that the user has entered,&nbsp; the <b>cont_ok</b> flag is set to <font FACE="Courier"><a href="Programs.html#PC_FALSE">FALSE</a></font>, and a
+message is displayed to the user.&nbsp; The program will continue with the
+statements after the END IF on line <CODE class=linenumber>49</CODE>.</li>
+  <li>Lines <CODE class=linenumber> 40</CODE>  thru <CODE class=linenumber>50</CODE>:
+    contain the logic to be executed if <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a>
+was not set
+to <font FACE="Courier"><a href="Programs.html#PC_TRUE">TRUE</a></font> (the user did not cancel the query).
+    <ul>
+      <li>In lines <CODE class=linenumber> 40</CODE>  and <CODE class=linenumber>41</CODE>, the <b>get_cust_cnt</b> function is called, to
+  retrieve the
+  number of rows that would be returned by the query criteria.&nbsp; The <b>where_clause</b>
+  variable is passed to the function, and the value returned will be stored in
+  the <b>cust_cnt</b> variable.</li>
+      <li>Lines <CODE class=linenumber> 42</CODE> is the beginning of a nested
+  <a href="FlowControl.html#FC_IF"> IF</a> statement,&nbsp; testing the value
+  of <b>cust_cnt</b>.</li>
+      <li>Lines <CODE class=linenumber> 43</CODE> thru <CODE class=linenumber> 46</CODE> are executed if the value
+  of <b>cust_cnt</b> is greater than zero; a message
+  with the number of rows returned is displayed to the user, and the function <b>cust_select</b>
+  is called.&nbsp; The <b>where_clause</b> is passed to this function, and the
+  returned value is stored in <b>cont_ok</b>.&nbsp; Execution continues with the
+  statement after the END IF on line <CODE class=linenumber>51</CODE>.</li>
+      <li>Lines <CODE class=linenumber> 48</CODE> and <CODE class=linenumber> 49</CODE> are executed if the value is zero (no rows found); a
+  message is displayed to the user, and <b>cont_ok</b> is set to <font FACE="Courier"><a href="Programs.html#PC_FALSE">FALSE</a></font>.&nbsp;
+        Execution continues after the END IF on line <CODE class=linenumber>51</CODE>.</li>
+    </ul>
+  </li>
+  <li>Line <CODE class=linenumber>49</CODE> is the end of the <a href="FlowControl.html#FC_IF">IF</a> statement beginning on line
+<CODE class=linenumber>33</CODE>.</li>
+  <li>Lines <CODE class=linenumber>53</CODE> thru <CODE class=linenumber> 55</CODE> test the value of
+<b>cont_ok</b>, which will have been set during
+the preceding <a href="FlowControl.html#FC_IF"> IF</a> statements and in the function
+<b>cust_select</b>.&nbsp; If <b> cont_ok</b> is <font FACE="Courier"><a href="Programs.html#PC_TRUE">TRUE</a></font>, the function
+<b> display_cust</b>
+is called.</li>
+  <li>Line <CODE class=linenumber> 57</CODE> is the end of the <b> query_cust</b> function.</li>
+</ul>
+
+
+<hr>
+<h3><a name="get_cust_cnt">Example: custquery.4gl (Function get_cust_cnt)&nbsp;</a>
+  </h3>
+<p>This function is called by the function <b>query_cust</b> to return the count
+of rows that would be retrieved by the SELECT statement.&nbsp; The criteria
+previously entered by the user and stored in the variable <b>where_clause </b>is
+used.
+  </p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top">&nbsp;
+        <b>Function get_cust_cnt</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> get_cust_cnt(p_where_clause)
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> p_where_clause <tt>STRING</tt>,
+<CODE class=linenumber>03</CODE>         sql_text <tt>STRING</tt>,
+<CODE class=linenumber>04</CODE>         cust_cnt <tt>SMALLINT</tt>
+<CODE class=linenumber>05</CODE>
+<CODE class=linenumber>06</CODE>   <tt>LET</tt> sql_text = 
+<CODE class=linenumber>07</CODE>    &quot;SELECT COUNT(*) FROM customer&quot; || 
+<CODE class=linenumber>08</CODE>    &quot; WHERE &quot; || p_where_clause
+<CODE class=linenumber>09</CODE>
+<CODE class=linenumber>10</CODE>   <tt>PREPARE</tt> cust_cnt_stmt <tt>FROM</tt> sql_text
+<CODE class=linenumber>11</CODE>   <tt>EXECUTE</tt> cust_cnt_stmt <tt>INTO</tt> cust_cnt
+<CODE class=linenumber>12 </CODE>  <tt>FREE</tt> cust_cnt_stmt
+<CODE class=linenumber>13</CODE>
+<CODE class=linenumber>14</CODE>   <tt>RETURN</tt> cust_cnt
+<CODE class=linenumber>15</CODE>
+<CODE class=linenumber>16</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+<ul>
+  <li>Line <CODE class=linenumber> 01</CODE>  The function accepts as a parameter the value of <b>where_clause</b>,
+stored in the local variable <b>p_where_clause</b> defined on Line <CODE class=linenumber>60</CODE>.</li>
+  <li>Line <CODE class=linenumber> 02</CODE>  defines a local <a href="DataTypes.html#DT_STRING">STRING</a>
+variable, <b>sql_txt</b>,&nbsp; to hold the
+complete text of the SQL <a href="StaticSql.html#SS_SELECT">SELECT</a> 
+statement.</li>
+  <li>Line <CODE class=linenumber> 04</CODE>  defines a local variable <b>cust_cnt</b>&nbsp; to hold the count
+returned by the <a href="StaticSql.html#SS_SELECT">SELECT</a> statement.</li>
+  <li>Lines <CODE class=linenumber> 06</CODE> thru <CODE class=linenumber> 08</CODE> 
+    create the string containing the complete SQL <a href="StaticSql.html#SS_SELECT">SELECT</a> 
+statement,
+concatenating <b> p_where_clause</b> at the end using the || operator.&nbsp; Notice that
+the word WHERE must be provided in the string.</li>
+  <li>Line <CODE class=linenumber> 10</CODE>  uses the <a href="DynamicSql.html#DS_PREPARE">PREPARE</a>
+statement to convert the <a href="DataTypes.html#DT_STRING">STRING</a>
+ into an
+executable SQL statement, parsing the statement and storing it in memory.&nbsp;
+The prepared statement is modular in scope.&nbsp; The prepared statement has the
+identifier<b> cust_cnt_stmt</b>, which does not have to be defined.</li>
+  <li>Line <CODE class=linenumber> 11</CODE>  executes the SQL <a href="StaticSql.html#SS_SELECT">SELECT</a>
+statement contained in <b>cust_cnt_stmt</b>, using
+the <a href="DynamicSql.html#DS_EXECUTE"> EXECUTE&nbsp; ... INTO</a> syntax to store the value returned by the statement
+in the variable <b>cust_cnt</b>.&nbsp; This syntax can be used if the SQL
+statement returns a single row of values.</li>
+  <li>Line <CODE class=linenumber> 12</CODE>  The <a href="DynamicSql.html#DS_FREE">FREE</a> statement releases the memory associated with the
+<a href="DynamicSql.html#DS_PREPARE">PREPARE</a>d statement, since this
+    statement is no longer needed.</li>
+  <li>Line <CODE class=linenumber> 14</CODE>  returns the value of <b>cust_cnt</b> to the calling function, <b>query_cust</b>.</li>
+  <li>Line <CODE class=linenumber> 16</CODE>  is the end of the <b>get_cust_cnt</b> function.</li>
+</ul>
+
+
+<hr>
+<h2><a name="Retrievingdata">Retrieving data from the Database</a></h2>
+<h3><a name="Cursors">Using Cursors</a></h3>
+<p>When an SQL <a href="StaticSql.html#SS_SELECT">SELECT</a> statement in your application will retrieve more than one
+row, a <a href="ResultSets.html#RESULTSET"> cursor</a> must be used to pass the selected data to the program one row at a
+time.&nbsp; The <a href="ResultSets.html#RESULTSET"> cursor</a> is a data structure that represents a specific location
+within the active set of rows that the <a href="StaticSql.html#SS_SELECT">SELECT</a>
+statement retrieved.</p>
+<ul>
+  <li>Sequential cursor - reads through the active set only once each time it is
+    opened, by moving the cursor forward one row each time a row is requested.</li>
+  <li>Scroll cursor - fetches the rows of the active set in any sequence.&nbsp;
+    To implement a scroll cursor, the database server creates a temporary table
+    to hold the active set.</li>
+</ul>
+<p>The scope of a <a href="ResultSets.html#RESULTSET"> cursor</a> is the module in which it is declared. Cursor names
+must be unique within a module.</p>
+<p>The general sequence of&nbsp; program statements when using a <a href="StaticSql.html#SS_SELECT">SELECT</a>
+cursor
+for Query-by-Example is:</p>
+<ul>
+  <li><a href="ResultSets.html#RS_DECLARE">DECLARE</a> - the program declares a cursor for the <a href="DataTypes.html#DT_STRING">STRING</a>
+    that contains the
+    SQL <a href="StaticSql.html#SS_SELECT">SELECT</a> statement.&nbsp; This allocates storage to hold the cursor.
+    Note that the string does not have to be prepared using the PREPARE
+    statement.</li>
+  <li><a href="ResultSets.html#RS_OPEN">OPEN</a> - the program opens the cursor.&nbsp; The active set associated with
+    the <a href="ResultSets.html#RESULTSET"> cursor</a> is identified, and the cursor is positioned before the first row
+    of the set.</li>
+  <li><a href="ResultSets.html#RS_FETCH">FETCH</a> - the program fetches a row of data into host
+    <a href="Variables.html">variables</a> and
+    processes it.&nbsp; The syntax <font face="Courier New" size="2"> FETCH NEXT &lt;<i>cursor-identifier</i>&gt; INTO &lt;<i>variable-names</i>&gt;</font> can be used with
+  a <a href="#Cursors"> SCROLL CURSOR</a> to fetch&nbsp; the next row relative to the current position of
+  the <a href="ResultSets.html#RESULTSET"> cursor</a> in the SQL result set.&nbsp;
+    Using <font face="Courier New" size="2"> FETCH PREVIOUS ...</font> moves
+  the <a href="ResultSets.html#RESULTSET"> cursor</a> back one row in the SQL result set.</li>
+  <li><a href="ResultSets.html#RS_CLOSE">CLOSE</a> - the program closes the
+    <a href="ResultSets.html#RESULTSET"> cursor</a> after the last row desired is
+    fetched.&nbsp; This releases the active result set associated with the cursor.&nbsp;
+    The cursor can be re-opened.</li>
+  <li><a href="ResultSets.html#RS_FREE">FREE</a> - when the <a href="ResultSets.html#RESULTSET"> cursor</a>
+    is no longer needed, the program frees the cursor
+    to release the storage area holding the cursor.&nbsp; Once a <a href="ResultSets.html#RESULTSET"> cursor</a>
+    has been
+    freed, it must be declared again before it can be re-opened.</li>
+</ul>
+<p>The <a href="ResultSets.html#RESULTSET"> cursor</a> program statements must appear physically within the module in the order
+listed.</p>
+<hr>
+<h3>The <a name="SQLCA.SQLCODE">SQLCA.SQLCODE</a></h3>
+<p>The &quot;SQLCA&quot; name stands for &quot;SQL Communication
+Area&quot;.&nbsp; The <a href="Exceptions.html#SQLERRORS"> SQLCA </a> variable is a predefined record containing
+information on the execution of an SQL statement. The&nbsp; <a href="Exceptions.html#SQLERRORS">SQLCA</a>
+record
+is filled after any SQL statement execution.&nbsp; The SQLCODE member of this
+record contains the SQL execution code:</p>
+
+  <table border="0" width="60%">
+    <tr>
+      <td width="169" bgcolor="#C0C0C0" valign="top"><b>Execution Code</b></td>
+      <td bgcolor="#C0C0C0" valign="top" width="723"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="169" valign="top"><b>0</b></td>
+      <td valign="top" width="723">SQL statement executed successfully.</td>
+    </tr>
+    <tr>
+      <td width="169" valign="top"><b>100</b></td>
+      <td valign="top" width="723">No rows were found.</td>
+    </tr>
+    <tr>
+      <td width="169" valign="top"><b>&lt;0</b></td>
+      <td valign="top" width="723">An SQL error occurred.</td>
+    </tr>
+  </table>
+
+
+<p> The <a href="Programs.html#PC_NOTFOUND"> NOTFOUND</a> constant is a predefined integer value that evaluates to 100.
+This constant is typically used to test the execution status of an SQL statement
+returning a result set, to check if rows have been found.</p>
+<hr>
+<h3><a name="cust_select">Example custquery.4gl (function cust_select)</a></h3>
+<p>This function is called by the function <b>query_cust</b>, if the row count
+returned by the function <b>get_cust_cnt</b> indicates that the criteria
+previously entered by the user and stored in the variable <b>where_clause</b>
+would produce an SQL SELECT result set.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top">&nbsp;
+        <b>Function cust_select</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> cust_select(p_where_clause) 
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> p_where_clause <tt>STRING</tt>,
+<CODE class=linenumber>03</CODE>         sql_text <tt>STRING</tt>,
+<CODE class=linenumber>04</CODE>         fetch_ok <tt>SMALLINT</tt>
+<CODE class=linenumber>05</CODE>
+<CODE class=linenumber>06</CODE> <tt>  LET</tt> sql_text = &quot;SELECT store_num, &quot; ||
+<CODE class=linenumber>07</CODE>    &quot; store_name, addr, addr2, city, &quot; ||
+<CODE class=linenumber>08</CODE>    &quot; state, zipcode, contact_name, phone &quot; ||
+<CODE class=linenumber>09</CODE>    &quot; FROM customer WHERE &quot; || p_where_clause ||
+<CODE class=linenumber>10</CODE>    &quot; ORDER BY store_num&quot;
+<CODE class=linenumber>11
+12</CODE> <tt>  DECLARE</tt> cust_curs <tt>SCROLL CURSOR FROM</tt> sql_text
+<CODE class=linenumber>13</CODE> <tt>  OPEN</tt> cust_curs
+<CODE class=linenumber>14</CODE> <tt>  CALL</tt> fetch_cust(1)   -- fetch the first row 
+<CODE class=linenumber>15</CODE>      <tt>RETURNING </tt>fetch_ok
+<CODE class=linenumber>16</CODE>   <tt>IF NOT</tt> (fetch_ok) <tt>THEN</tt>
+<CODE class=linenumber>17</CODE>     <tt> MESSAGE</tt> &quot;no rows in table.&quot;   
+<CODE class=linenumber>18</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>19</CODE>
+<CODE class=linenumber>20</CODE>   <tt>RETURN</tt> fetch_ok
+<CODE class=linenumber>21</CODE>   
+<CODE class=linenumber>22</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+<ul>
+  <li>Line <CODE class=linenumber> 01 </CODE> The function <b> cust_select</b> accepts as a parameter the
+    <b>where_clause</b>,
+storing it in the local variable <b>p_where_clause</b>.</li>
+  <li>Lines<CODE class=linenumber> 06</CODE> thru <CODE class=linenumber>10 </CODE>concatenate the entire text of the SQL statement into the
+local <a href="DataTypes.html#DT_STRING">STRING</a> variable <b>sql_txt</b>.</li>
+  <li>Line <CODE class=linenumber> 12</CODE>  declares a <a href="#Cursors"> SCROLL CURSOR</a> 
+with the identifier
+<b>cust_curs</b>, for the <a href="DataTypes.html#DT_STRING">STRING</a>
+variable <b>sql_text</b>.</li>
+  <li>Line <CODE class=linenumber> 13</CODE>  opens the <a href="ResultSets.html#RESULTSET"> cursor</a>, positioning before the first row of the result
+set.&nbsp; Note that these statements are physically in the correct order within the
+module.&nbsp;</li>
+  <li>Lines <CODE class=linenumber> 14</CODE>  and<CODE class=linenumber> 15</CODE>
+    call the function
+<b>fetch_cust</b>, passing as a parameter the
+literal value <b>1</b>, and
+returning a value stored in the local variable <b>fetch_ok</b>.&nbsp; Passing
+    the value <b>1</b> to <b>fetch_cust</b> will result in the NEXT row of the
+    result set being fetched (see the logic in the function <b>fetch_cust</b>),
+    which is this case would be the first row. &nbsp;</li>
+  <li>Line <CODE class=linenumber>16</CODE> Since <b> fetch_ok</b> is defined as a
+    <a href="DataTypes.html#DT_SMALLINT">SMALLINT</a>, it can be used as a flag
+containing the values <font FACE="Courier"><a href="Programs.html#PC_TRUE">TRUE</a></font>
+    or <font FACE="Courier"><a href="Programs.html#PC_FALSE">FALSE</a></font>.&nbsp;
+    The value returned from the function <b> fetch_cust</b> indicates whether the fetch
+  was successful.</li>
+  <li>Line <CODE class=linenumber>17 </CODE>displays a message to the user if the
+    <a href="ResultSets.html#RS_FETCH">FETCH</a>  was not
+successful.&nbsp; Since this is the fetch of the first row in the result set,
+    another user must have deleted the&nbsp; rows after the program selected the count.&nbsp;</li>
+  <li>Line <CODE class=linenumber> 20 </CODE> returns the value of <b> fetch_ok</b> to the calling function.&nbsp;This determines whether the function <b> display_cust</b> is called.</li>
+  <li>Line <CODE class=linenumber>22 </CODE>is the end of the function <b>cust_select</b>.</li>
+</ul>
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li>Lines <CODE class=linenumber>15</CODE> and <CODE class=linenumber>16</CODE> could be combined to shorten the code:</li>
+</ol>
+  <pre>      <tt>IF NOT</tt> fetch_cust(1) <tt>THEN</tt> ...</pre>
+        <blockquote>
+  <p>This syntax would call the function <b>fetch_cust</b> implicitly, passing the parameter 
+	<b>1</b>;
+  the function returns <a href="Programs.html#PC_TRUE">TRUE</a> or <a href="Programs.html#PC_FALSE">FALSE</a>, which would be tested by the
+  <a href="FlowControl.html#FC_IF"> IF</a> statement.</p>
+        </blockquote>
+
+
+<hr>
+<h3><a name="fetch_cust">Example: custquery.4gl (function fetch_cust)</a></h3>
+<p>This function is designed so that it can be re-used each time a row is to be
+fetched from the <b>customer</b> database table; a variable is passed to indicate whether the
+<a href="ResultSets.html#RESULTSET"> cursor</a> should move
+forward one row or backward one row.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top">&nbsp;
+        <b>Function fetch_cust</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> fetch_cust(p_fetch_flag)
+<CODE class=linenumber>02</CODE>    <tt>DEFINE</tt> p_fetch_flag <tt>SMALLINT</tt>,
+<CODE class=linenumber>03</CODE><tt>           </tt>fetch_ok <tt>SMALLINT</tt>
+<CODE class=linenumber>04</CODE>
+<CODE class=linenumber>05  </CODE> <tt>LET</tt><CODE class=linenumber> </CODE>fetch_ok = FALSE<CODE class=linenumber>
+06</CODE>   <tt>IF</tt> (p_fetch_flag = 1) <tt>THEN</tt>
+<CODE class=linenumber>07</CODE>     <tt>FETCH NEXT</tt> cust_curs
+<CODE class=linenumber>08</CODE>       <tt>INTO</tt> mr_custrec.*
+<CODE class=linenumber>09</CODE>   <tt>ELSE</tt>
+<CODE class=linenumber>10</CODE>     <tt>FETCH PREVIOUS</tt> cust_curs
+<CODE class=linenumber>11</CODE>       <tt>INTO</tt> mr_custrec.*
+<CODE class=linenumber>12</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>13</CODE>
+<CODE class=linenumber>14</CODE>   <tt>IF</tt> (SQLCA.SQLCODE = NOTFOUND)<tt> THEN</tt>
+<CODE class=linenumber>15</CODE>    <tt> LET</tt> fetch_ok = FALSE
+<CODE class=linenumber>16</CODE>   <tt>ELSE</tt>
+<CODE class=linenumber>17</CODE>     <tt>LET</tt> fetch_ok = TRUE
+<CODE class=linenumber>18</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>19</CODE>
+<CODE class=linenumber>20</CODE>  <tt> RETURN</tt> fetch_ok
+<CODE class=linenumber>21</CODE>
+<CODE class=linenumber>22</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+<ul>
+  <li>Line <CODE class=linenumber>01</CODE>  The function <b> fetch_cust</b> accepts a parameter and stores it in the
+local <a href="Variables.html">variable</a> <b>p_fetch_flag</b>.</li>
+  <li>Line <CODE class=linenumber> 03</CODE> defines a <a href="Variables.html">variable</a>,
+    <b> fetch_ok,</b> to serve as an indicator whether the <a href="ResultSets.html#RS_FETCH">FETCH</a> was successful.</li>
+  <li>Lines <CODE class=linenumber>06 </CODE>thru <CODE class=linenumber>  12</CODE>
+    tests the value of <b>p_fetch_flag</b>, moving the <a href="ResultSets.html#RESULTSET"> cursor</a> 
+    forward with <font face="Courier New" size="2">FETCH NEXT</font> if the
+    value is <b>1</b>, and backward with <font face="Courier New" size="2">FETCH</font>
+    <font face="Courier New" size="2">PREVIOUS</font> if the value is <b>-1</b>.&nbsp;
+    The values of the row in the <b>customer</b> database table are fetched into the
+program <a href="Variables.html">variables</a>
+ of the <b> mr_custrec</b> record.&nbsp; The <font face="Courier New" size="2"> INTO
+    mr_custrec.* </font>syntax requires that the program <a href="Variables.html">variables</a>
+    in the <a href="Records.html">record</a> <b> mr_custrec</b> 
+    are in the same order as the columns are listed in the <a href="StaticSql.html#SS_SELECT">SELECT</a>
+  statement.</li>
+  <li>Lines <CODE class=linenumber> 14</CODE>  thru <CODE class=linenumber>15 </CODE>tests <b> SQLCA.SQLCODE</b> and sets the value of <b> fetch_ok</b> to <font FACE="Courier"><a href="Programs.html#PC_FALSE">FALSE</a></font>
+    if the fetch did not return a row.&nbsp; If the <a href="ResultSets.html#RS_FETCH">FETCH</a> was successful,
+    <b> fetch_ok</b> is set to <font FACE="Courier"><a href="Programs.html#PC_TRUE">TRUE</a></font>.</li>
+  <li>Line <CODE class=linenumber> 20</CODE>  returns the value of <b> fetch_ok</b> to the calling function.</li>
+  <li>Line <CODE class=linenumber> 22</CODE>  is the end of the function <b>fetch_cust.</b></li>
+</ul>
+
+
+<hr>
+<h3><a name="fetch_rel_cust">Example: querycust.4gl (function fetch_rel_cust)</a></h3>
+<p>This function is called by the <a href="Menus.html"> MENU</a>
+options &quot;next&quot; and &quot;previous&quot; in the <b>custmain.4gl</b>
+module.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top">
+        <b>Function fetch_rel_cust</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> fetch_rel_cust(p_fetch_flag)
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> p_fetch_flag <tt>SMALLINT</tt>,
+<CODE class=linenumber>03</CODE>         fetch_ok <tt>SMALLINT</tt>
+<CODE class=linenumber>04</CODE>
+<CODE class=linenumber>05</CODE>   <tt>MESSAGE</tt> &quot; &quot;       
+<CODE class=linenumber>06</CODE>   <tt>CALL</tt> fetch_cust(p_fetch_flag)
+<CODE class=linenumber>07</CODE>     <tt>RETURNING</tt> fetch_ok
+<CODE class=linenumber>08</CODE>
+<CODE class=linenumber>09</CODE>  <tt> IF</tt> (fetch_ok) <tt>THEN</tt>
+<CODE class=linenumber>10</CODE>    <tt> CALL</tt> display_cust()
+<CODE class=linenumber>11</CODE>  <tt> ELSE</tt>
+<CODE class=linenumber>12</CODE>    <tt> IF</tt> (p_fetch_flag = 1) <tt>THEN</tt>
+<CODE class=linenumber>13</CODE>       <tt>MESSAGE</tt> &quot;End of list&quot;
+<CODE class=linenumber>14</CODE>     <tt>ELSE</tt>
+<CODE class=linenumber>15 </CODE>     <tt> MESSAGE</tt> &quot;Beginning of list&quot;
+<CODE class=linenumber>16</CODE>     <tt>END IF</tt>
+<CODE class=linenumber>17</CODE>  <tt> END IF</tt>
+<CODE class=linenumber>18</CODE>
+<CODE class=linenumber>19</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+<ul>
+  <li>Line <CODE class=linenumber> 01</CODE>  The parameter passed to it, <b> p_fetch_flag</b> will be
+    <b> 1</b> or -<b>1</b>, depending
+on the direction in which the <a href="#Cursors"> SCROLL CURSOR</a>  is to move.</li>
+  <li>Line <CODE class=linenumber> 05</CODE>  re-sets the <a href="MessageDisplay.html#MESSAGE"> MESSAGE</a> display to blanks.</li>
+  <li>Line <CODE class=linenumber> 06</CODE>  calls the function <b>fetch_cust</b>, passing it the value of
+    <b>p_fetch_flag</b>.&nbsp; The function <b> fetch_cust</b> uses the <a href="#Cursors"> SCROLL CURSOR</a>  to retrieve the next row in
+  the direction indicated, returning <font FACE="Courier"><a href="Programs.html#PC_FALSE">FALSE</a>
+  </font>if there was no row found.</li>
+  <li>Lines<b> </b><CODE class=linenumber> 09</CODE>  and <CODE class=linenumber> 10</CODE> If a row was found (the
+    <b> fetch_cust</b> function returned
+<font FACE="Courier"><a href="Programs.html#PC_TRUE">TRUE</a></font>)
+the <b> display_cust</b> function is called to display the row in the form.</li>
+  <li>Line<b> </b><CODE class=linenumber> 13</CODE> If no rows were found and the direction is forward, indicated by
+    <b>
+p_fetch_flag</b> of <b>1</b>, the <a href="ResultSets.html#RESULTSET"> cursor</a> is past the end of the result set.</li>
+  <li>Line<b> </b><CODE class=linenumber> 15</CODE>  If no rows were found and the direction is backward, indicated by
+    <b>
+p_fetch_flag</b> of <b>-1</b>, the <a href="ResultSets.html#RESULTSET"> cursor</a> is prior to the beginning of the result set.</li>
+  <li>Line <CODE class=linenumber> 19</CODE>   is the end of the function <b>fetch_rel_cust</b>.</li>
+</ul>
+
+
+<hr>
+<h3><a name="display_cust">Example: custquery.4gl (function display_cust)</a></h3>
+<p> This function displays the contents of the <b> mr_custrec</b> record in the
+form.&nbsp; It is called by the functions <b>query_cust </b>and <b>fetch_rel_cust</b>.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function display_cust</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> display_cust()
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY BY NAME</tt> mr_custrec.*
+<CODE class=linenumber>03</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line <CODE class=linenumber>02</CODE>   uses the <a href="TutChap03.html#displaybyname">DISPLAY
+            BY NAME</a> syntax to display the contents of the program record <b>mr_custrec</b>
+            to the form fields having the same name.</li>
+        </ul>
+
+
+<hr>
+<h2><a name="CompileLink">Compiling and Linking the Program</a></h2>
+
+
+<p>The two example modules must be compiled and&nbsp; then linked
+into a single program. </p>
+
+
+<p>From the command line: </p>
+
+
+<pre>	fglcomp custmain.4gl </pre>
+
+
+<pre>	fglcomp custquery.4gl </pre>
+
+
+<p>This produces the object modules <b>custmain.42m</b> and <b>custquery.42m</b>,
+which must be linked to produce the program <b>cust.42r</b>:</p>
+
+
+<pre>	fgllink -o cust.42r custmain.42m custquery.42m</pre>
+
+
+<p>Or, compile both modules and link at the same time:</p>
+
+
+<pre>	fgl2p -o cust.42r custmain.4gl custquery.4gl</pre>
+
+
+<hr>
+<h2><a name="ModifyingtheProgram">Modifying the Program to Handle Errors</a></h2>
+
+<h3><a name="WHENEVER">The WHENEVER ERROR statement</a></h3>
+<p>Since program statements that access the database may be expected to fail
+occasionally (the row is locked, etc.) the <a href="Exceptions.html#DEFINITION">WHENEVER ERROR</a> <b> </b>statement can
+be used to handle this type of error.</p>
+<p>By default, when a runtime error occurs
+the program will stop.&nbsp; To prevent this happening when SQL statements that
+access the database fail, surround the SQL statement with <a href="Exceptions.html#DEFINITION">WHENEVER ERROR</a>
+statements, as in the following example based on the <b>fetch_cust</b> function
+in the <b>custquery.4gl</b>
+program module:</p>
+<pre><tt> </tt><CODE class=linenumber>01</CODE><tt> IF</tt> (p_fetch_flag = 1) <tt>THEN</tt>
+ <CODE class=linenumber>02</CODE>    <tt>WHENEVER ERROR CONTINUE</tt>
+ <CODE class=linenumber>03</CODE>    <tt>FETCH NEXT</tt> cust_curs
+ <CODE class=linenumber>04</CODE>       <tt>INTO</tt> mr_custrec.*
+ <CODE class=linenumber>05</CODE>    <tt>WHENEVER ERROR STOP
+ </tt><CODE class=linenumber>06</CODE><tt> ...</tt></pre>
+<p><a href="Exceptions.html#DEFINITION">WHENEVER ERROR</a> statements are modular in scope, and generate additional code
+for exception handling when the module is compiled. This exception handling is
+valid until the end of the module or until a new <a href="Exceptions.html#DEFINITION">WHENEVER ERROR</a>
+instruction is
+encountered by the compiler.</p>
+<p>When the example code is compiled, WHENEVER ERROR CONTINUE will
+generate code to prevent the program from stopping if the <a href="ResultSets.html#RS_FETCH">FETCH</a> 
+statement fails.
+Immediately after the <a href="ResultSets.html#RS_FETCH">FETCH</a> 
+statement, the WHENEVER ERROR STOP
+instruction will generate the code to re-set the default behavior for the rest
+of the module.</p>
+<p>You can write your own error function to handle SQL errors, and use the <a href="Exceptions.html#DEFINITION">
+WHENEVER ERROR CALL</a> &lt;<i>function-name</i>&gt; syntax to activate it.&nbsp;
+Run-time errors may be logged to an <a href="Exceptions.html#TRACE">error
+log</a>. </p>
+<h3><a name="NegativeSQLCA.SQLCODE">Negative SQLCA.SQLCODE</a></h3>
+<p>The database server returns an execution code whenever an SQL
+statement&nbsp; is executed, available in <a href="#SQLCA.SQLCODE"> SQLCA.SQLCODE</a>.&nbsp;
+If the code is a negative number,&nbsp; an SQL error has
+occurred.&nbsp; Just as we checked the <a href="#SQLCA.SQLCODE"> SQLCA.SQLCODE</a>  for the <a href="Programs.html#PC_NOTFOUND"> NOTFOUND</a> 
+condition, we can also check the code for&nbsp;database errors (negative
+SQLCODE).&nbsp; The SQLCA.SQLCODE should be checked immediately after each SQL
+statement that may fail, including&nbsp; DECLARE, OPEN, FETCH, etc.&nbsp;For
+simplicity of the examples, the error handling in these programs is minimal.</p>
+<h3><a name="SQLERRMESSAGE">SQLERRMESSAGE</a> </h3>
+<p>If an SQL error occurs, the <a href="Operators.html#OP_SQLERRMESSAGE">SQLERRMESSAGE</a>
+operator returns the error message associated with the error code.&nbsp; This is
+a character string that can be displayed to the user with the <a href="TutChap03.html#Displaymsg">ERROR</a>
+instruction. </p>
+<pre><CODE class=linenumber> </CODE><tt>    ERROR </tt>SQLERRMESSAGE </pre>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Changes to function
+        fetch_cust (custquery.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> fetch_cust (p_fetch_flag)
+<CODE class=linenumber>02</CODE>    <tt>DEFINE</tt> p_fetch_flag <tt>SMALLINT</tt>,
+<CODE class=linenumber>03</CODE><tt>           </tt>fetch_ok     <tt>SMALLINT</tt>
+<CODE class=linenumber>04</CODE>
+<CODE class=linenumber>05  </CODE> <tt>LET</tt><CODE class=linenumber> </CODE>fetch_ok = FALSE<CODE class=linenumber>
+06</CODE>   <tt>IF</tt> (p_fetch_flag = 1) <tt>THEN
+</tt><CODE class=linenumber>07</CODE><tt>      WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>08</CODE>     <tt>FETCH NEXT</tt> cust_curs
+<CODE class=linenumber>09</CODE>       <tt>INTO</tt> mr_custrec.*
+<CODE class=linenumber>10</CODE>     <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>11</CODE>   <tt>ELSE
+</tt><CODE class=linenumber>12</CODE><tt>      WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>13</CODE>     <tt>FETCH PREVIOUS</tt> cust_curs
+<CODE class=linenumber>14</CODE>       <tt>INTO</tt> mr_custrec.*
+<CODE class=linenumber>15</CODE>     <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>16</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>17</CODE>
+<CODE class=linenumber>18</CODE>   <tt>CASE</tt>
+<CODE class=linenumber>19</CODE>   <tt>WHEN</tt> (SQLCA.SQLCODE = 0)
+<CODE class=linenumber>20</CODE>     <tt> LET </tt>fetch_ok = TRUE
+<CODE class=linenumber>21</CODE>   <tt>WHEN </tt>(SQLCA.SQLCODE = NOTFOUND)
+<CODE class=linenumber>22</CODE>     <tt> LET</tt> fetch_ok = FALSE
+<CODE class=linenumber>23</CODE>   <tt>WHEN </tt>(SQLCA.SQLCODE &lt; 0)
+<CODE class=linenumber>24</CODE>     <tt> LET </tt>fetch_ok = FALSE
+<CODE class=linenumber>25</CODE>     <tt>ERROR</tt> SQLERRMESSAGE
+<CODE class=linenumber>26</CODE>   <tt>END CASE</tt> 
+<CODE class=linenumber>27</CODE>
+<CODE class=linenumber>28</CODE>  <tt> RETURN</tt> fetch_ok
+<CODE class=linenumber>29</CODE>
+<CODE class=linenumber>30</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+<ul>
+  <li>Lines <CODE class=linenumber>08</CODE>, <CODE class=linenumber>09</CODE>, <CODE class=linenumber>13</CODE>,
+    <CODE class=linenumber>14 </CODE>The SQL statements
+    are surrounded by WHENEVER ERROR statements. If an error occurs during the
+    SQL statements, the program will continue.&nbsp; The error handling is
+    re-set to the default (STOP) immediately after each SQL statement so that
+    failures of other program statements will not be ignored.</li>
+  <li>Lines <CODE class=linenumber> 18</CODE> to <CODE class=linenumber>26 </CODE> Immediately after the
+    WHENEVER ERROR STOP statement, the SQLCA.SQLCODE is checked, to see whether
+    the SQL statement succeeded.&nbsp; A CASE statement is used, since there are
+    more than two conditions to be checked.</li>
+</ul>
+
+
+<h3><a name="cleanup">Close and Free the Cursor</a></h3>
+
+<p>Closing and freeing the cursor when you no longer need it is good practice,
+especially if the modules are part of a larger program. This function must be
+placed in the same module as the DECLARE/OPEN/FETCH statements and in sequence,
+so this is the last function in the <b>query_cust</b> module.&nbsp; However, the
+function can be called from <b>cust_main</b>, as a final &quot;cleanup&quot;
+routine.&nbsp;&nbsp;</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="100%" bgcolor="#C0C0C0" valign="top"><b>Function cleanup (custquery.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> cleanup() 
+<CODE class=linenumber>02</CODE>   <tt>WHENEVER ERROR CONTINUE</tt> 
+<CODE class=linenumber>03</CODE>   <tt>CLOSE</tt> cust_curs 
+<CODE class=linenumber>04</CODE>   <tt>FREE</tt> cust_curs 
+<CODE class=linenumber>05</CODE>   <tt>WHENEVER ERROR STOP</tt><CODE class=linenumber>
+06 </CODE><tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line    
+<CODE class=linenumber>03</CODE>&nbsp;Closes the
+            cursor used to retrieve the database rows.</li>
+          <li>Line
+<CODE class=linenumber> 04 </CODE>Frees the memory associated with the cursor.</li>
+          <li>Lines <CODE class=linenumber>02</CODE> and <CODE class=linenumber>05
+            </CODE>The WHENEVER ERROR
+            statements prevent a program error if the user exited the program
+            without querying, and the cursor was never created).</li>
+        </ul>
+
+
+<hr>
+<h2><a name="CursorError">Error if Cursor is not Open</a> </h2>
+<p>In the example program in this chapter, if the user selects the Next or Previous action from the <a href="Menus.html#SYNTAX"> MENU</a>
+before he has
+queried, the program returns an error (&quot;Program stopped at line .... Fetch
+attempted on unopened cursor.&quot;). One way to prevent this error would be
+to add a variable to the program to indicate whether the user has queried for a
+result set, and to prevent him from executing the actions associated with Next
+or Previous until he has done so. </p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="100%" bgcolor="#C0C0C0" valign="top"><b>Changes to function
+        query_cust (custquery.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01 </CODE><tt>FUNCTION</tt> query_cust()
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> cont_ok      <tt>SMALLINT</tt>,
+<CODE class=linenumber>03</CODE>         cust_cnt     <tt>SMALLINT</tt>,
+<CODE class=linenumber>04</CODE>         where_clause <tt>STRING</tt>
+<CODE class=linenumber>05</CODE>   <tt>MESSAGE</tt> &quot;Enter search criteria&quot;
+<CODE class=linenumber>06</CODE>   <tt>LET</tt> cont_ok = FALSE
+<CODE class=linenumber>07</CODE>
+<CODE class=linenumber>...</CODE>
+<CODE class=linenumber>08</CODE>
+<CODE class=linenumber>09</CODE>   <tt>IF </tt>(cont_ok = TRUE) <tt>THEN</tt>
+<CODE class=linenumber>10</CODE>    <tt> CALL</tt> display_cust()
+<CODE class=linenumber>11</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>12</CODE>    
+<CODE class=linenumber>13</CODE> <tt>  RETURN </tt>cont_ok 
+<CODE class=linenumber>14
+15 </CODE><tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line <CODE class=linenumber>13 </CODE>A single line is added to the <b>query_cust </b>function
+            to return the value of <b>cont_ok, </b>which indicates whether the query was
+successful<b>, </b> to the calling function in <b>custmain.4gl</b>.&nbsp;</li>
+        </ul>
+
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Changes to module custmain.4gl</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> query_ok <tt>SMALLINT</tt>
+<CODE class=linenumber>03</CODE> 
+<CODE class=linenumber>04</CODE>  <tt> DEFER INTERRUPT</tt>
+<CODE class=linenumber>05</CODE>
+<CODE class=linenumber>06</CODE>   <tt>CONNECT TO</tt> &quot;custdemo&quot;
+<CODE class=linenumber>07</CODE>   <tt>CLOSE WINDOW SCREEN</tt>
+<CODE class=linenumber>08</CODE>   <tt>OPEN WINDOW</tt> w1 <tt>WITH FORM</tt> &quot;custform&quot;
+<CODE class=linenumber>09</CODE>  <tt> LET</tt> query_ok = FALSE
+<CODE class=linenumber>10</CODE>
+<CODE class=linenumber>11</CODE>   <tt>MENU</tt> &quot;Customer&quot;
+<CODE class=linenumber>12</CODE>     <tt>ON ACTION</tt> query
+<CODE class=linenumber>13</CODE>       <tt>CALL</tt> query_cust() <tt>RETURNING</tt> query_ok
+<CODE class=linenumber>14</CODE>     <tt>ON ACTION</tt> next           
+<CODE class=linenumber>15</CODE>       <tt>IF</tt> (query_ok) <tt>THEN</tt>
+<CODE class=linenumber>16</CODE>         <tt>CALL</tt> fetch_rel_cust(1)
+<CODE class=linenumber>17</CODE>       <tt>ELSE</tt>
+<CODE class=linenumber>18</CODE>         <tt>MESSAGE </tt>&quot;You must query first.&quot;
+<CODE class=linenumber>19</CODE>       <tt>END IF
+</tt><CODE class=linenumber>20</CODE>     <tt>ON ACTION</tt> previous
+<CODE class=linenumber>21</CODE>      <tt> IF</tt> (query_ok) <tt>THEN</tt>
+<CODE class=linenumber>22</CODE>         <tt>CALL</tt> fetch_rel_cust(-1)
+<CODE class=linenumber>23</CODE>       <tt>ELSE</tt>
+<CODE class=linenumber>24</CODE>         <tt>MESSAGE</tt> &quot;You must query first.&quot;
+<CODE class=linenumber>25</CODE>       <tt>END IF</tt>
+<CODE class=linenumber>26 </CODE>    <tt>ON ACTION</tt> quit
+<CODE class=linenumber>27</CODE>       <tt>EXIT MENU
+</tt><CODE class=linenumber>28</CODE><tt>   END MENU</tt>
+<CODE class=linenumber>29</CODE>
+<CODE class=linenumber>30 </CODE>  <tt>CLOSE WINDOW</tt> w1
+<CODE class=linenumber>31  </CODE><tt> CALL</tt><CODE class=linenumber> </CODE>cleanup()
+<CODE class=linenumber>32</CODE>  <tt> DISCONNECT CURRENT</tt>
+<CODE class=linenumber>33</CODE>
+<CODE class=linenumber>34</CODE> <tt>END MAIN</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+<ul>
+  <li>Line    
+<CODE class=linenumber>03</CODE>
+defines the <a href="Variables.html">variable</a>  <b>query_ok</b>, which will be used to indicate whether the
+user has queried.</li>
+  <li>Line    
+<CODE class=linenumber>09</CODE>
+sets the initial value of <b> query_ok</b> to <font FACE="Courier"><a href="Programs.html#PC_FALSE">FALSE</a></font>.</li>
+  <li>Line    
+<CODE class=linenumber>13</CODE>
+the function <b>query_cust</b> now returns a value for <b>query_ok</b>.</li>
+  <li>Lines    
+<CODE class=linenumber>15 </CODE>thru    
+<CODE class=linenumber>19 </CODE>and
+    Lines    
+<CODE class=linenumber>21</CODE>
+thru     
+<CODE class=linenumber>25:</CODE> these sections test the value of <b>query_ok</b> when Next or Previous has
+  been selected.&nbsp; If&nbsp; <b>query_ok</b>&nbsp; is <font FACE="Courier"><a href="Programs.html#PC_TRUE">TRUE</a></font>, the function <b>fetch_rel_cust</b>
+  is called; otherwise, a message is displayed to the user.</li>
+  <li>Line    
+<CODE class=linenumber>31 </CODE> calls the <b>cleanup</b> function to close the
+    cursor used to fetch the database rows.</li>
+</ul>
+
+
+</body>
+</html>

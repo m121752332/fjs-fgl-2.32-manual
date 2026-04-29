@@ -1,0 +1,623 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Menus</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Menus</a></H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#BASICS">Basics</a>
+    <ul>
+      <li><a href="#WHAT_IS_MENU">What is a MENU?</a></li>
+      <li><a href="#RENDERING">Rendering options</a>
+        <ul>
+          <li><a href="#DEFAULT_REDERINGS">Default renderings for MENU</a></li>
+          <li><a href="#BINDING_VIEWS">Binding explicit action views</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#USAGE">Usage</a>
+  <ul>
+     <li><a href="#PROG_STEPS">Programming Steps</a></li>
+     <li><a href="#INSTRUCTION_CONFIG">Instruction Configuration</a></li>
+     <li><a href="#DEFAULT_ACTIONS">Default Actions</a></li>
+     <li><a href="#CONTROL_BLOCKS">Control Blocks</a></li>
+     <li><a href="#INTERACTION_BLOCKS">Interaction Blocks</a></li>
+     <li><a href="#CONTROL_INSTRUCTIONS">Control Instructions</a></li>
+     <li><a href="#DEFAULT_ACCELERATOR_KEYS">Default Accelerator Keys</a></li>
+     <li><a href="#COMMAND">Using the COMMAND clause</a></li>
+     <li><a href="#CMDKEYS">Using the COMMAND KEY clause</a></li>
+  </ul>
+  </li>
+
+  <li><a href="#EXAMPLES">Examples</a>
+    <ul>
+      <li><a href="#EXAMPLE_1">Example 1:  Abstract action controller</a></li>
+      <li><a href="#EXAMPLE_2">Example 2: Simple menu (old Informix 4GL style)</a></li>
+      <li><a href="#EXAMPLE_3">Example 3: Using a modal menu</a></li>
+      <li><a href="#EXAMPLE_4">Example 4: Using a popup menu</a></li>
+    </ul>
+  </li>
+</ul>
+
+
+<p><i>See also:</i> <a href="DynamicUI.html">Dynamic User Interface</a></p>
+
+
+<HR>
+
+
+<h3><a name="BASICS">Basics</a></h3>
+
+<h4><a name="WHAT_IS_MENU">What is a MENU?</a></h4>
+
+<p>A Menu defines a list of options (also
+called actions) that can trigger program routines. The <tt>MENU</tt>  statement
+
+is an interactive instruction defining the possible actions that can be executed in a specific
+context at a given place in the program. One Menu can only define a
+set of options for a given level.
+You cannot define all menu options of your
+program in a unique Menu; you must use nested Menu calls. A typical
+application  starts  with a global Menu, defining general options to access
+sub-routines, which in turn implement specific Menus
+ with options like
+'Append', 'Delete', 'Modify', and 'Search' that trigger sub-routines to manage
+database records.</p>
+
+<h4><a name="RENDERING">Rendering options</a></h4>
+
+<h5><a name="DEFAULT_REDERINGS">Default renderings for MENU</a></h5>
+
+
+<p>By default, if no explicit action views are associated
+with Menu options, these options are displayed as 
+simple push buttons in a specific
+area, depending on the front end. The following screen is produced by the program shown in 
+<a href="#EXAMPLE_2">Example
+2</a> with the desktop front-end:</p>
+
+<p align="center"><img src="../Images/Screen002.png"></p>
+
+<p>You can
+display a Menu in a modal dialog window by setting
+some attributes, as shown in the source code of <a href="#EXAMPLE_3">Example 3</a>.
+In this case, if the user clicks on an options, the <tt>MENU</tt> instruction
+will automatically exit and the modal dialog window will be clause (there is no
+need for an <tt>EXIT MENU</tt> command):</p>
+
+<p align="center"><img src="../Images/Screen001.png"></p>
+
+
+<p> Menus can also be displayed as popup choice lists, as illustrated in <a href="#EXAMPLE_4">Example
+4</a>. Like for modal dialog menus, there is no need for an <tt>EXIT MENU</tt>
+command to leave the <tt>MENU</tt> instruction, it will close automatically when
+an option is selected by the user:
+
+
+<p align="center"> <img border="0" src="../Images/Screen021.png">
+
+
+<h5><a name="BINDING_VIEWS">Binding explicit action views</a></h5>
+
+<p>A <tt>MENU</tt>  statement is a controller for user
+actions.&nbsp; You bind actions views with
+Menu options <i>by name</i>. For example, if your Menu contains <tt>ON</tt> <tt>
+ACTION</tt> <tt>sendmail</tt>, you can specify which action view the user would 
+use to trigger the sendmail action by:</p>
+<ul>
+  <li>Set the name attribute with the action name (<tt>sendmail</tt>) for a <i>Toolbar</i> button (see
+    <a href="Toolbars.html">Toolbars</a> for more details).</li>
+  <li>Set the name attribute with the action name (<tt>sendmail</tt>) for a <i>
+	TopMenu</i> button (see <a href="Topmenus.html">Topmenus</a>  for more details).</li>
+  <li>Set the item-name with the action name (<tt>sendmail</tt>) for a <i>Button</i> 
+	widget (see <a href="FormSpecFiles.html">Form
+    Specification Files</a> for more details).</li>
+</ul>
+
+
+<p>Action views are bound to an action controller <i>by name</i>. See the <a href="InteractionModel.html#BINDING_ACTIONS">Interaction
+Model</a> description for more details.</p>
+
+
+<h4><font color="#FF0000">Warning:</font> When binding action views to menu 
+option clauses, the action name is case sensitive. The compiler converts <tt>COMMAND</tt>
+labels and <tt>ON ACTION</tt>  identifiers to lowercase for the action. It is 
+recommended that you use all lowercase letters when providing the action name 
+for the action view.</h4>
+
+
+<p> For more details about default
+and explicit action views, see <a href="InteractionModel.html">Interaction
+Model</a>.
+
+
+<HR>
+
+
+<h3><a name="MENU">MENU</a></h3>
+
+<h4>Purpose:</h4><p>The <tt> MENU</tt> instruction defines a set of user
+choices. </p>
+
+
+<h4><a name="SYNTAX">Syntax</a>:</h4><code>MENU <u>[</u><i>title</i><u>]</u><i><br>
+</i>
+&nbsp;&nbsp; <u>[</u> ATTRIBUTES ( <i>control-attributes</i> ) <u>]</u>
+<br>
+&nbsp; &nbsp;<u>[</u> BEFORE MENU<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <i>menu-statement<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i> <u>[...]</u><br>
+&nbsp;&nbsp; <u>]</u><br>
+&nbsp;&nbsp; <i>menu-option</i><br>
+&nbsp;&nbsp; <u>[...]<br>
+</u>
+END MENU</code>
+
+
+<p>where <i> menu-option</i> is one of:</p>
+
+
+<p><code> <u>{</u> COMMAND 
+<i>option-name </i><u>[</u><i>option-comment</i><u>]</u> <u>[</u><i> </i>HELP <i>help-number </i><u>]</u><br>
+&nbsp;&nbsp;&nbsp; <i>menu-statement<br>
+&nbsp;&nbsp;&nbsp;</i> <u>[...]</u><br>
+ <u>|</u> COMMAND KEY ( <i>key-name</i> ) 
+<i>option-name </i><u>[</u><i>option-comment</i><u>]</u> <u>[</u><i> </i>HELP <i>help-number </i><u>]</u><br>
+&nbsp;&nbsp;&nbsp; <i>menu-statement<br>
+&nbsp;&nbsp;&nbsp;</i> <u>[...]</u><br>
+ <u>|</u> COMMAND KEY ( <i>key-name</i> )<br>
+&nbsp;&nbsp;&nbsp; <i>menu-statement<br>
+&nbsp;&nbsp;&nbsp;</i> <u>[...]</u><br>
+ <u>|</u> ON ACTION <i>action-name</i> <br>
+&nbsp;&nbsp;&nbsp; <i>menu-statement<br>
+&nbsp;&nbsp;&nbsp;</i> <u>[...]</u><br>
+ <u>|</u> ON IDLE <i>idle-seconds</i> <br>
+&nbsp;&nbsp;&nbsp; <i>menu-statement<br>
+&nbsp;&nbsp;&nbsp;</i> <u>[...]</u><br>
+ <u>}
+</u></code>
+
+
+</p>
+
+
+<p>where <i>menu-statement</i> is:</p>
+
+
+<p><code><u>{</u> <i>statement</i><br>
+ <u>|</u>  CONTINUE MENU<br>
+ <u>|</u>  EXIT MENU<br>
+<u>|</u>  NEXT OPTION <i>option</i> <br>
+ <u>|</u> SHOW OPTION <u>{</u> ALL <u>|</u>
+ <i>option </i><u>[,...]</u> <u>}</u> <br>
+ <u>|</u>  HIDE OPTION <u>{</u> ALL <u>|</u>
+ <i>option </i><u>[,...]</u> <u>}</u> <br>
+ <u>}</u></code></p>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>title</i> is a <a href="Expressions.html#EX_STRING">string
+    expression</a>  defining the title of the menu.</li>
+  <li> <i>control-attributes</i> is a list of attributes that defines the
+    behavior and presentation of the menu.</li>
+  <li> <i>key-name</i> is an hot-key identifier (like <tt>F11</tt> or <tt>Control-z</tt>).</li>
+  <li> <i>option-name</i> is a <a href="Expressions.html#EX_STRING">string
+    expression</a>  defining the label of the menu option and identifying the <a href="InteractionModel.html">action</a>
+    that can be executed by the user.</li>
+  <li> <i>option-comment</i> is a <a href="Expressions.html#EX_STRING">string
+    expression</a> containing a description for the menu option,
+    displayed&nbsp;when <i>option-name</i> is the current.</li>
+  <li> <i>help-number </i>is an integer that allows you
+    to associate a <a href="MessageFiles.html"> help message</a>
+    number with the menu <i>option.</i></li>
+  <li><i>action-name</i> identifies an <a href="InteractionModel.html">action</a>
+    that can be executed by the user.</li>
+  <li><i>idle-seconds</i> is an <a href="Literals.html"> integer literal</a> or <a href="Variables.html">variable</a> that defines a number of
+    seconds.</li>
+  <li><i>action-name</i> identifies an <a href="InteractionModel.html">action</a>
+    that can be executed by the user.</li>
+  <li><i>bool-expr</i> is an <a href="Expressions.html#EX_INTEGER">integer
+    expression</a> that must evaluate to 0 or 1.</li>
+  <li><i>variable</i> is a <a href="Variables.html">program variable</a> that
+    receives the return of the <tt>GET</tt> instruction.</li>
+</ol>
+
+
+<p> The
+following table shows the <i>control-attributes </i> supported by the <tt>MENU</tt>
+ statement:</p>
+
+
+<div align="center">
+  <center>
+  <table border="0" cellpadding="0" width="90%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="30%"><b> Attribute</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+    <td width="30%"><tt>STYLE = <i>string</i></tt></td>
+    <td>Defines the type of the menu. Values can be
+      '<code>default</code>', '<code>dialog</code>' or '<code>popup</code>'.</td>
+    </tr>
+    <tr>
+    <td width="30%"><tt>COMMENT = <i>string</i></tt></td>
+    <td>Defines the message associated with
+      this menu.</td>
+    </tr>
+    <tr>
+    <td width="30%"><tt>IMAGE = <i>string</i></tt></td>
+    <td>Defines the icon file associated with
+      this menu.</td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+
+<HR>
+
+<h3><a name="USAGE">Usage</a></h3>
+
+
+<p>The <tt> MENU</tt> instruction can be used to control user actions. See <a href="InteractionModel.html">Interaction
+Model</a> for more details about actions. </p>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>It is recommended that you do not use the <tt>COMMAND
+    KEY</tt>   clause to handle user actions;
+    use the <tt>ON ACTION</tt> clause
+    instead.</li>
+  <li>The compiler converts the <tt>ON ACTION</tt> identifiers to lowercase for 
+	internal storage. <tt>ON ACTION APPEND</tt> is equivalent to
+    <tt>ON ACTION append</tt>.</li>
+  <li>When using <tt>COMMAND &quot;<i>label</i>&quot;</tt>, you can use 
+	uppercase letters: The compiler converts the command label to lowercase for 
+	the action name. <tt>COMMAND &quot;Append&quot;</tt> is
+    equivalent to <tt>ON ACTION append</tt>, except that the text and comment
+    attributes are defined at the program level.</li>
+  <li>For backward compatibility, it is possible to use simple characters and
+    multiple keys in the <tt>COMMAND
+    KEY</tt>  clause, but this is not recommended. If multiple keys are defined
+    in the <tt>COMMAND
+    KEY</tt>  clause, only the last element will be used as accelerator key.</li>
+</ol>
+
+
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li>Window close events can be trapped with <tt>COMMAND KEY(INTERRUPT)</tt>
+    clause. See <a href="InteractionModel.html#XCROSS_CLOSE">Interaction Model</a>
+    for more
+    details.</li>
+  <li>Default presentation of menu buttons can be shown in different
+    positions in the window, according to the <a href="WindowsAndForms.html#WINDOW_STYLES">Window
+    Style</a>.</li>
+</ol>
+
+
+<h4><a name="PROG_STEPS">Programming Steps</a></h4>
+
+<p>The typical usage of a <tt>MENU</tt> instruction is show in the following
+example, using a set of <tt>ON ACTION</tt> control blocks:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MENU</tt>
+<CODE class=linenumber>02</CODE>    <tt>ON ACTION </tt>new<tt>
+</tt><CODE class=linenumber>03</CODE>      <tt>CALL</tt> newFile()
+<CODE class=linenumber>04</CODE>    <tt>ON ACTION </tt>open<tt>
+</tt><CODE class=linenumber>05</CODE>      <tt>CALL</tt> openFile()
+<CODE class=linenumber>06</CODE>    <tt>ON ACTION </tt>quit<tt>
+</tt><CODE class=linenumber>07</CODE>      <tt>EXIT PROGRAM</tt>
+<CODE class=linenumber>08</CODE> <tt>END MENU</tt></PRE>
+
+
+<p>The <tt>COMMAND</tt> clause defines both the action name and the label of the
+menu option, which is by default decorated
+on the front end side as a push-button in a specific area. The <tt>ON ACTION</tt> clause defines
+an action trigger clause as described in Interaction Model, <a href="InteractionModel.html#CTRLGACTIONS">Controlling User Actions</a> 
+section. To write abstract code, we recommend that you use the <tt>ON ACTION</tt> clause instead of <tt>COMMAND</tt>. However, 
+when using 'dialog' menus, you might only need to provide the title of the buttons; in such situations, you can 
+use <tt>COMMAND</tt> clauses.</p>
+
+
+<h4><a name="INSTRUCTION_CONFIG">Instruction Configuration</a></h4>
+
+
+<p>When the <tt>STYLE</tt>  instruction attribute is set to '<code>default</code>' or when you do not
+specify the menu type, the runtime system
+generates a default decoration as a set of buttons in a specific area of the
+current window. When this attribute is set to '<code>dialog</code>',
+the menu options appear as buttons at the bottom in a temporary modal window, in which
+you can define the message and the icon with the <tt>COMMENT</tt> and <tt>IMAGE</tt>
+attributes. When the <tt>STYLE</tt> is set to '<code>popup</code>', the menu
+appears as a popup menu (contextual menu).</p>
+
+
+<p><b><font color="#FF0000">Warning:</font></b>&nbsp;If the menu is a &quot;<code>dialog</code>&quot;
+or &quot;<code>popup</code>&quot;, the dialog is automatically exited after any
+action clause such as <tt>ON ACTION</tt>, <tt>COMMAND</tt> or <tt>ON IDLE</tt>.</p>
+
+
+<h4><a name="DEFAULT_ACTIONS">Default Actions</a></h4>
+
+<p>When an <tt>MENU</tt> instruction executes, the runtime system creates
+a set of <a href="InteractionModel.html#PREDEFACTIONS">default actions</a>. The following table lists the default actions created for
+this dialog:</p>
+
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="20%"><b>Default action</b></td>
+    <td bgcolor="#C0C0C0"><b>Control Block execution order</b></td>
+  </tr>
+  <tr>
+    <td width="20%"><tt>close </tt> </td>
+    <td>Created to execute <tt>COMMAND KEY(INTERRUPT)</tt> if used (can be
+      overwritten with <tt>ON ACTION close</tt>)<br>
+      Default action view is hidden. See <a href="InteractionModel.html#XCROSS_CLOSE">Windows
+      closed by the user</a>.</td>
+  </tr>
+  <tr>
+    <td width="20%"><tt>help</tt></td>
+    <td>Shows the help topic defined by the <tt>HELP</tt> clause.<br>
+      Default action view is hidden.</td>
+  </tr>
+</table>
+
+
+<h4><a name="CONTROL_BLOCKS">Control Blocks</a></h4>
+
+
+<p>If the menu block contains a <tt>BEFORE MENU</tt> clause, statements
+    within this clause will be executed before the menu is displayed.</p>
+
+<h4><a name="INTERACTION_BLOCKS">Interaction Blocks</a></h4>
+
+
+<p>The <tt>ON ACTION <i>action-name</i></tt> clause defines a set of
+instructions to be executed when an action is fired.</p>
+
+
+<p> When you enter a <tt>MENU</tt> statement, you are entering an interactive 
+instruction, also known as a <i>dialog</i>. During a dialog, you can enable or disable an action with the
+<tt>setActionActive()</tt>
+method of the <a href="ClassDialog.html">DIALOG</a> object. You can also hide and show
+the default action view with the <tt>setActionHidden()</tt> method&nbsp; of the <a href="ClassDialog.html">DIALOG</a> 
+object.&nbsp;</p>
+<pre><code class="linenumber">01</code> <tt>...</tt>
+<code class="linenumber">02</code>    <tt>BEFORE MENU</tt>
+<code class="linenumber">03</code>       <tt>CALL DIALOG</tt>.setActionActive(&quot;query&quot;,<tt>FALSE</tt>)
+<code class="linenumber">04</code>       <tt>CALL DIALOG</tt>.setActionHidden(&quot;adduser&quot;,<tt>TRUE</tt>)
+<code class="linenumber">05</code> <tt>...</tt></pre>
+
+
+<p>The <tt>ON IDLE <i>idle-seconds</i></tt>  clause defines a set of
+instructions that must be executed after <i>idle-seconds</i>  of inactivity.
+This can be used to quit the dialog after the user has not
+interacted with the program for a specified period of time. The parameter <i>idle-seconds</i>
+must be an <a href="Literals.html"> integer literal</a> or <a href="Variables.html">variable</a>. If it evaluates to zero, the timeout is
+disabled.</p>
+
+
+<pre><CODE class=linenumber>01</CODE> <tt>...</tt>
+<CODE class=linenumber>02</CODE>    <tt>ON IDLE</tt> 10
+<CODE class=linenumber>03</CODE>       <tt>IF</tt> ask_question(&quot;Do you want to leave the dialog?&quot;) <tt>THEN</tt>
+<CODE class=linenumber>04</CODE>          <tt>EXIT MENU</tt>
+<CODE class=linenumber>05</CODE>       <tt>END IF</tt>
+<CODE class=linenumber>06</CODE> <tt>...</tt></pre>
+
+
+<h4><a name="CONTROL_INSTRUCTIONS">Control Instructions</a> </h4>
+
+<p> <tt> CONTINUE MENU</tt> statement causes the runtime system to ignore the remaining
+    instructions in the current block and redisplay the menu.
+<p> <tt> EXIT MENU</tt> statement terminates the <tt> MENU</tt> block without executing any
+    other statement.
+
+
+<p> The <tt> NEXT OPTION <i>option</i></tt> statement defines <i>option</i> as
+the default. This cannot apply to
+a hidden option, and works only with default action views created when an
+explicit view is not used.
+
+
+<p> The <tt>SHOW OPTION</tt> and <tt>HIDE OPTION</tt>&nbsp; statements are
+provided for backward compatibility only. The <tt>SHOW OPTION</tt> statement&nbsp; is used to make the default action
+view visible and the explicit action views enabled. The <tt> HIDE OPTION</tt> statement&nbsp; is used to make
+the default action view invisible and the explicit action views disabled. The
+    <tt> ALL</tt>
+    clause can be used to specify all options. It is now recommended that you 
+hide and show action views with the <tt>setActionHidden()</tt> method&nbsp; of 
+the <a href="ClassDialog.html">DIALOG</a> object.<h4> <a name="DEFAULT_ACCELERATOR_KEYS">Default Accelerator Keys</a></h4>
+<p> When a Menu instruction executes, the first letter of the display text on 
+the action view is, by default, underscored. For an action views where the 
+underscored letter is not shared with other action views, pressing the key 
+corresponding to that letter will execute that action. For an action view where 
+the underscored letter is shared with other action views surfaced by the Menu 
+statement, pressing the key corresponding to that letter will toggle the focus 
+between all action views that share the same letter. For example:
+<pre><CODE class=linenumber>01</CODE> <tt>MENU</tt> 
+<CODE class=linenumber>02</CODE><tt>   COMMAND</tt> &quot;Start&quot;
+<CODE class=linenumber>03   </CODE>  <tt>DISPLAY</tt> &quot;Start&quot;&nbsp;&nbsp;&nbsp;&nbsp; 
+<CODE class=linenumber>04</CODE>&nbsp;&nbsp;&nbsp;<tt>COMMAND</tt> &quot;cmdone&quot;
+<CODE class=linenumber>05</CODE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<tt>DISPLAY</tt> &quot;Command 1&quot;
+<CODE class=linenumber>06</CODE><tt>   COMMAND</tt> &quot;cmdtwo&quot;
+<CODE class=linenumber>07   </CODE>  <tt>DISPLAY</tt> &quot;Command 2&quot;&nbsp;&nbsp;&nbsp;&nbsp; 
+<CODE class=linenumber>08</CODE>&nbsp;&nbsp;&nbsp;<tt>COMMAND</tt> &quot;Quit&quot;
+<CODE class=linenumber>09</CODE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<tt>EXIT</tt> <tt>MENU</tt>
+<CODE class=linenumber>10</CODE> <tt>END MENU</tt></pre>
+In this example, if you press &quot;S&quot;, the action &quot;<tt>start</tt>&quot; will be 
+performed. If you press &quot;C&quot;, the focus will toggle between &quot;<tt>cmdone</tt>&quot; and 
+&quot;<tt>cmdtwo</tt>&quot;. If you press &quot;Q&quot;, the action &quot;<tt>quit</tt>&quot; will be 
+performed.
+<p>For information on specifying an alternate accelerator key using 
+the ampersand (&amp;), see &quot;<a href="#COMMAND">Using the COMMAND clause</a>&quot; below.</p>
+
+<h4><a name="COMMAND">Using the COMMAND clause</a></h4>
+
+
+<p>When using the <tt>COMMAND</tt> clause, the name of the action
+will be the option text converted to lowercase letters. The <i>text</i> and <i>comment</i> decoration attributes <u>for the default
+action view</u> will get the value of the option text and comment text of the
+menu clause. As these attributes are defined by the program, the
+corresponding <i>text</i> and <i>comment</i> attributes in <a href="ActionDefaults.html">Action
+Defaults</a> are
+not applied to these menu options. For example, when you define a <tt>COMMAND
+&quot;Hello&quot; &quot;This is the Hello option&quot;</tt> menu option, the
+name of the action will be &quot;<tt>hello</tt>&quot;, the button text will be &quot;<tt>Hello</tt>&quot;,
+and the comment will be &quot;<tt>This is the Hello option</tt>&quot;,
+even if an action default defines a different text or comment for the action
+&quot;<tt>hello</tt>&quot;.</p>
+<p>With the COMMAND clause, if the user includes an ampersand (&amp;) in the option text, the system 
+transforms it as an accelerator for the next character. The ampersand is not 
+considered when determining the name of the action. For example:</p>
+
+
+<pre><CODE class=linenumber>01</CODE> <tt>MENU</tt> 
+<CODE class=linenumber>02</CODE>    <tt>COMMAND</tt> &quot;S&amp;ave&quot;
+<CODE class=linenumber>03</CODE>      ... 
+<CODE class=linenumber>04</CODE>    <tt>COMMAND</tt> &quot;&amp;Quit&quot;
+<CODE class=linenumber>05</CODE>       <tt>EXIT MENU</tt>
+<CODE class=linenumber>06</CODE> <tt>END MENU</tt> </pre>
+<p>In the first COMMAND clause of this example, the name of the action will be 
+&quot;<tt>save</tt>&quot;, the button text will be &quot;S<u>a</u>ve&quot; (with the &quot;a&quot; underscored), and 
+the accelerator key for this command will be Alt+A. In the second COMMAND clause 
+in this example, the name of the action will be &quot;<tt>quit</tt>&quot;, the button text will be 
+&quot;<u>Q</u>uit&quot; (with the &quot;Q&quot; underscored), and the accelerator key for this 
+command will be Alt+Q.</p>
+<p align="center">
+<img border="0" src="../Images/Screen019.png"></p>
+
+
+<h4><a name="CMDKEYS">Using the COMMAND KEY clause</a></h4>
+
+
+<p>When the <tt>COMMAND KEY</tt> specifies an option text (as in <tt>COMMAND KEY(F10,F12)
+&quot;Hello&quot;</tt>) the name of the action is defined by the option text, in
+lowercase letters (i.e. &quot;<tt>hello</tt>&quot;). If the <tt>COMMAND KEY</tt>
+does not specify the option text, the action name defaults to the <u>last key</u>
+of the list in lowercase letters. For example, if you write <tt>COMMAND
+KEY(F10,F12,Control-Z)</tt>, the name of the action will be &quot;<tt>control-z</tt>&quot;.
+So if you want to define action defaults for a <tt>COMMAND KEY</tt> using
+multiple keys, you must use the last key for the name of the action.</p>
+
+
+<p>A <tt>COMMAND KEY</tt> clause implicitly defines up to four accelerator
+attributes for the action. The corresponding <a href="ActionDefaults.html">Action
+Defaults</a> accelerators will
+be ignored. For backward compatibility, the <tt>COMMAND KEY</tt> instruction supports up
+to four keys. Each four keys are used to initialize the <i>acceleratorName</i>, <i>acceleratorName2</i>, <i>acceleratorName3</i>
+and <i>acceleratorName4</i> attributes of the action. Missing accelerators will
+be assigned from Action
+Defaults. For example, when you define a <tt>COMMAND KEY(F10,F12)
+&quot;Hello&quot;</tt> menu option, <i>acceleratorName</i> will be
+&quot;<tt>F10</tt>&quot; and <i>acceleratorName2</i> will be &quot;<tt>F12</tt>&quot;, even if an
+Action
+Defaults for the action &quot;<tt>hello</tt>&quot; defines <i> acceleratorName</i> as &quot;<tt>F5</tt>&quot;
+and <i>acceleratorName2</i> as &quot;<tt>control-f</tt>&quot;. However, you can set the
+third accelerator
+with the <i>acceleratorName3</i> attribute in Action Defaults.</p>
+
+
+<h4><font color="#FF0000">Warning:</font> In <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a>
+mode, actions created with
+COMMAND [KEY] do not get accelerators of Action defaults; Only actions defined
+with ON ACTION will get accelerators of Action Defaults.</h4>
+
+
+<p>By default, <tt>COMMAND KEY</tt> actions are not decorated with a default
+button in the action frame (i.e. <a href="InteractionModel.html#DEFAULT_ACTION_VIEWS">default
+action view</a>). You can show the default button by configuring a <tt>text</tt>
+attribute with the <a href="ActionDefaults.html#ACTDEFTEXT">Action Defaults</a>.</p>
+
+
+<HR>
+
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+
+<h4><a name="EXAMPLE_1">Example 1</a>:  Abstract action controller</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MENU</tt>
+<CODE class=linenumber>02</CODE>    <tt>ON ACTION </tt>new<tt>
+</tt><CODE class=linenumber>03</CODE>      <tt>CALL</tt> newFile()
+<CODE class=linenumber>04</CODE>    <tt>ON ACTION </tt>open<tt>
+</tt><CODE class=linenumber>05</CODE>      <tt>CALL</tt> openFile()
+<CODE class=linenumber>06</CODE>    <tt>ON ACTION </tt>save<tt>
+</tt><CODE class=linenumber>07</CODE>      <tt>CALL</tt> saveFile()
+<CODE class=linenumber>08</CODE>    <tt>ON ACTION</tt> import<tt>
+</tt><CODE class=linenumber>09</CODE>      <tt>LOAD FROM</tt> &quot;infile.dat&quot; <tt>INSERT INTO </tt>table
+<CODE class=linenumber>10</CODE>    <tt>ON ACTION </tt>quit<tt>
+</tt><CODE class=linenumber>11</CODE>      <tt>EXIT PROGRAM</tt>
+<CODE class=linenumber>12</CODE> <tt>END MENU</tt></PRE>
+
+
+<h4><a name="EXAMPLE_2">Example 2</a>: Simple menu (old Informix 4GL style)</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MENU</tt> &quot;File&quot;
+<CODE class=linenumber>02</CODE>    <tt>COMMAND KEY </tt>( CONTROL-N ) &quot;New&quot; &quot;Creates New File&quot; <tt>HELP</tt> 101<tt>
+</tt><CODE class=linenumber>03</CODE>      <tt>CALL</tt> newFile()
+<CODE class=linenumber>04</CODE>    <tt>COMMAND KEY </tt>( CONTROL-O ) &quot;Open&quot; &quot;Open existing File&quot; <tt>HELP</tt> 102<tt>
+</tt><CODE class=linenumber>05</CODE>      <tt>CALL</tt> openFile()
+<CODE class=linenumber>06</CODE>    <tt>COMMAND KEY </tt>( CONTROL-S ) &quot;Save&quot; &quot;Save Current File&quot; <tt>HELP</tt> 103<tt>
+</tt><CODE class=linenumber>07</CODE>      <tt>CALL</tt> saveFile()
+<CODE class=linenumber>08</CODE>    <tt>COMMAND</tt> &quot;Import&quot;<tt>
+</tt><CODE class=linenumber>09</CODE>      <tt>LOAD FROM</tt> &quot;infile.dat&quot; <tt>INSERT INTO </tt>table
+<CODE class=linenumber>10</CODE>    <tt>COMMAND KEY </tt>( CONTROL-Q ) &quot;Quit&quot; &quot;Quit Program&quot; <tt>HELP</tt> 201<tt>
+</tt><CODE class=linenumber>11</CODE>      <tt>EXIT PROGRAM</tt>
+<CODE class=linenumber>12</CODE> <tt>END MENU</tt></PRE>
+
+
+<h4><a name="EXAMPLE_3">Example 3</a>: Using a modal menu</h4>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>MENU</tt> &quot;Example of dialog menu&quot;
+<CODE class=linenumber>03</CODE>       <tt>ATTRIBUTES</tt> ( <tt>STYLE</tt>=&quot;dialog&quot;, <tt>C</tt><tt>OMMENT</tt>=&quot;Delete the file?&quot; )
+<CODE class=linenumber>04</CODE>       <tt>COMMAND</tt> &quot;Yes&quot;
+<CODE class=linenumber>05</CODE>         <tt>DISPLAY </tt>&quot;Yes&quot;
+<CODE class=linenumber>06</CODE>       <tt>COMMAND</tt> &quot;No&quot;
+<CODE class=linenumber>07</CODE>         <tt>DISPLAY </tt>&quot;No&quot;
+<CODE class=linenumber>08</CODE>       <tt>COMMAND</tt> &quot;Cancel&quot;
+<CODE class=linenumber>09</CODE>         <tt>DISPLAY </tt>&quot;Cancel&quot;
+<CODE class=linenumber>10</CODE>    <tt>END MENU</tt>
+<CODE class=linenumber>11 </CODE><tt>END MAIN</tt></PRE>
+
+
+<h4><a name="EXAMPLE_4">Example 4</a>: Using a popup menu</h4>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE</tt> r <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>MENU</tt> &quot;test&quot;
+<CODE class=linenumber>04</CODE>        <tt>COMMAND</tt> &quot;popup&quot; <tt>DISPLAY</tt> popup()
+<CODE class=linenumber>05</CODE>        <tt>COMMAND</tt> &quot;quit&quot; <tt>EXIT MENU</tt>
+<CODE class=linenumber>06</CODE>        <tt>END MENU</tt>
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>08</CODE>
+<CODE class=linenumber>09</CODE> <tt>FUNCTION</tt> popup()
+<CODE class=linenumber>10</CODE>    <tt>DEFINE</tt> r <tt>INTEGER</tt>
+<CODE class=linenumber>11</CODE>    <tt>LET</tt> r = -1
+<CODE class=linenumber>12</CODE>    <tt>MENU</tt> &quot;unused&quot; <tt>ATTRIBUTES</tt> ( <tt>STYLE</tt>=&quot;popup&quot; )
+<CODE class=linenumber>13</CODE>        <tt>COMMAND</tt> &quot;Copy all&quot; <tt>LET</tt> r = 1
+<CODE class=linenumber>14</CODE>        <tt>COMMAND</tt> &quot;Copy current&quot; <tt>LET</tt> r = 2
+<CODE class=linenumber>15</CODE>        <tt>COMMAND</tt> &quot;Paste all&quot; <tt>LET</tt> r = 3
+<CODE class=linenumber>16</CODE>        <tt>COMMAND</tt> &quot;Paste current&quot; <tt>LET</tt> r = 4
+<CODE class=linenumber>17</CODE>    <tt>END MENU</tt>
+<CODE class=linenumber>18</CODE>    <tt>RETURN</tt> r
+<CODE class=linenumber>19</CODE> <tt>END FUNCTION</tt></PRE>
+
+
+</BODY>
+</HTML>

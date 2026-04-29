@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>om.DomDocument</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The DomDocument class</a> </H1>
+
+<p>Summary:</p>
+
+<ul>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#METHODS">Methods</a></li>
+  <li><a href="#USAGE">Usage</a><ul>
+  <li><a href="#Create_a_DomDocument">Create a new DomDocument object</a></li>
+	<li><a href="#Create_a_DomNode">Create a new DomNode object</a></li>
+	<li><a href="#getDocumentElement">Return the root node of the DomDocument</a></li>
+	<li><a href="#getElementbyID">Return a specific node of the DomDocument </a> </li>
+	<li><a href="#removeElement">Remove a DomNode object</a></li>
+</ul>
+	</li>
+  <li><a href="#EXAMPLES">Examples</a></li>
+</ul>
+<p><i>See also:</i>
+<a href="BuiltInClasses.html">Built-in Classes</a>, <a href="XmlUtils.html">XML
+Utilities</a></p>
+
+<HR>
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+<h4>Purpose:</h4>
+
+<p>The <b>DomDocument</b> class provides methods to manipulate a data tree,
+following the <a href="XmlUtils.html">DOM</a> standards.</p>
+
+<h4>Syntax:</h4>
+
+<p><code>om.DomDocument</code></p>
+
+
+<HR>
+
+
+<h3><a name="METHODS">Methods:</a></h3>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#3399FF" colspan="2"><b>Class Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><b>Name</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#create">create</a>( tag </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>   om.DomDocument</code></td>
+    <td valign="top">Creates a new, empty DomDocument object, where <i>tag</i> identifies the
+      tag name of the root element.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#createFromXmlFile">createFromXmlFile</a>( file </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>   om.DomDocument</code></td>
+    <td valign="top">Creates a new DomDocument object using an XML file specified by the
+      parameter <i>file</i>. Returns NULL if an error occurs.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#createFromString">createFromString</a>(
+      source </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>   om.DomDocument</code></td>
+    <td valign="top">Creates a new DomDocument object by parsing the XML string
+      passed as parameter. Returns NULL if an error occurs.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#66FFCC" colspan="2"><b>Object Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><b>Name</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#copy">copy</a>( src om.DomNode, deep </code><tt>INTEGER</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>   om.DomNode</code></td>
+    <td valign="top">Clones a DomNode (with child nodes if <i>deep</i> is
+      <a href="Programs.html#PC_TRUE">TRUE</a>).</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#createChars">createChars</a>( text </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING</tt><code> om.DomNode</code></td>
+    <td valign="top">Creates a DomNode as a text node.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#createEntity">createEntity</a>( text </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>   om.DomNode</code></td>
+    <td valign="top">Creates a DomNode as an entity node.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#createElement">createElement</a>( tag </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>   om.DomNode</code></td>
+    <td valign="top">Creates a new empty DomNode object with a tag name specified by <i>tag</i>.&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getDocumentElement">getDocumentElement</a>( )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>   om.DomNode</code></td>
+    <td valign="top">Returns the root node of the DOM document.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getElementbyID">getElementById</a>( id </code><tt>INTEGER</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>   om.DomNode</code></td>
+    <td valign="top">Gets an element using its id, the internal integer identifier automatically assigned to each DomNode 
+	object. </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#removeElement">removeElement</a>( e om.DomNode )</code></td>
+    <td valign="top">Removes a DomNode object and any descendent DomNodes from the document.</td>
+  </tr>
+</table>
+
+
+<HR>
+
+
+<h3><a name="USAGE">Usage:</a></h3>
+A DomDocument object holds a <a href="XmlUtils.html"> DOM</a> tree of <a href="ClassDomNode.html">DomNode</a> objects.
+<p>A unique root <a href="ClassDomNode.html">DomNode</a> object is owned by a DomDocument object.
+
+<h4><a name="Create_a_DomDocument">Create a new DomDocument object</a></h4>
+<p>To create an instance of the DomDocument class, you must first declare a <a href="Variables.html">variable</a> with the type om.DomDocument. 
+<p>Then, use the method  <a name="create"><code>om.DomDocument.create()</code></a> to instantiate a new, empty 
+DomDocument object. 
+<p>To create a document from an existing XML file, use the method <code><a name="createFromXmlFile">om.DomDocument.createFromXmlFile()</a></code>.
+You can also use the <code><a name="createFromString">om.DomDocument.createFromString()</a></code>
+method to create a document from a string in memory.
+<h4><a name="Create_a_DomNode">Create a new DomNode object</a></h4>
+<p>New nodes can be created with the <a name="createElement"><code>createElement()</code></a>
+ method.
+<p>New text nodes can be created with the <code><a name="createChars">createChars()</a></code>
+ method.
+<p>New entity nodes can be created with the <a name="createEntity"><code>createEntity()</code></a>
+ method.
+<p>Clone a DomNode object using the <a name="copy"><code>copy()</code></a> method.
+<p>Once a new DomNode object is created, you can for example inserted it in the DOM tree 
+with the <code>insertBefore()</code> method of a DomNode object<h4>
+<a name="getDocumentElement">Return the root node of the DomDocument</a></h4>
+<p>You can get the root node with the <code>getDocumentElement()</code> method. Once you have the root element, you can recursively manipulate child nodes 
+with the <a href="ClassDomNode.html">DomNode</a> class methods
+<h4><a name="getElementbyID">Return a specific node of the DomDocument</a></h4>
+<p>You can get a specific node of the DomDocument by using its internal identifier with the
+<code>getElementById()</code> method.
+<h4><a name="removeElement">Remove a DomNode object</a></h4>
+<p>Use the <code>removeElement()</code> method to remove an Element from a DomDocument.
+
+
+<HR>
+
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+
+<h4>Example 1:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> d om.DomDocument
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> r om.DomNode
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> d = om.DomDocument.create(&quot;MyDocument&quot;)
+<CODE class=linenumber>05</CODE>   <tt>LET</tt> r = d.getDocumentElement()
+<CODE class=linenumber>06</CODE> <tt>END MAIN</tt></PRE>
+
+</BODY>
+</HTML>

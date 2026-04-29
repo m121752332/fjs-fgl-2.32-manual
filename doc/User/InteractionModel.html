@@ -1,0 +1,1403 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+
+<TITLE>Interaction Model</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The Interaction Model</a></H1>
+
+<p>Summary:</p>
+
+<ul>
+      <li><a href="#IM_CONCEPT">The Model-View-Controller Paradigm</a></li>
+      <li><a href="#CTRLGACTIONS">Controlling User Actions</a>
+      <ul>
+          <li><a href="#ACTION_HANLDING_BASICS">Action handling basics</a></li>
+          <li><a href="#DEFAULT_ACTION_VIEWS">Default Action Views</a></li>
+          <li><a href="#DECORATING_ACTION_VIEWS">Decorating Action Views</a></li>
+          <li><a href="#ENA_DIS_ACTIONS">Enabling and Disabling Actions</a></li>
+          <li><a href="#BINDING_ACTIONS">Binding Action views to Action Handlers</a>
+            <ul>
+              <li><a href="#BINDING_BASICS">Action binding basics</a></li>
+              <li><a href="#SUBDIALOG_PREFIX">Sub-dialog prefix in the DIALOG instruction</a></li>
+              <li><a href="#ON_ACTION_INFIELD">Field-specific enabled actions</a></li>
+              <li><a href="#RESOLVING_ACTION_CONFLICTS">Resolving multi-level action name conflicts</a></li>
+              <li><a href="#ACTION_BINDING_COMBINATIONS">Action view binding combinations</a></li>
+            </ul>
+          </li>
+          <li><a href="#DEFAULT_CONTEXT_MENU">Default Context Menu</a></li>
+          <li><a href="#ACTION_VALIDATE">Avoiding field data validation in UNBUFFERED mode</a></li>
+      </ul>
+      </li>
+      <li><a href="#PREDEFACTIONS">Predefined Actions</a>
+      <ul>
+          <li><a href="#PA_DEFINITION">Definition</a></li>
+          <li><a href="#PA_AUTOLOCAL">Automatic and Local actions with same name</a></li>
+          <li><a href="#PA_OVERWRITE">Overwriting predefined actions with ON
+            ACTION</a></li>
+          <li><a href="#PA_AUTO_ACTIVATE">Predefined actions enabled according
+            to context</a></li>
+          <li><a href="#PA_LIST">Lists of predefined actions</a></li>
+      </ul>
+      </li>
+      <li><a href="#ACCELNAMES">Keyboard Accelerator Names</a>
+      <ul>
+          <li><a href="#ACCEL_KEYS">Accelerator keys</a></li>
+          <li><a href="#ACCEL_KEY_LIST">List of key names</a></li>
+          <li><a href="#ACCEL_KEY_MOD">Accelerator key modifiers</a></li>
+      </ul>
+      </li>
+      <li><a href="#INTERRUPTION">Interruption Handling</a></li> 
+      <li><a href="#DIRTY">Detecting data changes immediately</a></li> 
+      <li><a href="#VALIDATE">Controlling data validation when an action is fired</a></li> 
+      <li><a href="#XCROSS_CLOSE">Windows closed by the user</a>
+        <ul>
+          <li><a href="#close_in_dialog">The close action in DIALOG</a></li>
+          <li><a href="#close_in_singular">The close action in singular dialogs</a></li>
+          <li><a href="#close_in_menu">The close action in MENU</a></li>
+          <li><a href="#close_example">Close action example</a></li>
+        </ul>
+      </li> 
+</ul>
+
+<p><i>See also:</i>  <a href="DynamicUI.html">Dynamic User Interface</a>, <a href="FormSpecFiles.html">Form Files</a>, <a href="WindowsAndForms.html">Windows
+and Forms</a>.</p>
+
+<HR>
+
+<h2><a name="IM_CONCEPT">The Model-View-Controller Paradigm</a></h2>
+
+<p>The Dynamic User Interface architecture is based on the Model-View-Controller 
+(MVC) paradigm. The <i>Model</i> defines the object to be
+displayed (typically the application data that is stored in program
+variables). The <i>View</i> defines the decoration of the Model (how the Model
+must be displayed to the screen, this is typically the form). The <i>Controller</i>
+is the program code that implements the processing that manages the Model.
+Multiple <i>Views</i> can be associated to a <i>Model</i> and a <i>Controller</i>.</p>
+
+<p>With BDL, you define the Views in the <a href="DynamicUI.html#ABSTRACTUI"> Abstract User Interface</a> 
+ tree or through built-in classes designed for this (such as <a href="ClassWindow.html">Window</a>
+or <a href="ClassForm.html">Form</a>).
+You store Models in the <a href="Variables.html">program variables</a>,
+and you implement the Controllers with interactive instructions, such as <a href="MultipleDialogs.html">DIALOG</a>
+or&nbsp;
+<a href="RecordInput.html">INPUT</a>.</p>
+
+<p>Normally the Controllers should not provide any decoration information, as that
+is the purpose of Views. Because of the history of the language, however, some interactive instructions such as
+<a href="Menus.html">MENU</a> define both
+the Controller and some presentation information such as menu title, command labels, and
+comments. In this case, the runtime system automatically creates the View with
+that information; you can still associate other Views to the same controller.</p>
+
+
+<HR>
+
+<h2><a name="CTRLGACTIONS">Controlling User Actions</a></h2>
+
+<h3><a name="ACTION_HANLDING_BASICS">Action Handling Basics</a></h3>
+
+<p>In the user interface of the application, you can have interactive elements
+(such as buttons) that can trigger an event transmitted to
+the <a href="FglTerms.html#RUNTIME_SYSTEM">Runtime System</a> for
+interpretation. To manage such events, the <i>Action Views</i> can produce <i>Action
+Events</i> that will execute the code of the corresponding <i>Action Handler</i>
+in the current interactive instruction of the program.</p>
+
+<h3><a name="DEFAULT_ACTION_VIEWS">Default Views for Actions</a></h3>
+
+<p>If no explicit action view is defined, such as a toolbar button, or a topmenu
+item or a simple button in the form layout, the front end creates a default action view for each <tt>MENU COMMAND</tt>
+or <tt>ON ACTION</tt> clause used in the current interactive instruction.
+Typically, the default action views appear as buttons in the action frame.</p>
+
+<p>Note that when creating actions with <tt>ON KEY</tt> (or <tt>COMMAND KEY</tt> without a
+command name in a <a href="Menus.html">MENU</a>), the default action view gets invisible. However, if you define a <tt>text</tt>
+attribute in the <a href="ActionDefaults.html#ACTDEFTEXT">Action Defaults</a>, the default button is made
+visible.</p>
+
+
+<p>You can control the default action view visibility
+by using the <a href="FSFAttributes.html#FA_DEFAULTVIEW">DEFAULTVIEW Action
+Default attribute</a> or the <tt>defaultView</tt> attribute in the <a href="ActionDefaults.html">4ad
+files</a>.</p>
+
+
+<p>If one or more action views are defined explicitly for a given action, the
+front end considers that the default view is no longer needed, and hides the
+corresponding button. Typically, if you define in the form a <a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTONEDIT">BUTTONEDIT</a>
+field or a <a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTON">BUTTON</a> that triggers an action, you do not need an additional button in the
+action frame.</p>
+
+
+<p>The presentation of the default action views can be controlled with&nbsp;<a href="WindowsAndForms.html#WINDOW_STYLES">Window
+Styles</a>.</p>
+
+
+<h3><a name="DECORATING_ACTION_VIEWS">Decorating Action Views</a></h3>
+
+<p>A default decoration for action views can be
+centralized in an external file. This is strongly recommended, to separate
+the decoration of the action view from action usage (the action handler) as much as possible. See <a href="ActionDefaults.html">Action
+Defaults</a> for more details.</p>
+
+<p>Details about Action Defaults appliance will be discussed later in this
+section.</p>
+
+<h3><a name="ENA_DIS_ACTIONS">Enabling and Disabling Actions</a></h3>
+
+<p>During an interactive instruction, you can enable or disable an action with the <code>setActionActive()</code>
+method of the <a href="ClassDialog.html#setActionActive">ui.Dialog</a> built-in class. This
+method takes the name of the action (in lowercase letters) and a boolean expression 
+(<tt>0</tt> or <tt>FALSE</tt>, <tt>1</tt> or <tt>TRUE</tt>) as arguments.</p>
+<pre><code class="linenumber">01</code> <tt>...</tt>
+<code class="linenumber">02</code>    <tt>BEFORE INPUT</tt>
+<code class="linenumber">03</code>       <tt>CALL</tt> <tt>DIALOG</tt>.setActionActive(&quot;zoom&quot;,<tt>FALSE</tt>)
+<code class="linenumber">04</code> <tt>...</tt></pre>
+
+<p>Details about action activation and de-activation will be discussed in other
+parts of this section.</p>
+
+<h3><a name="BINDING_ACTIONS">Binding Action Views to Action Handlers</a></h3>
+
+<h4><a name="BINDING_BASICS">Action binding basics</a></h4>
+
+<p>Remember that <i>Action Views</i>  can produce <i>Action
+Events</i>  that will execute the code of the corresponding <i>Action Handler</i>
+ in the current interactive instruction of the program.</p>
+
+<p>Action Views (like buttons) are bound to an action by the 'name'
+attribute. For example, a Toolbar button with the name 'cancel'
+is bound to the Action Handler using the name 'cancel'. Action Handlers are
+defined in interactive instructions with an <tt>ON ACTION</tt> clause or <tt>
+COMMAND</tt>
+/ <tt>ON KEY</tt>
+clauses:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>INPUT ARRAY</tt> custarr <tt>WITHOUT DEFAULTS FROM</tt> sr_cust.*
+<CODE class=linenumber>02</CODE>   <tt>ON ACTION </tt>printrec
+<CODE class=linenumber>03</CODE>     <tt>CALL</tt> PrintRecord(custarr[arr_curr()].*) 
+<CODE class=linenumber>04</CODE>   <tt>ON ACTION </tt>showhelp
+<CODE class=linenumber>05</CODE>     <tt>CALL</tt> ShowHelp()
+<CODE class=linenumber>06</CODE> <tt>END INPUT</tt></pre>
+
+<p>For backward compatibility, the <tt>COMMAND</tt> / <tt>ON KEY</tt> clauses are still supported. 
+However, it is strongly recommended that you use <tt>ON ACTION</tt>  clauses instead, 
+as the <tt>ON ACTION</tt>  clauses identify user actions with an abstract name.</p>
+
+<p>In <tt>ON ACTION <i>action-name</i></tt>, the name of the action must be a valid
+<a href="LanguageFeatures.html#LF_IDENTS"> identifier</a>, preferably
+written in lowercase letters (see warning below). </p>
+
+<p><b><font color="#FF0000">Warning:</font> In the <a href="DynamicUI.html#ABSTRACTUI"> Abstract User Interface</a>  tree
+(where the action views are defined), action names are case-sensitive (as they are standard
+DOM attribute values).&nbsp; In BDL, however, identifiers are not case-sensitive. To avoid any confusion,
+the <a href="Tools.html#TL_FGLCOMP">compiler</a> automatically
+converts action identifiers to lowercase.</b></p>
+
+<h4><a name="SUBDIALOG_PREFIX">Sub-dialog prefix in the DIALOG instruction</a> </h4>
+
+<p> You can use the <a href="MultipleDialogs.html">DIALOG</a>
+ instruction. Within the <tt>DIALOG</tt> instruction, we
+distinguish <i>dialog actions</i> from <i>sub-dialog actions.</i> When the <tt>ON
+ACTION</tt> handler is defined as
+a dialog
+action, the action name is a simple identifier as in singular interactive
+instructions. When the <tt>ON
+ACTION</tt> handler is defined inside a <a href="MultipleDialogs.html#sub-dialogs">sub-dialog</a>
+or if
+the action is an implicit action such as <a href="MultipleDialogs.html#insert-delete-rows"><i>insert</i>
+in INPUT ARRAY</a>, the action name gets the name of the sub-dialog as the prefix to identify the sub-dialog action
+with a unique name :</p>
+<pre><code class="linenumber">01</code> <tt>DIALOG</tt>
+<code class="linenumber">02</code>    <tt>INPUT BY NAME </tt>... <tt>ATTRIBUTES </tt>(<tt>NAME </tt>= &quot;cust&quot;)
+<code class="linenumber">03</code>       <tt>ON ACTION</tt> check                   -- sub-dialog action &quot;cust.check&quot;
+<code class="linenumber">04</code>       ...
+<code class="linenumber">05</code>    <tt>END INPUT</tt>
+<code class="linenumber">06</code>    <tt>DISPLAY ARRAY </tt>arr_orders <tt>TO </tt>sr_ord.*
+<code class="linenumber">07</code>       ...
+<code class="linenumber">08</code>       <tt>ON ACTION</tt> check                   -- sub-dialog action &quot;sr_ord.check&quot;
+<code class="linenumber">09</code>       ...
+<code class="linenumber">10</code>    <tt>END DISPLAY</tt>
+<code class="linenumber">11</code>    <tt>BEFORE DIALOG</tt>
+<code class="linenumber">12</code>       ...
+<code class="linenumber">13</code>    <tt>ON ACTION</tt> close                      -- dialog action &quot;close&quot;
+<code class="linenumber">14</code>       ...
+<code class="linenumber">15</code> <tt>END DIALOG</tt></pre>
+
+<p>For <tt>INPUT</tt> and <tt>CONSTRUCT</tt>
+sub-dialogs, the <a href="MultipleDialogs.html#identifying-sub-dialogs"> 
+sub-dialog identifier</a> can be specified with the
+<tt>NAME</tt>
+attribute. The <tt>INPUT ARRAY</tt> and <tt>DISPLAY ARRAY</tt> sub-dialogs are 
+implicitly identified with the screen-record name defined in the form.</p>
+
+<p>By using the sub-dialog identifier, you can bind action views to specific
+sub-dialog actions. Action views bound to sub-dialog actions with qualified
+sub-dialog action names will always be active, even if the focus is not in the
+sub-dialog of the action. You typically use fully-qualified sub-dialog actions
+names for <a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTON">buttons</a> in the
+form body or in <a href="Topmenus.html">TopMenu</a> options. However, it does 
+not make much sense to use this technique for <a href="Toolbars.html">ToolBar</a> buttons.</p>
+
+<p>If you specify a simple action name (without the sub-dialog prefix), the
+action view will be attached to any sub-dialog action
+with the matching name. This is especially useful for common
+actions such as the implicit <i>insert</i> / <i>append</i> / <i>delete</i>
+actions created by <tt>INPUT ARRAY</tt>, when the
+dialog handles multiple editable lists. You can bind <a href="Toolbars.html">ToolBar</a> buttons to these
+actions without the sub-dialog prefix; the buttons will apply to the current list
+that has the focus. The action views bound to sub-dialog actions without the sub-dialog
+qualifier will automatically be enabled or disabled when
+entering or leaving the group of fields controlled by the sub-dialog (i.e.
+typical navigation buttons in the toolbar will be disabled if the focus is not
+in a list).</p>
+
+<p>If a sub-dialog action is fired when the focus is not in the sub-dialog of the
+action, the focus will automatically be given to the first field of the
+sub-dialog, before executing the user code defined in the <tt>ON ACTION</tt>
+clause. This will trigger the same validation rules and control blocks as if the
+user had selected the first field of the sub-dialog by hand.</p>
+
+<p>When using <a href="ClassDialog.html#setActionActive">DIALOG.setActionActive()</a>
+(or any method that takes an action name as parameter), you can specify the action name with or without a sub-dialog
+identifier. If you
+qualify the action with the sub-dialog identifier,&nbsp;the sub-dialog action 
+is clearly identified. If you don't specify a sub-dialog prefix, the action will be identified 
+based on&nbsp;the focus context - when the focus is in the sub-dialog of the action, non-qualified
+action names
+identify the local sub-dialog action; otherwise, they identify a dialog action if
+one exists with the same name. Disabling an action by the program
+with <code>setActionActive()</code>, will take precedence over the
+built-in activation rules (i.e. if the action is disabled by the program, the action
+will not be activated when entering the sub-dialog).</p>
+
+<p>For action views bound to sub-dialog actions with qualifiers, the <a href="ActionDefaults.html">Action
+Defaults</a> defined with the corresponding <u>action
+name</u> will be used to set the attributes with the default values. In other
+words, the prefix will be ignored. For example, if an action view is defined
+with the name &quot;<i>custlist.append</i>&quot;, it will get the action
+defaults defined for the &quot;<i>append</i>&quot; action.</p>
+
+<h4><a name="ON_ACTION_INFIELD">Field-specific enabled actions</a> </h4>
+
+<p>The <tt>ON ACTION</tt> interaction block
+has been extended with the <tt>INFIELD <i>field-name</i></tt>  clause: </p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>INPUT ARRAY</tt> custarr <tt>WITHOUT DEFAULTS FROM</tt> sr_cust.*
+<CODE class=linenumber>02</CODE>   <tt>ON ACTION </tt>zoom<tt> INFIELD</tt> cust_city
+<CODE class=linenumber>03</CODE>     <tt>LET</tt> custarr[arr_curr()].cust_city = zoom_city() 
+<CODE class=linenumber>04</CODE>   <tt>ON ACTION </tt>zoom<tt> INFIELD</tt> cust_state
+<CODE class=linenumber>05</CODE>     <tt>LET</tt> custarr[arr_curr()].cust_state = zoom_state() 
+<CODE class=linenumber>06</CODE> <tt>END INPUT</tt></pre>
+
+<p>If an action is defined with the <tt>INFIELD <i>field-name</i></tt> clause,
+the action object name is implicitly prefixed with the field name. You can then bind
+action views by using this prefix to identify the action. Without the field name
+prefix, the
+action view is enabled and disabled automatically according to the current
+field. If you bind the action view with
+the fully-qualified name including the field name prefix, the action view will
+always be active.</p>
+
+<p><b><font color="#FF0000">TO BE VALIDATED (BUG #16465) </font></b>Note that the <tt><i>field-name</i></tt> element of the <tt>INFIELD <i>field-name</i></tt>
+syntax can actually be a <tt><i>field-spec</i></tt> syntax, with an optional
+table or screen record prefix as in <tt>BEFORE FIELD</tt> control blocks. If
+such as prefix is used, the field-action will be identified by <i>table-prefix.field-name</i>:</p>
+
+<pre><i>    table-prefix . field-name . action-name</i></pre>
+
+<p>Actions defined in sub-dialogs of the <a href="MultipleDialogs.html">DIALOG</a>
+ instruction get the name of the sub-dialog as prefix. If <tt>ON ACTION <i>action-name</i>
+INFIELD <i>field-name</i></tt> is
+used in a sub-dialog, the action object name is prefixed with the name of the
+sub-dialog, followed by the name of the field. The fully-qualified action name
+will be:</p>
+
+<pre><i>    sub-dialog-name . field-name . action-name</i></pre>
+
+<p><b><font color="#FF0000">TO BE VALIDATED (BUG #16465)</font></b> If the <tt>INFIELD</tt>
+clause in a sub-dialog uses a table prefix for the field, the full-qualified
+action name will be:</p>
+
+<pre><i>    sub-dialog-name . table-prefix . field-name . action-name</i></pre>
+
+<p>When the field-specific action is fired (for example by a button of the
+toolbar bound with the fully-qualified action name) and if the field does not
+have the focus, the runtime system first selects that field before executing the
+code of the <tt>ON ACTION INFIELD</tt> block. The field selection forces data
+validation and <tt>AFTER FIELD</tt> of the current field, followed by <tt>BEFORE
+FIELD</tt> of the target field associated to the action.</p>
+
+<p>Note that it's still possible to enable/disable field-specific
+action objects by the program using the <a href="ClassDialog.html#setActionActive">DIALOG.setActionActive()</a>
+ method. When specifying a fully-qualified action name with the field name prefix, that field-specific action will be enabled or disabled. When disabled by
+the <code>setActionActive()</code> method, the corresponding action views will always be
+disabled, even if the field has the focus. If you do not specify a
+fully-qualified name in the method call, and if several actions are defined with
+the same action name in different sub-dialogs and/or using the <tt>INFIELD</tt>
+clause, the method will identify the action according to the current focus
+context. For example, if you define <tt>ON ACTION zoom INFIELD cust_city</tt>
+and <tt>ON ACTION zoom INFIELD cust_addr</tt>, when the focus is in <tt>cust_city</tt>,
+a call to <tt>DIALOG.setActionActive(&quot;zoom&quot;, FALSE)</tt> will disable
+the action specific to the <tt>cust_city</tt> field.</p>
+
+<p>Fields can be enabled or disabled dynamically with the <a href="ClassDialog.html#setFieldActive">DIALOG.setFieldActive()</a>
+method. If an <tt>ON ACTION INFIELD</tt> is declared on a field and if you enable/disable the field dynamically,
+then the field-specific action (and corresponding action views in the form) will be enabled or disabled
+accordingly.</p>
+
+<h4><a name="RESOLVING_ACTION_CONFLICTS">Resolving multi-level action name
+conflicts</a></h4>
+
+<p>We have seen in the above sections that actions can be defined at three
+levels in the context of a <a href="MultipleDialogs.html">DIALOG</a>
+ instruction (this would be only two levels in singular dialogs like <a href="RecordInput.html">INPUT</a>):</p>
+
+<ol>
+  <li>Dialog level</li>
+  <li>Sub-dialog level (<tt>DIALOG</tt> instruction only)</li>
+  <li>Field level</li>
+</ol>
+<p>In some case, you may want to use the same action name for different levels.
+For example, in a order input form, a typical &quot;print&quot; action could
+be defined as a global dialog action, to print the complete order data including
+order lines. Another &quot;print&quot; action could be defined for the sub-dialog
+handling order lines, to print a report with detailed information of the current
+order line only.</p>
+<p>As long as you bind action views with full qualified names,
+the <tt>ON ACTION</tt> handler is clearly identified. However, when you do not
+bind with the complete prefix of a sub-dialog or field action, the runtime
+system searches for the best <tt> ON ACTION</tt> handler to be executed, according to the
+current focus context.</p>
+<p>Take for example a <a href="MultipleDialogs.html">DIALOG</a>
+ instruction defining three <tt>ON ACTION print</tt> handlers at the dialog,
+sub-dialog and field level:</p>
+<pre><code class="linenumber">01</code> <tt>DIALOG</tt>
+<code class="linenumber">02</code>    <tt>INPUT BY NAME </tt>... <tt>ATTRIBUTES </tt>(<tt>NAME </tt>= &quot;cust&quot;)
+<code class="linenumber">03</code>       ...
+<code class="linenumber">04</code>       <tt>ON ACTION</tt> print <tt>INFIELD</tt> cust_name   -- field-level action (1)
+<code class="linenumber">05</code>         ...
+<code class="linenumber">06</code>       <tt>ON ACTION</tt> print                   -- sub-dialog-level action (2)
+<code class="linenumber">07</code>         ...
+<code class="linenumber">08</code>    <tt>END INPUT</tt>
+<code class="linenumber">09</code>    ...
+<code class="linenumber">10</code>    <tt>ON ACTION</tt> print                      -- dialog-level action (3)
+<code class="linenumber">11</code>      ...
+<code class="linenumber">12</code> <tt>END DIALOG</tt></pre>
+
+<p>The action views of the form will behave as follows:</p>
+<ul>
+  <li>Action views bound with the name &quot;<b>print</b>&quot; will always be active,
+    and fire the <tt> ON ACTION print</tt> handler corresponding to the current focus context:
+    <ul>
+      <li> (1) is fired if the focus is in the <code>cust_name</code>  field.</li>
+      <li>(2) is fired if the focus is in the <code>cust</code> sub-dialog, but
+        not in <code>cust_name</code>  field.</li>
+      <li>(3) is fired if the focus is in another sub-dialog as <code>cust</code>
+        sub-dialog.</li>
+    </ul>
+  </li>
+  <li>Action views bound with the name &quot;<b>cust.print</b>&quot; will always
+    be active, even if the focus is not the <code>cust</code> sub-dialog,
+    and fire the <tt> ON ACTION print</tt> handler according to the current focus context:
+    <ul>
+      <li> (1) is fired if the focus is in the <code>cust_name</code>  field.</li>
+      <li>(2) is fired if the focus is in the <code>cust</code> sub-dialog, but
+        not in <code>cust_name</code>  field.</li>
+    </ul>
+  </li>
+  <li>Action views bound with the name &quot;<b>cust.cust_name.print</b>&quot; will
+    always be active,
+    and fire the <tt> ON ACTION print INFIELD cust_name</tt> handler after
+    giving the focus to the <tt>cust_name</tt> field.</li>
+</ul>
+<p><b><font color="#FF0000">Warning:</font> If the first field of a sub-dialog
+defines an <tt>ON ACTION INFIELD</tt> with the same action name as a sub-dialog
+action, and the focus is not in that sub-dialog when the user selects an
+action view bound with the name <i>sub-dialog-name.action-name</i>, the runtime
+system gives the focus to the first field of the sub-dialog. This field becomes the
+current field, and the runtime system executes the field-specific action handler
+instead of the sub-dialog action handler.</b></p>
+
+<h4><a name="ACTION_BINDING_COMBINATIONS">Action view binding combinations</a></h4>
+
+<p>With multi-level action definitions (i.e. dialog-level, sub-dialog-level,
+field-level), action binding rules generate many combinations, resulting in
+different visual effects and behaviors. The examples in the following table are 
+provided to help you understand how this feature works:</p>
+
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="35%"><b>Program ON ACTION block</b></td>
+    <td bgcolor="#C0C0C0" width="30%"><b>Explicit action view in form</b></td>
+    <td bgcolor="#C0C0C0" width="30%" valign="top"><b>Visual result and behavior</b></td>
+    <td bgcolor="#C0C0C0" width="5%" align="center"><b>Case#</b></td>
+  </tr>
+  <tr>
+    <td width="100%" bgcolor="#C0C0C0" colspan="4"><b>Singular dialog (INPUT,
+      INPUT ARRAY, CONSTRUCT, DISPLAY ARRAY)</b></td>
+  </tr>
+  <tr>
+    <td width="35%" bgcolor="#CCFFCC" rowspan="5"><tt>INPUT ...<br>
+      &nbsp; ...<br>
+      &nbsp; ON ACTION search<br>
+      &nbsp; ...</tt></td>
+    <td bgcolor="#CCFFFF" width="30%"><tt><i>none</i></tt></td>
+    <td width="30%" bgcolor="#CCFFFF" valign="top">Default action view displays
+      in control panel, always active.</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">1A</td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFCC" width="30%"><tt>BUTTON b1 : search, ...</tt></td>
+    <td width="30%" bgcolor="#FFFFCC" valign="top">No default action view,
+      button is always active.</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">1B</td>
+  </tr>
+  <tr>
+    <td bgcolor="#CCFFFF" width="30%"><tt>TOOLBAR<br>
+      &nbsp; ITEM search ( ... )</tt></td>
+    <td width="30%" bgcolor="#CCFFFF" valign="top">No default action view,
+      toolbar button is always active.</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">1C</td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFCC" width="30%"><tt>TOPMENU<br>
+      &nbsp; COMMAND search ( ... )</tt></td>
+    <td width="30%" bgcolor="#FFFFCC" valign="top">No default action view,
+      topmenu command is always active.</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">1D</td>
+  </tr>
+  <tr>
+    <td bgcolor="#CCFFFF" width="30%"><tt>BUTTONEDIT f01 = ...,<br>
+      &nbsp;&nbsp;&nbsp; ACTION = search, ...</tt></td>
+    <td width="30%" bgcolor="#CCFFFF" valign="top">No default action view, field
+      button is always active.</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">1E</td>
+  </tr>
+  <tr>
+    <td width="100%" bgcolor="#C0C0C0" colspan="4"><b>DIALOG block with global
+      dialog action</b></td>
+  </tr>
+  <tr>
+    <td width="35%" bgcolor="#CCFFCC" rowspan="5"><tt>DIALOG ...<br>
+      &nbsp; ...<br>
+      &nbsp; ON ACTION search<br>
+      &nbsp; ...</tt></td>
+    <td bgcolor="#CCFFFF" width="30%"><tt><i>none</i></tt></td>
+    <td width="30%" bgcolor="#CCFFFF" valign="top">Default action view displays
+      in control panel, always active.</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">2A</td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFCC" width="30%"><tt>BUTTON b1 : search, ...</tt></td>
+    <td width="30%" bgcolor="#FFFFCC" valign="top">No default action view,
+      button is always active.</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">2B</td>
+  </tr>
+  <tr>
+    <td bgcolor="#CCFFFF" width="30%"><tt>TOOLBAR<br>
+      &nbsp; ITEM search ( ... )</tt></td>
+    <td width="30%" bgcolor="#CCFFFF" valign="top">No default action view,
+      toolbar button is always active.</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">2C</td>
+  </tr>
+  <tr>
+    <td bgcolor="#FFFFCC" width="30%"><tt>TOPMENU<br>
+      &nbsp; COMMAND search ( ... )</tt></td>
+    <td width="30%" bgcolor="#FFFFCC" valign="top">No default action view,
+      topmenu command is always active.</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">2D</td>
+  </tr>
+  <tr>
+    <td bgcolor="#CCFFFF" width="30%"><tt>BUTTONEDIT f01 = ...,<br>
+      &nbsp;&nbsp;&nbsp; ACTION = search, ...</tt></td>
+    <td width="30%" bgcolor="#CCFFFF" valign="top">No default action view, field
+      button is always active.</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">2E</td>
+  </tr>
+  <tr>
+    <td width="100%" bgcolor="#C0C0C0" colspan="4"><b>DIALOG block with
+      sub-dialog action</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#CCFFCC" width="35%" rowspan="9"><tt>DIALOG ...<br>
+      &nbsp; INPUT ... ATTRIBUTE(NAME=&quot;cust&quot;)<br>
+      &nbsp;&nbsp;&nbsp; ...<br>
+      &nbsp;&nbsp;&nbsp; ON ACTION search<br>
+      &nbsp;&nbsp;&nbsp; ...</tt></td>
+    <td width="30%" bgcolor="#CCFFFF"><tt><i>none</i></tt></td>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">Default action view displays and is active in
+      control panel when focus is in one of the fields of <tt>cust</tt> group.</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">3A</td>
+  </tr>
+  <tr>
+    <td width="30%" bgcolor="#FFFFCC"><tt>BUTTON b1 : search, ...</tt></td>
+    <td width="30%" valign="top" bgcolor="#FFFFCC">No default action view, button is active when
+      focus is in one of the fields of <tt>cust</tt> group.</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">3B</td>
+  </tr>
+  <tr>
+    <td width="30%" bgcolor="#CCFFFF"><tt>BUTTON b1 : cust.search, ...</tt></td>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">No default action view, button is always
+      active. When user clicks on button, focus automatically goes to first
+      field of <tt>cust</tt> group.</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">3C</td>
+  </tr>
+  <tr>
+    <td width="30%" bgcolor="#FFFFCC"><tt>TOOLBAR<br>
+      &nbsp; ITEM search ( ... )</tt></td>
+    <td width="30%" valign="top" bgcolor="#FFFFCC">No default action view, toolbar button is
+      active when focus is in one of the fields of <tt>cust</tt> group.</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">3D</td>
+  </tr>
+  <tr>
+    <td width="30%" bgcolor="#CCFFFF"><tt>TOOLBAR<br>
+      &nbsp; ITEM cust.search ( ... )</tt></td>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">No default action view, toolbar button is
+      always active. When user clicks on button, focus automatically goes to
+      first field of <tt>cust</tt> group.</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">3E</td>
+  </tr>
+  <tr>
+    <td width="30%" bgcolor="#FFFFCC"><tt>TOPMENU<br>
+      &nbsp; COMMAND search ( ... )</tt></td>
+    <td width="30%" valign="top" bgcolor="#FFFFCC">No default action view, topmenu command is
+      active when focus is in one of the fields of <tt>cust</tt> group.</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">3F</td>
+  </tr>
+  <tr>
+    <td width="30%" bgcolor="#CCFFFF"><tt>TOPMENU<br>
+      &nbsp; COMMAND cust.search ( ... )</tt></td>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">No default action view,
+      topmenu command is
+      always active. When user selects command, focus automatically goes to
+      first field of <tt>cust</tt> group.</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">3G</td>
+  </tr>
+  <tr>
+    <td width="30%" bgcolor="#FFFFCC"><tt>BUTTONEDIT f01 = ...,<br>
+      &nbsp;&nbsp;&nbsp; ACTION = search, ...</tt></td>
+    <td width="30%" valign="top" bgcolor="#FFFFCC">No default action view, field button is active
+      when focus is in one of the fields of <tt>cust</tt> group.</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">3H</td>
+  </tr>
+  <tr>
+    <td width="30%" bgcolor="#CCFFFF"><tt>BUTTONEDIT f01 = ...,<br>
+      &nbsp;&nbsp;&nbsp; ACTION = cust.search, ...</tt></td>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">No default action view, field button is always
+      active. When user clicks on button, focus automatically goes to the field.</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">3I</td>
+  </tr>
+  <tr>
+    <td width="100%" bgcolor="#C0C0C0" colspan="4"><b>DIALOG block with field
+      specific sub-dialog action</b></td>
+  </tr>
+  <tr>
+    <td width="35%" bgcolor="#CCFFCC" rowspan="13"><tt>DIALOG ...<br>
+      &nbsp; INPUT ... ATTRIBUTE(NAME=&quot;cust&quot;)<br>
+      &nbsp;&nbsp;&nbsp; ...<br>
+      &nbsp;&nbsp;&nbsp; ON ACTION search INFIELD city&nbsp;<br>
+      &nbsp;&nbsp;&nbsp; ...</tt></td>
+    <td width="30%" bgcolor="#CCFFFF"><tt><i>none</i></tt></td>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">Default action view displays and is active in
+      control panel when focus is in the field <tt>city</tt> only.</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">4A</td>
+  </tr>
+  <tr>
+    <td width="30%" bgcolor="#FFFFCC"><tt>BUTTON b1 : search, ...</tt></td>
+    <td width="30%" valign="top" bgcolor="#FFFFCC">No default action view, button is active when
+      focus is in the field <tt>city</tt> only.</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">4B</td>
+  </tr>
+  <tr>
+    <td width="30%" bgcolor="#CCFFFF"><tt>BUTTON b1 : cust.search, ...</tt></td>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">No default action view, button is active when
+      focus is in the field <tt>city</tt> only.<br>
+      The action view binds to the field action.</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">4C</td>
+  </tr>
+  <tr>
+    <td width="30%" bgcolor="#FFFFCC"><tt>BUTTON b1 : cust.city.search, ...</tt></td>
+    <td width="30%" valign="top" bgcolor="#FFFFCC">No default action view, button is always
+      active. When user clicks on button, focus automatically goes to <tt>city</tt>
+      field.</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">4D</td>
+  </tr>
+  <tr>
+    <td width="30%" bgcolor="#CCFFFF"><tt>TOOLBAR<br>
+      &nbsp; ITEM search ( ... )</tt></td>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">No default action view, toolbar button is
+      active when focus is in the field <tt>city</tt> only.</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">4E</td>
+  </tr>
+  <tr>
+    <td width="30%" bgcolor="#FFFFCC"><tt>TOOLBAR<br>
+      &nbsp; ITEM cust.search ( ... )</tt></td>
+    <td width="30%" valign="top" bgcolor="#FFFFCC">No default action view, button is active when
+      focus is in the field <tt>city</tt> only.<br>
+      The action view binds to the field action.</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">4F</td>
+  </tr>
+  <tr>
+    <td width="30%" bgcolor="#CCFFFF"><tt>TOOLBAR<br>
+      &nbsp; ITEM cust.city.search ( ... )</tt></td>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">No default action view, button is always
+      active. When user clicks on toolbar button, focus automatically goes to <tt>city</tt>
+      field.</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">4G</td>
+  </tr>
+  <tr>
+    <td width="30%" bgcolor="#FFFFCC"><tt>TOPMENU<br>
+      &nbsp; COMMAND search ( ... )</tt></td>
+    <td width="30%" valign="top" bgcolor="#FFFFCC">No default action view, command is
+      active when focus is in the field <tt>city</tt> only.</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">4H</td>
+  </tr>
+  <tr>
+    <td width="30%" bgcolor="#CCFFFF"><tt>TOPMENU<br>
+      &nbsp; COMMAND cust.search ( ... )</tt></td>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">No default action view,
+      command is active when
+      focus is in the field <tt>city</tt> only.<br>
+      The action view binds to the field action.</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">4I</td>
+  </tr>
+  <tr>
+    <td width="30%" bgcolor="#FFFFCC"><tt>TOPMENU<br>
+      &nbsp; COMMAND cust.city.search ( ... )</tt></td>
+    <td width="30%" valign="top" bgcolor="#FFFFCC">No default action view,
+      command is always
+      active. When user selects topmenu command, focus automatically goes to <tt>city</tt>
+      field.</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">4J</td>
+  </tr>
+  <tr>
+    <td width="30%" bgcolor="#CCFFFF"><tt>BUTTONEDIT f01 = ...,<br>
+      &nbsp;&nbsp;&nbsp; ACTION = search, ...</tt></td>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">No default action view, field
+      button is
+      active when focus is in the field <tt>city</tt> only.</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">4K</td>
+  </tr>
+  <tr>
+    <td width="30%" bgcolor="#FFFFCC"><tt>BUTTONEDIT f01 = ...,<br>
+      &nbsp;&nbsp;&nbsp; ACTION = cust.search, ...</tt></td>
+    <td width="30%" valign="top" bgcolor="#FFFFCC">No default action view, field
+      button is
+      active when focus is in the field <tt>city</tt> only.</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">4L</td>
+  </tr>
+  <tr>
+    <td width="30%" bgcolor="#CCFFFF"><tt>BUTTONEDIT f01 = ...,<br>
+      &nbsp;&nbsp;&nbsp; ACTION = cust.city.search, ...</tt></td>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">No default action view, field
+      button is always active.</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">4M</td>
+  </tr>
+</table>
+
+
+<h3><a name="DEFAULT_CONTEXT_MENU">Default Context Menu</a></h3>
+
+
+<p>Some front-ends display a default context menu, showing all possible (active) 
+actions in the current context. You can define the action to be represented
+in this context menu by using the <a href="FSFAttributes.html#FA_CONTEXTMENU">CONTEXTMENU
+Action Default attribute</a>.</p>
+
+
+<h3><a name="ACTION_VALIDATE">Avoiding field data validation in UNBUFFERED mode</a></h3>
+
+
+<p>When you use the <a href="MultipleDialogs.html#buff-unbuff-modes">UNBUFFERED
+mode</a>, the current field value is validated before <tt>ON ACTION</tt> is fired.
+If you want to disabled this validation (typically, for a user-defined <i>cancel</i>
+or <i>quit</i> action), you can set the <a href="ActionDefaults.html#ACTDEFVALIDATE">validate</a>
+Action Default attribute to zero. This is especially needed in <a href="MultipleDialogs.html">DIALOG</a>
+ instructions; in singular dialogs like <a href="RecordInput.html">INPUT</a>,
+predefined actions like <i>cancel</i> do not validate the current field value 
+when <tt>UNBUFFERED</tt> mode is used.&nbsp;</p>
+
+
+<HR>
+
+<h2><a name="PREDEFACTIONS">Predefined Actions</a></h2>
+
+<h3><a name="PA_DEFINITION">Definition</a></h3>
+
+<p>The BDL language predefines some action names for common operations of 
+interactive instructions. These actions are called <u>Predefined Actions</u>,
+and get a default handler implemented in the dialog internals. For example, the <i>accept</i>
+action is a predefined action that validates the current dialog.</p>
+
+<p>There are three types of predefined actions:</p>
+
+<ul>
+	<li><b>Automatic actions:</b> actions that are automatically created and handled by the
+      program dialog.</li>
+	<li><b>Special actions:</b> actions with a special usage, that can be fired asynchronously
+      or automatically by the front-end.</li>
+	<li><b>Local actions:</b> actions that are handled on the front end only.</li>
+</ul>
+
+<p>Note also that dialogs can handle <tt>ON IDLE</tt> events, but such timeout
+events are not considered as actions.</p>
+
+<p>Default decoration attributes and keyboard shortcuts are defined in the <a href="ActionDefaults.html">FGLDIR/lib/default.4ad</a>
+global action defaults file for predefined actions.</p>
+
+<h3><a name="PA_AUTOLOCAL">Automatic and Local actions with same name</a></h3>
+
+<p>Some predefined actions exist as both <u>automatic actions</u> and as <u>local
+actions</u>. The automatic actions are created according to the dialog context.
+If an automatic action has to be defined and if a local action exists with the
+same name, the automatic action takes precedence over the local action. For
+example, if the dialog context requires a <i>editcopy</i> runtime action, the
+local <i>editcopy</i> action will not be handled by the front-end.&nbsp;</p>
+
+<h3><a name="PA_OVERWRITE">Overwriting predefined actions with ON ACTION</a></h3>
+
+<p>If you define your own <tt>ON ACTION</tt> handler with the name of a
+predefined action, the default action processing is bypassed and the program code is executed
+instead.</p>
+
+<p>The next code example defines an <tt>ON ACTION</tt> clause with the <i>accept</i>
+predefined action name:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>INPUT BY NAME </tt>customer.*
+<CODE class=linenumber>02</CODE>  <tt>ON ACTION</tt> accept
+<CODE class=linenumber>03</CODE>     ...
+<CODE class=linenumber>04</CODE> <tt>END INPUT</tt></pre>
+
+<p>In this case, the default behavior of the automatic <i>accept</i> action is not performed; the user code is
+executed instead.</p>
+
+
+<p><a href="#PA_DEFINITION">Local actions</a> can be overwritten in the same manner, however, this is not
+recommended (use your own action names).</p>
+
+
+<h3><a name="PA_AUTO_ACTIVATE">Predefined actions enabled according to context</a></h3>
+
+
+<p>Some predefined actions (such as <i>insert</i>, <i>append</i> and <i>delete</i>
+in <a href="InputArray.html">INPUT ARRAY</a>) are enabled and disabled
+automatically by the dialog according to the context (for example, when a static
+array is full, the <i>insert</i> and <i>append</i> actions get disabled).</p>
+
+
+<p>Even
+when overwriting such actions with your own action handler, the runtime system will continue to enable and
+disabled the actions automatically.&nbsp;</p>
+
+
+<h3><a name="PA_BINDING">Binding action views to predefined actions</a></h3>
+
+<p>As for user-defined actions, if
+you design forms with action views using predefined action names, they will automatically attach
+themselves to the actions of the interactive instructions. It is also possible to define default
+images, texts, comments and accelerator keys in the <a href="ActionDefaults.html">Action
+Defaults</a> resource file for the predefined actions.</p>
+
+<h3><a name="PA_LIST">List of predefined actions</a></h3>
+
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="15%"><b>Action Name</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+    <td bgcolor="#C0C0C0" width="20%"><b>ON ACTION block is required</b></td>
+    <td bgcolor="#C0C0C0" width="5%"><b>Context</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="15%"><b>Runtime Actions</b></td>
+    <td bgcolor="#C0C0C0"><b>Automatically created by the runtime system</b></td>
+    <td bgcolor="#C0C0C0" width="20%">&nbsp;</td>
+    <td bgcolor="#C0C0C0" width="5%">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#CCFFFF"><tt>accept</tt></td>
+    <td bgcolor="#CCFFFF">Validates the current interactive instruction
+      (singular dialogs only)</td>
+    <td align="center" width="20%" bgcolor="#CCFFFF">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">(1)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#CCFFFF"><tt>cancel</tt></td>
+    <td bgcolor="#CCFFFF">Cancels the current interactive instruction (singular
+      dialogs only)</td>
+    <td align="center" width="20%" bgcolor="#CCFFFF">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">(1)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#CCFFFF"><tt>close</tt></td>
+    <td bgcolor="#CCFFFF">Triggers a cancel key in the current 
+	interactive instruction (by default)</td>
+    <td align="center" width="20%" bgcolor="#CCFFFF">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">(7)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#CCFFFF"><tt>insert</tt></td>
+    <td bgcolor="#CCFFFF">Inserts a new row before current row</td>
+    <td align="center" width="20%" bgcolor="#CCFFFF">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">(2)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#CCFFFF"><tt>append</tt></td>
+    <td bgcolor="#CCFFFF">Appends a new row at the end of the list</td>
+    <td align="center" width="20%" bgcolor="#CCFFFF">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">(2)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#CCFFFF"><tt>delete</tt></td>
+    <td bgcolor="#CCFFFF">Deletes the current row</td>
+    <td align="center" width="20%" bgcolor="#CCFFFF">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">(2)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#CCFFFF"><tt>nextrow</tt></td>
+    <td bgcolor="#CCFFFF">Moves to the next row (only if list using one flat screen
+      record)</td>
+    <td align="center" width="20%" bgcolor="#CCFFFF">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">(8)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#CCFFFF"><tt>prevrow</tt></td>
+    <td bgcolor="#CCFFFF">Moves to the previous row (only if list using one flat
+      screen record)</td>
+    <td align="center" width="20%" bgcolor="#CCFFFF">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">(8)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#CCFFFF"><tt>firstrow</tt></td>
+    <td bgcolor="#CCFFFF">Moves to the first row (only if list using one flat screen
+      record)</td>
+    <td align="center" width="20%" bgcolor="#CCFFFF">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">(8)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#CCFFFF"><tt>lastrow</tt></td>
+    <td bgcolor="#CCFFFF">Moves to the last row (only if list using one flat screen
+      record)</td>
+    <td align="center" width="20%" bgcolor="#CCFFFF">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">(8)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#CCFFFF"><tt>help</tt></td>
+    <td bgcolor="#CCFFFF">Shows the help topic defined by the <tt>HELP</tt> clause</td>
+    <td align="center" width="20%" bgcolor="#CCFFFF">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">(1)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#CCFFFF"><tt>editcopy</tt></td>
+    <td bgcolor="#CCFFFF">Copy selected rows (or current row if MRS is off) to the clipboard</td>
+    <td align="center" width="20%" bgcolor="#CCFFFF">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#CCFFFF">(9)</td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="15%"><b>Special Actions</b></td>
+    <td bgcolor="#C0C0C0"><b>Special behavior</b></td>
+    <td bgcolor="#C0C0C0" width="20%">&nbsp;</td>
+    <td bgcolor="#C0C0C0" width="5%">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#FFCCFF"><tt>interrupt</tt></td>
+    <td bgcolor="#FFCCFF">Sends an interruption request to the program when
+      processing</td>
+    <td align="center" width="20%" bgcolor="#FFCCFF">no</td>
+    <td align="center" width="5%" bgcolor="#FFCCFF">(5)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#FFCCFF"><tt>dialogtouched</tt></td>
+    <td bgcolor="#FFCCFF">Sent by the front end each time the user modifies the value
+      of a field</td>
+    <td align="center" width="20%" bgcolor="#FFCCFF">yes</td>
+    <td align="center" width="5%" bgcolor="#FFCCFF">(7)</td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="15%"><b>Local Actions</b></td>
+    <td bgcolor="#C0C0C0"><b>Handled by the front end</b></td>
+    <td bgcolor="#C0C0C0" width="20%">&nbsp;</td>
+    <td bgcolor="#C0C0C0" width="5%">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#FFFFCC"><tt>editcopy</tt></td>
+    <td bgcolor="#FFFFCC">Copies the current selected text to the clipboard</td>
+    <td align="center" width="20%" bgcolor="#FFFFCC">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">(7)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#FFFFCC"><tt>editcut</tt></td>
+    <td bgcolor="#FFFFCC">Copies the current selected text to the clipboard and removes
+      the text from the current input widget</td>
+    <td align="center" width="20%" bgcolor="#FFFFCC">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">(7)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#FFFFCC"><tt>editpaste</tt></td>
+    <td bgcolor="#FFFFCC">Pastes the clipboard content to the current input widget</td>
+    <td align="center" width="20%" bgcolor="#FFFFCC">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">(7)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#FFFFCC"><tt>nextfield</tt></td>
+    <td bgcolor="#FFFFCC">Moves to the next field in the form</td>
+    <td align="center" width="20%" bgcolor="#FFFFCC">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">(3)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#FFFFCC"><tt>prevfield</tt></td>
+    <td bgcolor="#FFFFCC">Moves to the previous field in the form</td>
+    <td align="center" width="20%" bgcolor="#FFFFCC">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">(3)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#FFFFCC"><tt>nextrow</tt></td>
+    <td bgcolor="#FFFFCC">Moves to the next row in the list</td>
+    <td align="center" width="20%" bgcolor="#FFFFCC">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">(4)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#FFFFCC"><tt>prevrow</tt></td>
+    <td bgcolor="#FFFFCC">Moves to the previous row in the list</td>
+    <td align="center" width="20%" bgcolor="#FFFFCC">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">(4)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#FFFFCC"><tt>firstrow</tt></td>
+    <td bgcolor="#FFFFCC">Moves to the first row in the list</td>
+    <td align="center" width="20%" bgcolor="#FFFFCC">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">(4)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#FFFFCC"><tt>lastrow</tt></td>
+    <td bgcolor="#FFFFCC">Moves to the last row in the list</td>
+    <td align="center" width="20%" bgcolor="#FFFFCC">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">(4)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#FFFFCC"><tt>nextpage</tt></td>
+    <td bgcolor="#FFFFCC">Moves to the next page in the list</td>
+    <td align="center" width="20%" bgcolor="#FFFFCC">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">(4)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#FFFFCC"><tt>prevpage</tt></td>
+    <td bgcolor="#FFFFCC">Moves to the previous page in the list</td>
+    <td align="center" width="20%" bgcolor="#FFFFCC">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">(4)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#FFFFCC"><tt>nexttab</tt></td>
+    <td bgcolor="#FFFFCC">Moves to the next page in the folder</td>
+    <td align="center" width="20%" bgcolor="#FFFFCC">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">(6)</td>
+  </tr>
+  <tr>
+    <td width="15%" bgcolor="#FFFFCC"><tt>prevtab</tt></td>
+    <td bgcolor="#FFFFCC">Moves to the previous page in the folder</td>
+    <td align="center" width="20%" bgcolor="#FFFFCC">can overwrite</td>
+    <td align="center" width="5%" bgcolor="#FFFFCC">(6)</td>
+  </tr>
+</table>
+
+<p>Contexts description (last column in above table):</p>
+
+<ol>
+  <li><a href="Construct.html">CONSTRUCT</a>, <a href="RecordInput.html">INPUT</a>,
+      <a href="Prompt.html">PROMPT</a>, <a href="InputArray.html">INPUT ARRAY</a>
+    and <a href="DisplayArray.html">DISPLAY ARRAY</a>.</li>
+  <li><a href="InputArray.html">INPUT ARRAY</a> only.</li>
+  <li><a href="Construct.html">CONSTRUCT</a>, <a href="RecordInput.html">INPUT</a>
+    and <a href="InputArray.html">INPUT ARRAY</a>.</li>
+  <li><a href="InputArray.html">INPUT ARRAY</a> and <a href="DisplayArray.html">DISPLAY ARRAY</a>.</li>
+  <li>Only possible when no interactive instruction is active.</li>
+  <li>Possible in any kind of interactive instruction (<a href="Menus.html">MENU</a> included).</li>
+  <li><a href="MultipleDialogs.html">DIALOG</a>, <a href="Construct.html">CONSTRUCT</a>, <a href="RecordInput.html">INPUT</a>,
+      <a href="Prompt.html">PROMPT</a>, <a href="InputArray.html">INPUT ARRAY</a>
+    and <a href="DisplayArray.html">DISPLAY ARRAY</a>.</li>
+  <li><a href="InputArray.html">INPUT ARRAY</a> and <a href="DisplayArray.html">DISPLAY ARRAY</a>
+    on flat screen-record.</li>
+  <li><a href="DisplayArray.html">DISPLAY ARRAY</a>
+    only.</li>
+</ol>
+
+
+<HR>
+
+<h2><a name="ACCELNAMES">Keyboard Accelerator Names</a></h2>
+
+<h3><a name="ACCEL_KEYS">Accelerator keys</a></h3>
+
+<p>Some parts of the user interface can define accelerators keys. With <a href="ActionDefaults.html">Action Defaults</a>, you can define up to four accelerator keys for the same action, by setting the <i>acceleratorName</i>,
+<i>acceleratorName2</i>, <i>acceleratorName3</i> and <i>acceleratorName4</i>
+ attributes.</p>
+
+<p>If no accelerators are defined in the Action Defaults, the runtime system
+sets default accelerators for <a href="#PREDEFACTIONS">predefined actions</a>,
+according to the user interface mode. For example, the <i>accept</i> action will
+get the <tt>Return</tt> and <tt>Enter</tt> keys in <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a>
+mode; the <tt>Escape</tt> key would be used in <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a>
+mode.</p>
+
+<p>If you want to force an action to have no accelerator, specify &quot;<tt>none</tt>&quot;
+as the accelerator name.</p>
+
+
+<p>If one of the user-defined actions uses an accelerator that would normally be
+used for a predefined action, the runtime system does not set that accelerator
+for the predefined action. For example (in GUI mode), if you define an <tt>ON
+ACTION quit</tt> with an action default using the accelerator &quot;<tt>Escape</tt>&quot;,
+the <i>cancel</i> predefined action will not get the &quot;<tt>Escape</tt>&quot; default
+accelerator. User settings take precedence over defaults.</p>
+
+
+<p>Note that text edition and navigation accelerators such as <tt>Home</tt> and <tt>End</tt>
+are usually local to the widget. According to the context, such accelerators
+might be eaten by the widget and will not fire the action bound to the
+corresponding accelerator defined in the Action Defaults. For example, even if
+the Action Defaults for <i>firstrow</i> action defines the <tt>Home</tt>
+accelerator, when using an <a href="InputArray.html">INPUT ARRAY</a>, the Home
+keystroke will jump to the beginning of the edit field, not the first row of
+the list.&nbsp;</p>
+
+
+<p> <a name="ACCEL_KEY_LIST"> The following table lists
+all the keyboard accelerator names:</a></p>
+
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="15%" height="40"><b>Accelerator Name</b></td>
+    <td bgcolor="#C0C0C0" height="40"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="15%" height="18"><tt>none</tt></td>
+    <td height="18">Special name indicating the runtime system must not set
+      any default accelerator for the action.</td>
+  </tr>
+  <tr>
+    <td width="15%" height="18"><tt>0-9</tt></td>
+    <td height="18">Decimal digits from 0 to 9</td>
+  </tr>
+  <tr>
+    <td width="15%" height="21"><tt>A-Z</tt></td>
+    <td height="21">Letters from A to Z</td>
+  </tr>
+  <tr>
+    <td width="15%" height="21"><tt>F1-F35</tt></td>
+    <td height="21">The functions keys</td>
+  </tr>
+  <tr>
+    <td width="15%" height="21"><tt>BackSpace</tt></td>
+    <td height="21">The BACKSPACE key (do not confuse with DELETE key)</td>
+  </tr>
+  <tr>
+    <td width="15%" height="21"><tt>Delete</tt></td>
+    <td height="21">The DELETE key (navigation keyboard group)</td>
+  </tr>
+  <tr>
+    <td width="15%" height="21"><tt>Down</tt></td>
+    <td height="21">The DOWN key (arrow keyboard group)</td>
+  </tr>
+  <tr>
+    <td width="15%" height="21"><tt>End</tt></td>
+    <td height="21">The END key (navigation keyboard group)</td>
+  </tr>
+  <tr>
+    <td width="15%" height="21"><tt>Enter</tt></td>
+    <td height="21">The ENTER key (numeric keypad, see <a href="#NOTE">Note</a>)</td>
+  </tr>
+  <tr>
+    <td width="15%" height="21"><tt>Escape</tt></td>
+    <td height="21">The ESCAPE key</td>
+  </tr>
+  <tr>
+    <td width="15%" height="21"><tt>Home</tt></td>
+    <td height="21">The HOME key (navigation keyboard group)</td>
+  </tr>
+  <tr>
+    <td width="15%" height="21"><tt>Insert</tt></td>
+    <td height="21">The INSERT key (navigation keyboard group)</td>
+  </tr>
+  <tr>
+    <td width="15%" height="21"><tt>Left</tt></td>
+    <td height="21">The LEFT key (arrow keyboard group)</td>
+  </tr>
+  <tr>
+    <td width="15%" height="21"><tt>Minus</tt></td>
+    <td height="21">The MINUS sign key (-)</td>
+  </tr>
+  <tr>
+    <td width="15%" height="21"><tt>Next</tt></td>
+    <td height="21">The NEXT PAGE key (navigation keyboard group)</td>
+  </tr>
+  <tr>
+    <td width="15%" height="21"><tt>Prior</tt></td>
+    <td height="21">The PRIOR PAGE key (navigation keyboard group)</td>
+  </tr>
+  <tr>
+    <td width="15%" height="21"><tt>Return</tt></td>
+    <td height="21">The RETURN key (alphanumeric keypad, see <a href="#NOTE">Note</a>)</td>
+  </tr>
+  <tr>
+    <td width="15%" height="21"><tt>Right</tt></td>
+    <td height="21">The RIGHT key (arrow keyboard group)</td>
+  </tr>
+  <tr>
+    <td width="15%" height="21"><tt>Space</tt></td>
+    <td height="21">The SPACE-BAR key</td>
+  </tr>
+  <tr>
+    <td width="15%" height="21"><tt>Tab</tt></td>
+    <td height="21">The TABULATION Key</td>
+  </tr>
+  <tr>
+    <td width="15%" height="21"><tt>Up</tt></td>
+    <td height="21">The UP key (arrow keyboard group)</td>
+  </tr>
+</table>
+
+<h4><a name="NOTE">Note:</a></h4>
+<p>The &quot;<code>Enter</code>&quot; key represents the ENTER key available on
+the numeric keypad of standard keyboards, while &quot;<code>Return</code>&quot;
+represents the RETURN key of the
+alphanumeric keyboard. By default, the validation action is configured to accept
+both &quot;<code>Enter</code>&quot; and &quot;<code>Return</code>&quot; keys. See the
+<a href="ActionDefaults.html">Action Defaults</a> file.</p>
+
+<h3><a name="ACCEL_KEY_MOD">Accelerator key modifiers</a></h3>
+
+<p>All of the key names listed in the previous table can be combined with CONTROL /
+SHIFT / ALT modifiers, by adding &quot;<code>Control-</code>&quot;,
+&quot;<code>Shift-</code>&quot;, or &quot;<code>Alt-</code>&quot; to the name of the accelerator.</p>
+
+<p>For example:</p>
+
+<pre><code>Control-P
+Shift-Alt-F12
+Control-Shift-Alt-Z</code></pre>
+
+
+<HR>
+
+<h2><a name="INTERRUPTION">Interruption Handling</a></h2>
+
+<h3>Why do we need interruption handling?</h3>
+
+<p>When the BDL program executes an interactive instruction, the front end can send
+action events based on user actions. When the program performs a long
+process like a loop, a report, or a database query, the front end has no 
+control.&nbsp; You might want to permit the user to stop a long-running
+process.</p>
+
+<h3>How to program the detection of user interruptions</h3>
+
+<p>To detect user interruptions, you define an action view with the
+name 'interrupt'. When the runtime system takes control to process program
+code, the front end automatically enables the local 'interrupt' action to let the
+user send an asynchronous interruption request to the program.</p>
+
+<p><b><font color="#FF0000">Warning:</font> The front end can not handle
+interruption requests properly if the display generates a lot of network
+traffic. In this case, the front end has to process a lot of user interface
+modifications and has no time to detect a mouse click on the 'interrupt' action
+view. A typical example is a program doing a loop from 1 to 10000, just
+displaying the value of the counter to a field and doing a refresh. This would
+generate hundreds of AUI tree modifications in a short period of time. In such
+a case, we recommended that you calculate a modulo and display steps 10 by 10 or 100 by
+100.</b></p>
+
+<h3>Interruption handling example:</h3>
+
+<p>Form file &quot;f1.per&quot;:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>LAYOUT</tt>
+<CODE class=linenumber>02</CODE>  <tt>GRID</tt>
+<CODE class=linenumber>03</CODE>  {
+<CODE class=linenumber>04</CODE>   Step: [pb                    ]
+<CODE class=linenumber>05</CODE>         [sb                    ]
+<CODE class=linenumber>06</CODE>  }
+<CODE class=linenumber>07</CODE>  <tt>END</tt>
+<CODE class=linenumber>08</CODE> <tt>END</tt>
+<CODE class=linenumber>09</CODE> <tt>ATTRIBUTES</tt>
+<CODE class=linenumber>10</CODE> <tt>PROGRESSBAR</tt> pb = <tt>FORMONLY</tt>.progress, <tt>VALUEMIN</tt>=0, <tt>VALUEMAX</tt>=100;
+<CODE class=linenumber>11</CODE> <tt>BUTTON</tt> sb : interrupt, <tt>TEXT</tt>=&quot;Stop&quot;;
+<CODE class=linenumber>12</CODE> <tt>END</tt></pre>
+
+<p>Program:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>  <tt>DEFINE</tt> i,j <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>  <tt>DEFER INTERRUPT</tt>
+<CODE class=linenumber>04</CODE>  <tt>OPEN FORM</tt> f1 <tt>FROM</tt> &quot;f1&quot;
+<CODE class=linenumber>05</CODE>  <tt>DISPLAY FORM</tt> f1
+<CODE class=linenumber>06</CODE>  <tt>LET</tt> int_flag=<tt>FALSE</tt>
+<CODE class=linenumber>07</CODE>  <tt>FOR</tt> i=1 <tt>TO</tt> 100
+<CODE class=linenumber>08</CODE>    <tt>DISPLAY </tt>i <tt>TO </tt>progress 
+<CODE class=linenumber>09</CODE>    <tt>CALL</tt> ui.Interface.refresh()
+<CODE class=linenumber>10</CODE>    <tt>FOR</tt> j=1 <tt>TO</tt> 1000 -- Loop to emulate processing
+<CODE class=linenumber>11</CODE>      <tt>DISPLAY </tt>j
+<CODE class=linenumber>12  </CODE>    <tt>IF</tt> int_flag <tt>THEN EXIT FOR END IF</tt>
+<CODE class=linenumber>13</CODE>    <tt>END FOR</tt>
+<CODE class=linenumber>14</CODE>    <tt>IF</tt> int_flag <tt>THEN EXIT FOR END IF</tt>
+<CODE class=linenumber>15</CODE>  <tt>END FOR</tt>
+<CODE class=linenumber>16</CODE> <tt>END MAIN</tt></pre>
+
+
+<HR>
+
+<h2><a name="DIRTY">Detecting data changes immediately</a></h2>
+<p>You can use a special predefined action to detect user changes immediately
+and execute code in the program to set up your interactive instruction. This special action has
+the name &quot;<i>dialogtouched</i>&quot; and must be declared with an <tt>ON ACTION</tt>
+clause to be enabled:</p>
+<pre><CODE class=linenumber>01</CODE>  <tt>DIALOG</tt>
+<CODE class=linenumber>02</CODE>    ...
+<CODE class=linenumber>03</CODE>    <tt>ON ACTION </tt>dialogtouched
+<CODE class=linenumber>04   </CODE>    <tt>LET</tt> changing = <tt>TRUE</tt>
+<CODE class=linenumber>05   </CODE>    <tt>CALL </tt>DIALOG.setActionActive(&quot;dialogtouched&quot;, <tt>FALSE</tt>)
+<CODE class=linenumber>06</CODE>    ...
+<CODE class=linenumber>07</CODE>  <tt>END DIALOG</tt></pre>
+
+<p>The <i>dialogtouched</i> action works for any field controlled by the
+current interactive instruction, and with any type of <a href="FormSpecFiles.html#FF_FORM_FIELD">form field</a>:
+Every time the user modifies the value of a field (without
+leaving the field), the <tt>ON
+ACTION dialogtouched</tt> block will be executed; This can be triggered by
+typing characters in a text editor field, clicking a checkbox / radiogroup, or
+modifying a slider.</p>
+
+
+<p>You may only want to detect the beginning of a record modification, to enable a
+&quot;save&quot; action for example. To prevent further <i>dialogtouched</i> action events, just disable
+that action with a <a href="ClassDialog.html#setActionActive">setActionActive()</a>
+call.&nbsp;If the <i>dialogtouched</i> action is enabled, the <tt>ON ACTION</tt> block will be
+fired each time the user modifies the value in the current field.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> Note that you must disable / enable
+the <i>dialogtouched</i> action in accordance with the
+status of the dialog: If this action is enabled, the <tt>ON ACTION</tt> block
+will be fired each time the user types characters (or modifies the value with
+copy/paste) in the current field; This can generate a lot of network traffic.</b> </p>
+
+
+<p>The current field may contain some text that does not represent a valid value of the underlying field data type. For example, a form field bound to a
+<a href="DataTypes.html#DT_DATE">
+DATE</a> variable may contain only a part of a valid date string, such as
+<code>[12/24/&nbsp;&nbsp;&nbsp; ]</code>. For this reason, the target variable
+cannot hold the current text displayed on the screen when the <tt>ON ACTION
+dialogtouched</tt> code is executed, even when using the <tt>UNBUFFERED</tt>
+mode.</p>
+<p>To avoid data validation on action code execution, the <i>dialogtouched</i> action is defined
+with <tt>validate=&quot;no&quot;</tt> in the default <a href="ActionDefaults.html">Action
+Defaults</a> file. This is mandatory when using the <tt>UNBUFFERED</tt> mode;
+otherwise the runtime would try to copy the input buffer into the program
+variable when a <i>dialogtouched</i> action is fired. Since the text of the
+current field will in most cases contain only a part of a valid data value, that
+would always result in a conversion error.</p>
+
+
+<HR>
+
+<h2><a name="VALIDATE">Controlling data validation when an action is fired</a></h2>
+<p>When using the <tt>UNBUFFERED</tt> mode of interactive instructions such as <a href="RecordInput.html">INPUT</a>
+or <a href="MultipleDialogs.html">DIALOG</a>, if the user triggers an action,
+the current field data is checked and loaded in the target variable bound to the
+form field. For example, if the user types a wrong date (or only a part of a
+date) in a field using a <a href="DataTypes.html#DT_DATE">DATE</a> variable and
+then clicks on a button to fire an action, the runtime system will throw an
+error and will not execute the <tt>ON ACTION</tt> block corresponding to the
+button.</p>
+<p>If you want to prevent data validation for some actions, you can use the <tt>validate</tt>
+Action Default attribute. This attribute instructs the runtime not&nbsp; to copy the
+input buffer text into the program variable (requiring input buffer text to
+match the target data type).</p>
+<p>The <tt>validate</tt> Action Default attribute can be set in the global
+action default file, or at the form level, in a line of the <a href="FormSpecFiles.html#SECTION_ACTDEFS">ACTION
+DEFAULTS</a> section.</p>
+
+
+<HR>
+
+
+<h2><a name="XCROSS_CLOSE">Windows closed by the user</a></h2>
+<p>In graphical applications, windows can be closed by the user, for
+example by pressing <code>ALT+F4</code>  or by clicking the cross button in the
+upper-left corner of the window. A <a href="#PREDEFACTIONS">Predefined Action</a> is dedicated
+to this specific event, named <i>close</i>. When the user closes a graphical window, the program gets
+a <i>close</i> action.</p>
+
+
+<h3><a name="close_in_dialog">The close action in DIALOG</a></h3>
+
+
+<p> When executing a <a href="MultipleDialogs.html">DIALOG</a> instruction,
+the <i>close</i> action executes the <tt>ON
+ACTION close</tt> block, if defined. Otherwise, the <i>close</i> action is mapped to the
+<i>cancel</i> action if an <tt>ON ACTION cancel</tt> handler is defined. If neither <tt>ON
+ACTION close</tt>, nor <tt>ON
+ACTION cancel</tt> are defined, nothing will happen if the user tries to close
+the window with the X cross
+button or an <code>ALT+F4</code>   keystroke. The <a href="Programs.html#PV_INT_FLAG">int_flag</a> register will not be
+set in the context of <tt>DIALOG</tt>.</p>
+
+
+<h3><a name="close_in_singular">The close action in singular dialogs</a></h3>
+
+
+<p> When executing an <a href="RecordInput.html">INPUT</a>, <a href="InputArray.html">INPUT
+ARRAY</a>, <a href="Construct.html">CONSTRUCT</a>, <a href="DisplayArray.html">DISPLAY
+ARRAY</a> or <a href="Prompt.html">PROMPT</a>, if an <tt>ON
+ACTION close</tt> handler is defined, the handler code will be executed. Otherwise, the <i>close</i> action acts the same as the <i>cancel</i>
+<a href="#PREDEFACTIONS">predefined action</a>.
+So by default when the user clicks the X cross button, the interactive instruction stops and&nbsp;<a href="Programs.html#PV_INT_FLAG">int_flag</a> 
+is set to 1. If there is an explicit <tt>ON ACTION cancel</tt> block defined,
+int_flag is set to 1 and the user code below <tt>ON ACTION cancel</tt>  will be
+executed. Note that if the <tt>CANCEL=FALSE</tt> option is set, no <i>cancel</i>
+and no <i>close</i>
+action will be created, and you must write an <tt>ON
+ACTION close</tt> handler to proceed with the <i>close</i> action. In this case, the int_flag register will not be
+set when the <i>close</i> action is fired.</p>
+
+
+<h3><a name="close_in_menu">The close action in MENU</a></h3>
+
+
+<p>When executing a <a href="Menus.html">MENU</a>
+ instruction, if an <tt>ON
+ACTION close</tt> handler is defined, the handler code will be executed. If no
+specific <i>close</i> action handler is defined, the code of the <tt>COMMAND
+KEY(INTERRUPT)</tt> or <tt>ON ACTION cancel</tt> will be executed, if defined.
+if neither <tt>COMMAND KEY(INTERRUPT)</tt> nor <tt>ON ACTION cancel</tt> are
+defined, nothing happens and the program stays in the <tt>MENU</tt> instruction.
+Regarding the <i>close</i> action, the value of <a href="Programs.html#PV_INT_FLAG">int_flag</a>
+is undefined in a <tt>MENU</tt> instruction.</p>
+
+
+<h3><a name="close_example">Close action example</a></h3>
+
+
+<p>You typically implement a <i>close</i> action handler to open a confirmation
+dialog box as in following example:</p>
+
+
+<pre><code class="linenumber">01 </code><tt>INPUT BY NAME</tt> cust_rec.*
+<code class="linenumber">02    </code>...
+<code class="linenumber">03    </code><tt>ON ACTION</tt> close
+<code class="linenumber">04    </code>  <tt>IF</tt> msg_box_yn(&quot;Are you sure you want to close this window?&quot;) == &quot;y&quot; <tt>THEN</tt>
+<code class="linenumber">05      </code>  <tt>EXIT INPUT</tt>
+<code class="linenumber">06    </code>  <tt>END IF</tt>
+<code class="linenumber">07    </code>...
+<code class="linenumber">08</code> <tt>END INPUT</tt></pre>
+
+
+</BODY>
+</HTML>

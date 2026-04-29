@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Message Files</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Message Files</a></H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#DEFINITION">Basics</a></li>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#COMPILING">Compiling Message Files</a></li>
+  <li><a href="#USING">Using Messages Files</a></li>
+  <li><a href="#EXAMPLES">Example</a></li>
+</ul>
+
+
+<p>See also: <a href="Programs.html#PROGRAM_OPTIONS">OPTIONS</a>,
+<a href="BuiltInFunctions.html#BF_SHOWHELP">SHOWHELP()</a>, <a href="Tools.html#TL_FGLMKMSG">
+   fglmkmsg</a>, <a href="LocalizedStrings.html">Localized Strings</a>.</p>
+
+<HR>
+
+<h3><a name="DEFINITION">Basics</a></h3>
+
+<p>Message Files define text messages with a unique integer identifier. You can
+create as many message files as needed. Message files are typically used to
+implement application help system, especially when using the <a href="FglTerms.html#TEXT_USER_INTERFACE">Text
+User Interface</a> mode. </p>
+
+
+<p>In order to use a message file, you need to do the following:&nbsp; </p>
+
+
+<ol>
+  <li>Create the source message file with a text editor.</li>
+  <li>Compiler the source message file to a binary format.</li>
+  <li>Copy the binary file to a distribution directory.</li>
+  <li>In programs, specify the message file with <a href="Programs.html#options-help-file">OPTIONS
+    HELP FILE</a>.</li>
+</ol>
+<p>Message files are supported for backward compatibility. You should also have
+a look at the <a href="LocalizedStrings.html">Localized Strings</a> feature. </p>
+
+
+<HR>
+
+
+<h3><a name="SYNTAX">Syntax</a></h3><code><i>filename</i>.msg</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>filename</i> is the name of the message source file.</li>
+</ol>
+
+
+<h4>Syntax of a message file:</h4>
+<p><code><u>{</u><br>
+&nbsp; <i>message-definition
+</i><br>
+<u>|</u> <i>include-directive
+</i><br>
+<u>}</u><i><br>
+</i>[...]</code></p>
+<p>where <i>message-definition</i> is: </p>
+
+
+<p><code>.<i>message-number<br>
+message-line <u>|</u> new-page<br>
+</i>[...]</code></p>
+<p>where <i>include-directive</i> is: </p>
+
+
+<p><code>.include <i>file-name
+</i></code></p>
+
+
+<p>and where <i>new-page</i> is: </p>
+
+
+<p><code>^L (Control-L, ASCII 12)</code></p>
+
+
+<p>You can split the message into pages by adding the ^L (Control-L / ASCII 12)
+in a line.</p>
+
+
+<p><b><font color="#FF0000">Warning: </font>Multi-line messages will include the new-line (ASCII 10) characters.</b></p>
+
+
+<HR>
+
+<h3><a name="COMPILING">Compiling Message Files</a></h3>
+<p>In order to use message files in a program, the message source files (<tt>.msg</tt>) must be compiled with 
+the <a href="Tools.html#TL_FGLMKMSG">
+   fglmkmsg</a> utility to produce compiled message files (<tt>.iem</tt>).</p>
+<p>The following command line compiles the message source file mess01.msg:</p>
+<code>fglmkmsg mess01.msg</code><p>This creates the compiled message file mess01.iem.</p>
+<p>For backward compatibility, you can specify the output file as second
+argument:</p>
+<code>fglmkmsg mess01.msg mess01.iem</code><h4><font color="#FF0000">Warning: </font>The
+<tt>.iem</tt> compiled version of the message file must be distributed on the
+machine where the programs are executed.</h4>
+
+
+<HR>
+
+<h3><a name="USING">Using Message Files</a></h3>
+<p>In order to use compiled message files (<tt>.iem</tt>) in programs, you must
+first specify the message file with the <a href="Programs.html#options-help-file">OPTIONS
+HELP FILE</a> command:</p>
+<PRE><CODE class=linenumber>01</CODE>  <tt>OPTIONS</tt> <tt>HELP FILE</tt> &quot;mymessages.iem&quot;</PRE>
+
+<p>The message file will first be searched with the string passed to the <tt>OPTIONS
+HELP FILE</tt> command (i.e. the current directory if the file is specified
+without a path), and if not found, the <a href="EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href="EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a>
+environment variable with be used.</p>
+
+<p>After the message file is defined, you can start the help viewer by calling the <tt><a href="BuiltInFunctions.html#BF_SHOWHELP">SHOWHELP()</a></tt>
+function:</p>
+<PRE><CODE class=linenumber>01</CODE>  <tt>CALL </tt>showhelp(1242)</PRE>
+
+
+<p>You can also use the <tt>HELP</tt>
+ keyword in a dialog instruction like <a href="RecordInput.html">INPUT</a> to
+define particular message number for that the dialog:</p>
+<PRE><CODE class=linenumber>01</CODE>  <tt>INPUT BY NAME </tt>... <tt>HELP </tt>455</PRE>
+
+<p>The help viewer will automatically display the message text corresponding to
+the number when the user pressed the help key. By default, the help key is
+CONTROL-W in <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI mode</a> and F1 in <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI
+mode</a>.</p>
+
+
+<HR>
+
+<h3><a name="EXAMPLES">Example</a></h3>
+
+
+<h4>Message source file example:</h4>
+<PRE><CODE class=linenumber>01</CODE> .101<tt>
+</tt><CODE class=linenumber>02</CODE> This is help about option 1<tt>
+</tt><CODE class=linenumber>03</CODE> .102<tt>
+</tt><CODE class=linenumber>04</CODE> This is help about help<tt>
+</tt><CODE class=linenumber>05</CODE> .103<tt>
+</tt><CODE class=linenumber>06</CODE> This is help about My Menu</PRE>
+
+
+
+<h4>Application using this help message:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>     <tt>OPTIONS</tt>
+<CODE class=linenumber>03</CODE>         <tt>HELP FILE</tt> &quot;help.iem&quot;
+<CODE class=linenumber>04</CODE>     <tt>OPEN WINDOW</tt> w1 <tt>AT</tt> 5,5 <tt>WITH FORM</tt> &quot;const&quot;
+<CODE class=linenumber>05</CODE>     <tt>MENU</tt> &quot;My Menu&quot;
+<CODE class=linenumber>06</CODE>         <tt>COMMAND</tt> &quot;Option 1&quot; <tt>HELP</tt> 101
+<CODE class=linenumber>07</CODE> 	       <tt>DISPLAY</tt> &quot;Option 1 chosen&quot;
+<CODE class=linenumber>08</CODE>         <tt>COMMAND</tt> &quot;Help&quot;
+<CODE class=linenumber>09</CODE>             <tt>CALL</tt> <tt>SHOWHELP</tt>(103)
+<CODE class=linenumber>10</CODE>     <tt>END MENU</tt>
+<CODE class=linenumber>11</CODE>     <tt>CLOSE WINDOW</tt> w1
+<CODE class=linenumber>12</CODE> <tt>END MAIN</tt></PRE>
+
+</BODY>
+</HTML>

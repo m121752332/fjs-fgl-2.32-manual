@@ -1,0 +1,642 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Frequently Asked Questions</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Frequently Asked Questions</a></H1>
+
+<p>This page contains questions frequently asked when migrating
+applications from BDL V3 to Genero BDL.</p>
+
+<p>
+<a href="#FAQ001">FAQ001: When using Genero, why do I have a different display than with BDL V3?<br></a>
+<a href="#FAQ002">FAQ002: Why does an empty window always appear?<br></a>
+<a href="#FAQ003">FAQ003: Why do some COMMAND KEY buttons no longer appear?<br></a>
+<a href="#FAQ004">FAQ004: Why aren't the elements of my forms aligned properly?<br></a>
+<a href="#FAQ005">FAQ005: Why doesn't the ESC key validate my input?<br></a>
+<a href="#FAQ006">FAQ006: Why doesn't the CTRL-C key cancel my input?<br></a>
+<a href="#FAQ007">FAQ007: Why do the gui.* FGLPROFILE entries have no effect?<br></a>
+<a href="#FAQ008">FAQ008: Why do I get a link error when using the FGL_GETKEY() function?<br></a>
+<a href="#FAQ009">FAQ009: Why do large static arrays raise a stack overflow error?<br></a>
+<a href="#FAQ010">FAQ010: Why do get error -6366 "Could not load database driver <i>drivername</i>"?</a><br>
+<a href="#FAQ011">FAQ011: Why do get invalid characters in my forms?</a></p>
+
+<HR>
+
+<h3><a name="FAQ001">FAQ001: When using Genero, why do I have a different display
+than with BDL V3?</a></h3>
+
+<h4>Explanation: </h4>
+
+<p>Genero introduces major Graphical User Interface enhancements that sometimes require
+code modification. With BDL V3, application windows created with the <a href="WindowsAndForms.html#OPEN_WINDOW">OPEN
+    WINDOW</a> instruction were displayed as static boxes in the main graphical
+window. In the new GUI mode of Genero, application windows are displayed as independent, resizable
+graphical
+    windows.</p>
+
+<p><i>Links:</i>
+<a href="DynamicUI.html">Dynamic User Interface</a>,
+<a href="WindowsAndForms.html">Windows</a>,
+<a href="ClassApplication.html">Application class</a>. </p>
+
+<HR>
+
+<h3><a name="FAQ002">FAQ002: Why does an empty window always appear?</a></h3>
+
+<h4>Description: </h4>
+
+<p>An additional empty window appears when I explicitly create a window with
+<a href="WindowsAndForms.html#OPEN_WINDOW">OPEN WINDOW</a> (following the <a href="WindowsAndForms.html">new
+window management rules</a>). </p>
+
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02  </code> <tt>OPEN WINDOW</tt> w1 <tt>AT </tt>1,1 <tt>WITH FORM </tt>&quot;form1&quot;
+<code class="linenumber">03  </code> <tt>MENU</tt> &quot;Example&quot;
+<code class="linenumber">04   </code> <tt>COMMAND </tt>&quot;Exit&quot;
+<code class="linenumber">05    </code> <tt>EXIT MENU</tt>
+<code class="linenumber">06  </code> <tt>END MENU</tt>
+<code class="linenumber">07  </code> <tt>CLOSE WINDOW</tt> w1
+<code class="linenumber">08</code> <tt>END MAIN</tt></pre>
+
+
+<h4>Explanation: </h4>
+
+<p>In the new standard <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a> mode, all Windows are displayed as real
+front-end windows, including the default <tt>SCREEN</tt> Window. When an
+application starts, the runtime system creates this default SCREEN Window,
+as in version 3. This is required because some applications use the <tt>SCREEN</tt>
+Window to display forms (they do not use the
+<a href="WindowsAndForms.html#OPEN_WINDOW">OPEN WINDOW</a> instruction to create new
+windows). So, to facilitate BDS V3 to Genero migration, the runtime system must keep the default
+<tt>SCREEN</tt> window creation; otherwise, existing applications would fail if
+their code was not modified.</p>
+
+<h4>Solution: </h4>
+
+<p>You can either execute a <a href="WindowsAndForms.html#CLOSE_WINDOW">CLOSE WINDOW SCREEN</a> at
+the beginning of the program, to close the default window created by the runtime
+system, or use the <a href="WindowsAndForms.html#OPEN_FORM">OPEN FORM</a> + <a href="WindowsAndForms.html#DISPLAY_FORM">DISPLAY
+FORM</a> instructions, to display the main form in the default <tt>SCREEN</tt>
+window. </p>
+
+<h4>Example:</h4>
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">03  </code> <tt>OPEN FORM</tt> f <tt>FORM </tt>&quot;form1&quot;
+<code class="linenumber">03  </code> <tt>DISPLAY FORM</tt> f
+<code class="linenumber">04  </code> <tt>MENU</tt> &quot;Example&quot;
+<code class="linenumber">05   </code> <tt>COMMAND </tt>&quot;Exit&quot;
+<code class="linenumber">06    </code> <tt>EXIT MENU</tt>
+<code class="linenumber">07  </code> <tt>END MENU</tt>
+<code class="linenumber">08</code> <tt>END MAIN</tt></pre>
+
+
+<HR>
+
+<h3><a name="FAQ003">FAQ003: Why do some COMMAND KEY buttons no longer appear?</a></h3>
+
+<h4>Description: </h4>
+
+<p>When creating a <a href="Menus.html">MENU</a>
+ with <tt>COMMAND
+KEY(<i>keyname</i>) &quot;<i>option</i>&quot;</tt> clause, the button for <i>keyname</i>
+is no longer displayed: </p>
+
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02  </code> <tt>MENU</tt> &quot;Example&quot;
+<code class="linenumber">03    </code> <tt>COMMAND </tt>&quot;First&quot;
+<code class="linenumber">04    </code> <tt>  EXIT PROGRAM</tt>
+<code class="linenumber">05    </code> <tt>COMMAND KEY </tt>(F5) &quot;Second&quot;
+<code class="linenumber">06    </code> <tt>  EXIT PROGRAM</tt>
+<code class="linenumber">07    </code> <tt>COMMAND KEY </tt>(F6) -- Third is a hidden option
+<code class="linenumber">08    </code> <tt>  EXIT PROGRAM</tt>
+<code class="linenumber">09  </code> <tt>END MENU</tt>
+<code class="linenumber">10</code> <tt>END MAIN</tt></pre>
+
+
+<h4>Explanation: </h4>
+
+<p>In BDL Version 3, when using the <a href="Menus.html">MENU</a>
+instruction, several buttons are displayed for each clause of the type <tt>COMMAND
+KEY(<i>keyname</i>) &quot;<i>option</i>&quot;</tt>: one for the menu option, and
+others for each associated key.</p>
+
+<p>When using Genero, for a named <a href="Menus.html">MENU</a>
+option defined with <tt>COMMAND KEY</tt>, the
+buttons of associated keys are no longer displayed (F5 in our example), because there is already a
+button created for the named menu option. The so called &quot;hidden menu options&quot; created
+by a <tt>COMMAND KEY(<i>keyname</i>)</tt> clause (F6 in our example)
+are not displayed as long as you do not associate a label, for example with the <a href="BuiltInFunctions.html#BF_FGL_DIALOG_SETKEYLABEL">FGL_SETKEYLABEL()</a>
+function.</p>
+
+<HR>
+
+<h3><a name="FAQ004">FAQ004: Why aren't the elements of my forms aligned properly?</a></h3>
+
+<h4>Description: </h4>
+
+<p>In my forms, I used to align labels and fields by character, for typical
+terminal display. But now, when using the new <a href="FormSpecFiles.html#SECTION_LAYOUT">LAYOUT
+section</a>, some elements are not aligned as expected. In the following
+example, the beginning of the field <code>f001</code> is expected in the column
+near the end of the digit-based text of the first line, but the field is
+actually displayed just after the label &quot;<code>Name:</code>&quot;:</p>
+
+<pre><code class="linenumber">01</code> <tt>DATABASE FORMONLY</tt>
+<code class="linenumber">02</code>
+<code class="linenumber">03</code> <tt>LAYOUT</tt>
+<code class="linenumber">04</code>   <tt>GRID</tt> {
+<code class="linenumber">05</code>   01234567890123456789
+<code class="linenumber">06</code>    Name:             [f001       ]
+<code class="linenumber">07</code>   }
+<code class="linenumber">08</code>   <tt>END</tt>
+<code class="linenumber">09</code> <tt>END</tt>
+<code class="linenumber">10</code>
+<code class="linenumber">11</code> <tt>ATTRIBUTES</tt>
+<code class="linenumber">12</code> f001 = formonly.field1 <tt>TYPE CHAR;</tt>
+<code class="linenumber">13</code> <tt>END</tt></pre>
+
+
+<h4>Explanation: </h4>
+
+<p>By default, Genero BDL displays form elements with proportional fonts,
+using layout managers to align these elements inside the window. In some cases,
+this requires a review of the content of form screens when using the new layout
+management, because the layout is based on new alignment rules which are more abstract and
+automatic than the character-based grids in Version 3.</p>
+
+<p>In most cases, the <a href="Tools.html#TL_FGLFORM">form compiler</a> is able to analyze
+the layout section of <a href="FormSpecFiles.html">form specification files</a> in order
+to produce an acceptable presentation, but sometimes you will have to touch the
+form files to give hints for the alignment of elements.</p>
+
+<h4>Solution: </h4>
+
+<p>In the above example, the field <code>f001</code> is aligned according to the
+label appearing on the same line. By adding one space before the field position,
+the form compiler will understand that the field must be aligned to the text in
+the first line:</p>
+<pre><code class="linenumber">01</code> <tt>DATABASE FORMONLY</tt>
+<code class="linenumber">02</code>
+<code class="linenumber">03</code> <tt>LAYOUT</tt>
+<code class="linenumber">04</code>  <tt>GRID</tt> {
+<code class="linenumber">05</code>  01234567890123456789
+<code class="linenumber">06</code>   Name:              [f001       ]
+<code class="linenumber">07</code>  }
+<code class="linenumber">08</code>  <tt>END</tt>
+<code class="linenumber">09</code> <tt>END</tt>
+<code class="linenumber">10</code>
+<code class="linenumber">11</code> <tt>ATTRIBUTES</tt>
+<code class="linenumber">12</code> f001 = formonly.field1 <tt>TYPE CHAR;</tt>
+<code class="linenumber">13</code> <tt>END</tt></pre>
+
+
+<p>In the next example, the fields are automatically aligned to the text in the
+first line:</p>
+<pre><code class="linenumber">01</code> <tt>DATABASE FORMONLY</tt>
+<code class="linenumber">02</code>
+<code class="linenumber">03</code> <tt>LAYOUT</tt>
+<code class="linenumber">04</code>  <tt>GRID</tt> {
+<code class="linenumber">05</code>                 First         Last
+<code class="linenumber">06</code>    Name:        [f001      ]  [f002       ]
+<code class="linenumber">07</code>  }
+<code class="linenumber">08</code>  <tt>END</tt>
+<code class="linenumber">09</code> <tt>END</tt>
+<code class="linenumber">10</code>
+<code class="linenumber">11</code> <tt>ATTRIBUTES</tt>
+<code class="linenumber">12</code> f001 = formonly.field1 <tt>TYPE CHAR;</tt>
+<code class="linenumber">13</code> f002 = formonly.field2 <tt>TYPE CHAR;</tt>
+<code class="linenumber">14</code> <tt>END</tt></pre>
+
+
+<HR>
+
+<h3><a name="FAQ005">FAQ005: Why doesn't the ESC key validate my input?</a></h3>
+
+<h4>Description: </h4>
+
+<p>The traditional 4GL ESC key does not validate an <a href="RecordInput.html">INPUT</a>, but cancels it
+instead!</p>
+
+<h4>Explanation: </h4>
+
+<p>To follow front end platform standards (like Microsoft Windows for example),
+Genero must reserve the ESC key as the standard key to cancel the
+current interactive statement.</p>
+
+<h4>Solution: </h4>
+
+<p>You can change the accelerator keys for the 'accept' action with <a href="ActionDefaults.html">Action
+Defaults</a>. However, is not recommended to change the defaults, because ESC is
+the standard key to be used to cancel a dialog in GUI applications.</p>
+
+
+<HR>
+
+<h3><a name="FAQ006">FAQ006: Why doesn't the CTRL-C key cancel my input?</a></h3>
+
+<h4>Description: </h4>
+
+<p>The traditional 4GL CTRL-C key does not cancel an <a href="RecordInput.html">INPUT</a>.</p>
+
+<h4>Explanation: </h4>
+
+<p>To follow front end platform standards (like Microsoft Windows for example),
+Genero BDL must reserve the CTRL-C key as the standard key to copy the
+current selected text to the clipboard, for cut and paste.</p>
+
+<h4>Solution: </h4>
+
+<p>You can change the accelerator keys for the 'cancel' action with <a href="ActionDefaults.html">Action
+Defaults</a>. However, is not recommended to change the defaults, because ESC is
+the standard key to be used to cancel a dialog in GUI applications.</p>
+
+
+<HR>
+
+<h3><a name="FAQ007">FAQ007: Why do the gui.* FGLPROFILE entries have no effect?</a></h3>
+
+<h4>Description: </h4>
+
+<p>The <code>gui.*</code>  and some other <a href="FglProfile.html">FGLPROFILE</a>
+ entries related to graphics no longer have effect.</p>
+
+<h4>Explanation: </h4>
+
+<p>These entries are related to the old user interface. They are no longer supported. In version 3, the <code>gui.*</code> entries
+were interpreted
+by the front end. As the user interface has completely been re-designed, the <code> gui.*</code> entries
+have been removed, too .</p>
+
+<h4>Solution: </h4>
+<p>Review the definition of these entries and use the new possibilities of the <a href="DynamicUI.html">Dynamic
+User Interface</a>.</p>
+
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="30%"><b>Entry</b></td>
+    <td bgcolor="#C0C0C0"><b>Replacement</b></td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>menu.Style</tt></td>
+    <td>None, no longer needed.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>key.<i>key-name</i>.order</tt></td>
+    <td>None, no longer needed.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>Menu.defKeys</tt></td>
+    <td>None, no longer needed.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>InputArray.defKeys</tt></td>
+    <td>None, no longer needed.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>DisplayArray.defKeys</tt></td>
+    <td>None, no longer needed.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>Input.defKeys</tt></td>
+    <td>None, no longer needed.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>Construct.defKeys</tt></td>
+    <td>None, no longer needed.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>Prompt.defKeys</tt></td>
+    <td>None, no longer needed.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>Sleep.defKeys</tt></td>
+    <td>None, no longer needed.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>GetKey.defKeys</tt></td>
+    <td>None, no longer needed.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.local.edit.*</tt></td>
+    <td>None, no longer needed.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.preventClose.message</tt></td>
+    <td>None, <i>cancel</i> <a href="DynamicUI.html">action</a> is sent when the
+      user closes a window.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.chartable</tt></td>
+    <td>None, no longer needed.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.whatch.delay</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.useOOB.interrupt</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.containerType</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.containerName</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.mdi.*</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.screen.clientPositioning</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.screen.size.*</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.screen.x</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.screen.incrx</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.screen.y</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.screen.incry</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.screen.withwm</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.workSpaceFrame.noList</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.workSpaceFrame.screenArray.optimalStretch</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.workSpaceFrame.screenArray.compressed</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.controlFrame.visible</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.controlFrame.position</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.controlFrame.scrollVisible</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.controlFrame.scroll.*</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.bubbleHelp.*</tt></td>
+    <td>None, front end specific.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.directory.images</tt></td>
+    <td>None, front end specific.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.toolbar.dir</tt></td>
+    <td>None, front end specific.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.toolbar.*</tt></td>
+    <td>The <a href="Toolbars.html">new toolbar definition</a>.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.menu.*</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.menuButton.*</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.button.*</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.empty.button.visible</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.keyButton.*</tt></td>
+    <td>None, front end specific.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.key.add_function</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.key.interrupt</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.key.doubleClick.left</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.key.click.right</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.key.<i>num</i>.translate</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.key.copy</tt></td>
+    <td>None, front end specific.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.key.paste</tt></td>
+    <td>None, front end specific.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.key.cut</tt></td>
+    <td>None, front end specific.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.form.foldertab.*</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.key.forldertab.input.sendNextField</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.key.foldertab.num.selection</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.mswindow.button</tt></td>
+    <td>None, front end specific.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.fieldButton.style</tt></td>
+    <td>None, front end specific.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.BMPButton.style</tt></td>
+    <td>None, front end specific.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.key.radiocheck.invokeexit</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.entry.style</tt></td>
+    <td>None, front end specific.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.interaction.inputarray.usehighlightcolor</tt></td>
+    <td>None, front end specific.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.mswindow.scrollbar</tt></td>
+    <td>None, front end specific.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.scrollbar.expandwindow</tt></td>
+    <td>None, front end specific.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.statusbar.*</tt></td>
+    <td>None, front end specific.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.display.*</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"><tt>gui.user.font.choice</tt></td>
+    <td>None.</td>
+  </tr>
+  <tr>
+    <td width="30%"></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td width="30%"></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td width="30%"></td>
+    <td></td>
+  </tr>
+</table>
+
+
+<HR>
+
+<h3><a name="FAQ008">FAQ008: Why do I get a link error when using the
+FGL_GETKEY() function?</a></h3>
+
+<h4>Description: </h4>
+
+<p>This function is no longer supported; it has been removed from the language.</p>
+
+<h4>Explanation: </h4>
+
+<p>That function waited for a key-press from the user, but this kind of
+interaction does not fit into the new user interface protocol.</p>
+
+<h4>Solution: </h4>
+<p>Review the program and use standard interactive instructions to manage the
+interaction with the user.<br>
+See the <a href="DynamicUI.html">Dynamic User Interface concept</a>.</p>
+
+<HR>
+
+<h3><a name="FAQ009">FAQ009: Why do large static arrays raise a stack overflow?</a></h3>
+
+<h4>Description: </h4>
+
+<p>When using very large static arrays (DEFINE a1 ARRAY[10000] OF ...), I get a
+stack overflow on Windows platforms.</p>
+
+<h4>Explanation: </h4>
+
+<p>The runtime system uses the default stack size
+defined by the C compiler. As function static arrays are allocated on the C
+stack, using very large static arrays in functions can result in a stack
+overflow error.&nbsp;</p>
+
+<h4>Solution: </h4>
+<p>Review the program and use <a href="Arrays.html">dynamic arrays</a> instead
+of static arrays..</p>
+
+<HR>
+
+<h3><a name="FAQ010">FAQ010: Why do I get error -6366 "Could not load database driver <i>drivername</i>"?</a></h3>
+
+<h4>Description: </h4>
+
+<p>Error <b><a href="FglErrors.html#-6366">-6366</a></b> occurs when the runtime system fails to load the
+  specified database driver.</p>
+
+<h4>Explanation:</h4>
+
+<p> The database driver shared object (.so or . DLL) or a dependent library could
+  not be found.</p>
+
+<h4>Solution: </h4>
+<p>Make sure that the specified driver name does not have a spelling mistake. If
+the driver name is correct, there is probably an environment problem. Make sure
+that the <a href="Installation.html#INST_SR_DBCLIENT">database client software
+is installed</a> on the system (Genero does not communicate directly with the
+database server, you need the client library). Check
+  the UNIX LD_LIBRARY_PATH environment variable or the PATH variable on Windows.
+These must point to the database client libraries. Another common error is the
+installation of a database client software of a different object type as the
+Genero runtime system. For example, if you install a 32 bit Genero version, you
+must install a 32 bit version of the database client software, the 64 bit
+version will not work.</p>
+
+<HR>
+
+<h3><a name="FAQ011">FAQ011: Why do I get invalid characters in my form?</a></h3>
+
+<h4>Description: </h4>
+
+<p>The application starts, connects to the database and seams to work properly,
+but strange symbols (rectangles, question marks) are displayed in the forms for
+non-ASCII characters. The ASCII characters display properly.</p>
+
+<h4>Explanation:</h4>
+
+<p> The is certainly a character set configuration mistake.</p>
+
+<h4>Solution: </h4>
+<p>You have probably defined a wrong - or missed the - runtime system locale or
+the database client locale. Read carefully the section &quot;<a href="Localization.html#LOCALE_SETTINGS">Understanding
+locale settings</a>&quot; in the Localization page.</p>
+
+</BODY>
+</HTML>
+

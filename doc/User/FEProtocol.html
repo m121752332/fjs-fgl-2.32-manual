@@ -1,0 +1,415 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Front End Protocol</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p align="left"><a href="../index.html">Back to Contents</a></p>
+<hr width="100%">
+<h1><a name="PAGE_HEADER">Front End Protocol</a></h1>
+<p>This page describes the <b>Front End Protocol</b>: the communication between
+the <a href="FglTerms.html#RUNTIME_SYSTEM"> Runtime System</a> and the
+<a href="FglTerms.html#FRONT_END"> Front End</a>.</p>
+<ul>
+  <li><a href="#DEFINITION">Definition of the Front End Protocol</a></li>
+  <li><a href="#RSCOMMANDS">Runtime System Commands</a></li>
+  <li><a href="#FEEVENTS">Front End Events</a></li>
+  <li><a href="#INITIALIZATION">Communication Initialization</a></li>
+  <li><a href="#COMPRESSION">GUI Protocol Compression</a></li>
+  <li><a href="#FGLGUIDEBUG">GUI Protocol Debugging Variable</a></li>
+</ul>
+
+<HR width="100%">
+
+<h3><a name="DEFINITION">Definition of Front End Protocol</a></H3>
+
+<p>The purpose of the <b>Front End Protocol</b> is to synchronize the
+<b>Abstract User Interface (AUI) Tree</b> maintained by the Runtime System and
+the corresponding copy held by the Front End. For more details about
+these concepts, see the <a href="DynamicUI.html">Dynamic User Interface</a>.</p>
+
+<p>The <b>AUI Tree</b> is used by the Front End to
+create graphical objects. The Front End and the Runtime System have the
+same version of the AUI Tree. This way, communications correspond to
+AUI Tree synchronization operations:
+on one hand the Front End sends <b>modification requests</b> to
+the Runtime System (also called Front End Events);
+on the other hand, the Runtime System analyses and validates Front End requests,
+performs some codes if required, and sends back <b>modification orders</b>.</p>
+
+<p>The following schema describes typical communication between the Runtime
+System and the Front End:</p>
+
+<p align="center"><img border="0" src="../Images/DUIFig02.png" width="504" height="288"></p>
+
+<ol>
+  <li>
+    <a href="#INITIALIZATION">Initialization</a> phase:
+    The Runtime System sends the initial AUI Tree.</li>
+  <li>
+    The Front End builds the Graphical User Interface according to the
+    AUI Tree.</li>
+  <li>
+    The Front End waits for a user interaction (mouse click, keyboard typing).</li>
+  <li>
+    When the user performs some interaction, the Front End sends
+    <a href="#FEEVENTS">Front End Events</a> corresponding to the modifications made
+    by the user.</li>
+  <li>
+ <a href="#FEEVENTS">Front End Events</a> are analyzed and validated
+    by the runtime system.</li>
+  <li>
+    The Runtime System sends back the result of the Front End requests, by the
+    way of
+    <a href="#RSCOMMANDS"> AUI Tree Modifications Commands</a>.</li>
+  <li>
+    When receiving these commands, the Front End modifies its
+    version of the AUI Tree and updates the Graphical User Interface. It then waits for new user interactions (step 3).</li>
+</ol>
+
+<HR width="100%">
+
+<h3><a name="STRING_LITTERALS">String Literals</a></h3>
+<p>In the Front End Protocol, the type of all attributes is <a href="DataTypes.html#DT_STRING">string</a>.
+The value of the attributes follows the same rules as 4gl <a href="Literals.html#LT_STRING">string
+literals</a>:</p>
+<ul>
+  <li>values are enclosed between double quotes : <tt>&quot;</tt></li>
+  <li>CR character is <tt>\n</tt></li>
+  <li>TAB character is <tt>\t</tt></li>
+  <li>double quotes character is <tt>\&quot;</tt></li>
+</ul>
+<h4>Example:</h4>
+<pre><CODE class=linenumber>01&nbsp;</CODE>&nbsp; { <tt>GroupBox</tt> 25 {&nbsp; { <tt>text</tt> &quot;this is a \&quot;GroupBox\&quot;&quot;} } {}}</pre>
+
+<hr>
+
+<h3><a name="RSCOMMANDS">Runtime System Commands</a></H3>
+
+<p>The Runtime System sends commands to the Front End in order to modify
+the User Interface. As discussed earlier, these commands are modifications of 
+the AUI Tree. Modifications can be:</p>
+
+<ul>
+  <li><a href="#CMD_AN">Adding children to a node</a> </li>
+  <li><a href="#CMD_UN">Changing node attributes</a> </li>
+  <li><a href="#CMD_RN">Removing a node</a> </li>
+</ul>
+
+<h4>Syntax:</h4>
+<pre>om <i>command-id</i> 
+{ 
+  <u>[</u> { <u>{</u> <i>appendNodeCommand</i> <u>|</u> <i>updateNodeCommand</i> <u>|</u> <i>removeNodeCommand</i> <u>}</u> } <u>]</u> <u>[...]</u>
+}</pre>
+
+<h4>Notes:
+
+</h4>
+
+<ul>
+  <li><i>command-id</i> is the number of the command. This number is
+    automatically increased for each command sent by the application to the Front
+    End. The very first <i>appendNodeCommand</i> used to initialize the
+    Protocol is command 0.</li>
+</ul>
+
+<p><b><font color="#FF0000">Warning:</font></b> <b>There is no verification made
+about this order. The communication wire is supposed to be reliable and the
+Runner and the Front End do not perform verification about lost commands.</b></p>
+
+<hr>
+
+<h3><a name="CMD_AN">Append Node Command</a></h3>
+<p>The<b> an</b> command adds one or several children and their attributes to
+a specified node. Several children (and sub-children) and can be added in the
+same <b>an</b> command. This command is sent by the Runtime System
+when there are new graphical objects to display, and to
+<a href="#INITIALIZATION">initialize</a> communication.</p>
+<h4>Syntax:</h4>
+<pre>  an <i>parent-id</i> <i>new-node</i></pre>
+
+<p>
+
+Where <i>new-node</i> is :</p>
+
+<pre>  <i>tagName</i> <i>new-id</i> { <u>[</u> <i>attribute-list</i> <u>]</u> } { <u>[</u> <i>child-list </i><u>]</u> } }</pre>
+
+<p>
+
+Where <i>attribute-list</i> is :</p>
+
+<pre>  { <i>attribute-name</i> &quot;<i>attribute-value</i>&quot; } <u>[...]</u></pre>
+
+Where <i>children-list</i> is :
+
+<pre>  { <i>new-node</i> } <u>[...]</u></pre>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>parent-id</i> identifies the existing node.</li>
+  <li><i>tag-name</i> identifies the type of the added child. The list of
+    possible children for each node is defined in the AUI Tree.</li>
+  <li><i>new-id</i> is a unique id for the new node created.</li>
+  <li><i>attribute-name</i> is the name of the attribute of the node.</li>
+  <li><i>attribute-value</i> is the value of the attribute.</li>
+</ol>
+<h4>Example:</h4>
+<p>This example shows an <tt>an</tt> command that creates a <a href="Menus.html">Menu</a>
+(a Menu node is added) :</p>
+<pre>
+<CODE class=linenumber>01</CODE> <tt>an</tt> 0 <tt>Menu</tt> 356 { { <tt>active</tt> &quot;1&quot;} { <tt>text</tt> &quot;MAIN&quot;} { <tt>posY</tt> &quot;0&quot;} { <tt>selection</tt> &quot;357&quot;} }
+<CODE class=linenumber>02</CODE> {
+<CODE class=linenumber>03</CODE>   { <tt>MenuAction</tt> 357 { { <tt>name</tt> &quot;Option1&quot;} { <tt>text</tt> &quot;Option1&quot;} { <tt>comment</tt> &quot;&quot;} } {}} 
+<CODE class=linenumber>04</CODE> <tt></tt>  { <tt>MenuAction</tt> 358 { { <tt>name</tt> &quot;Flow&quot;} { <tt>text</tt> &quot;Flow&quot;} { <tt>comment</tt> &quot;&quot;} } {}} 
+<CODE class=linenumber>05</CODE> <tt></tt>  { <tt>MenuAction</tt> 359 { { <tt>name</tt> &quot;Window&quot;} { <tt>text</tt> &quot;Window&quot;} { <tt>comment</tt> &quot;OPEN WINDOW&quot;} } {}} 
+<CODE class=linenumber>06</CODE> <tt></tt>  { <tt>MenuAction</tt> 360 { { <tt>name</tt> &quot;Form&quot;} { <tt>text</tt> &quot;Form&quot;} { <tt>comment</tt> &quot;form: scroll, erase...&quot;} } {}} 
+<CODE class=linenumber>07</CODE> <tt></tt>  { <tt>MenuAction</tt> 361 { { <tt>name</tt> &quot;Dialog&quot;} { <tt>text</tt> &quot;Dialog&quot;} { <tt>comment</tt> &quot;&quot;} } {}} 
+<CODE class=linenumber>08</CODE>   { <tt>MenuAction</tt> 362 { { <tt>name</tt> &quot;Display&quot;} { <tt>text</tt> &quot;Display&quot;} { <tt>comment</tt> &quot;&quot;} } {}} 
+<CODE class=linenumber>09</CODE>   { <tt>MenuAction</tt> 363 { { <tt>name</tt> &quot;Options&quot;} { <tt>text</tt> &quot;Options&quot;} { <tt>comment</tt> &quot;OPTIONS&quot;} } {}} 
+<CODE class=linenumber>10</CODE> <tt></tt>  { <tt>MenuAction</tt> 364 { { <tt>name</tt> &quot;Exit&quot;} { <tt>text</tt> &quot;Exit&quot;} { <tt>comment</tt> &quot;&quot;} } {}} 
+<CODE class=linenumber>11</CODE> }
+</pre>
+<hr>
+
+<h3><a name="CMD_RN">Remove Node Command</a></h3>
+<p>The <b>rn</b> command removes a specific node. This command
+is used when graphical objects are no longer required and need to be
+removed from the User Interface.</p>
+<h4>Syntax:</h4>
+<pre>  rn <i>node-id</i></pre>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>node-id</i> identifies the existing node to be deleted</li>
+</ol>
+<h4>Example:</h4>
+<p>This example shows a <tt>rn</tt> command that removes a node from the AUI 
+Tree; in this example, the node removed would be a MenuAction node
+created by the <tt>an</tt> command in the previous example.</p>
+<pre><CODE class=linenumber>01</CODE> rn 357</pre>
+<hr>
+
+<h3><a name="CMD_UN">Update Node Command</a></h3>
+<p>The <b>un</b> command modifies some attributes of a specific node. This command is used to modify the aspect of a widget, for example to validate
+the value entered by a user in a form field. This command is also used to
+confirm a focus change, modifying the <tt>focus</tt> attribute of the
+UserInterface node.</p>
+<h4>Syntax:</h4>
+<pre>  un node-id { <u>[</u> <i>attribute-list</i> <u>]</u> }</pre>
+
+
+<p>
+
+Where <i>attribute-list</i> is :</p>
+
+<pre>  { <i>attribute-name</i> &quot;<i>attribute-value</i>&quot; } <u>[...]</u></pre>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>node-id</i> identifies the modified node.</li>
+  <li><i>attribute-name</i> is the name of the attribute of the node.</li>
+  <li><i>attribute-value</i> is the value of the attribute.</li>
+</ol>
+<h4>Example:</h4>
+<p>This example shows an <tt>un</tt> command confirming a focus change:
+the focus now goes to the <a href="Menus.html">Menu</a> option
+identified by id &quot;358&quot;, created by the <tt>an</tt> command described in the example below.
+The UserInterface node has always an id equal to 0 (zero).</p>
+<pre><CODE class=linenumber>01</CODE> un 0 { <tt>focus</tt> &quot;358&quot; }</pre>
+
+<hr>
+
+<h3><a name="FEEVENTS">Front End Events</a></H3>
+
+<p>The Front End sends &quot;modification requests&quot; represented as &quot;Front
+End Events&quot; to the Runtime system. A group of modification requests can be sent in the same <tt>event _om</tt> command.</p>
+
+<p>These events can be:</p>
+
+<ul>
+  <li>
+    <p align="left">events associated to any defined action (<tt>ActionEvent</tt>).
+    This type of event is sent if a user invokes an enabled Action: Action within Dialog,
+    MenuAction within Menu or StartMenuCommand within StartMenu.</li>
+  <li>events associated to closing the current window (<tt>CloseWindowEvent</tt>).
+    This type of event is sent if a user wants to close the current Window.</li>
+  <li>events associated to modifications of the User Interface (<tt>ConfigureEvent</tt>).
+    This type of event is sent if a user modifies something in the User Interface.
+    Typically, this is used for focus changes or when data is entered in a form
+    field.</li>
+  <li>events associated to Keyboard action which can not be handled by any other
+    event (<tt>KeyEvent</tt>). This type of event is sent to notify the Runtime
+    System that a user has pressed one of the following keys : <tt>tab</tt>, <tt>shift+tab</tt>,
+    <tt>key_up</tt>, <tt>key_down</tt>, <tt>page_up</tt>, <tt>page_down</tt>.&nbsp;</li>
+  <li>events associated to local functions (<tt>FunctionCallEvent</tt>). This
+    type of event is sent when a local function is over, to sent back the result
+    of this function. Typically, local functions are <a href="WinDDE.html">DDE
+    Functions</a>, <a href="UtilityFunctions.html#UF_WINEXEC">winexec</a>.</li>
+  <li>events sent by the Front End to terminate an application (<tt>DestroyEvent</tt>).
+    This type of event is sent when there is an error on the Front End side that
+    needs that the application terminates.</li>
+</ul>
+
+<p>A very basic Front End needs only to handle <tt>KeyEvent</tt>
+events, and can send all keys pressed by the user to the Runtime System. For
+performance and more enhancements, most of the key pressed events are handled
+locally by the Front End. Only the keys mentioned above are sent.&nbsp;</p>
+
+<h4>Syntax:</h4>
+<pre>event _om <i>command-id</i> {} 
+{ 
+  <u>{</u> { ConfigureEvent 0 { { idRef &quot;<i>object-id</i>&quot; } <i>attribute-list</i>  } }
+  <u>|</u> { KeyEvent 0 { { keyName &quot;<i>key-value</i>&quot; } } }
+  <u>|</u> { ActionEvent 0 { { idRef  &quot;<i>object-id</i>&quot; } } }
+  <u>|</u> { FunctionCallEvent 0 { { result &quot;<i>result-value</i>&quot; } } }
+  <u>|</u> { DestroyEvent 0 { { status &quot;<i>status-value</i>&quot; } { message &quot;<i>message-value</i>&quot; } } }
+  <u>}</u> <u>[...]</u>
+}</pre>
+
+
+Where <i>attribute-list</i> is :
+
+<pre>{ <i>attribute-name</i> &quot;<i>attribute-value</i>&quot; } <u>[...]</u></pre>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>command-id</i>  is the number of the event. This number is increased
+    automatically for each <tt>event _om</tt> command sent by the Front End to Runtime System.&nbsp; </li>
+  <li><i>object-id</i> is the id of the node which is concerned by the event.
+    Typically, this is the id of the object which has been changed by the user,
+    such as a form field.</li>
+  <li><i>attribute-name</i> is the name of the attribute of the node.</li>
+  <li><i>attribute-value</i> is the value of the attribute.</li>
+  <li><i>key-value</i> is the value of the key pressed.</li>
+  <li><i>result-value</i> is the value returned by the local function, after it 
+	completes execution.</li>
+  <li><i>status-value</i> is the error identifier that causes the <tt>DestroyEvent</tt>.</li>
+  <li><i>message-value</i> is the error message explaining the reason of the
+    <tt>DestroyEvent</tt>.</li>
+</ol>
+
+<h4>Example:</h4>
+<p>This example shows an <tt>event _om</tt> command corresponding to the following
+interaction:</p>
+<ul>
+  <li>the user enters a value into a field. A <tt>ConfigureEvent</tt> with the
+    new value is sent.</li>
+  <li>the user click with the mouse in another field. A<tt> ConfigureEvent</tt>
+    with the position of the cursor in the new field is sent.</li>
+</ul>
+
+<pre>
+<CODE class=linenumber>01</CODE> <tt>event _om</tt> 3 {} 
+<CODE class=linenumber>02</CODE>  { 
+<CODE class=linenumber>03</CODE>    { <tt>ConfigureEvent</tt> 0 { { <tt>idRef</tt> &quot;35&quot; } { <tt>value</tt> &quot;someText&quot; } { <tt>cursor</tt> &quot;4&quot; } } }
+<CODE class=linenumber>04</CODE>    { <tt>ConfigureEvent</tt> 0 { { <tt>idRef</tt> &quot;32&quot; } { <tt>cursor</tt> &quot;6&quot; } } } 
+<CODE class=linenumber>05</CODE>  }           
+</pre>
+
+<HR width="100%">
+
+<h3><a name="INITIALIZATION">Communication Initialization</a></H3>
+
+<p>Communication is initiated by the Runtime System, which sends some meta
+information to the Front End. The meta information sent is &quot;<tt>encoding&quot;</tt>.
+The Front End replies with some information, to include the version of the Front
+End. With communication initialized, the Runtime System sends the first version of the AUI Tree, generated
+according to the interactive elements used in the program (see <a href="Menus.html">Menus</a>,
+<a href="WindowsAndForms.html">Windows and Forms</a>).</p>
+
+<p>The root node of the Tree is the UserInterface node. This node is sent once 
+to the Front End. The append node command (<tt>an</tt>) is used to create the root node with 
+an id of zero ('0'). The append node command is then used to add all the
+children needed by the Front End to build the initial Graphical User Interface.</p>
+
+<h4>DVM meta message syntax:</h4>
+
+<pre>DVM :   meta Connection {
+              { encoding &quot;<i>character-set</i>&quot; }
+              { protocolVersion &quot;<i>protocol-version</i>&quot; }
+              { interfaceVersion &quot;<i>interface-version</i>&quot; }
+              { runtimeVersion &quot;<i>runtime-version</i>&quot; }
+              { compression &quot;<i>zlib|none</i>&quot; }
+              { encapsulation &quot;<i>0|1</i>&quot; }
+        }</pre>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>character-set</i> defines the encoding character code set used in the
+    protocol.</li>
+  <li>The compression attribute defines the type of compression used. The compression method can be
+    &quot;zlib&quot; or "none". 
+  When &quot;zlib&quot; is used the encapsulation must be enabled.
+  If this attribute is not set the default value is "none".  When the DVM send this attribute it is a request. 
+  The compression is only used once the front-end validates this request.</li>
+  <li><i>protocol-version</i> defines the version of the protocol (commands).</li>
+  <li><i>interface-version</i> defines the version of the user interface (nodes
+    and attributes).</li>
+  <li><i>runtime-version</i> defines the version of runtime system (VM).</li>
+</ol>
+
+<h4>Front-end meta message syntax:</h4>
+
+<pre>FE :    meta Client {
+              { name &quot;<i>client-type</i>&quot; }
+              { version &quot;<i>client-version</i>&quot; }
+              { host &quot;<i>hostname</i>&quot; }
+              { port &quot;<i>tcpport</i>&quot; }
+              { connections &quot;<i>count</i>&quot; }
+              { frontEndID2 &quot;<i>frontend-ID2</i>&quot; }
+              { compression &quot;<i>zlib|none</i>&quot; }
+              { encapsulation &quot;<i>0|1</i>&quot; }
+              { filetransfer &quot;<i>0|1</i>&quot; }
+        }</pre>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>client-type</i> is the type of the front end, for example, GDC.</li>
+  <li><i>client-version</i> is the version of the Front End.</li>
+  <li><i>hostname</i> is the network address (alphanumeric value) of the
+    computer hosting the Front End.</li>
+  <li><i>tcpport</i> is the network port number used by the connection.</li>
+  <li><i>count</i> is the number of connections established with the front-end.</li>
+  <li><i>frontend-ID2</i> identifies the front-end for authentication rules.</li>
+</ol>
+
+<HR width="100%">
+
+<h3><a name="COMPRESSION">GUI Protocol Compression</a></H3>
+<p>Compression might be used in the GUI protocol to reduce the amount of data
+exchanged between the front-end and the application server. Compression is
+typically useful on slow networks. The compression algorithm is provided
+by the standard ZLIB library of the system.</p>
+<p>Compression makes sense on slow networks (for example, with a phone-line dialup
+modem, or broadband modem based networks); On
+fast networks (like 100 Mbps Ethernet based networks), compression uses un-necessary processor time.</p>
+<p>Compression is disabled by default, and can be enabled with this <a href="FglProfile.html">FGLPROFILE</a>
+entry:</p>
+<pre>gui.protocol.format = &quot;zlib&quot;</pre>
+
+<p>If the above parameter is defined, but the ZLIB library is not
+installed on your system, compression cannot be supported, and the program will
+stop with error <a href="FglErrors.html#-6317">-6317</a>.</p>
+
+<p>Note that when using the Genero Web Client (GWC/GAS), compression is not useful
+and is automatically disabled.</p>
+
+<HR width="100%">
+
+<h3><a name="FGLGUIDEBUG">GUI Protocol Debugging Variable</a></h3>
+
+<p> To properly see the GUI communication in a front-end log window, set
+the environment variable <a href="EnvironmentVariables.html#EV_FGLGUIDEBUG"> FGLGUIDEBUG</a> to 1.</p>
+
+</body>
+
+</html>

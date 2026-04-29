@@ -1,0 +1,1519 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>ui.Dialog</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The Dialog class</a> </H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#METHODS">Methods</a></li>
+  <li><a href="#USAGE">Usage</a>
+    <ul>
+      <li><a href="#DIALOG-instance">The DIALOG object instance</a></li>
+      <li><a href="#accept">Terminating the dialog</a></li>
+      <li><a href="#function-param">Passing the dialog object to a function</a></li>
+      <li><a href="#getCurrent">Getting the current dialog object</a></li>
+      <li><a href="#getArrayLength">Getting the total number of rows in a list</a></li>
+      <li><a href="#setArrayLength">Setting the total number of rows of a list</a></li>
+      <li><a href="#nextField">Registering the next field to jump to</a></li>
+      <li><a href="#getCurrentRow">Getting the current row of a list</a></li>
+      <li><a href="#setCurrentRow">Setting the current row in a list</a></li>
+      <li><a href="#getCurrentItem">Getting the current item having focus</a></li>
+      <li><a href="#getFieldBuffer">Getting the input buffer of a field</a></li>
+      <li><a href="#getFieldTouched">Getting the touched flag of a field</a></li>
+      <li><a href="#setFieldTouched">Setting the touched flag of a field</a></li>
+      <li><a href="#getForm">Current form used by the dialog</a></li>
+      <li><a href="#ident_actions">Identifying actions with dialog class methods</a></li>
+      <li><a href="#setActionActive">Enabling/disabling Actions</a></li>
+      <li><a href="#ident_fields">Identifying fields with dialog class methods</a></li>
+      <li><a href="#setFieldActive">Enabling/disabling Fields</a></li>
+      <li><a href="#insertRow">Inserting a new row in a list</a></li>
+      <li><a href="#insertNode">Inserting a new node in a tree</a></li>
+      <li><a href="#appendRow">Appending a new row in a list</a></li>
+      <li><a href="#appendNode">Appending a new node in a tree</a></li>
+      <li><a href="#deleteRow">Deleting a row from a list</a></li>
+      <li><a href="#deleteNode">Deleting a node from a tree</a></li>
+      <li><a href="#deleteAllRows">Deleting all rows from a list</a></li>
+      <li><a href="#validate">Checking form level validation rules</a></li>
+      <li><a href="#setActionHidden">Handling default action view visibility</a></li>
+      <li><a href="#setDefaultUnbuffered">Setting the UNBUFFERED mode</a></li>
+      <li><a href="#setting TTY Attributes">Setting TTY attributes for cells in lists</a></li>
+      <li><a href="#setSelectionMode">Defining the row selection mode</a></li>
+      <li><a href="#isRowSelected">Querying row selection</a></li>
+      <li><a href="#setSelectionRange">Setting row selection</a></li>
+      <li><a href="#selectionToString">Serialize data of the selected rows</a></li>
+    </ul>
+  </li>
+  <li><a href="#EXAMPLES">Examples</a>
+    <ul>
+      <li><a href="#EXAMPLE_1">Disable fields dynamically</a></li>
+      <li><a href="#EXAMPLE_2">Get form and hide fields</a></li>
+      <li><a href="#EXAMPLE_3">Pass a dialog object to a function</a></li>
+      <li><a href="#EXAMPLE_4">Set display attributes to cells</a></li>
+    </ul>
+  </li>
+</ul>
+
+
+<p>See also: <a href="BuiltInClasses.html">Built-in classes</a>, <a href="InteractionModel.html">Interaction
+Model</a>, <a href="MultipleDialogs.html">Multiple Dialogs</a>, <a href="WindowsAndForms.html">Windows
+and Forms</a></p>
+
+
+<HR>
+
+
+<p>The <b>Dialog</b> class is a <a href="BuiltInClasses.html">built-in
+class</a>  that provides an interface to an interactive instruction such as <a href="RecordInput.html">INPUT</a>. </p>
+
+
+<h2><a name="SYNTAX">Syntax</a>:</h2><code>ui.Dialog</code>
+
+
+<br>
+&nbsp;<HR>
+
+
+<h2><a name="METHODS">Methods:</a></h2>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#3399FF" colspan="2"><b>Class Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="37%" valign="top"><b>Name</b></td>
+    <td bgcolor="#C0C0C0" valign="top" width="62%"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#getCurrent">getCurrent</a>( )</code></td>
+    <td valign="top" width="62%">Returns the current dialog object. NULL if no
+      current active dialog.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#setDefaultUnbuffered">setDefaultUnbuffered</a>( v </code><tt>INTEGER</tt><code> )</code></td>
+    <td valign="top" width="62%">Sets the default of the <tt>UNBUFFERED</tt> attribute for 
+	the next dialogs.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#66FFCC" colspan="2" valign="top"><b>Object Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="37%" valign="top"><b>Name</b></td>
+    <td bgcolor="#C0C0C0" valign="top" width="62%"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#accept">accept</a>( )</code></td>
+    <td valign="top" width="62%">Validates all dialog fields.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#appendRow">appendRow</a>( arrname
+      </code><tt>STRING</tt><code> )</code></td>
+    <td valign="top" width="62%">Append a row at the end of the list.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#appendNode">appendNode</a>( arrname
+      </code><tt>STRING</tt><code>, pos </code><tt>INTEGER</tt><code>
+      )<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td valign="top" width="62%">Append a new tree node at the end of the list.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#deleteRow">deleteRow</a>( arrname
+      </code><tt>STRING</tt><code>, pos </code><tt>INTEGER</tt><code>
+ )</code></td>
+    <td valign="top" width="62%">Deletes row at position <i>pos</i>.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#deleteNode">deleteNode</a>( arrname
+      </code><tt>STRING</tt><code>, pos </code><tt>INTEGER</tt><code>
+ )</code></td>
+    <td valign="top" width="62%">Deletes a tree node at position <i>pos</i>.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#deleteAllRows">deleteAllRows</a>( arrname
+      </code><tt>STRING </tt><code>)</code></td>
+    <td valign="top" width="62%">Delete all rows of the list.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#getArrayLength">getArrayLength</a>( arrname </code><tt>STRING</tt><code>
+      )<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td valign="top" width="62%">Returns the total number of rows in a list.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#getCurrentItem">getCurrentItem</a>(
+      ) </code><tt>RETURNING STRING</tt></td>
+    <td valign="top" width="62%">Returns the current item having the focus. This
+      can be a field, list or action.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#getCurrentRow">getCurrentRow</a>( arrname </code><tt>STRING</tt><code>
+      )<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td valign="top" width="62%">Returns the current row of a list.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#getFieldBuffer">getFieldBuffer</a>( fieldname </code><tt>STRING</tt><code>
+      )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td valign="top" width="62%">Returns the current input buffer of the field 
+	identified by <i>fieldname</i>.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#getFieldTouched">getFieldTouched</a>(
+      fieldlist </code><tt>STRING</tt><code>
+      )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td valign="top" width="62%">Returns TRUE if the TOUCHED flag of one of the the
+      specified fields is set.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#getForm">getForm</a>()<br>
+      &nbsp; </code><tt>RETURNING </tt><code>ui.Form</code></td>
+    <td valign="top" width="62%">Returns the current form used by this dialog.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#insertRow">insertRow</a>( arrname
+      </code><tt>STRING</tt><code>, pos </code><tt>INTEGER</tt><code>
+      )</code></td>
+    <td valign="top" width="62%">Inserts a row before position <i>pos</i>.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#insertNode">insertNode</a>( arrname
+      </code><tt>STRING</tt><code>, pos </code><tt>INTEGER</tt><code>
+      )</code></td>
+    <td valign="top" width="62%">Inserts a new tree node before position <i>pos</i>.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#isRowSelected">isRowSelected</a>( arrname
+      </code><tt>STRING</tt><code>, pos </code><tt>INTEGER</tt><code>
+      )</code></td>
+    <td valign="top" width="62%">Returns TRUE if the row at <i>pos</i> is
+      selected.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#nextField">nextField</a>( 
+	fieldname </code><tt>STRING </tt><code>)</code></td>
+    <td valign="top" width="62%">Registers the name of the next field that must 
+	get the focus when control returns to the dialog.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#selectionToString">selectionToString</a>( arrname
+      </code><tt>STRING</tt><code> )</code></td>
+    <td valign="top" width="62%">Builds a tab-separated value list from the
+      selected rows.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#setArrayLength">setArrayLength</a>( arrname </code><tt>STRING</tt><code>,
+      v </code><tt>INTEGER</tt><code>
+      )</code></td>
+    <td valign="top" width="62%">Sets the total number of rows in a list for
+      paged mode.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#setActionActive">setActionActive</a>( actname </code><tt>STRING</tt><code>,
+      v </code><tt>INTEGER</tt><code> )</code></td>
+    <td valign="top" width="62%">Enables or disables the action identified by <i>actname</i>.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#setActionHidden">setActionHidden</a>( actname </code><tt>STRING</tt><code>,
+      v </code><tt>INTEGER</tt><code>
+      )</code></td>
+    <td valign="top" width="62%">Hides or shows the default action view identified by
+      <i>actname</i>.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#setCurrentRow">setCurrentRow</a>( arrname </code><tt>STRING</tt><code>,
+      row</code><tt> INTEGER</tt><code>)</code></td>
+    <td valign="top" width="62%">Change the current row in a list.&nbsp;&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#setFieldActive">setFieldActive</a>(
+      fieldlist </code><tt>STRING</tt><code>,
+      v </code><tt>INTEGER</tt><code> )</code></td>
+    <td valign="top" width="62%">Enables or disables one or several fields identified by <i>fieldlist</i>.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#setFieldTouched">setFieldTouched</a>(
+      fieldlist </code><tt>STRING</tt><code>,
+      v </code><tt>INTEGER</tt><code> )</code></td>
+    <td valign="top" width="62%">Sets the TOUCHED flag of one or several fields identified by <i>fieldlist</i>.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#setCellAttributes">setCellAttributes</a>( attarr </code><tt>ARRAY OF RECORD</tt><code>
+      )</code></td>
+    <td valign="top" width="62%">Defines decoration attributes for each cell
+      (singular dialogs only).</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#setArrayAttributes">setArrayAttributes</a>( arrname
+      </code><tt>STRING</tt><code>, attarr
+      </code><tt>ARRAY OF RECORD</tt><code>
+      )</code></td>
+    <td valign="top" width="62%">Defines decoration attributes for each cell
+      (multiple dialogs).</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#setSelectionMode">setSelectionMode</a>( arrname
+      </code><tt>STRING</tt><code>, mode </code><tt>INTEGER</tt><code> )</code></td>
+    <td valign="top" width="62%">Defines the row selection mode. Possible values
+      are:<br>
+      &nbsp;0 = single row selection,<br>
+      &nbsp;1 = multi-row selection.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#setSelectionRange">setSelectionRange</a>( arrname
+      </code><tt>STRING</tt><code>, start </code><tt>INTEGER</tt><code>, end </code><tt>INTEGER</tt><code>,
+      value </code><tt>INTEGER</tt><code> )</code></td>
+    <td valign="top" width="62%">Sets the selection flags for a range of rows.</td>
+  </tr>
+  <tr>
+    <td width="37%" valign="top"><code><a href="#validate">validate</a>(
+      fieldlist </code><tt>STRING</tt><code> )</code></td>
+    <td valign="top" width="62%">Check form-level validation rules for the list
+      of fields.<br>
+      Returns error number if problem.</td>
+  </tr>
+</table>
+
+
+<HR>
+
+
+<h2><a name="USAGE">Usage:</a></h2>
+
+
+<h3><a name="DIALOG-instance">The DIALOG object instance</a></h3>
+
+
+<p>This class provides an interface to the interactive instructions <a href="RecordInput.html">INPUT</a>,
+<a href="InputArray.html">INPUT ARRAY</a>, <a href="DisplayArray.html">DISPLAY
+ARRAY</a>, <a href="Construct.html">CONSTRUCT</a>, and <a href="Menus.html">MENU</a>.</p>
+
+
+<p>The <tt>DIALOG</tt> keyword is a pre-defined object variable. To get an instance of this class, 
+use <tt>DIALOG</tt>
+inside the interactive instruction block:</p>
+
+
+<pre><code class="linenumber">01 </code><tt>INPUT BY NAME </tt>custid, custname
+<code class="linenumber">02   </code><tt>ON ACTION </tt>disable
+<code class="linenumber">03   </code>  <tt>CALL DIALOG</tt>.setFieldActive(&quot;custid&quot;,0)
+<code class="linenumber">04 </code><tt>END INPUT</tt></pre>
+
+
+<h3><a name="function-param">Passing the dialog object to a function</a></h3>
+
+
+<p>The dialog object is only valid during the execution of the interactive
+instruction. Using the <tt>DIALOG</tt> keyword outside
+a dialog instruction block results in a compilation error. However, you can pass the object to a function, 
+in order to
+write common dialog configuration code:</p>
+<pre><code class="linenumber">01 </code><tt>INPUT BY NAME </tt>custid, custname
+<code class="linenumber">02   </code><tt>BEFORE INPUT</tt>
+<code class="linenumber">03   </code>  <tt>CALL </tt>setupDialog(<tt>DIALOG</tt>)
+<code class="linenumber">04 </code><tt>END INPUT
+</tt><code class="linenumber">05 </code><tt>
+</tt><code class="linenumber">06 </code><tt>FUNCTION </tt>setupDialog(d)
+<code class="linenumber">07   </code><tt>DEFINE </tt>d ui.Dialog
+<code class="linenumber">08   </code><tt>IF </tt>user_group = &quot;admin&quot; <tt>THEN</tt>
+<code class="linenumber">09      </code><tt>CALL </tt>d.setActionActive(&quot;delete&quot;,1)
+<code class="linenumber">10      </code><tt>CALL </tt>d.setActionActive(&quot;convert&quot;,1)
+<code class="linenumber">11   </code><tt>ELSE</tt>
+<code class="linenumber">12      </code><tt>CALL </tt>d.setActionActive(&quot;delete&quot;,0)
+<code class="linenumber">13      </code><tt>CALL </tt>d.setActionActive(&quot;convert&quot;,0)
+<code class="linenumber">14   </code><tt>END IF</tt>
+<code class="linenumber">15 </code><tt>END FUNCTION</tt></pre>
+
+
+<h3><a name="getCurrent">Getting the current dialog object</a></h3>
+
+
+<p>If needed, you can get the current active dialog object with the <code>ui.Dialog.getCurrent()</code>
+class method:</p>
+
+
+<pre><code class="linenumber">01 </code><tt>FUNCTION </tt>field_disable(name)
+<code class="linenumber">02   </code><tt>DEFINE </tt>name <tt>STRING</tt>
+<code class="linenumber">03   </code><tt>DEFINE </tt>d ui.Dialog
+<code class="linenumber">04   </code><tt>LET </tt>d = ui.Dialog.getCurrent()
+<code class="linenumber">05   </code><tt>IF </tt>d <tt>IS NOT NULL THEN</tt>
+<code class="linenumber">06      </code><tt>CALL </tt>d.setFieldActive(name, <tt>FALSE</tt>)
+<code class="linenumber">07   </code><tt>END IF</tt>
+<code class="linenumber">08 </code><tt>END FUNCTION</tt></pre>
+
+
+<p>The method returns <a href="Programs.html#PC_NULL">NULL</a> if there is no
+current active dialog.</p>
+
+
+<h3><a name="accept">Terminating the dialog</a></h3>
+
+
+<p>You can use the <code>accept()</code> method to validate field input and
+terminate the dialog. This method is equivalent to the <tt>ACCEPT INPUT</tt> / <tt>ACCEPT
+DISPLAY</tt> / <tt>ACCEPT DIALOG</tt> instructions. The method is provided as a
+3GL alternative to the <tt>ACCEPT</tt> control instructions, if you need for
+example to terminate the dialog in a function, outside the context of a dialog
+block, where control instructions cannot be used.</p>
+
+
+<p>See <a href="MultipleDialogs.html#ACCEPT_DIALOG">ACCEPT DIALOG</a> for more
+details.</p>
+
+
+<h3><a name="getArrayLength">Getting the total number of rows in a list</a></h3>
+
+
+<p>The <code>getArrayLength(&quot;<i>screen-array</i>&quot;)</code> method can be used to retrieve the total
+number of rows of an <tt>INPUT ARRAY</tt> or <tt>DISPLAY ARRAY</tt> list. You must pass the
+name of the screen array to identify the list:</p>
+
+
+<pre><code class="linenumber">01 </code><tt> DIALOG</tt>
+<code class="linenumber">02 </code><tt>      DISPLAY ARRAY </tt>custlist <tt>TO </tt>sa_custlist.*<tt>
+</tt><code class="linenumber">03 </code><tt>        BEFORE ROW
+</tt><code class="linenumber">04 </code><tt>         MESSAGE </tt>&quot;Row count: &quot; || DIALOG.getArrayLength(&quot;sa_custlist&quot;)<tt>
+</tt><code class="linenumber">05 </code><tt>         </tt>...<code class="linenumber">
+06 </code><tt>      END DISPLAY
+</tt><code class="linenumber">07 </code><tt>      INPUT ARRAY </tt>ordlist <tt>TO </tt>sa_ordlist.*<tt>
+</tt><code class="linenumber">08 </code><tt>        BEFORE ROW
+</tt><code class="linenumber">09 </code><tt>         MESSAGE </tt>&quot;Row count: &quot; || DIALOG.getArrayLength(&quot;sa_ordlist&quot;)<tt>
+</tt><code class="linenumber">10 </code><tt>         </tt>...<code class="linenumber">
+11 </code><tt>      END INPUT
+</tt><code class="linenumber">12 </code><tt>         </tt>...</pre>
+
+
+<h3><a name="setArrayLength">Setting the total number of rows in a list</a></h3>
+
+
+<p>The <code>setArrayLength(&quot;<i>screen-array</i>&quot;, <i>length</i>)</code> method is used to specify the total number
+of
+rows of an <tt>INPUT ARRAY</tt> or <tt>DISPLAY ARRAY</tt>  list when using the <a href="MultipleDialogs.html#paged-mode">paged
+mode</a>. You must pass the
+name of the screen array to identify the list, followed by an integer expression
+defining the number of rows. When using a <a href="Arrays.html">dynamic array</a>
+without <tt>ON FILL BUFFER</tt> you don't need to
+specify the total number of rows to the <tt>DIALOG</tt> instruction: It is
+defined by the number of elements in the array. However, when using the <a href="MultipleDialogs.html#paged-mode">paged
+mode</a> in a <tt>DISPLAY ARRAY</tt>, the total number of rows does not
+correspond to the elements in the program array, because the program array holds
+only a page of the whole list. In any other cases, a call to this method is just
+ignored.</p>
+
+
+<h3><a name="nextField">Registering the next field to jump to</a></h3>
+
+
+<p>The <code>nextField(<i>field-specification</i>)</code> method can be used register the name of the next
+field that must get the focus when control goes back to the dialog. This method
+is similar to the <a href="MultipleDialogs.html#NEXT_FIELD">NEXT FIELD
+instruction</a>, except that it does not implicitly break the program flow. If
+you want to get the same behavior as <tt>NEXT FIELD</tt>, the method call must
+be followed by a <tt>CONTINUE DIALOG / INPUT / CONSTRUCT</tt> instruction.&nbsp;</p>
+
+
+<p>Since this method takes an expression as parameter, you can write generic
+code, when the name of the target field is not known at compile time. In the
+next example, the <code>check_value()</code> function returns a field name where
+the value does not satisfy the validation rules:</p>
+
+
+<pre><code class="linenumber">01 </code><tt>   DEFINE </tt>fn<tt> STRING
+</tt><code class="linenumber">02 </code><tt>   </tt>...<tt>
+</tt><code class="linenumber">03 </code><tt>   ON ACTION </tt>save<tt>
+</tt><code class="linenumber">04 </code><tt>         IF </tt>( fn := check_values() )<tt> IS NOT NULL THEN
+</tt><code class="linenumber">05     </code><tt>         CALL </tt>DIALOG.nextField(fn)<tt>
+</tt><code class="linenumber">06     </code><tt>         CONTINUE DIALOG
+</tt><code class="linenumber">07 </code><tt>         END IF
+</tt><code class="linenumber">08 </code><tt>         CALL </tt>save_data()<tt>
+</tt><code class="linenumber">09 </code><tt>         </tt>...</pre>
+
+
+<p>The first parameter identifies the form field, see <a href="#ident_fields">Identifying
+fields in dialog methods</a> for more details.</p>
+
+
+<h3><a name="getCurrentRow">Getting the current row of a list</a></h3>
+
+
+<p>The <code>getCurrentRow(&quot;<i>screen-array</i>&quot;)</code> method can be used to retrieve the current
+row of an <tt>INPUT ARRAY</tt> or <tt>DISPLAY ARRAY</tt> list. You must pass the
+name of the screen array to identify the list:</p>
+
+
+<pre><code class="linenumber">01 </code><tt> DIALOG</tt>
+<code class="linenumber">02 </code><tt>      DISPLAY ARRAY </tt>custlist <tt>TO </tt>sa_custlist.*<tt>
+</tt><code class="linenumber">03 </code><tt>        BEFORE ROW
+</tt><code class="linenumber">04 </code><tt>         MESSAGE </tt>&quot;Current row: &quot; || DIALOG.getCurrentRow(&quot;sa_custlist&quot;)<tt>
+</tt><code class="linenumber">05 </code><tt>         </tt>...<code class="linenumber">
+06 </code><tt>      END DISPLAY
+</tt><code class="linenumber">07 </code><tt>      INPUT ARRAY </tt>ordlist <tt>TO </tt>sa_ordlist.*<tt>
+</tt><code class="linenumber">08 </code><tt>        BEFORE ROW
+</tt><code class="linenumber">09 </code><tt>         MESSAGE </tt>&quot;Current row: &quot; || DIALOG.getCurrentRow(&quot;sa_ordlist&quot;)<tt>
+</tt><code class="linenumber">10 </code><tt>         </tt>...<code class="linenumber">
+11 </code><tt>      END INPUT
+</tt><code class="linenumber">12 </code><tt>         </tt>...</pre>
+
+
+<h3><a name="setCurrentRow">Setting the current row in a list</a></h3>
+
+
+<p>If you want to change the current row in an <tt>INPUT ARRAY</tt> or <tt>DISPLAY
+ARRAY</tt> list, you can use the <code>setCurrentRow(&quot;<i>screen-array</i>&quot;,
+<i>index</i>)</code> method. You must
+pass the name of the screen array to identify the list, and the new row number:</p>
+
+
+<pre><code class="linenumber">01 </code><tt> DEFINE </tt>x<tt> INTEGER</tt>
+<code class="linenumber">02 </code><tt> DIALOG</tt>
+<code class="linenumber">03 </code><tt>      DISPLAY ARRAY </tt>custlist <tt>TO </tt>sa_custlist.*<tt>
+</tt><code class="linenumber">04 </code><tt>         </tt>...<code class="linenumber">
+05 </code><tt>      END DISPLAY
+</tt><code class="linenumber">06 </code><tt>      ON ACTION </tt>goto_x<tt>
+</tt><code class="linenumber">07 </code><tt>         CALL </tt>DIALOG.setCurrentRow(&quot;sa_custlist&quot;, x)<tt>
+</tt><code class="linenumber">08 </code><tt>         </tt>...</pre>
+
+
+<p>Note that moving to a different row with <code>setCurrentRow()</code> will
+not trigger <a href="MultipleDialogs.html#CONTROL_BLOCKS">control blocks</a>
+such as <tt>AFTER ROW</tt>. This method will not set the focus either; You need
+to use <tt>NEXT FIELD</tt> to set the focus to a list (this works with <tt>DISPLAY
+ARRAY</tt> as well as with <tt>INPUT ARRAY</tt>).</p>
+
+
+<p> If <a href="#setSelectionMode">multi-row selection</a> is enabled, all selection flags of rows are
+cleared, and the new current row gets automatically selected.</p>
+
+
+<h3><a name="getCurrentItem">Getting the current item having focus</a></h3>
+
+
+<p>The <code>getCurrentItem()</code> method returns the name of the current form
+item having the focus:</p>
+
+
+<ul>
+  <li>If the focus is on an action view (typically, a <a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTON">BUTTON</a>
+    in the form layout), <code>getCurrentItem()</code> returns the name of the
+    corresponding action. Note that if several action views a bound to the same
+    action handler with a unique name, there is no way to distinguish which
+    action view has the focus.</li>
+  <li>If the focus is in a simple field controlled by an <a href="MultipleDialogs.html#sub-dialog-INPUT">INPUT</a>
+    or <a href="MultipleDialogs.html#sub-dialog-CONSTRUCT">CONSTRUCT</a>
+    sub-dialogs, <code>getCurrentItem()</code> returns the <i>[tab-name.]field-name</i> of that
+    current field. The <i>tab-name.</i> prefix is added if a <tt>FROM</tt>
+    clause is used with an explicit list of fields. No prefix is added if <tt>FROM
+    screen-record.*</tt> is used or if <tt>BY NAME</tt> clause is used.</li>
+  <li>If the focus is in a list controlled by a <a href="MultipleDialogs.html#sub-dialog-DISPLAY-ARRAY">DISPLAY
+    ARRAY</a>  sub-dialog, <code>getCurrentItem()</code> returns the <i>screen-array</i>
+    name identifying the list.</li>
+  <li>If the focus is in a field of a list controlled by an <a href="MultipleDialogs.html#sub-dialog-INPUT-ARRAY">INPUT
+    ARRAY</a>  sub-dialog, <code>getCurrentItem()</code> returns <i>screen-array.field-name</i>,
+    identifying both the list and the current field. Note however that in some
+    context, the current field is undefined. For example when entering the <tt>INPUT
+    ARRAY</tt> sub-dialog, <code>getCurrentItem()</code> will return the <i>screen-array</i>
+    only when in the <tt>BEFORE INPUT</tt> control block.</li>
+</ul>
+
+
+<h3><a name="getFieldBuffer">Getting the input buffer of a field</a></h3>
+
+
+<p>The <code>getFieldBuffer(&quot;<i>field-specification</i>&quot;)</code> method returns the current input buffer of
+the specified field. The input buffer is used by the dialog to synchronize form
+fields and program variables. In some situations, especially when using the <a href="MultipleDialogs.html#buff-unbuff-modes">BUFFERED
+mode</a> or in a <a href="Construct.html">CONSTRUCT</a>, you may want to access
+that input buffer.</p>
+
+
+<p>
+      The <i>field-specification</i> is a string containing the field qualifier, with an
+      optional prefix (&quot;<code>[table.]column</code>&quot;).</p>
+
+
+<pre><code class="linenumber">01 </code><tt>   LET </tt>buff = DIALOG.getFieldBuffer(&quot;customer.cust_name&quot;)</pre>
+
+
+<p>The input buffer can be set with:</p>
+
+
+<ul>
+  <li>A <a href="RecordDisplay.html#DISPLAY_TO">DISPLAY TO</a> or <a href="RecordDisplay.html#DISPLAY_BY_NAME">DISPLAY
+    BY NAME</a> instruction</li>
+  <li>The <a href="BuiltInFunctions.html#BF_FGL_DIALOG_SETBUFFER">fgl_dialog_setbuffer()</a>
+    function (only for the current field)</li>
+</ul>
+
+
+<p>See <a href="#ident_fields">Identifying fields in dialog methods</a> for more
+details about field name specification.</p>
+
+
+<h3><a name="getFieldTouched">Getting the TOUCHED flag of a field</a></h3>
+
+
+<p>The <code>getFieldTouched(&quot;<i>field</i><i>-list</i>&quot;)</code> method returns TRUE if the <a href="MultipleDialogs.html#touched-flag">TOUCHED
+flag</a> of the specified field is set.</p>
+
+
+<p>
+      The <i>field-list</i> is a string containing the field qualifier, with an
+      optional prefix (&quot;<code>[table.]column</code>&quot;), a table
+prefix followed by a dot and an asterisk (&quot;<code>table.*</code>&quot;), or a
+simple asterisk (&quot;<code>*</code>&quot;).
+      See <a href="#ident_fields">Identifying fields in dialog methods</a> for
+      more details about the <i> field -list</i> specification.</p>
+
+
+<p>The next code example checks if a specific field has been touched:</p>
+
+
+<pre><code class="linenumber">01 </code><tt>   AFTER FIELD </tt>cust_name
+<code class="linenumber">02 </code><tt>      IF </tt>DIALOG.getFieldTouched(&quot;customer.cust_address&quot;) <tt>THEN
+</tt><code class="linenumber">03 </code><tt>         </tt>...</pre>
+
+
+<p>If the parameter is a screen record following by dot-asterisk, the method checks
+the touched flags of all the fields that belong to the screen record:</p>
+
+
+<pre><code class="linenumber">01 </code><tt>   ON ACTION </tt>quit
+<code class="linenumber">02 </code><tt>      IF </tt>DIALOG.getFieldTouched(&quot;customer.*&quot;) <tt>THEN
+</tt><code class="linenumber">03 </code><tt>         </tt>...</pre>
+
+
+<p>
+      When passing a simple asterisk (*) to the method, the runtime system will check
+      all fields used by the dialog:</p>
+
+
+<pre><code class="linenumber">01 </code><tt>   ON ACTION </tt>quit
+<code class="linenumber">02 </code><tt>      IF </tt>DIALOG.getFieldTouched(&quot;*&quot;) <tt>THEN
+</tt><code class="linenumber">03 </code><tt>         </tt>...</pre>
+
+
+<p>
+      See <a href="#ident_fields">Identifying fields in dialog methods</a> for
+      more details about field name specification.</p>
+
+
+<h3><a name="setFieldTouched">Setting the TOUCHED flag of a field</a></h3>
+
+
+<p>The <code>setFieldTouched(&quot;<i>field</i><i>-list</i>&quot;)</code> method can be used to change the <a href="MultipleDialogs.html#touched-flag">TOUCHED
+flag</a> of the specified field(s).</p>
+
+
+<p>
+      The <i>field-list</i> is a string containing the field qualifier, with an
+      optional prefix (&quot;<code>[table.]column</code>&quot;), or a table
+prefix followed by a dot and an asterisk (&quot;<code>table.*</code>&quot;). See <a href="#ident_fields">Identifying fields in dialog methods</a> for
+      more details about the <i> field -list</i> specification.</p>
+
+
+<p>You typically use this method to set the touched flag when assigning a
+variable, to emulate a user input. Remember when using the <a href="MultipleDialogs.html#buff-unbuff-modes">UNBUFFERED</a>
+mode, you don't need to <a href="RecordDisplay.html#DISPLAY_BY_NAME">DISPLAY</a>
+the value to the fields. The <code>setFieldTouched()</code> method is provided
+as a 3GL replacement for the <a href="RecordDisplay.html#DISPLAY_BY_NAME">DISPLAY</a>
+ instructions to set the touched flags.</p>
+
+
+<pre><code class="linenumber">01 </code><tt>   ON ACTION </tt>zoom_city
+<code class="linenumber">02 </code><tt>      LET </tt>p_cust.cust_city = zoom_city()<tt>
+</tt><code class="linenumber">02 </code><tt>      CALL </tt>DIALOG.setFieldTouched(&quot;customer.cust_city&quot;, <tt>TRUE</tt>)<tt>
+</tt><code class="linenumber">03 </code><tt>         </tt>...</pre>
+
+
+<p>If the parameter is a screen record following by dot-asterisk, the method checks
+the touched flags of all the fields that belong to the screen record. You
+typically use this to reset the touched flags of a group of fields, after
+modifications have been saved to the database, to get back to the initial state
+of the dialog:</p>
+
+
+<pre><code class="linenumber">01 </code><tt>   ON ACTION </tt>save
+<code class="linenumber">02 </code><tt>      CALL </tt>save_cust_record()<tt>
+</tt><code class="linenumber">03 </code><tt>      CALL </tt>DIALOG.setFieldTouched(&quot;customer.*&quot;, <tt>FALSE</tt>)<tt>
+</tt><code class="linenumber">04 </code><tt>         </tt>...</pre>
+
+
+<p>Note that the touched flags are reset to false when using an INPUT ARRAY
+list, every time you leave the modified row.</p>
+
+
+<h3><a name="getForm">Current form used by the dialog</a></h3>
+
+
+<p>The <code>getForm()</code> method returns a <a href="ClassForm.html">ui.Form</a>
+object as a handle to the current form used by the dialog. Use this form object to
+modify elements of the current form. For example, you can hide some parts of the
+form with the <a href="ClassForm.html">ui.Form.setElementHidden()</a> method.
+The runtime system is able to detect hidden fields and exclude them from the
+input list. See <a href="#EXAMPLE_2">Example 2</a>.</p>
+
+
+<h3><a name="ident_actions">Identifying actions in dialog methods</a></h3>
+
+
+<p>In methods like <a href="#setActionActive">setActionActive()</a>, the first
+parameter identifies the action object to be modified. This parameter can be
+full-qualified or partly-qualified. If you don't specify a full-qualified name,
+the action object will be identified according
+to the focus context.</p>
+
+
+<p>The action name specification can be any of the following:</p>
+
+
+<ul>
+  <li><i>action-name</i></li>
+  <li><i>dialog-name.action-name</i></li>
+  <li><i>dialog-name.field-name.action-name</i></li>
+  <li><i>field-name.action-name</i> (singular dialogs only)</li>
+</ul>
+<p>Here <i>action-name</i> identifies the name of the action specified in <tt>ON
+ACTION <i>action-name</i></tt> or <tt>COMMAND &quot;<i>action-name</i>&quot;</tt>
+handlers, while <i>dialog-name</i> identifies the <a href="RecordInput.html#SYNTAX">singular
+dialog</a> or <a href="MultipleDialogs.html#sub-dialogs">sub-dialog</a> and <i>field-name</i>
+defines the field bound to the action <a href="InteractionModel.html#ON_ACTION_INFIELD">INFIELD</a>
+clause of <tt>ON ACTION</tt>.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> The action name must be passed in lowercase letters.</b></p>
+
+
+<p>The runtime system will raise the error <b><a href="FglErrors.html#-8089">-8089</a></b> if the action specified
+by <i>[dialog-name.][field-name.]action-name</i> can not be found within the
+current dialog.</p>
+
+<p>In the <a href="MultipleDialogs.html">DIALOG instruction</a>,
+actions can be prefixed with the <a href="MultipleDialogs.html#binding-actions"> sub-dialog
+identifier</a>. However, if methods like <code>setActionActive()</code> are called in the
+context of the sub-dialog, the prefix can be omitted. When using a
+field-specific action defined with the <a href="InteractionModel.html#ON_ACTION_INFIELD">INFIELD</a>
+clause of <tt>ON ACTION</tt>, you can identify the action with the
+full-qualified name <i>dialog-name.field-name.action-name</i>. Like sub-dialog
+actions, if you specify only <i>action-name</i>, the runtime system will search
+for the action object according to the focus context.</p>
+
+
+<p>When using a singular dialog like <a href="RecordInput.html">INPUT</a>, you
+can identify field-specific actions by <i>field-name.action-name</i> if the
+dialog was defined without a <tt>NAME</tt> attribute.</p>
+
+
+<p>For more details, see <a href="InteractionModel.html#BINDING_ACTIONS">Binding
+action views to action handlers</a>.</p>
+
+
+<h3><a name="setActionActive">Enabling/Disabling Actions</a></h3>
+
+
+<p>Dialog actions can be enabled and disabled with the <code>setActionActive(&quot;<i>action-specification</i>&quot;,
+<i>boolean</i>)</code>
+dialog method:</p>
+<pre><code class="linenumber">01</code>    <tt>BEFORE DIALOG</tt>
+<code class="linenumber">02</code>       <tt>CALL</tt> <tt>DIALOG</tt>.setActionActive(&quot;zoom&quot;, <tt>FALSE</tt>)</pre>
+
+
+<p>The first parameter identifies the action object of the dialog, see <a href="#ident_actions">Identifying
+actions in dialog methods</a> for more details.</p>
+
+
+<p>In <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a> applications,
+push-buttons triggering actions should normally be disabled if the current
+context / situation makes the corresponding action invalid or unusable. For
+example, a &quot;print&quot; button should be disabled if there is nothing to
+print. The <code> setActionActive()</code> method is typically used to
+enable/disable actions according to the context.</p>
+
+
+<p> The second parameter of the method must be a boolean expression that evaluates to 0
+(<tt>FALSE</tt>) or 1 (<tt>TRUE</tt>).</p>
+
+<p>To simplify action activation, you can write a common &quot;setup&quot;
+function which centralizes all rules to enable/disable actions. This function
+can then be called from any place in the <tt>DIALOG</tt>  instruction, passing the
+DIALOG object as parameter. See
+<a href="#EXAMPLE_3">Example 3</a>.</p>
+
+
+<p>You can also use
+the <a href="InteractionModel.html#ON_ACTION_INFIELD">INFIELD</a>
+ clause of <tt>ON ACTION</tt> to automatically disable an action if the focus leaves the
+specified field.</p>
+
+
+<h3><a name="setActionHidden">Handling default action view visibility</a></h3>
+
+<p>The <a href="InteractionModel.html#DEFAULT_ACTION_VIEWS">Default View</a> 
+(and <a href="ActionDefaults.html#ACTDEFATTRIBUTES">Context Menu</a> option) of an
+action can made visible or invisible with the <code>setActionHidden(&quot;<i>action</i>&quot;,
+<i>value</i>)</code>
+dialog method:</p>
+
+
+<pre><code class="linenumber">01</code>    <tt>ON ACTION</tt> hide
+<code class="linenumber">02</code>       <tt>CALL</tt> <tt>DIALOG</tt>.setActionHidden( &quot;confirm&quot;, 1 )</pre>
+
+
+<p>The first parameter identifies the action object of the dialog, see <a href="#ident_actions">Identifying
+actions in dialog methods</a> for more details.</p>
+
+
+<p>Values of the second parameter can be 1 or 0.</p>
+
+
+<h3><a name="ident_fields">Identifying fields in dialog methods</a></h3>
+
+
+<p>In methods like <a href="#setFieldActive">setFieldActive()</a>, the first
+parameter identifies the form field (or, for some methods, a list of fields) to be modified.
+The form field names can be
+full-qualified or partly-qualified.&nbsp;</p>
+<p><b><font color="#FF0000">Warning:</font> In such methods, fields are identified by the
+form field name specification, not the program variable name used by the dialog. Remember form
+fields are bound to program variables with the binding clause of dialog
+instruction (<tt>INPUT <i>variable-list</i> FROM <i>field-list</i></tt>, <tt>INPUT
+BY NAME <i>variable-list</i></tt>, <tt>CONSTRUCT BY NAME <i>sql</i> ON <i>column-list</i></tt>,
+<tt>CONSTRUCT <i>sql</i> ON <i>column-list</i> FROM <i>field-list</i></tt>, <tt>INPUT
+ARRAY <i>array-name</i> FROM <i>screen-array.*</i></tt>).</b></p>
+
+
+<p>The field name specification can be any of the following:</p>
+
+
+<ul>
+  <li><i>field-name</i></li>
+  <li><i>table-name.field-name</i></li>
+  <li><i>screen-record-name.field-name</i></li>
+  <li>FORMONLY<i>.field-name</i></li>
+</ul>
+
+
+<p>Here are some examples:</p>
+
+
+<ul>
+  <li><code>&quot;cust_name&quot;</code>,</li>
+  <li><code>&quot;customer.cust_name&quot;</code>,</li>
+  <li><code>&quot;cust_screen_record.cust_name&quot;</code>,</li>
+  <li><code>&quot;item_screen_array.item_label&quot;</code>,</li>
+  <li><code>&quot;formonly.total&quot;</code>,</li>
+  <li><code>&quot;customer.*&quot;</code> (only some methods accept the
+    &quot;dot asterisk&quot; notation)</li>
+</ul>
+<p>When no field name prefix is used, the first form field matching that field
+name will be used. If the field specification is invalid (i.e. no field in the
+current dialog matches the field specification), the method will throw the error
+<b><a href="FglErrors.html#-1373">-1373</a></b>.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> When using a prefix in the field
+name specification, it must match the <u>field prefix</u> assigned by the dialog
+according to the field binding method used at the beginning of the interactive
+statement: When no screen-record has been explicitly specified in the field
+binding clause (for example, when using <tt>INPUT BY NAME <i>variable-list</i></tt>),
+the <u>field prefix</u> must be the database table name (or <tt>FORMONLY</tt>)
+used in the form file, or any valid screen-record using that field. But when the
+<tt>FROM</tt> clause of the dialog specifies an explicit screen-record (for
+example, in <tt>INPUT <i>variable-list</i> FROM <i>screen-record.* /
+field-list-with-screen-record-prefix</i></tt> or <tt>INPUT ARRAY <i>array-name</i>
+FROM <i>screen-array.*</i></tt>) the <u>field prefix</u> must be the
+screen-record name used in the <tt>FROM</tt> clause.</b></p>
+
+
+<p>Some methods like <a href="#validate">validate()</a>, <a href="#setFieldActive">setFieldActive()</a>, <a href="#setFieldTouched">setFieldTouched()</a>,
+<a href="#getFieldTouched">getFieldTouched()</a> can take a list of fields as
+parameter, by using the &quot;dot-asterisk &quot; notation (screen-record.*). This
+way you can check, query or change a complete list of fields in one method call:</p>
+
+
+<pre><code class="linenumber">01 </code><tt>   ON ACTION </tt>save
+<code class="linenumber">02 </code><tt>      CALL </tt>save_cust_record()<tt>
+</tt><code class="linenumber">03 </code><tt>      CALL </tt>DIALOG.setFieldTouched(&quot;customer.*&quot;, <tt>FALSE</tt>)<tt>
+</tt><code class="linenumber">04 </code><tt>         </tt>...</pre>
+
+
+<h3><a name="setFieldActive">Enabling/Disabling Fields</a></h3>
+
+
+<p>Form fields used by the dialog can be enabled/disabled with the <code>setFieldActive(&quot;<i>field-list</i>&quot;,
+<i>boolean</i>)</code>
+method. When a
+field is disabled, it is still visible, but the user cannot edit the value.</p>
+
+
+<pre><code class="linenumber">01</code>    <tt>ON CHANGE</tt> cust_name
+<code class="linenumber">02</code>       <tt>CALL</tt> <tt>DIALOG</tt>.setFieldActive( &quot;customer.cust_addr&quot;, (rec.cust_name <tt>IS NOT NULL</tt>) )</pre>
+
+
+<p>
+      The <i>field-list</i> is a string containing the field qualifier, with an
+      optional prefix (&quot;<code>[table.]column</code>&quot;), or a table
+prefix followed by a dot and an asterisk (&quot;<code>table.*</code>&quot;). See <a href="#ident_fields">Identifying
+fields in dialog methods</a>  for more details about the <i> field -list</i>
+specification.</p>
+
+
+<p>
+      Note that you should not disable all fields of a dialog, otherwise the
+      dialog execution stops (at least one field must get the focus during a
+      dialog execution).</p>
+
+
+<p> See also <a href="#EXAMPLE_1">Example 1</a>.</p>
+
+
+<h3> <a name="insertRow">Inserting a new row in a list</a></h3>
+
+
+<p>The <code>insertRow(&quot;<i>screen-array</i>&quot;, <i>index</i>)</code> method is
+just a basic row creation function, to insert a row in the list at a given
+position. It does not set the current row or raise any
+<tt>BEFORE ROW</tt> / <tt>BEFORE INSERT</tt> / <tt>AFTER INSERT</tt> / <tt>AFTER
+ROW</tt> control blocks. It is quite similar to inserting a new element in the
+program array, except the internal registers are automatically updated (like the
+total number of rows returned by <a href="#getArrayLength">getArrayLength()</a>).
+If the list was decorated with <a href="#setArrayAttributes"> cell attributes</a>, the program array defining the
+attributes will also be synchronized. If <a href="#setSelectionMode">multi-row selection</a> is enabled, selection flags of existing rows are kept.
+Selection information is synchronized (i.e. flags are shifted down) for all rows
+      after the new inserted row.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> This method should not be called in
+control blocks such as <tt>BEFORE ROW</tt>, <tt>AFTER ROW</tt>, <tt>BEFORE
+INSERT</tt>, <tt>AFTER INSERT</tt>, <tt>BEFORE DELETE</tt>, <tt>AFTER DELETE</tt>,
+but it can safely be used in an <tt>ON ACTION</tt> block.</b></p>
+
+
+<p>After the method is called, a new row is created in the program array, so you
+can assign values to the variables before the control goes back to the user. The
+<code>getArrayLength()</code> method will return the new row count.</p>
+
+
+<p>Note that the method does not set the current row and does not give the focus to the
+list; you need
+to call <code>setCurrentRow()</code> and execute <a href="MultipleDialogs.html#NEXT_FIELD">NEXT FIELD</a> 
+if you want to give the focus.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font>  The insertRow() method must not be
+used when controlling a treeview. You must usethe <a href="#insertNode">insertNode()</a>
+method instead.</b></p>
+
+
+<p>The method takes two parameters:</p>
+
+
+<ol>
+  <li>The name of the screen array identifying the list.</li>
+  <li>The index where the row has to be inserted (starts at 1).</li>
+</ol>
+
+
+<p> If the index is greater as the number of
+rows, a new row will be appended at the end or the list. This will be equivalent
+to call the <code>appendRow()</code> method.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> If the list is empty, getCurrentRow() will return zero. So you must test this and use 1 instead
+to reference the first row otherwise you can get -1326 errors when using the
+program array.</b></p>
+
+
+<p>Following code example shows a user-define action to insert ten rows in the
+list at the current position:</p>
+
+
+<pre><code class="linenumber">01</code>    <tt>ON ACTION</tt> insert_some_rows
+<code class="linenumber">02</code>       <tt>LET </tt>r = <tt>DIALOG</tt>.getCurrentRow(&quot;sa&quot;)<code class="linenumber">
+03</code>       <tt>IF </tt>r == 0 <tt>THEN LET </tt>r = 1<tt> END IF</tt><code class="linenumber">
+04</code>       <tt>FOR </tt>i = 10 <tt>TO </tt>1 <tt>STEP </tt>-1<code class="linenumber">
+05</code>          <tt>CALL</tt> <tt>DIALOG</tt>.insertRow(&quot;sa&quot;, r)
+<code class="linenumber">06</code>          <tt>LET</tt> p_items[r].item_quantity = 1.00
+<code class="linenumber">07</code>       <tt>END FOR</tt></pre>
+
+
+<h3> <a name="insertNode">Inserting a new node in a tree</a></h3>
+
+
+<p>The <code>insertNode(&quot;<i>screen-array</i>&quot;, <i>index</i>)</code> method
+is similar to <a href="#insertRow">insertRow()</a>, except that it has to be
+used when the dialog controls a <a href="TreeViews.html">treeview</a>.</p>
+
+
+<p>This method must be used when modifying the array of a treeview during the
+execution of the dialog, for example when implementing a <a href="TreeViews.html#DYNAMIC_FILLING">dynamic
+tree</a> with <tt>ON EXPAND</tt> / <tt>ON COLLAPSE</tt> triggers. Before the
+execution of the dialog, you can fill the program array directly. This includes
+the context of <tt>BEFORE DISPLAY</tt> or <tt>BEFORE DIALOG</tt> control blocks.</p>
+
+
+<p>The method takes two parameters:</p>
+
+
+<ol>
+  <li>The name of the screen array identifying the tree.</li>
+  <li>The index of the next sibling node in the program array (starts at 1).</li>
+</ol>
+
+
+<p>When adding rows for a treeview, the id of the parent node and new
+node matters because that information is used to build the internal tree
+structure. When calling <code>insertNode()</code>, you pass the index of the
+next sibling node. In the program array, the parent-id member of the new node
+will automatically be initialized with the value of the parent-id of the next sibling
+node, then the internal tree structure is re-built.</p>
+
+
+<h3> <a name="appendRow">Appending a new row in a list</a></h3>
+
+
+<p>The <code>appendRow(&quot;<i>screen-array</i>&quot;)</code> method is
+just a basic row creation function to append a row to the end of the list. It does not set the current row or raise any
+<tt>BEFORE ROW</tt> / <tt>BEFORE INSERT</tt> / <tt>AFTER INSERT</tt> / <tt>AFTER
+ROW</tt> control blocks. It is quite similar to appending a new element to the
+program array, except the internal registers are automatically updated (like the
+total number of rows returned by <a href="#getArrayLength">getArrayLength()</a>).
+If the list was decorated with <a href="#setArrayAttributes"> cell attributes</a>, the program array defining the
+attributes will also be synchronized. If <a href="#setSelectionMode">multi-row selection</a> is enabled, selection flags of existing rows are kept.
+New row is inserted at the end of the list with selection flag set to
+      zero.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> This method should not be called in
+control blocks such as <tt>BEFORE ROW</tt>, <tt>AFTER ROW</tt>, <tt>BEFORE
+INSERT</tt>, <tt>AFTER INSERT</tt>, <tt>BEFORE DELETE</tt>, <tt>AFTER DELETE</tt>,
+but it can safely be used in an <tt>ON ACTION</tt> block.</b></p>
+
+
+<p>After the method is called, a new row is created in the program array, so you
+can assign values to the variables before the control goes back to the user. The
+<code>getArrayLength()</code> method will return the new row count.</p>
+
+
+<p>Note that the method does not set the current row and does not give the focus to the
+list; you need
+to call <code>setCurrentRow()</code> and execute <a href="MultipleDialogs.html#NEXT_FIELD">NEXT FIELD</a> 
+if you want to give the focus.</p>
+
+
+<p>The <code>appendRow()</code> method does not create a <a href="MultipleDialogs.html#temporary-rows">temporary
+row</a> as the implicit append action of <tt>INPUT ARRAY</tt>; The row is
+considered as permanent once it is added.</p>
+
+
+<p>The method takes only one parameter:</p>
+
+
+<ol>
+  <li>The name of the screen array identifying the list.</li>
+</ol>
+
+
+<p>Following code example implements a user-defined to append ten rows at the
+end of the list:</p>
+
+
+<pre><code class="linenumber">01</code>    <tt>ON ACTION</tt> append_some_rows
+<code class="linenumber">02</code>       <tt>FOR </tt>i = 1 <tt>TO </tt>10<code class="linenumber">
+03</code>          <tt>CALL</tt> <tt>DIALOG</tt>.appendRow(&quot;sa&quot;)
+<code class="linenumber">04</code>          <tt>LET</tt> r = <tt>DIALOG</tt>.getArrayLength(&quot;sa&quot;)
+<code class="linenumber">05</code>          <tt>LET</tt> p_items[r].item_quantity = 1.00
+<code class="linenumber">06</code>       <tt>END FOR</tt></pre>
+
+
+<h3> <a name="appendNode">Appending a new node in a tree</a></h3>
+
+
+<p>The <code>appendNode(&quot;<i>screen-array</i>&quot;, <i>index</i>)</code> method has to be
+used to add a new node under a given parent, when the dialog controls a <a href="TreeViews.html">treeview</a>.</p>
+
+
+<p>This method must be used when modifying the array of a treeview during the
+execution of the dialog, for example when implementing a <a href="TreeViews.html#DYNAMIC_FILLING">dynamic
+tree</a> with <tt>ON EXPAND</tt> / <tt>ON COLLAPSE</tt> triggers. Before the
+execution of the dialog, you can fill the program array directly. This includes
+the context of <tt>BEFORE DISPLAY</tt> or <tt>BEFORE DIALOG</tt> control blocks.</p>
+
+
+<p>The method takes two parameters:</p>
+
+
+<ol>
+  <li>The name of the screen array identifying the tree.</li>
+  <li>The index of the parent node in the program array (starts at 1).</li>
+</ol>
+
+
+<p>When adding rows for a treeview, the id of the parent node and new node
+matters because that information is used to build the internal tree structure.
+When calling <code>appendNode()</code>, you pass the index of the parent node
+under which the new node will be appended. In the program array, the parent-id
+member of the new node will automatically be initialized with the value of the
+id of the parent node identifier by the <i>index</i> passed as parameter, then
+the internal tree structure is re-built.</p>
+
+
+<p>If the parent index is zero, a new root node will be appended.</p>
+
+
+<p>The methods returns the index of the new inserted node.</p>
+
+
+<p>In the program array, the parent-id member of the new node
+will automatically be initialized with the value of the id member of the parent node identified
+by the index.</p>
+
+
+<h3> <a name="deleteRow">Deleting a row from a list</a></h3>
+
+
+<p>The <code>deleteRow(&quot;<i>screen-array</i>&quot;, <i>index</i>)</code> method is
+just a basic row deletion function. It does not reset the current row or raise
+any <tt>BEFORE DELETE</tt> / <tt>AFTER DELETE</tt> / <tt>AFTER ROW</tt> / <tt>BEFORE
+ROW</tt> control blocks (except in some particular situation as described
+below). It is quite similar to deleting an element to the
+program array, except that internal registers are automatically updated (like
+the total number of rows returned by <a href="#getArrayLength">getArrayLength()</a>).
+If the list was decorated with <a href="#setArrayAttributes"> cell attributes</a>, the program array defining the
+attributes will also be synchronized. If <a href="#setSelectionMode">multi-row selection</a> is enabled, selection information is synchronized (i.e.
+selection flags are shifted up) for all rows
+      after the deleted row.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> This method should not be called in
+control blocks such as <tt>BEFORE ROW</tt>, <tt>AFTER ROW</tt>, <tt>BEFORE
+INSERT</tt>, <tt>AFTER INSERT</tt>, <tt>BEFORE DELETE</tt>, <tt>AFTER DELETE</tt>,
+but it can safely be used in an <tt>ON ACTION</tt> block.</b></p>
+
+
+<p>After the method is called, the row does no more exist in the program array,
+and the <code>getArrayLength()</code> method will return the new row count.</p>
+
+
+<p> If the <code>deleteRow()</code> method is called during an <tt>INPUT
+ARRAY</tt>, and after the call no more rows are in the list, the dialog will
+automatically append a new <a href="MultipleDialogs.html#temporary-rows">temporary
+row</a> if the focus is in the list, to let the user enter new data.<font color="#FF0000">
+<b>When using AUTO APPEND = FALSE attribute, no temporary row will be created
+and the current
+row register will be automatically changed to make sure that it will not be greater as
+the total number of rows.</b></font></p>
+
+
+<p> If <code>deleteRow()</code> method is called during an <tt>INPUT
+ARRAY</tt>  or <tt>DISPLAY ARRAY</tt> that <u>has the focus</u>, control blocks
+such as <tt>BEFORE ROW</tt> / <tt>BEFORE FIELD</tt> will be executed if you delete
+<u> the current row</u>. This is required
+to reset the internal state of the dialog.</p>
+
+
+<p>The method takes two parameters:</p>
+
+
+<ol>
+  <li>The name of the screen array identifying the list.</li>
+  <li>The index of the row to be deleted (starts at 1).</li>
+</ol>
+<p>If you pass zero as row index, the method does nothing (if no rows are in the
+list, <code>getCurrentRow()</code> returns zero).</p>
+
+
+<p>Following code example implements a user-defined action to remove the rows
+that have a specific property:</p>
+
+
+<pre><code class="linenumber">01</code>    <tt>ON ACTION</tt> delete_invalid_rows
+<code class="linenumber">02</code>       <tt>FOR </tt>r = 1 <tt>TO DIALOG</tt>.getArrayLength(&quot;sa&quot;)<code class="linenumber">
+03</code>          <tt>IF NOT </tt>s_orders[t].is_valid <tt>THEN</tt><code class="linenumber">
+04</code>            <tt>CALL</tt> <tt>DIALOG</tt>.deleteRow(&quot;sa&quot;,r)
+<code class="linenumber">05</code>            <tt>LET</tt> r = r - 1
+<code class="linenumber">06</code>          <tt>END IF</tt><code class="linenumber">
+07</code>       <tt>END FOR</tt></pre>
+
+
+<h3> <a name="deleteNode">Deleting a node from a tree</a></h3>
+
+
+<p>The <code>deleteNode(&quot;<i>screen-array</i>&quot;, <i>index</i>)</code> method
+is similar to <a href="#deleteRow">deleteRow()</a>, except that it has to be
+used when the dialog controls a <a href="TreeViews.html">treeview</a>.</p>
+
+
+<p>This method must be used when modifying the array of a treeview during the
+execution of the dialog, for example when implementing a <a href="TreeViews.html#DYNAMIC_FILLING">dynamic
+tree</a> with <tt>ON EXPAND</tt> / <tt>ON COLLAPSE</tt> triggers. Before the
+execution of the dialog, you can fill the program array directly. This includes
+the context of <tt>BEFORE DISPLAY</tt> or <tt>BEFORE DIALOG</tt> control blocks.</p>
+
+
+<p>The method takes two parameters:</p>
+
+
+<ol>
+  <li>The name of the screen array identifying the tree.</li>
+  <li>The index of the node in the program array that has to be deleted (starts at 1).</li>
+</ol>
+
+
+<p>The main difference with <a href="#deleteRow">deleteRow()</a> is that <code>deleteNode()</code>
+will remove recursively all child nodes before removing the node identified by
+index.&nbsp;</p>
+
+
+<p>If the index is zero, all root nodes will be deleted from the tree.</p>
+
+
+<h3> <a name="deleteAllRows">Deleting all rows of a list</a></h3>
+
+
+<p>The <code>deleteAllRows(&quot;<i>screen-array</i>&quot;)</code>  method removes all the rows of a list driven by a <tt>DISPLAY ARRAY</tt> or <tt>INPUT
+ARRAY</tt>. This is equivalent to a <code>deleteRow()</code> call, but instead
+of deleting one particular row, it removes all rows of the specified list.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> This method should not be called in
+control blocks such as <tt>BEFORE ROW</tt>, <tt>AFTER ROW</tt>, <tt>BEFORE
+INSERT</tt>, <tt>AFTER INSERT</tt>, <tt>BEFORE DELETE</tt>, <tt>AFTER DELETE</tt>,
+but it can safely be used in an <tt>ON ACTION</tt> block.</b></p>
+
+
+<p>After the method is called, all rows are deleted from the program array,
+and the <code>getArrayLength()</code> method will return zero.</p>
+
+
+<p>The method takes the name of the screen-array as parameter.</p>
+
+
+<p>If the <code>deleteAllRows()</code> method is called during an <tt>INPUT
+ARRAY</tt>, the dialog will automatically append a new <a href="MultipleDialogs.html#temporary-rows">temporary
+row</a> if the focus is in the list, to let the user enter new data.<font color="#FF0000">
+<b>When using AUTO APPEND = FALSE attribute, no temporary row will be created
+and the current
+row register will be automatically changed to make sure that it will not be greater as
+the total number of rows.</b></font></p>
+
+
+<p> If <code>deleteAllRows()</code> method is called during an <tt>INPUT
+ARRAY</tt> or <tt>DISPLAY ARRAY</tt> that <u>has the focus</u>, the <tt>BEFORE ROW</tt>
+control block will be executed if you delete the current row. This is required
+to reset the internal state of the dialog.</p>
+
+
+<p> 
+If the list was decorated with <a href="#setArrayAttributes"> cell attributes</a>, the program array defining the
+attributes will be cleared. If <a href="#setSelectionMode">multi-row selection</a> 
+is enabled, selection flags are cleared.</p>
+
+
+<h3><a name="validate">Checking form level validation rules</a></h3>
+
+
+<p>In order to execute <a href="FSFAttributes.html#FA_NOT_NULL">NOT NULL</a>, <a href="FSFAttributes.html#FA_REQUIRED">REQUIRED</a>
+and <a href="FSFAttributes.html#FA_INCLUDE">INCLUDE</a> validation rules defined
+in the <a href="FormSpecFiles.html">form specification files</a>, you can call
+the <code>validate(&quot;<i>field-list</i>&quot;)</code> method by passing a list of fields or screen records
+as parameter. The method returns zero if success and the input error code of the
+first field which does not satisfy the validation rules.</p>
+
+
+<p>Note that the current field is always checked, even if it is not part of the
+validation field list. This is mandatory, otherwise the current field may be
+left with invalid data.</p>
+
+
+<p>If an error occurs, the <code>validate()</code> method automatically displays
+the corresponding error message, and registers the <a href="#nextField">next
+field</a> to jump to when the interactive instruction gets the control back.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> The validate() method does not stop
+code execution if an error is detected. You must execute a </b><tt>CONTINUE
+DIALOG</tt><b> or </b><tt>CONTINUE INPUT</tt><b> instruction to cancel the code
+execution.</b></p>
+
+
+<p>A typical usage is for a &quot;save&quot; action:&nbsp;</p>
+
+
+<pre><code class="linenumber">01</code>    <tt>ON ACTION</tt> save
+<code class="linenumber">02</code>       <tt>IF DIALOG</tt>.validate(&quot;cust.*&quot;) &lt; 0 <tt>THEN</tt><code class="linenumber">
+03</code>         <tt>CONTINUE DIALOG</tt><code class="linenumber">
+04</code>       <tt>END IF</tt><code class="linenumber">
+05</code>       <tt>CALL</tt> customer_save()</pre>
+
+
+<p>See <a href="#ident_fields">Identifying fields in dialog methods</a> for more
+details about the <i>field -list</i> specification.</p>
+
+
+<h3><a name="setDefaultUnbuffered">Setting the UNBUFFERED mode</a></h3>
+
+
+<p>By default dialogs are not sensitive to variable changes. To make a dialog
+sensitive, use the <tt>UNBUFFERED</tt> attribute in the dialog
+instruction definition. However, you can define the default for all subsequent dialogs
+by using the <code>setDefaultUnbuffered()</code> class method:</p>
+
+
+<pre><code class="linenumber">01 </code><tt>CALL </tt>ui.Dialog.setDefaultUnbuffered(<tt>TRUE</tt>)</pre>
+
+
+<h3><a name="setting TTY Attributes">Setting TTY attributes for cells in lists</a></h3>
+<h4><a name="setArrayAttributes">Multiple Dialogs</a></h4>
+<p>In an <a href="InputArray.html">INPUT ARRAY</a> or <a href="DisplayArray.html">DISPLAY
+ARRAY</a> instruction, the <code>setArrayAttributes(&quot;<i>screen-array</i>&quot;,
+<i>program-array</i>)</code>
+ method can be used to specify display attributes for each cell. You must define
+an array with the same number of record elements as the data array used by the <tt>INPUT
+ARRAY</tt> or <tt>DISPLAY ARRAY</tt>. Each element must have the same name as in
+the data array, and must be defined with a character data type (you typically
+use <a href="DataTypes.html#DT_STRING">STRING</a>). </p>
+<p>Fill the display attributes
+array with color and video attributes. These must be specified in lowercase 
+characters and
+separated by a blank (ex: &quot;<tt>red reverse</tt>&quot;).</p>
+
+<p>Possible values for cell attributes are a combination of the following:</p>
+
+
+<ul>
+  <li>The TTY attribute <code>reverse</code></li>
+  <li>The TTY attribute <code>blink</code></li>
+  <li>The TTY attribute <code>underline</code></li>
+  <li>One of the TTY colors <code>white, yellow, magenta, red, cyan, green,
+    blue, black</code></li>
+</ul>
+<p>Then, pass the
+array to the dialog with the <code>setArrayAttributes()</code>
+ method, in a&nbsp; <tt>BEFORE INPUT</tt> or <tt>BEFORE DISPLAY</tt> block. Display
+attributes can be changed dynamically during the dialog:</p>
+
+<pre><code class="linenumber">01</code>    <tt>ON ACTION</tt> set_attributes
+<code class="linenumber">02</code>       <tt>CALL</tt> <tt>DIALOG</tt>.setArrayAttributes( &quot;sr&quot;, attarr )</pre>
+
+<p>Note that like data values, if you change the cell attributes during the
+dialog, these are not displayed automatically unless the <a href="MultipleDialogs.html#buff-unbuff-modes">UNBUFFERED</a>
+mode is used. </p>
+<pre><code class="linenumber">01</code>    <tt>ON ACTION</tt> modify_cell_attribute
+<code class="linenumber">02</code>       <tt>LET</tt> attarr[index].col8 = &quot;red reverse&quot;</pre>
+
+<p>If you set <tt>NULL</tt> to a , the default TTY attributes will be reset:</p>
+
+<pre><code class="linenumber">01</code>    <tt>ON ACTION</tt> clean_cell_attribute
+<code class="linenumber">02</code>       <tt>LET</tt> attarr[index].col8 = <tt>NULL</tt></pre>
+
+<p>The cell attributes array can be detached from the dialog by passing <tt>NULL</tt>
+as second parameter to the <code>setArrayAttributes()</code>
+ method. When doing this, the default TTY attributes will be reset (those
+defined by the window or dialog <tt>ATTRIBUTE</tt> clause):</p>
+
+<pre><code class="linenumber">01</code>    <tt>ON ACTION</tt> remove_attributes
+<code class="linenumber">02</code>       <tt>CALL</tt> <tt>DIALOG</tt>.setArrayAttributes( &quot;sr&quot;, NULL )</pre>
+
+<p>For a complete example, see <a href="#EXAMPLE_4">Example 4</a>.</p>
+
+
+<h4><a name="setCellAttributes">Singular Dialogs</a></h4>
+<p>An equivalent method called <code>setCellAttributes(<i>program-array</i>)</code>,
+takes only the program array as argument. The <code>setCellAttributes()</code>
+method is designed for singular dialogs, where only one screen array is
+used.</p>
+
+
+<h3><a name="setSelectionMode">Defining the row selection mode</a></h3>
+
+<p>The <tt>DISPLAY ARRAY</tt> dialogs supports
+multi-row selection. This option is disabled by default and can be enabled with
+the <code>setSelectionMode(&quot;<i>screen-array</i>&quot;, <i>mode</i>)</code>
+method:</p>
+
+
+<pre><code class="linenumber">01</code>    <tt>ON ACTION</tt> mrs_on
+<code class="linenumber">02</code>       <tt>CALL</tt> <tt>DIALOG</tt>.setSelectionMode( &quot;sr&quot;, 1 )</pre>
+
+<p>Possible values of the second parameter are 0 (single row selection) or 1
+(multi-range selection); other values
+are reserved for future use.</p>
+<p>Multi-row selection can be enabled and disabled during the dialog execution.
+If multi-row selection is switched off, selected rows get de-selected.</p>
+
+
+<p>For more details about multi-row selection, see <a href="MultipleDialogs.html#multi-row-selection">Multiple
+Dialogs page</a>.</p>
+
+
+<h3><a name="isRowSelected">Querying row selection</a></h3>
+
+<p>If multi-row selection is enabled with <a href="#setSelectionMode">setSelectionMode()</a>,
+you can check whether a row is selected with the <code>isRowSelected(&quot;<i>screen-array</i>&quot;,
+<i>index</i>)</code> method:</p>
+
+
+<pre><code class="linenumber">01</code>    <tt>ON ACTION</tt> check_current_row_selected
+<code class="linenumber">02</code>       <tt>IF</tt> <tt>DIALOG</tt>.isRowSelected( &quot;sr&quot;, <tt>DIALOG</tt>.getCurrentRow(&quot;sr&quot;) ) <tt>THEN
+</tt><code class="linenumber">03</code>         <tt>MESSAGE</tt> &quot;Current row is selected.&quot;<tt>
+</tt><code class="linenumber">04</code>       <tt>END IF</tt></pre>
+
+
+<p align="left">If multi-row selection is off, the method returns <a href="Programs.html#PC_TRUE">TRUE</a>
+for the current row and <a href="Programs.html#PC_FALSE">FALSE</a> for other
+rows.</p>
+
+
+<h3><a name="setSelectionRange">Setting row selection</a></h3>
+
+<p>If multi-row selection is enabled with <a href="#setSelectionMode">setSelectionMode()</a>,
+you can set the selection flags for a range of rows with the <code>setSelectionRange(&quot;<i>screen-array</i>&quot;,
+<i>start-index</i>, <i>end-index</i>, <i>value</i>)</code> method.&nbsp;</p>
+
+
+<pre><code class="linenumber">01</code>    <tt>ON ACTION</tt> select_all
+<code class="linenumber">02</code>       <tt>CALL</tt> <tt>DIALOG</tt>.setSelectionRange( &quot;sr&quot;, 1, -1, 1)</pre>
+
+
+<p>The start and end index must be in the range of possible row indexes (from 1
+to <code>DIALOG.getArrayLength(&quot;<i>screen-array</i>&quot;)</code>).</p>
+<p>If you specify an end index of -1, it will set the flags from start index to
+the end of the list.</p>
+
+
+<h3><a name="selectionToString">Serialize data of the selected rows</a></h3>
+
+
+<p>The <code>selectionToString(&quot;<i>screen-array</i>&quot;)</code> method
+can be used to get a tab-separated value list of the <a href="#setSelectionMode"> selected
+rows</a>. When multi-row selection is
+disabled, the method
+serializes the current row. You typically use this method in conjunction with
+Drag &amp; Drop to fill the buffer, by using a text/plain MIME type, to export
+data to external applications.</p>
+
+
+<pre><code class="linenumber">01</code>    <tt>ON ACTION</tt> serialize
+<code class="linenumber">02</code>       <tt>LET </tt>buff = <tt>DIALOG</tt>.selectionToString( &quot;sr&quot; )</pre>
+
+
+<p>Numeric and date data will be formatted according to current locale settings
+(<a href="EnvironmentVariables.html#EV_DBMONEY">DBMONEY</a>, <a href="EnvironmentVariables.html#EV_DBDATE">DBDATE</a>).</p>
+<p>The visual presentation of data is respected: The dialog will copy the rows
+in the sort order specified by the user, moved columns will appear in the same
+positions as in the table and hidden columns will be ignored. Note that phantom
+columns are not copied.</p>
+
+
+<p>Items in the tab-separated record will be surrounded by double-quotes if the
+value contains special characters such as a new-line, a double-quote, or
+controls characters with ASCII code &lt; 0x20. Double-quotes in the value will
+be doubled.</p>
+
+
+<HR>
+
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+
+<h4><a name="EXAMPLE_1">Example 1: Disable fields dynamically.</a></h4>
+
+<pre><code class="linenumber">01</code> <tt>FUNCTION</tt> input_customer()
+<code class="linenumber">02   </code> <tt>DEFINE</tt> custid <tt>INTEGER</tt>
+<code class="linenumber">03   </code> <tt>DEFINE</tt> custname <tt>CHAR</tt>(10)
+<code class="linenumber">04    </code><tt>INPUT BY NAME </tt>custid, custname
+<code class="linenumber">05      </code><tt>ON ACTION </tt>enable
+<code class="linenumber">06      </code>  <tt>CALL DIALOG</tt>.setFieldActive(&quot;custid&quot;,1)
+<code class="linenumber">07      </code><tt>ON ACTION </tt>disable
+<code class="linenumber">08      </code>  <tt>CALL DIALOG</tt>.setFieldActive(&quot;custid&quot;,0)
+<code class="linenumber">09    </code><tt>END INPUT</tt>
+<code class="linenumber">10</code> <tt>END FUNCTION</tt></pre>
+
+
+<h4><a name="EXAMPLE_2">Example 2: Get the form and hide fields.</a></h4>
+
+<pre><code class="linenumber">01</code> <tt>FUNCTION</tt> input_customer()
+<code class="linenumber">02   </code> <tt>DEFINE</tt> f ui.Form
+<code class="linenumber">03   </code> <tt>DEFINE</tt> custid <tt>INTEGER</tt>
+<code class="linenumber">04   </code> <tt>DEFINE</tt> custname <tt>CHAR</tt>(10)
+<code class="linenumber">05    </code><tt>INPUT BY NAME </tt>custid, custname
+<code class="linenumber">06      </code><tt>BEFORE INPUT</tt>
+<code class="linenumber">08        </code><tt>LET </tt>f = <tt>DIALOG</tt>.getForm()
+<code class="linenumber">09      </code>  <tt>CALL </tt>f.setElementHidden(&quot;customer.custid&quot;,1)
+<code class="linenumber">10    </code><tt>END INPUT</tt>
+<code class="linenumber">11</code> <tt>END FUNCTION</tt></pre>
+
+
+<h4><a name="EXAMPLE_3">Example 3: Pass a dialog object to a function.</a></h4>
+
+<pre><code class="linenumber">01</code> <tt>FUNCTION</tt> input_customer()
+<code class="linenumber">02   </code> <tt>DEFINE</tt> custid <tt>INTEGER</tt>
+<code class="linenumber">03   </code> <tt>DEFINE</tt> custname <tt>CHAR</tt>(10)
+<code class="linenumber">04    </code><tt>INPUT BY NAME </tt>custid, custname
+<code class="linenumber">05      </code><tt>BEFORE INPUT</tt>
+<code class="linenumber">06        </code><tt>CALL </tt>setup_dialog(<tt>DIALOG</tt>)
+<code class="linenumber">07    </code><tt>END INPUT</tt>
+<code class="linenumber">08 </code><tt>END FUNCTION</tt>
+<code class="linenumber">09 </code>
+<code class="linenumber">10 </code><tt>FUNCTION</tt> setup_dialog(d)
+<code class="linenumber">11    </code><tt>DEFINE </tt>d ui.Dialog
+<code class="linenumber">12    </code><tt>CALL </tt>d.setActionActive(&quot;print&quot;,user.can_print)
+<code class="linenumber">13    </code><tt>CALL </tt>d.setActionActive(&quot;query&quot;,user.can_query)
+<code class="linenumber">14</code> <tt>END FUNCTION</tt></pre>
+
+
+<h4><a name="EXAMPLE_4">Example 4: Set display attributes for cells. </a></h4>
+
+<pre><code class="linenumber">01</code> <tt>FUNCTION</tt> display_customer()
+<code class="linenumber">02    </code><tt>DEFINE </tt>i <tt>INTEGER</tt>
+<code class="linenumber">03    </code><tt>DEFINE </tt>arr <tt>DYNAMIC ARRAY OF RECORD</tt>
+<code class="linenumber">04                 </code><tt> </tt>key <tt>INTEGER,</tt>
+<code class="linenumber">05                 </code><tt> </tt>name <tt>CHAR</tt>(10)
+<code class="linenumber">06               </code><tt>END RECORD</tt>
+<code class="linenumber">07    </code><tt>DEFINE </tt>att <tt>DYNAMIC ARRAY OF RECORD</tt>
+<code class="linenumber">08                 </code><tt> </tt>key <tt>STRING</tt>,
+<code class="linenumber">09                 </code><tt> </tt>name <tt>STRING</tt>
+<code class="linenumber">10               </code><tt>END RECORD</tt>
+<code class="linenumber">11</code>
+<code class="linenumber">12    </code><tt>FOR </tt>i=1 <tt>TO </tt>10
+<code class="linenumber">13    </code><tt>   CALL </tt>arr.appendElement()
+<code class="linenumber">14    </code><tt>   LET </tt>arr[i].key = i
+<code class="linenumber">15    </code><tt>   LET </tt>arr[i].name = &quot;name &quot; || i
+<code class="linenumber">16    </code><tt>   CALL </tt>att.appendElement()
+<code class="linenumber">17    </code><tt>   IF </tt>i <tt>MOD</tt> 2 = 0 <tt>THEN</tt>
+<code class="linenumber">18       </code><tt>   LET </tt>att[i].key = &quot;red&quot;
+<code class="linenumber">19    </code><tt>      LET </tt>att[i].name = &quot;blue reverse&quot;
+<code class="linenumber">20    </code><tt>   ELSE</tt>
+<code class="linenumber">21       </code><tt>   LET </tt>att[i].key = &quot;green&quot;
+<code class="linenumber">22    </code><tt>      LET </tt>att[i].name = &quot;magenta reverse&quot;
+<code class="linenumber">23    </code><tt>   END IF</tt>
+<code class="linenumber">24    </code><tt>END FOR</tt>
+<code class="linenumber">25</code>
+<code class="linenumber">26    </code><tt>DIALOG ATTRIBUTES(UNBUFFERED)</tt>
+<code class="linenumber">27      </code><tt>DISPLAY ARRAY </tt>arr <tt>TO </tt>sr.*
+<code class="linenumber">28      </code><tt>ON ACTION </tt>att_attach
+<code class="linenumber">29        </code><tt>CALL </tt>DIALOG.setArrayAttributes(&quot;sr&quot;, att)
+<code class="linenumber">30      </code><tt>ON ACTION </tt>att_detach
+<code class="linenumber">31        </code><tt>CALL </tt>DIALOG.setArrayAttributes(&quot;sr&quot;, <tt>NULL</tt>)
+<code class="linenumber">32      </code><tt>ON ACTION </tt>att_modify_cell
+<code class="linenumber">33        </code><tt>LET </tt>att[2].key = &quot;red reverse&quot;
+<code class="linenumber">34      </code><tt>ON ACTION </tt>att_clear_cell
+<code class="linenumber">35        </code><tt>LET </tt>att[2].key = <tt>NULL</tt>
+<code class="linenumber">36    </code><tt>END DIALOG</tt>
+<code class="linenumber">37</code>
+<code class="linenumber">38</code> <tt>END FUNCTION</tt></pre>
+
+
+</BODY>
+</HTML>

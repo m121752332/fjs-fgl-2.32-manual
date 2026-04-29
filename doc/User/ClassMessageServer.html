@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>base.MessageServer</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The MessageServer class</a> </H1>
+
+<p><b><font color="#FF0000">Warning:</font> This feature is experimental and
+subject to change.</b></p>
+
+<p>Summary:</p>
+
+<ul>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#METHODS">Methods</a></li>
+  <li><a href="#USAGE">Usage</a>
+  </li>
+  <li><a href="#EXAMPLES">Examples</a></li>
+</ul>
+<p><i>See also:</i>
+<a href="BuiltInClasses.html">Built-in Classes</a>, <a href="FormSpecFiles.html">Form
+Specification File</a></p>
+
+<HR>
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+<p>The <b>MessageServer</b> class allows a program to send a key action over the
+network to other programs using this service. The action transmission is <u>not</u>
+guaranteed.</p>
+
+<h4>Syntax:</h4>
+
+<p><code>base.MessageServer</code></p>
+
+
+<HR>
+
+
+<h3><a name="METHODS">Methods:</a></h3>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#3399FF" colspan="2"><b>Class Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><b>Name</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#connect">connect</a>()</code></td>
+    <td valign="top">Connects to the group of programs to be notified by a
+      message.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#send">send</a>( keyname </code><tt>STRING</tt><code>
+      )</code></td>
+    <td valign="top">Sends a key event to the group of programs connected
+      together.</td>
+  </tr>
+</table>
+
+
+<HR>
+
+
+<h3><a name="USAGE">Usage:</a></h3>
+<p>The MessageServer class can be used to join a group of programs to be
+notified by simple messages (i.e. key events). The programs can run on different
+machines connected together in a network.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font>  The MessageServer uses network API
+capabilities with Sockets and the UDP protocol. While this is obvious, make sure
+the computers are configured with a network. Note that the UDP protocol does not
+guarantee the transmission of datagrams. Therefore, messages sent with the
+MessageServer can arrive out of order, duplicated, or go missing without notice.</b></p>
+
+
+<p>The UPD port used is <b>6600</b>, the IP address group is <b>224.0.1.1</b>,
+and this cannot be changed.</p>
+
+
+<h4><a name="connect">Connecting to the group</a></h4>
+
+
+<p>First the program must call the <code>base.MessageServer.connect()</code>  class method to
+join the group of programs that can be notified by a message.</p>
+
+
+<h4><a name="send">Sending a message</a></h4>
+<p>Once connected to the message server group, a program can call the <code>base.MessageServer.send()</code> class method
+to notify other programs registered to the group.</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>CALL</tt> base.MesageServer.connect()
+<CODE class=linenumber>02</CODE> <tt>CALL</tt> base.MessageServer.send(&quot;f1&quot;)</PRE>
+
+<p>All programs registered to the message server group (including the program
+which has sent the message) will be notified. The messages can be treated by the
+current dialog with a simple <tt> ON KEY()</tt> interaction block.</p>
+
+
+<HR>
+
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+
+<h4>Example 1: Simple MessageServer usage</h4>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>CALL</tt> base.MessageServer.connect()
+<CODE class=linenumber>03</CODE>   <tt>MENU</tt> &quot;test&quot;
+<CODE class=linenumber>04    </CODE>   <tt>COMMAND</tt> &quot;send F1&quot; <tt>CALL</tt> base.MessageServer.send(&quot;f1&quot;)
+<CODE class=linenumber>05    </CODE>   <tt>ON KEY</tt> (F1) <tt>DISPLAY</tt> &quot;Key F1 received...&quot;
+<CODE class=linenumber>06    </CODE>   <tt>COMMAND</tt> &quot;quit&quot; <tt>EXIT MENU</tt>
+<CODE class=linenumber>07</CODE>   <tt>END MENU</tt>
+<CODE class=linenumber>08</CODE> <tt>END MAIN</tt></PRE>
+
+
+</BODY>
+</HTML>

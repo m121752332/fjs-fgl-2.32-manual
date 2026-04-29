@@ -1,0 +1,192 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>base.StringTokenizer</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The StringTokenizer class</a> </H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#METHODS">Method</a><a href="#USAGE">s</a></li>
+	<li><a href="#USAGE">Usage</a><ul>
+  <li><a href="#create">Create a tokenizer</a></li>
+	<li><a href="#createExt">Extended create method</a></li>
+	<li><a href="#countTokens">Count the number of tokens</a></li>
+	<li><a href="#hasMoreTokens">Check if there are more tokens to return</a></li>
+	<li><a href="#nextToken">Return the next token</a></li>
+</ul></li>
+	<li><a href="#EXAMPLES">Examples</a></li>
+</ul>
+
+
+<p>See also: <a href="BuiltInClasses.html">Built-in classes</a>, <a href="ClassStringBuffer.html">StringBuffer</a></p>
+
+
+<HR>
+
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+<p>The <b>StringTokenizer</b> class is designed to parse a
+string to extract tokens according to delimiters. </p>
+
+
+<h4>Syntax:</h4><code>base.StringTokenizer</code>
+
+
+<HR>
+
+
+<h3><a name="METHODS">Methods:</a></h3>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#3399FF" colspan="2"><b>Class Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%" valign="top"><b>Name</b></td>
+    <td bgcolor="#C0C0C0" valign="top"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#create">create</a>( src </code><tt> STRING</tt>   <code>, delim </code><tt> STRING</tt>&nbsp;<code>
+      )<br>
+      &nbsp;&nbsp;</code><tt>RETURNING</tt>    <code>base.StringTokenizer</code></td>
+    <td valign="top">Returns a StringTokenizer object prepared to parse the <i>src</i> source
+      string according to the <i>delim</i>  delimiters. The <i>delim</i>
+      parameter is a string that can hold one or more delimiters.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#createExt">createExt</a>( src </code><tt> STRING</tt>   <code>, delim </code><tt> STRING</tt><code>, </code><tt> <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; </tt>   <code> esc </code><tt>STRING</tt><code>, nulls
+      </code><tt>INTEGER</tt><code> )<br>
+      &nbsp;&nbsp;</code><tt>RETURNING</tt>    <code>base.StringTokenizer</code></td>
+    <td valign="top">Same as create(), except for additional options. The <i>esc</i>
+      parameter defines an escape character for the delimiter. The <i>nulls</i>
+      parameter indicates if empty tokens are taken into account.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#00FFCC" colspan="2" valign="top"><b>Object Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%" valign="top"><b>Name</b></td>
+    <td bgcolor="#C0C0C0" valign="top"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#countTokens">countTokens</a>()<br>
+      &nbsp;&nbsp;</code><tt>RETURNING INTEGER</tt> </td>
+    <td valign="top">Returns the number of tokens left to be returned.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#hasMoreTokens">hasMoreTokens</a>()<br>
+      &nbsp;&nbsp;</code><tt>RETURNING INTEGER</tt> </td>
+    <td valign="top">Returns TRUE if there are more tokens to return.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#nextToken">nextToken(</a>)<br>
+      &nbsp;&nbsp;</code><tt>RETURNING STRING</tt> </td>
+    <td valign="top">Parses the string and returns the next token.</td>
+  </tr>
+</table>
+
+
+<HR>
+
+
+<h3><a name="USAGE">Usage:</a></h3>
+
+
+<p>The StringTokenizer built-in class is provided to split a source string into
+tokens, according to delimiters. The following code uses the <code>
+<a name="create">base.StringTokenizer.create()</a></code> method to create a
+StringTokenizer that
+will generate 3 tokens with the values &quot;aaa&quot;, &quot;bbb&quot;, &quot;ccc<code>&quot;:</code></p>
+<pre><CODE class=linenumber>01</CODE> <tt>DEFINE </tt>tok base.StringTokenizer
+<CODE class=linenumber>02</CODE> <tt>LET</tt> tok = base.StringTokenizer.create(&quot;aaa|bbb|ccc&quot;,&quot;|&quot;)</pre>
+
+
+<p>The StringTokenizer can take a unique or multiple delimiters into account. A
+delimiter is always one character long. In the following example, 3 delimiters
+are used, and 4 tokens are extracted:</p>
+<pre><CODE class=linenumber>01</CODE> <tt>DEFINE </tt>tok base.StringTokenizer
+<CODE class=linenumber>02</CODE> <tt>LET</tt> tok = base.StringTokenizer.create(&quot;aaa|bbb;ccc+ddd&quot;,&quot;|+;&quot;)</pre>
+
+
+<p>If you create a StringTokenizer with the <code>base.StringTokenizer.create(<i>src</i>,<i>delim</i>)</code> method, the empty tokens
+are <u>not</u> taken into account, and no escape character is defined for the
+delimiters:</p>
+<ul>
+  <li>No escape character can be used.</li>
+  <li>The<code> nextToken()</code> method will never return NULL strings.</li>
+  <li>In the source string, leading and trailing delimiters or the amount of delimiters between two&nbsp;tokens
+    do not affect the number of tokens.</li>
+</ul>
+<p>If you create a StringTokenizer with the <code><a name="createExt">base.StringTokenizer.reateExt(<i>src</i>,<i>delim</i>,<i>esc</i>,<i>nulls</i>)</a></code>
+method, you can configure the StringTokenizer:</p>
+<p>When passing a character to the <i>esc</i> parameter, the delimiters can be
+escaped in the source string.</p>
+<p>When passing TRUE to the <i>nulls</i> parameter, the empty
+tokens are taken into account:</p>
+<ul>
+  <li>The <code>nextToken()</code> method might return NULL strings.</li>
+  <li>In the source string, leading and trailing delimiters or the amount of delimiters between two&nbsp;tokens affects the
+    number of tokens.</li>
+</ul>
+
+
+<p>Note that when you want to specify a backslash as a delimiter, you must use double backslashes in 
+both the 
+source string and as the delimiter, as shown in 
+Example 3 below.</p>
+<p>The <a name="countTokens"><code>countTokens()</code></a> method counts the 
+number of tokens left to be returned.</p>
+<p>The <a name="hasMoreTokens"><code>hasMoreTokens()</code></a> method returns 
+TRUE if there are more tokens to return.</p>
+<p>The <a name="nextToken"><code>nextToken()</code></a> method parses the string 
+and returns the next token.</p>
+
+
+<HR>
+
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+
+<h4><a name="EXAMPLE1">Example 1</a>: Split a UNIX directory path</h4><pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>tok base.StringTokenizer
+<CODE class=linenumber>03</CODE>   <tt>LET</tt> tok = base.StringTokenizer.create(&quot;/home/tomy&quot;,&quot;/&quot;)
+<CODE class=linenumber>04</CODE>   <tt>WHILE</tt> tok.hasMoreTokens()
+<CODE class=linenumber>05</CODE>     <tt>DISPLAY</tt> tok.nextToken()
+<CODE class=linenumber>06</CODE>   <tt>END WHILE</tt>
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt></pre>
+
+
+<h4><a name="EXAMPLE2">Example 2</a>: Taking escaped delimiters and NULL tokens into account</h4><pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>tok base.StringTokenizer
+<CODE class=linenumber>03</CODE>   <tt>LET</tt> tok = base.StringTokenizer.createExt(&quot;||\\|aaa||bbc|&quot;,&quot;|&quot;,&quot;\\&quot;,TRUE)
+<CODE class=linenumber>04</CODE>   <tt>WHILE</tt> tok.hasMoreTokens()
+<CODE class=linenumber>05</CODE>     <tt>DISPLAY</tt> tok.nextToken()
+<CODE class=linenumber>06</CODE>   <tt>END WHILE</tt>
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt></pre>
+
+
+<h4><a name="EXAMPLE3">Example 3</a>: Specifying a backslash as the delimiter </h4><pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>tok base.StringTokenizer
+<CODE class=linenumber>03</CODE>   <tt>LET</tt> tok = base.StringTokenizer.create(&quot;C:\\My Documents\\My Pictures&quot;,&quot;\\&quot;)
+<CODE class=linenumber>04</CODE>   <tt>WHILE</tt> tok.hasMoreTokens()
+<CODE class=linenumber>05</CODE>     <tt>DISPLAY</tt> tok.nextToken()
+<CODE class=linenumber>06</CODE>   <tt>END WHILE</tt>
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt></pre>
+
+
+<pre>&nbsp;</pre>
+
+
+</BODY>
+</HTML>

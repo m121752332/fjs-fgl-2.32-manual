@@ -1,0 +1,264 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>om.SaxDocumentHandler</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The SaxDocumentHandler class</a> </H1>
+
+<p>Summary:</p>
+
+<ul>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#METHODS">Methods</a></li>
+  <li><a href="#USAGE">Usage</a><ul>
+  <li><a href="#createForName">Creating a SaxDocumentHandler object</a></li>
+	<li><a href="#readXmlFile">Loading the document</a></li>
+	<li><a href="#Processing">Processing the documen</a>t</li>
+</ul>
+	</li>
+  <li><a href="#EXAMPLES">Examples</a></li>
+</ul>
+<p><i>See also:</i>
+<a href="BuiltInClasses.html">Built-in Classes</a>, <a href="XmlUtils.html">XML
+Utilities</a>, <a href="ClassXmlWriter.html">XmlWriter</a></p>
+
+<HR>
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+<p>The <b>SaxDocumentHandler</b> class provides an interface to write an <a href="XmlUtils.html">XML</a>
+ filter with a loadable 4gl module, following the <a href="XmlUtils.html">SAX</a>
+standards. </p>
+
+<b><font color="#FF0000">Warning:</font> You must either write a BDL module dedicated to the implementation of the filter
+    methods, or create the SaxDocumentHandler object with a <a href="ClassXmlWriter.html">XmlWriter</a>
+    creation method; see <a href="#USAGE"> usage</a> for more details.</b>
+
+<h4>Syntax:</h4>
+
+<p><code>om.SaxDocumentHandler</code></p>
+
+
+<HR>
+
+
+<h3><a name="METHODS">Methods:</a></h3>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#3399FF" colspan="2"><b>Class Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%" valign="top"><b>Name</b></td>
+    <td bgcolor="#C0C0C0" valign="top"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#createForName">createForName</a>( module </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>     om.SaxDocumentHandler</code></td>
+    <td valign="top">Creates a SaxDocumentHandler object using a BDL module.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#66FFCC" colspan="2" valign="top"><b>Object Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%" valign="top"><b>Name</b></td>
+    <td bgcolor="#C0C0C0" valign="top"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#readXmlFile">readXmlFile</a>( file </code><tt>STRING </tt><code>)</code></td>
+    <td valign="top">Reads an XML file and applies the filter.</td>
+  </tr>
+  <tr>
+      <td width="50%" valign="top"><code><a href="#setIndent">setIndent</a> ( indenting </code><tt>BOOLEAN </tt><code>)</code></td>
+      <td valign="top">Enables output indentation if <code>indenting</code> is TRUE. Indentation is enabled by default</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#startDocument">startDocument</a>( )</code></td>
+    <td valign="top">Processes the beginning of the document.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#startElement">startElement</a>( tag </code><tt>STRING</tt><code>, atts
+      SaxAttributes )</code></td>
+    <td valign="top">Processes the beginning of an element having the tag name <i>tag</i> and
+      the attributes <i>atts</i>.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#characters">characters</a>( text </code><tt>STRING</tt><code> )</code></td>
+    <td valign="top">Processes characters of a text node.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#skippedEntity">skippedEntity</a>( text </code><tt>STRING</tt><code> )</code></td>
+    <td valign="top">Processes an unresolved entity.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#endElement">endElement</a>( tag </code><tt>STRING</tt><code> )</code></td>
+    <td valign="top">Processes the end of an element having the tag name <i>tag</i>.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#endDocument">endDocument</a>( )</code></td>
+    <td valign="top">Processes the end of the document.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#processingInstruction">processingInstruction</a>( n </code><tt>STRING</tt><code>,
+      a </code><tt>STRING </tt><code>)</code></td>
+    <td valign="top">Processes a processing instruction with the name <i>n</i> and attributes <i>a</i>.</td>
+  </tr>
+</table>
+
+
+<HR>
+
+
+<h3><a name="USAGE">Usage:</a></h3>
+
+<p>This class can be used in two different ways:</p>
+<ol>
+  <li>To implement an XML SAX filter, using BDL functions defined in a module.</li>
+  <li>To write an XML document to a file, process or socket output, using <a href="ClassXmlWriter.html">XmlWriter</a>
+    creation methods.</li>
+</ol>
+
+<p>This page describes the first usage; see <a href="ClassXmlWriter.html">XmlWriter</a>
+for more details about the second usage.</p>
+
+<p>With the SaxDocumentHandler class, you can implement a SAX filter by
+using a BDL
+module to write the methods handling the standard SAX events. The SaxDocumentHandler class
+also provides methods to process all SAX events by hand. This
+is useful if you want to chain SAX filters.</p>
+<h4><a name="createForName">Creating a SaxDocumentHandler object</a></h4>
+<p>First, you create the SaxDocumentHandler object with the <code>om.SaxDocumentHandler.createForName(<i>module</i>)</code>
+ method, which takes a BDL module as a parameter:</p>
+
+<PRE><code class="linenumber">01</code> <tt>DEFINE</tt> filter om.SaxDocumentHandler<code class="linenumber">
+02</code> <tt>LET</tt> filter = om.SaxDocumentHandler.createForName(&quot;module1&quot;)</PRE>
+
+<p>When doing this, the runtime system loads the BDL module and attaches its <a href="Functions.html">functions</a>
+to the SaxDocumentHandler methods <u> by name</u>.</p>
+
+<h4><a name="readXmlFile">Loading the document</a></h4>
+<p>To process a document, you typically load it from an XML file:</p>
+
+<PRE><code class="linenumber">01</code> <tt>CALL</tt> filter.readXmlFile(&quot;xmlsource&quot;)</PRE>
+
+<h4><a name="Processing">Processing the document</a></h4>
+<p>The module must implement
+the following functions to match the SAX filter events:</p>
+
+<ul>
+  <li><a name="startDocument"><code>startDocument()</code></a>: Called one time at the beginning of the document
+    processing.</li>
+  <li><a name="processingInstruction"><code>processingInstruction(name,data)</code></a>: Called when a processing
+    instruction is reached, identified by <i>name</i>, with <i>data</i>
+    information.</li>
+  <li><a name="startElement"><code>startElement(name,attr)</code>:</a> Called when an XML element is
+    reached, identified by the tag <i> name</i>, having the <i>attr</i>
+    attributes (<a href="ClassSaxAttributes.html">SaxAttributes</a>).</li>
+  <li><a name="characters"><code>characters(chars)</code>:</a> Called when a text node is reached, having the
+    characters <i>chars</i>.</li>
+  <li><a name="skippedEntity"><code>skippedEntity(chars)</code></a>: Called when an
+    unknown entity node is reached (like &amp;xxx; for example). Entity name is
+    stored in <i>chars</i>.</li>
+  <li><a name="endElement"><code>endElement(name)</code></a>: Called when the end of an XML element is reached,
+    identified by the tag <i> name</i>.</li>
+  <li><a name="endDocument"><code>endDocument()</code>: </a>Called one time at the beginning of the document
+    processing.</li>
+</ul>
+
+<p>In these functions, you are free to process the XML document as you wish. You
+can&nbsp;use the <a href="ClassSaxAttributes.html">SaxAttributes</a> methods to
+get the attributes of an element, transform the values or ignore some
+attributes, and write directly to a file or to the database, or even chain
+directly with another SaxDocumentHandler. If you want to write to an XML file,
+you typically use an <a href="ClassXmlWriter.html">XmlWriter</a> object.&nbsp;</p>
+
+<p>By default, the SaxDocumentHandler object outputs XML with
+indentation. If you want to disable indentation, use the
+<a name="setIndent"><code>setIndent()</code></a>
+method:</p>
+
+<PRE><code class="linenumber">01</code> <tt>CALL</tt> myhdlr.setIndent(<tt>FALSE</tt>)</PRE>
+
+<HR>
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+<h4>Example 1:&nbsp;Extracting phone numbers from a directory.</h4>
+
+<p>This example shows how to write a SAX filter to extract phone numbers
+from a directory file written in XML.</p>
+
+<PRE><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> f om.SaxDocumentHandler
+<code class="linenumber">03</code>   <tt>LET</tt> f = om.SaxDocumentHandler.createForName(&quot;module1&quot;)
+<code class="linenumber">04</code>   <tt>CALL</tt> f.readXmlFile(&quot;customers&quot;)
+<code class="linenumber">05</code> <tt>END MAIN</tt></PRE>
+
+<p><b>Notes:</b></p>
+<ol>
+	<li>In Line
+<code class="linenumber">03</code>, the input parameter specifies the name of a 
+	source file that has been compiled into a .42m file (&quot;module1.42m&quot; in our 
+	example).</li>
+</ol>
+
+<p>The module &quot;module1.4gl&quot;:</p>
+
+<PRE><code class="linenumber">01</code> <tt>FUNCTION</tt> startDocument()
+<code class="linenumber">02</code> <tt>END FUNCTION</tt>
+<code class="linenumber">03</code>
+<code class="linenumber">04</code> <tt>FUNCTION</tt> processingInstruction(name,data)
+<code class="linenumber">05</code>   <tt>DEFINE</tt> name,data <tt>STRING</tt>
+<code class="linenumber">06</code> <tt>END FUNCTION</tt>
+<code class="linenumber">07</code>
+<code class="linenumber">08</code> <tt>FUNCTION</tt> startElement(name,attr)
+<code class="linenumber">09</code>   <tt>DEFINE</tt> name <tt>STRING</tt>
+<code class="linenumber">10</code>   <tt>DEFINE</tt> attr om.SaxAttributes
+<code class="linenumber">11</code>   <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<code class="linenumber">12</code>   <tt>IF</tt> name=&quot;Customer&quot; <tt>THEN</tt>
+<code class="linenumber">13</code>      <tt>DISPLAY</tt> attr.getValue(&quot;lname&quot;),&quot; &quot;,
+<code class="linenumber">14</code>             attr.getValue(&quot;fname&quot;),&quot;:&quot;,
+<code class="linenumber">15</code>             <tt>COLUMN</tt> 60, attr.getValue(&quot;phone&quot;)
+<code class="linenumber">16</code>   <tt>END IF</tt>
+<code class="linenumber">17</code> <tt>END FUNCTION</tt>
+<code class="linenumber">18</code>
+<code class="linenumber">19</code> <tt>FUNCTION</tt> endElement(name)
+<code class="linenumber">20</code>   <tt>DEFINE</tt> name STRING
+<code class="linenumber">21</code> <tt>END FUNCTION</tt>
+<code class="linenumber">22</code>
+<code class="linenumber">23</code> <tt>FUNCTION</tt> endDocument()
+<code class="linenumber">24</code> <tt>END FUNCTION</tt>
+<code class="linenumber">25</code>
+<code class="linenumber">26</code> <tt>FUNCTION</tt> characters(chars)
+<code class="linenumber">27</code>   <tt>DEFINE</tt> chars <tt>STRING</tt>
+<code class="linenumber">28</code> <tt>END FUNCTION</tt>
+<code class="linenumber">29</code>
+<code class="linenumber">30</code> <tt>FUNCTION</tt> skippedEntity(chars)
+<code class="linenumber">31</code>   <tt>DEFINE</tt> chars <tt>STRING</tt>
+<code class="linenumber">32</code> <tt>END FUNCTION</tt></PRE>
+
+
+<p>The XML file &quot;customers&quot;:</p>
+
+<pre>&lt;Customers&gt;
+  &lt;Customer customer_num=&quot;101&quot; fname=&quot;Ludwig&quot; lname=&quot;Pauli&quot;
+    company=&quot;All Sports Supplies&quot; address1=&quot;213 Erstwild Court&quot;
+    address2=&quot;&quot; city=&quot;Sunnyvale&quot; state=&quot;CA&quot; zipcode=&quot;94086&quot;
+    phone=&quot;408-789-8075&quot; /&gt;
+  &lt;Customer customer_num=&quot;102&quot; fname=&quot;Carole&quot; lname=&quot;Sadler&quot;
+    company=&quot;Sports Spot&quot; address1=&quot;785 Geary St&quot;
+    address2=&quot;&quot; city=&quot;San Francisco&quot; state=&quot;CA&quot; zipcode=&quot;94117&quot;
+    phone=&quot;415-822-1289&quot; /&gt;
+  &lt;Customer customer_num=&quot;103&quot; fname=&quot;Philip&quot; lname=&quot;Currie&quot;
+    company=&quot;Phil&amp;apos;s Sports&quot; address1=&quot;654 Poplar&quot;
+    address2=&quot;P. O. Box 3498&quot; city=&quot;Palo Alto&quot; state=&quot;CA&quot;
+    zipcode=&quot;94303&quot; phone=&quot;415-328-4543&quot; /&gt;
+&lt;/Customers&gt;</pre>
+
+</BODY></HTML>

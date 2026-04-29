@@ -1,0 +1,288 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Automatic source documentation generator</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Automatic source documentation generator</a></H1>
+
+<p> Summary:</p>
+
+<ul>
+  <li><a href="#BASICS">Basics</a></li>
+  <li><a href="#PREREQUISITES">Prerequisites</a></li>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#DOCSTRUCT">Documentation structure</a></li>
+  <li><a href="#COMMENTS">Adding comments to sources</a>
+    <ul>
+      <li><a href="#COMMENTING_FUNCTION">Commenting a Function</a></li>
+      <li><a href="#COMMENTING_MODULE">Commenting a Module</a></li>
+      <li><a href="#COMMENTING_PACKAGE">Commenting a Package</a></li>
+      <li><a href="#COMMENTING_PROJECT">Commenting a Project</a></li>
+    </ul>
+  </li>
+  <li><a href="#DOCGEN">Running the doc generator</a></li>
+</ul>
+
+<HR>
+
+<h3><a name="BASICS">Basics</a></h3>
+
+<p>Documenting sources is an important task in software development, to share
+the code among applications and achieve better reusability. Source documentation must be concise,
+clear, and complete. However, documenting sources can be boring and subject to
+mistakes if large repetitive documentation sections have to be written by hand.</p>
+
+<p>Robust
+source documentation can be produced automatically with the <a href="Tools.html#TL_FGLCOMP">fglcomp</a> compiler.
+The compiler can generate source documentation from the <b>.4gl</b> files of your
+project with minimum effort. The resulting source documentation is generated in simple HTML
+format and can be published on a web server.</p>
+<p>Source documentation is generated with the <b>--build-doc</b>
+option of <a href="Tools.html#TL_FGLCOMP">fglcomp</a>. You can generate 
+default documentation from the existing sources. For a better description of
+the code, you can add
+special <b>#+</b> comments in your sources to describe code elements such
+as functions, function parameters, and return values.</p>
+
+<HR>
+
+<h3><a name="PREREQUISITES">Prerequisites</a></h3>
+<p>To generate the HTML pages, fglcomp first generates <b>.xa</b> files which
+must be converted to <b>.html</b> files. The conversion from <b>.xa</b> to <b>.html</b>
+is done with an XSLT processor using the <b>.xsl</b> style sheets files provided
+in FGLDIR/lib/fgldoc/</p>
+<p>You must have an XSLT processor installed on the machine where the
+documentation is generated.</p>
+<ul>
+  <li>On Unix, fglcomp runs the FGLDIR/lib/fgldoc/<b>Transform.sh</b>
+    script to convert .xa files to .html files.<br>
+    Therefore you need the <b>xsltproc</b> command line XSLT processor (from the libxml
+    package).</li>
+  <li>On Windows, fglcomp runs the FGLDIR\lib\fgldoc\<b>Transform.wsf</b>
+    script to convert .xa files to .html files.<br>
+    To run that .wsf script, you must have <b>cscript.exe</b> installed with the
+    <b>Microsoft.XMLDOM</b>  class (this is the case on recent Windows
+    versions).</li>
+</ul>
+
+<p>If necessary, the style sheets provided in FGLDIR/lib/fgldoc can be adapted to
+transform the <b> .xa</b> files to <b> .html</b> files.</p>
+
+<HR>
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+<p>To extract documentation from a 4gl source:</p>
+
+<p><code>fglcomp --build-doc <i>filename</i>.4gl</code></p>
+
+<HR>
+
+<h3><a name="DOCSTRUCT">Documentation structure</a></h3>
+
+<p>The source documentation structure is based on the well-known Java-doc
+technique. The generated documentation reflects the structure of your sources; in
+order to have nicely structured source documentation, you must have a nicely
+structured source tree.</p>
+
+<p>The Genero BDL source documentation elements are structured as follows (elements
+in <font color="#FF0000">red</font> must be created by hand,
+while the <font color="#008000">green</font> color indicates generated files):</p>
+
+<ul>
+  <li>Top/root directory (the root of your project)
+    <ul>
+      <li><b><font color="#FF0000">overview.4gl</font></b> (description
+        of the project)</li>
+      <li><b><font color="#008000">overview-summary.html</font></b></li>
+      <li><b><font color="#008000">overview-frame.html</font></b></li>
+      <li><b><font color="#008000">allclasses-frame.html</font></b></li>
+      <li><b><font color="#008000">index-all.html</font></b></li>
+      <li><b><font color="#008000">index.html</font></b></li>
+      <li><b><font color="#008000">fgldoc.css</font></b></li>
+      <li>sub-directory1 (package)
+        <ul>
+          <li>sub-directory11 (package)
+            <ul>
+              <li>...</li>
+            </ul>
+          </li>
+          <li>sub-directory12 (package)
+            <ul>
+              <li>sub-directory121 (package)
+                <ul>
+                  <li><b><font color="#FF0000">package-info.4gl</font></b>
+                    (description of the package/directory)</li>
+                  <li><b><font color="#008000">package-summary.html</font></b></li>
+                  <li><b><font color="#008000">package-frame.html</font></b></li>
+                  <li>source1211.4gl (module)</li>
+                  <li><b><font color="#008000">source1211.html</font></b></li>
+                  <li>source1212.4gl (module)
+                    <ul>
+                      <li><b><font color="#FF0000">#+ Module 1212 comment</font></b>
+                        (description of the module)</li>
+                      <li><b><font color="#FF0000">#+ Function 12121 comment</font></b>
+                        (description of the function)</li>
+                      <li>function12121</li>
+                      <li><b><font color="#FF0000">#+ Function 12121 comment</font></b></li>
+                      <li>function12122</li>
+                      <li>...</li>
+                    </ul>
+                  </li>
+                  <li><b><font color="#008000">source1212.html</font></b></li>
+                  <li>source1213.4gl (module)</li>
+                  <li><b><font color="#008000">source1213.html</font></b></li>
+                  <li>...</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>sub-directory2 (package)
+        <ul>
+          <li>...</li>
+        </ul>
+      </li>
+      <li>sub-directory3 (package)
+        <ul>
+          <li>...</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>You must create a file named <b>overview.4gl</b> in the top directory of the
+project. This file contains the overall description of the project. In that directory, the documentation generator creates the files <b>overview-summary.html</b>, <b>overview-frame.html</b>, <b>allclasses-frame.html</b>, <b>index-all.html</b>, <b>index.html</b>
+and <b>fgldoc.css</b>.</p>
+
+<p>The generator can scan sub-directories to build the documentation for a whole
+project; each source directory defines a <i>package</i>. For each directory (i.e.
+<i>package</i>), the generator creates a <b>package-summary.html</b>
+and a <b>package-frame.html</b> file. If a file with the name <b>package-info.4gl</b>
+exists, it will be scanned to complete the <b>package-summary.html</b> file with
+the package description.</p>
+
+<p>The generator creates a <i>filename</i>.html file for each 4gl source module,
+seen as a <i>class</i> in the documentation.</p>
+
+<HR>
+
+<h3><a name="COMMENTS">Adding comments to sources</a></h3>
+
+<h4><a name="COMMENTING_FUNCTION">Commenting a Function</a></h4>
+
+<p>To comment a function, add some lines starting with <b>#+</b>, before the
+function body. The comment body is composed of paragraphs separated by a blank
+line. The first paragraph of the comment is a short description of the function.
+This description will be placed in the function summary table. The next
+paragraph is long text describing the function in detail. Other paragraphs
+must start with a <b>tag</b> to identify the type of the paragraph; a tag starts
+with the @ &quot;at&quot; sign.</p>
+
+<p>Supported @ tags:</p>
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0"><b>Tag</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td valign="top"><tt>@code</tt></td>
+    <td valign="top">Indicates that the next lines show a code example using the function.</td>
+  </tr>
+  <tr>
+    <td valign="top"><tt>@param <i>name description</i></tt></td>
+    <td valign="top">Defines a function parameter identified by <i>name</i>,
+      explained by a <i>description</i>.<br>
+      <b><font color="#FF0000">Warning:</font></b> <i>name</i> must match the
+      parameter name in the function declaration.</td>
+  </tr>
+  <tr>
+    <td valign="top"><tt>@return <i> description</i></tt></td>
+    <td valign="top">Describes the values returned by the function.<br>
+      You can add more than one @return line to the function comment.</td>
+  </tr>
+</table>
+
+<h5>Example:</h5>
+<PRE><CODE class=linenumber>01</CODE> #+ Compute the amount of the orders for a given customer<tt>
+</tt><CODE class=linenumber>02</CODE> #+<tt>
+</tt><CODE class=linenumber>03</CODE> #+ This function calculates the total amount of all orders for the<tt>
+</tt><CODE class=linenumber>04</CODE> #+ customer identified by the cust_id number passed as parameter.<tt>
+</tt><CODE class=linenumber>05</CODE> #+<tt>
+</tt><CODE class=linenumber>06</CODE> #+ @code<tt>
+</tt><CODE class=linenumber>07</CODE> #+ DEFINE total DECIMAL(10,2)<tt>
+</tt><CODE class=linenumber>08</CODE> #+ CALL total = ordersTotal(r_customer.cust_id)<tt>
+</tt><CODE class=linenumber>09</CODE> #+<tt>
+</tt><CODE class=linenumber>10</CODE> #+ @param cid Customer identifier<tt>
+</tt><CODE class=linenumber>11</CODE> #+<tt>
+</tt><CODE class=linenumber>12</CODE> #+ @return The total amount as DECIMAL(10,2)<tt>
+</tt><CODE class=linenumber>13</CODE> #+<tt>
+</tt><CODE class=linenumber>14</CODE> <tt>FUNCTION</tt> ordersTotal(cid)<tt>
+</tt><CODE class=linenumber>15</CODE>    <tt>DEFINE</tt> cid <tt>INTEGER
+</tt><CODE class=linenumber>16</CODE>    <tt>DEFINE</tt> ordtot <tt>DECIMAL</tt>(10,2)<tt>
+</tt><CODE class=linenumber>17</CODE>    <tt>SELECT SUM</tt>(ord_amount) <tt>INTO </tt>ordtot<tt>
+</tt><CODE class=linenumber>18</CODE>         <tt>FROM </tt>orders <tt>WHERE </tt>orders.cust_id = cid<tt>
+</tt><CODE class=linenumber>19</CODE>    <tt>RETURN </tt>ordtot<tt>
+</tt><CODE class=linenumber>20</CODE> <tt>END FUNCTION</tt></PRE>
+
+<h4><a name="COMMENTING_MODULE">Commenting a Module</a></h4>
+
+<p>To comment a 4gl module, you can add <b> #+</b> lines at the beginning of the source,
+before module element declarations such as module variable definitions.&nbsp;</p>
+
+<h5>Example:</h5>
+<PRE><CODE class=linenumber>01</CODE> #+ This module implements customer information handling<tt>
+</tt><CODE class=linenumber>02</CODE> #+<tt>
+</tt><CODE class=linenumber>03</CODE> #+ This code uses the 'customer' and 'custdetail' database tables.<tt>
+</tt><CODE class=linenumber>04</CODE> #+ Customer input, query and list handling functions are defined here. <tt>
+</tt><CODE class=linenumber>05</CODE> #+<tt>
+</tt><CODE class=linenumber>06</CODE> <tt>DEFINE</tt> r_cust <tt>RECORD
+</tt><CODE class=linenumber>07</CODE>    cust_id <tt>INTEGER</tt>,<tt>
+</tt><CODE class=linenumber>08</CODE>    cust_name <tt>VARCHAR</tt>(50),<tt>
+</tt><CODE class=linenumber>09</CODE>    cust_address <tt>VARCHAR</tt>(200)<tt>
+</tt><CODE class=linenumber>10</CODE> <tt>END RECORD</tt></PRE>
+
+<h4><a name="COMMENTING_PACKAGE">Commenting a Package</a></h4>
+
+<p>To describe a complete directory (i.e. package), you must create a <b>package-info.4gl</b>
+file in the directory and add a <b> #+</b> comment in the file. The comment will be
+added to the <b>package-summary.html</b> file.</p>
+
+<h4><a name="COMMENTING_PROJECT">Commenting a Project</a></h4>
+<p>In the top directory of your sources, you must create a <b>overview.4gl</b>
+file with a <b> #+</b> comment describing the project. This file is mandatory
+in order to generate the tree of html pages for an entire project, as it is used as
+the starting point by fglcomp. See &quot;<a href="#DOCGEN">Running the documentation generator</a>&quot;
+for more details.</p>
+
+<HR>
+
+<h3><a name="DOCGEN">Running the documentation generator</a></h3>
+
+<p>To produce the source documentation, follow these steps:</p>
+
+<ol>
+  <li>Go to the TOP directory of your sources.</li>
+  <li>Create a file named <b>overview.4gl</b>, with a <b> #+</b> comment
+    describing your project.</li>
+  <li>Go to the subdirectories and create files named <b>package-info.4gl</b> with
+    a <b> #+</b> comment describing the package.</li>
+  <li>Edit the 4gl modules to add <b> #+</b> comments to functions that must be
+    documented.</li>
+  <li>Go back to the TOP directory.</li>
+  <li>Run <b>fglcomp --build-doc overview.4gl</b>.</li>
+  <li>To test the result, load the generated <b>index.html</b> file in your
+    preferred browser.</li>
+</ol>
+
+</BODY>
+</HTML>

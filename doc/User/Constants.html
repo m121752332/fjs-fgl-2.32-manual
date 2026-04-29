@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Constants</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Constants</a></H1>
+<p> Summary:</p>
+
+<ul>
+  <li><a href="#DEFINITION">Definition</a></li>
+  <li><a href="#EXAMPLES">Examples</a></li>
+</ul>
+
+
+<p><i>See also:</i> <a href="Variables.html">Variables</a>, <a href="Records.html">Records</a>,
+<a href="DataTypes.html">Data Types</a>, <a href="UserTypes.html">User Types</a>.</p>
+
+
+<HR>
+
+<h3><a name="DEFINITION">Definition</a></h3>
+
+<h4>Purpose:</h4><p>A <i>constant</i> defines a read-only value identified by a name.</p>
+
+
+<h4>Syntax:</h4><code><u>[</u>PRIVATE<u>|</u>PUBLIC<u>]</u> CONSTANT <i>constant-definition</i>
+ <u>
+[,...]</u></code><p>where <i>constant-definition</i> is:</p>
+<code> <i>identifier</i>  <u> [</u> <i>datatype </i><u>]</u> = <i>value</i>
+</code><h4>Notes:</h4>
+<ol>
+  <li><i>identifier</i> is the name of the constant to be defined.</li>
+  <li><i>datatype</i> can be any <a href="DataTypes.html">data type</a>
+    except complex types like <a href="DataTypes.html#DT_TEXT">TEXT</a> or <a href="DataTypes.html#DT_BYTE">BYTE</a>.</li>
+  <li><i>value</i> can be an
+    <a href="Literals.html#LT_INTEGER">integer literal</a>, a
+    <a href="Literals.html#LT_DECIMAL">decimal literal</a>, or a
+    <a href="Literals.html#LT_STRING">string literal</a>. <i>value</i>
+    cannot be <a href="Programs.html#PC_NULL">NULL</a>.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+<p>You can declare a constant to define a static value that can be used in other
+instructions. Constants can be <a href="Globals.html">global</a>,
+module-specific, or local to a <a href="Functions.html">function</a>.</p>
+<p>By default, module-specific constants are private; They cannot be used by an
+other module of the program. To make a module constant public, add the <tt>PUBLIC</tt>
+keyword before <tt>CONSTANT</tt>. When a module constant is declared as public,
+it can be referenced by another module by using the <a href="Programs.html#IMPORT">IMPORT</a>
+instruction.</p>
+<p>When declaring a constant, the data type specification can be omitted. The literal
+value automatically defines the data type:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>CONSTANT</tt> c1 = &quot;Drink&quot; -- Declares a STRING constant
+<CODE class=linenumber>02</CODE> <tt>CONSTANT</tt> c2 = 4711    -- Declares an INTEGER constant</PRE>
+
+
+<p>However, in some cases, you may need to specify the data type:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>CONSTANT</tt> c1 <tt>SMALLINT</tt> = 12000 -- Would be an INTEGER by default</PRE>
+
+
+Constants can be used in variable, records, and array definitions:<PRE><CODE class=linenumber>01</CODE> <tt>CONSTANT</tt> n = 10
+<CODE class=linenumber>02</CODE> <tt>DEFINE</tt> a <tt>ARRAY</tt>[n] <tt>OF INTEGER</tt></PRE>
+
+
+<p>Constants can be used at any place in the language where you normally use
+literals:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>CONSTANT</tt> n = 10
+<CODE class=linenumber>02</CODE> <tt>FOR</tt> i=1 <tt>TO</tt> n</PRE>
+
+Constants can be passed as function parameters, and returned from functions.
+
+
+<p>Defining public constants in a module to be imported by others:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>PUBLIC CONSTANT</tt> pi = 3.14159265</PRE>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>A constant cannot be used in the <tt> ORDER BY</tt> clause of a static <tt> SELECT</tt>
+    statement, because the compiler considers identifiers after <tt> ORDER BY</tt> as part
+    of the SQL statement (i.e. column names), not as constants.<br>
+    <tt>&nbsp; CONSTANT position = 3<br>
+    &nbsp; SELECT * FROM table ORDER BY position</tt></li>
+  <li>Automatic <a href="DataConversions.html">date type conversion</a> can take
+    place in some cases:<br>
+    <tt>&nbsp; CONSTANT c1 CHAR(10) = &quot;123&quot;<br>
+    &nbsp; CONSTANT c2 CHAR(10) = &quot;abc&quot;<br>
+    &nbsp; DEFINE i INTEGER<br>
+    &nbsp; FOR i=1 TO c1 # Constant &quot;123&quot; is be converted to 123<br>
+    &nbsp; FOR i=1 TO c2 # Constant &quot;abc&quot; is converted to zero!</tt></li>
+  <li>Character constants defined with a string literal that is longer than the
+    length of the datatype are truncated:<br>
+    <tt>&nbsp; CONSTANT s CHAR(3) = 'abcdef'<br>
+    &nbsp; DISPLAY s # Displays &quot;abc&quot;</tt></li>
+  <li>The compiler throws an error when the symbol used as a constant is not
+    defined:<br>
+    <tt>&nbsp; DEFINE s CHAR(c) # Error, c is not defined!</tt></li>
+  <li>The compiler throws an error when the symbol used as a constant is a
+    variable:<br>
+    <tt>&nbsp; DEFINE c INTEGER<br>
+    &nbsp; DEFINE s CHAR(c) # Error, c is a variable!</tt></li>
+  <li>The compiler throws an error when you try to assign a value to a
+    constant:<br>
+    <tt>&nbsp; CONSTANT c INTEGER = 123<br>
+    &nbsp; LET c = 345 # Error, c is a constant!</tt></li>
+  <li>The compiler throws an error when the symbol used is not defined as an
+    integer constant:<br>
+    <tt>&nbsp; CONSTANT c CHAR(10) = &quot;123&quot;<br>
+    &nbsp; DEFINE s CHAR(c) # Error, c is not an integer!</tt></li>
+</ol>
+
+
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li>Define common special characters with constants:<br>
+    <tt>&nbsp; CONSTANT C_ESC&nbsp; = '\x1b'<br>
+    &nbsp; CONSTANT C_TAB&nbsp; = '\t'<br>
+    &nbsp; CONSTANT C_CR&nbsp;&nbsp; = '\r'<br>
+    &nbsp; CONSTANT C_LF&nbsp;&nbsp; = '\n'<br>
+    &nbsp; CONSTANT C_CRLF = '\r\n'</tt></li>
+</ol>
+
+
+<HR>
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+
+<h4>Example 1:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>CONSTANT</tt> c1 =&quot;Drink&quot;,   # Declares a STRING constant
+<CODE class=linenumber>02</CODE>          c2 = 4711,     # Declares an INTEGER constant
+<CODE class=linenumber>03</CODE>          n = 10,        # Declares an INTEGER constant
+<CODE class=linenumber>04</CODE>          x <tt>SMALLINT</tt> = 1 # Declares a SMALLINT constant
+<CODE class=linenumber>05</CODE> <tt>DEFINE</tt> a <tt>ARRAY</tt>[n] <tt>OF INTEGER</tt>
+<CODE class=linenumber>06</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>07</CODE>   <tt>CONSTANT</tt> c1 = &quot;Hello&quot;
+<CODE class=linenumber>08</CODE>   <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<CODE class=linenumber>09</CODE>   <tt>FOR</tt> i=1 <tt>TO</tt> n
+<CODE class=linenumber>10</CODE>       <tt>...</tt>
+<CODE class=linenumber>11</CODE>   <tt>END FOR</tt>
+<CODE class=linenumber>12</CODE>   <tt>DISPLAY</tt> c1 || c2  # Displays &quot;Hello4711&quot;
+<CODE class=linenumber>13</CODE> <tt>END MAIN</tt></PRE>
+
+
+</BODY>
+</HTML>

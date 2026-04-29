@@ -1,0 +1,2601 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<TITLE>ODI Adaptation Guide for Genero db</TITLE>
+<meta http-equiv="Content-Type" content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p><a href="../index.html">Back to Contents</a></p>
+
+<HR>
+
+<H1>ODI Adaptation Guide For Genero db 3.6x, 3.8x</H1>
+
+<p>Installation</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIADS_PREP01">Install Genero db and create a database</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS_PREP02">Prepare the runtime environment</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS_DRVAV">Driver availability matrix</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS_MIG01">Migrating from Genero db 3.61 to
+      3.80 and +</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS_MIG02">Driver Manager independency with Genero BDL 2.21</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p>Database concepts</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIADS007a">Database concepts</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS008a">Data consistency and concurrency management</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS009a">Transactions handling</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS016a">Defining database users</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS016b">Setting privileges</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p>Data dictionary</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIADS010">BOOLEAN data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS011a">CHARACTER data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS021">NUMERIC data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS001">DATE data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS001b"> DATETIME data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS001c">INTERVAL data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS005">SERIAL data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS004">ROWIDs</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS053">The ALTER TABLE instruction</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS012">Constraints</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS013">Triggers and Stored Procedures</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS019">Name resolution of SQL objects</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS051">Setup database statistics</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS100">Data type conversion table</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p>Data manipulation</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIADS101">Genero db</a><a href="#ODIADS101"> Sql Error Management</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS003">Reserved words</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS006">Outer joins</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS009a">Transactions handling</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS017">Temporary tables</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS018">Substrings in SQL</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS019">Name resolution of SQL objects</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS020">String delimiters and object names</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS022">Getting one row with SELECT</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS024">MATCHES and LIKE conditions</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS033">Querying system catalog tables</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS034">Syntax of UPDATE statements</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS047">The USER constant</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p>BDL programming</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIADS005">SERIAL data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS025">IBM®INFORMIX®specific SQL statements in BDL</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS028">INSERT cursors</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS031">Cursors WITH HOLD</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS008b">SELECT FOR UPDATE</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS032">UPDATE/DELETE WHERE CURRENT OF &lt;cursor&gt;</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS046">The LOAD and UNLOAD instructions</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS054">SQL Interruption</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIADS055">Scrollable Cursors</a></td>
+  </tr>
+</table>
+</center></div>
+
+<hr>
+
+<h2 align="left"><a name="ODIADS_PREP">Runtime configuration</a></h2>
+
+<h3 align="left"><a name="ODIADS_PREP01"><small>Install Genero db and create a database</small></a></h2>
+
+</h3>
+
+<blockquote>
+  <ol>
+    <li><p>Install Genero db on your computer.</p>
+      <p>By default, Genero db is configured to run alone on a networked machine, having client applications
+      hosted on other machines. Here are some tips to setup Genero db , you should change some configuration
+      parameters:</p>
+      <ul>
+        <li><p>If applications and the database server are colocated on the same
+      machine: By default, Genero db uses
+      nearly all the memory available on the computer. To share the memory with
+      applications, you must change the <b>MEMORY_OVERRIDE</b>
+      parameter in $ANTSHOME/Server/config.txt.</p></li>
+        <li><p>If applications and the database server are colocated on the same
+      machine: If memory is not a concern and if the number of
+          connections is about 50, you may want to try the <b>networking=IPC</b> communication protocol in 
+    the data source definition to get better performance. Over 50 simultaneous
+          connections, you should use the default TCP-socket protocol.</p></li>
+        <li><p>For production use, a caching
+     RAID controller on which to do logging is highly recommended. For maximum 
+    data integrity, <b>LOG_MODE </b>should be set to <b>DURABLE</b>, and <b>
+    LOGPATH</b> should point to a different disk than the disk containing data. If <b>LOGPATH</b> does not point to a disk 
+    managed by a RAID controller, <b>LOG_MODE </b>should be set to <b>OSDURABLE</b>. 
+    See the Genero db documentation for more details.</p></li>
+        <li><p>By default, Genero db relies
+      on local area network multicast to enable clients and servers to find each 
+		other. If you have a firewall, you must allow <b>UDP</b> connections
+      on port <b>12345</b> for the multicast address <b>255.0.0.37</b>. If you want to
+      disable multicast search: on the server side, set <b>MULTICAST_ENABLED=FALSE</b> in
+          $ANTSHOME/Server/config.txt. On the client side, for Unix platforms, you must set <b>overridebroadcast=yes</b> in the
+      ODBC data source definition. For Windows platforms, check the
+      &quot;<b>Override Multicast</b>&quot; option in the ODBC data source
+      configuration (click the &quot;<i>Advanced</i>&quot; button, then click 
+      &quot;<i>Connection Method</i>&quot; in the &quot;<i>Networking</i>&quot;
+      section).</p>
+        </li>
+        <li><p>If you are running Genero db <b> 3.80</b> or higher, you must set 
+		the server configuration parameter <b>COMPATIBILITY_MODE=INFORMIX</b>.<b><br>
+          </b>For details about the SQL features affected by this
+          parameter, see the <i>Genero db Migration Guide</i>.<br>
+          For details about disabling the compatibility mode check , see below the FGLPROFILE configuration settings.</p>
+        </li>
+      </ul>
+    </li>
+    <li><p>Set up an ODBC data source, called <i>mydb</i>.<br>
+      <br>
+      The default ODBC data source settings need to be adapted:</p>
+      <ul>
+        <li>
+          <p>
+      Set <b>overridebroadcast=yes</b>  if you don't need multicast, as
+      described in (1).</p>
+        </li>
+        <li>
+          <p>During the installation of Genero db, the data source might have
+          been created with the login and password of the SYSTEM user. If you leave these default
+      user and password entries, anyone can connect to the database as the user SYSTEM
+      	(a superuser). You must clean the <b>user</b> and <b>password</b> ODBC
+          parameters. This will force client
+      programs to specify a login and password to connect to the database.&nbsp;</p>
+        </li>
+        <li>
+          <p>By default, the Genero db client re-connects automatically to the
+          server if the connection is lost. This is a useful feature as long as
+          the SQL session is stateless. However, if you create temporary tables
+          or if you change session parameters with ALTER SESSION, the session
+          context will be silently lost if a re-connect occurs. To get an SQL
+          error when DB connection is lost, you can deny the client to
+          re-connect by setting <b>automaticfailover=no</b> in the ODBC
+          parameters. Note that the Genero db client does not re-connect
+          automatically if a transaction was started. In such case the program
+          gets and SQL error.</p>
+        </li>
+        <li>
+          <p>Typical Genero applications 
+	connect only once to the database server. By default, the Genero db client 
+	uses connection aggregators, which re-use connection resources and
+      server bindings for new connections. This is useful when the same client
+      process opens and closes many connections, but is unnecessary overhead in
+      typical Genero applications.<br>
+          Additionally, using aggregation implies multithreading. UNIX signal
+          handling are not thread safe. Since the runtime system uses the UNIX
+          signal() function, <b> <font color="#FF0000">you <u>must</u> disable
+          aggregation by setting noaggregators=0
+      in the ODBC data source definition.</font></b> On Windows platforms, the
+          noaggregators property can only be changed with the registry editor,
+          under the ODBC.INI key.</p>
+        </li>
+        <li>
+          <p>The Genero db
+      client library maintains a statement pool by default. When you FREE a cursor or
+      statement in your programs, the underlying ODBC statement handle structure
+      goes to the statement pool for future reuse. You can disable the ODBC
+      statement pool by setting the <b>disableStmtPool</b> ODBC.INI parameter to
+      <b>Yes</b>. When this parameter is set, fetch buffers are&nbsp; freed as
+          well an the process consumes less memory.</p>
+        </li>
+        <li>
+          <p>Set the correct database client character set with the <b>characterset</b>
+          parameter. This character set must match the character set used by the
+          locale of the runtime system (<b>LANG/LC_ALL</b>).</p>
+        </li>
+        <li>
+          <p>You may want to set <b>useinfxenvvars</b> to yes to take
+          environment variables such as DBDATE into account regarding date
+          to/from string conversions.</p>
+        </li>
+      </ul>
+    </li>
+    <li><p>Create a database user dedicated to your
+      application. You can create database users authenticated by a password or
+      use OS authentication. The example below creates a user authenticated by a
+      password. See the <i>Genero db Programmer's Guide</i> for more details about OS
+      authentication.<br>
+      <br>
+      <font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;$ antscmd -d mydb -u SYSTEM -p SYSTEM<br>
+      &nbsp;&nbsp; ...<br>
+      &nbsp;&nbsp;&nbsp; mydb&gt; CREATE USER <i>appadmin</i> IDENTIFIED BY <i>password</i>;</font>
+	<br>
+      <font face="Courier New" size="2"><br>
+      </font>Grant database privileges to the user:<br>
+      <font face="Courier New" size="2"><br>
+      &nbsp;&nbsp;&nbsp;mydb&gt; GRANT CREATE SESSION TO <i>appadmin</i>;<br>
+      &nbsp;&nbsp;&nbsp;mydb&gt; GRANT CREATE TABLE TO <i>appadmin</i>;<br>
+      &nbsp;&nbsp; mydb&gt; GRANT CREATE VIEW TO <i>appadmin</i>;<br>
+      &nbsp;&nbsp; mydb&gt; GRANT CREATE SYNONYM TO <i>appadmin</i>;<br>
+      &nbsp;&nbsp; mydb&gt; GRANT CREATE PROCEDURE TO <i>appadmin</i>;<br>
+      &nbsp;&nbsp; mydb&gt; GRANT CREATE SEQUENCE TO <i>appadmin</i>;</font></p>
+    </li>
+    <li><p>Create the application tables.<br>
+      <br>
+      Do not forget to convert INFORMIX data types to Genero db data types. See issue <a href="#ODIADS100">ODIADS100</a> for more details.<br>
+      <br>
+      Check for reserved words in your table and column names. See the <i>Genero 
+	db SQL Syntax Guide: Appendix B, Reserved Words</i></p>
+    </li>
+  </ol>
+</blockquote>
+
+<h3 align="left"><a name="ODIADS_PREP02"><small>Prepare the runtime environment</small></a></h2>
+
+</h3>
+
+<blockquote>
+  <ol>
+    <li><p>If you want to connect to a remote Genero db
+      server from an application server, you must have ODBC properly configured on your
+      application server.</p>
+    </li>
+    <li><p>Make sure the the Genero db client environment variables are properly
+      set. Check for example <b>ANTSHOME</b> (the path to the installation
+      directory). See Genero db documentation for more details.</p>
+    </li>
+    <li><p>On UNIX systems, verify the ODBC environment variables <b>ODBCINI</b>
+      and <b>ODBCINST</b>. These must respectively point to the ODBC Data Source
+      definition file (usually, /etc/odbc.ini) and to the ODBC Database Driver
+      definition file (usually, /etc/odbcinst.ini). You will not be able to
+      connect to Genero db if these environment variables are not set.</p>
+
+    </li>
+    <li><p>Verify the environment variable
+      defining the search path for database client shared libraries (libaodbc.so
+      on UNIX, AODBC.DLL on Windows). On UNIX platforms, the variable is specific to the operating system. 
+	For example, on Solaris and Linux systems, it is <b>LD_LIBRARY_PATH</b>, on
+      AIX it is <b>LIBPATH</b>, or HP/UX it is <b>SHLIB_PATH</b>. On Windows,
+      you define the DLL search path in the <b>PATH</b> environment variable.</p>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0">
+      <p align="center"><font color="#0000FF"><b>Genero db version</b></font></td>
+    <td bgcolor="#C0C0C0" width="70%">
+      <p align="center"><font color="#0000FF"><b>Shared library environment
+      setting</b></font></td>
+  </tr>
+  <tr>
+    <td><font color="#0000FF"><b>Version 3.81 and lower</b></font></td>
+    <td align="center" width="70%">
+      <p align="left"><i>UNIX</i>: Add <b>$ANTSHOME/antsodbc</b> (or <b>$ANTSHOME/antsodbc/64</b>
+      for 64 bit) to LD_LIBRARY_PATH (or its equivalent).<br>
+      <i>Windows</i>: Add <b>%ANTSHOME%\antsodbc</b> to PATH.</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td align="center" width="70%"></td>
+  </tr>
+</table>
+    </li>
+    <li><p>To verify if the ODBC environment is correct, you can for example
+      start the Genero db SQL command interpreter:<br>
+      <br>
+      <font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;&nbsp; $ antscmd -d <i>dns-name</i>
+      -u <i>appadmin</i> -p <i>password</i></font></p>
+    </li>
+    <li><p>Set up the <b>fglprofile</b> entries for <a href="Connections.html#DS_ODI_DBVSPEC"> database connections</a> to your data source.</p>
+    </li>
+    <li><p>Starting with the dbmads380 driver, the driver will check
+      for COMPATIBILITY_MODE=INFORMIX at connection time. If you don't want to
+      use this compatibility mode in the server, you can bypass the checking
+      with following FGLPROFILE entry:<br>
+      <br>
+      <font face="Courier New" size="2">
+      &nbsp;&nbsp; dbi.database.<i>dbname</i>.ads.compatibility.check =
+      &quot;none&quot;</font><br>
+      <br>
+      <b><font color="#FF0000">Warning: Before disabling the INFORMIX
+      compatibility mode and bypassing its checking in the driver, you must
+      understand that the Genero db server will not behave like Informix servers
+      in some particular cases, like date/numeric formatting and conversions,
+      blank padding semantics in string expressions, and locking/concurrency
+      behavior. For more details about the SQL features affected by the
+      COMPATIBILITY_MODE parameter, see the <i>Genero db Migration Guide</i>.</font></b></p>
+    </li>
+    <li><p>Create normal application users and define the schema to be used.<br><br>
+      With Genero db, a schema is created when creating a user. If the <i>APPADMIN</i> user
+      creates the tables, the schema for application tables will be &quot;APPADMIN&quot;.<br><br>
+      In order to make application tables visible to normal DB users, you can
+      specify a default schema for normal users by adding the DEFAULT SCHEMA
+      clause in CREATE USER:<br><br>
+      <font size="2" face="Courier New">&nbsp;&nbsp;
+      mydb&gt; CREATE USER username IDENTIFIED BY password
+      DEFAULT SCHEMA appadmin; </font><font size="2"><br></font><br>
+      You can also use the following FGLPROFILE entry to make the database driver
+      select a default schema after connection:<br><br>
+	<font face="Courier New" size="2">
+      &nbsp;&nbsp; dbi.database.<i>dbname</i>.ads.schema =
+      &quot;<i>name</i>&quot;<br>
+	</font><br>Here &lt;<b>dbname</b>&gt; identifies the
+      database name used in the BDL program ( DATABASE <b>dbname</b> ) and
+      &lt;<b>name</b>&gt; is the schema name to be used.<br>
+      <br>
+      If needed, database users can be authenticated as <i>Operating System
+      users</i>. In order to create a DB user authenticated by the operating
+      system, use the IDENTIFIED EXTERNALLY clause in CREATE USER:<br>
+      <br>
+      <font size="2" face="Courier New">&nbsp;&nbsp; mydb&gt; CREATE USER username IDENTIFIED EXTERNALLY;</font><font size="2"><br>
+      </font>
+      <br>
+      The OS users will be able to connect to the database if the $ANTSHOME/Server/ants.rhosts
+      file contains an entry to identify the OS user.<br>
+      <br>
+      <b><font color="#FF0000">Warning:</font></b> Pay attention to the user
+      name, which can be case-sensitive according to the database configuration
+      settings. You can check
+      the name of the database users by querying the system tables (ANTS_ALL_USERS
+      in 3.80).<br>
+      <br>
+ See the Genero db documentation for more details about OS users creation.</p>
+    </li>
+	<li>Grant privileges to application users:<br>
+      <br>
+      By default the tables created by the <i>appadmin</i> user cannot be
+      modified by the application users; you must first grant privileges:<br>
+      <br>
+      <font size="2" face="Courier New">&nbsp;&nbsp; mydb&gt; GRANT SELECT, INSERT,
+      UPDATE, DELETE
+      ON tablename TO username;<br>
+    </font><font size="2"><br>
+      </font>You can do this for all existing and future users by specifying PUBLIC as
+      the grantee:<br>
+      <br>
+      <font face="Courier New" size="2">&nbsp;&nbsp; mydb&gt; GRANT SELECT, INSERT, UPDATE, DELETE
+      ON tablename TO PUBLIC;<br></font><br>
+      If the database has stored procedures, you must also grant execute
+      permission to application users:<br><br>
+      <font face="Courier New" size="2">&nbsp;&nbsp; mydb&gt; GRANT EXECUTE ON procname TO username;<br>
+	</font>
+	</li>
+	<li>In order to connect to Genero db, you must have a
+      database driver &quot;dbmads*&quot; in FGLDIR/dbdrivers.
+      <ol>
+        <li>If the server is Genero db version <b>3.61</b>, use the <b>dbmads3x</b>
+          driver.</li>
+        <li>If the server is Genero db version <b>3.80</b>, use the <b>dbmads380</b>
+          driver.
+        </li>
+        <li>If the server is Genero db version <b>3.81</b>, use the <b>dbmads381</b>
+          driver.<br>
+        </li>
+      </ol>
+	</li>
+    <li>To simplify migration to newer database servers, you can define the 
+	driver mode to an older version as the default, and keep using Informix 
+	emulations of the old driver (supported starting with Genero BDL 2.20.05):<br>
+      <br>
+      <font face="Courier New" size="2">
+      &nbsp;&nbsp; dbi.database.<i>dbname</i>.ads.driver.mode = <u>{</u>
+      &quot;3.61&quot; <u>|</u> &quot;3.80&quot; <u>|</u> &quot;3.81&quot; <u>}</u></font><br>
+      <br>
+      See below for more details about server migration.</li>
+  </ol>
+</blockquote>
+
+<h3 align="left"><a name="ODIADS_DRVAV"><small>Driver availability matrix</small></a></h3>
+
+<p>The next table lists the Genero BDL versions including the different Genero
+db drivers:</p>
+
+<div align="center">
+  <center>
+
+<table border="0" width="90%">
+  <tr>
+    <td>&nbsp;</td>
+    <td bgcolor="#C0C0C0" colspan="8">
+      <p align="center"><font color="#0000FF"><b>Genero BDL versions</b></font></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0"><font color="#0000FF"><b>Genero db driver</b></font></td>
+    <td bgcolor="#C0C0C0" align="center"><font color="#0000FF"><b>2.3x</b></font><br>
+      <font color="#0000FF"><b>(from 2.30.05)</b></font></td>
+    <td bgcolor="#C0C0C0" align="center"><font color="#0000FF"><b>2.21<br>
+      (from 2.21.02)</b></font></td>
+    <td bgcolor="#C0C0C0" align="center"><font color="#0000FF"><b>2.20<br>
+      (from 2.20.09)</b></font></td>
+    <td bgcolor="#C0C0C0" align="center"><font color="#0000FF"><b>2.11<br>
+      (from 2.11.17)</b></font></td>
+    <td bgcolor="#C0C0C0" align="center"><font color="#0000FF"><b>2.10<br>
+      (from 2.10.06)</b></font></td>
+    <td bgcolor="#C0C0C0" align="center"><font color="#0000FF"><b>2.02<br>
+      (from 2.02.18)</b></font></td>
+    <td bgcolor="#C0C0C0" align="center"><font color="#0000FF"><b>2.00<br>
+      (from 2.00.1p)</b></font></td>
+    <td bgcolor="#C0C0C0" align="center"><font color="#0000FF"><b>1.33<br>
+      (from 1.33.2r)</b></font></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0"><b>dbmads3x</b></td>
+    <td bgcolor="#008000">&nbsp;</td>
+    <td bgcolor="#008000">&nbsp;</td>
+    <td bgcolor="#008000">&nbsp;</td>
+    <td bgcolor="#008000">&nbsp;</td>
+    <td bgcolor="#008000">&nbsp;</td>
+    <td bgcolor="#008000">&nbsp;</td>
+    <td bgcolor="#008000">&nbsp;</td>
+    <td bgcolor="#008000">&nbsp;</td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0"><b>dbmads380</b></td>
+    <td bgcolor="#008000">&nbsp;</td>
+    <td bgcolor="#008000">&nbsp;</td>
+    <td bgcolor="#008000">&nbsp;</td>
+    <td bgcolor="#008000">&nbsp;</td>
+    <td bgcolor="#FF0000">&nbsp;</td>
+    <td bgcolor="#FF0000">&nbsp;</td>
+    <td bgcolor="#008000">&nbsp;</td>
+    <td bgcolor="#FF0000">&nbsp;</td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0"><b>dbmads381</b></td>
+    <td bgcolor="#008000">&nbsp;</td>
+    <td bgcolor="#008000">&nbsp;</td>
+    <td bgcolor="#008000">&nbsp;</td>
+    <td bgcolor="#008000">&nbsp;</td>
+    <td bgcolor="#FF0000">&nbsp;</td>
+    <td bgcolor="#FF0000">&nbsp;</td>
+    <td bgcolor="#008000">&nbsp;</td>
+    <td bgcolor="#FF0000">&nbsp;</td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<h3 align="left"><a name="ODIADS_MIG01"><small>Migrating from Genero db 3.61 to
+3.80 and +</small></a></h3>
+
+<p>This section lists several issues to be addressed when migrating from Genero db 3.61 to 
+Genero db 3.80 (and higher). As described later in this page for some SQL
+topics, there are important differences with Informix emulations when using Genero 
+db 3.61 versus Genero db 3.80. Migrating to a major new version of Genero db
+should not only be motivated by bug fixes. You should also benefit from the
+new Informix feature emulations implemented in the Genero db server. For example, the main
+Informix-compatibility improvement in Genero db 3.80 is the support for
+Informix-style DATETIME
+and INTERVAL data types.</p>
+
+<p>While we strongly recommend that you take the time to migrate your database
+schema and use the new native types provided by the last Genero db server, you
+may want to install the most recent server but keep using the old Informix
+emulations. Starting with Genero BDL 2.20.05, you can define an <a href="Connections.html#DS_ODI_DBVSPEC">FGLPROFILE parameter</a>
+to force the database driver to work in a specific mode:</p>
+
+<p>
+      <font face="Courier New" size="2">&nbsp;&nbsp; dbi.database.<i>dbname</i>.ads.driver.mode =
+<u>{</u> &quot;3.61&quot; <u>|</u> &quot;3.80&quot; <u>|</u> &quot;3.81&quot; <u>}</u></font></p>
+
+<p>Here is a checklist to help you prepare for your migration to Genero db 3.80:</p>
+
+<blockquote>
+  <ol>
+    <li>Make sure that you use the correct database driver, as described in the
+      <a href="#ODIADS_PREP02">above</a> section. Starting with <b>dbmads380</b> (since Genero BDL version 2.11.14),
+      the server version string is tested by the driver. If the server
+      version does not match, the program will stop with error <b><a href="FglErrors.html#-6319">-6319</a></b>.<br>
+    </li>
+    <li><b>DATETIME</b> and <b> INTERVAL</b> types are now native data types in Genero db
+      3.80. Before 3.80, DATETIME and INTERVAL had to be stored in TIME,
+      TIMESTAMP and CHAR(50) columns. In order to use the new 
+	Informix-compatible data types, you must modify the existing database
+      tables (ALTER TABLE) as well as your database creation scripts . Keep in mind that when
+      creating permanent or temporary tables in your programs at runtime, the
+      dbmads380 driver will no longer convert DATETIME and INTERVAL types to
+      TIME, TIMESTAMP or CHAR(50); the native Genero db DATETIME and INTERVAL types will be used. New data type usage 
+	also has an impact on the
+      formatting with LOAD and UNLOAD instructions.<br>
+      For more details, see <a href="#ODIADS001b">DATETIME data type</a>, <a href="#ODIADS001c">INTERVAL data type</a>
+      and the <a href="#ODIADS100">data type conversion matrix</a> at the end of
+      this page.<br>
+    </li>
+    <li><b>DECIMAL(p,s)</b> data type now supports a precision of 38 digits. 
+	With 3.61, the precision was 15 digits, and it was not possible to store 
+	DECIMAL or MONEY data using a higher precision. This was a 3.61 
+	limitation/bug. With 3.80, the DECIMAL(p,s) data type can support the 
+	32-digit maximum imposed by Informix. Migrating to 3.80 will not have an 
+	impact.<br>
+    </li>
+    <li>If new data types hare being used (DATETIME/INTERVAL), you must
+      re-generate the <a href="DatabaseSchema.html">database schema file</a> and
+      recompile your programs and forms.<br>
+    </li>
+    <li>We strongly recommend that you set the <b>COMPATIBILITY_MODE=INFORMIX</b>
+      server parameter. Without this configuration setting, the dbmads380 and + drivers
+      will refuse to connect to the server. You can disable this checking with
+      an <a href="Connections.html#DS_ODI_DBVSPEC">FGLPROFILE parameter</a>, but
+      it is not recommended, as some SQL features will then not work as expected.<br>
+    </li>
+    <li><b>SQL Interruption</b> (OPTIONS SQL INTERRUPT ON/OFF) can now be used
+      with Genero db 3.80. This important feature was not working with 3.61. 
+	With this feature, you can cancel long running queries. See <a href="#ODIADS054">SQL
+      Interruption</a> for more details.<br>
+    </li>
+    <li>You must also consider <b>Genero db product specific changes</b> independent from Genero 
+	BDL and Genero db database
+      driver changes, which are not covered by this ODI migration guide. For
+      example, Genero db 3.80 includes enhancements in user management and 
+	policy. You must now GRANT CREATE SESSION privileges to let users connect to
+      the server. See Genero db documentation and release notes for more
+      details.&nbsp;</li>
+  </ol>
+</blockquote>
+
+<h3 align="left"><a name="ODIADS_MIG02"><small>Driver Manager independency with
+Genero Genero BDL 2.21</small></a></h3>
+
+<p>     Starting with Genero BDL version <b>2.21.00</b>, like UNIX/Linux ODI drivers
+linked to libaodbc.so, the Windows drivers are now directly linked with the
+Genero db client library (AODBC.DLL), to by-pass the Windows Driver Manager
+(ODBC32.DLL). This was required to avoid the charset conversions done by the Windows DM, to support UTF-8
+characters in SQL Text (bug 14789).</p>
+<p>     The ODBC data source and settings must still be configured with the ODBC
+Data Source Administrator on Windows. However, some Driver Manager features such as ODBC trace will no longer
+work, and the Genero db client DLL specification (<i>Driver</i> entry) will be
+ignored by Genero BDL runtime system, since the dbmads* drivers are directly linked to
+AODBC.DLL.</p>
+<p><b><font color="#FF0000">Warning:</font> Assuming that the AODBC.DLL library is not copied into the
+C:\WINDOWS\SYSTEM32 directory, the AODBC.DLL used by Genero BDL will now be found from the PATH environment variable, while with older versions,
+AODBC.DLL was loaded dynamically by the Driver Manager according to DSN settings. You must pay attention to this change if you are using different
+versions of Genero db client on the same machine. If you have installed multiple
+versions of the Genero db client, you better remove the AODBC.DLL file from the
+SYSTEM32 directory.</b></p>
+
+<hr>
+
+<h2><a name="ODIADS001">ODIADS001 - DATE data type</a></h2>
+
+<p>INFORMIX supports the DATE data type to store year, month and day
+information: </p>
+<ul>
+	<li><b>DATE</b>  = for year, month and day storage.</li>
+</ul>
+<p>Genero db has an equivalent type with the same name.</p>
+<p>String representing date time information: INFORMIX is able to convert quoted strings to DATE data, if the 
+string formatting matches the formatting set by environment parameters (DBDATE).
+Genero db can also convert quoted strings to DATE; by
+default, date/time formats follow the ISO standard (2005-01-30).</p>
+<p>Date arithmetic:</p>
+<ul>
+	<li>INFORMIX supports date arithmetic on DATE values. The 
+	result of an arithmetic expression involving dates is a number of days when DATEs are
+      used. </li>
+	<li>In Genero db, the result of an arithmetic expression involving DATE values is 
+	a number of days. You can subtract or add a integer to a DATE column.</li>
+	<li>INFORMIX automatically converts an integer to a date when the integer is 
+	used to set a value of a date column. Genero db does not do this conversion; review your 
+	code and change it to use a DATE type variable.</li>
+</ul>
+<p><b><em><u>Solution:</u></em></b></p>
+<p>The Genero db DATE type is used for INFORMIX DATE data. Arithmetic 
+expressions involving dates (for example, to add or remove a number of days 
+from a date) will produce the same results with Genero db as INFORMIX.</p>
+<p><b><font color="#FF0000">Warning:</font></b> Using integers 
+(the number of days since 1899/12/31) as dates is supported by Genero db in a SELECT INTO 
+statement 
+but not in a WHERE clause. Check your code to detect the use of integers with 
+DATE columns. With INFORMIX and Genero db, a date of 1900/1/1 when selected into 
+an INTEGER will be converted to 1.</p>
+<p><b><font color="#FF0000">Warning:</font></b> It is strongly 
+recommended that you use BDL variables in dynamic SQL statements instead of 
+quoted strings representing DATEs. For example:<br>
+<font face="Courier New" size="2">&nbsp;&nbsp; LET stmt = &quot;SELECT ... FROM customer WHERE create_date &gt;'&quot;, adate,&quot;'&quot;<br></font>
+is not portable.&nbsp; Use a question mark place holder instead and OPEN the 
+cursor by USING a date:<br>
+<font face="Courier New" size="2">&nbsp;&nbsp; LET stmt = &quot;SELECT ... FROM customer WHERE create_date &gt; ?&quot;</font></p>
+<p><b><font color="#FF0000">Warning:</font></b>  Before Genero db <b>3.80</b>,
+DATE arithmetic expressions using SQL parameters (USING variables) are not fully
+supported. For example:<font size="2" face="Courier New"> &quot;SELECT ... WHERE datecol &lt; ? + 1&quot;</font>
+ generates an error at PREPARE time.</p>
+
+<hr>
+
+<h2><a name="ODIADS001b">ODIADS001b - DATETIME data type</a></h2>
+
+<p>INFORMIX has the DATETIME data type to store year to fraction information. </p>
+<ul>
+	<li><b>DATETIME</b> = for year to fraction of a second (1-5) storage.</li>
+</ul>
+<p>Genero db <b>3.61</b>  has the following equivalents for INFORMIX DATETIME:</p>
+<ul>
+	<li><b>TIME</b> = for hour, minute, and second storage.</li>
+	<li><b>TIMESTAMP</b> = for year, month, day, hour, min, second, 
+	and fraction of second storage.</li>
+	<li><b>DATETIME</b> = Synonym for TIMESTAMP.</li>
+</ul>
+<p>Genero db <b>3.80</b> supports DATETIME and INTERVAL types likes INFORMIX:</p>
+<ul>
+	<li><b>DATETIME start TO end</b></li>
+	<li><b>INTERVAL start[(prec)] TO end</b></li>
+</ul>
+<p>String representing date time information: INFORMIX is able to convert quoted strings to DATETIME data, if the 
+string formatting matches the formatting set by environment parameters (GL_DATETIME).
+Genero db can also convert quoted strings to DATE / TIME / TIMESTAMP; by
+default, date/time formats follow the ISO standard (2005-01-30).</p>
+<p>Date arithmetic:</p>
+<ul>
+	<li>INFORMIX supports date arithmetic on DATETIME values. The 
+	result of an arithmetic expression involving DATETIME expressions is an
+      INTERVAL expression. </li>
+	<li>In Genero db <b>3.80</b>, DATETIME arithmetic and INTERVAL arithmetic are
+      supported by the server.</li>
+</ul>
+<p><b><em><u>Solution:</u></em></b></p>
+<p>With Genero db <b>3.80</b>:</p>
+<p>DATETIME and INTERVAL types can be used as with INFORMIX, since these types
+are supported as native server types.</p>
+<p>With Genero db <b>3.61</b>:</p>
+<p>INFORMIX DATETIME data with a precision from HOUR TO SECOND is stored in a Genero db
+TIME column. DATETIME data with any other precision is stored in Genero db TIMESTAMP columns. The database interface makes the conversion 
+automatically. Missing date or time parts default to 1900-01-01 00:00:00. For 
+example, when using a DATETIME HOUR TO MINUTE with the value of &quot;11:45&quot;, the
+Genero db DATETIME value will be &quot;1900-01-01 11:45:00&quot;.</p>
+<p><b><font color="#FF0000">Warnings:</font></b> </p>
+<ol>
+  <li>Literal DATETIME 
+expressions (i.e. DATETIME 1999-10-12 YEAR TO DAY) are not converted.</li>
+  <li> SQL Statements using 
+expressions with EXTEND must be reviewed and adapted to the native syntax.</li>
+</ol>
+
+<hr>
+
+<h2><a name="ODIADS001c">ODIADS001c - INTERVAL data type</a></h2>
+
+<p>INFORMIX's INTERVAL data type stores a value that represents a span of time.</p>
+
+<p>INTERVAL types are divided into two classes: <font color="#FF0000"><em>year-month intervals</em></font> and <font color="#FF0000"><em>day-time intervals</em></font>.</p>
+
+<p>Genero db <b>3.61</b> does not provide a data type similar to INFORMIX INTERVAL, but since version <b>3.80</b>, Genero db supports DATETIME and
+INTERVAL data types as INFORMIX. </p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Use Genero db version <b>3.80</b> if you want to store INFORMIX-like INTERVAL
+values, with full support of DATETIME arithmetics.</p>
+
+<hr>
+
+<h2><a name="ODIADS003">ODIADS003 - Reserved words</a></h2>
+
+<p>SQL object names, like table and column names, cannot be SQL reserved
+words in Genero db.&nbsp;An example of a common word which is part of
+the Genero db SQL grammar
+is <b> 'level</b>'</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>You must rename those table or column names that are Genero db reserved 
+words. Genero db reserved keywords are listed in the Genero db documentation.&nbsp;<br>
+Another solution is to enclose the table/column name in double quotes. 
+Double-quoted table/column names are case-sensitive. If this double-quoted 
+syntax is used, all subsequent references to this table/column must be in 
+the same double-quoted format.</p>
+
+<hr>
+
+<h2><a name="ODIADS004">ODIADS004 - ROWIDs</a></h2>
+
+<p>Genero db provides ROWIDs, but the data type is different from INFORMIX. INFORMIX
+ROWIDs are INTEGERs, while Genero db ROWIDs are BIGINT.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> Genero db ROWIDs can be used to
+identify a unique row during the lifetime of the transaction. After the
+transaction is committed, the ROWID may change.</p>
+
+<p>With INFORMIX, SQLCA.SQLERRD[6] contains the ROWID of the 
+last INSERTed or UPDATEd row. This is not currently supported with Genero db.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> Genero db ROWIDs are not fully
+compatible with INFORMIX ROWIDs.</p>
+
+  <p>It is recommended that you review the code and remove any usage of ROWIDs, as their 
+	usage is
+  not portable to other databases and may lead to problems when the code
+  runs against any other databases. (For example, Oracle has ROWIDs, but they are CHARs 
+	instead of
+  numeric.)</p>
+
+<hr>
+
+<h2><b><a name="ODIADS005">ODIADS005 - SERIAL data types</a></b></h2>
+<p>INFORMIX supports the SERIAL, SERIAL8 and BIGSERIAL data types to produce automatic
+integer sequences. SERIAL is based on INTEGER (32 bit), while SERIAL8 and
+BIGSERIAL can store 64 bit integers: </p>
+<ul>
+	<li>The table column must be of type SERIAL, SERIAL8 or BIGSERIAL.</li>
+	<li>To generate a new serial, no value or a zero 
+	value is specified in the INSERT statement:<br>
+	<font size="2" face="Courier New">&nbsp;&nbsp; INSERT INTO tab1 ( c ) VALUES ( 'aa' )<br>
+	&nbsp;&nbsp; INSERT INTO tab1 ( k, c ) VALUES ( 0, 'aa' )</font></li>
+	<li>After INSERT, the new SERIAL value is provided in
+	<font face="Courier New" color="#FF0000">SQLCA.SQLERRD[2]</font>, while the
+      new SERIAL8 and BIGSERIAL value must be fetched with a <font face="Courier New" color="#FF0000">SELECT
+      dbinfo('bigserial')</font> query.</li>
+</ul>
+<p>INFORMIX allows you to insert rows with a value other than zero for a 
+serial column. Using an explicit value automatically increments the internal 
+serial counter, to avoid conflicts with future INSERTs that are using a zero 
+value: <br>
+<font size="2" face="Courier New">&nbsp;&nbsp;&nbsp; CREATE TABLE tab ( k SERIAL );&nbsp; --&gt; internal 
+counter = 0<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 1<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 10 );&nbsp; --&gt; internal counter = 10<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 11<br>
+&nbsp;&nbsp;&nbsp; DELETE FROM tab; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; --&gt; internal counter = 11<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 12</font></p>
+<p>Genero db supports serial types like INFORMIX. </p>
+<p><b><em><u>Solution:</u></em></b></p>
+<p>When using Genero db, the SERIAL data type works the same as in INFORMIX. After an 
+insert, sqlca.sqlerrd[2] holds the last generated serial value.</p>
+<p>CREATE [TEMP] TABLE with a SERIAL column works as in INFORMIX.</p>
+
+<p>For SQL portability, INSERT statements should be reviewed to remove the SERIAL column from
+the list.<br>
+For example, the following statement:<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col1,col2) VALUES (<b>0</b>, p_value)</font><br>
+can be converted to :<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col2) VALUES (p_value)<br>
+</font>Static SQL INSERT using records defined from the schema file must also be
+reviewed :<br>
+<font face="Courier New">&nbsp;&nbsp; DEFINE rec LIKE tab.*</font><br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab VALUES ( rec.*
+)&nbsp;&nbsp; -- will use the serial column</font><br>
+can be converted to :<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab VALUES rec.* -- without
+braces, serial column is removed</font></p>
+
+<hr>
+
+<h2><a name="ODIADS006">ODIADS006 - Outer joins</a></h2>
+
+<p>The Genero db syntax for OUTER joins is different from the original INFORMIX
+outer join syntax:</p>
+
+<p>In INFORMIX SQL, outer tables are defined in the FROM clause using
+the OUTER keyword:</p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM a, <font color="#0000A0">OUTER(b)</font>
+ WHERE a.key = b.akey</font></pre>
+  <pre><font face="Courier New">SELECT ... FROM a, <font color="#0000A0">OUTER(b,OUTER(c))</font>
+ WHERE a.key = b.akey
+   AND b.key1 = c.bkey1
+   AND b.key2 = c.bkey2 </font></pre>
+</blockquote>
+
+<p>Genero db version 3.60 supports the same OUTER joins syntax as INFORMIX.</p>
+
+<p>Genero db also supports ANSI syntax joins:</p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM a, LEFT OUTER JOIN b ON a.key = b.key</font></pre>
+  <pre><font face="Courier New">SELECT </font><font face="Courier New">... FROM a 
+    LEFT OUTER JOIN  b LEFT OUTER JOIN c
+    ON ( (b.key1 = c.bkey1) AND (b.key2 = c.bkey2) ) ON ( (a.key = b.akey) )</font></pre>
+</blockquote>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p> Genero db supports INFORMIX outer joins syntax, with the following limitation:</p>
+
+<ol>
+  <li>Sub-queries are not allowed in outer-join predicates.</li>
+</ol>
+
+<p>However, for SQl portability, you should use the ANSI outer join syntax
+instead of the old Informix OUTER syntax.</p>
+
+<hr>
+
+<h2><a name="ODIADS007a">ODIADS007a - Database concepts</a></h2>
+
+<p>Most BDL applications use only one database instance (in the
+meaning of INFORMIX). But INFORMIX servers can handle multiple database 
+instances, while Genero db servers
+manage only one database instance. However, Genero db can manage multiple schemas.</p>
+
+<p><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SELECT * FROM <b>stores</b>.customer</font></p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>With Genero db, you can create as many&nbsp; users as database schemas are needed. You
+typically dedicate a database user to administer each occurrence of the
+application database (i.e. schema in Genero db).</p>
+
+<p>Any user can select the current
+database schema with the following SQL command:</p>
+
+<p><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SET SCHEMA &quot;&lt;schema&gt;&quot;</font></p>
+
+<p>Using this instruction, any user can access the tables
+without giving the owner prefix, as long as the table owner has granted privileges 
+required to access the
+tables.</p>
+
+<p>Genero db users can be associated to a default schema as follows:</p>
+
+<p><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CREATE
+  USER &quot;&lt;username&gt;&quot; IDENTIFIED ...<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  DEFAULT SCHEMA &quot;&lt;schema&gt;&quot;</font></p>
+
+<p>This is the preferred way to assign a schema to DB users.</p>
+
+<p>You can also make the database interface select the current schema 
+automatically using the following FGLPROFILE entry:</p>
+
+<p><font face="Courier New" size="2">&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+dbi.database.&lt;dbname&gt;.ads.schema = &quot;&lt;schema&gt;&quot;</font></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> double-quoted schema/user names 
+are case-sensitive.</p>
+
+<hr>
+
+<h2><a name="ODIADS008a">ODIADS008a - Data consistency and concurrency management</a></h2>
+
+<p><u>Data consistency</u> involves readers that
+want to access data
+currently being modified. <u>Concurrency data access</u> involves several writers
+accessing the same data for modification. <u>Locking granularity</u> defines the amount of
+data involved when a lock is set (row, page, table, and other groupings).</p>
+
+<p><u>INFORMIX</u><u>:</u></p>
+
+<p>INFORMIX uses a locking mechanism to handle data consistency and
+concurrency. When a process changes database information with UPDATE, INSERT or DELETE,
+an <u>exclusive lock</u> is set on the touched rows. The lock remains active until the end
+of the transaction. Statements performed outside a transaction are treated as a
+transaction containing a single operation, and release the locks immediately
+after
+execution. SELECT statements can set <u>shared locks</u> according to
+the <u>isolation
+level</u>. In case of locking conflicts (for example, when two processes want to acquire
+an exclusive lock on the same row for modification, or when a writer is trying to modify
+data protected by a shared lock), the behavior of a process can be changed by setting the <u>lock
+wait mode</u>.</p>
+
+<p>Control:<ul>
+  <li>Lock wait mode:
+	<font size="2" face="Courier New">SET LOCK MODE TO ...</font></li>
+  <li>Isolation level:
+	<font size="2" face="Courier New">SET ISOLATION TO ...</font></li>
+  <li>Locking granularity:
+	<font size="2" face="Courier New">CREATE TABLE ... LOCK MODE {PAGE|ROW}</font></li>
+  <li>Explicit exclusive lock:
+	<font size="2" face="Courier New">SELECT ... FOR UPDATE</font></li>
+</ul>
+
+<p>Defaults:<ul>
+  <li>The default isolation level is
+	<font size="2" face="Courier New">READ COMMITTED.</font></li>
+  <li>The default lock wait mode is
+	<font size="2" face="Courier New"><b>NOT WAIT</b>.</font></li>
+  <li>The default locking granularity is
+	<font size="2" face="Courier New">PAGE.</font></li>
+</ul>
+
+<p><u>Genero db</u><u>:</u></p>
+
+<p>Genero db does not use the same locking mechanism as INFORMIX; Genero db is a
+lock-avoidance database and thus behaves differently to other database regarding
+concurrency.</p>
+
+<p>The following transaction control instructions exist in
+Genero db:</p>
+
+  <ul>
+  <li>Lock wait mode:<font size="2" face="Courier New"> SET LOCK MODE TO ...</font></li>
+  <li>Isolation level:<font size="2" face="Courier New"> SET TRANSACTION ISOLATION 
+  LEVEL ...</font></li>
+  <li>Explicit exclusive lock:<font size="2" face="Courier New"> SELECT ... FOR 
+  UPDATE</font></li>
+</ul>
+
+<p>Defaults:<ul>
+  <li>The default isolation level is
+	<font size="2" face="Courier New">READ COMMITTED.</font></li>
+  <li>The default lock wait mode is
+	<font size="2" face="Courier New"><b>WAIT</b> </font>
+	<font size="2"><i>(not that this is different from Informix default, but
+    follows SQL programming recommendations)</i></font></li>
+</ul>
+
+<p>In order to reduce locking, Genero db supports &quot;<b>commutative updates</b>&quot;,
+which allows concurrent transactions to update the same row without the need to
+wait for each other. In most cases the result of concurrent transactions will be the
+same, however, you better review programs if some part of the code relies on the
+fact that an <font size="2" face="Courier New">UPDATE</font> 
+statement sets a lock on the row during the transaction, to avoid other db
+sessions to read / modify the row like INFORMIX does in READ COMMITTED isolation
+level. Workarounds will be discussed in the <i>Solution</i> part.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+  <p><font color="#FF0000"><b>Warning:</b></font> The <font size="2" face="Courier New">LOCK MODE {PAGE|ROW}</font>
+  is not supported by Genero db. This is specific to data storage mechanisms and
+  cannot be supported in the Genero db concurrency model.</p>
+
+  <p>You can use the same transaction control instructions and update clauses as
+  in INFORMIX:</p>
+
+  <ul>
+    <li><font size="2" face="Courier New">SET LOCK MODE ...</font></li>
+    <li><font size="2" face="Courier New">SELECT ... FOR UPDATE</font></li>
+  </ul>
+
+  <p>The <font size="2" face="Courier New">
+  SET ISOLATION TO ... </font>INFORMIX syntax is replaced by <font size="2" face="Courier New">
+  SET TRANSACTION ISOLATION LEVEL ... </font>in Genero db. The next table shows
+  the isolation level mappings done by the database driver:</p>
+
+<div align="center">
+  <center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><font color="#0000FF"><b>SET ISOLATION
+      instruction in program</b></font></td>
+    <td width="60%" bgcolor="#C0C0C0"><font color="#0000FF"><b>Native SQL
+      command</b></font></td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO DIRTY READ</td>
+    <td width="60%">SET TRANSACTION ISOLATION LEVEL READ COMMITTED</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO COMMITTED READ<br>
+      &nbsp; [READ COMMITTED] [RETAIN UPDATE LOCKS]</td>
+    <td width="60%">SET TRANSACTION ISOLATION LEVEL READ COMMITTED</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO CURSOR STABILITY</td>
+    <td width="60%">SET TRANSACTION ISOLATION LEVEL READ COMMITTED</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO REPEATABLE READ</td>
+    <td width="60%">SET TRANSACTION ISOLATION LEVEL SERIALIZABLE</td>
+  </tr>
+</table>
+  </center>
+</div>
+
+  <p><font color="#FF0000"><b>Warning:</b></font>  Since Genero db may not set
+  locks on modified rows during a transaction, you must check that your code
+  does not rely of the fact that <font size="2" face="Courier New">UPDATE</font>
+  or <font size="2" face="Courier New">DELETE</font> statements set locks on the
+  modified rows to prevent other db session to access the rows.</p>
+
+  <p>For example, see the next SQL code sequence, to be run in READ COMMITTED
+  isolation level:</p>
+
+<p><font face="Courier New" size="2">&nbsp;&nbsp; BEGIN WORK<br>
+  &nbsp;&nbsp;&nbsp;<b>UPDATE incr SET value = value + 1 WHERE key = 45</b><br>
+&nbsp;&nbsp; SELECT value FROM incr WHERE key = 45<br>
+&nbsp;&nbsp; COMMIT WORK</font></p>
+
+  <p>While in INFORMIX the <font size="2" face="Courier New">UPDATE</font>
+  statement will set a lock and prevent other db sessions to access the row for
+  modification until the transaction ends, Genero db (allowing commutative
+  updates) will not set a lock and
+  thus let other db sessions increment the row, while the first transaction is
+  still under progress. As result, a concurrent transaction may increment the
+  column before the first sessions could actually read the value it has
+  incremented itself and thus get the last value incremented by the concurrent
+  transaction.</p>
+
+  <p>To workaround this behavior, you can:</p>
+
+<ol>
+  <li>use the SERIALIZABLE
+  isolation level (for the duration of this transaction only, you better leave
+    COMMITTED READ as default),</li>
+  <li> do a SELECT FOR UPDATE when entering the
+  transaction:<br>
+    <font face="Courier New" size="2">&nbsp;&nbsp; BEGIN WORK<br>
+  &nbsp;&nbsp;&nbsp;<b>SELECT value FROM incr WHERE key = 45 FOR UPDATE</b><br>
+  &nbsp;&nbsp;&nbsp;UPDATE incr SET value = value + 1 WHERE key = 45<br>
+&nbsp;&nbsp; SELECT value FROM incr WHERE key = 45<br>
+&nbsp;&nbsp; COMMIT WORK</font></li>
+  <li>add an index on the column that is updated. Commutative updates are not
+    supported on indexed columns.</li>
+</ol>
+
+<hr>
+
+<h2><a name="ODIADS008b">ODIADS008b - SELECT FOR UPDATE</a></h2>
+
+<p>Many BDL programs implement pessimistic locking in order to prevent
+several users editing the same rows at the same time.</p>
+
+<p><font size="2" face="Courier New">&nbsp;&nbsp;DECLARE cc CURSOR FOR<br>
+&nbsp;&nbsp; &nbsp; SELECT ... FOR UPDATE [OF column-list]<br>
+&nbsp;&nbsp;OPEN cc<br>
+&nbsp;&nbsp;FETCH cc &lt;-- lock is acquired<br>
+&nbsp;&nbsp;CLOSE cc &lt;-- lock is released </font>
+
+<ul>
+  <li>The row must be fetched in order to set the lock.</li>
+  <li>If the cursor is local to a transaction, the lock is released when
+    the transaction ends.<br>
+    If the cursor is declared &quot;WITH HOLD&quot;, the lock is released when
+    the cursor is closed.</li>
+</ul>
+
+<p>Genero db allows individual and exclusive row locking with:</p>
+
+  <p><font face="Courier New" size="2">&nbsp;&nbsp;SELECT ... FOR UPDATE [OF column-list] </font>
+
+<ul>
+  <li>A lock is acquired for each selected row when the cursor is opened 
+	(before the first fetch).</li>
+	<li>The lock is only released when the transaction ends.</li>
+	<li>FOR UPDATE cursors can only be OPENed inside a transaction.</li>
+</ul>
+
+<p>Genero db locking granularity is at the row level.</p>
+
+<p>To control the behavior of the program when locking rows, INFORMIX provides a specific instruction to set the wait mode:</p>
+
+<p><font size="2" face="Courier New">&nbsp;&nbsp; SET LOCK MODE TO { WAIT | NOT WAIT | WAIT seconds }</font></p>
+
+<p>The default mode is NOT WAIT. This is an INFORMIX-specific SQL statement.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+<p>Genero db supports SELECT .. FOR UPDATE as in INFORMIX, but the rows are locked
+when the cursor is opened, not when the first row is fetched.</p>
+
+<p>Ensure that the use of 'FOR UPDATE' is always inside a transaction.</p>
+
+<p>
+Ensure that you COMMIT the transaction as soon as possible to prevent rows being 
+locked longer than necessary.</p>
+
+<hr>
+
+<h2><a name="ODIADS009a">ODIADS009a - Transactions handling</a></h2>
+
+<p>INFORMIX and Genero db handle transactions in a similar manner: In both INFORMIX and Genero db, transactions must be started with BEGIN WORK and finished with COMMIT WORK or
+ROLLBACK WORK.</p>
+
+<p>Statements executed outside a transaction are automatically committed.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> With INFORMIX in native mode (non-ANSI),
+DDL statements can be executed (and cancelled) in transactions.  Genero db does
+not support DDL statements inside transactions.</p>
+
+<p>Informix version 11.50 introduces savepoints with the following instructions:</p>
+
+<pre>    SAVEPOINT <i>name</i> <u>[</u>UNIQUE<u>]</u>
+    ROLLBACK <u>[</u>WORK<u>]</u> TO SAVEPOINT <u>[</u><i>name</i><u>]</u> <u>]</u>
+    RELEASE SAVEPOINT <i>name</i></pre>
+
+<p>Genero db supports savepoints too. However, there are differences:</p>
+
+<ol>
+  <li>Savepoints cannot be declared as UNIQUE</li>
+  <li>Rollback must always specify the savepoint name</li>
+  <li>You cannot release savepoints (RELEASE SAVEPOINT)</li>
+</ol>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Regarding transaction control instructions, existing applications
+do not have to be modified in order to work with Genero db.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> You must extract the DDL statements from transaction blocks.</p>
+
+<p>Transactions in stored procedures: avoid using transactions in stored procedures and
+allow the client applications to handle transactions, in accordance with the transaction model.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b>  If you want to use savepoints,
+do not use the UNIQUE keyword in the savepoint declaration, always specify the
+savepoint name in ROLLBACK TO SAVEPOINT, and do not drop savepoints with RELEASE
+SAVEPOINT.</p>
+
+<p>See also <a href="#ODIADS008b">ODIADS008b</a></p>
+
+<hr>
+
+<h2><a name="ODIADS010">ODIADS010 - BOOLEAN data type</a></h2>
+
+<p>INFORMIX supports the BOOLEAN data type, which can store 't' or 'f' values.
+Genero BDL implements the BOOLEAN data type in a different way: As in other
+programming languages, Genero BOOLEAN stores integer values 1 or 0 (for TRUE or
+FALSE). The type was designed this way to assign the result of a Boolean
+expression to a BOOLEAN variable.</p>
+
+<p> Genero db 3.60 supports a BOOLEAN type which can store the following values (case-insensitive): 
+TRUE/FALSE or 1/0. You can't use the 't' or 'f' character values as in INFORMIX.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>The Genero db database interface supports the BOOLEAN data type.</p>
+
+<hr>
+
+<h2><a name="ODIADS011a">ODIADS011a - CHARACTER data types</a></h2>
+
+<p>INFORMIX supports following character data types:</p>
+<ul>
+  <li>CHAR(N) with N&lt;= 32767 bytes</li>
+  <li>VARCHAR(N[,M]) with N&lt;=255 bytes</li>
+  <li>NCHAR(N) with N&lt;= 32767 bytes</li>
+  <li>NVARCHAR(N[,M]) with N&lt;=255 bytes</li>
+  <li>LVARCHAR (not covered in this section)</li>
+</ul>
+<p>In INFORMIX, both CHAR/VARCHAR and NCHAR/ NVARCHAR data types can be used to
+store single-byte or multi-byte encoded character strings. The only difference
+between CHAR/VARCHAR and NCHAR/NVARCHAR is for sorting: N[VAR]CHAR types use the
+collation order, while [VAR]CHAR types use the byte order. The character set
+used to store strings in CHAR/VARCHAR/NCHAR/NVARCHAR columns is defined by the
+DB_LOCALE environment variable. The character set used by applications is
+defined by the CLIENT_LOCALE environment variable. Note that INFORMIX uses Byte
+Length Semantics (the size N that you specify in [VAR]CHAR(N) is expressed in
+bytes, not characters as in some other databases)</p>
+<p>Genero db implements the following character types:</p>
+<ul>
+  <li>CHAR(N) with N&lt;= 60000 bytes, 3000 if the column is indexed</li>
+  <li>VARCHAR(N) with N&lt;= 60000 bytes, 3000 if the column is indexed</li>
+</ul>
+
+<p>String comparison semantics are equivalent in INFORMIX and Genero db:</p>
+
+  <ul>
+    <li>Trailing blanks are ignored when comparing CHAR and VARCHAR values.</li>
+    <li>
+Genero db treats empty strings as NOT NULL values.</li>
+  </ul>
+
+<p>In Genero db, CHAR and VARCHAR types store data in single byte or in UTF-8
+character sets. For CHAR and VARCHAR, the size is specified in a number of
+bytes, like INFORMIX. The character set used to store data for these types is
+defined by a database configuration parameter called CHARACTER_SET, this
+parameter must be defined before starting the server for the first time and
+cannot be changed later on.</p>
+<p>Automatic character set conversion between the Genero db client and server is
+supported. You must properly specify the client character set for Genero db,
+this is done with an ODBC configuration parameter called <i>characterset</i>.</p>
+<p><b><u><em>Solution:</em></u></b></p>
+<p>INFORMIX [VAR]CHAR(N) types can be mapped to Genero db [VAR]CHAR(N) types.</p>
+<p>Since both databases use Byte Length Semantics, you can use the same size to
+define [VAR]CHAR columns in both environments.</p>
+<p>Do not forget to properly define the client character set, which must
+correspond to the runtime system character set (LANG/LC_ALL).</p>
+<p>See also the section about <a href="Localization.html">Localization</a>.</p>
+
+<hr>
+
+<h2><a name="ODIADS012">ODIADS012 - Constraints</a></h2>
+
+<p><b>Constraint naming syntax:</b></p>
+
+<p>Both INFORMIX and Genero db support primary key, unique, foreign key, default
+and check constraints, but the constraint naming syntax is different : Genero db
+expects the &quot;CONSTRAINT&quot; keyword <b>before</b> the constraint
+specification and INFORMIX expects it <b>after</b>.</p>
+
+<p><b>UNIQUE constraint example:</b></p>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>INFORMIX</b></font></td>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>Genero db</b></font></td>
+  </tr>
+  <tr>
+    <td width="50%"><font face="Courier New">CREATE TABLE scott.emp (<br>
+    ...<br>
+    empcode CHAR(10) UNIQUE<br>
+    &nbsp;&nbsp;&nbsp;<b>[CONSTRAINT pk_emp]</b>,<br>
+    ...</font></td>
+    <td width="50%"><font face="Courier New">CREATE TABLE scott.emp (<br>
+    ...<br>
+    empcode CHAR(10)<br>
+    &nbsp;&nbsp;&nbsp;<b>[CONSTRAINT pk_emp]</b> UNIQUE,<br>
+    ...</font></td>
+  </tr>
+</table>
+
+<p><b>Primary keys:</b></p>
+
+<p>Like INFORMIX, Genero db creates an index to enforce PRIMARY KEY constraints
+(some RDBMS do not create indexes for constraints).&nbsp;</p>
+
+<p><b>Unique constraints:</b></p>
+
+<p>Like INFORMIX, Genero db creates an index to enforce UNIQUE constraints (some
+RDBMS do not create indexes for constraints).</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> Using CREATE UNIQUE INDEX is
+silently converted to a unique constraint. To drop an index created as CREATE
+UNIQUE INDEX, you must do an ALTER TABLE DROP CONSTRAINT.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> When using a unique constraint,
+INFORMIX allows only one row with a NULL value, while Genero db allows several
+rows with NULL!</p>
+
+<p><b>Foreign keys:</b></p>
+
+<p>Both INFORMIX and Genero db support the ON DELETE CASCADE option. To defer
+constraint checking, INFORMIX provides the SET CONSTRAINT command while Genero
+db provides the DISABLE CONSTRAINTS hint.</p>
+
+<p><b>Check constraints:</b></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> The check condition may be any
+valid expression that can be evaluated to TRUE or FALSE, including functions and
+literals. You must verify that the expression is not INFORMIX specific.</p>
+
+<p><b>Null constraints:</b></p>
+
+<p>INFORMIX and Genero db support not null constraints, but INFORMIX does not
+allow you to give a name to &quot;NOT NULL&quot; constraints.</p>
+
+<p><em><b><u>Solution:</u></b></em></p>
+
+<p><b>Constraint naming syntax:</b></p>
+
+<p>The database interface does not convert constraint naming expressions when
+creating tables from BDL programs. Review the database creation scripts to adapt
+the constraint naming clauses for Genero db.</p>
+
+<hr>
+
+<h2><a name="ODIADS013">ODIADS013 - Triggers and Stored Procedures</a></h2>
+
+  <p>Genero db supports the INFORMIX trigger and stored procedure language.</p>
+
+  <p>However, Genero db (&lt;=3.81) does not support user function calls within
+  queries, for example:</p>
+
+  <pre>SELECT getage(patient_bd) FROM patient WHERE patient_id = 12345</pre>
+  <p>See Genero db documentation for more details.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Until Genero db supports user function calls inside SQL queries, you need to
+extract the stored procedure/function and call it with a secondary statement
+handle as described <a href="SqlProgramming.html#SP_GDB">here</a>.</p>
+
+<hr>
+
+<h2><a name="ODIADS016a">ODIADS016a - Defining database users</a></h2>
+
+<p>INFORMIX users are defined at the operating system level. They must
+be members of the 'INFORMIX' group. The database administrator must grant CONNECT,
+RESOURCE or DBA privileges to those users.</p>
+
+<p>Genero db users must be registered in the database. They are created by
+the database administrator (SYSTEM) with the following command:</p>
+
+<p><font size="2" face="Courier New">&nbsp;&nbsp; CREATE USER &lt;username&gt; IDENTIFIED BY
+&lt;password&gt;<br>
+<br>
+</font>or for Operating System authentication:</p>
+
+<p>
+<font face="Courier New" size="2">&nbsp;&nbsp; CREATE USER &lt;username&gt; IDENTIFIED EXTERNALLY</font></p>
+
+<p><b><font color="#FF0000">Warning:</font> Additional configuration is required
+for Operating System authentication, see database server documentation for more
+details.</b></p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>For migration and testing purposes only, you can specify the user name and
+password in the FGLPROFILE.</p>
+
+<p>For a live system, it is recommended that you use the CONNECT TO statement and
+supply the user name and password, or create database users IDENTIFIED
+EXTERNALLY.</p>
+
+<p>Prior to Genero db 3.81, it was necessary to use quotes around user names:</p>
+
+<pre>CREATE USER “harry” IDENTIFIED EXTERNALLY [DEFAULT SCHEMA stores];</pre>
+
+<p>The quotes was necessary to force lower case, as most Linux/UNIX user names are by
+convention in lower case. Since the release of Genero db 3.81, when
+COMPATIBILTY_MODE = INFORMIX is set in the configuration file, this is no longer
+needed, and should NOT be used. Instead, create the user name WITHOUT quotes:</p>
+
+<pre>CREATE USER harry IDENTIFIED EXTERNALLY [DEFAULT SCHEMA stores];</pre>
+
+<p>In this case, Genero db would internally map the lower case name to the OS user,
+and would use OS authentication when connecting to the database.</p>
+
+<p>A few additional changes are required to make OS authentication work:</p>
+
+
+
+<ol>
+  <li>Change the ants.rhosts file's permission to 600. By default, this file has greater permission for “groups” and “other”, and Genero db would refuse to load the file if the permission is something like 644. It needs to be 0 for “group” and 0 for “other”. This file resides in
+    $ANTSHOME/Server</li>
+  <li>	Edit the file ants.rhosts and comment out the “+”. This would allow permissions for all user names created as OS users.</li>
+  <li>	Restart Genero db or execute the following SQL statement: ALTER SYSTEM
+    REFRESHTRUST;</li>
+  <li>Remove or comment out the “user” and “password” entries in
+    odbc.ini. The default values for these parameters are “SYSTEM” and “SYSTEM” respectively.</li>
+</ol>
+
+<hr>
+
+<h2><a name="ODIADS016b">ODIADS016b - Setting privileges</a></h2>
+
+<p>INFORMIX and Genero db user privileges management are similar.</p>
+
+<p>Genero db provides roles to group privileges which then can be assigned
+to users. Starting with version 7.20, INFORMIX also provides roles.</p>
+
+<p>INFORMIX users must have at least the CONNECT privilege to access the database:<br>
+<font face="Courier New" size="2">&nbsp;&nbsp;&nbsp; GRANT CONNECT TO (PUBLIC|user) </font></p>
+
+<p>To be able to create tables, views or synonyms, Genero db users need:<br>
+<font face="Courier New" size="2">&nbsp;&nbsp;&nbsp; GRANT CREATE TABLE TO &lt;user&gt;<br>
+&nbsp;&nbsp;&nbsp; GRANT CREATE VIEW TO &lt;user&gt;<br>
+&nbsp;&nbsp;&nbsp; GRANT CREATE SYNONYM TO &lt;user&gt;</font></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> Genero db does NOT provide the INFORMIX
+CONNECT, RESOURCE and DBA roles.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>In Genero db, roles can be created with database privileges to simulate INFORMIX
+system roles.</p>
+
+<hr>
+
+<h2><a name="ODIADS017">ODIADS017 - Temporary tables </a>
+</h2>
+
+<p> INFORMIX supports temporary tables with the following statements:</p>
+<p><font face="Courier New" size="2">&nbsp;&nbsp;SELECT ... INTO TEMP <i>tmpname</i>
+[WITH NO LOG]<br>
+&nbsp; CREATE TEMP TABLE <i>tmpname</i> ( ... ) [WITH NO LOG]</font></p>
+
+<p>Genero db supports the same temporary table SQL instructions as INFORMIX.</p>
+
+<p>However, there are some restrictions with Genero db temporary tables:</p>
+
+<ol>
+  <li>Genero db does not support DDL statements inside transaction blocks.</li>
+  <li> Genero db does not support the WITH NO LOG clause.</li>
+  <li> Genero db does not support CREATE UNIQUE INDEX on temporary tables.</li>
+</ol>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>You do not need to modify your code, as long as CREATE TEMP TABLE or SELECT
+INTO TEMP statements do not use any of the restrictions listed above.</p>
+
+<hr>
+
+<h2><a name="ODIADS018">ODIADS018 - Substrings in SQL</a></h2>
+
+<p>INFORMIX SQL statements can use substrings on columns defined with
+the character data type:<br>
+<font face="Courier New" size="2">&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 WHERE <font color="#0000A0">col1[2,3]</font> = 'RO' <br>
+&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 WHERE <font color="#0000A0">col1[10]</font>&nbsp;
+= 'R'&nbsp;&nbsp; -- Same as col1[10,10]<br>
+&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <font color="#0000A0">col1[2,3]</font> = 'RO' WHERE ...<br>
+&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 ORDER BY <font color="#0000A0">col1[1,3]</font></font></p>
+
+<p>Genero db provides the SUBSTRING( ) function, to extract a sub-string from a 
+string expression: <br>
+<font size="2" face="Courier New">&nbsp;&nbsp;&nbsp; SELECT .... FROM tab1 WHERE
+<font color="#0000A0">SUBSTRING(col1,2,2)</font> = 'RO'<br>
+&nbsp;&nbsp;&nbsp; SELECT <font color="#0000A0"><b>SUBSTRING('Some text' FROM 6 FOR 3)</b></font>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- Gives 'tex'</font></p>
+
+<p>Genero db 3.60 has implemented the <font face="Courier New">col[x,y]</font> 
+expression but not the <font face="Courier New">col[x]</font><font face="Times New Roman">
+</font>one.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>With Genero db <b>3.61</b>:</p>
+
+<p>The Genero db database driver will convert SQL expressions containing INFORMIX substring syntax for you. It is recommended, however, that
+you replace all INFORMIX <font face="Courier New">col[x,y]</font> expressions 
+with 
+<font face="Courier New">SUBSTRING(col FROM x FOR
+y-x+1)</font>.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> In UPDATE instructions, setting
+column values using subscripts will produce an error with Genero db:<br>
+<font size="2" face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <font color="#0000A0">col1[2,3]</font> = 'RO' WHERE ...</font><font size="2"><br>
+</font>is converted to:<br>
+<font face="Courier New" size="2">&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <font color="#0000A0">SUBSTRING(col1 FROM 2 FOR 3-2+1)</font> = 'RO' WHERE ...</font></p>
+
+<p>With Genero db <b>3.80</b>:</p>
+
+<p>The server supports all the INFORMIX-style substrings and no conversion is
+done by the database driver.</p>
+
+<hr>
+
+<h2><a name="ODIADS019">ODIADS019 - Name resolution of SQL objects</a></h2>
+
+<p>INFORMIX uses the following to identify an SQL object:<br>
+<font face="Courier New" size="2">&nbsp; [database[@dbservername]:][{owner|&quot;owner&quot;}.]identifier</font></p>
+
+<p>The ANSI convention is to use double-quotes for identifier
+delimiters (For example: &quot;tabname&quot;.&quot;colname&quot;).</p>
+
+<p><font color="#FF0000"><b>Warning: </b></font>When using double-quoted identifiers, both
+INFORMIX and Genero db become case-sensitive. Unlike INFORMIX, Genero db object names are stored in
+UPPERCASE in system catalogs. That means that SELECT &quot;col1&quot; FROM
+&quot;tab1&quot; will produce an error if those objects are created without 
+double-quotes; they are identified by COL1 and  TAB1 in Genero db system catalogs.</p>
+
+<p>With INFORMIX ANSI-compliant databases: 
+
+<ul>
+  <li>The table name must include &quot;owner&quot;, unless the connected user is the owner of the database object.</li>
+  <li>The database server shifts the owner name to uppercase letters before the statement executes, unless the owner name is enclosed in double quotes. </li>
+</ul>
+
+  <p>With Genero db, an object name takes the following form:<br> 
+  <font size="2" face="Courier New">&nbsp;&nbsp;
+[(schema|&quot;schema&quot;).](identifier|&quot;identifier&quot;)</font></p>
+
+<p>Object names are limited to 128 chars in Genero db.</p>
+
+<p>A Genero db schema is owned by a user (usually the application administrator).</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Check that you do not use single-quoted or double-quoted table names or column names in your static SQL statements. Those quotes must be removed because the database interface automatically converts double quotes to single quotes, and Genero db does not allow single quotes as database object name delimiters.</p>
+
+<p>See also issue <a href="#ODIADS007a">ODIADS007a</a></p>
+
+<hr>
+
+  <h2><a name="ODIADS020">ODIADS020 - String delimiters and object names</a></h2>
+
+<p>The ANSI string delimiter character is the single quote ( 'string'). Double quotes are used to delimit database object names (&quot;object-name&quot;).</p>
+
+<p><u>Example</u>:<font face="Courier New"> <font size="2">WHERE &quot;tabname&quot;.&quot;colname&quot; = 'a string value'</font></font></p>
+
+<p>INFORMIX allows double quotes as string delimiters, but Genero db doesn't. This is an important distinction, as many BDL programs use double quotes to delimit the strings in SQL commands.</p>
+
+<p>Remark: This problem concerns only double quotes within dynamic SQL statements. Double quotes used in pure BDL string expressions are not subject to  SQL compatibility problems. Double-quoted string literals in static SQL statements are converted to single-quoted strings by compilers.</p>
+
+<p>Genero db implements ANSI-compliant SQL syntax and therefore does not support double-quoted string literals; only database object names can be double-quoted.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<ul>
+  <li>With Genero db <b>3.61</b> and <b>3.80</b>, double quoted strings are
+    converted by the Genero db database driver (dbmads3x or dbmads380).</li>
+  <li>Starting with Genero db <b>3.81</b>, double quoted string literals are
+    supported by the server.</li>
+</ul>
+
+<hr>
+
+<h2><a name="ODIADS021">ODIADS021 - NUMERIC data types</a></h2>
+
+<p>INFORMIX supports several data types to store numbers: </p>
+<div align="center">
+  <center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><font color="#0000FF"><b>INFORMIX data type</b></font></td>
+    <td width="60%" bgcolor="#C0C0C0"><font color="#0000FF"><b>Description</b></font></td>
+  </tr>
+  <tr>
+    <td width="40%">SMALLINT</td>
+    <td width="60%">16 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">INT/INTEGER</td>
+    <td width="60%">32 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">BIGINT</td>
+    <td width="60%">64 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">INT8</td>
+    <td width="60%">64 bit signed integer (replaced by BIGINT)</td>
+  </tr>
+  <tr>
+    <td width="40%">DEC/DECIMAL(p)</td>
+    <td width="60%">Floating-point decimal number</td>
+  </tr>
+  <tr>
+    <td width="40%">DEC/DECIMAL(p,s)</td>
+    <td width="60%">Fixed-point decimal number</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY</td>
+    <td width="60%">Equivalent to DECIMAL(16,2)</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY(p)</td>
+    <td width="60%">Equivalent to DECIMAL(p,2)</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY(p,s)</td>
+    <td width="60%">Equivalent to DECIMAL(p,s)</td>
+  </tr>
+  <tr>
+    <td width="40%">REAL/SMALLFLOAT</td>
+    <td width="60%">Approximate 32-bit floating point real number (C float)</td>
+  </tr>
+  <tr>
+    <td width="40%">DOUBLE PREC./FLOAT</td>
+    <td width="60%">Approximate 64-bit floating point real number (C double) </td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<p>Genero db supports the following:</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="34%" bgcolor="#C0C0C0"><font color="#0000FF">Genero db</font><font color="#0000FF">
+    data type</font></td>
+    <td width="23%" bgcolor="#C0C0C0"><font color="#0000FF">Pseudotype</font></td>
+    <td width="110%" bgcolor="#C0C0C0"><font color="#0000FF">Description</font></td>
+  </tr>
+  <tr>
+    <td width="34%">SMALLINT</td>
+    <td width="23%">TINYINT / BIT</td>
+    <td width="110%">16-bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="34%">INT / INTEGER</td>
+    <td width="23%">&nbsp;</td>
+    <td width="110%">32-bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="34%">BIGINT</td>
+    <td width="23%">&nbsp;</td>
+    <td width="110%">64-bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="34%">INT8</td>
+    <td width="23%">&nbsp;</td>
+    <td width="110%">64-bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="34%">DECIMAL(p,s)</td>
+    <td width="23%">&nbsp;</td>
+    <td width="110%">Fixed-point decimal number <b>(p&lt;=15 with GDS 3.61)</b></td>
+  </tr>
+  <tr>
+    <td width="34%">NUMERIC(p,s)</td>
+    <td width="23%">&nbsp;</td>
+    <td width="110%">Fixed-point decimal number <b>(p&lt;=15 with GDS 3.61)</b></td>
+  </tr>
+  <tr>
+    <td width="34%">MONEY</td>
+    <td width="23%">&nbsp;</td>
+    <td width="110%">Number with precision nearly 19 and scale 4</td>
+  </tr>
+  <tr>
+    <td width="34%">DOUBLE / DOUBLE PRECISION / REAL</td>
+    <td width="23%">SMALLFLOAT / FLOAT(n)</td>
+    <td width="110%">Approximate 64-bit floating point real number (C double) </td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#FF0000"><b>Warnings:</b> </font></p>
+
+<ol>
+  <li>With Genero db 3.61, the maximum number of digits is <b>15</b>, while
+    Genero db 3.80 supports up to <b>36</b> digits.</li>
+  <li> The only difference between DECIMAL and NUMERIC is that NUMERIC guarantees the specified 
+precision, whereas DECIMAL guarantees at least the specified precision.</li>
+  <li>A pseudotype is accepted anywhere a regular type name is, but is silently 
+converted into another type which is supported by Genero db.</li>
+</ol>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>We recommend that you use the following conversion rules:</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="20%"><font color="#0000FF">INFORMIX</font><font color="#0000FF">
+    data type</font></td>
+    <td bgcolor="#C0C0C0" width="20%"><font color="#0000FF">Genero db</font><font color="#0000FF">
+    data type</font></td>
+  </tr>
+  <tr>
+    <td width="20%" height="21">SMALLINT</td>
+    <td width="20%" height="21">SMALLINT</td>
+  </tr>
+  <tr>
+    <td width="20%">INTEGER</td>
+    <td width="20%">INTEGER</td>
+  </tr>
+  <tr>
+    <td width="20%">BIGINT</td>
+    <td width="20%">BIGINT</td>
+  </tr>
+  <tr>
+    <td width="20%">INT8</td>
+    <td width="20%">BIGINT</td>
+  </tr>
+  <tr>
+    <td width="20%">DECIMAL(p)</td>
+    <td width="20%"><b>N/A until Genero db 3.90</b></td>
+  </tr>
+  <tr>
+    <td width="20%">DECIMAL(p,s)</td>
+    <td width="20%">DECIMAL(p,s) <b>with p &lt;=15 if Genero db 3.61</b></td>
+  </tr>
+  <tr>
+    <td width="20%">MONEY(p,s)</td>
+    <td width="20%">DECIMAL(p,s) <b>with p &lt;=15 if Genero db 3.61</b></td>
+  </tr>
+  <tr>
+    <td width="20%">SMALLFLOAT</td>
+    <td width="20%"> REAL (64b!)</td>
+  </tr>
+  <tr>
+    <td width="20%">FLOAT(n)</td>
+    <td width="20%">FLOAT</td>
+  </tr>
+</table>
+</center></div>
+
+<p><b><font color="#FF0000">Warning: </font> Genero db does not have a 32b
+floating point type, Informix SMALLFLOAT has to be converted to REAL, which is a
+64b floating point type in Genero db. Later, when extracting the schema of the
+database, the original type name used to create the table in Genero db can be
+used to distinguish 32b from 64b types in the .sch schema file.</b></p>
+
+<hr>
+
+<h2><a name="ODIADS022">ODIADS022 - Getting one row with SELECT</a></h2>
+
+<p>With INFORMIX, you must use the SYSTABLES system table with a condition on the table id:</p>
+
+<blockquote>
+
+<p><font face="Courier New" size="2">SELECT user <font color="#FF0000">FROM systables WHERE tabid=1</font></font></p>
+
+</blockquote>
+
+<p>With Genero db some statements can be as follows:</p>
+
+<blockquote>
+
+<pre><font face="Courier New">PREPARE pre FROM &quot;SELECT USER&quot; EXECUTE pre INTO l_user</font></pre>
+
+</blockquote>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Check the BDL sources for &quot;FROM systables WHERE tabid=1&quot; and use dynamic SQL to resolve this problem.</p>
+
+<hr>
+
+<h2><a name="ODIADS024">ODIADS024 - MATCHES and LIKE in SQL conditions</a></h2>
+
+<p>INFORMIX and Genero db both support MATCHES and LIKE in SQL statements.</p>
+
+<p>MATCHES allows you to use brackets to specify a set of matching characters at a given position:<br>
+<font face="Courier New" size="2">&nbsp;&nbsp; ( col MATCHES '[Pp]aris' )<br>
+&nbsp;&nbsp; ( col MATCHES '[0-9][a-z]*' )</font></p>
+
+<p>In this case, the LIKE statement has no equivalent feature.</p>
+
+<p>Genero db implements the MATCHES operator.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>None required.</p>
+
+<p>See also: <a href="SqlProgramming.html#PORT_MATCHES">MATCHES operator in SQL
+Programming</a>.</p>
+
+<hr>
+
+<h2><a name="ODIADS025">ODIADS025 - INFORMIX specific SQL statements in BDL </a></h2>
+
+<p>The BDL&nbsp;compiler supports several INFORMIX-specific SQL statements that have no meaning when using Genero db:</p>
+
+<ul>
+  <li>CREATE DATABASE</li>
+  <li>DROP DATABASE</li>
+  <li>START DATABASE (SE only)</li>
+  <li>ROLLFORWARD DATABASE</li>
+  <li>SET [BUFFERED] LOG</li>
+  <li>CREATE TABLE with special options (storage, lock mode, etc.)</li>
+</ul>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Review your BDL source and remove all static SQL statements which are INFORMIX-specific SQL statements.</p>
+
+<hr>
+
+<h2><a name="ODIADS028">ODIADS028 - INSERT cursors</a></h2>
+
+<p>INFORMIX supports insert cursors. An &quot;insert cursor&quot; is a
+special BDL cursor declared with an INSERT statement instead of a SELECT statement. When
+this kind of cursor is open, you can use the PUT instruction to add rows and the FLUSH
+instruction to insert the records into the database.</p>
+
+<p>For INFORMIX database with transactions, OPEN, PUT and FLUSH instructions must be executed within a transaction.</p>
+
+<p>Genero db does not support insert cursors.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Insert cursors are emulated by the Genero db database driver.</p>
+
+<hr>
+
+<h2><a name="ODIADS030">ODIADS030 - Very large data types</a></h2>
+
+<p> INFORMIX uses the TEXT and BYTE data types to store very large texts or images. </p>
+
+<p>Genero db 3.6 provides CLOB and BLOB data types, and provides TEXT/BYTE synonyms for
+INFORMIX compatibility.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>The TEXT and BYTE data types are supported by Genero db and  by the Genero db database driver.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Genero TEXT/BYTE program
+variables have a limit of 2 gigabytes, make sure that the large object data does
+not exceed this limit.</p>
+
+<hr>
+
+<h2><a name="ODIADS031">ODIADS031 - Cursors WITH HOLD</a></h2>
+
+<p>INFORMIX closes opened cursors automatically when a transaction ends unless the WITH HOLD option is used in the DECLARE instruction.&nbsp; </p>
+
+<p>By default Genero db keeps cursors open when a transaction ends (however, FOR UPDATE locks are released at the end of a transaction).</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>BDL cursors are automatically closed when a COMMIT WORK or ROLLBACK WORK is performed.</p>
+
+<p>WITH HOLD cursors with a SELECT FOR UPDATE can be supported, if the table has a primary key or a unique index.</p>
+
+<hr>
+
+<h2><a name="ODIADS032">ODIADS032 - UPDATE/DELETE WHERE CURRENT OF &lt;cursor&gt;</a></h2>
+
+<p>INFORMIX allows positioned UPDATEs and DELETEs with the &quot;WHERE CURRENT OF &lt;cursor&gt;&quot; clause, if the cursor has been DECLARED with a SELECT ...  FOR UPDATE statement.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> UPDATE/DELETE ... WHERE CURRENT OF
+&lt;cursor&gt; is supported by the Genero db API. However, the cursor must be OPENed and used inside a transaction.&nbsp;</p>
+
+<font face="Courier New">
+<p>        <font size="2">&nbsp;&nbsp;&nbsp; DECLARE cur1 CURSOR FOR SELECT * FROM mytable WHERE 1=1 FOR UPDATE<br>
+        &nbsp;&nbsp;&nbsp;
+        BEGIN WORK<br>
+        &nbsp;&nbsp;&nbsp;
+        OPEN cur1<br>
+                &nbsp;&nbsp;&nbsp;
+                FETCH cur1 INTO x,chr<br>
+                &nbsp;&nbsp;&nbsp;
+                UPDATE mytable SET mycol2 = "updated" WHERE CURRENT OF cur1<br>
+        &nbsp;&nbsp;&nbsp;
+        CLOSE cur1<br>
+&nbsp;&nbsp;&nbsp;
+COMMIT WORK</font></font></p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Check that your programs correctly put WHERE CURRENT OF &lt;cursorname&gt; inside a transaction.</p>
+
+<hr>
+
+<h2><a name="ODIADS033">ODIADS033 - Querying system catalog tables</a></h2>
+
+<p>Both INFORMIX and Genero db provides system catalog tables, however the table names and structure are different.</p>
+
+<p>Genero db provides the standard views for system catalog: 
+INFORMATION_SCHEMA.TABLES, INFORMATION_SCHEMA.COLUMNS, and so on.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> No automatic
+conversion of INFORMIX system tables is provided by the database interface.</p>
+
+<hr>
+
+<h2><a name="ODIADS034"><font >ODIADS034 - Syntax of UPDATE
+statements</font></a></h2>
+
+<p>INFORMIX allows a specific syntax for UPDATE statements:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;<font size="2">&nbsp; UPDATE table SET ( &lt;col-list&gt; ) = (
+&lt;val-list&gt; )</font></font></p>
+
+<p>Genero db supports this syntax.</p>
+<p>BDL programs can have the following type of statements:</p>
+
+<p><font size="2" face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET </font>
+<font face="Courier New" size="2">table.</font><font size="2" face="Courier New">* =
+  myrecord.*<br>
+  &nbsp;&nbsp;&nbsp; UPDATE table SET * = myrecord.*</font></p>
+
+<p>Static UPDATE statements using the above syntax are converted <u>by the
+compiler</u> to the standard form:<br>
+<br>
+<font size="2" face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET column=value [,...]
+</font></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> With Genero db 3.81, correlated
+sub-queries cannot be used for multi-column assignment in an UPDATE statement:<br>
+<br>
+<font size="2" face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE main_table SET
+(main_col1, main_col2)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = ( SELECT sub_col1, sub_col2 FROM
+sub_table WHERE sub_table.mkey = main_table.key )</font></p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Regular UPDATE statements without sub-queries do not need to be modified.
+However, you should check your code for UPDATE statements with sub-selects using
+multiple columns: Such statements need to be splitted to use only one column at
+the time.</p>
+
+<p>Replace:</p>
+
+<p>
+<font size="2" face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE main_table SET (<b>main_col1</b>,
+<b>main_col2</b>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = ( SELECT <b>sub_col1</b>, <b>sub_col2</b>
+FROM sub_table WHERE sub_table.mkey = main_table.key )</font></p>
+
+<p>By:</p>
+
+<p>
+<font size="2" face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE main_table SET (<b>main_col1</b>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = ( SELECT <b>sub_col1</b> FROM sub_table
+WHERE sub_table.mkey = main_table.key )<br>
+&nbsp;&nbsp;&nbsp; UPDATE main_table SET (<b>main_col2</b>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = ( SELECT <b>sub_col2</b> FROM sub_table
+WHERE sub_table.mkey = main_table.key )</font></p>
+
+<hr>
+
+<h2><a name="ODIADS046">ODIADS046 -&nbsp;The LOAD and UNLOAD instructions </a></h2>
+
+<p>INFORMIX provides SQL instructions to export data from a database table and import data into a database table: The UNLOAD instruction copies rows from a database table into a text file; the LOAD instructions insert rows from a text file into a database table.</p>
+
+<p>Genero db does not provide LOAD and UNLOAD instructions.</p>
+
+<p>Genero db provides an Import/Export Utility (impexp) that will convert a 
+specified set of tables, or an entire database, to or from a Comma Separated 
+Value (CSV) external format. </p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>In 4gl programs, the LOAD and UNLOAD instructions are supported with Genero db, with some limitations:</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  When using Genero db versions
+before <b>3.80</b>, there is a difference when you 
+use Genero db DATETIME
+columns. DATETIME columns created in Genero db are equivalent to INFORMIX DATETIME YEAR TO SECOND
+columns.&nbsp; In LOAD and UNLOAD, all Genero db DATE columns are treated
+as INFORMIX DATETIME YEAR TO SECOND columns and thus will be unloaded with the
+&quot;YYYY-MM-DD hh:mm:ss&quot;&nbsp; format.</p>
+
+<hr>
+
+<h2><a name="ODIADS047">ODIADS047 -&nbsp;The USER constant </a></h2>
+
+<p>Both INFORMIX and Genero db provide the USER constant, which  identifies the current user connected to the database server. However, there is a difference: 
+
+</p> 
+
+<ul>
+  <li>INFORMIX returns the user identifier as defined in the operating system, where it can be case-sensitive (UNIX) or not (NT).</li>
+  <li>Genero db returns the user identifier that is stored in the database.  By default, Genero db converts the user name to uppercase letters if you do not put the user name in double quotes when creating it. </li>
+</ul>
+
+<p>This is important if your application stores user names in database
+records (for example, to audit  data modifications). You can, for example,
+ connect to Genero db with the name 'scott', and perform the following SQL operations:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; <font size="2">(1) INSERT INTO mytab ( creator, comment )<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; VALUES ( <font color="#0000A0">USER</font>, 'example' );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (2) SELECT * FROM mytab<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHERE
+creator = '</font></font><font face="Courier New" size="2">scott</font><font face="Courier New"><font size="2">';</font><br>
+</font>The first command inserts 'SCOTT' (in uppercase letters) in the author column. The second statement will not find the row.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>When creating a user in Genero db, you can put double quotes around the user name in order to force Genero db to store the given user identifier as is:</p>
+
+<blockquote>
+  <p><font face="Courier New" size="2">CREATE USER &quot;scott&quot; IDENTIFIED BY &lt;pswd&gt;</font></p>
+</blockquote>
+
+<p>To verify the user names defined in Genero db, connect as SYSTEM and list the records of the ALL_USERS table as follows:</p>
+
+<blockquote>
+
+<p><font face="Courier New" size="2">CREATE USER john IDENTIFIED BY &lt;pswd&gt;</font></p>
+
+<p><font face="Courier New" size="2">SELECT user_name FROM table_of_users</font></p>
+
+<p><font face="Courier New" size="2">USER_NAME<br>
+-----------<br>
+SYSTEM<br>
+JOHN<br>
+scott </font>
+</blockquote>
+<p>&nbsp;
+
+<hr>
+
+<h2><a name="ODIADS051">ODIADS051 -&nbsp;Setup database statistics </a></h2>
+
+<p>INFORMIX provides a special instruction to compute database statistics in order to help the optimizer determine the best query execution plan:</p>
+<blockquote>
+  <p><font face="Courier New" size="2">UPDATE STATISTICS ...</font></p>
+</blockquote>
+
+<p>Genero db provides the following instruction to collect statistics:</p>
+<blockquote>
+  <p><font face="Courier New" size="2">SET GATHERSTATS <i>tablename</i></font></p>
+</blockquote>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Replace the UPDATE STATISTICS by multiple SET GATHERSTATS statements (one for each table)</p>
+
+<hr>
+
+<h2><a name="ODIADS053">ODIADS053 -&nbsp;The ALTER TABLE instruction </a></h2>
+
+<p>INFORMIX and Genero db have different implementations of the ALTER
+TABLE instruction. For example, INFORMIX allows you to use multiple ADD clauses 
+separated by commas; this is not supported by Genero db.</p>
+
+<p>INFORMIX:<br>
+<font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;&nbsp; ALTER TABLE customer ADD(col1 INTEGER), ADD(col2 CHAR(20))</font></p>
+
+<p>Genero db:<br> 
+<font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;&nbsp; ALTER TABLE customer ADD COLUMN col1 INTEGER ADD COLUMN col2 CHAR(20)</font></p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> No automatic conversion is done by the
+database interface. There is no real standard for this instruction ( that is, no
+common syntax for all database servers). Read the SQL documentation and review the
+SQL scripts or the BDL programs in order to use the database server-specific syntax
+for ALTER TABLE.</p>
+
+<hr>
+
+<h2><a name="ODIADS054">ODIADS054 -&nbsp;SQL Interruption</a></h2>
+
+<p>With INFORMIX, it is possible to interrupt a long running query if the SQL
+INTERRUPT ON option is set by the Genero program. The database server returns
+SQLCODE -213, which can be trapped to detect a user interruption.</p>
+
+<p>
+<font face="Courier New" size="2">&nbsp;&nbsp;&nbsp; MAIN<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DEFINE n INTEGER<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DEFER INTERRUPT<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OPTIONS SQL INTERRUPT ON<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DATABASE test1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHENEVER ERROR CONTINUE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- Start long query (self join takes time)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- From now on, user can hit CTRL-C in TUI mode
+to stop the query<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SELECT COUNT(*) INTO n FROM customers a,
+customers b<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHERE a.cust_id
+&lt;&gt; b.cust_id<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IF SQLCA.SQLCODE == -213 THEN<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DISPLAY &quot;Statement was
+interrupted by user...&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EXIT PROGRAM 1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END IF<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHENEVER ERROR STOP<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp;&nbsp; END MAIN</font></p>
+
+<p>Genero db 3.80 supports SQL Interruption in a similar way as INFORMIX. The db
+client must issue an SQLCancel() ODBC call to interrupt a query.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>The Genero db database driver supports SQL interruption and converts the
+native SQL error code -30005 to the INFORMIX error code -213.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Make sure you have Genero db
+3.80 or higher installed. Older versions do not support SQL interruption.</p>
+
+<p>Note that when writing these lines, Genero db 3.80 does not support
+interruption of a DDL statement or an SQL statement waiting for a lock to be
+released (such as SELECT FOR UPDATE). Those limitations should be removed in a
+later Genero db version.</p>
+
+<hr>
+
+<h2><a name="ODIADS055">ODIADS055 -&nbsp;Scrollable Cursors</a></h2>
+
+<p>The Genero programming language supports scrollable cursors with the <b>SCROLL</b>
+keyword, as shown in the following code example:&nbsp;</p>
+
+<p>
+<font face="Courier New" size="2">
+&nbsp;&nbsp;&nbsp;DECLARE c1 <b>SCROLL</b> CURSOR FOR SELECT * FROM customers
+ORDER BY cust_name<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH FIRST c1 INTO rec_cust.*<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH NEXT c1 INTO rec_cust.*<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH LAST c1 INTO rec_cust.*</font></p>
+
+<p>Genero db 3.80 does not support native scrollable cursors.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>The Genero db database driver emulates scrollable cursors with temporary
+files. On UNIX, the temp files are created in the directory defined by the
+DBTEMP, TMPDIR, TEMP or TMP environment variables (the default is /tmp). On
+Windows, the temp files are created with the _tempnam() MSVCRT API call.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Native scrollable cursors are
+normally handled by the database server (only pieces of the result-set are sent
+to the client application). With emulated scrollable cursors, when scrolling to
+the last row, all rows will be fetched into the temporary file. This can
+generate a lot of network traffic and can produce a large temporary file if the
+result-set contains a lot of rows. Additionally, programs are dependent on the
+file system resource allocated to the OS user (ulimit).</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  In case of a runtime system
+crash, the temporary files created for scrollable cursors are not removed
+automatically. Therefore, is it possible that you will find some unexpected files in
+the temp directory. Before removing such files, you must make sure that these
+files are no longer used by running processes. Recent operating systems take care
+of that, by removing unused temp files periodically.</p>
+
+<hr>
+
+<h2><a name="ODIADS100">ODIADS100 - Data type conversion table</a></h2>
+
+<div align="center">
+  <center>
+  <table border="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="33%"><font color="#0000FF">INFORMIX</font><font color="#0000FF"> 
+            Data Types</font></td>
+          <td bgcolor="#C0C0C0" width="33%"><font color="#0000FF">Genero db Data Types
+            (before 3.80)</font></td>
+          <td bgcolor="#C0C0C0" width="33%"><font color="#0000FF">Genero db Data Types
+            (since 3.80)</font></td>
+        </tr>
+        <tr>
+          <td width="33%">BIGINT</td>
+          <td width="33%">BIGINT</td>
+          <td width="33%">BIGINT</td>
+        </tr>
+        <tr>
+          <td width="33%">BIGSERIAL[(start)]</td>
+          <td width="33%">BIGSERIAL[(start)]</td>
+          <td width="33%">BIGSERIAL[(start)]</td>
+        </tr>
+        <tr>
+          <td width="33%">BLOB</td>
+          <td width="33%">BLOB</td>
+          <td width="33%">BLOB</td>
+        </tr>
+        <tr>
+          <td width="33%">BOOLEAN</td>
+          <td width="33%">BOOLEAN</td>
+          <td width="33%">BOOLEAN</td>
+        </tr>
+        <tr>
+          <td width="33%">BYTE</td>
+          <td width="33%">BYTE (= BLOB)<font face="Courier New"> <font color="#FF0000" size="2" face="Courier New">(using
+            &lt;= 2Gb!)</font></font></td>
+          <td width="33%">BYTE (= BLOB)<font face="Courier New"> <font color="#FF0000" size="2" face="Courier New">(using
+            &lt;= 2Gb!)</font></font></td>
+        </tr>
+        <tr>
+          <td width="33%">CHAR(n)</td>
+          <td width="33%" x:str="CHAR(n) ">CHAR(n)&nbsp;</td>
+          <td width="33%" x:str="CHAR(n) ">CHAR(n)&nbsp;</td>
+        </tr>
+        <tr>
+          <td width="33%">CHARACTER VARYING(n,m)</td>
+          <td width="33%">VARCHAR(n,m) (= VARCHAR (n))</td>
+          <td width="33%">VARCHAR(n,m) (= VARCHAR (n))</td>
+        </tr>
+        <tr>
+          <td width="33%">CHARACTER(n)</td>
+          <td width="33%">CHARACTER(n) (= CHAR (n))</td>
+          <td width="33%">CHARACTER(n) (= CHAR (n))</td>
+        </tr>
+        <tr>
+          <td width="33%">CLOB</td>
+          <td width="33%">CLOB</td>
+          <td width="33%">CLOB</td>
+        </tr>
+        <tr>
+          <td width="33%">DATE</td>
+          <td width="33%">DATE</td>
+          <td width="33%">DATE</td>
+        </tr>
+        <tr>
+          <td width="33%">DATETIME HOUR TO SECOND</td>
+          <td width="33%"><b>TIME</b></td>
+          <td width="33%">DATETIME HOUR TO SECOND</td>
+        </tr>
+        <tr>
+          <td width="33%">DATETIME x TO y (not HOUR TO&nbsp; SECOND)</td>
+          <td width="33%"><b>TIMESTAMP</b></td>
+          <td width="33%">DATETIME x TO y</td>
+        </tr>
+        <tr>
+          <td width="33%">DEC</td>
+          <td width="33%">DECIMAL</td>
+          <td width="33%">DECIMAL</td>
+        </tr>
+        <tr>
+          <td width="33%">DECIMAL(p)</td>
+          <td width="33%"><b>N/A until Genero db 3.90</b></td>
+          <td width="33%"><b>N/A until Genero db 3.90</b></td>
+        </tr>
+        <tr>
+          <td width="33%">DECIMAL(p,s)</td>
+          <td width="33%">DECIMAL(p,s)<b><font color="#FF0000">! p&lt;=15</font></b></td>
+          <td width="33%">DECIMAL(p,s)<b>  (p&lt;=32, FGL/IFX limit)</b></td>
+        </tr>
+        <tr>
+          <td width="33%">DOUBLE</td>
+          <td width="33%">DOUBLE</td>
+          <td width="33%">DOUBLE</td>
+        </tr>
+        <tr>
+          <td width="33%">DOUBLE PRECISION</td>
+          <td width="33%">DOUBLE PRECISION (= DOUBLE)</td>
+          <td width="33%">DOUBLE PRECISION (= DOUBLE)</td>
+        </tr>
+        <tr>
+          <td width="33%">FLOAT(n)</td>
+          <td width="33%">FLOAT(n) (= DOUBLE)</td>
+          <td width="33%">FLOAT(n) (= DOUBLE)</td>
+        </tr>
+        <tr>
+          <td width="33%">INT</td>
+          <td width="33%">INT</td>
+          <td width="33%">INT</td>
+        </tr>
+        <tr>
+          <td width="33%">INT8</td>
+          <td width="33%">INT8 (= BIGINT)</td>
+          <td width="33%">INT8 (= BIGINT)</td>
+        </tr>
+        <tr>
+          <td width="33%">INTEGER</td>
+          <td width="33%">INTEGER</td>
+          <td width="33%">INTEGER</td>
+        </tr>
+        <tr>
+          <td width="33%">INTERVAL x TO y</td>
+          <td width="33%"><b>CHAR(50)</b></td>
+          <td width="33%">INTERVAL x TO y</td>
+        </tr>
+        <tr>
+          <td width="33%">MONEY(p,s)</td>
+          <td width="33%"><b>DECIMAL(p,s)<font color="#FF0000">! p&lt;=15</font></b>
+          </td>
+          <td width="33%">DECIMAL(p,s)<b>  (p&lt;=32, FGL/IFX limit)</b>
+          </td>
+        </tr>
+        <tr>
+          <td width="33%">NCHAR(n)</td>
+          <td width="33%" x:str="NCHAR(n) ">NCHAR(n)&nbsp;</td>
+          <td width="33%" x:str="NCHAR(n) ">NCHAR(n)&nbsp;</td>
+        </tr>
+        <tr>
+          <td width="33%">NUMERIC(p,s)</td>
+          <td x:str="NUMERIC(p,s) " width="33%">NUMERIC(p,s)&nbsp;</td>
+          <td x:str="NUMERIC(p,s) " width="33%">NUMERIC(p,s)&nbsp;</td>
+        </tr>
+        <tr>
+          <td width="33%">NVARCHAR(n)</td>
+          <td width="33%" x:str="NVARCHAR(n) ">NVARCHAR(n)&nbsp;</td>
+          <td width="33%" x:str="NVARCHAR(n) ">NVARCHAR(n)&nbsp;</td>
+        </tr>
+        <tr>
+          <td width="33%">REAL</td>
+          <td width="33%">REAL (= DOUBLE)</td>
+          <td width="33%">REAL (= DOUBLE)</td>
+        </tr>
+        <tr>
+          <td width="33%">SERIAL[(start)]</td>
+          <td width="33%">SERIAL[(start)]</td>
+          <td width="33%">SERIAL[(start)]</td>
+        </tr>
+        <tr>
+          <td width="33%">SERIAL8[(start)]</td>
+          <td width="33%">SERIAL8[(start)]</td>
+          <td width="33%">SERIAL8[(start)]</td>
+        </tr>
+        <tr>
+          <td width="33%">SMALLFLOAT</td>
+          <td width="33%">SMALLFLOAT <font color="#FF0000" size="2" face="Courier New">(64b
+            in Genero db!)</font></td>
+          <td width="33%">SMALLFLOAT <font color="#FF0000" size="2" face="Courier New">(64b
+            in Genero db!)</font></td>
+        </tr>
+        <tr>
+          <td width="33%">SMALLINT</td>
+          <td width="33%">SMALLINT</td>
+          <td width="33%">SMALLINT</td>
+        </tr>
+        <tr>
+          <td width="33%">TEXT</td>
+          <td width="33%">TEXT (= CLOB)<font face="Courier New"> <font color="#FF0000" size="2" face="Courier New">(using
+            &lt;= 2Gb!)</font></font></td>
+          <td width="33%">TEXT (= CLOB)<font face="Courier New"> <font color="#FF0000" size="2" face="Courier New">(using
+            &lt;= 2Gb!)</font></font></td>
+        </tr>
+        <tr>
+          <td width="33%">VARCHAR(n,m)</td>
+          <td width="33%">VARCHAR(n,m) (= VARCHAR(n))</td>
+          <td width="33%">VARCHAR(n,m) (= VARCHAR(n))</td>
+        </tr>
+        <tr>
+          <td width="33%">VARCHAR(n)</td>
+          <td width="33%" x:str="VARCHAR(n) ">VARCHAR(n)&nbsp;</td>
+          <td width="33%" x:str="VARCHAR(n) ">VARCHAR(n)&nbsp;</td>
+        </tr>
+        </table>
+  </center>
+</div>
+
+<hr>
+
+<h2><a name="ODIADS101">ODIADS101 - Genero db Sql Error management</a></h2>
+
+<p>For a general idea on how Genero handles SqlErrors in the BDL language, check the following links: </p>
+
+<p><a href="Connections.html#ERRORINFO">Error Handling</a><br>
+<a href="Exceptions.html#SQLERRORS">SQL Errors</a><br>
+<a href="Programs.html#PV_STATUS">STATUS</a><br>
+<a href="Operators.html#OP_SQLSTATE">SQLSTATE</a><br>
+<a href="Operators.html#OP_SQLERRMESSAGE">SQLERRMESSAGE</a><br>
+<a href="Connections.html#SQLCA_RECORD">SQLCA Record</a><br>
+<a href="SqlProgramming.html#PORT_SQLCA">Portability: SQLCA</a></p>
+
+<p><u><em>Genero db</em></u><u><em> has some specific rules that need to be highlighted: </em></u></p>
+<ol>
+  <li>To handle SQL errors, you can use the <a href="Connections.html#SQLCA_RECORD">SQLCA.SQLCODE</a> register,
+      which gives the INFORMIX error code converted from the native Genero db error.
+      Additional SQL error information can be checked with following registers:</li>
+</ol>
+<blockquote>
+<ul>
+  <li>The native Genero db error code is stored in <b> SQLCA.SQLERRD[2]</b> register</li>
+  <li>The native Genero db error message is stored in <b>
+  <a href="Operators.html#OP_SQLERRMESSAGE">SQLERRMESSAGE</a></b> operator</li>
+</ul>
+<p>Next table shows the native Genero db errors and the corresponding Informix SQL error returned in SQLCA.SQLCODE:</p>
+</blockquote>
+<div align="center">
+  <center>
+  <table border="0" width="90%" id="AutoNumber1">
+    <tr>
+      <td bgcolor="#C0C0C0" width="192"><font color="#0000FF">Genero db</font><font color="#0000FF"><br> SQLCA.SQLERRD[2]</font></td>
+      <td bgcolor="#C0C0C0" width="190"><font color="#0000FF">INFORMIX</font><font color="#0000FF"><br> SQLCA.SQLCODE</font></td>
+      <td bgcolor="#C0C0C0" width="643"><font color="#0000FF">Error description<br> (SQLERRMESSAGE) </font></td>
+    </tr>
+    <tr>
+      <td height="17" width="192">-1</td>
+      <td width="190">-201</td>
+      <td x:str="syntax error " width="643">syntax error&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="17" width="192">-3</td>
+      <td width="190">-206</td>
+      <td x:str="table not found " width="643">table not found&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="17" width="192">-4</td>
+      <td width="190">-201</td>
+      <td x:str="syntax error " width="643">syntax error&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="17" width="192">-6</td>
+      <td width="190">-217</td>
+      <td x:str="column not found " width="643">column not found&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="17" width="192">-17</td>
+      <td width="190">-743</td>
+      <td x:str="object exists " width="643">object exists&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="17" width="192">-24</td>
+      <td width="190">-201</td>
+      <td x:str="syntax error " width="643">syntax error&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="17" width="192">-35</td>
+      <td width="190">-236</td>
+      <td x:str="cols/vals mismatch " width="643">cols/vals mismatch&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="17" width="192">-10014</td>
+      <td width="190">-213</td>
+      <td x:str="SQL interrupted " width="643">SQL interrupted&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="17" width="192">-30004</td>
+      <td width="190">-263</td>
+      <td x:str="could not lock " width="643"><i>Cannot wait on another session.</i></td>
+    </tr>
+    <tr>
+      <td height="17" width="192">-30005</td>
+      <td width="190">-213</td>
+      <td x:str="SQL interrupted " width="643">SQL interrupted&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="17" width="192">-60001</td>
+      <td width="190">-268</td>
+      <td x:str="unique constraint violation " width="643"><i> Uniqueness constraint violation.</i></td>
+    </tr>
+    <tr>
+      <td height="17" width="192">-80002</td>
+      <td width="190">-387</td>
+      <td x:str="no connect permission " width="643">no connect permission&nbsp;</td>
+    </tr>
+  </table>
+  </center>
+</div>
+<ol start="2">
+  <li>Many different formerly INFORMIX errors can be returned by the Genero db 
+	database driver; For example, fetch on open cursor, commit on 
+  unopened transaction, ... <br>
+  Here is the list of known errors the Genero db database driver can return:
+  </li>
+</ol>
+<div align="center">
+  <center>
+<table border="0" width="90%" id="AutoNumber1" style="border-collapse: collapse" bordercolor="#111111" cellpadding="0" cellspacing="0">
+  <tr>
+    <td bgcolor="#C0C0C0" width="159"><font color="#0000FF">SQLCA.SQLERRD[2]</font></td>
+    <td bgcolor="#C0C0C0" width="312"><font color="#0000FF">SQLERRMESSAGE </font></td>
+    <td bgcolor="#C0C0C0" width="382"><font color="#0000FF">Reason</font></td>
+  </tr>
+  <tr>
+    <td valign="top" width="159">-213</td>
+    <td x:str="syntax error " valign="top" width="312">Query canceled </td>
+    <td x:str="syntax error " valign="top" width="382">Long running query interrupted by user </td>
+  </tr>
+  <tr>
+    <td valign="top" width="159">-254</td>
+    <td x:str="syntax error " valign="top" width="312">Too many or too few host variables given. </td>
+    <td x:str="syntax error " valign="top" width="382">PREPARE s FROM &quot;insert into t values (?,?)&quot; <br> EXECUTE s USING x,y,z (z en trop) </td>
+  </tr>
+  <tr>
+    <td valign="top" width="159">-255</td>
+    <td x:str="syntax error " valign="top" width="312">Not in transaction.</td>
+    <td x:str="syntax error " valign="top" width="382">OPEN insert cursor without BEGIN WORK</td>
+  </tr>
+  <tr>
+    <td valign="top" width="159">-284</td>
+    <td x:str="syntax error " valign="top" width="312">A subquery has not returned exactly one row.</td>
+    <td x:str="syntax error " valign="top" width="382">SELECT * INTO ... FROM tab, returns more than one row</td>
+  </tr>
+  <tr>
+    <td valign="top" width="159">-400</td>
+    <td x:str="syntax error " valign="top" width="312">Fetch attempted on unopened cursor. </td>
+    <td x:str="syntax error " valign="top" width="382">FETCH on cursor not opened </td>
+  </tr>
+  <tr>
+    <td valign="top" width="159">-404</td>
+    <td x:str="syntax error " valign="top" width="312">The cursor or statement is not available.</td>
+    <td x:str="syntax error " valign="top" width="382">OPEN cursor after a FREE</td>
+  </tr>
+  <tr>
+    <td valign="top" width="159">-410</td>
+    <td x:str="syntax error " valign="top" width="312">Prepare statement failed or was not executed. </td>
+    <td x:str="syntax error " valign="top" width="382">EXECUTE a statement where PREPARE has failed </td>
+  </tr>
+  <tr>
+    <td valign="top" width="159">-413</td>
+    <td x:str="syntax error " valign="top" width="312">Insert attempted on unopened cursor.</td>
+    <td x:str="syntax error " valign="top" width="382">PUT on insert cursor not opened </td>
+  </tr>
+  <tr>
+    <td valign="top" width="159">-481</td>
+    <td x:str="syntax error " valign="top" width="312">Invalid statement name or statement was not prepared. </td>
+    <td x:str="syntax error " valign="top" width="382">EXECUTE a statement without PREPARE </td>
+  </tr>
+  <tr>
+    <td valign="top" width="159">-482</td>
+    <td x:str="syntax error " valign="top" width="312">Invalid operation on a non-SCROLL cursor. </td>
+    <td x:str="syntax error " valign="top" width="382">FETCH LAST/PREV/...  on non SCROLL cursor</td>
+  </tr>
+  <tr>
+    <td valign="top" width="159">-526</td>
+    <td x:str="syntax error " valign="top" width="312">Updates are not allowed on a scroll cursor. </td>
+    <td x:str="syntax error " valign="top" width="382">SELECT FOR UPDATE with SCROLL cursor </td>
+  </tr>
+  <tr>
+    <td valign="top" width="159">-535</td>
+    <td x:str="syntax error " valign="top" width="312">Already in transaction.  </td>
+    <td x:str="syntax error " valign="top" width="382">BEGIN WORK x2 </td>
+  </tr>
+  <tr>
+    <td valign="top" width="159">-6370</td>
+    <td x:str="syntax error " valign="top" width="312">Unsupported SQL feature. </td>
+    <td x:str="syntax error " valign="top" width="382">CREATE DATABASE, SET CONNECTION DORMANT, CREATE PROCEDURE FROM, DATABASE IN EXCLUSIVE MODE, CONNECT TO @server, ... </td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<ol>
+  <li value="3">If an unknown error comes from the DB Server and therefore is not mapped as an INFORMIX error, you'll get: </li>
+</ol>
+<blockquote>
+<p><b>-6372 General SQL error, check SQLCA.SQLERRD[2]</b></p>
+<p>When this SQL error occurs, you can check the native SQL error in the SQLCA.SQLERRD[2] register.</p>
+</blockquote>
+
+<ol>
+  <li value="4">If an unexpected problem happens within the database driver, the driver will return:</li>
+</ol>
+<blockquote>
+<p><b>-6319 Internal error in the database library. Set FGLSQLDEBUG to get more details</b></p>
+<p>When this SQL error occurs, you should set the FGLSQLDEBUG environment variable to get more details about the internal error.</p>
+</blockquote>
+
+<p><u>Error handling example:</u></p>
+
+<pre>MAIN
+ WHENEVER ERROR CONTINUE
+ CONNECT TO dsn_connectstring
+ IF STATUS &lt;&gt; 0 THEN
+    DISPLAY &quot;ERROR: Connection to the database failed.&quot;
+    DISPLAY SQLCA.SQLCODE, &quot;: &quot;,
+            SQLCA.SQLERRD[2], &quot;-&quot;, 
+            SQLERRMESSAGE
+    EXIT PROGRAM 1
+ END IF 
+
+ WHENEVER ERROR STOP 
+
+END MAIN</pre>
+
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>base.Application</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The Application class</a> </H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#METHODS">Methods</a></li>
+  <li><a href="#USAGE">Usage</a>
+    <ul>
+      <li><a href="#cmd-line-args">Command line arguments</a></li>
+      <li><a href="#program-info">Program information</a></li>
+      <li><a href="#runtime-info">Runtime information</a></li>
+      <li><a href="#fglprofile">FGLPROFILE resource</a></li>
+      <li><a href="#debugging">Debugging</a></li>
+    </ul>
+  </li>
+</ul>
+
+
+<p>See also: <a href="BuiltInClasses.html">Built-in classes</a></p>
+
+
+<HR>
+
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+<p>The <b>Application</b> class is a <a href="BuiltInClasses.html">built-in
+class</a> providing an interface to the&nbsp;application internals. </p>
+
+
+<h4>Syntax:</h4><code>base.Application</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li>This class does not have to be instantiated; it provides class methods for
+    the current program.</li>
+</ol>
+
+
+<HR>
+
+
+<h3><a name="METHODS">Methods:</a></h3>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#3399FF" colspan="2"><b>Class Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><b>Name</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code>
+	<a href="#cmd-line-args" name="getArgumentCount">getArgumentCount</a>()<br>
+      &nbsp;&nbsp;</code><tt>RETURNING INTEGER</tt></td>
+    <td valign="top">Returns the number of arguments passed to the program.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code>
+	<a href="#cmd-line-args" name="getArgument">getArgument</a>( position </code><tt>INTEGER</tt><code> )<br>
+      &nbsp;&nbsp;</code><tt>RETURNING STRING</tt> </td>
+    <td valign="top">Returns the argument passed to the program, according to its position.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code>
+	<a href="#program-info" name="getProgramName">getProgramName</a>()<br>
+      &nbsp;&nbsp;</code><tt>RETURNING STRING</tt> </td>
+    <td valign="top">Returns the name of the program.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code>
+	<a href="#program-info" name="getProgramDir">getProgramDir</a>()<br>
+      &nbsp;&nbsp;</code><tt>RETURNING STRING</tt> </td>
+    <td valign="top">Returns the system-dependent path of the directory where the program
+      files are located.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#runtime-info" name="getFglDir">getFglDir</a>()<br>
+      &nbsp;&nbsp;</code><tt>RETURNING STRING</tt> </td>
+    <td valign="top">Returns the system-dependent path of the installation directory of the
+      runtime system (<a href="EnvironmentVariables.html#EV_FGLDIR">FGLDIR</a>
+      environment variable).</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code>
+	<a href="#fglprofile" name="getResourceEntry">getResourceEntry</a>( name </code><tt>STRING</tt> <code> )<br>
+      &nbsp;&nbsp;</code><tt>RETURNING STRING</tt> </td>
+    <td valign="top">Returns the value of an <a href="FglProfile.html">FGLPROFILE</a> entry.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code>
+	<a href="#debugging" name="getStackTrace">getStackTrace</a>()<br>
+      &nbsp;&nbsp;</code><tt>RETURNING STRING</tt> </td>
+    <td valign="top">Returns the current stack trace of the program flow.</td>
+  </tr>
+</table>
+
+
+<HR>
+
+
+<h3><a name="USAGE">Usage:</a></h3>
+<p>The Application class groups a set of utility functions related to the
+program environment. Command line arguments, execution directory and <a href="FglProfile.html">FGLPROFILE</a>
+resource entries are some of the elements you can query with this class.</p>
+<h4><a name="cmd-line-args">Command line arguments</a></h4>
+<p>You can query command line arguments with the <code>getArgumentCount()</code>
+and <code>getArgument()</code> methods. The <code>getArgumentCount()</code>
+method returns the total number of arguments passed to the program, while <code>getArgument()</code>
+returns the argument value for the given position. First argument starts at 1
+(argument number zero is the program name).</p>
+
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02   </code> <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<code class="linenumber">03   </code> <tt>FOR</tt> i=1<tt> TO</tt> base.Application.getArgumentCount()
+<code class="linenumber">04       </code><tt>DISPLAY </tt>base.Application.getArgument(i)
+<code class="linenumber">05    </code><tt>END FOR</tt>
+<code class="linenumber">06</code> <tt>END MAIN</tt></pre>
+
+
+<h4><a name="program-info">Program information</a></h4>
+<p>Basic program execution information can be queried with the <code>getProgramName()</code>
+and <code>getProgramDir()</code> methods. The <code>getProgramName()</code>
+method returns the name of the program. The <code>getProgramDir()</code> method
+returns the directory path where the <b>42r</b> program file is located. Note
+that the directory path is system-dependent.</p>
+<h4><a name="runtime-info">Runtime information</a></h4>
+<p>Product information can be queried with the <code>getFglDir()</code>
+ method. The <code>getFglDir()</code>
+method returns the installation directory path defined by FGLDIR. Note
+that the directory path is system-dependent.</p>
+<h4><a name="fglprofile">FGLPROFILE resource</a></h4>
+<p>If needed you can query <a href="FglProfile.html">FGLPROFILE</a>  resource
+entries with the <code>getResourceEntry()</code>
+ method. This method returns the fglprofile value of the entry passed as
+parameter.</p>
+
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02   </code><tt>DISPLAY</tt> base.Application.getResourceEntry(&quot;mycompany.params.logmode&quot;)
+<code class="linenumber">03</code> <tt>END MAIN</tt></pre>
+
+
+<h4><a name="debugging">Debugging</a></h4>
+<p>In some situations - typically, to identify problems on a production site -
+you may want to known what functions have been called when a program raises an
+error. You can get and print the stack trace in a log file by
+using the <code>getStackTrace()</code> method. This method returns a string
+containing a formatted list of the current function stack.</p>
+<p>You typically use this function in a WHENEVER ERROR CALL handler, as in the
+following code example:</p>
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02   </code> <tt>WHENEVER ERROR CALL</tt> my_handler
+<code class="linenumber">03   </code> <tt>...</tt>
+<code class="linenumber">04</code><tt> END MAIN</tt>
+<code class="linenumber">05 </code><tt>...</tt>
+<code class="linenumber">06 </code><tt>FUNCTION </tt>my_handler()
+<code class="linenumber">07    </code><tt>DISPLAY </tt>base.Application.getStackTrace()
+<code class="linenumber">08 </code><tt>END FUNCTION</tt></pre>
+
+<p>Example of stack trace output:</p>
+
+<pre>#0 my_handler() at debug.4gl:173
+#1 save_customer_data() at customer.4gl:1534
+#2 edit_customer() at customer.4gl:542
+#3 main at main.4gl:23</pre>
+
+
+</BODY>
+</HTML>

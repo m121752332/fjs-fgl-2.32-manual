@@ -1,0 +1,2141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Basic Syntax Elements</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Basic Syntax Elements</a></H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#SUMMARY">Summary</a></li>
+  <li><a href="#OPERATOR_LIST">List of Basic Syntax Elements</a></li>
+  <li><a href="#PRECEDENCE_LIST">Order of Precedence List</a></li>
+  <li><a href="#GENERAL_WARNINGS">General Warnings</a></li>
+</ul>
+
+
+<p><i>See also:</i> <a href="Variables.html">Variables</a>, <a href="DataTypes.html">Data
+Types</a>, <a href="Expressions.html">Expressions</a>, <a href="Literals.html">Literals</a>.</p>
+
+
+<HR>
+
+<h2><a name="SUMMARY">Summary</a></h2>
+<p>This section describes basic syntax elements that can appear in
+<a href="Expressions.html">Expressions</a>. There are different sort of basic
+syntax elements such as classic arithmetic, string and comparison operators,
+pre-defined variables and registers like <tt>SQLSTATE</tt>, and predefined functions like <tt>SFMT()</tt>
+or <tt>TODAY</tt>.</p>
+
+
+<p>Elements of an expressions are evaluated according to their precedence, from highest to lowest, as 
+described in the <a href="#PRECEDENCE_LIST">Order of Precedence List</a>. Use <a href="#PARENTHESES">parentheses</a>   to instruct the runtime system
+to evaluate the expression in a different way than the default order of precedence.</p>
+
+
+<HR>
+
+<h2><a name="OPERATOR_LIST">List of Basic Syntax Elements</a></h2>
+
+<h3><a name="COMPARISON_OPERATORS">Comparison Operators</a></h3>
+
+  <ul>
+     <li><a href="#OP_ISNULL">Is Null</a> (<tt>IS NULL</tt>)</li>
+     <li><a href="#OP_LIKE">Like</a> (<tt>LIKE</tt>)</li>
+     <li><a href="#OP_MATCHES">Matches</a> (<tt>MATCHES</tt>)</li>
+     <li><a href="#OP_EQUAL">Equal</a> (<tt>==</tt>)</li>
+     <li><a href="#OP_DIFFERENT">Different</a> (<tt>!= or &lt;&gt;</tt>)</li>
+     <li><a href="#OP_LOWER">Lower</a> (<tt>&lt;</tt>)</li>
+     <li><a href="#OP_LOWER_OR_EQUAL">Lower or Equal</a> (<tt>&lt;=</tt>)</li>
+     <li><a href="#OP_GREATER">Greater</a> (<tt>&gt;</tt>)</li>
+     <li><a href="#OP_GREATER_OR_EQUAL">Greater or Equal</a> (<tt>&gt;=</tt>)</li>
+  </ul>
+
+<h3><a name="LOGICAL_OPERATORS">Logical Operators</a></h3>
+
+  <ul>
+     <li><a href="#OP_NOT">Not</a> (<tt>NOT</tt>)</li>
+     <li><a href="#OP_AND">And</a> (<tt>AND</tt>)</li>
+     <li><a href="#OP_OR">Or</a> (<tt>OR</tt>)</li>
+  </ul>
+
+<h3><a name="ARITHMETIC_OPERATORS">Arithmetic Operators</a></h3>
+
+  <ul>
+     <li><a href="#OP_ADDITION">Addition</a> (<tt>+</tt>)</li>
+     <li><a href="#OP_SUBTRACTION">Subtraction</a> (<tt>-</tt>)</li>
+     <li><a href="#OP_MULTIPLICATION">Multiplication</a> (<tt>*</tt>)</li>
+     <li><a href="#OP_DIVISION">Division</a> (<tt>/</tt>)</li>
+     <li><a href="#OP_EXPONENTIATION">Exponentiation</a> (<tt>**</tt>)</li>
+     <li><a href="#OP_MODULUS">Modulus</a> (<tt>MOD</tt>)</li>
+  </ul>
+
+<h3><a name="STRING_OPERATORS">Character String Handling</a></h3>
+
+  <ul>
+     <li><a href="#OP_ASCII">ASCII Char</a> (<tt>ASCII</tt>)</li>
+     <li><a href="#OP_COLUMN">Blank padding</a> (<tt>COLUMN</tt>)</li>
+     <li><a href="#OP_CONCATENATE">Concatenate</a> (<tt>||</tt>)</li>
+     <li><a href="#OP_APPEND">Append</a> (<tt>,</tt>)</li>
+     <li><a href="#OP_SUBSTRING">Substring</a> (<tt>[x,y]</tt>)</li>
+     <li><a href="#OP_USING">Formatting</a> (<tt>USING</tt>)</li>
+     <li><a href="#OP_CLIPPED">Clipped</a> (<tt>CLIPPED</tt>)</li>
+     <li><a href="#OP_ORD">Ordinal</a> (<tt>ORD</tt>)</li>
+     <li><a href="#OP_SPACES">Spaces</a> (<tt>SPACES</tt>)</li>
+     <li><a href="#OP_LSTR">Localized String</a> (<tt>LSTR</tt>)</li>
+     <li><a href="#OP_SFMT">Replace</a> (<tt>SFMT</tt>)</li>
+  </ul>
+
+<h3><a name="ASSOCIATIVE_OPERATORS">Associative Syntax Elements</a></h3>
+
+<ul>
+  <li><a href="#PARENTHESES">Parentheses</a> ( <tt>( )</tt> )</li>
+  <li><a href="#OP_MEMBERSHIP">Membership</a> ( <tt>.</tt> )
+  </li>
+</ul>
+
+
+<h3>Predefined SQL Registers</h3>
+
+<ul>
+  <li><a href="#OP_SQLSTATE">SQL State Code</a> (<tt>SQLSTATE</tt>)
+  </li>
+  <li><a href="#OP_SQLERRMESSAGE">SQL Error Message</a> (<tt>SQLERRMESSAGE</tt>)</li>
+</ul>
+
+
+<h3>Data Type related</h3>
+
+  <ul>
+     <li><a href="#OP_CAST">Type Casting</a> ( <tt>CAST</tt> )</li>
+     <li><a href="#OP_INSTANCEOF">Type Checking</a> ( <tt>INSTANCEOF</tt> )</li>
+  </ul>
+
+<h3><a name="ASSIGNMENT_OPERATORS">Assignment Operators</a></h3>
+
+  <ul>
+     <li><a href="#OP_ASSIGN">Assignment</a> ( <tt>:=</tt> )</li>
+  </ul>
+<h3>Date and Time Manipulation</h3>
+  <ul>
+     <li><a href="#OP_CURRENT">Current Datetime</a> (<tt>CURRENT x TO y</tt>)</li>
+     <li><a href="#OP_EXTEND">Datetime Extensions</a> (<tt>EXTEND( d, x TO y)</tt>)</li>
+     <li><a href="#OP_DATE">Date Conversion</a> (<tt>DATE</tt>)</li>
+     <li><a href="#OP_TIME">Time Conversion</a> (<tt>TIME</tt>)</li>
+     <li><a href="#OP_TODAY">Current Date</a> (<tt>TODAY</tt>)</li>
+     <li><a href="#OP_YEAR">Year of Date</a> (<tt>YEAR(d)</tt>)</li>
+     <li><a href="#OP_MONTH">Month of Date</a> (<tt>MONTH(d)</tt>)</li>
+     <li><a href="#OP_DAY">Day of Date</a> (<tt>DAY(d)</tt>)</li>
+     <li><a href="#OP_WEEKDAY">Weekday of Date</a> (<tt>WEEKDAY(d)</tt>)</li>
+     <li><a href="#OP_MDY">Building a Date</a> (<tt>MDY(m,d,y)</tt>)</li>
+     <li><a href="#OP_UNITS">Interval Unit</a> (<tt>UNITS</tt>)</li>
+  </ul>
+<h3>Form Field and Dialog Handling</h3>
+  <ul>
+     <li><a href="#OP_GET_FLDBUF">Field Buffer</a> (<tt>GET_FLDBUF</tt>)</li>
+     <li><a href="#OP_INFIELD">Current Field</a> (<tt>INFIELD</tt>)</li>
+     <li><a href="#OP_FIELD_TOUCHED">Field Modification</a> (<tt>FIELD_TOUCHED</tt>)</li>
+  </ul>
+
+
+<HR>
+
+<h2><a name="PRECEDENCE_LIST">Order of Precedence List</a></h2>
+<p>The following list describes the precedence order of the basic syntax
+elements. For example, the <code>MOD</code>
+operator has a higher precedence as the <code>*</code> operator. When computing
+an expression like <code>( 33 MOD 2 * 5 )</code>, the runtime system first
+evaluates <code>(33 MOD 2) = 1</code> and then evaluates <code>(1 * 5) = 5</code>.
+You can change this by using parentheses: <code>( 33 MOD ( 2 * 5 ) ) = 3</code>.
+The <b>P</b>
+column defines the precedence, from highest(14) to lowest(1). Note that some
+operators have the same precedence (i.e. are equivalent in evaluation order). The <b>A</b>
+column defines the direction of association (L=Left, R=Right, N=None).</p>
+<div align="center">
+  <center>
+<TABLE class=summary cellSpacing=0 cellPadding=3 width="95%" border=1>
+  <TBODY>
+  <TR>
+    <TH class=summary align=center width="5%">P&nbsp;</TH>
+    <TH class=summary align=left width="20%">Syntax Element&nbsp;</TH>
+    <TH class=summary align=center width="5%">A&nbsp;</TH>
+    <TH class=summary align=left>Description&nbsp;</TH>
+    <TH class=summary align=left>Example&nbsp;</TH></TR>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">14</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>CAST(v AS <i>type</i>)</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">N</TD>
+    <TD bgcolor="#FFFFCC">Type casting</TD>
+    <TD bgcolor="#FFFFCC"><code>CAST(var AS fgl.FglRecord)</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">14</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>INSTANCEOF</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Type checking</TD>
+    <TD bgcolor="#FFFFCC"><code>var INSTANCEOF java.lang.Boolean</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">13</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>UNITS</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Single-qualifier interval</TD>
+    <TD bgcolor="#FFFFCC"><code>(integer) UNITS DAY</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">12</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>+</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">R</TD>
+    <TD bgcolor="#FFFFCC">Unary plus</TD>
+    <TD bgcolor="#FFFFCC"><code>+ number</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">12</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>-</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">R</TD>
+    <TD bgcolor="#FFFFCC">Unary minus</TD>
+    <TD bgcolor="#FFFFCC"><code>- number</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">11</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>**</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Exponentiation</TD>
+    <TD bgcolor="#FFFFCC"><code>x ** 5</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">11</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>MOD</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Modulus</TD>
+    <TD bgcolor="#FFFFCC"><code>x MOD 2</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">10</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>*</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Multiplication</TD>
+    <TD bgcolor="#FFFFCC"><code>x * y</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">10</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>/</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Division</TD>
+    <TD bgcolor="#FFFFCC"><code>x / y</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">9</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>+</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Addition</TD>
+    <TD bgcolor="#FFFFCC"><code>x + y</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">9</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>-</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Subtraction</TD>
+    <TD bgcolor="#FFFFCC"><code>x - y</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">8</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>||</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Concatenation</TD>
+    <TD bgcolor="#FFFFCC"><code>&quot;Amount:&quot; || amount</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">7</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>LIKE</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">R</TD>
+    <TD bgcolor="#FFFFCC">String comparison</TD>
+    <TD bgcolor="#FFFFCC"><code>mystring LIKE &quot;A%&quot;</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">7</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>MATCHES</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">R</TD>
+    <TD bgcolor="#FFFFCC">String comparison</TD>
+    <TD bgcolor="#FFFFCC"><code>mystring MATCHES &quot;A*&quot;</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">6</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>&lt;</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Less than</TD>
+    <TD bgcolor="#FFFFCC"><code>var &lt; 100</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">6</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>&lt;=</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Less then or equal to</TD>
+    <TD bgcolor="#FFFFCC"><code>var &lt;= 100</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">6</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>&gt;</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Greater than</TD>
+    <TD bgcolor="#FFFFCC"><code>var &gt; 100</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">6</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>&gt;=</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Greater than or equal to</TD>
+    <TD bgcolor="#FFFFCC"><code>var &gt;= 100</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">6</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>==</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Equals</TD>
+    <TD bgcolor="#FFFFCC"><code>var == 100</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">6</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>&lt;&gt; or !=</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Not equal to</TD>
+    <TD bgcolor="#FFFFCC"><code>var &lt;&gt; 100</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">5</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>IS NULL</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Test for NULL</TD>
+    <TD bgcolor="#FFFFCC"><code>var IS NULL</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">5</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>IS NOT NULL</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Test for NOT NULL</TD>
+    <TD bgcolor="#FFFFCC"><code>var IS NOT NULL</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">4</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>NOT</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Logical inverse</TD>
+    <TD bgcolor="#FFFFCC"><code>NOT ( a = b )</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">3</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>AND</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Logical intersection</TD>
+    <TD bgcolor="#FFFFCC"><code>expr1 AND expr2</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">2</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>OR</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Logical union</TD>
+    <TD bgcolor="#FFFFCC"><code>expr1 OR expr2</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">1</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>ASCII( )</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">R</TD>
+    <TD bgcolor="#FFFFCC">ASCII Character</TD>
+    <TD bgcolor="#FFFFCC"><code>ASCII(32)</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">1</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>CLIPPED</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">R</TD>
+    <TD bgcolor="#FFFFCC">Delete trailing blanks</TD>
+    <TD bgcolor="#FFFFCC"><code>DISPLAY string CLIPPED</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">1</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>COLUMN (reports)</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">R</TD>
+    <TD bgcolor="#FFFFCC">Begin line mode display</TD>
+    <TD bgcolor="#FFFFCC"><code>PRINT COLUMN 32, &quot;a&quot;</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">1</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>(integer) SPACES</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">R</TD>
+    <TD bgcolor="#FFFFCC">Insert blank spaces</TD>
+    <TD bgcolor="#FFFFCC"><code>DISPLAY &quot;a&quot; (5) SPACES</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">1</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>LSTR(string)&nbsp;</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">R</TD>
+    <TD bgcolor="#FFFFCC">Load localized string</TD>
+    <TD bgcolor="#FFFFCC"><code>DISPLAY LSTR(&quot;str123&quot;)</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">1</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>SFMT(string [,p[...]])&nbsp;</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">R</TD>
+    <TD bgcolor="#FFFFCC">Parameter replacement</TD>
+    <TD bgcolor="#FFFFCC"><code>DISPLAY SFMT(&quot;%1&quot;,123)</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">1</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>SQLSTATE</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">R</TD>
+    <TD bgcolor="#FFFFCC">SQL State Code</TD>
+    <TD bgcolor="#FFFFCC"><code>IF SQLSTATE=&quot;IX000&quot;</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">1</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>SQLERRMESSAGE</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">R</TD>
+    <TD bgcolor="#FFFFCC">SQL Error Message</TD>
+    <TD bgcolor="#FFFFCC"><code>DISPLAY SQLERRMESSAGE</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">1</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>USING</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">R</TD>
+    <TD bgcolor="#FFFFCC">Format character string</TD>
+    <TD bgcolor="#FFFFCC"><code>TODAY USING &quot;yy/mm/dd&quot;</code></TD>
+  </tr>
+  <tr>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">1</TD>
+    <TD width="20%" bgcolor="#FFFFCC"><code>:=</code></TD>
+    <TD width="5%" bgcolor="#FFFFCC" align="center">L</TD>
+    <TD bgcolor="#FFFFCC">Assignment</TD>
+    <TD bgcolor="#FFFFCC"><code>var := &quot;abc&quot;</code></TD>
+  </tr>
+  </TBODY></TABLE>
+  </center>
+</div>
+
+
+<HR>
+
+<h2><a name="GENERAL_WARNINGS">General Warnings</a></h2>
+<h3>Pure SQL Synax Elements</h3>
+<p>The following are related to SQL syntax and not part of
+the language:</p>
+<ul>
+  <li><tt>BETWEEN <i>expr</i> AND <i>expr</i></tt></li>
+  <li><tt>IN ( <i> expr</i> [ , ..' ] )</tt></li>
+</ul>
+<h3>Report Routine Syntax Elements</h3>
+<p>The following are only available in the FORMAT section
+of report routines:</p>
+<ul>
+  <li><tt>PAGENO</tt></li>
+  <li><tt>WORDWRAP</tt></li>
+</ul>
+<p>See <a href="Reports.html">Report Definition</a> for more
+details.</p>
+
+
+<HR>
+
+<h3><a name="PARENTHESES">PARENTHESES</a></h3>
+<h4>Purpose:</h4>
+
+<p> Parentheses are typically used to associate a set of values or
+expressions to override the default order of precedence. </p>
+
+<h4>Syntax:</h4><code>  ( <i>expr</i>  <u> [...]</u> )</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>expr</i> is a <a href="Expressions.html">language expression</a>.</li>
+  <li>Typically used to change the <a href="#PRECEDENCE_LIST">precedence of operators</a>.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <tt>LET</tt> n = ( ( 3 + 2 ) * 2 )
+<CODE class=linenumber>04</CODE>   <tt>IF</tt> n=10 <tt>AND</tt> ( n&lt;=0 <tt>OR</tt> n&gt;=20 ) <tt>THEN</tt>
+<CODE class=linenumber>05</CODE>     <tt>DISPLAY</tt> &quot;OK&quot;
+<CODE class=linenumber>06</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="OP_MEMBERSHIP">MEMBERSHIP</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <b> period membership</b> specifies that its right-hand operand is
+a member of the set whose name is its left-hand operand. </p>
+
+<h4>Syntax:</h4><code><i>setname</i>.<i>element</i></code>
+<h4>Notes:</h4>
+<ol>
+  <li>Typically used for <a href="Records.html">record</a> members.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> rec <tt>RECORD</tt>
+<CODE class=linenumber>03</CODE>      n <tt>INTEGER</tt>,
+<CODE class=linenumber>04</CODE>      c <tt>CHAR</tt>(10)
+<CODE class=linenumber>05</CODE>   <tt>END RECORD</tt>
+<CODE class=linenumber>06</CODE>   <tt>LET</tt> rec.n = 12345
+<CODE class=linenumber>06</CODE>   <tt>LET</tt> rec.c = &quot;abcdef&quot;
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="OP_ASSIGN">ASSIGNMENT</a> </h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>:=</tt> assignment operator sets a value to the left-hand operand,
+which must be a variable. </p>
+
+<h4>Syntax:</h4><code><i>variable</i> := <i>value</i></code>
+<h4>Notes:</h4>
+<ol>
+  <li>Do not confuse with the <a href="Variables.html#VA_LET">LET</a>
+    instruction.</li>
+  <li>The left-hand operand must be a variable.</li>
+  <li>The assignment operator can be used in expressions.</li>
+  <li>The assignment operator has the lowest precedence.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> var1, var2 <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>   -- 1. Evaluates 2*5
+<CODE class=linenumber>04</CODE>   -- 2. Sets var2 to 10
+<CODE class=linenumber>05</CODE>   -- 3. Then affects var1 with 10
+<CODE class=linenumber>06</CODE>   <tt>LET</tt> var1 = var2:=2*5
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="OP_CAST">CAST</a> </h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>CAST</tt>  operator converts a value or object to the type or class
+specified. </p>
+
+<h4>Syntax:</h4><code>CAST( <i>expr</i> AS <i>type</i> )</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>expr</i> can be any <a href="Expressions.html">expression</a> supported
+    by the language.</li>
+  <li><i>type</i> is a <a href="UserTypes.html">structured user defined type</a>
+    or a <a href="JavaBridge.html">Java class</a>.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>The <tt>CAST()</tt> operator is required when you want to assign a value or object
+reference to variable defined with a type or class which requires narrowing
+reference conversion. The example below shows code using the <a href="JavaBridge.html#CAST_OPERATOR">Java
+Interface</a> facility of Genero BDL. When assigning a <i>java.lang.StringBuffer</i> reference to
+a <i>java.lang.Object</i> variable, widening reference conversion occurs and no <tt>CAST()</tt>
+operator is needed, but when assigning an <i>java.lang.Object</i> reference to a
+<i>java.lang.StringBuffer</i>
+variable, you must cast the object reference to a <i>java.lang. StringBuffer</i>.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORNT JAVA</tt> java.lang.Object
+<CODE class=linenumber>02</CODE> <tt>IMPORNT JAVA</tt> java.lang.StringBuffer
+<CODE class=linenumber>03</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>04</CODE>   <tt>DEFINE</tt> sb1, sb2 java.lang.StringBuffer
+<CODE class=linenumber>05</CODE>   <tt>DEFINE</tt> o java.lang.Object
+<CODE class=linenumber>06</CODE>   <tt>LET</tt> sb1 = StringBuffer.create()
+<CODE class=linenumber>07</CODE>   <tt>LET</tt> o = sb1 -- Widening Reference Conversion does not need CAST()
+<CODE class=linenumber>08</CODE>   <tt>LET</tt> sb2 = <tt>CAST</tt>( o <tt>AS</tt> java.lang.StringBuffer ) -- Narrowing Reference Conversion needs CAST()
+<CODE class=linenumber>09</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="OP_INSTANCEOF">INSTANCEOF</a> </h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>INSTANCEOF</tt> operator evaluates to <a href="Programs.html#PC_TRUE">TRUE</a>
+if the object reference is of the type or class specified. </p>
+
+<h4>Syntax:</h4><code> <i>expr</i> INSTANCEOF <i>type</i> </code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>expr</i> can be any <a href="Expressions.html">expression</a> supported
+    by the language.</li>
+  <li><i>type</i> is a <a href="UserTypes.html">structured user defined type</a>
+    or a <a href="JavaBridge.html">Java class</a>.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>The <tt>INSTANCEOF</tt> operator is used to check if an expression (usually,
+an object reference) is one of the type or class specified by <i>type</i>.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORNT JAVA</tt> java.lang.Object
+<CODE class=linenumber>02</CODE> <tt>IMPORNT JAVA</tt> java.lang.StringBuffer
+<CODE class=linenumber>03</CODE> <tt>IMPORNT JAVA</tt> java.lang.Number
+<CODE class=linenumber>04</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>05</CODE>   <tt>DEFINE</tt> o java.lang.Object
+<CODE class=linenumber>06</CODE>   <tt>DEFINE</tt> sb java.lang.StringBuffer
+<CODE class=linenumber>07</CODE>   <tt>LET</tt> sb = StringBuffer.create()
+<CODE class=linenumber>08</CODE>   <tt>LET</tt> o = sb
+<CODE class=linenumber>09</CODE>   <tt>DISPLAY</tt> sb <tt>INSTANCEOF</tt> java.lang.StringBuffer  -- shows 1
+<CODE class=linenumber>10</CODE>   <tt>DISPLAY</tt> o <tt>INSTANCEOF</tt> java.lang.StringBuffer   -- shows 1
+<CODE class=linenumber>11</CODE>   <tt>DISPLAY</tt> o <tt>INSTANCEOF</tt> java.lang.Number         -- shows 0
+<CODE class=linenumber>12</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="OP_ISNULL">IS NULL</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>IS NULL</tt> operator is provided to test whether a value is <a href="Programs.html#PC_NULL">NULL</a>. </p>
+
+<h4>Syntax:</h4><code><i>expr</i> IS NULL</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>expr</i> can be any <a href="Expressions.html">expression</a> supported
+    by the language.</li>
+  <li>Applies to most <a href="DataTypes.html">Data Types</a>, <b>except</b> complex
+    types like <a href="DataTypes.html#DT_BYTE"> BYTE</a> and <a href="DataTypes.html#DT_TEXT">TEXT</a>.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <tt>LET</tt> n = 257
+<CODE class=linenumber>04</CODE>   <tt>IF</tt> n <tt>IS NULL THEN</tt>
+<CODE class=linenumber>05</CODE>      <tt>DISPLAY</tt> &quot;Something is wrong here&quot;
+<CODE class=linenumber>06</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>07</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_EQUAL">EQUAL</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>==</tt> operator evaluates whether two expressions or two records are identical. </p>
+
+<h4>Syntax 1: Expression comparison</h4><code> <i>expr</i> == <i>expr</i></code>
+
+<h4>Syntax 2: Record comparison</h4><code><i>record1.*</i> == <i>record2.*</i></code>
+<h4>Notes:</h4>
+<ol>
+  <li>Syntax 1 applies to most <a href="DataTypes.html">Data Types</a>, <b>except</b> complex
+    types like <a href="DataTypes.html#DT_BYTE"> BYTE</a> and <a href="DataTypes.html#DT_TEXT">TEXT</a>.</li>
+  <li><i>expr</i> can be any <a href="Expressions.html">expression</a> supported
+    by the language.</li>
+  <li>Syntax 2 allows you to compare all members of records having the same
+    structure.</li>
+  <li><i>record1</i> and <i>record2</i> are <a href="Records.html">records</a>
+    with the same structure.</li>
+  <li>A single equal sign (<tt>=</tt>) can be used as an alias for this operator.&nbsp;</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>When comparing expressions using the first syntax, the result of the operator
+is <a href="Programs.html#PC_FALSE">FALSE</a> when one of the
+operands is <a href="Programs.html#PC_NULL">NULL</a>.</p>
+<p>When comparing two records using the second syntax, the runtime system
+compares all corresponding members of the records. If a pair of members are
+different, the result of the operator is <a href="Programs.html#PC_FALSE">FALSE</a>.
+When two corresponding members are <a href="Programs.html#PC_NULL">NULL</a>,
+they are considered as equal.&nbsp;</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>IF</tt> 256==257 <tt>THEN</tt>
+<CODE class=linenumber>03</CODE>      <tt>DISPLAY</tt> &quot;Something is wrong here&quot;
+<CODE class=linenumber>04</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>05</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_DIFFERENT">DIFFERENT</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>!=</tt> operator evaluates whether two expressions or two records are
+different. </p>
+
+<h4>Syntax 1: Expression comparison</h4><code> <i>expr</i>  != <i>expr</i></code>
+
+<h4>Syntax 2: Record comparison</h4><code><i>record1.*</i> != <i>record2.*</i></code>
+<h4>Notes:</h4>
+<ol>
+  <li>Syntax 1 applies to most <a href="DataTypes.html">Data Types</a>, <b>except</b> complex
+    types like <a href="DataTypes.html#DT_BYTE"> BYTE</a> and <a href="DataTypes.html#DT_TEXT">TEXT</a>.</li>
+  <li><i>expr</i> can be any <a href="Expressions.html">expression</a> supported
+    by the language.</li>
+  <li>Syntax 2 allows you to compare all members of records having the same
+    structure.</li>
+  <li><i>record1</i> and <i>record2</i> are <a href="Records.html">records</a>
+    with the same structure.</li>
+  <li>An alias exists for this operator: <tt>&lt;&gt;</tt></li>
+</ol>
+
+<h4>Usage:</h4>
+<p>When comparing expressions with the first syntax, the result of the operator
+is <a href="Programs.html#PC_FALSE">FALSE</a> when one of the
+operands is <a href="Programs.html#PC_NULL">NULL</a>.</p>
+<p>When comparing two records with the second syntax, the runtime system
+compares all corresponding members of the records. If one pair of members are
+different, the result of the operator is <a href="Programs.html#PC_TRUE">TRUE</a>.
+When two corresponding members are <a href="Programs.html#PC_NULL">NULL</a>,
+they are considered as equal.&nbsp;</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>IF</tt> 256 != 257 <tt>THEN</tt>
+<CODE class=linenumber>03</CODE>      <tt>DISPLAY</tt> &quot;This seems to be true&quot;
+<CODE class=linenumber>04</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>05</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_LOWER">LOWER</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>&lt;</tt> operator is provided to test whether a value or expression is
+lower than another. </p>
+
+<h4>Syntax:</h4><code> <i>expr</i> &lt; <i>expr</i></code>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>Applies to most <a href="DataTypes.html">Data Types</a>, <b>except</b> complex
+    types like <a href="DataTypes.html#DT_BYTE"> BYTE</a> and <a href="DataTypes.html#DT_TEXT">TEXT</a>.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="OP_LOWER_OR_EQUAL">LOWER OR EQUAL</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>&lt;=</tt> operator is provided to test whether a value or expression is
+lower than or equal to another. </p>
+
+<h4>Syntax:</h4><code> <i>expr</i> &lt;= <i>expr</i></code>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>Applies to most <a href="DataTypes.html">Data Types</a>, <b>except</b> complex
+    types like <a href="DataTypes.html#DT_BYTE"> BYTE</a> and <a href="DataTypes.html#DT_TEXT">TEXT</a>.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="OP_GREATER">GREATER</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>&gt;</tt> operator is provided to test whether a value or expression is
+greater than another. </p>
+
+<h4>Syntax:</h4><code> <i>expr</i> &gt; <i>expr</i></code>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>Applies to most <a href="DataTypes.html">Data Types</a>, <b>except</b> complex
+    types like <a href="DataTypes.html#DT_BYTE"> BYTE</a> and <a href="DataTypes.html#DT_TEXT">TEXT</a>.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="OP_GREATER_OR_EQUAL">GREATER OR EQUAL</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>&gt;=</tt> operator is provided to test whether a value or expression is
+greater than or equal to another. </p>
+
+<h4>Syntax:</h4><code> <i>expr</i> &gt;= <i>expr</i></code>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>Applies to most <a href="DataTypes.html">Data Types</a>, <b>except</b> complex
+    types like <a href="DataTypes.html#DT_BYTE"> BYTE</a> and <a href="DataTypes.html#DT_TEXT">TEXT</a>.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="OP_NOT">NOT</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>NOT</tt> operator is a typical logical NOT used to invert a Boolean
+expression. </p>
+
+<h4>Syntax:</h4><code>  NOT <i>boolexpr</i></code>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>IF NOT</tt> ( 256 != 257 ) <tt>THEN</tt>
+<CODE class=linenumber>03</CODE>      <tt>DISPLAY</tt> &quot;Something is wrong here&quot;
+<CODE class=linenumber>04</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>05</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_AND">AND</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>AND</tt> operator is the logical intersection operator. </p>
+
+<h4>Syntax:</h4><code> <i>boolexpr</i> AND <i>boolexpr</i></code>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>IF</tt> 256!=257 <tt>AND</tt> 256=257 <tt>THEN</tt>
+<CODE class=linenumber>03</CODE>      <tt>DISPLAY</tt> &quot;Sure?&quot;
+<CODE class=linenumber>04</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>05</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_OR">OR</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>OR</tt> operator is the logical union operator. </p>
+
+<h4>Syntax:</h4><code> <i>boolexpr</i> OR <i>boolexpr</i></code>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>IF TRUE OR FALSE THEN</tt>
+<CODE class=linenumber>03</CODE>      <tt>DISPLAY</tt> &quot;Must be true!&quot;
+<CODE class=linenumber>04</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>05</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_SQLSTATE">SQLSTATE</a> </h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>SQLSTATE</tt>  predefined variable returns the ANSI/ISO SQLSTATE code when an SQL
+error occurred. </p>
+
+<h4>Syntax:</h4><code>SQLSTATE</code>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The SQLSTATE error code is a standard ANSI specification, but not all
+    database engines support this feature. Check the database server
+    documentation for more details.</li>
+</ol>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DATABASE </tt>stores
+<CODE class=linenumber>03</CODE>   <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>04</CODE>   <tt>SELECT </tt>foo <tt>FROM </tt>bar
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY SQLSTATE</tt>
+<CODE class=linenumber>06</CODE> <TT>END MAIN</TT></PRE>
+
+<HR>
+
+<h3><a name="OP_SQLERRMESSAGE">SQLERRMESSAGE</a> </h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>SQLERRMESSAGE</tt> predefined variable returns the error message if an SQL
+error occurred. </p>
+
+<h4>Syntax:</h4><code>SQLERRMESSAGE</code>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DATABASE </tt>stores
+<CODE class=linenumber>03</CODE>   <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>04</CODE>   <tt>SELECT </tt>foo <tt>FROM </tt>bar
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY SQLERRMESSAGE</tt>
+<CODE class=linenumber>06</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h2><a name="OP_ASCII">ASCII</a></h2>
+
+<h4>Purpose:</h4>
+
+<p> The <tt>ASCII</tt>  predefined function returns the character corresponding to the ASCII
+code passed as a parameter. </p>
+
+<h4>Syntax:</h4><code>ASCII <i>intexpr</i></code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>intexpr</i> is an integer expression..</li>
+  <li>Typically used to generate a non-printable character such as NewLine or
+    Escape.</li>
+  <li>In a default (U.S. English) locale, this is the logical inverse of the 
+	<a href="#OP_ORD">ORD</a> operator.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>This is not a function, but a real operator (it can, for example, be used as
+    a function parameter).</li>
+</ol>
+
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li>Often used with <a href="#PARENTHESES">parentheses</a> ( ASCII(n) ),
+    but these are not needed.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY ASCII</tt> 65, <tt>ASCII</tt> 66, <tt>ASCII</tt> 7
+<CODE class=linenumber>03</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_LIKE">LIKE</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>LIKE</tt> operator returns <a href="Programs.html#PC_TRUE"> TRUE</a>
+if a string matches a given mask. </p>
+
+<h4>Syntax:</h4><code><i>expression </i><u>[</u>NOT<u>]</u> LIKE <i>mask</i>
+<u> [</u>
+ESCAPE &quot;<i>char</i>&quot; <u> ]</u></code>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>Do not confuse with the LIKE clause of the <a href="Variables.html"> DEFINE</a> instruction.</li>
+  <li>LIKE operators used in SQL statements are evaluated by the database server.
+    This may have a different behavior than the LIKE operator of the language.</li>
+</ol>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>expression</i> is any character string <a href="Expressions.html">expression</a>.</li>
+  <li><i>mask</i> is a character string expression defining the filter.</li>
+  <li><i>char</i> is a single char specifying the escape symbol.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <i>mask</i> can be any combination of characters, including the <tt>%</tt>
+and <tt>_</tt> wildcards:</p>
+<ul>
+  <li>The <tt>%</tt> percent character matches any string of zero or more characters.</li>
+  <li>The <tt>_</tt> underscore character matches any single character.</li>
+</ul>
+<p>The <tt>ESCAPE</tt> clause can be used to define an escape character
+different from the default backslash. It must be enclosed in single or double
+quotes.</p>
+<p>A backslash (or the escape character specified by the <tt>ESCAPE</tt> clause)
+makes the operator treat the next character as a literal character, even if it
+is one of the special symbols in the above list. This allows you to search for <tt>%</tt>,
+<tt>_</tt> or <tt>\</tt> characters.</p>
+
+<p><b><font color="#FF0000">Warning:</font> If you need to escape a wildcard
+character, keep in mind that a string constant must also escape the backslash
+character. As a result, if you want to pass a backslash to the LIKE operator (by
+using backslash as default escape character), you need to write four backslashes
+in the original string constant.</b></p>
+
+<p>The next table shows some examples of string constants used in the source
+code and their equivalent <tt>LIKE</tt> pattern:</p>
+
+  <table border="0" width="90%">
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0">
+        <p align="center"><b>Original<br>
+        String Constant</b></p>
+      </td>
+      <td width="10%" bgcolor="#C0C0C0">
+        <p align="center"><b>Equivalent<br>
+        MATCHES pattern</b></p>
+      </td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&quot;%&quot;</tt></td>
+      <td width="10%" align="center"><tt>%</tt></td>
+      <td width="50%">Matches any character in a non-empty string.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&quot;_&quot;</tt></td>
+      <td width="10%" align="center"><tt>_</tt></td>
+      <td width="50%">Matches a single character.&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&quot;abc%&quot;</tt></td>
+      <td width="10%" align="center"><tt>abc%</tt></td>
+      <td width="50%">Starts with abc.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&quot;*abc&quot;</tt></td>
+      <td width="10%" align="center"><tt>%abc</tt></td>
+      <td width="50%">Ends with abc.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&quot;%abc%&quot;</tt></td>
+      <td width="10%" align="center"><tt>%abc%</tt></td>
+      <td width="50%">Contains abc.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&quot;abc__&quot;</tt></td>
+      <td width="10%" align="center"><tt>abc__</tt></td>
+      <td width="50%">Strings equals abc followed by two additional
+        characters.&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&quot;\\%&quot;</tt></td>
+      <td width="10%" align="center"><tt>\%</tt></td>
+      <td width="50%">Contains a single star character (the % wildcard is
+        escaped)</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&quot;%abc\\\\def%&quot;</tt></td>
+      <td width="10%" align="center"><tt>%abc\\def%</tt></td>
+      <td width="50%">Contains abc followed by a backslash followed by def (the
+        backslash is escaped)</td>
+    </tr>
+  </table>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>IF</tt> &quot;abcdef&quot; <tt>LIKE</tt> &quot;a%e_&quot; <tt>THEN</tt>
+<CODE class=linenumber>03</CODE>      <tt>DISPLAY</tt> &quot;yes&quot;
+<CODE class=linenumber>04</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>05</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_MATCHES">MATCHES</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>MATCHES</tt> operator returns <a href="Programs.html#PC_TRUE"> TRUE</a>
+ if a string matches a given mask. </p>
+
+<h4>Syntax:</h4><code><i>expression </i><u>[</u>NOT<u>]</u> MATCHES <i>mask</i>
+<u> [</u>
+ESCAPE &quot;<i>char</i>&quot; <u> ]</u></code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>expression</i> is any character string <a href="Expressions.html">expression</a>.</li>
+  <li><i>mask</i> is a character string expression defining the filter.</li>
+  <li><i>char</i> is a single char specifying the escape symbol.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <i>mask</i> can be any combination of characters, including the <tt>*</tt>,
+<tt> ?</tt> and <tt> []</tt> wildcards:</p>
+<ul>
+  <li>The <tt> *</tt> star character matches any string of zero or more characters.</li>
+  <li>The <tt> ?</tt> question mark matches any single character.</li>
+  <li>The <tt> [ ]</tt> brackets match any enclosed character. A hyphen (<tt>-</tt>) between
+    characters means a range of characters. An initial caret (<tt>^</tt>) matches any
+    character that is not listed.</li>
+</ul>
+<p>The <tt>ESCAPE</tt> clause can be used to define an escape character
+different from the default backslash. It must be enclosed in single or double
+quotes.</p>
+<p>A backslash (or the escape character specified by the <tt>ESCAPE</tt> clause)
+makes the operator treat the next character as a literal character, even if it
+is one of the special symbols in the above list. This allows you to search for <tt>*</tt>,
+<tt>?</tt>, <tt>[</tt>, <tt>]</tt> or <tt>\</tt> characters.</p>
+
+<p><b><font color="#FF0000">Warning:</font> If you need to escape a wildcard
+character, keep in mind that a string constant must also escape the backslash
+character. As a result, if you want to pass a backslash to the MATCHES operator
+(by using backslash as default escape character), you need to write four
+backslashes in the original string constant.</b></p>
+
+<p>The next table shows some examples of string constants used in the source
+code and their equivalent <tt>MATCHES</tt> pattern:</p>
+
+  <table border="0" width="90%">
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0">
+        <p align="center"><b>Original<br>
+        String Constant</b></p>
+      </td>
+      <td width="10%" bgcolor="#C0C0C0">
+        <p align="center"><b>Equivalent<br>
+        MATCHES pattern</b></p>
+      </td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&quot;*&quot;</tt></td>
+      <td width="10%" align="center"><tt>*</tt></td>
+      <td width="50%">Matches any character in a non-empty string.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&quot;?&quot;</tt></td>
+      <td width="10%" align="center"><tt>?</tt></td>
+      <td width="50%">Matches a single character.&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&quot;abc*&quot;</tt></td>
+      <td width="10%" align="center"><tt>abc*</tt></td>
+      <td width="50%">Starts with abc.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&quot;*abc&quot;</tt></td>
+      <td width="10%" align="center"><tt>*abc</tt></td>
+      <td width="50%">Ends with abc.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&quot;*abc*&quot;</tt></td>
+      <td width="10%" align="center"><tt>*abc*</tt></td>
+      <td width="50%">Contains abc.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&quot;[a-z]*&quot;</tt></td>
+      <td width="10%" align="center"><tt>[a-z]*</tt></td>
+      <td width="50%">Starts with a letter in the range a to z.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&quot;abc??&quot;</tt></td>
+      <td width="10%" align="center"><tt>abc??</tt></td>
+      <td width="50%">Strings equals abc followed by two additional
+        characters.&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&quot;\\*&quot;</tt></td>
+      <td width="10%" align="center"><tt>\*</tt></td>
+      <td width="50%">Contains a single star character (the * wildcard is
+        escaped)</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&quot;*abc\\\\def*&quot;</tt></td>
+      <td width="10%" align="center"><tt>*abc\\def*</tt></td>
+      <td width="50%">Contains abc followed by a backslash followed by def (the
+        backslash is escaped)</td>
+    </tr>
+  </table>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>IF</tt> &quot;55f-plot&quot; <tt>MATCHES</tt> &quot;55[a-z]-*&quot; <tt>THEN</tt>
+<CODE class=linenumber>03</CODE>      <tt>DISPLAY</tt> &quot;Item reference format is correct.&quot;
+<CODE class=linenumber>04</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>05</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_CONCATENATE">CONCATENATE</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>||</tt> operator is the concatenation operator that produces a
+string expression. </p>
+
+<h4>Syntax:</h4><code>  <i>expr </i>|| <i>expr</i></code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>expr</i> can be a character, numeric or date time expression.</li>
+  <li>This operator has a high precedence; it can be used in parameters for
+    function calls.</li>
+  <li>The precedence of this operator is higher than <a href="#OP_LIKE"> LIKE</a> and
+    <a href="#OP_MATCHES">MATCHES</a>, but less
+    than arithmetic operators. For example, <tt>a || b + c</tt> is equivalent to
+     <tt>(a||(b+c))</tt>.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>If any of the members of a concatenation expression is <a href="Programs.html#PC_NULL">NULL</a>,
+    the result string will be NULL.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY</tt> &quot;Length: &quot; || length( &quot;ab&quot; || &quot;cdef&quot; )
+<CODE class=linenumber>03</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_APPEND">APPEND</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>,</tt> (comma) language element appends a value to a string and
+returns the concatenated result. </p>
+
+<h4>Syntax:</h4><code><i>charexpr , expr</i></code>
+<h4>Notes:</h4>
+<ol>
+  <li>Can only be used in <a href="Variables.html#VA_LET"> LET</a> and <a href="RecordDisplay.html#DISPLAY_TO"> DISPLAY</a> instructions.</li>
+  <li>In earlier versions this was the only way to concatenate strings; you can
+    also use the <tt><a href="#OP_CONCATENATE">||</a></tt><a href="#OP_CONCATENATE">
+    concatenation operator</a>.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY</tt> &quot;Today:&quot;, <tt>TODAY</tt>, &quot; and a number: &quot;, 12345.67
+<CODE class=linenumber>03</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_SUBSTRING">SUBSTRING</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>[]</tt> (square braces) notation following a CHAR or VARCHAR
+variable extracts a sub-string from the character variable. </p>
+
+<h4>Syntax:</h4><code><i>charvar</i> [ <i>start</i>  <u>[</u>, <i>end</i>  <u> ]</u> ]</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>start</i> defines the position of the first character of the sub-string
+    to be extracted.</li>
+  <li><i>end</i> defines the position of the last character of the sub-string to
+    be extracted.</li>
+  <li>If <i>end</i> is not specified, only one character is extracted.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>Sub-strings expressions in SQL statements are evaluated by the database
+    server. This may have a different behavior than the sub-string operator of the
+    language.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> s <tt>CHAR</tt>(10)
+<CODE class=linenumber>03</CODE>   <tt>LET</tt> s = &quot;abcdef&quot;
+<CODE class=linenumber>04</CODE>   <tt>DISPLAY</tt> s[3,4]
+<CODE class=linenumber>05</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_USING">USING</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>USING</tt> operator converts date, datetime and numeric values into a
+string with a formatting mask. </p>
+
+<h4>Syntax:</h4><code>  <i>expr</i> USING <i>format</i></code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>format</i>  is a string expression that defines the formatting mask to be used; see below for more
+    details.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <tt>USING</tt> operator applies a formatting string to the left operand.</p>
+<p>The format operand can be any valid <a href="Expressions.html#EX_STRING">string
+expression</a> using formatting characters as described later in this section.</p>
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The <tt>USING</tt> operator has a low <a href="#PRECEDENCE_LIST">order of
+    precedence</a>: if you use operators with a higher precedence, the resulting
+    string might not be what you are expecting. For example, the <a href="#OP_CONCATENATE">||
+    concatenation operator</a> is evaluated before <tt>USING</tt>. As a result:<br>
+    <tt>&nbsp;&nbsp; LET x = a || b USING &quot;<i>format</i>&quot;<br>
+    </tt>will first concatenate <tt>a</tt> and <tt>b</tt>, then apply the <tt>USING</tt>
+    format.<br>
+    To solve this issue, use braces around the <tt>USING</tt> expression:<br>
+    <tt>&nbsp;&nbsp; LET x = a || (b USING &quot;<i>format</i>&quot;)</tt></li>
+</ol>
+
+<h5><a name="FORMAT_NUMBERS">Formatting symbols for numbers:</a></h5>
+<p>For <a href="DataTypes.html#DT_DECIMAL">DECIMAL</a>, <a href="DataTypes.html#DT_MONEY">MONEY</a>,
+<a href="DataTypes.html#DT_SMALLFLOAT"> SMALLFLOAT</a>, and <a href="DataTypes.html#DT_FLOAT"> FLOAT</a> data types, <i>format-string</i> consists
+of a set of place holders that represent digits, currency symbols, thousands and
+decimal separators. For example, <tt>&quot;###.##@&quot;</tt> defines three places to the left of the decimal point and exactly two to the
+right, plus a currency symbol at the end of the string.</p>
+<p>When used with numeric values, the <i>format-string</i> must use normalized
+place holders described in the table below. The place holders will be replaced
+by the elements defined in the <a href="EnvironmentVariables.html#EV_DBMONEY"> DBMONEY</a> or <a href="EnvironmentVariables.html#EV_DBFORMAT">DBFORMAT</a>
+environment variables.</p>
+<div align="left">
+  <table border="0" width="90%">
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0">
+        <p align="center"><b>Character</b></p>
+      </td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>*</tt></td>
+      <td width="50%">Fills with asterisks any position that would otherwise be
+        blank.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&amp;</tt></td>
+      <td width="50%">Fills with zeros any position that would otherwise be
+        blank.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>#</tt></td>
+      <td width="50%">This does not change any blank positions in the display.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&lt;</tt></td>
+      <td width="50%">Causes left alignment.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>-</tt> </td>
+      <td width="50%">Displays a minus sign for negative numbers.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>+</tt></td>
+      <td width="50%">Displays a plus sign for positive numbers.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>(</tt></td>
+      <td width="50%">Displayed as left parentheses for negative numbers
+        (accounting parentheses).</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>)</tt></td>
+      <td width="50%">Displayed as right parentheses for negative numbers
+        (accounting parentheses).</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>,</tt> (comma)</td>
+      <td width="50%">Placeholder for thousand separator defined in <a href="EnvironmentVariables.html#EV_DBFORMAT">DBFORMAT</a>.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>.</tt> (period)</td>
+      <td width="50%">Placeholder for decimal separator defined in <a href="EnvironmentVariables.html#EV_DBMONEY"> DBMONEY</a> or <a href="EnvironmentVariables.html#EV_DBFORMAT">DBFORMAT</a>.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>$</tt></td>
+      <td width="50%">Placeholder for the <i>front</i>  currency symbol defined
+        in <a href="EnvironmentVariables.html#EV_DBMONEY"> DBMONEY</a> or <a href="EnvironmentVariables.html#EV_DBFORMAT">DBFORMAT</a>.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>@</tt></td>
+      <td width="50%">Placeholder for the <i>back</i>  currency symbol defined
+        in <a href="EnvironmentVariables.html#EV_DBMONEY"> DBMONEY</a> or <a href="EnvironmentVariables.html#EV_DBFORMAT">DBFORMAT</a>.</td>
+    </tr>
+  </table>
+</div>
+
+<h5><a name="FORMAT_DATES">Formatting symbols for dates:</a></h5>
+<div align="left">
+  <table border="0" width="90%">
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0">
+        <p align="center"><b>Character</b></p>
+      </td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>dd</tt></td>
+      <td width="50%">Day of the month as a 2-digit integer.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>ddd</tt></td>
+      <td width="50%">Three-letter English-language abbreviation of the day of
+        the week, for example, Mon, Tue.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>mm</tt></td>
+      <td width="50%">Month as a 2-digit integer.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>mmm</tt></td>
+      <td width="50%">Three-letter English-language abbreviation of the month,
+        for example, Jan, Feb.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>yy</tt></td>
+      <td width="50%">Year, as a 2-digits integer representing the 2 trailing
+        digits.&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>yyy</tt></td>
+      <td width="50%">Year as a 3-digit number <i>(Ming Guo format only)</i></td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>yyyy</tt></td>
+      <td width="50%">Year as a 4-digit number.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>c1</tt></td>
+      <td width="50%"><a href="Localization.html#MING_GUO">Ming Guo</a> format
+        modifier.</td>
+    </tr>
+  </table>
+</div>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> d <tt>DECIMAL</tt>(12,2)
+<CODE class=linenumber>03</CODE>   <tt>LET</tt> d = -12345678.91
+<CODE class=linenumber>04</CODE>   <tt>DISPLAY</tt> d <tt>USING</tt> &quot;$-##,###,##&amp;.&amp;&amp;&quot;
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY TODAY USING</tt> &quot;yyyy-mm-dd&quot;
+<CODE class=linenumber>06</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_CLIPPED">CLIPPED</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>CLIPPED</tt> operator removes trailing blanks of a string
+expression. </p>
+
+<h4>Syntax:</h4><code><i>charexpr</i> CLIPPED</code>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE> <tt>  DISPLAY</tt> &quot;Some text   &quot; <tt>CLIPPED</tt>
+<CODE class=linenumber>03</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR width="100%">
+
+
+<h3>
+<a name="OP_COLUMN">COLUMN</a></h3>
+
+
+
+<h4>Purpose:</h4>
+
+<p> The <tt>COLUMN</tt> operator generates blanks. </p>
+
+
+
+<h4>Syntax:</h4>
+
+
+<p><code>COLUMN <i>pos</i></code>
+
+
+
+</p>
+
+
+<h4>Notes:</h4>
+
+<ol>
+  <li><i>pos</i> is the column position (starts at 1).</li>
+</ol>
+
+
+<h4>Usage:</h4>
+
+
+<p>The <tt>COLUMN</tt>  operator is typically used in <a href="Reports.html">REPORT</a>
+routines to align data in <a href="Reports.html#RPT_STMT_PRINT">PRINT</a>
+statements and move the character position forward within the current line. This
+operator makes sense when used in an expression with the <a href="#OP_APPEND">append
+operator</a>: Spaces will be generated according to the number of characters
+that have been used in the expression, before the <tt>COLUMN</tt> operator.</p>
+<p>The <tt>COLUMN</tt> operator can be used outside report routines, in order to
+align data to be displayed with a proportional font, typically in a TUI context.
+For example, the next lines will always display the content of the <i>lastname</i>
+variable starting from column 30 of the terminal, no matters the number of
+characters contained in the <i>firstname</i> variable (note that the example
+defines <a href="DataTypes.html#DT_VARCHAR">VARCHAR</a> variables, since <a href="DataTypes.html#DT_CHAR">CHAR</a>
+variables are blank-padded, we would need to use the <a href="#OP_CLIPPED">CLIPPED</a>
+operator):</p>
+<pre><CODE class=linenumber>01</CODE>  <tt>DEFINE </tt>firstname, lastname<tt> VARCHAR</tt>(50)
+<CODE class=linenumber>02</CODE>  <tt>DISPLAY </tt>firstname, <tt>COLUIMN</tt>(30), lasttname</pre>
+
+
+<p>The <i>pos</i> operand must be a non-negative integer that specifies a character
+position offset (from the left margin) no greater than the line width (that is,
+no greater than the difference (right margin - left margin). This designation
+moves the character position to a left-offset, where 1 is the first position
+after the left margin. If current position is greater than the operand, the <tt>COLUMN</tt>
+specification is ignored.</p>
+<h4>Example:</h4>
+<pre><CODE class=linenumber>01</CODE>  <tt>PAGE HEADER</tt>
+<CODE class=linenumber>02</CODE>    <tt>PRINT </tt>&quot;Number&quot;, <tt>COLUMN </tt>12,&quot;Name&quot;, <tt>COLUMN </tt>35,&quot;Location&quot;
+<CODE class=linenumber>03</CODE>  <tt>ON EVERY ROW</tt>
+<CODE class=linenumber>04</CODE>    <tt>PRINT </tt>customer_num, <tt>COLUMN </tt>12,fname, <tt>COLUMN </tt>35,city</pre>
+
+
+<HR>
+
+<h3><a name="OP_ORD">ORD</a></h3>
+
+
+<h4>Purpose:</h4><p><tt>ORD()</tt> converts a character expression
+and returns the integer value of the first byte of that argument. </p>
+
+
+<h4>Syntax:</h4><code>ORD( <i>source</i> STRING )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>source</i> is a <a href="Expressions.html#EX_STRING">string expression</a>.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+<p>Only the first byte of the argument is evaluated. This operator is
+case-sensitive. It returns <a href="Programs.html#PC_NULL">NULL</a> if the
+    argument passed is not valid.</p>
+For a default (U.S. English) locale, <tt>ORD()</tt> is the logical inverse
+    of the <a href="Operators.html#OP_ASCII">ASCII()</a> operator.
+
+
+<p><i>See also:</i>      <a href="BuiltInFunctions.html#BF_FGL_KEYVAL">FGL_KEYVAL()</a>, <a href="Operators.html#OP_ASCII">ASCII()</a>.</p>
+
+
+<HR>
+
+<h3><a name="OP_SPACES">SPACES</a></h3>
+
+<h4>Purpose:</h4>
+
+<p> <tt>SPACES</tt> returns a character string with blanks. </p>
+
+<h4>Syntax:</h4><code><i>intexpr</i> SPACES</code>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li><i>intexpr</i> is an integer expression.</li>
+  <li>&quot;SPACE&quot; is an alias for this operator.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY</tt> 20 <tt>SPACES</tt> || &quot;xxx&quot;
+<CODE class=linenumber>03</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_LSTR">LSTR</a> </h3>
+
+<h4>Purpose:</h4>
+
+<p> <tt>LSTR()</tt> returns a <a href="LocalizedStrings.html">Localized
+String</a> corresponding to the identifier passed as parameter. </p>
+
+<h4>Syntax:</h4><code>LSTR(<i>strexpr)</i></code>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li><i>strexpr</i> is a <a href="Expressions.html#EX_STRING">string expression</a>.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY</tt> <tt>LSTR</tt> (&quot;str&quot;||123)  -- loads string 'str123'
+<CODE class=linenumber>03</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_SFMT">SFMT</a> </h3>
+
+<h4>Purpose:</h4>
+
+<p> <tt>SFMT()</tt> returns a string after replacing the parameters passed. </p>
+
+<h4>Syntax:</h4><code>SFMT( <i>strexpr</i> , <i>param</i> <u>[</u> , <i>param</i> <u>[...]</u> <u>]</u>
+)</code>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li><i>strexpr</i> is a <a href="Expressions.html#EX_STRING">string expression</a>.</li>
+  <li><i>param</i> is any valid <a href="Expressions.html"> expression</a> used to replace parameter place holders (%<i>n</i>).</li>
+  <li>At least one parameter is required.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+
+<p>The <tt>SFMT()</tt> operator can be used with parameters that will be
+automatically set in the string at the position defined by parameter place
+holders. The parameters used with the <tt>SFMT()</tt> operator can be any valid
+expressions. Numeric and date/time expressions are evaluated to strings according
+to the current format settings (<a href="EnvironmentVariables.html#EV_DBDATE">DBDATE</a>,
+<a href="EnvironmentVariables.html#EV_DBMONEY">DBMONEY</a>).</p>
+
+<p>A place holder a is special marker in the string, that is defined by the
+percent character followed by the parameter number. For example, %4 represents
+the parameter #4. You are allowed to use the same parameter place holder several
+times in the string. If you want to use the percent sign in the string, you must
+escape it with %%.</p>
+
+<p>Predefined&nbsp; placeholders can be used to insert information about last
+runtime system error that occurred. Note that these are only available in the
+context of a runtime error trapped with a <a href="Exceptions.html#DEFINITION">WHENEVER
+ERROR GOTO / CALL</a> handler:</p>
+
+  <table border="0" width="90%">
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0">
+        <p align="center"><b>Predefined parameter</b></p>
+      </td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="10%" align="left"><tt>%(ERRORFILE)</tt></td>
+      <td width="50%">Name of the module where last runtime error occurred.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="left"><tt>%(ERRORLINE)</tt></td>
+      <td width="50%">Line number in the module where last runtime error
+        occurred.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="left"><tt>%(ERRNO)</tt></td>
+      <td width="50%">Last operating system error number.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="left"><tt>%(STRERROR)</tt></td>
+      <td width="50%">Last operating system error text.</td>
+    </tr>
+  </table>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <tt>LET </tt>n = 234
+<CODE class=linenumber>04</CODE>   <tt>DISPLAY SFMT</tt>(&quot;Order #%1 has been %2.&quot;,n,&quot;deleted&quot;)
+<CODE class=linenumber>05</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="OP_ADDITION">ADDITION</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>+</tt> operator adds a number to another. </p>
+
+<h4>Syntax:</h4><code>  <i>numexpr</i> + <i>numexpr</i></code>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>  <tt>DISPLAY</tt> 100 + 200
+<CODE class=linenumber>03</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_SUBTRACTION">SUBTRACTION</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>-</tt> operator subtracts a number from another. </p>
+
+<h4>Syntax:</h4><code>  <i>numexpr</i> - <i>numexpr</i></code>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>  <tt>DISPLAY</tt> 100 - 200
+<CODE class=linenumber>03</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_MULTIPLICATION">MULTIPLICA</a><a name="OP_MULTIPLICATION">TION</a></h3>
+<h4>Purpose:</h4>
+
+<p>The <tt>*</tt> operator multiplies a number with another. </p>
+
+<h4>Syntax:</h4><code>  <i>numexpr</i> * <i>numexpr</i></code>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>  <tt>DISPLAY</tt> 100 * 200
+<CODE class=linenumber>03</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_DIVISION">DIVISION</a></h3>
+<h4>Purpose:</h4>
+
+<p>The <tt>/</tt> operator divides a number by another. </p>
+
+<h4>Syntax:</h4><code>  <i>numexpr</i> / <i>numexpr</i></code>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>  <tt>DISPLAY</tt> 100 / 200
+<CODE class=linenumber>03</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_EXPONENTIATION">EXPONENTIATION</a></h3>
+<h4>Purpose:</h4>
+
+<p>The <tt>**</tt> operator returns a value calculated by raising the left-hand
+operand to a power corresponding to the integer part of the right-hand operand. </p>
+
+<h4>Syntax:</h4><code><i>numexpr</i> ** <i>intexpr</i></code>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>  <tt>DISPLAY</tt> 2 ** 8
+<CODE class=linenumber>03</CODE>  <tt>DISPLAY</tt> 10 ** 4
+<CODE class=linenumber>04</CODE> <TT>END MAIN</TT></PRE>
+
+
+<p><b><font color="#FF0000">Warning:</font> If the right operand is a number
+with a decimal part, it is rounded to a whole integer before computing the
+exponentiation.</b></p>
+
+
+<HR>
+
+<h3><a name="OP_MODULUS">MODULUS</a></h3>
+<h4>Purpose:</h4>
+
+<p>The <tt>MOD</tt> operator returns the remainder, as an integer, from the division of
+the integer part of two numbers.&nbsp; </p>
+
+<h4>Syntax:</h4><code><i>intexpr</i> MOD <i>intexpr</i></code>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY</tt> 256 <tt>MOD</tt> 16
+<CODE class=linenumber>03</CODE>   <tt>DISPLAY</tt> 26 <tt>MOD</tt> 2
+<CODE class=linenumber>04</CODE>   <tt>DISPLAY</tt> 27 <tt>MOD</tt> 2
+<CODE class=linenumber>05</CODE> <TT>END MAIN</TT></PRE>
+
+
+<p><b><font color="#FF0000">Warning:</font> If the right operand is a number
+with a decimal part, it is rounded to a whole integer before computing the
+modulus.</b></p>
+
+
+<HR>
+
+<h3><a name="OP_CURRENT">CURRENT</a></h3>
+
+<h4>Purpose:</h4>
+
+<p> <tt>CURRENT</tt> returns the current date and time according to
+the qualifier. </p>
+
+<h4>Syntax:</h4><code>CURRENT <i>qual1 TO qual2</i><u>[</u>(<i>scale</i>)<u>]</u></code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>qual1,</i> <i>qual2</i> and <i>scale</i> define the date time
+    qualifier; see the <a href="DataTypes.html#DT_DATETIME">DATETIME</a> data
+    type for more details.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY CURRENT YEAR TO FRACTION</tt>(4)
+<CODE class=linenumber>03</CODE>   <tt>DISPLAY CURRENT HOUR TO SECOND</tt>
+<CODE class=linenumber>04</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_EXTEND">EXTEND</a></h3>
+
+<h4>Purpose:</h4>
+
+<p> <tt>EXTEND()</tt> adjusts a date time value according to the
+qualifier. </p>
+
+<h4>Syntax:</h4><code>EXTEND ( <i>dtexpr</i>, <i>qual1 TO qual2</i><u>[</u>(<i>scale</i>)<u>]</u>
+)</code>
+<h4>Notes:</h4>
+<ol>
+  <li>This operator is used to convert a date time expression to a <a href="DataTypes.html#DT_DATETIME">DATETIME</a>
+    value with a different precision.</li>
+  <li><i>dtexpr</i> is a <a href="Expressions.html#EX_DATETIME">date</a> or <a href="Expressions.html#EX_DATETIME">datetime</a>
+    expression. If it is a character string, it must consist of valid and
+    unambiguous time-unit values and separators, but with these restrictions:
+    <ul>
+      <li>It cannot be a character string in date format, such as
+        &quot;12/12/99&quot;.</li>
+      <li>It cannot be an ambiguous numeric datetime value, such as
+        &quot;05:06&quot; or &quot;05&quot;.</li>
+      <li>It cannot be a time expression that returns an <a href="DataTypes.html#DT_INTERVAL">INTERVAL</a>
+        value.</li>
+    </ul>
+  </li>
+  <li><i>qual1,</i> <i>qual2</i> and <i>scale</i> define the date time
+    qualifier, see the <a href="DataTypes.html#DT_DATETIME">DATETIME</a> data type for more details.</li>
+  <li>The default qualifier is <tt>YEAR TO DAY.</tt></li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY EXTEND</tt> ( <tt>TODAY</tt>, <tt>YEAR TO FRACTION</tt>(4) )
+<CODE class=linenumber>03</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_DATE">DATE</a></h3>
+
+<h4>Purpose:</h4>
+
+<p> <tt>DATE()</tt> converts a character expression, an integer or a
+datetime to a date value. </p>
+
+<h4>Syntax:</h4><code>DATE <u>[</u>(<i>dtexpr</i>)<u>]</u></code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>dtexpr</i> is a character <a href="Expressions.html#EX_STRING">string</a>,
+    an <a href="Expressions.html#EX_INTEGER">integer</a> or
+    a <a href="Expressions.html#EX_DATETIME">datetime</a> expression.</li>
+  <li>This operator is used to convert a character string, an integer or a date
+    time value to a <a href="DataTypes.html#DT_DATE">DATE</a> value.</li>
+  <li>When <i>dtexpr</i> is a character string expression, it must properly
+    formatted according to datetime format settings like <a href="EnvironmentVariables.html">DBDATE</a>.</li>
+  <li>If <i>dtexpr</i> is an integer expression, it is used as the number of
+    days since December 31, 1899.</li>
+  <li>If you supply no operand, it returns a character representation of the
+    current date in the format &quot;weekday month day year&quot;.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY DATE</tt> ( 34000 )
+<CODE class=linenumber>03</CODE>   <tt>DISPLAY DATE</tt> ( &quot;12/04/1978&quot; )
+<CODE class=linenumber>04</CODE>   <tt>DISPLAY DATE</tt> ( <tt>CURRENT</tt> )
+<CODE class=linenumber>05</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_TIME">TIME</a></h3>
+
+<h4>Purpose:</h4>
+
+<p> <tt>TIME()</tt> converts the time-of-day portion of its datetime
+operand to a character string. </p>
+
+<h4>Syntax:</h4><code>TIME <u>[</u>(<i>dtexpr</i>)<u>]</u></code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>dtexpr</i> is a <a href="Expressions.html#EX_DATETIME">datetime</a>
+    expression.</li>
+  <li>This operator converts a date time expression to a character string representing the time-of-day part of its
+    operand.</li>
+  <li>The format of the returned string is always &quot;hh:mm:ss&quot;.</li>
+  <li>If you supply no operand, it returns a character representation of the
+    current time.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY TIME</tt> ( <tt>CURRENT</tt> )
+<CODE class=linenumber>03</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_TODAY">TODAY</a></h3>
+
+<h4>Purpose:</h4>
+
+<p> <tt>TODAY</tt> returns the current calendar date. </p>
+
+<h4>Syntax:</h4><code>TODAY</code>
+<h4>Notes:</h4>
+<ol>
+  <li>Reads current system clock and returns a <a href="DataTypes.html#DT_DATE">DATE</a>
+    value that represents the current calendar date.</li>
+</ol>
+
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li>See also the <a href="#OP_CURRENT">CURRENT</a> operator that returns
+    current date and time.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY TODAY</tt>
+<CODE class=linenumber>03</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_YEAR">YEAR</a></h3>
+
+<h4>Purpose:</h4>
+
+<p> <tt>YEAR()</tt> extracts the year of a date time expression. </p>
+
+<h4>Syntax:</h4><code>YEAR ( <i>dtexpr</i> )</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>dtexpr</i> is a <a href="DataTypes.html#DT_DATE">date</a>
+    or <a href="DataTypes.html#DT_DATETIME">datetime</a> expression.</li>
+  <li>Returns an integer corresponding to the year portion of its operand.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY YEAR</tt> ( <tt>TODAY</tt> )
+<CODE class=linenumber>03</CODE>   <tt>DISPLAY YEAR</tt> ( <tt>CURRENT</tt> )
+<CODE class=linenumber>04</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_MONTH">MONTH</a></h3>
+
+<h4>Purpose:</h4>
+
+<p> <tt>MONTH()</tt> extracts the month of a date time expression. </p>
+
+<h4>Syntax:</h4><code>MONTH ( <i>dtexpr</i> )</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>dtexpr</i> is a <a href="Expressions.html#EX_DATETIME">date</a> or <a href="Expressions.html#EX_DATETIME">datetime</a>
+    expression.</li>
+  <li>Returns a positive whole number between 1 and 12
+    corresponding to the month of its operand.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY MONTH</tt> ( <tt>TODAY</tt> )
+<CODE class=linenumber>03</CODE>   <tt>DISPLAY MONTH</tt> ( <tt>CURRENT</tt> )
+<CODE class=linenumber>04</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_DAY">DAY</a></h3>
+
+<h4>Purpose:</h4>
+
+<p> <tt>DAY()</tt> extracts the day of the month of a date time
+expression. </p>
+
+<h4>Syntax:</h4><code>DAY ( <i>dtexpr</i> )</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>dtexpr</i> is a <a href="Expressions.html#EX_DATETIME">date</a> or <a href="Expressions.html#EX_DATETIME">datetime</a>
+    expression.</li>
+  <li>Returns a positive whole number between 1 and 31
+    corresponding to the day of the month of its operand.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY DAY</tt> ( <tt>TODAY</tt> )
+<CODE class=linenumber>03</CODE>   <tt>DISPLAY DAY</tt> ( <tt>CURRENT</tt> )
+<CODE class=linenumber>04</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_WEEKDAY">WEEKDAY</a></h3>
+
+<h4>Purpose:</h4>
+
+<p> <tt>WEEKDAY()</tt> extracts the day of the week of a date time
+expression. </p>
+
+<h4>Syntax:</h4><code>WEEKDAY ( <i>dtexpr</i> )</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>dtexpr</i> is a <a href="Expressions.html#EX_DATETIME">date</a> or <a href="Expressions.html#EX_DATETIME">datetime</a>
+    expression.</li>
+  <li>Returns a positive whole number between 0 and 6 corresponding to the day
+    of the week implied by its operand.</li>
+  <li>The integer 0 (Zero) represents Sunday.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY WEEKDAY ( TODAY )</tt>
+<CODE class=linenumber>03</CODE>   <tt>DISPLAY WEEKDAY ( CURRENT )</tt>
+<CODE class=linenumber>04</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_MDY">MDY</a></h3>
+<h4>Purpose:</h4>
+
+<p> <tt>MDY()</tt> builds a date value with 3 integers representing
+the month, day and year. </p>
+
+<h4>Syntax:</h4><code>MDY ( <i>intexpr1</i>, <i>intexpr2</i>, <i>intexpr3</i> )</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>intexpr1</i> is an integer representing the month (from 1 to 12).</li>
+  <li><i>intexpr2</i> is an integer representing the day (from 1 to 28, 29, 30 or
+    31 depending on the month).</li>
+  <li><i>intexpr3</i> is an integer representing the year (four digits).</li>
+  <li>The result is a <a href="DataTypes.html#DT_DATE">DATE</a> value.</li>
+  <li>The MDY() function is sensitive to the <a href="Localization.html#MING_GUO">C1
+    modifier of DBDATE</a>.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY MDY</tt> ( 12, 3+2, 1998 )
+<CODE class=linenumber>03</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_UNITS">UNITS</a></h3>
+
+<h4>Purpose:</h4>
+
+<p> <tt>UNITS</tt> converts an integer expression to an interval
+value. </p>
+
+<h4>Syntax:</h4><code> <i>intexpr</i> UNITS <i>qual</i><u>[</u>(<i>scale</i>)<u>]</u></code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>intexpr</i> is an integer expression.</li>
+  <li><i>qual</i> is one of the unit specifiers of a <a href="DataTypes.html#DT_DATETIME">DATETIME</a>
+    qualifier.</li>
+  <li>The result is a <a href="DataTypes.html#DT_INTERVAL">INTERVAL</a> value.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> d <tt>DATE</tt>
+<CODE class=linenumber>03</CODE>   <tt>LET</tt> d = <tt>TODAY</tt> + 200
+<CODE class=linenumber>04</CODE>   <tt>DISPLAY</tt> (d - <tt>TODAY</tt>) <tt>UNITS DAY</tt>
+<CODE class=linenumber>05</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="OP_GET_FLDBUF">GET_FLDBUF</a></h3>
+
+<h4>Purpose:</h4>
+
+<p> <tt>GET_FLDBUF</tt> returns as character strings the current
+values of the specified fields. </p>
+
+<h4>Syntax:</h4><code>GET_FLDBUF ( <u> [</u><i>group</i>.<u>]</u><i>field</i>  <u> [,...]</u> )</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>group</i> can be a table name, a screen record, a screen array or 'formonly'.</li>
+  <li><i>field</i> is the name of the screen field.</li>
+  <li>Typically used to get the value of a screen field before the input buffer
+    is copied into the associated variable.</li>
+  <li>If multiple fields are specified between parentheses, you must use the <a href="Functions.html">
+    RETURNING</a> clause.</li>
+  <li>When used in a <a href="InputArray.html"> INPUT ARRAY</a> instruction, the runtime system assumes that
+    you are referring to the current row.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The values returned by this operator are context dependent; it must be used carefully. If possible, use the <a href="Variables.html"> variable</a> associated to the input
+    field instead.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> ...
+<CODE class=linenumber>02</CODE>   <tt>LET</tt> v = GET_FLDBUF( customer.custname )
+<CODE class=linenumber>03</CODE>   <tt>CALL</tt> GET_FLDBUF( customer.* ) <tt>RETURNING</tt> rec_customer.*
+<CODE class=linenumber>04</CODE> ...</PRE>
+
+
+<HR>
+
+<h3><a name="OP_INFIELD">INFIELD</a></h3>
+
+<h4>Purpose:</h4>
+
+<p> <tt>INFIELD</tt> returns <a href="Programs.html#PC_TRUE"> TRUE</a>
+if its operand is the identifier
+of the current screen field. </p>
+
+<h4>Syntax:</h4><code>INFIELD ( <u> [</u><i>group</i>.<u>]</u><i>field</i> )</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>group</i> can be a table name, a screen record, a screen array or
+    'FORMONLY'.</li>
+  <li><i>field</i> is the name of the field in the form.</li>
+  <li>Typically used to check for the current field in a <a href="Construct.html">CONSTRUCT</a>,
+    <a href="RecordInput.html"> INPUT</a> or <a href="InputArray.html"> INPUT ARRAY</a>
+    instruction.</li>
+  <li>When used in an <a href="InputArray.html"> INPUT ARRAY</a> instruction, the runtime system assumes that
+    you are referring to the current row.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> ...
+<CODE class=linenumber>02</CODE> <tt>INPUT ...</tt>
+<CODE class=linenumber>03</CODE>   <tt>IF</tt> INFIELD( customer.custname ) <tt>THEN</tt>
+<CODE class=linenumber>04</CODE>      <tt>MESSAGE</tt> &quot;The current field is customer's name.&quot;
+<CODE class=linenumber>05</CODE> ...</PRE>
+
+
+<HR>
+
+<h3><a name="OP_FIELD_TOUCHED">FIELD_TOUCHED</a></h3>
+
+<h4>Purpose:</h4>
+
+<p> <tt>FIELD_TOUCHED</tt> returns <a href="Programs.html#PC_TRUE"> TRUE</a> if the value of a screen
+field has changed since the beginning of the interactive instruction. </p>
+
+<h4>Syntax:</h4><code>FIELD_TOUCHED ( <u>{</u> <u>[</u><i>group</i>.<u>]</u><i>field
+| group</i>.* | * <u>}</u> <u>[,...]</u> )</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>group</i> can be a table name, a screen record, a screen array or
+    'FORMONLY'.</li>
+  <li><i>field</i> is the name of the field in the form.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The <tt>FIELD_TOUCHED</tt> operator can only be used inside an <tt>INPUT</tt>,
+    <tt>INPUT ARRAY</tt> and <tt>CONSTRUCT</tt> interaction block.</li>
+  <li>Do not confuse with <a href="BuiltInFunctions.html#BF_FGL_BUFFERTOUCHED">FGL_BUFFERTOUCHED</a>; 
+	in that function, the flag is reset when entering a new field.</li>
+</ol>
+
+<h4>Usage:</h4>
+This operator is typically used to check if the value of a field (or multiple
+fields) was modified during the dialog execution.<p>The operator accept a list of
+explicit field names, the [<i>group</i>.]* notation in order to
+check multiple fields in a unique function call. When passing a simple asterisk
+(*) to
+the operator, the runtime system will check all fields used by the current
+dialog.</p>
+<p>Note that when used in an <a href="InputArray.html"> INPUT ARRAY</a> instruction, the runtime system assumes that
+    you are referring to the current row. </p>
+
+<p>For more details about the <tt>FIELD_TOUCHED</tt> operator usage and the
+understand the &quot;touched flag&quot; concept, see the <a href="MultipleDialogs.html#touched-flag">Touched
+Flag section</a> of the <tt>DIALOG</tt> instruction. </p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> ...
+<CODE class=linenumber>02</CODE> <tt>AFTER FIELD</tt> custname
+<CODE class=linenumber>03</CODE>   <tt>IF</tt> FIELD_TOUCHED( customer.custname ) <tt>THEN</tt>
+<CODE class=linenumber>04</CODE>      <tt>MESSAGE</tt> &quot;Customer name was changed.&quot;
+<CODE class=linenumber>05</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>06</CODE> ...
+<CODE class=linenumber>07</CODE> <tt>AFTER INPUT</tt>
+<CODE class=linenumber>08</CODE>   <tt>IF</tt> FIELD_TOUCHED( customer.* ) <tt>THEN</tt>
+<CODE class=linenumber>09</CODE>      <tt>MESSAGE</tt> &quot;Customer record was changed.&quot;
+<CODE class=linenumber>10</CODE> ...</PRE>
+
+</BODY>
+</HTML>

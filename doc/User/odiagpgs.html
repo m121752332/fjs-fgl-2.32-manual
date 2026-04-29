@@ -1,0 +1,1962 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<TITLE>ODI Adaptation Guide for PostgreSQL</TITLE>
+<meta http-equiv="Content-Type" content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p><a href="../index.html">Back to Contents</a></p>
+
+<HR>
+
+<H1>ODI Adaptation Guide For PostgreSQL 8.0.2, 8.1.x, 8.2.x, 8.3.x, 8.4.x, 9.0.x</H1>
+
+<p><font color="#000080">Installation</font></p>
+<div align="center">
+  <center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIPGS_PREP01">Install PostgreSQL and create a database</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS_PREP02">Prepare the runtime environment</a></td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<p><font color="#000080">Database concepts</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIPGS007a">Database concepts</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS039">Data storage concepts</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS008a">Data consistency and concurrency management</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS009">Transactions handling</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS016a">Defining database users</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS016b">Setting privileges</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">Data dictionary </font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIPGS041">BOOLEAN data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS011a">CHARACTER data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS021">NUMERIC data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS001">DATE and DATETIME data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS036">INTERVAL data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS005">SERIAL data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS004">ROWIDs</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS030">Very large data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS012">Constraints</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS013">Triggers</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS014">Stored procedures</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS019">Name resolution of SQL objects</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS100">Data type conversion table</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">Data manipulation</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIPGS003">Reserved words</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS006">Outer joins</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS009">Transactions handling</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS017">Temporary tables</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS018">Substrings in SQL</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS011b">The LENGTH( ) function</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS019">Name resolution of SQL objects</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS020">String delimiters</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS022">Using column aliases in SELECT</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS024">MATCHES and LIKE conditions</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS033">Querying system catalog tables</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS034">Syntax of UPDATE statements</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS035">The LENGTH() function</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">BDL programming</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIPGS005">SERIAL data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS010">Handling SQL errors when preparing statements</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS025">INFORMIX specific SQL statements in BDL</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS028">INSERT cursors</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS031">Cursors WITH HOLD</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS008b">SELECT FOR UPDATE</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS032">UPDATE/DELETE WHERE CURRENT OF &lt;cursor&gt;</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS046">The LOAD and UNLOAD instructions</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS047">SQL Interruption</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIPGS048">Scrollable Cursors</a></td>
+  </tr>
+</table>
+</center></div>
+
+<hr>
+
+<h2><a name="ODIPGS_PREP">Runtime configuration</a></h2>
+
+<blockquote>
+  <h3><a name="ODIPGS_PREP01">Install PostgreSQL and create a database</a></h3>
+  <ol>
+    <li><p>Compile and install the PostgreSQL Server on your computer.
+      PostgreSQL is a free database, you can download the sources from <a href="http://www.postgresql.org">www.postgresql.org</a>.</p>
+    </li>
+    <li><p>Read PostgreSQL installation notes for details about the <b>data</b>
+      directory creation with the <b>initdb</b> utility.</p>
+    </li>
+    <li><p>Set configuration parameters in <b>postgresql.conf</b>:</p>
+      <p><font color="#FF0000"><b>Warning for PGS 8.1 and 8.2:</b></font> UPDATE
+          / DELETE WHERE CURRENT OF needs <b>oid</b> column support.
+          Starting with PostgreSQL version 8.1, user tables do not get the <b>oid</b>
+          column by default. You must set the <b>default_with_oid</b>
+          configuration parameter to &quot;<b>on</b>&quot; in order to get oid
+          columns created. Starting with PostgreSQL 8.3 and the <b>dbmpgs83x</b>,
+      WHERE CURRENT OF is supported by the server and the <b>oid</b> columns are
+      not used, therefore you do no longer need to set the <b>default_with_oid</b>
+      parameter. However, if you plan to use ROWID keywords in SQL, these can be
+      converted to oid keywords, and therefore you need to have oid support by
+      using the <b>default_with_oid</b>
+      parameter.</p>
+    </li>
+    <li><p>Start a <b>postmaster</b> process to listen to database client connections.<br><br>
+      <b><font color="#FF0000">Warning:</font></b> If you want to connect through
+      TCP (for example from a Windows PostgreSQL client), you must start postmaster with
+      the <b>-i</b> option and setup the <b>pg_hba.conf</b> file for security
+      (trusted hosts and users).</p>
+    </li>
+    <li><p>Create a PostgreSQL database with the <b>createdb</b> utility:<br><br>
+      <font face="Courier New">&nbsp;&nbsp; $ createdb -h <i>hostname</i> <i>dbname</i></font></p>
+    </li>
+    <li><p>If you plan to use SERIAL emulation, you need the <b>plpgsql</b> procedure
+      language, because the database interface uses this language to create serial
+      triggers. Starting with PostgreSQL version <b>9.0</b>, the plpgsql
+      language is available by default. Prior to version 9.0, you must create
+      the language in your database with the following command:<br><br>
+      <font face="Courier New">&nbsp;&nbsp; $ createlang -h <i>hostname </i>plpgsql <i>dbname</i></font></p>
+    </li>
+    <li><p>Connect to the database as the administrator user and create a database user
+      dedicated to your application, the <b>application administrator</b>:<br><br>
+      <font face="Courier New">&nbsp;&nbsp; <i>dbname</i>=# CREATE USER <i>appadmin</i>
+      PASSWORD '<i>password</i>';<br>
+      &nbsp;&nbsp; CREATE USER<br>
+      &nbsp;&nbsp; <i>dbname</i>=# GRANT ALL PRIVILEGES ON DATABASE <i>dbname</i>
+      TO <i>appadmin</i>;<br>
+      &nbsp;&nbsp; GRANT<br>
+      &nbsp;&nbsp; <i>dbname</i>=# \q</font></p>
+    </li>
+    <li><p>Create the <b>application tables</b>. Do not forget to convert INFORMIX
+      data types to PostgreSQL data types.
+      See issue <a href="#ODIPGS100">ODIPGS100</a> for more details.</p>
+    </li>
+    <li><p>If you plan to use the SERIAL emulation, you must prepare the database.
+      See issue <a href="#ODIPGS005">ODIPGS005</a> for more details.</p>
+    </li>
+  </ol>
+</blockquote>
+
+<blockquote>
+  <h3><a name="ODIPGS_PREP02">Prepare the runtime environment</a></h3>
+  <ol>
+    <li><p>In order to connect to PostgreSQL, you must have a PostgreSQL 
+	database driver &quot;<b>dbmpgs*</b>&quot;
+      in FGLDIR/dbdrivers.<br><br>
+      <b><font color="#FF0000">Warning:</font></b> On HP/UX LP64, the PostgreSQL 
+	database driver must be linked with
+      the <b>libxnet</b> library if you want to use networking.</p>
+    </li>
+    <li><p>The <b>PostgreSQL client software</b> is required to connect to a database server.
+      Check if the PostgreSQL client library (<b>libpq.*</b>) is installed on the machine
+      where the 4gl programs run.</p>
+    </li>
+    <li><p>Make sure that the PostgreSQL client environment variables are
+      properly set. Check for example <b>PGDIR</b> (the path to the installation
+      directory), <b>PGDATA</b> (the path to the data files directory), etc. See
+      PostgreSQL documentation for more details.</p>
+
+    </li>
+    <li><p>Verify the environment variable
+      defining the search path for database client shared libraries (libpq.so on
+      UNIX, LIBPQ.DLL on Windows). On UNIX platforms, the variable is specific to the operating system. 
+	For example, on Solaris and Linux systems, it is <b>LD_LIBRARY_PATH</b>, on
+      AIX it is <b>LIBPATH</b>, or HP/UX it is <b>SHLIB_PATH</b>. On Windows,
+      you define the DLL search path in the <b>PATH</b> environment variable.</p>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0">
+      <p align="center"><font color="#0000FF"><b>PostgreSQL version</b></font></td>
+    <td bgcolor="#C0C0C0" width="70%">
+      <p align="center"><font color="#0000FF"><b>Shared library environment
+      setting</b></font></td>
+  </tr>
+  <tr>
+    <td><font color="#0000FF"><b>PostgreSQL 8.0 and higher</b></font></td>
+    <td align="center" width="70%">
+      <p align="left"><i>UNIX</i>: Add <b>$PGDIR/lib</b> to LD_LIBRARY_PATH (or
+      its equivalent).<br>
+      <i>Windows</i>: Add <b>%PGDIR%\bin</b> to PATH.</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td align="center" width="70%"></td>
+  </tr>
+</table>
+    </li>
+    <li><p>To verify if the PostgreSQL client environment is correct, you can
+      start the PostgreSQL command interpreter:<br>
+      <br>
+      <font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;&nbsp; $ psql <i>dbname</i>
+      -U <i>appadmin</i>  -W</font></p>
+    </li>
+    <li><p>Set up the <b>fglprofile</b> entries for <a href="Connections.html#DS_ODI_DBVSPEC">database
+      connections</a>.<br>
+      <br>
+      <b><font color="#FF0000">Warning:</font></b> <b>Make sure that you are
+      using the ODI driver corresponding to the database client and server
+      version. Because Informix features emulation are dependant from the
+      database server version, it is mandatory to use the same version of the
+      database client and ODI driver as the server version.</b></p>
+    </li>
+  </ol>
+</blockquote>
+
+<hr>
+
+<h2><a name="ODIPGS001">ODIPGS001 - DATE and DATETIME data types</a></h3>
+
+</h2>
+
+<p>INFORMIX provides two data types to store dates and time information: 
+
+<ul>
+  <li><b>DATE</b> = for year, month and day storage.</li>
+  <li><b>DATETIME</b> = for year to fraction(1-5) storage.</li>
+</ul>
+
+<p>PostgreSQL provides the following data type to store date and time
+information:</p>
+
+<ul>
+  <li><b>DATE</b> = for year, month, day storage.</li>
+  <li><b>TIME [(p)] [{with|without} time zone]</b> = for hour, minute, second <u>and fraction</u> storage.</li>
+  <li><b>TIMESTAMP [(p)] [{with|without} time zone]</b> = for year, month, day, hour, minute, second, fraction storage.</li>
+</ul>
+
+<p><b>String representing date time information:</b>
+
+<p>INFORMIX is able to convert quoted strings to DATE / DATETIME data if the string contents  matches environment parameters (i.e. DBDATE, GL_DATETIME).  As in INFORMIX, PostgreSQL can convert quoted strings to date time data according to the DateStyle session parameter. PostgreSQL always accepts ISO date time strings.</p>
+
+<p><b>Date arithmetic:</b> 
+
+<ul>
+  <li>INFORMIX supports date arithmetic on DATE and DATETIME values. The result of an arithmetic expression involving dates/times is a number of days when only DATEs are used and an INTERVAL value if a DATETIME is used in the expression.</li>
+  <li>In PostgreSQL, the result of an arithmetic expression involving DATE values is an INTEGER representing a number of days.</li>
+  <li>INFORMIX automatically converts an integer to a date when the integer is used to set a value of a date column. PostgreSQL does not support this automatic conversion.</li>
+  <li>Complex DATETIME expressions ( involving INTERVAL values for example) are INFORMIX specific and have no equivalent in PostgreSQL.</li>
+</ul>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>PostgreSQL has the same <b>DATE</b> data type as INFORMIX ( year, month, day ). So you can use PostgreSQL DATE data type for
+INFORMIX DATE columns.</p>
+
+<p>PostgreSQL <b>TIME(0) WITHOUT TIME ZONE</b> data type can be used to store INFORMIX DATETIME HOUR TO SECOND values. The database interface makes the conversion automatically.</p>
+
+<p>INFORMIX DATETIME values with any precision from YEAR to FRACTION(5) can
+be stored in PostgreSQL <b> TIMESTAMP(5) WITHOUT TIME ZONE</b> columns. The database interface makes the conversion
+automatically. Missing date or time parts default to 1900-01-01 00:00:00.0. For example,
+when using a DATETIME HOUR TO MINUTE with the value of &quot;11:45&quot;, the
+PostgreSQL TIMESTAMP value will be &quot;1900-01-01 11:45:00.0&quot;.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> SQL Statements using expressions with TODAY / CURRENT /&nbsp; EXTEND must be reviewed and adapted to the native syntax.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Literal DATETIME and INTERVAL expressions (i.e. DATETIME ( 1999-10-12) YEAR TO DAY) are not converted.</p>
+
+<hr>
+
+<h2><a name="ODIPGS003">ODIPGS003 - Reserved words</a></h3>
+
+</h2>
+
+<p>SQL object names like table and column names cannot be SQL reserved words in PostgreSQL.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Table or column names which are PostgreSQL reserved words must be renamed.</p>
+
+<hr>
+
+<h2><a name="ODIPGS004">ODIPGS004 - ROWIDs</a></h3>
+
+</h2>
+
+<p>When creating a table, INFORMIX automatically adds a
+&quot;ROWID&quot; integer column (applies to non-fragmented tables only). The
+ROWID column is auto-filled with a unique number and can be used
+like a primary key to access a given row.</p>
+
+<p>When the feature is enabled, PostgreSQL tables are automatically created with a OID column (Object Identifier) of type INTEGER. The behavior is equivalent to INFORMIX ROWID columns.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>The database automatically converts  ROWID keywords to OID for PostgreSQL. So you can execute &quot;SELECT ROWID FROM&quot; and &quot;UPDATE .. WHERE ROWID = ?&quot; statements as with INFORMIX.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b>  Starting with PostgreSQL
+version 8.1, OIDs are no longer supported by default. You need to define the <b>default_with_oid</b>
+ parameter in postgresql.conf to get OID columns created for tables.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> SQLCA.SQLERRD[6]
+is not supported.</font> All references to SQLCA.SQLERRD[6] must be removed because this
+variable will not hold the ROWID of the last INSERTed or UPDATEd row when using the PostgreSQL
+interface.</p>
+
+<hr>
+
+<h2><a name="ODIPGS005">ODIPGS005 - SERIAL data types</a>
+
+</h2>
+
+<p>INFORMIX supports the SERIAL, SERIAL8 and BIGSERIAL data types to produce automatic
+integer sequences. SERIAL is based on INTEGER (32 bit), while SERIAL8 and
+BIGSERIAL can store 64 bit integers: </p>
+<ul>
+	<li>The table column must be of type SERIAL, SERIAL8 or BIGSERIAL.</li>
+	<li>To generate a new serial, no value or a zero 
+	value is specified in the INSERT statement:<br>
+	<font size="2" face="Courier New">&nbsp;&nbsp; INSERT INTO tab1 ( c ) VALUES ( 'aa' )<br>
+	&nbsp;&nbsp; INSERT INTO tab1 ( k, c ) VALUES ( 0, 'aa' )</font></li>
+	<li>After INSERT, the new SERIAL value is provided in
+	<font face="Courier New" color="#FF0000">SQLCA.SQLERRD[2]</font>, while the
+      new SERIAL8 and BIGSERIAL value must be fetched with a <font face="Courier New" color="#FF0000">SELECT
+      dbinfo('bigserial')</font> query.</li>
+</ul>
+<p>INFORMIX allows you to insert rows with a value different from zero for
+    a serial column. Using an explicit value will automatically increment the internal serial
+    counter, to avoid conflicts with future INSERT statements that are using a zero value : <br>
+    <font face="Courier New">&nbsp;&nbsp;&nbsp; CREATE TABLE tab ( k SERIAL ); --&gt; internal counter = 0<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 1<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 10 );&nbsp; --&gt; internal counter = 10<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 11<br>
+&nbsp;&nbsp;&nbsp; DELETE FROM tab;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; --&gt;
+internal counter = 11<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 12</font></p>
+
+<p>PostgreSQL SERIAL data type:</p>
+
+<ul>
+  <li>PostgreSQL's SERIAL data type has the same name as in INFORMIX, but it behaves
+    differently.</li>
+  <li>You cannot define a start value ( SERIAL(100) ).</li>
+  <li>You cannot specify zero as serial value to get a new serial, the
+    PostgreSQL serial is based on default values, thus you must omit the serial column
+    in the INSERT statement.</li>
+  <li>When you INSERT a row with a specific value for the serial column, the
+    underlying sequence will not be incremented. As result, the next INSERT that
+    does not specify the serial column may get a new sequence that was already
+    inserted explicitly.</li>
+  <li>With some old versions of PostgreSQL, when you drop the table you must drop the sequence too.</li>
+</ul>
+
+<p>PostgreSQL sequences: 
+
+<ul>
+  <li>Sequences are totally detached from tables.</li>
+  <li>The purpose of sequences is to provide unique integer numbers.</li>
+  <li>Sequences are identified by a sequence name.</li>
+  <li>To create a sequence, you must use the CREATE SEQUENCE statement.<br>
+    Once a sequence is created, it is permanent (like a table).</li>
+  <li>To get a new sequence value, you must use the <b>nextval</b> function:<br>
+    <font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; INSERT INTO tab1 VALUES ( <b>nextval('tab1_seq')</b>, ... )</font></li>
+  <li>To get the last generated number, PostgreSQL provides the <b>currval</b> function :<br>
+    <font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SELECT <b>currval('tab1_seq')</b> </font></li>
+</ul>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The INFORMIX SERIAL data type can be emulated with three different methods, according to
+an FGLPROFILE setting:</p>
+
+<p>dbi.database.&lt;dbname&gt;.ifxemul.datatype.serial.emulation</p>
+
+<p>This entry can get the following values: &quot;native&quot;, &quot;regtable&quot;
+and &quot;trigseq&quot;.</p>
+
+<p><u>Using the native serial emulation</u></p>
+
+<p>The &quot;<b>native</b>&quot; mode is the default serial emulation mode,
+using the native PostgreSQL SERIAL data type. In this mode, the original type
+name will be left untouched by the SQL Translator and you will get the behavior
+of the PostgreSQL SERIAL column type, based on sequences.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b>  INSERT statements cannot use
+the serial column, even with a value zero. When using a NULL value, PostgreSQL
+will report an non-null constraint error. Thus, the serial column must be
+omitted from the INSERT statement.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> The <b>sqlca.sqlerrd[2]</b>  register
+<u> is not
+set</u> after an INSERT when using a PostgreSQL version prior to <b>8.3</b>.</p>
+
+<p>See also PostgreSQL documentation for more details about the native SERIAL
+type.</p>
+
+<p><u>Using the regtable serial emulation</u></p>
+
+With the &quot;<b>regtable</b>&quot; mode,
+      the SERIAL data type is emulated with a PostgreSQL <b>INTEGER</b>
+data type and <b>INSERT triggers</b> using the table <b>SERIALREG</b>
+ which is dedicated to sequence production.
+After an insert, <b>sqlca.sqlerrd[2]</b>  register holds the last generated serial value.
+
+<p>The triggers can be created <b>manually</b> during the application
+database installation procedure, or <b>automatically</b> from a BDL program: When a
+BDL program executes a CREATE [TEMP] TABLE with a SERIAL column, the database interface
+automatically converts the SERIAL data type to INTEGER and  dynamically creates the triggers.</p>
+
+<p>You must create the SERIALREG table as follows:<br><br>
+<font face="Courier New">CREATE TABLE SERIALREG (<br>
+&nbsp;&nbsp;&nbsp;&nbsp; TABLENAME VARCHAR(50) NOT NULL,<br>
+&nbsp;&nbsp;&nbsp;&nbsp; LASTSERIAL DECIMAL(20,0) NOT NULL,<br>
+&nbsp;&nbsp;&nbsp;&nbsp; PRIMARY KEY ( TABLENAME )<br>
+)</font></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> The SERIALREG table must be created before the triggers. The serial
+production is based on the SERIALREG table which registers the last generated number for
+each table. If you delete rows of this table, sequences will restart at 1 and you will get
+unexpected data.</p>
+
+<p>In database creation scripts, all SERIAL[(n)] data types
+must be converted to INTEGER data types and you must create one trigger for each
+table. To know how to write those triggers,&nbsp; you can create a small Genero
+program that creates a table with a SERIAL column. Set the FGLSQLDEBUG
+environment variable and run the program. The debug output will show you the
+native trigger creation command.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> With this emulation mode, INSERT statements using NULL for the SERIAL column will produce a new serial
+value:<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col1,col2) VALUES (NULL,'data')</font><br>
+This behavior is mandatory in order to support INSERT statements which do not use the serial column:<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col2) VALUES ('data')</font><br>
+Check if your application uses tables with a SERIAL column that can contain a NULL value.<br>
+Consider to remove the serial column from the INSERT statements.</p>
+
+<p><u>Using the trigseq serial emulation</u></p>
+
+<p>With &quot;<b>trigseq</b>&quot;,
+      the SERIAL data type is emulated with a PostgreSQL <b>INTEGER</b>
+data type and <b>INSERT triggers</b> using a sequence <b>&lt;tablename&gt;_seq</b>.
+      After an insert, <b>sqlca.sqlerrd[2]</b>  register holds the last generated serial value.</p>
+
+<p>The triggers can be created <b>manually</b> during the application
+database installation procedure, or <b>automatically</b> from a BDL program: When a
+BDL program executes a CREATE [TEMP] TABLE with a SERIAL column, the database interface
+automatically converts the SERIAL data type to INTEGER and  dynamically creates the triggers.</p>
+
+<p>In database creation scripts, all SERIAL[(n)] data types
+must be converted to INTEGER data types and you must create one trigger for each
+table. To know how to write those triggers,&nbsp; you can create a small Genero
+program that creates a table with a SERIAL column. Set the FGLSQLDEBUG
+environment variable and run the program. The debug output will show you the
+native trigger creation command.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> With this emulation mode,
+INSERT statements using NULL for the SERIAL column will produce a new serial
+value:<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col1,col2) VALUES (NULL,'data')</font><br>
+This behavior is mandatory in order to support INSERT statements which do not use the serial column:<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col2) VALUES ('data')</font><br>
+Check if your application uses tables with a SERIAL column that can contain a NULL value.<br>
+Consider to remove the serial column from the INSERT statements.</p>
+
+<p><u>Issues common to all serial emulation modes</u></p>
+
+<p><b><font color="#FF0000">Warning:</font></b>  <font >Since </font><b>sqlca.sqlerrd[2]</b>  <font >
+is defined as an INTEGER, it cannot hold values from BIGSERIAL (BIGINT) auto
+incremented columns. If you are using BIGSERIAL columns, you must query the sequence
+pseudo-column CURRVAL() or fetch the LASTSERIAL column from the SERIALREG table
+if used.</font></p>
+
+<p>For SQL portability, INSERT statements should be reviewed to remove the SERIAL column from
+the list.<br>
+For example, the following statement:<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col1,col2) VALUES (<b>0</b>, p_value)</font><br>
+can be converted to :<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col2) VALUES (p_value)<br>
+</font>Static SQL INSERT using records defined from the schema file must also be
+reviewed :<br>
+<font face="Courier New">&nbsp;&nbsp; DEFINE rec LIKE tab.*</font><br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab VALUES ( rec.*
+)&nbsp;&nbsp; -- will use the serial column</font><br>
+can be converted to :<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab VALUES rec.* -- without
+braces, serial column is removed</font></p>
+
+<hr>
+
+<h2><a name="ODIPGS006">ODIPGS006 - Outer joins</a></h3>
+
+</h2>
+
+<p>In INFORMIX SQL, outer tables can be defined in the FROM clause with the <b>OUTER</b> keyword:</p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM a, <b><font color="#0000A0">OUTER(b)</font></b>
+ WHERE a.key = b.akey</font></pre>
+  <pre><font face="Courier New">SELECT ... FROM a, <b><font color="#0000A0">OUTER(b,OUTER(c))</font></b>
+ WHERE a.key = b.akey
+   AND b.key1 = c.bkey1
+   AND b.key2 = c.bkey2 </font></pre>
+</blockquote>
+
+<p>PostgreSQL supports the ANSI outer join syntax:</p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM <b><font color="#0000A0">cust LEFT OUTER JOIN order
+                     ON cust.key = order.custno</font></b></font></pre>
+  <pre><font face="Courier New">SELECT ...
+  FROM <b><font color="#0000A0">cust</font></b></font><b><font
+face="Courier New" color="#0000A0"> LEFT OUTER JOIN order
+                 LEFT OUTER JOIN item
+                 ON order.key = item.ordno
+            ON cust.key = order.custno</font></b><font
+face="Courier New">
+ WHERE order.cdate &gt; current date</font></pre>
+</blockquote>
+
+<p>See the PostgreSQL reference for a complete description of the syntax.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>For better SQL portability, you should use the ANSI outer join syntax instead
+of the old Informix OUTER syntax.</p>
+
+<p>The PostgreSQL interface can convert most INFORMIX OUTER specifications to ANSI outer joins.</p>
+
+<p>Prerequisites:</p>
+
+<ol>
+  <li>In the FROM clause, the main table must be the first item and the
+    outer tables must figure from left to right in the order of outer levels.<br>
+    &nbsp;&nbsp; Example which does not work : &quot;<font face="Courier New">FROM OUTER(tab2), tab1</font>&quot;.</li>
+  <li>The outer join in the WHERE part must use the table name as prefix.<br>
+    &nbsp;&nbsp; Example : &quot;<font face="Courier New">WHERE tab1.col1 = tab2.col2</font>&quot;.</li>
+</ol>
+
+<p>Restrictions:</p>
+
+<ol>
+  <li>Additional conditions on outer table columns cannot be detected and therefore are not supported:<br>
+    &nbsp;&nbsp;Example : &quot;... <font face="Courier New">FROM tab1, OUTER(tab2) WHERE tab1.col1 = tab2.col2 AND
+    tab2.colx &gt; 10</font>&quot;.</li>
+  <li>Statements composed of 2 or more SELECT instructions using OUTERs are not supported.<br>
+    &nbsp; Example : &quot;<font face="Courier New">SELECT ... UNION SELECT&quot; or &quot;SELECT ... WHERE col IN (SELECT...)</font>&quot;</li>
+</ol>
+
+<p>Remarks:</p>
+
+<ol>
+  <li>Table aliases are detected in OUTER expressions.<br>
+    &nbsp;&nbsp; OUTER example with table alias : &quot;<font face="Courier New">OUTER( tab1 alias1)</font>&quot;.</li>
+  <li>In the outer join, &lt;outer table&gt;.&lt;col&gt; can be placed on
+    both right or left  sides  of the equal sign.<br>
+    &nbsp;&nbsp; OUTER join example with table on the left : &quot;<font face="Courier New">WHERE outertab.col1 =
+    maintab.col2</font> &quot;.</li>
+  <li>Table names detection is not case-sensitive.<br>
+    &nbsp;&nbsp; Example : &quot;<font face="Courier New">SELECT ... FROM tab1, TAB2 WHERE tab1.col1 = tab2.col2</font>&quot;.</li>
+  <li><a href="#ODIPGS017">Temporary tables</a> are supported in OUTER specifications.</li>
+</ol>
+
+<hr>
+
+<h2><a name="ODIPGS007a">ODIPGS007a - Database concepts</a></h3>
+
+</h2>
+
+<p>Most BDL applications use only one database entity (in the meaning of INFORMIX). But the same BDL application can connect to different occurrences of the same database schema, allowing several users to connect to those different databases.</p>
+
+<p>Like INFORMIX servers, PostgreSQL can handle multiple database entities. Tables created by a user can be accessed without the owner prefix by other users as long as they have access privileges to these tables.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Create a PostgreSQL database for each INFORMIX database.</p>
+
+<hr>
+
+<h2><a name="ODIPGS008a">ODIPGS008a - Data consistency and concurrency management</a></h3>
+
+</h2>
+
+<p><b>Data consistency</b> involves readers which want to access data
+currently modified by writers and <b>concurrency data access</b> involves several writers
+accessing the same data for modification. <b>Locking granularity</b> defines the amount of
+data concerned when a lock is set (row, page, table, ...).</p>
+
+<p><b>INFORMIX</b></p>
+
+<p>INFORMIX uses a locking mechanism to handle data consistency and concurrency.
+When a process changes database information with UPDATE, INSERT or DELETE,
+an <b>exclusive lock</b> is set on the touched rows. The lock remains active until the end
+of the transaction. Statements performed outside a transaction are treated as a
+transaction containing a single operation and therefore release the locks immediately
+after execution. SELECT statements can set <b>shared locks</b> according to the
+<b>isolation level</b>. In case of locking conflicts (for example, when two processes want to acquire
+an exclusive lock on the same row for modification or when a writer is trying to modify
+data protected by a shared lock), the behavior of a process can be changed by setting the 
+<b>lock
+wait mode</b>.</p>
+
+<p>Control:</p>
+
+<ul>
+  <li>Lock wait mode : SET LOCK MODE TO ...</li>
+  <li>Isolation level : SET ISOLATION TO ...</li>
+  <li>Locking granularity : CREATE TABLE ... LOCK MODE {PAGE|ROW}</li>
+  <li>Explicit exclusive lock : SELECT ... FOR UPDATE</li>
+</ul>
+
+<p>Defaults:</p>
+
+<ul>
+  <li>The default isolation level is read committed.</li>
+  <li>The default lock wait mode is &quot;not wait&quot;.</li>
+  <li>The default locking granularity is per page.</li>
+</ul>
+
+<p><u>PostgreSQL</u></p>
+
+<p>When data is modified, <b>exclusive locks</b> are set and held until
+the end of the transaction. For data consistency, PostgreSQL uses a <b>multi-version
+consistency model</b>: A copy of the original row is kept for readers before performing
+writer modifications. Readers do not have to wait for writers as in INFORMIX. The simplest
+way to think of PostgreSQL implementation of read consistency is to imagine each user
+operating a private copy of the database, hence the multi-version consistency model. The 
+<b>lock wait</b><u> mode</u> cannot be changed as in INFORMIX. Locks are set at the 
+<b>row level</b>
+in PostgreSQL and this cannot be changed.</p>
+
+<p>Control:</p>
+
+<ul>
+  <li>No lock wait mode control is provided.</li>
+  <li>Isolation level : SET TRANSACTION ISOLATION LEVEL ...</li>
+  <li>Explicit exclusive lock : SELECT ... FOR UPDATE</li>
+</ul>
+
+<p>Defaults:</p>
+
+<ul>
+  <li>The default isolation level is Read Committed.</li>
+</ul>
+
+<p>The main difference between INFORMIX and PostgreSQL is that readers do not have to wait for writers in PostgreSQL.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+  <p>The <font size="2" face="Courier New">
+  SET ISOLATION TO ... </font>INFORMIX syntax is replaced by <font size="2" face="Courier New">SET
+  SESSION CHARACTERISTICS AS TRANSACTION ISOLATION LEVEL ... </font>in
+  PostgreSQL. The next table shows the isolation level mappings done by the
+  PostgreSQL database driver:</p>
+
+<div align="center">
+  <center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><font color="#0000FF"><b>SET ISOLATION
+      instruction in program</b></font></td>
+    <td width="60%" bgcolor="#C0C0C0"><font color="#0000FF"><b>Native SQL
+      command</b></font></td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO DIRTY READ</td>
+    <td width="60%">SET SESSION CHARACTERISTICS AS<br>
+      &nbsp;TRANSACTION ISOLATION LEVEL READ COMMITTED</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO COMMITTED READ<br>
+      &nbsp; [READ COMMITTED] [RETAIN UPDATE LOCKS]</td>
+    <td width="60%">SET SESSION CHARACTERISTICS AS<br>
+      &nbsp;TRANSACTION ISOLATION LEVEL READ COMMITTED</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO CURSOR STABILITY</td>
+    <td width="60%">SET SESSION CHARACTERISTICS AS<br>
+      &nbsp;TRANSACTION ISOLATION LEVEL READ COMMITTED</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO REPEATABLE READ</td>
+    <td width="60%">SET SESSION CHARACTERISTICS AS<br>
+      &nbsp;TRANSACTION ISOLATION LEVEL SERIALIZABLE</td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<p>For portability, it is recommended that you work with INFORMIX in the read committed isolation level, make processes wait for each other (lock mode wait), and create tables with the &quot;lock mode row&quot; option.</p>
+
+<p>See INFORMIX and PostgreSQL documentation for more details about data consistency, concurrency and locking mechanisms.</p>
+
+<hr>
+
+<h2><a name="ODIPGS008b">ODIPGS008b - SELECT FOR UPDATE</a></h3>
+
+</h2>
+
+<p>A lot of BDL programs use pessimistic locking in order to avoid several users editing the same rows at the same time. </p>
+
+<p><font face="Courier New">&nbsp;&nbsp; DECLARE cc CURSOR FOR<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SELECT ... FROM tab WHERE ... FOR UPDATE<br>
+&nbsp;&nbsp; OPEN cc<br>
+&nbsp;&nbsp; FETCH cc &lt;-- lock is acquired<br>
+&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp; CLOSE cc &lt;-- lock is released</font></p>
+
+<p>In both INFORMIX and PostgreSQL, locks are released when closing the cursor or when the transaction ends.</p>
+
+<p>PostgreSQL locking granularity is at the row level.</p>
+
+<p>To control the behavior of the program when locking rows, INFORMIX provides a specific instruction to set the wait mode:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; SET LOCK MODE TO { WAIT | NOT WAIT | WAIT <em>seconds</em> }</font></p>
+
+<p>The default mode is NOT WAIT. This as an INFORMIX specific SQL statement.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> PostgreSQL has no equivalent for &quot;SET LOCK MODE TO NOT WAIT&quot;.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> The database
+interface is based on an emulation of an INFORMIX engine using transaction logging.
+Therefore, opening a SELECT ... FOR UPDATE cursor declared outside a transaction will
+raise an SQL error -255 (not in transaction).</p>
+
+<p>You must review the program logic if you use pessimistic locking because it is based on the NOT WAIT mode which is not supported by PostgreSQL.</p>
+
+<hr>
+
+<h2><a name="ODIPGS009">ODIPGS009 - Transactions handling</a></h3>
+
+</h2>
+
+<p>INFORMIX and PostgreSQL handle transactions in a similar manner. </p>
+
+<p>INFORMIX native mode (non ANSI):</p>
+
+<ul>
+  <li>Transactions are started with BEGIN WORK.</li>
+  <li>Transactions are validated with COMMIT WORK.</li>
+  <li>Transactions are canceled with ROLLBACK WORK.</li>
+  <li>Savepoints can be set with SAVEPOINT <i>name</i> [UNIQUE].</li>
+  <li>Transactions can be rolled back to a savepoint with ROLLBACK [WORK] TO
+    SAVEPOINT [<i>name</i>].</li>
+  <li>Savepoints can be released with RELEASE SAVEPOINT <i>name</i>.</li>
+  <li>Statements executed outside of a transaction are automatically committed.</li>
+  <li>DDL statements can be executed (and canceled) in transactions.</li>
+</ul>
+
+<p>PostgreSQL supports transaction with savepoints:</p>
+
+<ul>
+  <li>Transactions are started with BEGIN WORK. </li>
+  <li>Transactions are validated with COMMIT WORK.</li>
+  <li>Transactions are canceled with ROLLBACK WORK.</li>
+  <li>Savepoints can be placed with SAVEPOINT <i>name</i>.</li>
+  <li>Transactions can be rolled back to a savepoint with ROLLBACK
+    TO SAVEPOINT <i>name</i>.</li>
+  <li>Savepoints can be be released with RELEASE SAVEPOINT <i>name</i>.</li>
+  <li>Statements executed outside of a transaction are automatically committed.</li>
+  <li>DDL statements can be executed (and canceled) in transactions.</li>
+  <li>If an SQL error occurs in a transaction, the whole transaction is aborted.</li>
+</ul>
+
+<p>Transactions in stored procedures: avoid  using transactions in stored  procedures to allow the client applications to handle transactions, according to the transaction model.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  The main difference between INFORMIX
+and PostgreSQL resides in the fact that PostgreSQL cancels the whole
+transaction if an SQL error occurs in one of the statements executed inside the
+transaction. The following code example illustrates this difference:</p>
+
+<p><font face="Courier New">
+&nbsp;&nbsp; CREATE TABLE tab1 ( k INT PRIMARY KEY, c CHAR(10) )<br>
+&nbsp;&nbsp; WHENEVER ERROR CONTINUE<br>
+&nbsp;&nbsp; BEGIN WORK<br>
+&nbsp;&nbsp; INSERT INTO tab1 ( 1, 'abc' )<br>
+&nbsp;&nbsp; INSERT INTO tab1 ( 1, 'abc' ) -- PK constraint violation = SQL
+Error, whole TX aborted<br>
+&nbsp;&nbsp; COMMIT WORK</font></p>
+
+<p>With INFORMIX, this code will leave the table with one row inside, since the
+first INSERT statement succeeded. With PostgreSQL, the table will remain empty
+after executing this piece of code, because the server will rollback the whole
+transaction.&nbsp;To workaround this problem in PostgreSQL you can use SAVEPOINT
+as described below in the <i>Solution</i>.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>INFORMIX transaction handling commands are automatically converted to PostgreSQL instructions to start, validate or cancel transactions.</p>
+
+<p>Regarding the transaction control instructions, the BDL applications do not have to be modified in order to work with
+PostgreSQL. </p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  You must review the SQL
+statements inside BEGIN WORK / COMMIT WORK instruction and check if these can
+raise and SQL error. The SQL statements that can potentially raise an SQL error
+must be protected with a SAVEPOINT. If an error occurs, just rollback to the
+savepoint:</p>
+
+<p><font face="Courier New">
+&nbsp;&nbsp; CREATE TABLE tab1 ( k INT PRIMARY KEY, c CHAR(10) )<br>
+&nbsp;&nbsp; WHENEVER ERROR CONTINUE<br>
+&nbsp;&nbsp; BEGIN WORK<br>
+&nbsp;&nbsp; INSERT INTO tab1 ( 1, 'abc' )<br>
+<b>
+&nbsp;&nbsp; CALL sql_protect()<br>
+</b>
+&nbsp;&nbsp; INSERT INTO tab1 ( 1, 'abc' ) -- PK constraint violation = SQL
+Error<br>
+<b>
+&nbsp;&nbsp; CALL sql_unprotect()<br>
+</b>
+&nbsp;&nbsp; COMMIT WORK<br>
+&nbsp;&nbsp; ...<br>
+<br>
+&nbsp;&nbsp; FUNCTION sql_protect()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IF NOT dbtype == &quot;PGS&quot; THEN RETURN END
+IF<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EXECUTE IMMEDIATE &quot;SAVEPOINT _sql_protect_&quot;<br>
+&nbsp;&nbsp; END FUNCTION<br>
+<br>
+&nbsp;&nbsp; FUNCTION sql_unprotect()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IF NOT dbtype == &quot;PGS&quot; THEN RETURN END
+IF<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IF SQLCA.SQLCODE &lt; 0 THEN<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EXECUTE IMMEDIATE
+&quot;ROLLBACK TO SAVEPOINT _sql_protect_&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ELSE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EXECUTE IMMEDIATE &quot;RELEASE
+SAVEPOINT _sql_protect_&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END IF<br>
+&nbsp;&nbsp; END FUNCTION</font></p>
+
+<p><b><font color="#FF0000">Warning:</font></b>  If you want to use savepoints,
+do not use the UNIQUE keyword in the savepoint declaration, always specify the
+savepoint name in ROLLBACK TO SAVEPOINT, and do not drop savepoints with RELEASE
+SAVEPOINT.</p>
+
+<hr>
+
+<h2><a name="ODIPGS010">ODIPGS010 - Handling SQL errors when preparing statements</a></h3>
+
+</h2>
+
+<p>The PostgreSQL connector is implemented with the PostgreSQL <b>libpq</b> API.
+This library does not provide a way to send SQL statements
+to the database server during the BDL PREPARE instruction, like the INFORMIX
+interface. The statement is sent to the server only when opening the cursors or
+when executing the statement, because the database driver needs to provide
+the data types of the SQL parameters (only known at OPEN / EXECUTE time).</p>
+
+<p>Therefore, when preparing an SQL statement with the BDL PREPARE instruction, no SQL errors can be returned if the statement has syntax errors or if a column or a table name does not exist in the database.</p>
+
+<p>However, an SQL error will occur after the OPEN or EXECUTE instructions.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Check that your BDL programs do not test STATUS or SQLCA.SQLCODE variable just after PREPARE instructions.</p>
+
+<p>Change the program logic in order to handle the SQL errors when opening the cursors (OPEN) or when executing SQL statements (EXECUTE).</p>
+
+<hr>
+
+<h2><a name="ODIPGS041">ODIPGS041 - BOOLEAN data type</a>
+
+</h2>
+
+<p>INFORMIX supports the BOOLEAN data type, which can store 't' or 'f' values.
+Genero BDL implements the BOOLEAN data type in a different way: As in other
+programming languages, Genero BOOLEAN stores integer values 1 or 0 (for TRUE or
+FALSE). The type was designed this way to assign the result of a Boolean
+expression to a BOOLEAN variable.</p>
+
+<p>PostgreSQL supports the BOOLEAN data type and stores 't' or 'f' values for
+TRUE and FALSE representation. It is not possible to insert the integer values 1
+or 0: Values must be true, false, '1' or '0'.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The PostgreSQL database interface supports the BOOLEAN data type, and
+converts the BDL BOOLEAN integer values to a CHAR(1) of 't' or 'f'.</p>
+
+<hr>
+
+<h2><a name="ODIPGS011a">ODIPGS011a - CHARACTER data types</a></h3>
+
+</h2>
+
+<p>INFORMIX supports following character data types:</p>
+
+<ul>
+  <li>CHAR(N) with N&lt;= 32767 bytes</li>
+  <li>VARCHAR(N[,M]) with N&lt;=255 bytes</li>
+  <li>NCHAR(N) with N&lt;= 32767 bytes</li>
+  <li>NVARCHAR(N[,M]) with N&lt;=255 bytes</li>
+  <li>LVARCHAR (not covered in this section)</li>
+</ul>
+
+<p>In INFORMIX, both CHAR/VARCHAR and NCHAR/ NVARCHAR data types can be used to store
+single-byte or multi-byte encoded character strings.
+The only difference between CHAR/VARCHAR and NCHAR/NVARCHAR is for
+sorting: N[VAR]CHAR types use the collation order, while [VAR]CHAR types use the byte order.
+The character set used to store strings in CHAR/VARCHAR/NCHAR/NVARCHAR columns
+is defined by the DB_LOCALE environment variable. The character set used by
+applications is defined by the CLIENT_LOCALE environment variable. Note that
+INFORMIX uses Byte Length Semantics (the size N that you specify in [VAR]CHAR(N)
+is expressed in bytes, not characters as in some other databases)</p>
+
+<p>PostgreSQL provides the following character types: </p>
+
+<ul>
+  <li>CHAR(N) with N&lt;= 10485760 characters</li>
+  <li>VARCHAR(N) with N&lt;= 10485760 characters</li>
+  <li>TEXT with a limit of 1GB</li>
+</ul>
+
+<p>In PostgreSQL, CHAR, VARCHAR and TEXT types store data in single byte or
+multi-byte character sets. For CHAR and VARCHAR, the size is specified in a
+number of characters, not bytes. The character set used to store data for these
+types is defined by the database character set, which can be specified when you
+create the database with the <i>createdb</i> tool or the CREATE DATABASE SQL
+command. </p>
+
+<p>Automatic character set conversion between the PostgreSQL client and server
+is supported. You must properly specify the client character set for PostgreSQL,
+this can be done with different ways, for example with the SET CLIENT_ENCODING
+TO SQL command, or with configuration parameters. See PostgreSQL documentation
+for more details. </p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>INFORMIX [VAR]CHAR(N) types can be mapped to PostgreSQL [VAR]CHAR(N) types.</p>
+
+<p>  Keep in mind that PostgreSQL
+uses Character Length Semantics regarding CHAR/VARCHAR sizes: When you define a
+CHAR(20) and the database character set is multi-byte, the PostgreSQL column can hold
+more bytes/characters as the INFORMIX CHAR(20) type. For example, in UTF-8, you
+can store 20 é (e-acute) characters in PGS CHAR(20), but only IFX CHAR(20) can
+only store 10 of such characters, because in UTF-8, é is encoded with 2 bytes.
+Even if Genero uses Byte Length Semantics when you define a CHAR/VARCHAR
+variable, a good practice is to use the same sizes for PostgreSQL CHAR/VARCHAR
+columns: You could then store more characters in the PGS columns as the Genero
+variable can hold, but this is not a problem.</p>
+
+<p>You can store single-byte or multi-byte character strings in PostgreSQL CHAR, VARCHAR and
+TEXT columns.</p>
+
+<p>Do not forget to properly define the client character set, which must
+correspond to the runtime system character set.</p>
+
+<p>See also the section about <a href="Localization.html">Localization</a>.</p>
+
+<hr>
+
+<h2><a name="ODIPGS011b">ODIPGS011b - The LENGTH( ) function </a></h3>
+
+</h2>
+
+<p><b><font color="#FF0000">Warning:</font></b> PostgreSQL raises an error if the LENGTH() parameter is NULL. INFORMIX returns zero instead.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>The PostgreSQL database interface cannot simulate the behavior of the INFORMIX LENGTH() SQL function.</p>
+
+<p>Review the program logic and make sure you do not pass NULL values to the LENGTH() SQL function.</p>
+
+<hr>
+
+<h2><a name="ODIPGS012">ODIPGS012 - Constraints</a></h2>
+
+<p><b>Constraint naming syntax:</b></p>
+
+<p>Both INFORMIX and PostgreSQL support primary key, unique, foreign key,
+default and check constraints, but the constraint naming syntax is different.
+PostgreSQL expects the &quot;CONSTRAINT&quot; keyword <b>before</b> the
+constraint specification and INFORMIX expects it <b>after</b>.</p>
+
+<p><b>UNIQUE constraint example:</b></p>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>INFORMIX</b></font></td>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>PostgreSQL</b></font></td>
+  </tr>
+  <tr>
+    <td width="50%"><font face="Courier New">CREATE TABLE scott.emp (<br>
+    ...<br>
+    empcode CHAR(10) UNIQUE<br>
+    &nbsp;&nbsp;&nbsp;<b>[CONSTRAINT pk_emp]</b>,<br>
+    ...</font></td>
+    <td width="50%"><font face="Courier New">CREATE TABLE scott.emp (<br>
+    ...<br>
+    empcode CHAR(10)<br>
+    &nbsp;&nbsp;&nbsp;<b>[CONSTRAINT pk_emp]</b>
+    UNIQUE,<br>
+    ...</font></td>
+  </tr>
+</table>
+
+<p><b>Unique constraints:</b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  When using a unique constraint,
+INFORMIX allows only one row with a NULL value, while PostgreSQL allows several
+rows with NULL!</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The database interface does not convert constraint naming expressions when creating tables from BDL programs. 
+Review the database creation scripts to adapt the constraint naming clauses for PostgreSQL.</p>
+
+<hr>
+
+<h2><a name="ODIPGS013">ODIPGS013 - Triggers</a></h2>
+
+<p>INFORMIX and PostgreSQL provide triggers with similar features, but the trigger creation syntax and the programming languages are totally different.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>INFORMIX triggers must be converted to PostgreSQL triggers &quot;by hand&quot;.</p>
+
+<hr>
+
+<h2><a name="ODIPGS014">ODIPGS014 - Stored procedures</a></h3>
+
+</h2>
+
+<p>Both INFORMIX and PostgreSQL support stored procedures, but the programming languages are totally different. With PostgreSQL you must create the stored procedure language before writing triggers or stored procedures.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>INFORMIX stored procedures must be converted to PostgreSQL manually.</p>
+
+<hr>
+
+<h2><a name="ODIPGS016a">ODIPGS016a - Defining database users</a></h3>
+
+</h2>
+
+<p>INFORMIX users are defined at the operating system level, they must be members of the 'informix' group, and the database administrator must grant CONNECT, RESOURCE or DBA privileges to those users.</p>
+
+<p>PostgreSQL users must be registered in the database. They are created by the <b>createuser</b> utility:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; $ createuser --username=&lt;username&gt; --password</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>According to the application logic (is it a multi-user application ?), you have to create one or several PostgreSQL users.</p>
+
+<hr>
+
+<h2><a name="ODIPGS016b">ODIPGS016b - Setting privileges</a></h3>
+
+</h2>
+
+<p>INFORMIX and PostgreSQL user privileges management are quite similar.</p>
+
+<p>PostgreSQL provides <b>user groups</b> to grant or revoke permissions to more than one user at the same time.</p>
+
+<hr>
+
+<h2><a name="ODIPGS017">ODIPGS017 - Temporary tables </a></h3>
+
+</h2>
+
+<p>INFORMIX temporary tables are created through the
+<font face="Courier New" ><b> CREATE TEMP TABLE </b></font>
+DDL instruction or through a
+<b><font face="Courier New" >SELECT ... INTO TEMP </font></b> statement.
+Temporary tables are automatically dropped when the SQL session ends, but they can be
+dropped with the DROP TABLE command. There is no name conflict when several users create
+temporary tables with the same name.</p>
+
+<p>INFORMIX allows you to create indexes on temporary tables. No name conflict occurs when several users create an index on a temporary table by using the same index identifier.</p>
+
+<p>PostgreSQL support temporary tables as INFORMIX does, with a little syntax difference in the SELECT INTO TEMP instruction.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Temporary tables are well supported with native PostgreSQL temp tables.</p>
+
+<hr>
+
+<h2><a name="ODIPGS018">ODIPGS018 - Substrings in SQL</a></h3>
+
+</h2>
+
+<p>INFORMIX SQL statements can use subscripts on columns defined with the character data type:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 WHERE <b>col1[2,3]</b> = 'RO' <br>
+&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 WHERE <b>col1[10]</b>&nbsp;
+= 'R'&nbsp;&nbsp; -- Same as col1[10,10]<br>
+&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <b>col1[2,3]</b>= 'RO' WHERE ...<br>
+&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 ORDER BY <b>col1[1,3]</b></font></p>
+
+<p>.. while PostgreSQL provides the SUBSTR( ) function, to extract a substring from a string expression:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT .... FROM tab1 WHERE <b>SUBSTRING(col1 from 2 for 2)</b> = 'RO'<br>
+&nbsp;&nbsp;&nbsp; SELECT <b>SUBSTRING('Some text' from 6 for 3)</b> ...&nbsp;&nbsp; -- Gives 'tex'</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>You must replace all INFORMIX col[x,y] expressions by SUBSTRING( col from x for (y-x+1) ).</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> In UPDATE
+instructions, setting column values through subscripts will produce an error with PostgreSQL :<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <b>col1[2,3]</b> = 'RO' WHERE ...</font><br>
+is converted to:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <b>SUBSTRING(col1 from 2 for (3-2+1))</b> = 'RO' WHERE ...</font></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Column
+subscripts in ORDER BY expressions are also converted and produce an error with PostgreSQL:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 ORDER BY <b>col1[1,3]</b></font><br>
+is converted to:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 ORDER BY <b>SUBSTRING(col1 from 1 for(3-1+1))</b></font></p>
+
+<hr>
+
+<h2><a name="ODIPGS019">ODIPGS019 - Name resolution of SQL objects</a></h3>
+
+</h2>
+
+<p>INFORMIX uses the following form to identify an SQL object : </p>
+
+<p><font face="Courier New">&nbsp; [database[@dbservername]:][{owner|&quot;owner&quot;}.]identifier</font></p>
+
+<p>With PostgreSQL, an object name takes the following form:<br>
+<font face="Courier New">&nbsp; [owner.]identifier</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Check for single or double quoted table or column names in your source and remove them.</p>
+
+<hr>
+
+<h2><a name="ODIPGS020">ODIPGS020 - String delimiters</a></h3>
+
+</h2>
+
+<p>The ANSI string delimiter character is the single quote ( 'string'). Double quotes are used to delimit database object names (&quot;object-name&quot;).</p>
+
+<p>Example:<font face="Courier New"> WHERE &quot;tabname&quot;.&quot;colname&quot; = 'a string value'</font></p>
+
+<p>INFORMIX allows double quotes as string delimiters, but PostgreSQL doesn't. This is important since many BDL programs use that character to delimit the strings in SQL commands.</p>
+
+<p>Note: This problem concerns only double quotes within SQL statements. Double quotes used in pure BDL string expressions are not subject to SQL compatibility problems.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>The PostgreSQL database interface can automatically replace all double quotes by single quotes.</p>
+
+<p>Escaped string delimiters can be used inside strings like following:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; 'This is a single quote: '''<br>
+&nbsp;&nbsp;&nbsp;&nbsp; 'This is a single quote : \''<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &quot;This is a double quote : &quot;&quot;&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &quot;This is a double quote : \&quot;&quot;</font></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Database
+object names cannot be delimited by double quotes because the database interface
+cannot determine the difference between a database object name and a quoted string!</p>
+
+<p>For example, if the program executes the SQL statement:<br>
+<font face="Courier New">&nbsp;&nbsp;WHERE &quot;tabname&quot;.&quot;colname&quot; = &quot;a string value&quot;</font><br>
+replacing all double quotes by single quotes would produce:<br>
+<font face="Courier New">&nbsp;WHERE 'tabname'.'colname' = 'a string value'</font><br>
+This would produce an error since
+<font face="Courier New">'tabname'.'colname'</font> is not allowed by PostgreSQL.</p>
+
+<p>Although double quotes are replaced automatically in SQL statements, you should use only single quotes to enforce portability.</p>
+
+<hr>
+
+<h2><a name="ODIPGS021">ODIPGS021 - NUMERIC data types</a></h3>
+
+</h2>
+
+<p>INFORMIX supports several data types to store numbers:</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><font color="#0000FF"><b>INFORMIX Data Type</b></font></td>
+    <td width="60%" bgcolor="#C0C0C0"><font color="#0000FF"><b>Description</b></font></td>
+  </tr>
+  <tr>
+    <td width="40%">SMALLINT</td>
+    <td width="60%">16 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">INT/INTEGER</td>
+    <td width="60%">32 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">BIGINT</td>
+    <td width="60%">64 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">INT8</td>
+    <td width="60%">64 bit signed integer (replaced by BIGINT)</td>
+  </tr>
+  <tr>
+    <td width="40%">SMALLINT</td>
+    <td width="60%">16 bit integer&nbsp; ( -2^15 to 2^15 )</td>
+  </tr>
+  <tr>
+    <td width="40%">INT/INTEGER</td>
+    <td width="60%">32 bit integer&nbsp; ( -2^31 to 2^31 )</td>
+  </tr>
+  <tr>
+    <td width="40%">DEC/DECIMAL(p)</td>
+    <td width="60%">Floating-point decimal number</td>
+  </tr>
+  <tr>
+    <td width="40%">DEC/DECIMAL(p,s)</td>
+    <td width="60%">Fixed-point decimal number</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY</td>
+    <td width="60%">Equivalent to DECIMAL(16,2)</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY(p)</td>
+    <td width="60%">Equivalent to DECIMAL(p,2)</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY(p,s)</td>
+    <td width="60%">Equivalent to DECIMAL(p,s)</td>
+  </tr>
+  <tr>
+    <td width="40%">REAL/SMALLFLOAT</td>
+    <td width="60%">approx floating point (C float)</td>
+  </tr>
+  <tr>
+    <td width="40%">DOUBLE PREC./FLOAT</td>
+    <td width="60%">approx floating point (C double) </td>
+  </tr>
+</table>
+</center></div>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>PostgreSQL supports the following data types to store numbers:</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><b><font color="#0000FF">PostgreSQL data type</font></b></td>
+    <td width="60%" bgcolor="#C0C0C0"><b><font color="#0000FF">Description</font></b></td>
+  </tr>
+  <tr>
+    <td width="40%">NUMERIC(p,s) / DECIMAL(p,s)</td>
+    <td width="60%">Decimals with precision and scale (fractional part)</td>
+  </tr>
+  <tr>
+    <td width="40%">NUMERIC(p) / DECIMAL(p)</td>
+    <td width="60%">Integers with p digits (no fractional part)</td>
+  </tr>
+  <tr>
+    <td width="40%">NUMERIC / DECIMAL</td>
+    <td width="60%">Floating point numbers (no limit)</td>
+  </tr>
+  <tr>
+    <td width="40%">FLOAT4</td>
+    <td width="60%">16 bit variable precision</td>
+  </tr>
+  <tr>
+    <td width="40%">FLOAT8</td>
+    <td width="60%">32 bit variable precision</td>
+  </tr>
+  <tr>
+    <td width="40%">INT2</td>
+    <td width="60%">16 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">INT4</td>
+    <td width="60%">32 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">INT8</td>
+    <td width="60%">64 bit signed integer</td>
+  </tr>
+</table>
+</center></div>
+
+<p>ANSI types like SMALLINT, INTEGER, FLOAT are supported by PostgreSQL as aliases to INT2, INT4 and FLOAT8 native types.</p>
+
+<p>INFORMIX DECIMAL(p) floating point types are converted to DECIMAL without
+precision/scale, to store any floating point number in PostgreSQL.</p>
+
+<hr>
+
+<h2><a name="ODIPGS022">ODIPGS022 - Using column aliases in SELECT</a></h3>
+
+</h2>
+
+<p>PostgreSQL expects the ANSI notation for column aliases :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; SELECT col1 <b>AS col1_alias</b> FROM ...</font></p>
+
+<p>INFORMIX supports the ANSI notation.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> The
+database interface cannot convert INFORMIX alias specification to the ANSI notation.</p>
+
+<p>Review your programs and replace the INFORMIX notation with the ANSI form.</p>
+
+<hr>
+
+<h2><a name="ODIPGS024">ODIPGS024 - MATCHES and LIKE in SQL conditions</a></h3>
+
+</h2>
+
+<p>INFORMIX supports MATCHES and LIKE in SQL statements.  PostgreSQL supports the LIKE statement as in INFORMIX, plus the ~ operators that are similar but different from the INFORMIX MATCHES operator.</p>
+
+<p>MATCHES allows brackets to specify a set of matching characters at a given position :<br>
+<font face="Courier New">&nbsp;&nbsp; ( col MATCHES '[Pp]aris' )</font>.<br>
+<font face="Courier New">&nbsp;&nbsp; ( col MATCHES '[0-9][a-z]*' )</font>.<br>
+In this case, the LIKE statement has not equivalent feature.</p>
+
+<p>The following substitutions must be made to convert a MATCHES condition to a LIKE condition : 
+
+<ul>
+  <li>MATCHES keyword must be replaced by LIKE.</li>
+  <li>All '<font face="Courier">*</font>'
+    characters must be replaced by '</font><font face="Courier">%</font>'.</li>
+  <li>All '<font face="Courier">?</font>'
+    characters must be replaced by '</font><font face="Courier">_</font>'.</li>
+  <li>Remove all brackets expressions.</li>
+</ul>
+
+<p>PostgreSQL ~ operator expects regular expressions as follows:<br>
+<font face="Courier New">&nbsp;&nbsp; ( col ~ 'a.*' )</font></p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> SQL statements using MATCHES expressions must be reviewed in order to use LIKE expressions.</p>
+
+<p>See also: <a href="SqlProgramming.html#PORT_MATCHES">MATCHES operator in SQL
+Programming</a>.</p>
+
+<hr>
+
+<h2><a name="ODIPGS025">ODIPGS025 - INFORMIX specific SQL statements in BDL </a></h3>
+
+</h2>
+
+<p>The BDL&nbsp;compiler supports several INFORMIX specific SQL statements that have no meaning when using PostgreSQL.</p>
+
+<ul>
+  <li>CREATE DATABASE</li>
+  <li>DROP DATABASE</li>
+  <li>START DATABASE (SE only)</li>
+  <li>ROLLFORWARD DATABASE</li>
+  <li>SET [BUFFERED] LOG</li>
+  <li>CREATE TABLE with special options (storage, lock mode, etc.)</li>
+</ul>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Review your BDL source and remove all static SQL statements which are INFORMIX specific.</p>
+
+<hr>
+
+<h2><a name="ODIPGS028">ODIPGS028 - INSERT cursors</a></h3>
+
+</h2>
+
+<p>INFORMIX supports insert cursors. An &quot;insert cursor&quot; is a special BDL cursor declared with an INSERT statement instead of a SELECT statement. When this kind of cursor is open, you can use the PUT instruction to add rows and the FLUSH instruction to insert the records into the database.</p>
+
+<p>For INFORMIX database with transactions, OPEN, PUT and FLUSH instructions must be executed within a transaction.</p>
+
+<p>PostgreSQL does not support insert cursors.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Insert cursors are emulated by the PostgreSQL database interface.</p>
+
+<hr>
+
+<h2><a name="ODIPGS030">ODIPGS030 - Very large data types</a></h3>
+
+</h2>
+
+<p>Both INFORMIX and PostgreSQL Server provide special data types to store very large texts or
+images:</p>
+
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="33%"><font color="#0000FF"><b>INFORMIX Data
+    Type</b></font></td>
+    <td bgcolor="#C0C0C0" width="33%"><font color="#0000FF"><b>PostgreSQL</b></font><font color="#0000FF"><b> Data Type</b></font></td>
+  </tr>
+  <tr>
+    <td width="33%">TEXT</td>
+    <td width="33%">TEXT</td>
+  </tr>
+  <tr>
+    <td width="33%">BYTE</td>
+    <td width="33%">BYTEA</td>
+  </tr>
+</table>
+</center></div>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p> TEXT and BYTE data can be stored in
+PostgreSQL TEXT and BYTEA columns.</p>
+
+<hr>
+
+<h2><a name="ODIPGS031">ODIPGS031 - Cursors WITH HOLD</a></h3>
+
+</h2>
+
+<p>INFORMIX closes opened cursors automatically when a transaction ends unless the WITH HOLD option is used in the DECLARE instruction. In PostgreSQL, opened cursors using SELECT statements without a FOR UPDATE clause are not closed when a transaction ends. Actually, all PostgreSQL cursors are 'WITH HOLD' cursors unless the FOR UPDATE clause is used in the SELECT statement. </p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Cursors
+declared FOR UPDATE and using the WITH HOLD option cannot be supported with PostgreSQL because
+FOR UPDATE cursors are automatically closed by PostgreSQL when the transaction ends.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>BDL cursors that are not declared &quot;WITH HOLD&quot; are
+automatically closed by the database interface when a COMMIT WORK or ROLLBACK WORK is
+performed.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Since PostgreSQL automatically
+closes FOR UPDATE cursors when the transaction ends, opening cursors
+declared FOR UPDATE and WITH HOLD option results in an SQL error that does not normally
+appear with INFORMIX, in the same conditions. Review the program logic in order to find
+another way to set locks.</p>
+
+<hr>
+
+<h2><a name="ODIPGS032">ODIPGS032 - UPDATE/DELETE WHERE CURRENT OF &lt;cursor&gt;</a></h3>
+
+</h2>
+
+<p>INFORMIX allows positioned UPDATEs and DELETEs with the &quot;WHERE CURRENT OF &lt;cursor&gt;&quot; clause, if the cursor has been DECLARED with a SELECT ...  FOR UPDATE statement.</p>
+
+<p><font color="#FF0000"><b>PGS 8.1 and 8.2:</b></font> UPDATE/DELETE ... WHERE CURRENT OF
+&lt;cursor&gt; is not supported by PostgreSQL. However, you can use the OID column to do positioned updates/deletes.</p>
+
+<p><font color="#FF0000"><b>Since PGS 8.3:</b></font> UPDATE/DELETE ... WHERE CURRENT OF
+&lt;cursor&gt; is supported by PostgreSQL with server-side cursors created with
+a DECLARE statement.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><u>With PostgreSQL 8.1 (dbmpgs81x) and 8.2 (dbmpgs82x):</u></p>
+
+<p>UPDATE/DELETE ... WHERE CURRENT OF instructions are managed by the PostgreSQL database interface. The PostgreSQL database interface replaces &quot;WHERE CURRENT OF &lt;cursor&gt;&quot;&nbsp; by&nbsp; &quot;WHERE OID = ?&quot; and sets the value of the Object Identifier returned by the last FETCH done with the given cursor..</p>
+
+<p><font color="#FF0000"><b>Warning PGS 8.1 and 8.2:</b></font> Starting with PostgreSQL version 8.1, user tables do not get the <b>oid</b> column by default. You must set the <b>default_with_oid</b> configuration parameter in the <b>postgresql.conf</b> file.</p>
+
+<p><u>With PostgreSQL 8.3 (dbmpgs83x) and higher:</u></p>
+
+<p>UPDATE/DELETE ... WHERE CURRENT OF instructions are just executed as is.
+Since SELECT FOR UPDATE statements are now executed with a server cursor by
+using a DECLARE PostgreSQL statement, native positioned update/delete takes
+place.</p>
+
+<hr>
+
+<h2><a name="ODIPGS033">ODIPGS033 - Querying system catalog tables</a></h3>
+
+</h2>
+
+<p>As in INFORMIX, PostgreSQL provides system catalog tables (actually, system views). But the table names and their structure are quite different. </p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> No automatic conversion of INFORMIX system tables is provided by the database interface.</p>
+
+<hr>
+
+<h2><a name="ODIPGS034">ODIPGS034 - Syntax of UPDATE statements</a></h3>
+
+</h2>
+
+<p>INFORMIX allows a  specific syntax for UPDATE statements:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET ( &lt;col-list&gt; ) = ( &lt;val-list&gt; )</font></p>
+
+<p>or</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET table.* = myrecord.*<br>
+&nbsp;&nbsp;&nbsp; UPDATE table SET * = myrecord.*</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Static UPDATE statements using the above syntax are converted <b>by the compiler</b> to the standard form:<br><br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET column=value [,...] </font></p>
+
+<hr>
+
+<h2><a name="ODIPGS035">ODIPGS035 - The LENGTH() function</a></h3>
+
+</h2>
+
+<p>INFORMIX provides the LENGTH() function:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT
+    LENGTH(&quot;aaa&quot;), LENGTH(col1) FROM table </font></p>
+
+<p>PostgreSQL has a equivalent function with the same name, but there is some difference:</p>
+
+<p>INFORMIX does not count the trailing blanks neither for CHAR not for VARCHAR expressions, while PostgreSQL counts the trailing blanks.</p>
+
+<p>With the PostgreSQL LENGTH function, when using a CHAR column, values are always blank padded, so the function returns the size of the CHAR column. When using a VARCHAR column, trailing blanks are significant, and the function returns the number of characters, including trailing blanks.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>You must check if the trailing blanks are significant when using the LENGTH() function.</p>
+
+<p>If you want to count the number of character by ignoring the trailing blanks, you must use the RTRIM() function:</p>
+
+<hr>
+
+<h2><a name="ODIPGS036">ODIPGS036 - INTERVAL data type</a></h3>
+
+</h2>
+
+<p>INFORMIX INTERVAL data type stores a value that represents a span
+of time. INTERVAL types are divided into two classes : <b><i>year-month intervals</i></b> and 
+<i><b>day-time intervals</b></i>.</p>
+
+<p>Starting with version 8.4, PostgreSQL provides an INTERVAL data type which is
+equivalent to the Informix INTERVAL type; Here are some features of the
+PostgreSQL 8.4 interval type:</p>
+
+<ul>
+  <li>It is possible to specify the interval class / precision with YEAR, MONTH,
+    DAY, HOUR, MINUTE and SECOND[(p)] fields.</li>
+  <li>Fractional part of seconds can be defined with up to 6 digits.</li>
+  <li>INTERVALs value range is from -178000000 to +178000000 years.</li>
+  <li>Input and ouput format can be controlled with the SET intervalstyle
+    command.</li>
+</ul>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Starting with Genero 2.21, database drivers dbmpgs84x and higher convert the
+Informix-style INTERVAL type to the native PostgreSQL INTERVAL type. See the <a href="#ODIPGS100">data
+type conversion table</a> for the exact conversion rules.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> The PostgreSQL database driver
+forces the <b>intervalstyle</b> session parameter to 'iso_8601', this is
+required to insert and fetch interval database with the libpq C API functions.
+You must not change this setting during program execution.&nbsp;</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> While PostgreSQL INTERVALs
+support up to 9 digits for the higher unit like Informix, YEAR values range from
+-178000000 to +178000000 only. This limitation exists in PostgreSQL 8.4 and may
+be solved in future versions.</p>
+
+<p>With PostgreSQL and driver versions prior to 8.4, the INTERVAL data type is
+converted to CHAR(50).</p>
+
+<hr>
+
+<h2><a name="ODIPGS039">ODIPGS039 - Data storage concepts </a></h3>
+
+</h2>
+
+<p>An attempt should be made to preserve as much of the storage information as possible when converting from INFORMIX to PostgreSQL. Most important storage decisions made for INFORMIX database objects (like initial sizes and physical placement) can be reused for the PostgreSQL database.</p>
+
+<p>Storage concepts are quite similar in INFORMIX and in PostgreSQL, but the names are different.</p>
+
+<hr>
+
+<h2><a name="ODIPGS046">ODIPGS046 -&nbsp;The LOAD and UNLOAD instructions </a></h3>
+
+</h2>
+
+<p>INFORMIX provides two SQL instructions to export / import data from / into a database table: The UNLOAD instruction copies rows from a database table into a text file and the LOAD instructions insert rows from a text file into a database table.</p>
+
+<p>PostgreSQL does not provide LOAD and UNLOAD instructions.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>LOAD and UNLOAD instructions are supported.</p>
+
+<hr>
+
+<h2><a name="ODIPGS047">ODIPGS047 -&nbsp;SQL Interruption</a></h3>
+
+</h2>
+
+<p>With INFORMIX, it is possible to interrupt a long running query if the SQL
+INTERRUPT ON option is set by the Genero program. The database server returns
+SQLCODE -213, which can be trapped to detect a user interruption.</p>
+
+<p>
+<font face="Courier New" size="2">&nbsp;&nbsp;&nbsp; MAIN<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DEFINE n INTEGER<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DEFER INTERRUPT<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OPTIONS SQL INTERRUPT ON<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DATABASE test1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHENEVER ERROR CONTINUE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- Start long query (self join takes time)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- From now on, user can hit CTRL-C in TUI mode
+to stop the query<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SELECT COUNT(*) INTO n FROM customers a,
+customers b<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHERE a.cust_id
+&lt;&gt; b.cust_id<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IF SQLCA.SQLCODE == -213 THEN<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DISPLAY &quot;Statement was
+interrupted by user...&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EXIT PROGRAM 1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END IF<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHENEVER ERROR STOP<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp;&nbsp; END MAIN</font></p>
+
+<p>PostgreSQL supports SQL Interruption in a similar way as INFORMIX. The db
+client must issue an PQcancel() libPQ call to interrupt a query.</p>
+
+<p><u><em><b>Solution:</b></em></u></p>
+
+<p>The PostgreSQL database driver supports SQL interruption and converts the SQLSTATE
+code 57014 to the INFORMIX error code -213.</p>
+
+<hr>
+
+<h2><a name="ODIPGS048">ODIPGS048 -&nbsp;Scrollable Cursors</a></h2>
+
+<p>The Genero programming language supports scrollable cursors with the <b>SCROLL</b>
+keyword, as shown in the following code example:&nbsp;</p>
+
+<p>
+<font face="Courier New" size="2">
+&nbsp;&nbsp;&nbsp;DECLARE c1 <b>SCROLL</b> CURSOR FOR SELECT * FROM customers
+ORDER BY cust_name<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH FIRST c1 INTO rec_cust.*<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH NEXT c1 INTO rec_cust.*<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH LAST c1 INTO rec_cust.*</font></p>
+
+<p>PostgreSQL supports native scrollable cursors.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>The PostgreSQL database driver uses native scrollable cursors by declaring
+(DECLARE) server cursors with the SCROLL clause.&nbsp;</p>
+
+<hr>
+
+<h2><a name="ODIPGS100">ODIPGS100 - Data type conversion table</a></h3>
+
+</h2>
+
+<div align="center">
+  <center><table border="0" width="95%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="40%"><font color="#0000FF"><b>INFORMIX Data Types</b></font></td>
+          <td bgcolor="#C0C0C0"><font color="#0000FF"><b>PostgreSQL Data Types
+            (before 8.4)</b></font></td>
+          <td bgcolor="#C0C0C0"><font color="#0000FF"><b>PostgreSQL Data Types
+            (since 8.4)</b></font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">CHAR(n)</font></td>
+          <td><font face="Courier New" size="2">CHAR(n)</font></td>
+          <td><font face="Courier New" size="2">CHAR(n)</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">VARCHAR(n)</font></td>
+          <td><font face="Courier New" size="2">VARCHAR(n)</font></td>
+          <td><font face="Courier New" size="2">VARCHAR(n)</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">INTEGER</font></td>
+          <td><font face="Courier New" size="2">INT4</font></td>
+          <td><font face="Courier New" size="2">INT4</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">SMALLINT</font></td>
+          <td><font face="Courier New" size="2">INT2</font></td>
+          <td><font face="Courier New" size="2">INT2</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">FLOAT[(n)]</font></td>
+          <td><font face="Courier New" size="2">FLOAT4</font></td>
+          <td><font face="Courier New" size="2">FLOAT4</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">SMALLFLOAT</font></td>
+          <td><font face="Courier New" size="2">FLOAT8</font></td>
+          <td><font face="Courier New" size="2">FLOAT8</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">DECIMAL(p,s)</font></td>
+          <td><font face="Courier New" size="2">DECIMAL(p,s)</font></td>
+          <td><font face="Courier New" size="2">DECIMAL(p,s)</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">DECIMAL(p)</font></td>
+          <td><font face="Courier New" size="2">DECIMAL (no
+            precision = floating point)</font></td>
+          <td><font face="Courier New" size="2">DECIMAL (no
+            precision = floating point)</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">DECIMAL</font></td>
+          <td><font face="Courier New" size="2">DECIMAL</font></td>
+          <td><font face="Courier New" size="2">DECIMAL</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">MONEY(p,s)</font></td>
+          <td><font face="Courier New" size="2">DECIMAL(p,s)</font></td>
+          <td><font face="Courier New" size="2">DECIMAL(p,s)</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">DATE</font></td>
+          <td><font face="Courier New" size="2">DATE</font></td>
+          <td><font face="Courier New" size="2">DATE</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">DATETIME HOUR TO SECOND</font></td>
+          <td><font face="Courier New" size="2">TIME(0) WITHOUT TIME ZONE</font></td>
+          <td><font face="Courier New" size="2">TIME(0) WITHOUT TIME ZONE</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">DATETIME YEAR TO FRACTION(p)</font></td>
+          <td><font face="Courier New" size="2">TIMESTAMP(p) WITHOUT TIME ZONE</font></td>
+          <td><font face="Courier New" size="2">TIMESTAMP(p) WITHOUT TIME ZONE</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">INTERVAL YEAR[(p)]
+            TO MONTH</font></td>
+          <td><font face="Courier New" size="2">CHAR(50)</font></td>
+          <td><font face="Courier New" size="2">INTERVAL YEAR TO MONTH</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">INTERVAL YEAR[(p)]
+            TO YEAR</font></td>
+          <td><font face="Courier New" size="2">CHAR(50)</font></td>
+          <td><font face="Courier New" size="2">INTERVAL YEAR</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">INTERVAL MONTH[(p)]
+            TO MONTH</font></td>
+          <td><font face="Courier New" size="2">CHAR(50)</font></td>
+          <td><font face="Courier New" size="2">INTERVAL MONTH</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">INTERVAL DAY[(p)] TO
+            FRACTION(n)</font></td>
+          <td><font face="Courier New" size="2">CHAR(50)</font></td>
+          <td><font face="Courier New" size="2">INTERVAL DAY TO SECOND(n)</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">INTERVAL DAY[(p)] TO
+            SECOND</font></td>
+          <td><font face="Courier New" size="2">CHAR(50)</font></td>
+          <td><font face="Courier New" size="2">INTERVAL DAY TO SECOND(0)</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">INTERVAL DAY[(p)] TO
+            MINUTE</font></td>
+          <td><font face="Courier New" size="2">CHAR(50)</font></td>
+          <td><font face="Courier New" size="2">INTERVAL DAY TO MINUTE</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">INTERVAL DAY[(p)] TO
+            HOUR</font></td>
+          <td><font face="Courier New" size="2">CHAR(50)</font></td>
+          <td><font face="Courier New" size="2">INTERVAL DAY TO HOUR</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">INTERVAL DAY[(p)] TO
+            DAY</font></td>
+          <td><font face="Courier New" size="2">CHAR(50)</font></td>
+          <td><font face="Courier New" size="2">INTERVAL DAY</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">INTERVAL HOUR[(p)]
+            TO FRACTION(n)</font></td>
+          <td><font face="Courier New" size="2">CHAR(50)</font></td>
+          <td><font face="Courier New" size="2">INTERVAL HOUR TO SECOND(n)</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">INTERVAL HOUR[(p)]
+            TO SECOND</font></td>
+          <td><font face="Courier New" size="2">CHAR(50)</font></td>
+          <td><font face="Courier New" size="2">INTERVAL HOUR TO SECOND(0)</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">INTERVAL HOUR[(p)]
+            TO MINUTE</font></td>
+          <td><font face="Courier New" size="2">CHAR(50)</font></td>
+          <td><font face="Courier New" size="2">INTERVAL HOUR TO MINUTE</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">INTERVAL HOUR[(p)]
+            TO HOUR</font></td>
+          <td><font face="Courier New" size="2">CHAR(50)</font></td>
+          <td><font face="Courier New" size="2">INTERVAL HOUR</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">INTERVAL MINUTE[(p)]
+            TO FRACTION(n)</font></td>
+          <td><font face="Courier New" size="2">CHAR(50)</font></td>
+          <td><font face="Courier New" size="2">INTERVAL MINUTE TO SECOND(n)</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">INTERVAL MINUTE[(p)]
+            TO SECOND</font></td>
+          <td><font face="Courier New" size="2">CHAR(50)</font></td>
+          <td><font face="Courier New" size="2">INTERVAL MINUTE TO SECOND(0)</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">INTERVAL MINUTE[(p)]
+            TO MINUTE</font></td>
+          <td><font face="Courier New" size="2">CHAR(50)</font></td>
+          <td><font face="Courier New" size="2">INTERVAL MINUE</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">INTERVAL SECOND[(p)]
+            TO FRACTION(n)</font></td>
+          <td><font face="Courier New" size="2">CHAR(50)</font></td>
+          <td><font face="Courier New" size="2">INTERVAL SECOND(n)</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">INTERVAL SECOND[(p)]
+            TO SECOND</font></td>
+          <td><font face="Courier New" size="2">CHAR(50)</font></td>
+          <td><font face="Courier New" size="2">INTERVAL SECOND(0)</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">INTERVAL FRACTION[(p)]
+            TO FRACTION(n)</font></td>
+          <td><font face="Courier New" size="2">CHAR(50)</font></td>
+          <td><font face="Courier New" size="2">INTERVAL SECOND(n)</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">TEXT</font></td>
+          <td><font face="Courier New" size="2">TEXT</font></td>
+          <td><font face="Courier New" size="2">TEXT</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">BYTE</font></td>
+          <td><font face="Courier New" size="2">BYTEA</font></td>
+          <td><font face="Courier New" size="2">BYTEA</font></td>
+        </tr>
+      </table>
+  </center>
+</div>
+
+</body>
+</html>

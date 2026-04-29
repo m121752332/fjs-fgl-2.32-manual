@@ -1,0 +1,518 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+  <TITLE>WEB Components</TITLE>
+  <META http-equiv=Content-Type content="text/html">
+  <LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Using Web Components in forms</a></H1>
+
+<p>Summary:</p>
+<ul>
+  <li><a href="#BASICS">Basics</a></li>
+  <li><a href="#USAGE">Usage</a>
+  <ol>
+	<li><a href="#interface-script">Implement the interface script on front-ends</a><ul type="circle">
+		<li><a href="#component_to_program">From Component to Program</a></li>
+		<li><a href="#program_to_component">From Program to Component</a></li>
+		<li><a href="#version-checking">Version-checking Function</a></li>
+	</ul>
+	</li>
+	<li><a href="#webcomp-in-forms">Define a Web Component in form files</a></li>
+	<li><a href="#webcomp-in-programs">Use the Web Component in programs</a></li>
+	</ol>
+  </li>
+  <li><a href="#EXAMPLES">Web Component Examples</a>
+  </li>
+</ul>
+
+<p><i>See also:</i>  <a href="FormSpecFiles.html#FF_ITEMTYPE_WEBCOMPONENT">Forms</a></p>
+
+<HR>
+
+<h2><a name="BASICS">Basics</a></h2>
+<p>Starting with Genero <b>2.30</b>, you can integrate third party graphical
+components into form files by using a new form item type called <a href="FormSpecFiles.html#FF_ITEMTYPE_WEBCOMPONENT">WEBCOMPONENT</a>.</p>
+
+
+<p>A <tt>WEBCOMPONENT</tt> field is an element defining an area in the form layout 
+for instantiating
+an external component, based on html (javascript, ajax, flash...).</p>
+
+
+<p>The components that can be found on the web are designed for a specific
+need, and usually have advanced and powerful features which can bring greatly
+added value to your applications. You can, for example, find
+chart/graph widgets, calendar widgets, drawing widgets, etc. Such&nbsp;specialized
+widgets are not part of the standard GUI toolkits used to implement Genero
+front-ends, so they need to be integrated as external components.</p>
+
+
+<p>Here's a 4GL application using a 3rd party Flash-based chart component (http://www.fusionchart.com):</p>
+<p><img border="0" src="../Images/WebCompo2.png"></p>
+
+
+
+<p>Note that some web components are free, and some are licensed, so you should
+take the cost into account before integrating a new web component into the forms
+of your application.</p>
+
+<p>Genero Desktop Client uses <a href="http://webkit.org/">WebKit</a>. Webkit plugins are the 
+same as Mozilla Firefox or Google Chrome plugins (not extensions), so if you need to use a given plugin 
+(like Adobe Flash Player), you will need to install either the flash player plugin for Firefox or
+the stand alone player. Having only Microsoft Internet Explorer plugin is not enough as Webkit does not
+use Active X technology.  
+</p>
+
+<HR>
+
+<h2><a name="USAGE">Usage</a></h2>
+
+
+<p>The following sections describe in detail the programming steps to create an
+application using a <tt> WEBCOMPONENT</tt> form item type: </p>
+
+
+<ol>
+  <li><a href="#interface-script">Implement the Web Component interface script on the front-end side</a>.<br>
+    This step has to be done once, and then the script has to be deployed on
+    production sites.</li>
+  <li><a href="#webcomp-in-forms">Define a <tt> WEBCOMPONENT</tt> field in the form file</a>.</li>
+  <li><a href="#webcomp-in-programs">Use the Web Component in the dialog of the program</a>.</li>
+</ol>
+<p><b><font color="#FF0000">Warning:</font> Keep in mind that the interface
+script has to be deployed on the front-ends of your production sites. For
+deployment tips, refer to front-end specific documentation.</b></p>
+
+
+<HR size="1">
+
+
+<h3>1. <a name="interface-script">Implement the Web Component interface script on front-ends</a> 
+</h3>
+
+<p>Web Components are implemented on the front-end side through an interface
+script. The goal of this interface is to manage communication between the 4GL program and the component.</p>
+<p><img border="0" src="../Images/WebCompo1.png"></p>
+
+<p>
+      The Web Component API relies on a published global object
+      named <tt>gICAPI</tt> to:</p>
+
+    <ul>
+      <li>transmit data or requests <a href="#component_to_program">from the component to the 4GL program</a>.
+      </li>
+      <li>transmit data or events <a href="#program_to_component">from the 4GL program to the component</a>.
+      </li>
+    </ul>
+<h3><a name="component_to_program">From Component to Program</a>:</h3>
+<p>The <tt>gICAPI</tt> provides the following methods:</p>
+    <table border="0" cellpadding="0" width="90%">
+      <tr>
+        <td bgcolor="#3399FF" colspan="2">
+          <b>Object Methods</b>
+        </td>
+      </tr>
+      <tr>
+        <td bgcolor="silver" width="50%" valign="top">
+          <b>Name</b>
+        </td>
+        <td bgcolor="silver" valign="top">
+          <b>Description</b>
+        </td>
+      </tr>
+      <tr>
+        <td width="50%" valign="top">
+          <code><a href="#SetData">SetData</a>( data </code><tt>STRING</tt><code>
+          )</code>
+        </td>
+        <td valign="top">
+          Data to be sent to the program.
+        </td>
+      </tr>
+      <tr>
+        <td width="50%" valign="top">
+          <code><a href="#SetFocus">SetFocus</a>( )</code>
+        </td>
+        <td valign="top">
+          Generates a focus change request.
+        </td>
+      </tr>
+      <tr>
+        <td width="50%" valign="top">
+          <code><a href="#Action">Action</a>( action </code> <tt>STRING</tt><code>
+          )</code>
+        </td>
+        <td valign="top">
+          Triggers an action event.
+        </td>
+      </tr>
+    </table>
+    <h4>
+      <a name="SetData" id="SetData">SetData( data <tt>STRING</tt> )</a>
+    </h4>
+    <p>
+    Identifies the data to be sent to the program. The corresponding form field value will be updated with <code>data</code>.
+    Data is transmitted as plain text; sending a large amount of data is not recommended.
+    The corresponding form field must be the current one. In 4GL, only the current field can be updated by the user.
+    </p>
+    <h4>
+      <a name="SetFocus" id="SetFocus">SetFocus( )</a>
+    </h4>
+    <p>
+    Generates a focus change request. The focus is entirely managed by the runtime system. 
+	The focus request may fail:</p>
+<ul>
+	<li>if the current field does not satisfy validators (VERIFY, data type 
+	conversion...) </li>
+	<li>due to program logic (AFTER FIELD
+      ... NEXT FIELD CURRENT). </li>
+</ul>
+<p>
+    If&nbsp; the focus change request succeeds, <a href=
+      "#onFocus"><code>gICAPI.onFocus()</code></a> will be called with
+      the
+      <tt>true</tt> parameter.
+    </p>
+    <h4>
+      <a name="Action" id="Action">Action( action <tt>STRING</tt> )</a>
+    </h4>
+    <p>
+    Generates an action event, which will trigger the corresponding <code>ON ACTION</code> code.
+If the action named <code>action</code> is not available (not active or does not exist), this function 
+	does nothing.
+    </p>
+    <h3><a name="program_to_component">From Program to Component</a>:</h3>
+    <p>The following methods of the <tt>gICAPI</tt> object will be called by the Web Component Interface:</p>
+    <table border="0" cellpadding="0" width="90%">
+      <tr>
+        <td bgcolor="#3399FF" colspan="2">
+          <b>Object Methods</b>
+        </td>
+      </tr>
+      <tr>
+        <td bgcolor="silver" width="50%" valign="top">
+          <b>Name</b>
+        </td>
+        <td bgcolor="silver" valign="top">
+          <b>Description</b>
+        </td>
+      </tr>
+      <tr>
+        <td width="50%" valign="top">
+          <code><a href="#onFocus">onFocus</a>( polarity</code> <tt>BOOLEAN</tt>
+          <code>)</code>
+        </td>
+        <td valign="top">
+           Called when program sets focus in or out.          
+        </td>
+      </tr>
+      <tr>
+        <td width="50%" valign="top">
+          <code><a href="#onData">onData</a>( data</code> <tt>STRING</tt>
+          <code>)</code>
+        </td>
+        <td valign="top">
+          Called when FormField value changes.
+        </td>
+      </tr>
+      <tr>
+        <td width="50%" valign="top">
+          <code><a href="#onProperty">onProperty</a>( property</code> <tt>STRING</tt>
+          <code>)</code>
+        </td>
+        <td valign="top">
+          Called when a <a href="FSFAttributes.html#FA_PROPERTIES">property</a> has been added/removed, 
+			or its value has changed.
+        </td>
+      </tr>
+    </table>
+    <h4>
+      <a name="onFocus" id="onFocus">onFocus( polarity <tt>BOOLEAN</tt> )</a>
+    </h4>
+    <p>
+    This function will be called when the focus changes; <code>polarity</code> is set to 
+      <tt>true</tt> if the WebComponent gains the focus, <tt>false</tt> if the Component loses the focus.
+    </p>
+    <h4>
+      <a name="onData" id="onData">onData( data <tt>STRING</tt> )</a>
+    </h4>
+    <p>
+    This function will be called when the program value of the form field has been changed. The new value will be <code>data</code>.
+    </p>
+    <h4>
+      <a name="onProperty" id="onProperty">onProperty( property <tt>STRING</tt> )</a>
+    </h4>
+    <p>
+    This function will be called when one of the <a href="FSFAttributes.html#FA_PROPERTIES">properties</a> of the component has changed (been created/removed 
+	or value changed).
+    The format used to pass properties is <a href="http://en.wikipedia.org/wiki/JSON">JSON</a>.
+    The <u>complete</u> property set is sent in the parameter each time this function is called.
+    </p>
+    
+    <h3><a name="version-checking">Version-checking Function</a></h3>
+    <p>
+    The global function <code>onICHostReady( version </code> <tt>DECIMAL</tt> <code>)</code> will be called by the front end when the WebComponent Interface is ready. The version passed in 
+	the parameter allows you to check that your component is compatible with the API.
+    </p>
+    <h3>
+      Example:
+    </h3>
+    <pre><code class="linenumber">01</code> &lt;<tt>SCRIPT LANGUAGE</tt>=&quot;JavaScript&quot;&gt;                                           
+<code class="linenumber">02</code>  <code class="linenumber">// This function is called by the Genero Client Container </code>                                  
+<code class="linenumber">03</code>  <code class="linenumber">// so the web component can initialize itself and initialize  </code>                             
+<code class="linenumber">04</code>  <code class="linenumber">// the gICAPI handlers </code>                                               
+<code class="linenumber">05</code>  onICHostReady = <tt>function</tt>(version) {
+<code class="linenumber">06</code>      <tt>if</tt> ( version != 1.0 )                                                                             
+<code class="linenumber">07</code>          <tt>alert</tt>('Invalid API version');</pre>
+
+<p>At this point the API is ready; the <b>gICAPI</b> object is now created.
+<br>The next lines define the functions that must be called by the API to transmit data from the program to the component:
+</p>
+
+<pre>                                                         
+<code class="linenumber">08</code>                                                                                                                                                                             
+<code class="linenumber">09</code>      <code class="linenumber">// Initialize the focus handler called by the Genero Client </code>       
+<code class="linenumber">10</code>      <code class="linenumber">// Container when the DVM set/removes the focus to/from the </code>        
+<code class="linenumber">11</code>      <code class="linenumber">// component    </code>                                                   
+</pre>A focus border will be added when the component has the focus.
+<pre>                                                                                                  
+<code class="linenumber">12</code>      gICAPI.onFocus = <tt>function</tt>(polarity) {                                                     
+<code class="linenumber">13</code>          <tt>if</tt> ( polarity ) {                                                                              
+<code class="linenumber">14</code>              document.body.style.border = '1px solid blue';                                             
+<code class="linenumber">15</code>          } <tt>else</tt> {                                                                                       
+<code class="linenumber">16</code>              document.body.style.border = '1px solid grey';                                             
+<code class="linenumber">17</code>          }                                                                                              
+<code class="linenumber">18</code>      }
+<code class="linenumber">19</code>                                                                                                         
+<code class="linenumber">20</code>      <code class="linenumber">// Initialize the data handler ... </code>                                
+<code class="linenumber">21</code>      <code class="linenumber">// This component does not care about the data set by the DVM ...</code>  
+<code class="linenumber">22</code>      <code class="linenumber">// so there is nothing to do.</code>                                               
+<code class="linenumber">23</code>      gICAPI.onData = <tt>function</tt>(dt) {                                                            
+<code class="linenumber">24</code>      }                                                                                                  
+<code class="linenumber">25</code>                                                                                                         
+<code class="linenumber">26</code>      <code class="linenumber">// Initialize the properties handler ...</code>                           
+<code class="linenumber">27</code>      <code class="linenumber">// update the component when a property changes</code>                    
+</pre>
+A <b>div </b>section is used as the title. When the property "title" is changed from the program, the 
+<b>div </b>is updated. The JSON string is evaluated using the <code>eval</code> built-in javascript function.
+<pre>                                                                                                  
+<code class="linenumber">28</code>      gICAPI.onProperty = <tt>function</tt>(property) {                                                   
+<code class="linenumber">29</code>          var myObject = <tt>eval</tt>('(' + property + ')');                                            
+<code class="linenumber">30</code>          document.getElementById(&quot;title&quot;).innerHTML = myObject.title;                                   
+<code class="linenumber">31</code>      }                                                                                                  
+<code class="linenumber">32</code>  }                                                                                                      
+<code class="linenumber">33</code>
+</pre>
+Now the following functions will be used to transmit the data or focus request to the program.
+These functions will be called by the component itself, and will use the <b>gICAPI</b> object.
+<pre>                                                                                                         
+<code class="linenumber">34</code>                                                                                                          
+<code class="linenumber">35</code>  <code class="linenumber">// When the user clicks on the document we ask the DVM to</code>              
+<code class="linenumber">36</code>  <code class="linenumber">// get the focus</code>	                                                     
+<code class="linenumber">37</code>  askFocus = <tt>function</tt>() {                                                                       
+<code class="linenumber">38</code>      gICAPI.SetFocus();                                                                                 
+<code class="linenumber">39</code>  }                                                                                                      
+<code class="linenumber">41</code>   
+<code class="linenumber">42</code>  <code class="linenumber">// This function is called when the user clicks</code> 
+<code class="linenumber">43</code>  <code class="linenumber">// on an area of the map  </code>                       
+<code class="linenumber">44</code>  execAction = <tt>function</tt>(stateName) {                                      
+<code class="linenumber">45</code>      gICAPI.SetData(stateName); // Set the widget value so DVM knows it           
+<code class="linenumber">46</code>      gICAPI.Action(&quot;state&quot;);    // Raise an action                               
+<code class="linenumber">47</code>  }                                                                               
+<code class="linenumber">48</code> &lt;/<tt>SCRIPT</tt>&gt;                                                                
+<code class="linenumber">49</code>
+</pre>
+The component itself can now be loaded. In this example, the component is an image map. 
+When one of the areas is clicked, the name of the area (in this case, a state of the USA) will be transmitted as the value (using <code>gICAPI.SetData</code>),
+and an action indicating the user clicked on a state will be sent (using <code>gICAPI.Action</code>).
+<pre>
+<code class="linenumber">50</code> &lt;<tt>body</tt> <tt>onclick</tt>=&quot;askFocus()&quot; <tt>style</tt>=&quot;border: 1px solid grey;margin: 0px;&quot;&gt;                                                                            
+<code class="linenumber">51</code>     &lt;<tt>center</tt>&gt;                                                                                                                                       
+<code class="linenumber">52</code>         &lt;<tt>H1</tt> <tt>id</tt>=&quot;title&quot;&gt;default title&lt;/<tt>H1</tt>&gt;                                                                                                    
+<code class="linenumber">53</code>         &lt;<tt>IMG</tt> <tt>SRC</tt>=&quot;USAMAP.gif&quot; <tt>USEMAP</tt>=&quot;#USAMAP&quot; <tt>WIDTH</tt>=598 <tt>HEIGHT</tt>=364 <tt>BORDER</tt>=0&gt;                                                                      
+<code class="linenumber">54</code>         &lt;<tt>MAP</tt> <tt>NAME</tt>=&quot;USAMAP&quot;&gt;                                                                                                                        
+<code class="linenumber">55</code>             &lt;<tt>AREA</tt> <tt>SHAPE</tt>=POLY <tt>COORDS</tt>=&quot;230,35,294,38,299,57,299,79,228,79&quot; <tt>onclick</tt>=&quot;execAction('North Dakota')&quot; <tt>ALT</tt> = &quot;North Dakota&quot;&gt;                
+<code class="linenumber">56</code>             ...                                                                                                                                                      
+<code class="linenumber">57</code>             &lt;<tt>AREA</tt> <tt>SHAPE</tt>=POLY <tt>COORDS</tt>=&quot;486,146,529,136,536,155,536,161,515,156,511,144&quot; <tt>onclick</tt>=&quot;execAction('Maryland')&quot; <tt>ALT</tt> = &quot;Maryland&quot;&gt;
+<code class="linenumber">58</code>         &lt;/<tt>MAP</tt>&gt;                                                                                                                                  
+<code class="linenumber">59</code>     &lt;/<tt>center</tt>&gt;                                                                                                                                   
+<code class="linenumber">60</code> &lt;/<tt>body</tt>&gt;                                                                                                                                         
+</pre>
+
+
+<HR size="1">
+
+
+<h3>2. <a name="webcomp-in-forms">Define a Web Component in form files</a></h3>
+<p>In order to display and/or input data in a Web Component, you must define a <a href="FormSpecFiles.html#FF_FORM_FIELD">form
+field</a> with the <tt>WEBCOMPONENT</tt> item type.</p>
+
+
+<p>Since Web Component usage is usually very specific, the data of such fields
+is often not stored &quot;as is&quot; in a database column; you generally
+define the Web Component field name with the <tt>FORMONLY</tt> table prefix.</p>
+
+<p>The
+<a href="FSFAttributes.html#FA_COMPONENTTYPE">COMPONENTTYPE</a> attribute is
+mandatory to define the type of Web Component to be loaded. This attribute
+specifies a name that will be mapped to an interface script on the front-end
+side.</p>
+
+<p>In Genero Application Server configuration (see GAS documentation, GAS Configuration Reference, Execution Component), the entry <tt>WEB_COMPONENT</tt> defines the path where components are deployed:</p>
+
+<pre>
+<code class="linenumber">01</code>      &lt;<tt>WEB_APPLICATION_EXECUTION_COMPONENT</tt> <tt>Id</tt>="cpn.wa.execution.local"&gt;
+<code class="linenumber">02</code>        &lt;<tt>ENVIRONMENT_VARIABLE</tt> <tt>Id</tt>="FGLDIR"&gt;$(res.fgldir)&lt;/<tt>ENVIRONMENT_VARIABLE</tt>&gt;
+<code class="linenumber">03</code>        &lt;<tt>ENVIRONMENT_VARIABLE</tt> <tt>Id</tt>="FGLGUI"&gt;$(res.fglgui)&lt;/<tt>ENVIRONMENT_VARIABLE</tt>&gt;
+<code class="linenumber">04</code>        &lt;<tt>ENVIRONMENT_VARIABLE</tt> <tt>Id</tt>="PATH"&gt;$(res.path)&lt;/<tt>ENVIRONMENT_VARIABLE</tt>&gt;
+<code class="linenumber">05</code>        &lt;<tt>ENVIRONMENT_VARIABLE</tt> <tt>Id</tt>="FGLLDPATH"&gt;$(res.fglldpath)&lt;/<tt>ENVIRONMENT_VARIABLE</tt>&gt;
+<code class="linenumber">06</code>        &lt;<tt>ENVIRONMENT_VARIABLE</tt> <tt>Id</tt>="LD_LIBRARY_PATH"&gt;$(res.ldlibrarypath)&lt;/<tt>ENVIRONMENT_VARIABLE</tt>&gt;
+<code class="linenumber">07</code>        &lt;<tt>DVM</tt>&gt;$(res.dvm.wa)&lt;/<tt>DVM</tt>&gt;
+<b><code class="linenumber">08</code>        &lt;<tt>WEB_COMPONENT</tt>&gt;$(connector.uri)/components&lt;/<tt>WEB_COMPONENT</tt>&gt;</b>
+<code class="linenumber">09</code>      &lt;/<tt>WEB_APPLICATION_EXECUTION_COMPONENT</tt>&gt;
+</pre>
+
+<p>
+The component must be located in <tt>WEB_COMPONENT</tt>, in a directory named <tt>COMPONENTTYPE</tt>, and the main file must be named <tt>COMPONENTTYPE</tt>.html.       
+</p>
+
+<p>Example: </p>
+
+<pre>
+<code class="linenumber">01</code> <tt>WEBCOMPONENT </tt>wc = <tt>FORMONLY</tt>.mychart,
+<code class="linenumber">02</code>          <tt>COMPONENTTYPE</tt> = &quot;3DCharts&quot;;
+</pre>
+
+<p>The component and all related files should be located in <code>$FGLASDIR/web/components/3DCharts</code> and the main file should be <code>$FGLASDIR/web/components/3DCharts/3DCharts.html</code>.</p> 
+
+<p>Notes:
+<ul>
+<li>Genero Web Client uses automatically the above definition to load web components</li>
+<li>Genero Desktop Client uses automatically the above definition when connected to the GAS</li>
+<li>When Genero Desktop Client is directly connected to the DVM (via SSH for instance), the base path for 
+components is <code>$GDCDIR/webcomponents</code> and follows the same rule as above 
+(ex: <code>$GDCDIR/webcomponents/3DChars/3DCharts.html))</code>.<br>
+This base path can be modified by the following frontcall:</li>  
+</ul>
+</p>
+<pre>
+<code class="linenumber">01</code> <tt>CALL ui.interface.frontCall("</tt>standard<tt>", "</tt>setwebcomponentpath<tt>", [</tt>myUrl<tt>],[</tt>ret<tt>])</tt>
+</pre>
+<p>
+The url must be a well formatted url (e.g. <tt>"http://myserver/components"</tt> or <tt>"file:///c:/components"</tt>)
+</p>
+
+<p>Web Components are usually complex widgets displaying detailed information on
+the screen, like charts, graphs, or calendars. Such widgets are generally
+resizable; you can use the <a href="FSFAttributes.html#FA_STRETCH">STRETCH</a>
+attribute to let the end-user control the resizing policy of a Web Component field.
+</p>
+
+<p>Since Web Component field definitions are generic, you must use the <a href="FSFAttributes.html#FA_PROPERTIES">PROPERTIES</a>
+attribute to set specific parameters of the widget. In the above example, the type of the Web Component is identified by
+the name <code> &quot;3DCharts&quot;</code>. The <tt>PROPERTIES</tt> attribute defines
+the type of the chart (i.e. <code> &quot;bars&quot;</code>), and the X / Y axis labels.</p>
+
+
+<p>The <tt>PROPERTIES</tt> attribute can define a list of:</p>
+
+
+<ul>
+  <li>simple properties ( <code><i>name</i> = <i>value</i></code> ),</li>
+  <li>array properties ( <code><i>name</i> = ( <i>value1</i>, <i>value2</i>, ...
+    )</code> ) and</li>
+  <li>map/dictionary properties ( <code><i>name</i> = ( <i>sub-name1</i>  = <i>value1</i>,
+<i>sub-name2</i>  = <i>value2</i>, ... )</code> )</li>
+</ul>
+<p>where <i>name</i> is a simple identifier, and where <i>values</i> can be
+numeric or string literals.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> The name of a property defined in
+the PROPERTIES attribute is converted to lowercase by the form compiler. To
+avoid mistakes, a good programming pattern is to define properties in lowercase,
+in both the <a href="#interface-script">interface
+script</a> and the <a href="FSFAttributes.html#FA_PROPERTIES"> form definition
+file</a>. Keep in mind that property names are
+not checked at compile time, so nonexistent or mistyped properties will be
+ignored at runtime.</b></p>
+
+<p>Example: </p>
+
+<pre>
+<code class="linenumber">01</code> <tt>LAYOUT</tt>
+<code class="linenumber">02</code> <tt>GRID</tt>
+<code class="linenumber">03</code>{
+<code class="linenumber">04 </code>[wc                       ]
+<code class="linenumber">05 </code>[                         ]
+<code class="linenumber">06 </code>[                         ]
+<code class="linenumber">07 </code>[                         ]
+<code class="linenumber">08 </code>[                         ]
+<code class="linenumber">09 </code>}
+<code class="linenumber">10</code> <tt>END</tt>
+<code class="linenumber">11</code> <tt>END</tt>
+<code class="linenumber">12</code> <tt>ATTRIBUTES</tt>
+<code class="linenumber">13</code> <tt>WEBCOMPONENT </tt>wc = <tt>FORMONLY</tt>.mychart,
+<code class="linenumber">14</code>          <tt>COMPONENTTYPE</tt> = &quot;3DCharts&quot;,
+<code class="linenumber">15</code>          <tt>STRETCH</tt> = <tt>BOTH</tt>,
+<code class="linenumber">16</code>          <tt>PROPERTIES</tt> = ( type = &quot;bars&quot;,
+<code class="linenumber">17</code>                      x_label = &quot;Months&quot;,
+<code class="linenumber">18</code>                      y_label = &quot;Sales&quot; );
+<code class="linenumber">19</code> <tt>END</tt></pre>
+
+
+
+<p>For more details about the syntax and possible attributes, see the <a href="FormSpecFiles.html#FF_ITEMTYPE_WEBCOMPONENT">Form
+Specification File</a> page.</p>
+
+
+<HR size="1">
+
+
+<h3>3. <a name="webcomp-in-programs">Use the Web Component in programs</a> </h3>
+
+
+<p>Once a Web Component field is <a href="#webcomp-in-forms">defined in the form
+file</a>, it can be used as a regular Edit field in program dialogs.</p>
+
+
+<p>For example:</p>
+
+
+<pre><code class="linenumber">01</code> <tt>DEFINE </tt>mychart <tt>STRING</tt>
+<code class="linenumber">02</code> <tt>DEFINE </tt>data_array <tt>DYNAMIC ARRAY OF RECORD </tt>...
+<code class="linenumber">03</code> ...
+<code class="linenumber">04</code> <tt>LET</tt> mychart = array_to_chart( data_array )
+<code class="linenumber">05</code> <tt>DISPLAY BY NAME</tt> mychart
+<code class="linenumber">06</code> ...
+<code class="linenumber">07</code> <tt>INPUT BY NAME</tt> mychart
+<code class="linenumber">08</code>   <tt>AFTER FIELD</tt> mychart
+<code class="linenumber">09</code>     <tt>CALL</tt> deserialize( mychart, data_array )</pre>
+
+<p>The data format is completely specific to the component. You will have to serialize 
+the data in the 4GL program, and
+de-serialize it in the <a href="#onData">onData</a> function.</p>
+Depending on your needs, you can also use the <a href="FSFAttributes.html#FA_PROPERTIES">PROPERTIES</a> 
+attribute to pass the data and use JSON to handle it in the <a href="#onProperty">onProperty</a> function.
+<p><b><font color="#FF0000">Warning:</font> Keep in mind that all data will be transmitted via the <a href="DynamicUI.html#ABSTRACTUI">Abstract User Interface</a>; transmitting a lot of data will not be efficient and is likely to slow down your application.</b>
+<HR>
+
+<h2>Web Component <a name="EXAMPLES">Examples</a></h2>
+
+<p>
+Running examples can be tried on the GAS home page ( usually http://localhost:6394/demos.html for a stand-alone installation ):
+<br><br>
+<img border="0" src="../Images/WebCompo3.png">
+<br>
+
+</p>
+
+</BODY>
+</HTML>

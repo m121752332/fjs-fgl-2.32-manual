@@ -1,0 +1,1892 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+  <HEAD>
+    <TITLE>New Features</TITLE>
+    <META http-equiv="Content-Type" content="text/html">
+    <LINK href="../FglTechRef.css" type="text/css" rel="stylesheet">
+  </HEAD>
+  <BODY>
+    <p><a href="../index.html">Back to Contents</a></p>
+
+    <HR>
+    <H1><a name="PAGE_HEADER">New Features of the Language</a></H1>
+    <ul>
+      <li>
+        <b>Product line 2.3x</b>
+        <ul>
+          <li><a href="#VERSION_2_32">Version 2.32</a></li>
+          <li><a href="#VERSION_2_30">Version 2.30</a></li>
+        </ul>
+      <li>
+        <b>Product line 2.2x</b>
+        <ul>
+          <li><a href="#VERSION_2_21">Version 2.21</a></li>
+          <li><a href="#VERSION_2_20">Version 2.20</a></li>
+        </ul>
+      <li>
+        <b>Product line 2.1x</b>
+        <ul>
+          <li><a href="#VERSION_2_11">Version 2.11</a></li>
+          <li><a href="#VERSION_2_10">Version 2.10</a></li>
+        </ul>
+      </li>
+      <li>
+        <b>Product line 2.0x</b>
+        <ul>
+          <li><a href="#VERSION_2_02">Version 2.02</a>
+          <li><a href="#VERSION_2_01">Version 2.01</a>
+          <li><a href="#VERSION_2_00">Version 2.00</a></li>
+        </ul>
+      </li>
+      <li>
+        <b>Product line 1.3x</b>
+        <ul>
+          <li><a href="#VERSION_1_33">Version 1.33</a>
+          <li><a href="#VERSION_1_32">Version 1.32</a>
+          <li><a href="#VERSION_1_31">Version 1.31</a>
+          <li><a href="#VERSION_1_30">Version 1.30</a></li>
+        </ul>
+      <li>
+        <b>Product line 1.2x</b>
+        <ul>
+          <li><a href="#VERSION_1_20">Version 1.20</a></li>
+        </ul>
+      <li>
+        <b>Product line 1.1x</b>
+        <ul>
+          <li><a href="#VERSION_1_10">Version 1.10</a></li>
+        </ul>
+      </li>
+    </ul>
+    <p><i>See also:</i> <a href="FAQList.html">FAQ List</a>.</p>
+
+    <HR>
+    <h2><a name="VERSION_2_32">Version 2.32</a></h2>
+    <p>See also <a href="Mig0005.html">Upgrade Notes</a>.</p>
+
+    <p>In this Genero BDL version does not include new features. The development
+    team focused on stability and defects correction.</p>
+
+    <HR>
+    <h2><a name="VERSION_2_30">Version 2.30</a></h2>
+    <p>See also <a href="Mig0005.html">Upgrade Notes</a>.</p>
+    <ul>
+      <li><a href="#Drag_and_Drop">Drag &amp; Drop</a></li>
+      <li><a href="#Web_Component">The WEB Component</a></li>
+      <li><a href="#New_DB_Drivers_2_22">New database drivers</a></li>
+      <li><a href="#Mac_OS_X">Support for MAC OS/X platform</a></li>
+      <li><a href="#version-info-platform">Command line tools display platform
+        identifier with -V option</a></li>
+      <li><a href="#Oracle_bin_float_double">Oracle BINARY_FLOAT / BINARY_DOUBLE</a></li>
+      <li><a href="#multi-fglprofile">Multiple configuration file specification with FGLPROFILE</a></li>
+      <li><a href="#ensure-field-visible">Show a specific field of a form</a></li>
+      <li><a href="#error-message-style">Style attribute for ERROR and MESSAGE
+        instructions</a></li>
+      <li><a href="#toolbar-topmenu-style">Style attribute for ToolBar and
+        TopMenu elements</a></li>
+      <li><a href="#radiogroup_include_to_items">RADIOGROUP items are filled
+        with INCLUDE list</a></li>
+      <li><a href="#csv-channel-delimiter">CSV (Comma Separated Values) format
+        for LOAD/UNLOAD/Channel</a></li>
+      <li><a href="#ident-canvas-item">Identifying the last clicked canvas item</a></li>
+      <li><a href="#all-fields-touched">Checking the touched flag of all fields
+        used by the dialog</a></li>
+      <li><a href="#fgl_db_driver_type">Getting the type of the current database
+        driver</a></li>
+      <li><a href="#table-column-header-alignment">Table column header alignment</a></li>
+      <li><a href="#FGLSQLDEBUG-load-dll-error">FGLSQLDEBUG display shared
+        object load error</a></li>
+      <li><a href="#fgldbsch-sqlite">Schema extractor supports now SQLite</a></li>
+      <li><a href="#DIALOG_setFieldActive_field_list">DIALOG.setFieldActive
+        accepts now a list of fields</a></li>
+      <li><a href="#DIALOG_methods_tree">New DIALOG methods to manipulate trees</a></li>
+      <li><a href="#fglrun.arrayIgnoreRangeError">New FGLPROFILE entry
+        fglrun.arrayIgnoreRangeError</a></li>
+      <li><a href="#fglrun.mapAnyErrorToError">New FGLPROFILE entry
+        fglrun.mapAnyErrorToError</a></li>
+    </ul>
+
+    <h3><a name="Drag_and_Drop">Drag &amp; Drop</a> </h3>
+
+    <p>The major new feature of Genero BDL 2.30 is the ability to implement <a href="DragAndDrop.html">Drag
+    &amp; Drop</a> in DISPLAY ARRAY for tables or treeviews. </p>
+
+    <h3><a name="Web_Component">The WEB Component</a> </h3>
+
+    <p>A new form item type called <a href="FormSpecFiles.html#FF_ITEMTYPE_WEBCOMPONENT">WEBCOMPONENT</a>
+    is provided to integrate external Java-Script-based widgets in your forms. </p>
+
+    <h3><a name="New_DB_Drivers_2_22">New database drivers</a> </h3>
+    <p>Genero 2.30 provides the following new database drivers: </p>
+        <ul>
+          <li> <b>dbmase0Fx</b> for <a href="odiagase.html">Sybase ASE 15.x</a>
+            (2.30.01)</li>
+          <li> <b>dbmmys55x</b> for a <a href="odiagmys.html">Mysql 5.5.x
+            client</a> (2.30.01)</li>
+          <li> <b>dbmpgs90x</b> for a <a href="odiagpgs.html">PostgreSQL 9.0.x client</a>
+            (2.30.02)</li>
+        </ul>
+
+    <h3><a name="Mac_OS_X">Support for Mac OS/X platform</a></h3>
+
+    <p>Genero BDL is now available on Mac OS/X. You need at least Mac OS/X
+    version <b>10.5</b>.<br>
+    The Operating System code for Mac OS/X
+    10.5 64b is <b>m64x105</b>.</p>
+
+    <h3><a name="version-info-platform">Command line tools display platform
+    identifier with -V option</a></h3>
+
+    <p>When using the -V option to display version information with FGL
+    command-line tools, you get now also the platform identifier:</p>
+    <pre>$ fglrun -V
+...
+<b>Target lnxlc23
+</b>...</pre>
+
+    <p>The &quot;Target&quot; line helps to identify the operating system the
+    binary was compiled for. This information can be useful on systems where you can mix 32b and
+    64b binaries.&nbsp;</p>
+
+    <h3><a name="Oracle_bin_float_double">Oracle BINARY_FLOAT / BINARY_DOUBLE</a></h3>
+    <p>Informix SMALLFLOAT and FLOAT can now be stored in Oracle native
+    BINARY_FLOAT / BINARY_DOUBLE types.<br>
+    See <a href="odiagora.html#ODIORA021">Oracle Adaptation Guide</a> for more
+    details.</p>
+
+    <h3><a name="multi-fglprofile">Multiple configuration file specification
+    with FGLPROFILE</a></h3>
+    <p>The <a href="FglProfile.html">FGLPROFILE</a> environment variable now
+    accepts multiple file specification with an operating-system-specific path
+    separator:</p>
+    <pre>FGLPROFILE=&quot;/opt/app/etc/license.prf:/opt/app/etc/gui.prf:myprofile.prf&quot;</pre>
+
+    <h3><a name="ensure-field-visible">Show a specific field of a form</a></h3>
+    <p>A new method was added to the <a href="ClassForm.html#ensureFieldVisible">ui.Form
+    built-in class</a>, to make a specific form field visible, showing the
+    parent containers automatically.<br>
+    This method can also be used to bring a given folder page to the front, even
+    if the field is not active (i.e. not driven by a dialog).</p>
+
+    <h3><a name="error-message-style">STYLE attribute for ERROR and MESSAGE
+    instructions</a></h3>
+
+    <p>The <a href="MessageDisplay.html#ERROR">ERROR</a> and <a href="MessageDisplay.html#MESSAGE">MESSAGE</a>
+    instructions get an additional <b>STYLE</b> attribute, to reference a
+    presentation style and define the rendering with font, color,
+    and position.&nbsp;</p>
+
+    <h3><a name="toolbar-topmenu-style">STYLE attribute for TOOLBAR and TOPMENU
+    elements</a></h3>
+    <p>You can now define a style for <a href="Toolbars.html">TOOLBAR</a> and <a href="Topmenus.html">TOPMENU</a>
+    elements. See Front-End documentation for more details about possible decoration
+    attributes.</p>
+
+    <h3><a name="radiogroup_include_to_items">RADIOGROUP items are filled with
+    INCLUDE list</a></h3>
+
+    <p>As with COMBOBOX, the items of a <a href="FormSpecFiles.html#FF_ITEMTYPE_RADIOGROUP">RADIOGROUP</a>
+    are now filled with the values of the INCLUDE attribute, if specified.</p>
+
+    <h3><a name="csv-channel-delimiter">CSV (Comma Separated Value) format for
+    LOAD/UNLOAD/Channel</a></h3>
+
+    <p>The <a href="InOutSql.html">LOAD/UNLOAD</a> SQL instructions and the <a href="ClassChannel.html">base.Channel</a>
+    class now support the &quot;CSV&quot; delimiter specification to read/write
+    files in Comma Separated Value format.</p>
+
+    <h3><a name="ident-canvas-item">Identifying the last clicked canvas item</a></h3>
+    <p>Before version 2.30, the only way to identify what CANVAS item was
+    clicked was to bind a specific function key to the item, from F1 to F255.
+    You can now identify the last clicked item with the <a href="Canvas.html">drawGetClickedItemId()</a>
+    function of fgldraw.4gl.</p>
+
+    <h3><a name="all-fields-touched">Checking the touched flag of all fields
+    used by the dialog</a></h3>
+
+    <p>The <a href="Operators.html#OP_FIELD_TOUCHED">FIELD_TOUCHED()</a>
+    operator and <a href="ClassDialog.html#getFieldTouched">ui.Dialog.getFieldTouched()</a>
+    method accept now a simple star as parameter, in order to check all fields
+    used by the dialog.</p>
+
+    <h3><a name="fgl_db_driver_type">Getting the type of the current database
+    driver</a></h3>
+
+    <p>In order to identify the target database type, you can use the <a href="BuiltInFunctions.html#BF_FGL_DB_DRIVER_TYPE">fgl_db_driver_type()</a>
+    built-in function. This function returns the 3-letter code of the database
+    driver (ifx, ora, ads, db2, ...). See also the db_get_database_type()
+    function in FGLDIR/src/fgldbutil.4gl, this function maps the driver type to
+    a database code.</p>
+
+    <h3><a name="table-column-header-alignment">Table column header alignment</a></h3>
+
+    <p>The <a href="FSFAttributes.html#FA_JUSTIFY">JUSTIFY</a> attribute is now
+    supported for all form item types, in order to let you specify both the data
+    justification in the field/cell and the alignment of the table column
+    header.&nbsp;</p>
+
+    <h3><a name="FGLSQLDEBUG-load-dll-error">FGLSQLDEBUG displays shared object
+    load error</a></h3>
+    <p>In order to identify the reason why a database driver cannot be loaded, when
+    setting <a href="EnvironmentVariables.html#EV_FGLSQLDEBUG"> FGLSQLDEBUG</a> you now get an additional debug message that contains
+    the operating system error message (dlerror())</p>
+    <h3><a name="fgldbsch-sqlite">Schema extractor supports now SQLite</a></h3>
+    <p>With 2.30 the <a href="Tools.html#TL_FGLDBSCH">fgldbsch</a> tool can now
+    extract database schema from SQLiIte. However, pay attention to the data types used in SQLite (V 3.6): This database
+    supports some standard type names in the SQL syntax but in reality the types used to store data are very limited. For example, a DATE will be
+    stored as an integer or string (i.e. there is no native DATE type). See SQLite documentation for more details.</p>
+    <p>The fgldbsch tool will extract the schema according to the original type names used to create the table.</p>
+
+    <h3><a name="DIALOG_setFieldActive_field_list">DIALOG.setFieldActive accepts
+    now a list of fields</a></h3>
+
+    <p>The <a href="ClassDialog.html#setFieldActive">ui.Dialog.setFieldActive()</a>
+    method is now accepting a list of fields as parameter, with the &quot;dot-asterisk&quot;
+    notation, like the setFieldTouched() method:</p>
+
+    <pre>   CALL DIALOG.setFieldActive(&quot;customner.*&quot;, FALSE)
+   CALL DIALOG.setFieldActive(&quot;customner.cust_name&quot;, TRUE)</pre>
+
+    <p><b><font color="#FF0000">Warning:</font> If all fields of the dialog are
+    disabled, the dialog stops.</b></p>
+
+    <h3><a name="DIALOG_methods_tree">New DIALOG methods to manipulate trees</a></h3>
+    <p>This new feature is part of the fix for bug <b>#18224</b>.</p>
+    <p>When modifying a tree during the dialog execution (for example, when
+    implementing dynamic trees with ON EXPAND / ON COLLAPSE triggers), if you
+    use the <a href="ClassDialog.html#insertRow">ui.Dialog.insertRow()</a>, <a href="ClassDialog.html#deleteRow">ui.Dialog.deleteRow()</a>
+    or <a href="ClassDialog.html#deleteAllRows">ui.Dialog.deleteAllRows()</a>
+    methods to modify the node list, the internal tree structure was corrupted.
+    You could safely modify directly the program array with <a href="Arrays.html">array
+    methods</a>, but multi-range selection flags and cell attributes are not
+    synchronized when doing this. Starting with <b>2.30.02</b>, you can now use
+    the <a href="ClassDialog.html#insertNode">ui.Dialog.insertNode()</a>, <a href="ClassDialog.html#appendNode">ui.Dialog.appendNode()</a>
+    and <a href="ClassDialog.html#deleteNode">ui.Dialog.deleteNode()</a> methods
+    to manipulate the node list and get secondary data information synchronized.</p>
+
+    <h3><a name="fglrun.arrayIgnoreRangeError">New FGLPROFILE entry
+    fglrun.arrayIgnoreRangeError</a></h3>
+    <p>Version <b> 2.30.04</b> re-enables the <b>fglrun.arrayIgnoreRangeError</b> 
+    <a href="FglProfile.html">FGLPROFILE</a> entry which was supported by Four
+    Js BDS. This entry can be set to true to force the runtime system to
+    return the first element of an array when the array index is out of bounds.
+    See <a href="Arrays.html#arrayIgnoreRangeError">Arrays</a> for more details.</p>
+
+    <h3><a name="fglrun.mapAnyErrorToError">New FGLPROFILE entry
+    fglrun.mapAnyErrorToError</a></h3>
+    <p>The version <b>2.30.04</b> introduces the new <b>fglrun.mapAnyErrorToError</b>
+    <a href="FglProfile.html">FGLPROFILE</a> entry. This configuration parameter
+    can be set to true to map the default action of the WHENEVER ANY ERROR
+    exceptions to the action defined for the WHENEVER ERROR exception tpye.
+    See <a href="Exceptions.html#mapAnyErrorToError">Exceptions</a> for more details.</p>
+
+    <HR>
+        <h2><a name="VERSION_2_21">Version 2.21</a></h2>
+    <ul>
+      <li><a href="#Modules_2_21">Modules</a></li>
+      <li><a href="#SPINEDIT_VALMINMAX">SPINEDIT gets VALUEMIN, VALUEMAX</a></li>
+      <li><a href="#New_DB_Drivers_2_21">New database drivers</a></li>
+      <li><a href="#New_Styles">New presentation styles</a></li>
+      <li><a href="#numkeypad_decimal_separator">Numeric keypad decimal separator</a></li>
+      <li><a href="#auto_dispplay_byte">Automatic display of BYTE images</a></li>
+      <li><a href="#undef_paged_display_array">Paged DISPLAY ARRAY supports undefined initial row count</a></li>
+      <li><a href="#sql_column_default">Static SQL column definition supports DEFAULT clause</a></li>
+      <li><a href="#pgs_text_byte">PostgreSQL driver supports TEXT/BYTE</a></li>
+      <li><a href="#mdi_container_size">Define the initial size of the MDI container</a></li>
+      <li><a href="#insert_without_serial">New INSERT syntax to avoid SERIAL column usage</a></li>
+      <li><a href="#ming_guo_dbdate">Support for C1 Ming Guo date format modifier</a></li>
+      <li><a href="#load-error-846">New SQL debug message when LOAD fails with
+        error -846</a></li>
+      <li><a href="#snc-widechar">ODBC Character type control with SNC driver</a></li>
+      <li><a href="#Style_formScroll">New Presentation Style attribute for
+        Windows: formScroll</a></li>
+    </ul>
+
+    <h3><a name="Modules_2_21">Modules</a> </h3>
+
+    <p>The major new feature of Genero BDL 2.21 is the support of the 42m module
+    specification with the IMPORT instruction. </p>
+
+    <p>Please refer to the following links for more details: </p>
+
+    <ul>
+      <li><a href="CompilingPrograms.html#IMPORT">Importing modules</a></li>
+      <li><a href="Programs.html#IMPORT">The IMPORT instruction</a></li>
+      <li><a href="Functions.html">FUNCTION definitions (with PRIVATE / PUBLIC
+        modifiers)</a></li>
+      <li><a href="Reports.html">REPORT definitions (with PRIVATE / PUBLIC
+        modifiers)</a></li>
+      <li><a href="Variables.html">Variable definitions (with PRIVATE / PUBLIC
+        modifiers)</a></li>
+      <li><a href="UserTypes.html">User Types definitions (with PRIVATE / PUBLIC
+        modifiers)</a></li>
+      <li><a href="Constants.html">Constant definitions (with PRIVATE / PUBLIC
+        modifiers)</a></li>
+    </ul>
+
+    <h3><a name="SPINEDIT_VALMINMAX">SPINEDIT gets VALUEMIN, VALUEMAX</a> </h3>
+
+    <p>The <a href="FormSpecFiles.html#FF_ITEMTYPE_SPINEDIT">SPINEDIT widget</a>
+    gets two new attributes to define the range of possible values: 
+	<a href="FSFAttributes.html#FA_VALUEMIN">VALUEMIN</a>,
+    <a href="FSFAttributes.html#FA_VALUEMAX">VALUEMAX</a>. </p>
+
+    <h3><a name="New_DB_Drivers_2_21">New database drivers</a> </h3>
+    <p>The following database drivers are supported by Genero version 2.21: </p>
+        <ul>
+          <li> <b>dbmads381</b> for a <a href="odiagads.html">Genero db 3.81 client</a></li>
+          <li> <b>dbmesmA0</b> for an <a href="odiagmsv.html">EasySoft 1.2.3 client</a></li>
+          <li> <b>dbmpgs84x</b> for a <a href="odiagpgs.html">PostgreSQL 8.4.x
+            client</a></li>
+          <li> <b>dbmoraB2x</b> for <a href="odiagora.html">Oracle 11g release 2
+            (11.2)</a></li>
+        </ul>
+
+    <h4><a name="generodb_3_81">New Genero db 3.81 driver</a> </h4>
+
+    <p>A new driver for Genero db 3.81 is available in version 2.21; the name is
+    <b>dbmads381</b>. This driver no longer scans SQL text for translation,
+    as most common Informix syntax is now supported in Genero db 3.81 when
+    using COMPATIBILITY_MODE=INFORMIX. Skipping the SQL text scanning will
+    improve the performance of your programs. </p>
+
+    <p>For more details, see the <a href="odiagads.html">ODI Adaptation Guide</a>. </p>
+
+    <p>This driver is also back-ported in 2.20 versions (starting with 2.20.07). </p>
+
+    <h4><a name="easysoft_msv">New EasySoft driver to connect from Unix to SQL
+    Server</a> </h4>
+
+    <p>Version 2.21.00 introduces a new set of database drivers based on the <a href="http://www.easysoft.com">EasySoft
+    SQL Server ODBC client</a>. See the <a href="odiagmsv.html">ODI Adaptation Guide</a>
+    for SQL Server for more details about configuration settings. </p>
+
+    <p>This driver is also back-ported in 2.20 versions (starting with 2.20.08). </p>
+
+    <h4><a name="postgresql_8_4">New PostgreSQL 8.4 driver with INTERVAL support</a> </h4>
+
+    <p>Version 2.21.00 provides PostgreSQL 8.4 support with the new <b>dbmpgs84x</b>
+    driver. This driver converts Informix-style INTERVALs to native PostgreSQL
+    INTERVALs. See the <a href="odiagpgs.html#ODIPGS036">ODI Adaptation Guide</a>
+    for more details. </p>
+
+    <p>This driver is also back-ported in 2.20 versions (starting with 2.20.07). </p>
+
+    <h3><a name="New_Styles">New presentation styles</a> </h3>
+
+    <p>The following new style attributes were added in version 2.21:</p>
+    <ul>
+      <li>Window: <a href="PresentationStyles.html#STYATT_WINDOW">actionPanelButtonTextAlign, ringMenuButtonTextAlign</a></li>
+      <li>Image: <a href="PresentationStyles.html#STYATT_IMAGE">alignment</a></li>
+    </ul>
+
+    <h3><a name="numkeypad_decimal_separator">Numeric keypad decimal separator</a></h3>
+    <p>With Genero 2.21, the decimal separator key of the numeric keypad does 
+	not follow the application settings for numeric data formatting defined by <a href="EnvironmentVariables.html#EV_DBMONEY">DBMONEY</a>
+    or <a href="EnvironmentVariables.html#EV_DBFORMAT">DBFORMAT</a>. The decimal
+    separator defined by one of these environment variables will be used when
+    pressing the dot key of the numeric keypad.</p>
+
+    <h3><a name="auto_dispplay_byte">Automatic display of BYTE images</a></h3>
+
+    <p>Image data contained in a <a href="DataTypes.html#DT_BYTE">BYTE</a>
+    variable can now be displayed automatically by Genero when using a simple
+    DISPLAY BY NAME, DISPLAY TO or when the BYTE variable is used by a dialog
+    instruction. See the ImageList demo, for example, in FGLDIR/demo/Widgets.</p>
+
+    <p>Note that the BYTE data must be located in a file (LOCATE IN FILE &quot;path&quot;)
+    or temp file (LOCATE IN FILE)</p>
+
+    <p>For more details about image fields, see 
+	<a href="FormSpecFiles.html#FF_ITEMTYPE_IMAGE">IMAGE
+    field types</a>.</p>
+
+    <h3><a name="undef_paged_display_array">Paged DISPLAY ARRAY supports
+    undefined initial row
+    count</a></h3>
+
+    <p>Before 2.21, when using a Paged DISPLAY ARRAY, it was mandatory to
+    provide the total number of rows in the result set, which required a
+    SELECT COUNT(*) before executing the dialog instruction. The dialog now supports an undefined number of rows, with value -1 in the COUNT dialog
+    attribute.</p>
+
+    <p>For more details, see <a href="DisplayArray.html">Paged DISPLAY ARRAY</a>.</p>
+
+    <h3><a name="sql_column_default">Static SQL column definition supports
+    DEFAULT clause</a></h3>
+
+    <p>Starting with 2.21 the syntax of the CREATE TABLE and ALTER TABLE Static
+    SQL statements allows the DEFAULT clause in column definitions.</p>
+
+    <pre>CREATE TABLE item ( num SERIAL, name VARCHAR(50) DEFAULT '&lt;undefined&gt;' NOT NULL )</pre>
+
+    <h3><a name="pgs_text_byte">PostgreSQL supports TEXT/BYTE</a></h3>
+    <p>With 2.21 it is now possible to use <a href="odiagpgs.html#ODIPGS030">TEXT/BYTE data with
+    PostgreSQL</a> with the <b>dbmpgs</b> drivers.</p>
+
+    <h3><a name="mdi_container_size">Define the initial size of the MDI
+    container</a></h3>
+    <p>Genero BDL 2.21 provides a new <a href="ClassInterface.html#setSize">ui.Interface</a>
+    method to let you define the initial size of the MDI container window:</p>
+
+    <pre>CALL ui.Interface.setSize( &quot;600px&quot;, &quot;1000px&quot; )</pre>
+
+    <h3><a name="insert_without_serial">New INSERT syntax to avoid SERIAL column usage</a></h3>
+    <p>Version 2.21 supports a new Static SQL syntax for the INSERT statement,
+    which removes the record member defined as SERIAL, SERIAL8 or BIGSERIAL in
+    the schema file:</p>
+
+    <pre>SCHEMA mydb
+DEFINE record RECORD LIKE table.*
+...
+INSERT INTO table VALUES record.*</pre>
+
+    <p>For more details, see <a href="StaticSql.html">Static SQL</a>.</p>
+
+    <h3><a name="ming_guo_dbdate">Support for C1 Ming Guo date format modifier</a></h3>
+    <p>You can enable the digit-based Ming Guo date format by adding the C1
+    modifier at the end of the value set for the DBDATE environment variable:</p>
+
+    <pre>$ DBDATE=&quot;Y3MD/C1&quot;
+$ export DBDATE</pre>
+
+    <p>Notes:</p>
+    <ul>
+      <li>When using C1, the possible values for the Yn specifier are Y4, Y3,
+        Y2.</li>
+      <li>The MDI() function is sensitive to the C1 modifier usage in DBDATE.</li>
+      <li>The USING operator supports the c1 modifier as well.</li>
+      <li>The C2 modifier to use Era names is not supported.</li>
+      <li>Unlike Informix 4gl, when using negative years, the minus sign is
+        placed over the left-most zero of the year.</li>
+      <li>Front-ends may not support the Ming Guo calendar for widgets like
+        DATEEDIT.</li>
+    </ul>
+    <p>For more details, see <a href="Localization.html#MING_GUO">Ming Guo date
+    format</a>.</p>
+
+    <h3><a name="load-error-846">New SQL debug message when LOAD fails with
+    error -846</a></h3>
+    <p>The <a href="InOutSql.html">LOAD</a> statement can fail with <a href="FglErrors.html#-846">error
+    -846</a> when the input file has a corrupted line (missing or invalid field
+    separator, invalid character set, UNIX/DOS line terminators). Before
+    2.21.00, you had to check every line of the input file to find the problem.
+    With this new version you can now easily find the invalid line by setting
+    the <a href="EnvironmentVariables.html#EV_FGLSQLDEBUG">FGLSQLDEBUG</a>
+    environment variable. The runtime system will display such debug messages
+    with the line number:</p>
+    <pre>| DBI: LOAD: Corrupted data file, check line #12345.</pre>
+
+    <h3><a name="snc-widechar">ODBC Character type control with SNC driver</a></h3>
+    <p>Starting with version <b>2.21.02</b>, you can instruct the SNC driver to
+    use simple char or wide-char character strings for ODBC, with the following
+    FGLPROFILE entry:</p>
+    <pre>dbi.database.&lt;dbname&gt;.snc.widechar = true/false</pre>
+
+    <p>See <a href="odiagmsv.html#ODIMSV040">SQL Server ODI Adaptation Guide</a>
+    for more details.</p>
+
+    <h3><a name="Style_formScroll">New Presentation Style attribute for Windows:
+    formScroll</a></h3>
+    <p>The <a href="PresentationStyles.html#STYATT_WINDOW">formScroll</a>
+    Presentation Style attribute can be set for Windows to control scrollbars
+    display when the Window is larger as the screen.</p>
+
+    <HR>
+        <h2><a name="VERSION_2_20">Version 2.20</a></h2>
+        <p>See also <a href="Mig0004.html">Upgrade Notes</a>.</p>
+    <ul>
+      <li><a href="#Java_Interface_2_20">The Java Interface</a></li>
+      <li><a href="#tree-view-tables">Tree-view containers</a></li>
+      <li><a href="#traditional_ui_mode">The traditional user interface mode</a></li>
+      <li><a href="#phantom-fields">Phantom fields</a></li>
+      <li><a href="#MultiRowSelection">Multi-row selection in lists</a></li>
+      <li><a href="#new-data-types-2.20">New built-in data types</a></li>
+      <li><a href="#built-in-sort-input-array">Built-in sort works in INPUT ARRAY</a></li>
+      <li><a href="#New_DB_Drivers_2_20">New database drivers</a></li>
+      <li><a href="#action-defaults-contextMenu">New contextMenu action default attribute</a></li>
+      <li><a href="#private-functions">Private functions</a></li>
+      <li><a href="#autodoc">Automatic source documentation generator</a></li>
+      <li><a href="#fgl-man-pages">MAN pages for Genero BDL commands</a></li>
+      <li><a href="#New_Presentation_styles_2.20">New presentation styles</a></li>
+      <li><a href="#New_FE_Calls_2.20">New front-end calls</a></li>
+      <li><a href="#MYSQL_2_20_TEXT_BYTE">MySQL driver supports TEXT/BYTE</a></li>
+      <li><a href="#fglcomp_timestamp">Writing a timestamp to 42m modules</a></li>
+      <li><a href="#disabling-fe-protocol-compression">Disabling Front-End protocol compression</a></li>
+      <li><a href="#FGLRESOURCEPATH">New environment variable for program resource files</a></li>
+      <li><a href="#fgl_dialog_setselection">New built-in functions to handle text selection</a></li>
+      <li><a href="#layout_image">New IMAGE attribute in form LAYOUT element</a></li>
+      <li><a href="#on_action_infield">INFIELD clause for ON ACTION interaction blocks</a></li>
+      <li><a href="#high-prec-math-2.20">New high-precision math functions for DECIMALs</a></li>
+      <li><a href="#database-userauth-callback">Database user authentication callback function</a></li>
+      <li><a href="#get-current-dialog">Getting the current active dialog</a></li>
+      <li><a href="#START_REPORT_TO_XML_HANDLER">SAX Document Handler specification in START REPORT</a></li>
+      <li><a href="#auto-completion-vim">Automatic Code Completion with VIM</a></li>
+      <li><a href="#report-definition-file">Report definition file generation</a></li>
+      <li><a href="#improved-FGLSQLDEBUG">Improved FGLSQLDEBUG output</a></li>
+    </ul>
+    <h3><a name="Java_Interface_2_20">The Java Interface</a> </h3>
+    <p>The major new feature of Genero BDL 2.20 is the <a href="JavaBridge.html"> Java Interface</a>.
+        This allows you to instantiate and use Java classes from FGL. </p>
+    <h3><a name="tree-view-tables">Tree-view containers</a> </h3>
+    <p>Genero BDL 2.20 introduces typical Tree-View widgets with the new TREE container.<br>
+    See <a href="TreeViews.html">Tree Views</a> for more details. </p>
+    <h3><a name="traditional_ui_mode">The traditional user interface mode</a> </h3>
+        <p>To simplify migration from Informix 4GL or Four Js BDS, you can now
+        run applications in traditional mode to render windows as simple
+        boxes, as in the WTK front-end. For more details,
+        see <a href="DynamicUI.html#TRADITIONAL_MODE">Traditional GUI mode</a>.
+        See also the new <a href="MigI4GL.html">I4GL migration guide</a> and <a href="Mig0000.html">BDS migration guide</a> </p>
+    <h3><a name="phantom-fields">Phantom fields</a> </h3>
+    <p>Genero BDL 2.20 introduces a new sort of form field with the PHANTOM
+    keyword. Phantom fields are used to define the screen-record or
+    screen-array, but are not used in the LAYOUT section of the form. Phantom
+    fields are especially useful when implementing a TREE container.<br>
+    See <a href="FormSpecFiles.html#FF_PHANTOM_FIELDS">Phantom Fields</a> for
+    more details. </p>
+    <h3><a name="MultiRowSelection">Multi-row selection in lists</a> </h3>
+        <p><a href="DisplayArray.html">DISPLAY ARRAY</a> can now
+        handle <a href="MultipleDialogs.html#multi-row-selection">multi-row selection</a>.</p>
+        <h3><a name="new-data-types-2.20">New built-in data types</a></h3>
+        <p>Version 2.20 introduces three new built-in data types:</p>
+    <ul>
+      <li><a href="DataTypes.html#DT_TINYINT">TINYINT</a> (8 bit signed integer)</li>
+      <li><a href="DataTypes.html#DT_BIGINT">BIGINT</a> (64 bit signed integer)</li>
+      <li><a href="DataTypes.html#DT_BOOLEAN">BOOLEAN</a> (8 bit boolean
+        TRUE/FALSE)</li>
+    </ul>
+        <h3><a name="built-in-sort-input-array">Built-in sort works in INPUT ARRAY</a></h3>
+        <p>Before version 2.20, built-in sort was only available in DISPLAY ARRAY.
+        Now the rows can be sorted during an <a href="InputArray.html"> INPUT ARRAY</a>.</p>
+    <h3><a name="New_DB_Drivers_2_20">New database drivers</a> </h3>
+    <p>The following database drivers are supported by Genero version 2.20: </p>
+        <ul>
+          <li> <b>dbmmys60x</b> for a <a href="odiagmys.html">MySQL 6.0.x client</a>
+            (2.20.01)</li>
+          <li> <b>dbmsqt3xx</b> for an <a href="odiagsqt.html">SQLite 3 library</a>
+            (2.20.01)</li>
+        </ul>
+        <h3><a name="action-defaults-contextMenu">New contextMenu action default attribute</a></h3>
+        <p>A new <a href="ActionDefaults.html">Action Defaults attribute</a> named
+        &quot;<b>contextMenu</b>&quot; has been added to allow you to specify whether
+        the menu option is visible in the default context menu.
+        The default value is &quot;yes&quot; - the option is visible whenever the
+        action is visible.</p>
+        <h3><a name="private-functions">Private functions</a></h3>
+    <p>It is now possible to hide a function (or report) to the other modules
+    with the new <a href="Functions.html">PRIVATE keyword</a>.</p>
+        <h3><a name="autodoc">Automatic source documentation generator</a></h3>
+    <p>The <a href="Tools.html#TL_FGLCOMP">fglcomp</a> compiler has been
+        extended with a new <b>--build-doc</b> option for <a href="AutoDoc.html">generating 4gl source documentation</a>.</p>
+        <h3><a name="fgl-man-pages">MAN pages for Genero BDL commands</a></h3>
+        <p>On UNIX platforms, you can now use man pages for Genero BDL tools like fglcomp and fglform:</p>
+    <pre>$ man fglcomp</pre>
+        <p>Note that on some platforms, you must set the <b>MANPATH</b>
+        environment variable to $FGLDIR/man.</p>
+    <h3>
+                <a name="New_Presentation_styles_2.20">New Presentation styles</a></h3>
+                <a href="PresentationStyles.html">Presentation Styles</a> have been extended:
+    <ul>
+      <li>
+            <a href="FormSpecFiles.html#FF_ITEMTYPE_TEXTEDIT">TEXTEDIT</a>
+            fields can use the style attribute &quot;<b><a href="PresentationStyles.html#STYATT_TEXTEDIT">integratedSearch</a></b>&quot;
+            to enable a search facility.
+      <li>
+                <a href="FormSpecFiles.html#FF_CONTAINER_FOLDER">FOLDER</a>
+                controls can now get a &quot;<b><a href="PresentationStyles.html#STYATT_FOLDER">position</a></b>&quot;
+                style attribute to define the position (top, left, right,
+                bottom) of folder tabs.</li>
+      <li>
+                <a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTON">BUTTON</a> form
+                items get a new &quot;<b><a href="PresentationStyles.html#STYATT_BUTTON">buttonType</a></b>&quot;
+                attribute to define the rendering of the button.</li>
+      <li>
+                <a href="Menus.html">MENUs</a> created with the popup option can be
+                placed with the &quot;<a href="PresentationStyles.html#STYATT_MENU"><b>position</b></a>&quot;
+                attribute.</li>
+      <li>          
+                <a href="WindowsAndForms.html">WINDOWs</a> Menu and Action panel decoration can be customized using 
+                &quot;<a href="PresentationStyles.html#STYATT_WINDOW"><b>ringMenuDecoration</b></a>&quot; and &quot;<a href="PresentationStyles.html#STYATT_WINDOW"><b>actionPanelDecoration</b></a>&quot;
+                attributes.
+                <br/>
+                New &quot;<b><a href="PresentationStyles.html#STYATT_MDI">tabbedContainer</a></b>&quot; and &quot;<b><a href="PresentationStyles.html#STYATT_WINDOW">tabbedContainerCloseMethod </a></b>&quot;
+                attributes can be used to turn on and customize &quot;<a href="MDIWindows.html#tabbedMDI">tabbed MDI</a>&quot; feature.
+                </li>
+                
+      <li>
+                <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLEs</a> can
+                use the new &quot;<b><a href="PresentationStyles.html#STYATT_TABLE">tableType</a></b>&quot;
+                attribute to render data in different ways (picture flow).
+                <br/>
+                The new &quot;<b><a href="PresentationStyles.html#STYATT_TABLE">resizeFillsEmptySpace</a></b>&quot;
+                attribute can be used to define how the last column is resized when the table is resized.
+                </li>
+      <li>
+                All items with an <a href="FSFAttributes.html#FA_IMAGE">image attribute</a> can
+                use the new &quot;<b><a href="PresentationStyles.html#STYATT_COMMON">imageCache</a></b>&quot;
+                attribute to define if the picture can be cached locally.</li>
+    </ul>
+    
+    <h3>
+      <a name="New_FE_Calls_2.20">New Front-End Calls</a></h3>
+        <a href="FrontEndFunctions.html">Frond-End Functions</a> have been extended:
+    <ul>
+      <li>
+                New &quot;<b>getwindowid</b>&quot; function in the <tt>standard</tt> module 
+                to get the system window manager id of a window.</li>
+      <li>
+                The &quot;<b>feinfo</b>&quot; function in the <tt>standard</tt> module 
+                has been extended to query the workstation system version, number of screens, and
+                screen resolution.&nbsp;</li>
+      <li>
+                New &quot;<b>launchurl</b>&quot; function in the <tt>standard</tt> module
+                to open a given url (http, mailto...) with the default installed url handler
+                (e.g. your default browser for http, default mailer for mailto...).</li>
+    </ul>
+        <h3><a name="MYSQL_2_20_TEXT_BYTE">MySQL Driver supports TEXT/BYTE</a></h3>
+        <p>It is now possible to use <a href="odiagmys.html#ODIMYS030">TEXT/BYTE data with MySQL</a>
+        with the <b>dbmmys</b> drivers.</p>
+        <h3><a name="fglcomp_timestamp">Adding a timestamp to 42m modules</a></h3>
+        <p><a href="Tools.html#TL_FGLCOMP">fglcomp</a> has a new option (<b>fglcomp
+        --timestamp</b>) to write the compilation timestamp to the generated 42m
+        p-code module. If present, the timestamp will be printed when using <b>fglrun -b</b>.
+        Use compilation timestamps only if really needed; every new compiled .42m module will
+        be different, even if the source code has not changed.</p>
+        <h3><a name="disabling-fe-protocol-compression">Disabling Front-End protocol compression</a></h3>
+        <p> Front-End protocol compression can now be
+        disabled with a new FGLPROFILE entry. This is especially useful in fast
+        networks to save processor time. See <a href="FEProtocol.html#COMPRESSION">Front-End Protocol</a>
+        for more details.</p>
+        <h3> <a name="FGLRESOURCEPATH"> New environment variable for program resource files</a></h3>
+        <p> To work around conflicts with the Informix database path specification in
+        DBPATH, you can now use the <a href="EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a>
+        environment variable to specify search paths for program resource files
+        like forms.</p>
+        <h3> <a name="fgl_dialog_setselection">New built-in functions to handle text selection</a></h3>
+        <p> New built-in functions are now available to control the part of the
+        text that is selected in the current field:</p>
+        <p><a href="BuiltInFunctions.html#BF_FGL_DIALOG_GETSELECTIONEND">FGL_DIALOG_GETSELECTIONEND()</a><br>
+        <a href="BuiltInFunctions.html#BF_FGL_DIALOG_SETSELECTION">FGL_DIALOG_SETSELECTION()</a></p>
+        <h3><a name="layout_image">New IMAGE attribute in form LAYOUT element</a></h3>
+        <p>The <a href="FormSpecFiles.html#SECTION_LAYOUT">LAYOUT</a> element of
+        a form definition can now use the IMAGE attribute to define the icon to
+        be used for the parent Window. This is especially useful in a <a href="MDIWindows.html">Container-based
+        application</a>, to distinguish child programs inside the container.</p>
+        <h3><a name="on_action_infield">INFIELD clause in ON ACTION
+        interactive block</a></h3>
+        <p>The ON ACTION interactive block has been extended with a new <a href="InteractionModel.html#ON_ACTION_INFIELD">INFIELD
+        <i>field-name</i>
+        clause</a>, to automatically enable/disable the action when
+        entering/leaving the specified field.</p>
+        <h3><a name="high-prec-math-2.20">New high-precision math functions for
+        DECIMALs</a></h3>
+        <p>Following built-in functions have been added for precision math
+        computing with DECIMALs:</p>
+        <ul>
+          <li><a href="BuiltInFunctions.html#BF_FGL_DECIMAL_TRUNCATE">FGL_DECIMAL_TRUNCATE()</a></li>
+          <li><a href="BuiltInFunctions.html#BF_FGL_DECIMAL_SQRT">FGL_DECIMAL_SQRT()</a></li>
+          <li><a href="BuiltInFunctions.html#BF_FGL_DECIMAL_EXP">FGL_DECIMAL_EXP()</a></li>
+          <li><a href="BuiltInFunctions.html#BF_FGL_DECIMAL_LOGN">FGL_DECIMAL_LOGN()</a></li>
+          <li><a href="BuiltInFunctions.html#BF_FGL_DECIMAL_POWER">FGL_DECIMAL_POWER()</a></li>
+        </ul>
+        <h3><a name="database-userauth-callback">Database user authentication
+        callback function</a></h3>
+        <p>When using the DATABASE instruction, you can now define an <a href="Connections.html#DBCUSERAUTH">FGLPROFILE
+        entry specifying a callback function</a> which returns a username and
+        password to be used for the database connection.</p>
+        <h3><a name="get-current-dialog">Getting the current active dialog</a></h3>
+        <p>A new class method is now available to get the current active dialog:
+        <a href="ClassDialog.html#getCurrent">ui.Dialog.getCurrent()</a>.</p>
+        <h3><a name="START_REPORT_TO_XML_HANDLER">SAX Document Handler
+        specification in START REPORT</a></h3>
+        <p>The START REPORT instruction now supports a new clause to specify the
+        XML SAX Document Handler to process XML output with the <a href="Reports.html#RPT_XML">TO
+        XML HANDLER syntax</a>.</p>
+        <h3><a name="auto-completion-vim">Automatic Code Completion with VIM</a></h3>
+        <p>If you have vim 7 installed, you can now use <a href="CodeEditing.html#VIM_AC">.per
+        and .4gl code completion</a> within your preferred editor.&nbsp;</p>
+
+        <h3><a name="report-definition-file">Report definition file generation</a></h3>
+
+        <p>With fglcomp 2.20 you can use the --build-rdd option to generate a
+        data definition file (.rdd)</p>
+
+    <h3><a name="improved-FGLSQLDEBUG">Improved FGLSQLDEBUG output</a></h3>
+    <p>When setting the <a href="EnvironmentVariables.html#EV_FGLSQLDEBUG">FGLSQLDEBUG
+    environment variable</a>, you get now the SQL command header with SQL
+    command name and 4GL source/line information <u>before</u> executing the
+    underlying ODI driver code. If the driver code crashes or stops the process
+    with an assertion, you can easily identify the last SQL instruction that was
+    executed. Before version 2.20, SQL debug output was printed <u>after</u> the
+    execution of the ODI driver code. If the ODI driver encountered a problem,
+    you could not find what SQL instruction was the reason for the crash.</p>
+
+    <HR>
+
+        <h2><a name="VERSION_2_11">Version 2.11</a></h2>
+    <ul>
+      <li><a href="#New_DB_Drivers_2_11">New database drivers</a></li>
+      <li><a href="#Static_SQL_2_11">Static SQL syntax extension</a>
+              <ul>
+                <li><a href="#derived_tables">Derived tables and derived column list</a></li>
+                <li><a href="#ifx11_isolation">New transaction isolation levels of Informix 11</a></li>
+                <li><a href="#cast_operator">The CAST operator</a></li>
+              </ul>
+            </li>
+      <li><a href="#prepro-noli-option">New preprocessor option to remove line number information</a></li>
+      <li><a href="#sysdba-sysoper-connection">Connecting to Oracle as SYSDBA or SYSOPER</a></li>
+      <li><a href="#ui.ComboBox-2.11">New methods for ui.ComboBox</a></li>
+      <li><a href="#currentRowVisibleAfterSort">Make current row visible after sort in lists</a></li>
+      <li><a href="#read-old-build-info">Reading pcode build information of older versions</a></li>
+    </ul>
+    <h3><a name="New_DB_Drivers_2_11">New database drivers</a> </h3>
+    <p>The following database drivers are supported by Genero version 2.11: </p>
+        <ul>
+          <li> <b>dbmpgs83x</b> for a <a href="odiagpgs.html">PostgreSQL 8.3.x client</a>
+            (2.11.02)</li>
+          <li> <b>dbmftm90</b> for a <a href="odiagmsv.html">FreeTDS client</a> connecting to SQL Server
+            2005 (2.11.02)</li>
+          <li> <b>dbmsncA0</b> for a <a href="odiagmsv.html">SQL Server Native client</a> connecting to SQL Server
+            2008 (2.11.02)</li>
+          <li> <b>dbmoraB1</b> for an <a href="odiagora.html">Oracle 11g client</a>
+            (2.11.02)</li>
+          <li> <b>dbmads380</b> for a <a href="odiagads.html">Genero db Server 3.80 client</a>
+            (2.11.05)</li>
+          <li> <b>dbmmys51x</b> for a <a href="odiagmys.html">MySQL 5.1.x client</a>
+            (2.11.10)</li>
+        </ul>
+        <h3><a name="Static_SQL_2_11">Static SQL syntax extension</a></h3>
+        <h4><a name="derived_tables">Derived tables and derived column list</a></h4>
+        <p>Genero BDL static SQL syntax now supports derived tables and
+        derived column lists in the FROM clause, for example:</p>
+    <pre>   SELECT * FROM (SELECT * FROM customers ORDER BY cust_num) AS t(c1,c2,c3,...)</pre>
+        <p>See database server documentation for more details about this SQL feature.
+        Note that Informix 11 does not support the full ANSI SQL 92
+        specification for derived columns, while other databases like DB2 do.
+        For this reason, fglcomp allows the ANSI standard syntax.</p>
+        <h4><a name="ifx11_isolation">New transaction isolation levels of Informix 11</a></h4>
+        <p>The SET ISOLATION statement now supports the new Informix 11 clauses
+        for the COMMITTED READ option:</p>
+    <pre>   SET ISOLATION TO COMMITTED READ [LAST COMMITTED] [RETAIN UPDATE LOCKS]</pre>
+        <p>When connecting to a non-Informix database, the LAST COMMITTED and
+        RETAIN UPDATE LOCKS are ignored; other databases do not support these
+        options, and have the same behavior as when these options are used with
+        Informix 11.</p>
+        <h4><a name="cast_operator">The CAST operator</a></h4>
+        <p>The CAST operator can now be used in static SQL statements:</p>
+    <pre>   CAST ( <i>expression</i> AS <i>sql-data-type</i> ) </pre>
+        <p>Note that only Informix data types are supported after the AS
+        keyword.</p>
+        <h3><a name="prepro-noli-option">New preprocessor option to remove line
+        number information</a></h3>
+        <p>You can now remove line number information with <b>-p noln</b> when
+        preprocessing sources to get a readable output:</p>
+    <pre>   fglcomp -E -p noln mymodule.4gl</pre>
+        <h3><a name="sysdba-sysoper-connection">Connecting to Oracle as SYSDBA
+        or SYSOPER</a></h3>
+        <p>In order to execute database administration tasks, you can now
+        connect to Oracle as SYSDBA or SYSOPER with the <a href="Connections.html#UA_ORA">CONNECT
+        instruction</a>:</p>
+        <pre>   CONNECT TO &quot;dbname&quot; USER &quot;scott/SYSDBA&quot; USING &quot;tiger&quot;</pre>
+        <h3><a name="ui.ComboBox-2.11">New methods for ui.ComboBox</a></h3>
+        <p>The <a href="ClassComboBox.html">ui.ComboBox</a> class has been
+        extended with new methods: getTextOf() and getIndexOf().</p>
+        <h3><a name="currentRowVisibleAfterSort">Make current row visible after sort in
+        lists</a></h3>
+        <p>A new <a href="FglProfile.html">FGLPROFILE</a> entry has been added
+        to force the current row to be shown automatically after a sort in a
+        table:</p>
+        <pre>   Dialog.currentRowVisibleAfterSort = 1</pre>
+        <p>By default, the offset does not change and the current row may
+        disappear from the window. When this new&nbsp;parameter is used, the
+        current row will always be visible. For more details, see <a href="Programs.html#RUNTIMECONFIG">Runtime Configuration</a>.</p>
+        <h3><a name="read-old-build-info">Reading pcode build information of older versions</a></h3>
+        <p>The <b>-b</b> option of <a href="Tools.html#TL_FGLRUN">fglrun</a> has
+        been extended to recognize headers of pcode modules compiled with older
+        versions of FGL. For more details, see <a href="CompilingPrograms.html#BUILDINFO">Compiling Programs</a>.
+        Additionally, <a href="Tools.html#TL_FGLFORM">fglform</a> now
+        writes build information in the 42f files, to identify on the production
+        site what Genero BDL version was used to compile forms.</p>
+    <HR>
+    <h2><a name="VERSION_2_10">Version 2.10</a></h2>
+    <p>See also <a href="Mig0003.html">Upgrade Notes</a>.</p>
+    <ul>
+      <li><a href="#Multiple_Dialogs_2.10">Multiple Dialogs</a></li>
+      <li><a href="#TRY_CATCH_pseudo_statement_2.10">TRY/CATCH pseudo statement</a></li>
+      <li><a href="#WHENEVER_RAISE_2.10">WHENEVER ... RAISE</a></li>
+      <li><a href="#SQL_Server_Native_Client_driver_2.10">SQL Server Native Client driver</a></li>
+      <li><a href="#Support_for_SPLITTER_attribute_2.10">Support for SPLITTER attribute</a></li>
+      <li><a href="#Double_click_in_tables_2.10">Double-click in tables</a></li>
+      <li><a href="#New_X_conversion_code_2.10">New X conversion code in fgldbsch</a></li>
+      <li><a href="#SQL_Interruption_2.10">SQL Interruption in database drivers</a></li>
+      <li><a href="#NULL_pointer_exceptions_2.10">NULL pointer exceptions can be trapped</a></li>
+      <li><a href="#Client_socket_interface_2.10">Client socket interface in Channels</a></li>
+      <li><a href="#Stack_trace_2.10">Stack trace</a></li>
+      <li><a href="#GUI_Connection_Timeout_2.10">GUI connection timeout</a></li>
+      <li><a href="#Assigning_value_to_TEXT_2.10">Assigning a value to a TEXT variable</a></li>
+      <li><a href="#New_Presentation_styles_2.10">New presentation styles</a></li>
+      <li><a href="#fglrun_dash_s_option_2.10">fglrun -s option now displays more information</a></li>
+      <li><a href="#fglrun_dash_e_option_2.10">fglrun -e option takes list of extensions</a></li>
+      <li><a href="#Detecting_data_changes_2.10">Detecting data changes immediately</a></li>
+      <li><a href="#Controlling_data_validation_2.10">Controlling data validation for actions</a></li>
+      <li><a href="#New_MINWIDTH_MINHEIGHT_2.10">New MINWIDTH, MINHEIGHT attribute in forms</a></li>
+      <li><a href="#Avoid_automatic_temporary_row_2.10">Avoid automatic temporary row in INPUT ARRAY</a></li>
+      <li><a href="#New_DOM_methods_for_strings">New DOM methods to serialize or parse strings</a></li>
+      <li><a href="#New_IO_methods_for_TEXT_BYTE">New I/O methods to read/write TEXT or BYTE from/to files</a></li>
+    </ul>
+    <h3><a name="Multiple_Dialogs_2.10">Multiple Dialogs</a></h3>
+    <p>A new <a href="MultipleDialogs.html">DIALOG instruction</a> handles 
+    different parts of a form simultaneously.&nbsp; See also
+    <a href="ClassDialog.html">ui.Dialog class</a>.</p>
+    <h3><a name="TRY_CATCH_pseudo_statement_2.10">TRY/CATCH pseudo statement</a></h3>
+    <p>The <a href="Exceptions.html#TRYCATCH">TRY/CATCH pseudo statement</a> 
+    can handle exceptions raised by the runtime system. </p>
+    <h3><a name="WHENEVER_RAISE_2.10">WHENEVER .... RAISE</a></h3>
+    <p>Instructs the DVM that an uncaught exception will be handled by the 
+    caller of the function. See <a href="Exceptions.html">Exceptions</a>.</p>
+    <h3><a name="SQL_Server_Native_Client_driver_2.10">SQL Server Native Client 
+    driver</a></h3>
+    <p>Support for <a href="odiagmsv.html#ODIMSV_PREP02">SQL Server 2005 Native Client</a> 
+    is now provided.</p>
+    <h3><a name="Support_for_SPLITTER_attribute_2.10">Support for SPLITTER 
+    attribute</a></h3>
+    <p>HBox and VBox containers can now have a splitter.&nbsp; See also <a href="FormSpecFiles.html#FF_LAYOUT_TAG">
+            Layout Tags</a>.</p>
+    <h3><a name="Double_click_in_tables_2.10">Double-click in tables</a></h3>
+    <p>With the new <a href="FSFAttributes.html#FA_DOUBLECLICK">DOUBLECLICK</a> table 
+      attribute, it is now possible to send a specific action when the user 
+      double-clicks on a row.</p>
+    <h3><a name="New_X_conversion_code_2.10">New X conversion code in fgldbsch</a></h3>
+    <p>The <a href="Tools.html#TL_FGLDBSCH">fgldbsch</a> tool now supports the X 
+      conversion code to ignore table columns of a specific type. This is useful for 
+      ROWID-like columns such as SQL Server's <i>uniqueidentifier</i> columns.</p>
+    <h3><a name="SQL_Interruption_2.10">SQL Interruption</a> in database drivers</h3>
+    <p>Before version <b>2.10</b>, 
+    <a href="SqlProgramming.html#SQL_INTERRUPTION">SQL interruption</a> was not supported 
+    well for Oracle, 
+      SQL Server, DB2 and Genero db databases. SQL interruption is now available with 
+      all databases providing an API to cancel a long-running query.</p>
+    <p>For more details, see <a href="SqlProgramming.html#SQL_INTERRUPTION">SQL Programming</a>.</p>
+    <h3><a name="NULL_pointer_exceptions_2.10">NULL pointer exceptions</a> can be trapped</h3>
+    <p>Error <b>-8083</b> will be raised if you try to call an object method with a 
+      variable that does not reference an object (that contains NULL):</p>
+    <pre>DEFINE x ui.Dialog
+-- x is NULL
+CALL x.setFieldActive(&quot;fieldname&quot;,FALSE)  -- raises -8083</pre>
+    <p>In previous versions, this raised a fatal NULL pointer error. This 
+      exception can now be trapped with&nbsp; 
+    <a href="Exceptions.html#WHENEVER">WHENEVER ERROR</a>.</p>
+    <h3><a name="Client_socket_interface_2.10">Client socket interface</a> in Channels</h3>
+    <p>The Channel class now provides a method to 
+      establish a client socket connection to a server, with the new 
+      <a href="ClassChannel.html#open-client-socket">openClientSocket()</a> method.</p>
+    <h3><a name="Stack_trace_2.10">Stack trace</a></h3>
+    <p>For debugging purpose, you can now get the stack trace of the program with the <a href="ClassApplication.html#debugging">
+        Application.getStackTrace()</a> method.</p>
+    <h3><a name="GUI_Connection_Timeout_2.10">GUI Connection Timeout</a></h3>
+    <p>It is now possible to define a timeout delay for front-end connections with the 
+      following <a href="FglProfile.html">FGLPROFILE</a> entry:</p>
+    <pre>gui.connection.timeout = <i>seconds</i></pre>
+    <p>See <a href="DynamicUI.html#FECONN_TIMEOUT">Dynamic User Interface</a> for more details.</p>
+    <h3><a name="Assigning_value_to_TEXT_2.10">Assigning a value to a TEXT variable</a>&nbsp;</h3>
+    <p>Before version <b>2.10</b>, it was only possible to assign a <a href="DataTypes.html#DT_TEXT">
+        TEXT</a> to a TEXT variable. Now you can assign <a href="DataTypes.html#DT_STRING">
+        STRING</a>, <a href="DataTypes.html#DT_CHAR">CHAR</a> and <a href="DataTypes.html#DT_VARCHAR">
+        VARCHAR</a> values to a TEXT variable. For more details about data type 
+      conversions, see the <a href="DataConversions.html#CONVERSION_TABLE">Data 
+        Conversion Table</a>.</p>
+    <h3>
+      <a name="New_Presentation_styles_2.10">New Presentation styles</a></h3>
+    <a href="PresentationStyles.html">Presentation Styles</a> have been extended:
+    <ul>
+      <li>
+            The style attribute &quot;<b><a href="PresentationStyles.html#STYATT_WINDOW">position</a></b>&quot; for
+            <a href="WindowsAndForms.html"> Windows</a> can be set to
+            &quot;<b>previous</b>&quot;.
+      <li>
+                <a href="FormSpecFiles.html#FF_ITEMTYPE_TEXTEDIT">TEXTEDIT</a> now has the &quot;<b><a href="PresentationStyles.html#STYATT_TEXTEDIT">textSyntaxHighlight</a></b>&quot; attribute (value can be
+                &quot;<b>per</b>&quot;, more 
+        to come...).</li>
+      <li>
+                All widgets can now use the &quot;<b><a href="PresentationStyles.html#STYATT_COMMON">localAccelerators</a></b>&quot;
+                global style attribute to interpret standard navigation and
+                editor keys (like Home/End) without firing an action that uses
+                the same keys as accelerators.</li>
+    </ul>
+    <h3>
+      <a name="fglrun_dash_s_option_2.10">fglrun -s option</a> now displays more information</h3>
+    <p>The -s option of fglrun now reports more information about sizes. See <a href="Optimization.html">
+        Optimization</a> for more details.</p>
+    <h3>
+      <a name="fglrun_dash_e_option_2.10">fglrun -e option</a> takes list of extensions</h3>
+    <p>The fglrun -e option now supports a comma-separated list of extensions, and -e 
+      can be specified multiple times:</p>
+    <pre>fglrun -e ext1,ext2,ext3 -e ext4,ext5 myprogram</pre>
+    <p>See <a href="CExtensions.html">C Extensions</a> for more details.</p>
+    <h3>
+      <a name="Detecting_data_changes_2.10">Detecting data changes</a> immediately</h3>
+    <p>It is now possible to get an action event when the user modifies the value of a 
+      field, with the <a href="InteractionModel.html#DIRTY">predefined&nbsp;dialogtouched 
+        action</a>.</p>
+    <h3>
+      <a name="Controlling_data_validation_2.10">Controlling data validation</a> for actions</h3>
+    <p>You can now use the validate="no" action default attribute to <a href="InteractionModel.html#VALIDATE">
+        prevent data validation</a> when executing an action.</p>
+    <h3>
+            <a name="New_MINWIDTH_MINHEIGHT_2.10">New MINWIDTH, MINHEIGHT</a> attributes in forms</h3>
+    <p>It is now possible to define a minimum width and height for forms with
+        the <a href="FSFAttributes.html#FA_MINWIDTH">MINWIDTH</a>, <a href="FSFAttributes.html#FA_MINHEIGHT">MINHEIGHT</a>
+        attributes.</p>
+    <h3>
+            <a name="Avoid_automatic_temporary_row_2.10">Avoid automatic temporary row</a> in INPUT ARRAY</h3>
+    <p>With the new <a href="MultipleDialogs.html#input-array-attribute-auto-append">AUTO
+        APPEND</a> attribute, you can now avoid the automatic creation of a <a href="MultipleDialogs.html#temporary-rows">temporary
+        row</a> in INPUT ARRAY.</p>
+        <h3><a name="New_DOM_methods_for_strings">New DOM methods to serialize
+        or parse strings</a></h3>
+        <p>The parse() and toString() methods are now available for a <a href="ClassDomNode.html">DomNode</a>
+        object, and a <a href="ClassDomDocument.html">DomDocument</a> object can
+        be created with createFromString().</p>
+        <h3><a name="New_IO_methods_for_TEXT_BYTE">New I/O methods to read/write
+        TEXT or BYTE from/to files</a></h3>
+        <p>The <a href="DataTypes.html#DT_TEXT">TEXT</a> and <a href="DataTypes.html#DT_BYTE">BYTE</a>
+        data types now support the methods readFile(fileName) and
+        writeFile(fileName).&nbsp;</p>
+    <p><a href="#PAGE_HEADER">Back to the top</a></p>
+    <HR>
+    <h2><a name="VERSION_2_02">Version 2.02</a></h2>
+<ul>
+  <li><a href="#New_Static_SQL_Commands_2.02">New Static SQL Commands</a></li>
+<li><a href="#Global_Variables_in_C_Extensions_2.02">Global Variables in C 
+Extensions</a></li>
+  <li><a href="#Localization_of_runtime_system_error_messages_2.02">
+  Localization of runtime system error messages</a></li>
+<li><a href="#Debugger_enhancement_2.02">Debugger enhancement</a></li>
+  <li><a href="#Tab_index_can_be_zero_2.02">Tab index can be zero</a></li>
+<li><a href="#New_FGLPROFILE_entry_for_Oracle_driver_2.02">New FGLPROFILE entry 
+for Oracle driver</a></li>
+  <li>
+  <a href="#New_FGLPROFILE_entry_to_define_temporary_table_emulation_type_2.02">
+  New FGLPROFILE entry to define temporary table emulation type</a></li>
+</ul>
+    <h3><a name="New_Static_SQL_Commands_2.02">New Static SQL Commands</a></h3>
+    <p>Some common SQL statements have been added to the static SQL syntax, such as TRUNCATE TABLE, RENAME INDEX, CREATE / ALTER / DROP / RENAME 
+          SEQUENCE. See <a href="StaticSql.html"> Static SQL Commands</a>.</p>
+<h3><a name="Global_Variables_in_C_Extensions_2.02">Global Variables in C Extensions</a></h3>
+    <p>You can now share global variables between the Genero BDL source and the C Extension, 
+          by using the -G option of fglcomp. See <a href="CExtensions.html#SHARING_GLOBALS">Global 
+            variables in C Extensions</a>.</p>
+    <h3><a name="Localization_of_runtime_system_error_messages_2.02">Localization of runtime system error messages</a></h3>
+    <p>It is now possible to customize the runtime system error messages according to 
+      the current locale. See <a href="Localization.html#RTMSG">Localization</a> for 
+      more details.</p>
+    <h3><a name="Debugger_enhancement_2.02">Debugger enhancement</a></h3>
+    <p>New debugger commands (<a href="Debugger.html#CMD_PTYPE">ptype</a>).</p>
+    <p>You can now avoid switching into debug mode with SIGTRAP (Unix) or CTRL-Break 
+      (Windows) with the new <a href="Debugger.html#SIGTRAP">fglrun.ignoreDebuggerEvent</a>
+      FGLPROFILE entry.</p>
+    <h3><a name="Tab_index_can_be_zero_2.02">Tab index can be zero</a></h3>
+    <p>You can now specify a TABINDEX of zero to exclude the form item from the tagging 
+      list. See <a href="FSFAttributes.html#FA_TABINDEX">TABINDEX</a> for more 
+      details.</p>
+    <h3><a name="New_FGLPROFILE_entry_for_Oracle_driver_2.02">New FGLPROFILE entry for Oracle driver</a></h3>
+    <p>It is now possible to specify the SELECT statement producing the unique session 
+      identifier which is used for temporary table names.<br>
+      See <a href="Connections.html#DS_ODI_DBVSPEC">Database vendor specific parameters</a>
+      for more details.</p>
+    <h3>
+    <a name="New_FGLPROFILE_entry_to_define_temporary_table_emulation_type_2.02">New FGLPROFILE entry to define temporary table emulation type</a></h3>
+    <p>To emulate Informix temporary tables, you can now set the <b>temptables.emulation</b>
+      parameter to use GLOBAL TEMPORARY TABLES instead of permanent tables.<br>
+      See <a href="odiagora.html#ODIORA017">temporary table emulation</a> for more 
+      details.</p>
+    <p><a href="#PAGE_HEADER">Back to the top</a></p>
+    <HR>
+    <h2><a name="VERSION_2_01">Version 2.01</a></h2>
+<ul>
+  <li><a href="#FESQLC_compiler_V2_2.01">FESQLC compiler (V2)</a></li>
+<li><a href="#DB2_V9.x_support_2.01">DB2 V9.x support</a></li>
+  <li><a href="#PostgreSQL_V_8.2.x_support_2.01">PostgreSQL V 8.2.x support</a></li>
+<li><a href="#Extension_of_the_form_layout_tag_syntax_2.01">Extension of the 
+form layout tag syntax</a></li>
+  <li><a href="#Negative_form_of_warning_flags_in_fglcomp_2.01">Negative form 
+  of warning flags in fglcomp</a></li>
+<li><a href="#Run_supports_ComSpec_variable_on_Windows_2.01">Run supports 
+ComSpec variables on Windows</a></li>
+</ul>
+    <h3><a name="FESQLC_compiler_V2_2.01">FESQLC compiler (V2)</a></h3>
+    <p>ESQL/C Compiler.</p>
+    <p><b><font color="#FF0000">Warning:</font> Since version 2.32, fesqlc is no
+    longer part of Genero BDL package and is shipped as a separate product.</b></p>
+<h3><a name="DB2_V9.x_support_2.01">DB2 V9.x support</a></h3>
+<p>Support of DB2 V9.x. See <a href="odiagdb2.html">DB2 V9.x support</a>.</p>
+<h3><a name="PostgreSQL_V_8.2.x_support_2.01">PostgreSQL V 8.2.x support</a></h3>
+<p>Support of PostgreSQL 8.2.x. See <a href="odiagpgs.html">PostgreSQL V 8.2.x support</a>.</p>
+    <h3><a name="Extension_of_the_form_layout_tag_syntax_2.01">Extension of the form layout tag syntax</a></h3>
+    <p>
+      The <a href="FormSpecFiles.html#FF_LAYOUT_TAG">layout tag syntax</a> in grids 
+      has been extended to support an ending tag to get better control of form 
+      layout.</p>
+    <h3>
+      <a name="Negative_form_of_warning_flags_in_fglcomp_2.01">Negative form of warning flags in fglcomp</a></h3>
+    <p>
+      The fglcomp compiler now supports a negative form for <a href="Tools.html#FglCompWarningFlags">
+        warning arguments</a>.</p>
+    <h3>
+      <a name="Run_supports_ComSpec_variable_on_Windows_2.01">Run supports ComSpec variable on Windows</a></h3>
+    <p>
+      When using the <a href="Programs.html#RUN">RUN</a> command, the ComSpec 
+      environment variable is now used under Windows platforms.</p>
+    <p><a href="#PAGE_HEADER">Back to the top</a></p>
+    <HR>
+    <h2><a name="VERSION_2_00">Version 2.00</a></h2>
+    <p>See also <a href="Mig0002.html">Upgrade Notes</a>.</p>
+    <ul>
+      <li><a href="#Dynamic_Runner_Architecture_2.00">Dynamic Runner Architecture</a></li>
+      <li><a href="#User_defined_types_2.00">User defined types</a></li>
+      <li><a href="#New_Widgets_2.00">New Widgets</a></li>
+      <li><a href="#Extended_Schema_Files_2.00">Extended Schema Files</a></li>
+      <li><a href="#File_Management_Functions_2.00">File Management Functions</a></li>
+      <li><a href="#Math_Functions_2.00">Math Functions</a></li>
+      <li><a href="#Stored_procedure_calls_2.00">Stored procedure calls</a></li>
+      <li><a href="#Informix-like_C_API_library_2.00">Informix-like C API library </a></li>
+      <li><a href="#Memory_usage_optimization_2.00">Memory usage optimization</a></li>
+      <li><a href="#The_IMPORT_instruction_2.00">The IMPORT instruction</a></li>
+      <li><a href="#WIDTH_and_HEIGHT_attributes_in_Images_2.00">WIDTH and HEIGHT attributes in Images</a></li>
+      <li><a href="#New_debugger_commands_2.00">New debugger commands</a></li>
+      <li><a href="#Improved_Presentation_Styles_2.00">Improved Presentation Styles</a></li>
+      <li><a href="#Compiler_supports_constraints_in_CREATE_TABLE_2.00">Compiler supports constraints in CREATE TABLE</a></li>
+      <li><a href="#Automatic_front-end_startup_2.00">Automatic front-end startup</a></li>
+      <li><a href="#New_channel_function_to_detect_EOF_2.00">New channel function to detect EOF</a></li>
+      <li><a href="#Responding_to_CTRL_LOGOFF_EVENT_on_Windows_2.00">Responding to CTRL_LOGOFF_EVENT on Windows</a></li>
+      <li><a href="#New_compiler_warning_options_2.00">New compiler warning options</a></li>
+      <li><a href="#Fourth_accelerator_definition_2.00">Fourth accelerator definition</a></li>
+      <li><a href="#Conditional_TTY_attributes_for_all_widgets_2.00">Conditional TTY attributes for all widgets </a></li>
+      <li><a href="#New_FGL_SETENV()_built-in_function_2.00">New FGL_SETENV() built-in function</a></li>
+      <li><a href="#Support_for_entities_in_XML_reader_and_writer_2.00">Support for entities in XML reader and writer</a></li>
+      <li><a href="#Schema_extractor_supports_now_Informix_LVARCHAR">Schema extractor supports now Informix LVARCHAR</a></li>
+    </ul>
+    <h3><a name="Dynamic_Runner_Architecture_2.00">Dynamic Runner Architecture</a></h3>
+<p>Runner now uses shared libraries; you no longer need to link a runner. See <a href="Installation.html">Dynamic Runner Architecture</a>.</p>
+<h3><a name="User_defined_types_2.00">User defined types</a></h3>
+<p>You can now define your own data type with records or arrays. See <a href="UserTypes.html">User defined types</a>.</p>
+<h3><a name="New_Widgets_2.00">New Widgets</a></h3>
+<p>New widgets have been added: <a href="FormSpecFiles.html#FF_ITEMTYPE_SLIDER">SLIDER</a>,
+          <a href="FormSpecFiles.html#FF_ITEMTYPE_SPINEDIT">SPINEDIT</a>, <a href="FormSpecFiles.html#FF_ITEMTYPE_TIMEEDIT">
+            TIMEEDIT</a>.</p>
+<h3><a name="Extended_Schema_Files_2.00">Extended Schema Files</a></h3>
+<p>Database Schema files have been extended for Genero (<a href="FormSpecFiles.html#FF_ITEMTYPE_FIELD">FIELD</a>
+          item type). See <a href="DatabaseSchema.html">Extended Schema Files</a>.</p>
+<h3><a name="File_Management_Functions_2.00">File Management Functions</a></h3>
+<p>File management function library provided as loadable extension. See <a href="Ext_os_Path.html">File Management Functions</a>.</p>
+<h3><a name="Math_Functions_2.00">Math Functions</a></h3>
+<p>Mathematical function library provided as loadable extension. See <a href="Ext_util_Math.html">Math Functions</a>.</p>
+<h3><a name="Stored_procedure_calls_2.00">Stored procedure calls</a></h3>It is now possible to call stored procedures with output parameters. See <a href="SqlProgramming.html#PROG_STOPROC">Stored 
+            procedure calls</a>.<h3>
+<a name="Informix-like_C_API_library_2.00">Informix-like C API library</a></h3>C extension support has been extended with Informix-like C API functions. 
+    See <a href="CExtensions.html#CAPI">Informix-like C API 
+            library</a>.
+            
+    <h3><a name="Memory_usage_optimization_2.00">Memory usage optimization</a></h3>
+    <p>
+      The runtime system now shares several static elements among all processes, 
+      reducing the memory usage. The shared elements are: Data type definitions, 
+      string constants and debug information. For example, when a program defines a 
+      string containing a long SQL statement, all Genero processes will share the 
+      same string, which is allocated only once.</p>
+    <h3><a name="The_IMPORT_instruction_2.00">The IMPORT instruction</a></h3>
+    <p>
+      To declare a C extension module, you must now use the <a href="Programs.html#IMPORT">
+        IMPORT</a> instruction at the beginning of a module.</p>
+    <h3><a name="WIDTH_and_HEIGHT_attributes_in_Images_2.00">WIDTH and HEIGHT attributes in Images</a></h3>
+    <p>
+      You can now specify the WIDTH and HEIGHT attributes for <a href="FormSpecFiles.html#FF_ITEMTYPE_IMAGE">
+        IMAGE</a> form items, as a replacement for PIXELWIDTH / PIXELHEIGHT.</p>
+    <h3><a name="New_debugger_commands_2.00">New debugger commands</a></h3>
+    <p>New commands have been added to the debugger (<a href="Debugger.html#CMD_CALL">call</a>,
+      <a href="Debugger.html#CMD_IGNORE">ignore</a>).</p>
+    <h3><a name="Improved_Presentation_Styles_2.00">Improved Presentation Styles</a></h3>
+    <p>You can now specify pseudo selectors such as <i>focus</i>, <i>active</i>, <i>inactive</i>,
+      <i>input</i>, <i>display</i> for fields and <i>odd</i> / <i>even</i> states for 
+      table rows.</p>
+    <p>Some new style attributes were added:</p>
+        <ul>
+          <li>'errorMessagePosition' can be used for Windows to define how the
+            ERROR message must be displayed;</li>
+          <li>'highlightTextColor' for tables 
+      allows you to change the color of the selected line;</li>
+          <li>'border' allows you to 
+      remove the border of some widgets like button, images;</li>
+          <li>'firstDayOfWeek' can be 
+      used for DateEdit widget to specify the first day of the week in the
+            calendar;</li>
+          <li>The auto-selection behavior for ComboBoxes and RadioGroup can be changed using
+            'autoSelectionStart'.</li>
+        </ul>
+        <p>
+      For more details, see <a href="PresentationStyles.html">Presentation Styles</a>.</p>
+    <h3><a name="Compiler_supports_constraints_in_CREATE_TABLE_2.00">Compiler supports constraints in CREATE TABLE</a></h3>
+    <p>It is now possible to specify primary key, foreign key and check constraints in 
+      static CREATE TABLE statements:</p>
+    <pre>  CREATE TABLE t1 (
+     col1 INTEGER PRIMARY KEY,
+     col2 CHAR(2),
+     col3 DATE,
+     FOREIGN KEY (col2) REFERENCES t2(col1)
+  )</pre>
+    <h3><a name="Automatic_front-end_startup_2.00">Automatic front-end startup</a></h3>
+    <p>In X11 or Windows TSE environments, you can now automatically start up the 
+      front-end with FGLPROFILE entries. See <a href="DynamicUI.html#AUTOSTART">Dynamic 
+        User Interface</a> for more details.</p>
+    <h3><a name="New_channel_function_to_detect_EOF_2.00">New channel function to detect EOF</a></h3>
+    <p>The <a href="ClassChannel.html">Channel</a> class now has an isEof() method to 
+      detect end of file.</p>
+    <h3><a name="Responding_to_CTRL_LOGOFF_EVENT_on_Windows_2.00">Responding to CTRL_LOGOFF_EVENT on Windows</a></h3>
+    <p>It is now possible to ignore the <a href="Programs.html#CTRL_LOGOFF_EVENT">CTRL_LOGOFF_EVENT</a>
+      events on Windows platforms.</p>
+    <h3><a name="New_compiler_warning_options_2.00">New compiler warning options</a></h3>
+    <p>The fglcomp compiler has new warning flags: See <a href="Tools.html#FglCompWarningFlags">
+        fglcomp</a> for more details.</p>
+    <h3><a name="Fourth_accelerator_definition_2.00">Fourth accelerator definition</a></h3>
+    <p>You can now define a fourth accelerator for an action in <a href="ActionDefaults.html">
+        actions defaults</a> or in the <a href="FormSpecFiles.html#SECTION_ACTDEFS">form 
+        files</a>.</p>
+    <h3><a name="Conditional_TTY_attributes_for_all_widgets_2.00">Conditional TTY attributes for all widgets</a></h3>
+    <p>It is now possible to specify TTY attributes (COLOR, REVERSE) and conditional 
+      TTY attributes (COLOR WHERE) for all type of fields.<br>
+      See <a href="FormSpecFiles.html">Form Specification Files</a> and <a href="FSFAttributes.html#FA_COLOR_WHERE">
+        COLOR WHERE</a> attribute for more details.</p>
+    <h3><a name="New_FGL_SETENV()_built-in_function_2.00">New FGL_SETENV() built-in function</a></h3>
+    <p>A new built-in function has been added to set an environment variable: <a href="BuiltInFunctions.html#BF_FGL_SETENV">
+        FGL_SETENV()</a>.</p>
+    <h3><a name="Support_for_entities_in_XML_reader_and_writer_2.00">Support for entities in XML reader and writer</a></h3>
+    <p>The <a href="XmlUtils.html">XML reader and writer classes</a> have been extended 
+      to properly support markup language entities (like HTML's <b>&amp;nbsp;</b> ).</p>
+    <h3><a name="Schema_extractor_supports_now_Informix_LVARCHAR">Schema
+        extractor supports now Informix LVARCHAR</a></h3>
+    <p>The <a href="Tools.html#TL_FGLDBSCH">fgldbsch</a> tool can now extract
+        database tables with LVARCHAR columns. The LVARCHAR type is converted to
+        VARCHAR2(n&gt;255) in the .sch file.</p>
+    <p><a href="#PAGE_HEADER">Back to the top</a></p>
+    <HR>
+    <h2><a name="VERSION_1_33">Version 1.33</a></h2>
+    <ul>
+      <li><a href="#TypeInfo_class_1.33">TypeInfo class</a></li>
+      <li><a href="#Generic_ODBC_support_1.33">Generic ODBC support</a></li>
+      <li><a href="#MySQL_5_support_1.33">MySQL 5 support</a></li>
+      <li><a href="#Genero_DB_3.4_support_1.33">Genero db 3.4 support</a></li>
+      <li><a href="#PostgreSQL_8.1_support_1.33">PostgreSQL 8.1 support</a></li>
+      <li><a href="#SQL_Server_2005_support_1.33">SQL Server 2005 support</a></li>
+      <li><a href="#New_license_manager_1.33">New license manager</a></li>
+      <li><a href="#FESQLC_compiler_V1_1.33">FESQLC compiler (V1)</a></li>
+      <li><a href="#Binary_mode_in_Channel_class_1.33">Binary mode in Channel class</a></li>
+      <li><a href="#New_header_files_for_C_extensions_1.33">New header files for C extensions</a></li>
+      <li><a href="#Block_fetch_with_SQL_Server_1.33">Block fetch with SQL Server</a></li>
+      <li><a href="#Third_accelerator_definition_1.33">Third accelerator definition</a></li>
+    </ul>
+<h3><a name="TypeInfo_class_1.33">TypeInfo class</a></h3>
+<p>A class to serialize program variables. See <a href="ClassTypeInfo.html">TypeInfo class</a>.</p>
+<h3><a name="Generic_ODBC_support_1.33">Generic ODBC support</a></h3>
+<p>A generic ODBC database driver is now available (code is <b>odc</b>). See <a href="Connections.html">Generic ODBC support</a>.</p>
+<h3><a name="MySQL_5_support_1.33">MySQL 5 support</a></h3>MySQL version 5 is now supported. See <a href="odiagmys.html">MySQL 5. support</a>.
+<h3><a name="Genero_DB_3.4_support_1.33">Genero db 3.4 
+support</a></h3>
+<p>Genero db version 3.4 is now supported. See <a href="odiagads.html">Genero db support</a>.</p>
+<h3><a name="PostgreSQL_8.1_support_1.33">PostgreSQL 8.1 support</a></h3>
+<p>PostgreSQL version 8.1 is now supported. See <a href="odiagpgs.html">PostgreSQL 8.1 support</a>.</p>
+<h3><a name="SQL_Server_2005_support_1.33">SQL Server 2005 support</a></h3>
+<p>Microsoft SQL Server 2005 is now supported. See <a href="odiagmsv.html">SQL Server 2005 support</a>.</p>
+<h3><a name="New_license_manager_1.33">New license manager</a></h3>
+<p>New license manager supporting strict licensing. See <a href="Installation.html">New license manager</a>.</p>
+<h3><a name="FESQLC_compiler_V1_1.33">FESQLC compiler (V1)</a></h3>ESQL/C compiler.<h3>
+<a name="Binary_mode_in_Channel_class_1.33">Binary mode in Channel class</a></h3>
+    <p>The <a href="ClassChannel.html">base.Channel</a> class now supports a binary 
+      mode with the 'b' option, to control CR/LF translation when using DOS files.</p>
+    <h3><a name="New_header_files_for_C_extensions_1.33">New header files for C extensions</a></h3>
+    <p>Distribution of Datetime.h, Interval.h, loc_t.h header files in 
+      FGLDIR/include/f2c.</p>
+    <h3><a name="Block_fetch_with_SQL_Server_1.33">Block fetch with SQL Server</a></h3>
+    <p>You can now pre-fetch rows by block with SQL Server to get better performance. 
+      Use the following FGLPROFILE entry to specify the maximum number of rows the 
+      driver can pre-fetch:</p>
+    <pre>dbi.database.&lt;dbname&gt;.msv.prefetch.rows = &lt;count&gt;</pre>
+    <p>See <a href="Connections.html#DS_ODI_DBVSPEC">"Database vendor specific parameters" 
+        in Connections</a> for more details.</p>
+    <h3><a name="Third_accelerator_definition_1.33">Third accelerator definition</a></h3>
+    <p>You can now define a third accelerator for an action in <a href="ActionDefaults.html">
+        actions defaults</a> or in the <a href="FormSpecFiles.html#SECTION_ACTDEFS">form 
+        files</a>.</p>
+    <p><a href="#PAGE_HEADER">Back to the top</a></p>
+    <HR>
+    <h2><a name="VERSION_1_32">Version 1.32</a></h2>
+<ul>
+  <li><a href="#PostgreSQL_8.0_support_1.32">PostgreSQL 8.0 support</a></li>
+<li><a href="#File_transfer_functions_1.32">File transfer functions</a></li>
+  <li><a href="#Debugger_enhancement_1.32">Debugger enhancement</a></li>
+<li><a href="#Preprocessor_is_now_integrated_in_compilers_1.32">Preprocessor is 
+now integrated in compilers</a></li>
+</ul>
+    <h3><a name="PostgreSQL_8.0_support_1.32">PostgreSQL 8.0 support</a></h3>
+<p>PostgreSQL version 8.0 is now supported (8.0.2 and higher). See <a href="odiagpgs.html">PostgreSQL 8.0 support</a>.</p>
+<h3><a name="File_transfer_functions_1.32">File transfer functions</a></h3>
+<p>Get/Put functions to transfer files from/to the front-end. See <a href="BuiltInFunctions.html#BF_FGL_PUTFILE">File 
+            transfer functions</a>.</p>
+    <h3><a name="Debugger_enhancement_1.32">Debugger enhancement</a></h3>
+    <p>New debugger commands (<a href="Debugger.html#CMD_WATCH">watch</a> with 
+      condition, <a href="Debugger.html#CMD_WHATIS">whatis</a>).</p>
+    <h3><a name="Preprocessor_is_now_integrated_in_compilers_1.32">Preprocessor is now integrated in compilers</a></h3>
+    <p>
+      The <a href="Preprocessor.html">preprocessor</a> is now part of the compilers 
+      and is always enabled. Preprocessing directives start with an ampersand 
+      character (<b>&amp;</b>).</p>
+    <p><a href="#PAGE_HEADER">Back to the top</a></p>
+    <HR>
+    <h2><a name="VERSION_1_31">Version 1.31</a></h2>
+<ul>
+  <li><a href="#Front-end_Protocol_Compression_1.31">Front-end Protocol Compression</a></li>
+  <li><a href="#MySQL_4.1.x_support_1.31">MySQL 4.1.x support</a></li>
+  <li><a href="#Oracle_10g_support_1.31">Oracle 10g support</a></li>
+  <li><a href="#Dynamic_C_extensions_1.31">Dynamic C extensions</a></li>
+  <li><a href="#New_built-in_functions_1.31">New built-in functions</a></li>
+  <li><a href="#Interruption_handling_1.31">Interruption handling</a></li>
+  <li><a href="#New_Dialog_method_1.31">New Dialog method</a></li>
+  <li><a href="#Front-end_identification_1.31">Front-end identification</a></li>
+</ul>
+<h3><a name="Front-end_Protocol_Compression_1.31">Front-end Protocol Compression</a></h3>
+Faster user interface communication. See <a href="FEProtocol.html">Front-end Protocol Compression</a>.
+<h3><a name="MySQL_4.1.x_support_1.31">MySQL 4.1.x support</a></h3>
+<p>MySQL version 4.1.x is now supported, 3.23 is de-supported. See <a href="odiagmys.html">MySQL 4.1.x support</a>.</p>
+<h3><a name="Oracle_10g_support_1.31">Oracle 10g support</a></h3>
+<p>Oracle version 10g is now supported. See <a href="odiagora.html">Oracle 10g support</a>.</p>
+<h3><a name="Dynamic_C_extensions_1.31">Dynamic C extensions</a></h3>
+          C extensions can be loaded dynamically, no need to re-link runner. 
+See <a href="CExtensions.html">Dynamic C extensions</a>.
+    <h3><a name="New_built-in_functions_1.31">New built-in functions</a></h3>
+    <p>The <a href="BuiltInFunctions.html#BF_FGL_WIDTH">FGL_WIDTH</a> built-in function 
+      computes the number of print columns needed to represent a single or multi-byte 
+      character.</p>
+    <h3><a name="Interruption_handling_1.31">Interruption handling</a></h3>
+    <p>Interruption handling with SSH port forwarding - only supported with GDC 1.31!</p>
+    <h3><a name="New_Dialog_method_1.31">New Dialog method</a></h3>
+    <p>New method <a href="ClassForm.html">ui.Form.setFieldStyle()</a> to set a style 
+      for a field.</p>
+    <h3><a name="Front-end_identification_1.31">Front-end identification</a></h3>
+    <p>Improved front-end identification when connecting to GUI client.</p>
+    <p><a href="#PAGE_HEADER">Back to the top</a></p>
+    <HR>
+    <h2><a name="VERSION_1_30">Version 1.30</a></h2>
+    <p>See also <a href="Mig0001.html">Upgrade Notes</a>.</p>
+<ul>
+  <li><a href="#Preprocessor_1.30">Preprocessor</a></li>
+  <li><a href="#Layout_Enhancements_1.30">Layout Enhancements</a></li>
+  <li><a href="#Presentation_Styles_1.30">Presentation Styles</a></li>
+  <li><a href="#Localization_Support_1.30">Localization Support</a></li>
+  <li><a href="#Action_defaults_in_forms_1.30">Action defaults in forms</a></li>
+  <li><a href="#Dialog_Control_1.30">Dialog Control</a></li>
+  <li><a href="#Sybase_ASA_Support_1.30">Sybase ASA Support</a></li>
+  <li><a href="#PostgreSQL_7.4_support_1.30">PostgreSQL 7.4 support</a></li>
+  <li><a href="#Build_information_in_42m_modules_1.30">Build information in 42m modules</a></li>
+  <li><a href="#MySQL_3.23_support_for_Windows_platforms_1.30">MySQL 3.23 support for Windows platforms</a></li>
+  <li><a href="#Upshift_Downshift_in_Comboboxes_1.30">Upshift / Downshift in Comboboxes</a></li>
+  <li><a href="#Message_compiler_does_not_require_output_file_any_longer_1.30">Message compiler does not require output file any longer</a></li>
+  <li><a href="#Breakpoint_in_source_code_1.30">Breakpoint in source code</a></li>
+  <li><a href="#Row_highlighting_in_tables_1.30">Row highlighting in tables</a></li>
+  <li><a href="#Method_base.Array.appendElement_1.30">Method base.Array.appendElement()</a></li>
+  <li><a href="#Compiled_Localized_String_file_extension_42s_1.30">Compiled Localized String file extension 42s</a></li>
+  <li><a href="#Assignment_Operator_1.30">Assignment operator</a></li>
+  <li><a href="#New_fglcomp_option_for_SQL_1.30">New fglcomp option for SQL</a></li>
+  <li><a href="#Compiler_generates_standard_UPDATE_syntax_1.30">Compiler generates standard UPDATE syntax</a></li>
+  <li><a href="#Defining_color_attributes_for_each_table_cell_1.30">Defining color attributes for each table cell</a></li>
+  <li><a href="#Form_methods_in_ui.Window_1.30">Form methods in ui.Window</a></li>
+  <li><a href="#Methods_base.Channel.readLine_and_writeLine_1.30">Method base.StringBuffer.replace()</a></li>
+  <li><a href="#Methods_base.Channel.readLine_and_writeLine_1.30">Methods base.Channel.readLine() and base.Channel.writeline()</a></li>
+  <li><a href="#Dynamic_arrays_used_as_data_model_in_INPUT_ARRAY_DISPLAY_ARRAY_1.30">Dynamic arrays used as data model in INPUT ARRAY / DISPLAY ARRAY</a></li>
+  <li><a href="#TITLE_attribute_for_fields_1.30">TITLE attribute for fields</a></li>
+  <li><a href="#FGLLDPATH_used_during_link_1.30">FGLLDPATH used during link</a></li>
+  <li><a href="#Method_ui.Dialog.setDefaultUnbuffered_1.30">Method ui.Dialog.setDefaultUnbuffered()</a></li>
+  <li><a href="#Action_Defaults_applied_by_DVM_1.30">Action Defaults applied by DVM</a></li>
+  <li><a href="#DATEEDIT_supports_DBDATE_FORMAT_1.30">DATEEDIT supports DBDATE &amp; FORMAT</a></li>
+  <li><a href="#New_Action_Close_1.30">New predefined action 'close'</a></li>
+  <li><a href="#Tabbing_order_in_TABLEs_during_INPUT_ARRAY_1.30">Tabbing order in TABLEs during INPUT ARRAY</a></li>
+  <li><a href="#ACCEPT_xx_instruction_1.30">ACCEPT xx instruction</a></li>
+  <li><a href="#ACCEPT_CANCEL_dialog_attribute_1.30">ACCEPT / CANCEL dialog attribute</a></li>
+  <li><a href="#INPUT_ARRAY_now_has_default_append_action_1.30">INPUT ARRAY now has default 'append' action</a></li>
+  <li><a href="#Linker_option_-O_removed_1.30">Linker option -O removed</a></li>
+  <li><a href="#Method_ui.Window.createForm_1.30">Method ui.Window.createForm()</a></li>
+  <li><a href="#TopMenu_attributes_in_PER_1.30">TopMenu attributes in .per</a></li>
+  <li><a href="#Specifying_real_field_size_in_forms_1.30">Specifying real field size in forms</a></li>
+  <li><a href="#Version_number_in_UI_protocol_1.30">Version number in UI protocol</a></li>
+  <li><a href="#MENU_node_available_in_BEFORE_MENU_1.30">MENU node available in BEFORE MENU</a></li>
+  <li><a href="#New_HBox_tags_1.30">New HBox tags</a></li>
+  <li><a href="#Form_layout_extensions_1.30">Form layout extensions</a></li>
+  <li><a href="#New_Table_definition_attributes_1.30">New Table definition attributes</a></li>
+  <li><a href="#New_ORIENTATION_attribute_for_RADIOGROUPs_1.30">New ORIENTATION attribute for RADIOGROUPs</a></li>
+  <li><a href="#Reviewed_fglrun.setenv_environment_variables_handling_in_FGLPROFILE_1.30">Reviewed fglrun.setenv environment variables handling in FGLPROFILE</a></li>
+  <li><a href="#MENU_COMMAND_generates_lowercase_action_name_1.30">MENU COMMAND generates lowercase action name</a></li>
+  <li><a href="#Method_ui.Interface.loadTopMenu_1.30">Method ui.Interface.loadTopMenu()</a></li>
+  <li><a href="#ON_CHANGE_fired_on_click_1.30">ON CHANGE fired on click</a></li>
+  <li><a href="#New_ui.Dialog_built-in_class_1.30">New ui.Dialog built-in class</a></li>
+  <li><a href="#New_ui.Form_methods_1.30">New ui.Form methods</a></li>
+  <li><a href="#Array_sub-script_operator_now_returns_the_sub-array_1.30">Array sub-script operator now returns the sub-array</a></li>
+  <li><a href="#Dynamic_arrays_passed_by_reference_to_functions_1.30">Dynamic arrays passed by reference to functions</a></li>
+  <li><a href="#Control_MDI_children_with_ui.Interface_1.30">Control MDI children with ui.Interface</a></li>
+  <li><a href="#CANCEL_INSERT_in_AFTER_INSERT_1.30">Cancel INSERT in AFTER INSERT</a></li>
+  <li><a href="#Toolbar_and_Topmenu_now_have_the_hidden_attribute_1.30">Toolbar and Topenu now have the hidden attribute</a></li>
+  <li><a href="#NEXT_FIELD_CURRENT_1.30">NEXT FIELD CURRENT</a></li>
+</ul>
+<h3><a name="Preprocessor_1.30">Preprocessor</a></h3>
+<p>Integrated preprocessor allows use of #include and #define/#ifdef macros. See <a href="Preprocessor.html">Preprocessor</a>.</p>
+<h3><a name="Layout_Enhancements_1.30">Layout Enhancements</a></h3>
+    <p>New layout rules and form item attributes provide better control of form 
+          design. See <a href="Mig0001.html">Layout Enhancements</a>.</p>
+<h3><a name="Presentation_Styles_1.30">Presentation Styles</a></h3>
+    <p>Decoration attribute can be defined in a style file to set fonts and colors. 
+    See <a href="PresentationStyles.html">Presentation Styles</a>.</p>
+<h3><a name="Localization_Support_1.30">Localization Support</a></h3>
+    <p>Localization Support (multi-byte character sets). See <a href="Localization.html#DEFINITION">Localization Support</a>.</p>
+<h3><a name="Action_defaults_in_forms_1.30">Action defaults in forms</a></h3>
+    <p>Action defaults can be specified in forms. See <a href="FormSpecFiles.html#SECTION_ACTDEFS">Action defaults in forms</a>.</p>
+<h3><a name="Dialog_Control_1.30">Dialog Control</a></h3>
+Dialog built-in class to provide better control over interactive instructions. See <a href="ClassDialog.html">Dialog Control</a>.
+<h3><a name="Sybase_ASA_Support_1.30">Sybase ASA Support</a></h3>
+    <p>New drivers to connect to Sybase Adaptive Server Anywhere V7 and V8. 
+    See <a href="odiagasa.html">Sybase ASA Support</a></p>
+<h3><a name="PostgreSQL_7.4_support_1.30">PostgreSQL 7.4 support</a></h3>
+<p>Support for PostgreSQL 7.4 with parameterized queries. See <a href="odiagpgs.html">PostgreSQL 7.4 support</a>.</p>
+    <h3><a name="Build_information_in_42m_modules_1.30">Build information in 42m modules</a></h3>
+    <p>The <a href="Tools.html#TL_FGLCOMP">fglcomp</a> compiler now adds build 
+      information in 42m modules. Compiler version of a 42m module can be checked on 
+      site by using the <a href="Tools.html#TL_FGLRUN">fglrun</a> with the -b option:</p>
+    <pre>$ fglrun -b module.42m
+2004-05-17 10:42:05 1.30.2a-620.10 /devel/tests/module.4gl</pre>
+    <h3><a name="MySQL_3.23_support_for_Windows_platforms_1.30">MySQL 3.23 support for Windows platforms</a></h3>
+    <p>A MySQL 3.23 driver is now provided for Windows platforms (was previously only 
+      provided on Linux).</p>
+    <h3><a name="Upshift_Downshift_in_Comboboxes_1.30">Upshift/Downshift in Comboboxes</a></h3>
+    <p><a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">COMBOBOX</a> fields now 
+      support UPSHIFT and DOWNSHIFT attributes, to force character case when <a href="FSFAttributes.html#FA_QUERYEDITABLE">
+        QUERYEDITABLE</a> is used.</p>
+    <h3>
+    <a name="Message_compiler_does_not_require_output_file_any_longer_1.30">Message compiler does not require output file any longer</a></h3>
+    <p>The <a href="Tools.html#TL_FGLMKMSG">fglmkmsg</a> tool now has the same behavior 
+      as other tools like fglcomp and fglform: If you give only the source file, the 
+      message compiler uses the same file name for the compiled output file, adding 
+      the <b>.iem</b> extension.</p>
+    <h3><a name="Breakpoint_in_source_code_1.30">Breakpoint in source code</a></h3>
+    <p>New <a href="Programs.html#BREAKPOINT">BREAKPOINT</a> instruction to stop a 
+      program at a given position when using the debugger. It is ignored when not 
+      running in debug mode.</p>
+    <h3><a name="Row_highlighting_in_tables_1.30">Row highlighting in tables</a></h3>
+    <p>New TABLE presentation style attribute <a href="PresentationStyles.html#STYATT_TABLE">
+        highlightCurrentRow</a>, to indicate if the current row must be highlighted 
+      in a specific mode. By default, the current row is highlighted during a DISPLAY 
+      ARRAY.</p>
+    <h3><a name="Method_base.Array.appendElement_1.30">Method base.Array.appendElement()</a></h3>
+    <p>New method <a href="Arrays.html">base.Array.appendElement()</a>, to append an 
+      element at the end of a dynamic array.</p>
+    <h3><a name="Compiled_Localized_String_file_extension_42s_1.30">Compiled Localized String file extension = 42s</a></h3>
+    <p>Compiled Localized String files now have the .42s extension. Previous extension 
+      was .4ls.</p>
+    <h3><a name="Assignment_Operator_1.30">Assignment Operator</a></h3>
+    <p>New <a href="Operators.html#OP_ASSIGN">assignment operator</a> := has been added 
+      to the language. You can now assign variables in expressions:<br>
+      IF ( i := (j+1) ) == 2 THEN
+    </p>
+    <h3><a name="New_fglcomp_option_for_SQL_1.30">New fglcomp option for SQL</a></h3>
+    <p>The <a href="Tools.html#TL_FGLCOMP">fglcomp</a> compiler now has a new option to 
+      detect non-standard SQL syntax:<br>
+      fglcomp -W stdsql module.4gl
+    </p>
+    <h3><a name="Compiler_generates_standard_UPDATE_syntax_1.30">Compiler generates standard UPDATE syntax</a></h3>
+    <p>The <a href="Tools.html#TL_FGLCOMP">fglcomp</a> compiler now converts static SQL 
+      updates like:
+      <pre>UPDATE tab SET (c1,c2)=(v1,c2) ...</pre>
+    <p>to a standard syntax:</p>
+    <pre>UPDATE tab SET c1=v1, c2=v2 ...</pre>
+    <p>See also <a href="SqlProgramming.html">SQL Programming</a>.</p>
+    <h3><a name="Defining_color_attributes_for_each_table_cell_1.30">Defining color attributes for each table cell</a></h3>
+    <p>The new method <a href="ClassDialog.html">ui.Dialog.SetCellAttributes()</a> lets 
+      you define colors for each cell of a table.</p>
+    <h3><a name="Form_methods_in_ui.Window_1.30">Form methods in ui.Window&nbsp;</a></h3>
+    <p>The <a href="ClassWindow.html">ui.Window</a> class provides new methods to 
+      create or get a form object.</p>
+    <h3><a name="Method_base.StringBuffer.replace_1.30">Method base.StringBuffer.replace()</a></h3>
+    <p>New method <a href="ClassStringBuffer.html">base.StringBuffer.replace()</a>, to 
+      replace a sub-string in a string:
+      <pre>CALL s.replace(&quot;old&quot;,&quot;new&quot;,2)</pre>
+      Replaces two occurrences of "old" with "new"...
+      <h3><a name="Methods_base.Channel.readLine_and_writeLine_1.30">Methods base.Channel.readLine() and base.Channel.writeLine()</a></h3>
+    <p>New methods to read/write complete lines in <a href="ClassChannel.html">Channel 
+        built-in class</a>: readLine() and writeLine().</p>
+    <h3>
+    <a name="Dynamic_arrays_used_as_data_model_in_INPUT_ARRAY_DISPLAY_ARRAY_1.30">Dynamic arrays used as data model in INPUT ARRAY / DISPLAY ARRAY</a></h3>
+    <p>When using a dynamic array in <a href="InputArray.html">INPUT ARRAY</a> or <a href="DisplayArray.html">
+        DISPLAY ARRAY</a>, the number of rows is defined by the size of the dynamic 
+      array. The SET_COUNT() or COUNT attributes are ignored.</p>
+    <h3><a name="TITLE_attribute_for_fields_1.30">TITLE attribute for fields</a></h3>
+    <p>The new form field attribute <a href="FSFAttributes.html#FA_TITLE">TITLE</a> can 
+      be used to specify a table column label with a localized string.</p>
+    <h3><a name="FGLLDPATH_used_during_link_1.30">FGLLDPATH used during link</a></h3>
+    <p>The FGLLDPATH variable is now used <a href="CompilingPrograms.html">during link</a></p>
+    <h3><a name="Method_ui.Dialog.setDefaultUnbuffered_1.30">Method ui.Dialog.setDefaultUnbuffered()</a></h3>
+    <p>New class method <a href="ClassDialog.html">ui.Dialog.setDefaultUnbuffered()</a> 
+      to set the default for the UNBUFFERED mode.</p>
+    <h3><a name="Action_Defaults_applied_by_DVM_1.30">Action Defaults applied by DVM</a></h3>
+    <p>Action Defaults now applied at element creation by the runtime system. In 
+      previous versions this was done dynamically by the front-end. Now, changing an 
+      action default node at runtime has no effect on existing elements.</p>
+    <h3><a name="DATEEDIT_supports_DBDATE_FORMAT_1.30">DATEEDIT supports DBDATE &amp; FORMAT</a></h3>
+    <p>The <a href="FormSpecFiles.html#FF_ITEMTYPE_DATEEDIT">DATEEDIT</a> field type 
+      now supports DBDATE/CENTURY settings and the FORMAT attribute.</p>
+    <h3><a name="New_Action_Close_1.30">New predefined action 'close'</a></h3>
+    <p>New default action 'close' to control Window closing. You can now write the 
+      following to control window closing:
+      <pre>  ON ACTION close</pre>
+      See <a href="InteractionModel.html#XCROSS_CLOSE">Windows and Forms</a>.
+      <h3><a name="Tabbing_order_in_TABLEs_during_INPUT_ARRAY_1.30">Tabbing order in TABLEs during INPUT ARRAY</a></h3>
+    <p><a href="InputArray.html">INPUT ARRAY</a> using TABLE container now needs FIELD 
+      ORDER FORM attribute to keep tabbing order consistent with visual order of 
+      columns.</p>
+    <h3><a name="ACCEPT_xx_instruction_1.30">ACCEPT xx instruction</a></h3>
+    <p>New instructions <a href="RecordInput.html">ACCEPT INPUT</a> / <a href="Construct.html">
+        ACCEPT CONSTRUCT</a> / <a href="DisplayArray.html">ACCEPT DISPLAY</a> to 
+      validate a dialog by program.
+      <pre>ON ACTION doit
+   ACCEPT INPUT</pre>
+      <h3><a name="ACCEPT_CANCEL_dialog_attribute_1.30">ACCEPT / CANCEL dialog attribute</a></h3>
+    <p>New dialog attribute ACCEPT / CANCEL to avoid creation of default actions 
+      'accept' and 'cancel'.<br>
+      See <a href="RecordInput.html#CONTROL_INSTRUCTIONS">Record Input</a> control 
+      instructions.</p>
+    <h3><a name="INPUT_ARRAY_now_has_default_append_action_1.30">INPUT ARRAY now has default 'append' action</a></h3>
+    <p>New default action 'append' in <a href="InputArray.html#DEFAULT_ACTIONS">INPUT ARRAY</a>. 
+      Allows you to add a row at the end of the list.</p>
+    <h3><a name="Linker_option_-O_removed_1.30">Linker option -O removed</a></h3>
+    <p>The <a href="Tools.html#TL_FGLLINK">linker</a> option -O (optimize) is 
+      de-supported (was ignored before). You now get a warning if you use this 
+      option.</p>
+    <h3><a name="Method_ui.Window.createForm_1.30">Method ui.Window.createForm()</a></h3>
+    <p>New method <a href="ClassForm.html">ui.Window.createForm()</a> to create an 
+      empty form object in order to build forms from scratch at runtime.</p>
+    <h3><a name="TopMenu_attributes_in_PER_1.30">TopMenu attributes in .per</a></h3>
+    <p><a href="FormSpecFiles.html#SECTION_TOPMENU">TopMenu definition in forms</a> now 
+      allows attributes in parenthesis.</p>
+    <h3><a name="Specifying_real_field_size_in_forms_1.30">Specifying real field size in forms</a></h3>
+    <p>The form layout syntax now allows you to specify the <a href="FormSpecFiles.html#FF_ITEM_TAG">
+        real width</a> of form items. By default, BUTTONEDIT, COMBOBOX and DATEEDIT 
+      get a real width as follows:
+      <pre>  if nbchars&gt;2 : width = nbchars - 2; otherwise width = nbchars</pre>
+    (Here nbchars is the number of characters used in the layout definition.)
+    <p>Now you can specify the real width by using a dash '-' in the tag:</p>
+    <pre> 1234567
+[f01  - ]      width = 5, grid cells used = 7</pre>
+    <p>This works also in hbox tags and screen arrays.</p>
+    <h3><a name="Version_number_in_UI_protocol_1.30">Version number in UI protocol</a></h3>
+    <p>User interface protocol is now controlled with a version number, to check 
+      compatibility between the front end and runtime system.</p>
+    <h3><a name="MENU_node_available_in_BEFORE_MENU_1.30">MENU node available in BEFORE MENU</a></h3>
+    <p>Important remark: Before build 530 the MENU has attached the WINDOW when 
+      returning from the BEFORE MENU actions. Since build 530 the WINDOW must exist 
+      before the MENU statement. So now the MENU node is available in the BEFORE MENU 
+      block, but a WINDOW opened or made CURRENT in the BEFORE MENU block will NOT be 
+      used.</p>
+    <h3><a name="New_HBox_tags_1.30">New HBox tags</a></h3>
+    <p>Layout GRID now accepts <a href="FormSpecFiles.html#FF_HBOX_TAG">HBox tags</a> to 
+      group items horizontally.</p>
+    <h3><a name="Form_layout_extensions_1.30">Form layout extensions</a></h3>
+    <ul>
+      <li>
+        Elements in <a href="FormSpecFiles.html#FF_CONTAINER_GRID">grids</a>
+      now have cell columns and lines plus width &amp; height.
+      <li>
+        Form <a href="FormSpecFiles.html#SECTION_LAYOUT">VERSION</a>
+      attribute to distinguish form revisions.
+      <li>
+        Layout <a href="FormSpecFiles.html#SECTION_LAYOUT">SPACING</a>
+      attribute to define space between widgets.
+      <li>
+        The <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">DEFAULT SAMPLE</a>
+      instruction.
+      <li>
+        New form item attributes, like <a href="FSFAttributes.html#FA_SAMPLE">SAMPLE</a>,
+        <a href="FSFAttributes.html#FA_JUSTIFY">JUSTIFY</a>, <a href="FSFAttributes.html#FA_SIZEPOLICY">
+          SIZEPOLICY</a> ...</li>
+    </ul>
+    <h3><a name="New_Table_definition_attributes_1.30">New Table definition attributes</a></h3>
+    <ul>
+      <li>
+        You can now specify <a href="FSFAttributes.html#FA_HIDDEN">HIDDEN</a>
+      = USER as 'hidden to the user by default'.
+      <li>
+        Table columns now have new attribute <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">
+          UNMOVABLE</a>
+      to avoid moving.
+      <li>
+        WANTCOLUMNSANCHORED replaced by <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">UNMOVABLECOLUMNS</a>.
+      <li>
+        WANTCOLUMNSVISIBLE replaced by <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">UNHIDABLECOLUMNS</a>.
+      <li>
+        Tables now accept a <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">WIDTH</a> and
+        <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">HEIGHT</a> attribute to specify 
+        a size.</li>
+    </ul>
+    <h3><a name="New_ORIENTATION_attribute_for_RADIOGROUPs_1.30">New ORIENTATION attribute for RADIOGROUPs</a></h3>
+    <p>RADIOGROUP fields now support the attribute <a href="FormSpecFiles.html#FF_ITEMTYPE_RADIOGROUP">
+        ORIENTATION</a> = { VERTICAL | HORIZONTAL }.</p>
+    <h3>
+    <a name="Reviewed_fglrun.setenv_environment_variables_handling_in_FGLPROFILE_1.30">Reviewed fglrun.setenv environment variables handling in FGLPROFILE</a></h3>
+    <p>Now, on Windows platforms only, the ix drivers automatically set standard 
+      Informix environment variables with ifx_putenv(). Values are taken from the 
+      console environment with getenv(). Additional variables can be specified with:
+      <pre>dbi.stdifx.environment.count = n
+dbi.stdifx.environment.xx = &quot;variable&quot;</pre>
+      <h3><a name="MENU_COMMAND_generates_lowercase_action_name_1.30">MENU COMMAND generates lowercase action name</a></h3>
+    <p>The MENU COMMAND clause now generates action names in lowercase. This means, 
+      when you define COMMAND "Open", it will bind to all actions views defined with 
+      the name 'open'.</p>
+    <h3><a name="Method_ui.Interface.loadTopMenu_1.30">Method ui.Interface.loadTopMenu()</a></h3>
+    <p>New <a href="ClassInterface.html">ui.Interface.loadTopMenu()</a> method to load 
+      a global <a href="Topmenus.html">topmenu</a>.</p>
+    <h3><a name="ON_CHANGE_fired_on_click_1.30">ON CHANGE fired on click</a></h3>
+    <p>The <a href="RecordInput.html#CONTROL_BLOCKS">ON CHANGE</a> block is now fired 
+      when the user clicks on a checkbox, radiogroup, or changes the item in a 
+      combobox.</p>
+    <h3><a name="New_ui.Dialog_built-in_class_1.30">New ui.Dialog built-in class</a></h3>
+    <p>New <a href="ClassDialog.html">ui.Dialog</a> built-in class available with the <a href="RecordInput.html#CONTROL_CLASS">
+        DIALOG</a> keyword in all interactive instructions. You can now 
+      activate/deactivate fields and actions during a dialog:</p>
+    <pre>INPUT ...
+     AFTER FIELD field1
+     CALL DIALOG.setFieldActive(&quot;field2&quot;,rec.field1 IS NOT NULL)
+     CALL DIALOG.setActionActive(&quot;check&quot;,rec.field1 IS NOT NULL)</pre>
+    <h3><a name="New_ui.Form_methods_1.30">New ui.Form methods</a></h3>
+    <p>The <a href="ClassForm.html">ui.Form</a> built-in class has new methods to 
+      handle form elements. The hidden attribute is now also managed at the model 
+      level, this allows you to hide form fields by name, instead of using the 
+      decoration node.</p>
+    <pre>CALL myform.setElementHidden(&quot;formonly.field1&quot;,2)
+CALL myform.setFieldHidden(&quot;field1&quot;,2) -- prefix is optional</pre>
+    <h3><a name="Array_sub-script_operator_now_returns_the_sub-array_1.30">Array sub-script operator now returns the sub-array</a></h3>
+    <p>The [] array sub-script operator now returns the sub-array:</p>
+    <pre>DEFINE a2 DYNAMIC ARRAY WITH DIMENSION 2 OF INTEGER
+LET a2[5,10] = 123
+DISPLAY a2.getLength() -- displays 5
+DISPLAY a2[5].getLength() -- displays 10</pre>
+    <h3><a name="Dynamic_arrays_passed_by_reference_to_functions_1.30">Dynamic arrays passed by reference to functions</a></h3>
+    <p>Dynamic arrays are now passed by reference to functions. You can change a 
+      dynamic array in a function when it is passed as an argument.</p>
+    <h3><a name="Control_MDI_children_with_ui.Interface_1.30">Control MDI children with ui.Interface</a></h3>
+    <p>New methods are provided in <a href="ClassInterface.html">ui.Interface</a> to 
+      control the MDI children.</p>
+    <h3><a name="CANCEL_INSERT_in_AFTER_INSERT_1.30">CANCEL INSERT in AFTER INSERT</a></h3>
+    <p>In INPUT ARRAY, <a href="InputArray.html#CONTROL_INSTRUCTIONS">CANCEL INSERT</a> 
+      now supported in AFTER INSERT, to remove the new added line when needed.</p>
+    <h3><a name="Toolbar_and_Topmenu_now_have_the_hidden_attribute_1.30">Toolbar and Topmenu now have the hidden attribute</a></h3>
+    <p><a href="Toolbars.html">Toolbar</a> and <a href="Topmenus.html">Topmenu</a> elements 
+      now have the hidden attribute so you can create them and hide the options the 
+      user is not supposed to see.</p>
+    <p><font color="#ff0000"><b>Warning:</b></font> Hiding a toolbar or topmenu option 
+      does not prevent the use of the accelerator of the action. Use <a href="ClassDialog.html">
+        ui.Dialog.setActionActive()</a>!</p>
+    <h3><a name="NEXT_FIELD_CURRENT_1.30">NEXT FIELD CURRENT</a></h3>
+    <p>New keyword for <a href="RecordInput.html#CONTROL_INSTRUCTIONS">NEXT FIELD</a>: 
+      NEXT FIELD CURRENT. Gives control back to the dialog instruction without moving 
+      to another field.</p>
+    <p><a href="#PAGE_HEADER">Back to the top</a></p>
+    <HR>
+    <h2><a name="VERSION_1_20">Version 1.20</a></h2>
+<ul>
+  <li><a href="#Debugger_1.20">Debugger</a></li>
+  <li><a href="#Program_Profiler_1.20">Program Profiler</a></li>
+  <li><a href="#Localized_Strings_1.20">Localized Strings</a></li>
+  <li><a href="#Unbuffered_Dialogs_1.20">Unbuffered Dialogs</a></li>
+  <li><a href="#Paged_Display_Array_1.20">Paged Display Array</a></li>
+  <li><a href="#Action_Defaults_1.20">Action Defaults</a></li>
+  <li><a href="#Client_side_settings_saved_for_each_programs_1.20">Client-side settings saved for each program</a></li>
+  <li><a href="#APPEND_ROW_dialog_attribute_1.20">APPEND ROW dialog attribute</a></li>
+  <li><a href="#KEEP_CURRENT_ROW_dialog_attribute_1.20">KEEP CURRENT ROW dialog attribute</a></li>
+  <li><a href="#UNHIDABLE_attribute_for_image_and_labels_1.20">UNHIDABLE attribute for image and labels</a></li>
+  <li><a href="#TERMINATE_REPORT_EXIT_REPORT_1.20">TERMINATE REPORT / EXIT REPORT</a></li>
+  <li><a href="#TINYINT_data_type_with_SQL_Server_1.20">TINYINT data type with SQL Server</a></li>
+  <li><a href="#Toolbars_can_be_defined_in_forms_1.20">Toolbars can be defined in forms</a></li>
+  <li><a href="#Topmenus_can_be_defined_in_forms_1.20">Topmenus can be defined in forms</a></li>
+  <li><a href="#Build_version_number_1.20">Build version number</a></li>
+  <li><a href="#Get_a_help_message_text_1.20">Get a help message text</a></li>
+  <li><a href="#Set_the_current_row_1.20">Set the current row</a></li>
+  <li><a href="#Interruption_handling_1.20">Interruption handling</a></li>
+  <li><a href="#StatusBar_definition_with_style_attribute_1.20">StatusBar definition with style attribute</a></li>
+  <li><a href="#Field_order_form_1.20">Field order form</a></li>
+  <li><a href="#Runtime_system_re-written_in_C_1.20">Runtime system re-written in C</a></li>
+  <li><a href="#Passing_arrays_as_function_parameter_1.20">Passing arrays as function parameter</a></li>
+  <li><a href="#Compiler_supports_now_ANSI_outer_joins_1.20">Compiler supports ANSI outer joins</a></li>
+  <li><a href="#Methods_for_StringBuffer_1.20">Methods for StringBuffer</a></li>
+  <li><a href="#Default_items_created_for_COMBOBOX_1.20">Default items created for COMBOBOX</a></li>
+  <li><a href="#ON_IDLE_clause_in_dialogs_1.20">ON IDLE clause in dialogs</a></li>
+  <li><a href="#Order_of_INPUT_ARRAY_trigger_execution_1.20">Order of INPUT ARRAY trigger execution</a></li>
+  <li><a href="#New_ui.ComboBox_class_1.20">New ui.ComboBox class</a></li>
+  <li><a href="#Predefined_actions_in_lists_nextrow_prevrow_1.20">Predefined actions in lists: nextrow / prevrow</a></li>
+  <li><a href="#FOREACH_infinite_loop_1.20">FOREACH infinite loop</a></li>
+  <li><a href="#Record_comparison_1.20">Record comparison</a></li>
+  <li><a href="#ON_CHANGE_trigger_1.20">ON CHANGE trigger</a></li>
+  <li><a href="#Program_icon_1.20">Program icon</a></li>
+  <li><a href="#Form_compilation_warnings_1.20">Form compilation warnings</a></li>
+  <li><a href="#FORMAT_attribute_in_LABELs_1.20">FORMAT attribute in LABELs</a></li>
+  <li><a href="#SQLSTATE_and_SQLERRMESSAGE_1.20">SQLSTATE and SQLERRMESSAGE</a></li>
+  <li><a href="#Front_End_Function_calls_1.20">Front End Function calls</a></li>
+  <li><a href="#New_ui.Form_built_in_class_1.20">New ui.Form built-in class</a></li>
+  <li><a href="#TABINDEX_for_tabbing_order_1.20">TABINDEX for tabbing order</a></li>
+  <li><a href="#LSTR_operator_1.20">LSTR operator</a></li>
+  <li><a href="#SFMT_operator_1.20">SFMT operator</a></li>
+  <li><a href="#ON_ROW_CHANGE_trigger_1.20">ON ROW CHANGE trigger</a></li>
+  <li><a href="#New_StringTokenizer_class_1.20">New StringTokenizer class</a></li>
+  <li><a href="#Faster_linker_1.20">Faster linker</a></li>
+  <li><a href="#Global_constants_1.20">Global constants</a></li>
+  <li><a href="#ON_ACTION_in_MENUs_1.20">ON ACTION in MENUs</a></li>
+  <li><a href="#New_Application_class_1.20">New Application class</a></li>
+  <li><a href="#New_Channel_class_1.20">New Channel class</a></li>
+  <li><a href="#Predefined_help_action_1.20">Predefined 'help' action</a></li>
+</ul>
+    <h3><a name="Debugger_1.20">Debugger</a></h3>Integrated debugger with gdb syntax to interface with graphical tools like ddd. 
+    See <a href="Debugger.html">Debugger</a>.
+<h3><a name="Program_Profiler_1.20">Program Profiler</a></h3>The <a href="Profiler.html">Program Profiler</a> can be used to generate 
+      statistics of program execution, to find the bottlenecks in the source code.<h3>
+<a name="Localized_Strings_1.20">Localized Strings</a></h3>
+    <p>Internationalizes your application in different languages with localized 
+          strings. </p>
+    <p>Localized Strings are now supported. You can identify strings to be localized, 
+      with the % notation:</p>
+    <pre> LAYOUT ( TEXT= %&quot;custlist&quot; )</pre>
+    <p>See <a href="LocalizedStrings.html">Localized Strings</a>.</p>
+<h3><a name="Unbuffered_Dialogs_1.20">Unbuffered Dialogs</a></h3>
+    <p>Interactive instructions support the UNBUFFERED mode, to synchronise data model 
+          and view automatically.&nbsp;&nbsp;Dialogs can now use the <a href="RecordInput.html#PROG_STEPS">UNBUFFERED</a> attribute, 
+      that simplifies INPUT, DISPLAY ARRAY and INPUT ARRAY coding; input/display 
+      buffer is no longer used. When you set a variable, the value is automatically 
+      displayed to the field. See <a href="RecordInput.html">Unbuffered Dialogs</a>.</p>
+<h3><a name="Paged_Display_Array_1.20">Paged Display Array</a></h3>
+    <p>DISPLAY ARRAY can now work in buffered mode, to avoid loading a big array when 
+          you have a lot of rows to display. The <a href="DisplayArray.html">DISPLAY ARRAY</a> instruction now has a new ON 
+      FILL BUFFER block that can be used with dynamic arrays to feed the dialog with 
+      data rows on demand. See <a href="DisplayArray.html">Paged Display Array</a>.</p>
+    <h3><a name="Action_Defaults_1.20">Action Defaults</a></h3>
+    <p>Centralize default attributes for actions in <a href="ActionDefaults.html">Action 
+        Defaults files</a>.</p>
+    <h3><a name="Client_side_settings_saved_for_each_programs_1.20">Client side settings saved for each program</a></h3>
+    <p>Client side settings are now saved in registry according to the 'name' attribute 
+      of UserInterface, which can be set with <a href="ClassInterface.html">ui.Interface.setName()</a>
+      method. By default UserInterface.name is not set to the name of the program.</p>
+    <h3><a name="APPEND_ROW_dialog_attribute_1.20">APPEND ROW dialog attribute</a></h3>
+    <p>New attribute APPEND ROW = TRUE/FALSE for <a href="InputArray.html#INSTRUCTION_CONFIG">
+        INPUT ARRAY</a> instruction. Defines if the user is allowed to add rows at 
+      the end of the list.</p>
+    <h3><a name="KEEP_CURRENT_ROW_dialog_attribute_1.20">KEEP CURRENT ROW dialog attribute</a></h3>
+    <p>New attribute KEEP CURRENT ROW = TRUE/FALSE for <a href="DisplayArray.html#INSTRUCTION_CONFIG">
+        DISPLAY ARRAY</a> and <a href="InputArray.html#INSTRUCTION_CONFIG">INPUT ARRAY</a>
+      instructions. Defines if the current row must remain highlighted when leaving 
+      the dialog. The default is FALSE.</p>
+    <h3><a name="UNHIDABLE_attribute_for_image_and_labels_1.20">UNHIDABLE attribute for image and labels</a></h3>
+    <p>Image and labels now support the <a href="FSFAttributes.html#FA_UNHIDABLE">UNHIDABLE</a>
+      attribute for table columns.</p>
+    <h3><a name="TERMINATE_REPORT_EXIT_REPORT_1.20">TERMINATE REPORT / EXIT REPORT</a></h3>
+    <p>New report instructions TERMINATE REPORT / EXIT REPORT. Use the EXIT REPORT 
+      statement to terminate a report within a REPORT definition. Both statements 
+      have the following effects:<br>
+      - Terminate the processing of the current report.<br>
+      - Delete any intermediate files or temporary tables that were created while 
+      processing the report.
+    </p>
+    <h3><a name="TINYINT_data_type_with_SQL_Server_1.20">TINYINT data type with SQL Server</a></h3>
+    <p>SQL Server driver now supports the TINYINT data type.</p>
+    <h3><a name="Toolbars_can_be_defined_in_forms_1.20">Toolbars can be defined in forms</a></h3>
+    <p>You can now define <a href="Toolbars.html">Toolbars</a> in form specification 
+      files.</p>
+    <h3><a name="Topmenus_can_be_defined_in_forms_1.20">Topmenus can be defined in forms</a></h3>
+    <p>You can now define <a href="Topmenus.html">Topmenus</a> in form specification 
+      files.</p>
+    <h3><a name="Build_version_number_1.20">Build version number</a></h3>
+    <p>The <a href="BuiltInFunctions.html#BF_FGL_GETVERSION">FGL_GETVERSION()</a> function 
+      returns the internal version number of the runtime system.</p>
+    <h3><a name="Get_a_help_message_text_1.20">Get a help message text</a></h3>
+    <p>The <a href="BuiltInFunctions.html#BF_FGL_GETHELP">FGL_GETHELP()</a> function 
+      returns the message text for a give help number.</p>
+    <h3><a name="Set_the_current_row_1.20">Set the current row</a></h3>
+    <p>The <a href="BuiltInFunctions.html#BF_FGL_SET_ARR_CURR">FGL_SET_ARR_CURR()</a> function 
+      changes the current row in <a href="DisplayArray.html">DISPLAY ARRAY</a> or <a href="InputArray.html">
+        INPUT ARRAY</a>.</p>
+    <h3><a name="Interruption_handling_1.20">Interruption handling</a></h3>
+    <p>Users can now send an <a href="InteractionModel.html#INTERRUPTION">interruption</a> request 
+      from the client to the program, to stop long running queries, reports and other 
+      BDL procedures, by testing the int_flag variable. The client is using an OOB 
+      signal.
+    </p>
+    <h3><a name="StatusBar_definition_with_style_attribute_1.20">StatusBar definition with style attribute</a></h3>
+    <p>There is now a new window style attribute for statusbar layout specification. 
+      You can now set <a href="PresentationStyles.html">statusBarType</a> attribute 
+      in the 4st style file for Windows, in order to control the display of status 
+      bars.
+    </p>
+    <h3><a name="Field_order_form_1.20">Field order form</a></h3>
+    <p>New <a href="Programs.html#PROGRAM_OPTIONS">OPTIONS</a> clause FIELD ORDER FORM 
+      provided to use the <a href="FSFAttributes.html#FA_TABINDEX">TABINDEX</a> attribute 
+      to define the field tabbing order. FIELD ORDER FORM can also be used at the 
+      dialog level as dialog attribute.</p>
+    <h3><a name="Runtime_system_re-written_in_C_1.20">Runtime system re-written in C</a></h3>
+    <p>Runtime system has been re-written in pure C language, g++ 3.2 and corresponding 
+      gnu libs (libstdc++, libsupc++, ...) are no longer needed; a runner can be 
+      linked with a native cc compiler. See <a href="Installation.html">Installation and 
+        Setup</a>.
+    </p>
+    <h3><a name="Passing_arrays_as_function_parameter_1.20">Passing arrays as function parameter</a></h3>
+    <p><a href="Arrays.html">Arrays</a> can be passed as parameters, all elements are 
+      expanded.</p>
+    <h3><a name="Compiler_supports_now_ANSI_outer_joins_1.20">Compiler supports now ANSI outer joins</a></h3>
+    <p>You can now write static SQL statements using ANSI outer joins:</p>
+    <pre>   SELECT .. FROM a LEFT OUTER JOIN b ON a.key=b.key</pre>
+    <h3><a name="Methods_for_StringBuffer_1.20">Methods for StringBuffer</a></h3>
+    <p>New methods for <a href="ClassStringBuffer.html">StringBuffer class</a>: 
+      base.StringBuffer.replaceAt() and base.StringBuffer.insertAt().</p>
+    <h3><a name="Default_items_created_for_COMBOBOX_1.20">Default items created for COMBOBOX</a></h3>
+    <p>For <a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">COMBOBOX</a> form items, a 
+      default ITEMS list is created by fglform when an INCLUDE list is used.</p>
+    <h3><a name="ON_IDLE_clause_in_dialogs_1.20">ON IDLE clause in dialogs</a></h3>
+    <p>The <a href="RecordInput.html#INTERACTION_BLOCKS">ON IDLE</a> clause can be used 
+      to execute a block of instructions after a timeout.</p>
+    <h3><a name="Order_of_INPUT_ARRAY_trigger_execution_1.20">Order of INPUT ARRAY trigger execution</a></h3>
+    <p>New logical order of execution for 
+    <a href="InputArray.html#CTRLBLOCK_EXECUTION">INPUT 
+        ARRAY</a> triggers:</p>
+<ol>
+  <li>BEFORE INPUT</li>
+  <li>BEFORE ROW</li>
+  <li>BEFORE INSERT</li>
+  <li>BEFORE FIELD </li>
+</ol>
+    <h3><a name="New_ui.ComboBox_class_1.20">New ui.ComboBox class</a></h3>
+    <p>New <a href="ClassComboBox.html">ui.ComboBox</a> class has been added, to 
+      configure COMBOBOX fields at runtime.</p>
+    <h3><a name="Predefined_actions_in_lists_nextrow_prevrow_1.20">Predefined actions in lists: nextrow / prevrow</a></h3>
+    <p><a href="DisplayArray.html#DEFAULT_ACTIONS">DISPLAY ARRAY</a> and <a href="InputArray.html#DEFAULT_ACTIONS">
+        INPUT ARRAY</a> instructions now automatically use two predefined actions 
+      nextrow and prevrow, which allow binding action views for navigation.</p>
+    <h3><a name="FOREACH_infinite_loop_1.20">FOREACH infinite loop</a></h3>
+    <p>FOREACH that raises an error no longer loops infinitely.</p>
+    <h3><a name="Record_comparison_1.20">Record comparison</a></h3>
+    <p>
+      Operators equal (= or ==) and not equal (&lt;&gt; or !=) now can be used with 
+      records. All members will be compared. If two members are NULL the result of 
+      this member comparison results in TRUE.</p>
+    <h3><a name="ON_CHANGE_trigger_1.20">ON CHANGE trigger</a></h3>
+    <p>ON CHANGE field trigger in <a href="RecordInput.html#CONTROL_BLOCKS">INPUT</a> and
+      <a href="InputArray.html#CONTROL_BLOCKS">INPUT ARRAY</a>. Same as AFTER FIELD, 
+      but only fired if the value has changed.</p>
+    <h3><a name="Program_icon_1.20">Program icon</a></h3>
+    <p>New image attribute in UserInterface node, for the program icon. Can be set with <a href="ClassInterface.html">
+        ui.Interface.setImage()</a>.</p>
+    <h3><a name="Form_compilation_warnings_1.20">Form compilation warnings</a></h3>
+    <p>New option -W for <a href="Tools.html#TL_FGLFORM">fglform</a> to show warnings.</p>
+    <h3><a name="FORMAT_attribute_in_LABELs_1.20">FORMAT attribute in LABELs</a></h3>
+    <p><a href="FormSpecFiles.html#FF_ITEMTYPE_LABEL"> LABELs</a> can now have a FORMAT 
+      attribute.</p>
+    <h3><a name="SQLSTATE_and_SQLERRMESSAGE_1.20">SQLSTATE and SQLERRMESSAGE</a></h3>
+    <p>New <a href="Connections.html#ERRORINFO">SQLSTATE and SQLERRMESSAGE</a> operators, 
+      to give SQL execution information.</p>
+    <h3><a name="Front_End_Function_calls_1.20">Front End Function calls</a></h3>
+    <p>You can now call predefined functions in the front-end, by using the <a href="ClassInterface.html">
+        ui.Interface.frontCall()</a>method.<br>
+      See also <a href="FrontEndFunctions.html">Front End Functions</a>.
+    </p>
+    <h3><a name="New_ui.Form_built_in_class_1.20">New ui.Form built-in class</a></h3>
+    <p>New <a href="ClassForm.html">ui.Form</a> built-in class to handle forms.</p>
+    <h3><a name="TABINDEX_for_tabbing_order_1.20">TABINDEX for tabbing order</a></h3>
+    <p>New <a href="FSFAttributes.html#FA_TABINDEX">TABINDEX</a> field attribute to 
+      define the tabbing order in forms.</p>
+    <h3><a name="LSTR_operator_1.20">LSTR operator</a></h3>
+    <p>New LSTR operator to get a localized string by name:</p>
+    <pre>  DISPLAY LSTR(&quot;custno_comment&quot;)</pre>
+    <h3><a name="SFMT_operator_1.20">SFMT operator</a></h3>
+    <p>New SFMT operator to format strings with parameters:</p>
+    <pre>  DISPLAY SFMT(&quot;Could not find %1 in %2.&quot;,filename,dirname)</pre>
+    <h3><a name="ON_ROW_CHANGE_trigger_1.20">ON ROW CHANGE trigger</a></h3>
+    <p>New ON ROW CHANGE clause in <a href="InputArray.html#CONTROL_BLOCKS">INPUT ARRAY</a>. 
+      This trigger will be executed if at least one value in the row has been 
+      modified. The ON ROW CHANGE code is be executed just before the AFTER ROW 
+      clause.
+    </p>
+    <h3><a name="New_StringTokenizer_class_1.20">New StringTokenizer class</a></h3>
+    <p>The <a href="ClassStringTokenizer.html">StringTokenizer</a> class can be used to 
+      parse strings for tokens.</p>
+    <h3><a name="Faster_linker_1.20">Faster linker</a></h3>
+    <p>Linker is now faster when having program modules with a huge number of 
+      functions.</p>
+    <h3><a name="Global_constants_1.20">Global constants</a></h3>
+    <p><a href="Constants.html">CONSTANTs</a> can now be defined as GLOBALs.</p>
+    <h3><a name="ON_ACTION_in_MENUs_1.20">ON ACTION in MENUs</a></h3>
+    <p><a href="Menus.html">MENU</a> instruction now supports ON ACTION clause, to 
+      write abstract menus as simple action handlers.</p>
+    <h3><a name="New_Application_class_1.20">New Application class</a></h3>
+    <p>The <a href="ClassApplication.html">base.Application</a> class provides an 
+      interface to the program properties.</p>
+    <h3><a name="New_Channel_class_1.20">New Channel class</a></h3>
+    <p>New definition of the interface for Channels, now based on objects:</p>
+    <pre> DEFINE c base.Channel
+ LET c = base.Channel.create()
+ CALL c.openFile(&quot;data.txt&quot;,&quot;r&quot;)</pre>
+    <h3><a name="Predefined_help_action_1.20">Predefined 'help' action</a></h3>
+    <p>New 'help' <a href="InteractionModel.html#PREDEFACTIONS">predefined action</a>, to 
+      start help viewer for HELP clauses in dialog instructions.</p>
+    <pre> INPUT BY NAME .... HELP 12423 -- Creates action 'help'</pre>
+    <p><a href="#PAGE_HEADER">Back to the top</a></p>
+    <HR>
+    <h2><a name="VERSION_1_10">Version 1.10</a></h2>
+    <ul>
+      <li><a href="#Dynamic_User_Interface_1.10">Dynamic User Interface</a></li>
+      <li><a href="#Interactive_Instruction_Extensions_1.10">Interactive Instruction Extensions</a></li>
+      <li><a href="#Built_in_Classes_1.10">Built-in Classes</a></li>
+      <li><a href="#Constant_Definitions_1.10">Constant Definitions</a></li>
+      <li><a href="#Extended_Form_Files_1.10">Extended Form Files</a></li>
+      <li><a href="#Dynamic_Arrays_1.10">Dynamic Arrays</a></li>
+      <li><a href="#XML_utilities_1.10">XML utilities</a></li>
+      <li><a href="#STRING_data_type_1.10">STRING data type</a></li>
+      <li><a href="#Defining_MDI_containers_1.10">Defining MDI containers</a></li>
+      <li><a href="#SCHEMA_instruction_1.10">SCHEMA instruction</a></li>
+    </ul>
+<h3><a name="Dynamic_User_Interface_1.10">Dynamic User Interface</a></h3>
+<p>The <a href="DynamicUI.html">Dynamic User Interface</a> is the major new 
+          concept in Genero. It is the basement for the new graphical user interface. 
+See <a href="DynamicUI.html">Dynamic User Interface</a>.</p>
+<h3><a name="Interactive_Instruction_Extensions_1.10">Interactive Instruction Extensions</a></h3>
+<p>Classical interactive instructions such as <a href="RecordInput.html">INPUT</a>,
+          <a href="InputArray.html">INPUT ARRAY</a>, <a href="DisplayArray.html">DISPLAY 
+            ARRAY</a>, <a href="Construct.html">CONSTRUCT</a> have been extended with 
+          new control blocks and control instructions. See <a href="RecordInput.html">Interactive 
+        Instruction Extensions</a>.</p>
+<h3><a name="Built_in_Classes_1.10">Built-in Classes</a></h3>
+<p>The language supports now <a href="BuiltInClasses.html">built-in classes</a>, a 
+          new object-oriented way to program in BDL. See <a href="BuiltInClasses.html">Built-in Classes</a>.</p>
+<h3><a name="Constant_Definitions_1.10">Constant Definitions</a></h3>
+<p>It is now possible to define <a href="Constants.html">constants</a>, as in 
+          other languages. See <a href="Constants.html">Constant Definitions</a>.</p>
+<h3><a name="Extended_Form_Files_1.10">Extended Form Files</a></h3>
+<p>You can now define complex layouts with the <a href="FormSpecFiles.html">extended 
+            PER files</a>. See <a href="FormSpecFiles.html">Extended Form Files</a>.</p>
+<h3><a name="Dynamic_Arrays_1.10">Dynamic Arrays</a></h3>
+<p>The language now supports <a href="Arrays.html">dynamic arrays</a> with 
+      automatic memory allocation. DISPLAY ARRAY can now work in buffered mode, to avoid to load a big array when 
+          you have a lot of rows to display. See <a href="Arrays.html">Dynamic Arrays</a>. </p>
+    <h3><a name="XML_utilities_1.10">XML utilities</a></h3>
+    <p>A set of <a href="XmlUtils.html">XML Utilities</a> are provided in the runtime 
+      library as built-in classes.</p>
+    <h3><a name="STRING_data_type_1.10">STRING data type</a></h3>
+    <p>A new <a href="DataTypes.html#DT_STRING">STRING</a> data type is now available, 
+      to simplify utility function coding.</p>
+    <h3><a name="Defining_MDI_containers_1.10">Defining MDI containers</a></h3>
+    <p>Defining <a href="ClassInterface.html">Window Containers (MDI)</a> is a simple 
+      way to group programs.</p>
+    <h3><a name="SCHEMA_instruction_1.10">SCHEMA instruction</a></h3>
+    <p>The new <a href="Programs.html#DB_SCHEMA">SCHEMA</a> instruction allows you to 
+      specific a database schema without having an implicit connection when the 
+      program executes.</p>
+    <p><a href="#PAGE_HEADER">Back to the top</a></p>
+    <HR>
+    </BODY>
+</HTML>

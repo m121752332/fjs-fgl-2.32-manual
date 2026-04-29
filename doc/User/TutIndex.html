@@ -1,0 +1,237 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Tutorial Summary</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<h1>Genero BDL Tutorial Summary</h1>
+
+<p>If you are a developer new to <b> Genero</b> and the <b> Business Development
+Language</b>, this tutorial is designed for you, to explain concepts and provide
+code examples for some of the common business-related tasks. The only
+prerequisite knowledge is familiarity with relational databases
+and SQL. </p>
+<p>The chapters contain a series of programs that range in complexity from 
+simply displaying a
+database row to more advanced topics, such as
+handling arrays and master/detail relationships. Each chapter has a general discussion of the
+features and programming techniques used in the example programs, with annotated code samples. The examples in later chapters
+build on
+concepts and functions explained in earlier chapters. These programs have the BDL keywords in
+uppercase letters; this is a convention only.&nbsp;For ease in reading, the BDL
+keywords are colored green. The line numbers in the programs are for reference 
+only; they are not a part of the BDL code.</p>
+
+<p>If you wish to run the example programs or try out the programming techniques 
+described in this tutorial, See <a href="#testing">Testing the Example Programs</a> 
+for the requirements.</p>
+<p>For an overview of Genero BDL,&nbsp; see <a href="IntroBDL.html">
+Introduction: BDL Concepts</a>.&nbsp; </p>
+
+<hr>
+
+<h1>Tutorial Chapters
+</h1>
+
+  <table border="0" cellpadding="5" cellspacing="0" width="100%">
+    <tr>
+      <td width="293" valign="top" align="left" bgcolor="#FFCC99"><b>Chapter</b></td>
+      <td width="635" valign="top" align="left" bgcolor="#FFCC99"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="293" valign="top" bgcolor="#FFFFCC">
+ <a href="TutChap01.html">1 - Overview</a>
+      </td>
+      <td width="635" valign="top" bgcolor="#FFFFCC">
+  <p>This chapter provides an overview of the Tutorial and a description of the 
+	database schema&nbsp; and sample data used for the example programs.&nbsp; </td>
+    </tr>
+    <tr>
+      <td width="293" valign="top" bgcolor="#FFFFCC">
+  <a href="TutChap02.html">2 - Using BDL</a>
+      </td>
+      <td width="635" valign="top" bgcolor="#FFFFCC">
+  This chapter illustrates the structure of a BDL program and some of the BDL
+  statements that perform some common tasks - display a text message to the screen,
+        connect to a database and
+  retrieve data, define variables, and pass variables between functions.
+      </td>
+    </tr>
+    <tr>
+      <td width="293" valign="top" bgcolor="#FFFFCC"><a href="TutChap03.html">3 - 
+		Displaying Data(Windows/Forms)</a></td>
+      <td valign="top" width="635" bgcolor="#FFFFCC">This chapter illustrates 
+		opening a window that contains a form to display information to the 
+		user. An SQL statement is used to retrieve the data from a database 
+		table. A form specification file is defined to display the values 
+		retrieved.&nbsp; The actions that are available to the user are defined 
+		in the source code, tied to buttons that display on the form.&nbsp;
+      </td>
+    </tr>
+    <tr>
+      <td width="293" valign="top" bgcolor="#FFFFCC"><a href="TutChap04.html">4 
+		- Searching the Database(Query by Example)
+        </a>
+      </td>
+      <td valign="top" width="635" bgcolor="#FFFFCC">The program in this chapter&nbsp;allows the user to search a database by entering criteria in a form. The search criteria is used to
+build an SQL SELECT statement to retrieve the desired database rows. A cursor is defined in the program, to allow the user to scroll
+back and forth between the rows of the result set.&nbsp; Testing the success of the SQL
+        statements and handling errors is
+illustrated.
+      </td>
+    </tr>
+    <tr>
+      <td width="293" valign="top" bgcolor="#FFFFCC"><a href="TutChap05.html">5 -
+        Enhancing the Form</a></td>
+      <td valign="top" width="635" bgcolor="#FFFFCC">
+        Program forms can be displayed in a variety of ways. This chapter illustrates adding a Toolbar or a
+        Topmenu (pulldown menu) by modifying the form specification
+        file, changing the window's appearance, and disabling/enabling actions.
+        The example programs in this
+chapter use some of the action defaults 
+defined by Genero BDL to standardize the presentation of common actions to the
+        user.
+      </td>
+    </tr>
+    <tr>
+      <td width="293" valign="top" bgcolor="#FFFFCC"><a href="TutChap06.html">6 - 
+		Modifying Data (Insert/Update/Delete)</a></td>
+      <td valign="top" width="635" bgcolor="#FFFFCC">This program allows the user to insert/update/delete rows in the customer
+        database table.&nbsp; Embedded SQL statements (UPDATE/INSERT/DELETE) are used to update
+the table, based on the values stored in the program record.&nbsp; SQL
+transactions, concurrency, and consistency are discussed.&nbsp;A
+dialog window
+is displayed to prompt the user to verify the deletion of a row.
+      </td>
+    </tr>
+    <tr>
+      <td width="293" valign="top" bgcolor="#FFFFCC"><a href="TutChap07.html">7 -
+        Displaying an Array of Data</a></td>
+      <td valign="top" width="635" bgcolor="#FFFFCC">
+<p>Unlike the previous programs, the example in this chapter displays multiple 
+customer records at once.&nbsp; The program defines a program array to hold the 
+records, and displays the records in a form containing a table and a screen 
+array.&nbsp; The example program is then modified to dynamically fill the array as needed.&nbsp; This program
+illustrates a library function - the example is written so it can be used in
+multiple programs, maximizing code re-use.
+        </p>
+
+      </td>
+    </tr>
+    <tr>
+      <td width="293" valign="top" bgcolor="#FFFFCC"><a href="TutChap08.html">8 -
+        Modifying an Array</a></td>
+      <td valign="top" width="635" bgcolor="#FFFFCC">The program in this chapter
+        allows the user to view and change a list of records displayed on a 
+		form. As each record in the program
+array is added, updated, or deleted,&nbsp; the program logic makes corresponding
+changes in the rows of the corresponding database table.&nbsp;
+      </td>
+    </tr>
+    <tr>
+      <td width="293" valign="top" bgcolor="#FFFFCC"><a href="TutChap09.html">9 -
+        Creating Reports</a></td>
+      <td valign="top" width="635" bgcolor="#FFFFCC">This program generates a simple report of the data in the customer database
+table.&nbsp;The two parts of a report, the report driver logic and the report definition are illustrated.&nbsp; A technique to allow a user to interrupt a long-running report is shown.
+      </td>
+    </tr>
+    <tr>
+      <td width="293" valign="top" bgcolor="#FFFFCC"><a href="TutChap10.html">10 -Using Localization</a></td>
+      <td valign="top" width="635" bgcolor="#FFFFCC">Localization support and localized 
+		strings allow you to internationalize your application using
+different languages, and to customize it for specific industry markets in your user
+population. This chapter illustrates the use of localized strings in your
+        programs.
+      </td>
+    </tr>
+    <tr>
+      <td width="293" valign="top" bgcolor="#FFFFCC"><a href="TutChap11.html">11
+        - Managing Master/Detail Forms</a></td>
+      <td valign="top" width="635" bgcolor="#FFFFCC">The form used by the program in this chapter contains fields from both the
+		<b>orders</b> and <b>items</b> tables in the <b>custdemo</b> database, illustrating a master-detail
+relationship.&nbsp; Since there are multiple items associated with a single
+order, the rows from the items table are&nbsp; displayed
+in a table on the form.&nbsp; This chapter focuses on the master/detail form
+and the unique features of the corresponding program.</td>
+    </tr>
+    <tr>
+      <td width="293" valign="top" bgcolor="#FFFFCC"><a href="TutChap12.html">12 
+		- Changing the User Interface Dynamically</a></td>
+      <td valign="top" width="635" bgcolor="#FFFFCC">This chapter focuses on 
+		using the classes and methods in the <b>ui</b> 
+package of built-in classes to modify the user interface at runtime. Among the 
+		techniques illustrated are hiding or disabling form items; changing the 
+		text, style or image associated with a form item; loading a ComboBox 
+		from a database table; and adding Toolbars and Topmenus dynamically.</td>
+    </tr>
+    <tr>
+      <td width="293" valign="top" bgcolor="#FFFFCC"><a href="TutChap13.html">13 
+		- Master/Detail using Multiple Dialogs</a></td>
+      <td valign="top" width="635" bgcolor="#FFFFCC">This chapter shows how to
+        implement <b>order</b> and <b>items</b> input in a unique dialog
+        statement. In chapter 11 the order input is detached from the items
+        input. The code example in chapter 13 makes both order and item input
+        fields active at the same time, which is more natural in GUI
+        applications.</td>
+    </tr>
+  </table>
+
+<hr>
+<h2><a name="testing">Testing the Example Programs</a></h2>
+<p>Before you can create the
+<b>custdemo</b> database and test the example programs, the following
+requirements must be met:</p>
+<ul>
+  <li>You must have access to one of the supported relational database systems,
+    and it must be up and running.</li>
+  <li>Genero BDL must be installed, and the <a href="Installation.html"> appropriate
+    environment</a>
+    must be set to allow you to use it.</li>
+  <li>The front-end client specific to your system (Genero Desktop Client, for example) must be installed.</li>
+  <li>A text-editor to view and edit the program files must be available.</li>
+</ul>
+
+<p>The example database is designed to be as generic as possible, so it can be implemented
+on various relational database systems.</p>
+
+<p>The source code of example programs are provided in the <b>Tutorial</b>
+directory of the HTML documentation.</p>
+
+<p>To set up the environment in order to run the example
+programs:</p>
+<ol>
+  <li>Using your database system software, create an empty database
+named <b>custdemo</b> with logging enabled.</li>
+	<li>Make a copy on your system of the <b>Tutorial</b> directory provided in the documentation.</li>
+	<li>From your copy of the Tutorial files:</li>
+</ol>
+<blockquote>
+	<ul>
+		<li>execute the SQL statements in the file <b>
+		<a href="../Tutorial/custdemo.sql">custdemo.sql</a></b>
+    to create tables in the <b>custdemo</b> database.</li>
+		<li>Execute the SQL statements in the file <b>
+		<a href="../Tutorial/loadcust.sql">loadcust.sql</a></b>
+to insert rows into the tables of the <b>custdemo</b> database.</li>
+	</ul>
+</blockquote>
+<ol start="4">
+  <li>Configure <a href="FglProfile.html">FGLPROFILE</a> with <b>dbi.*</b>
+    entries to connect to the database. See <a href="Connections.html">Connections</a>
+    for more details.</li>
+	<li>Set the <a href="EnvironmentVariables.html#EV_FGLDBPATH">FGLDBPATH</a>
+    environment variable to &quot;<b>..</b>&quot;, in order to let compilers
+    access the <b>custdemo.sch</b> database schema file from example
+    sub-directories.</li>
+</ol>
+
+<hr>
+
+</BODY>
+</HTML>

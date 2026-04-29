@@ -1,0 +1,1018 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Database Schema Files</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Database Schema Files</a></H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#DEFINITION">What are Database Schema Files?</a></li>
+  <li><a href="#EXTRACTOR">Database Schema Extractor</a></li>
+  <li><a href="#SCHEMA_FILES">Schema Files</a>
+      <ul>
+        <li><a href="#SCH_FILE">Column Definition File (.sch)</a>
+          <ul>
+            <li><a href="#IFX_DISTINCT_TYPES">Informix DISTINCT types</a></li>
+          </ul>
+        </li>
+        <li><a href="#VAL_FILE">Column Validation File (.val)</a></li>
+        <li><a href="#ATT_FILE">Column Video Attributes File (.att)</a></li>
+      </ul>
+  </li>
+</ul>
+
+
+<p><i>See also:</i> <a href="FormSpecFiles.html">Forms</a>, <a href="Programs.html">Programs</a>,
+<a href="Variables.html">Variables</a>, <a href="Tools.html#TL_FGLDBSCH">fgldbsch</a></p>
+
+
+<HR>
+
+<h3><a name="DEFINITION">Definition of Database Schema Files</a></h3>
+
+<p>Database Schema Files hold the definition of the database tables and columns.
+The schema files contain the column data types, validation rules, form item types, and display attributes
+for columns.</p>
+
+
+<p>The schema files are typically used to centralize column data types to define
+<a href="Variables.html">program variables</a>, as well as display attributes which are
+normally specified in the <a href="FormSpecFiles.html">form specification file</a>.</p>
+
+
+<b><font color="#FF0000">Warning: </font>It is strongly recommended that you
+re-generate the schema files when upgrading to a new Genero BDL version. Bug
+fixes and new data type support can required schema file changes. If the schema
+file holds data type codes that are unknown to the current version, the
+compilers will raise the error <a href="FglErrors.html#-6634">-6634</a>.&nbsp;</b>
+
+
+<p>
+
+
+The database schema files are generated with the <a href="Tools.html#TL_FGLDBSCH">fgldbsch</a>
+tool from the system tables of an existing database.</p>
+
+
+<b><font color="#FF0000">Warning: </font>For some type of databases, the table
+owner is mandatory to extract schema information. If you do not specify the -ow
+option in the comment line, fgldbsch will take the -un user name as default. If
+you do not use the -un/-up options because you are using <a href="Connections.html#DS_ODI_INDIRECT">indirect
+database connection</a> with FGLPROFILE settings to identify the database user
+or if the database user is authenticated by the operating system,
+the fgldbsch tool will try to identify the current database user (USER or
+CURRENT_USER constant) and use this as table owner to extract the schema.</b>
+
+
+<p>In program sources or form specification files, you must specify the database schema file with the <a href="Programs.html#DB_SCHEMA">SCHEMA</a>
+instruction. The <a href="EnvironmentVariables.html#EV_FGLDBPATH">FGLDBPATH</a>
+environment variable can be used to define a list of directories where the
+compiler can find database schema files.</p>
+
+
+<b><font color="#FF0000">Warning: </font>The data types, display attributes, and validation rules are taken from the
+    <i>Database Schema Files</i> <b><u>during compilation</u></b>. Make sure that the
+    schema files of the <a href="FglTerms.html#DEVELOPMENT_DATABASE">
+    development database</a>  correspond to the <a href="FglTerms.html#PRODUCTION_DATABASE">production
+    database</a>, otherwise
+    the elements defined in the compiled version of your modules
+    and <a href="FormSpecFiles.html">forms</a> will not match
+    the table structures of the production database.</b>
+
+
+<p>Program variables can be defined with the <a href="Variables.html#DEFINITION">LIKE</a>
+keyword to get the data type defined in the schema files:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>SCHEMA </tt>stores
+<CODE class=linenumber>02</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>03</CODE> <tt>  DEFINE </tt>custrec <tt>RECORD LIKE </tt>customer.*
+<CODE class=linenumber>04</CODE> <tt>  DEFINE </tt>name <tt>LIKE </tt>customer.cust_name
+<CODE class=linenumber>05</CODE> <tt>  ...</tt>
+<CODE class=linenumber>06</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p>Form fields defined with the <a href="FormSpecFiles.html#FF_ITEMTYPE_FIELD">FIELD
+item type</a> can get the form
+item type from the schema files:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>SCHEMA </tt>stores
+<CODE class=linenumber>02</CODE> <tt>LAYOUT</tt>
+<CODE class=linenumber>03</CODE> <tt>GRID</tt>
+<CODE class=linenumber>04</CODE> {
+<CODE class=linenumber>05</CODE>   [f001         ]
+<CODE class=linenumber>06</CODE> }
+<CODE class=linenumber>07</CODE> <tt>TABLES</tt>
+<CODE class=linenumber>08</CODE>   customer
+<CODE class=linenumber>09</CODE> <tt>END</tt>
+<CODE class=linenumber>10</CODE> <tt>ATTRIBUTES</tt>
+<CODE class=linenumber>11</CODE> <tt>FIELD </tt>f001 = customer.cust_name;
+<CODE class=linenumber>12</CODE> <tt>END</tt></PRE>
+<p><b>Note:</b> For handling uppercase characters in the database name you must quote the name:
+<font face="Courier New"><font color="#008000"> SCHEMA </font>&quot;myDatabase&quot;</font></p>
+
+
+<HR>
+
+<h3><a name="EXTRACTOR">Database Schema Extractor</a></h3>
+
+
+<p>The <a href="Tools.html#TL_FGLDBSCH">fgldbsch</a> tool extracts the schema description for any database
+supported by Genero. Schema information is extracted from the database
+specific system tables. The database type is automatically detected after connection; you do not
+have to specify any database server type.</p>
+
+
+<p>The <a href="FglTerms.html#DATABASE_SYSTEM"> database system</a> must be
+available and the database client environment must be set properly in order
+to connect to the database engine and generate the schema files.</p>
+
+<p>You must run <code>fgldbsch</code> with the
+<tt>-db dbname</tt> option to identify the database source to which to connect. The
+<tt>dbname</tt> and related options could be present in the
+<a href="FglProfile.html">FGLPROFILE</a> file. See <u>
+<a name="DS_ODI_INDIRECT" href="Connections.html#DS_ODI_INDIRECT">Indirect 
+database specification method</a></u>&nbsp; in
+<a name="PAGE_HEADER" href="Connections.html">Database Connections</a>. 
+Otherwise, related options have to be provided with the <code>fgldbsch</code> 
+ command.</p>
+
+<p><code>fgldbsch <b>-db test1</b></code></p>
+
+
+<p>The database driver can be specified with the <tt>-dv dbdriver</tt> option,
+if the default driver is not appropriate.</p>
+
+<p><code>fgldbsch -db test1 <b>-dv dbmoraB2x</b></code></p>
+
+
+<p>If the operating system user is not the database user, you can provide a
+database user name and password respectively with the <tt>-un</tt> and <tt>-up</tt> options.</p>
+
+<p><code>fgldbsch -db test1 <b>-un scott -up fourjs</b></code></p>
+
+
+<p>The <a href="Tools.html#TL_FGLCOMP">fglcomp</a> and <a href="Tools.html#TL_FGLFORM">fglform</a>
+compilers expect <a href="DataTypes.html">BDL data types</a> in
+the schema file. While most data types correspond to Informix SQL data types, non-Informix databases 
+can have different data types. Therefore, data types in the schema file are generated from the system catalog tables according to some conversion rules. You can control the conversion method with the <tt>-cv</tt> option.
+Each character position of the string passed by this option corresponds
+to a line in the conversion table. You must give a conversion code for each
+data type (for example: <tt>-cv AABAAAB</tt>). Run the tool with the
+<tt>-ct</tt> option to see the conversion tables. When using <tt>X</tt> as
+conversion code, the columns using the corresponding data types will be
+ignored and not written to the <b> .sch</b> file. This is particularly useful in the
+case of auto-generated columns like SQL Server's <i>uniqueidentifier</i> data
+type, when using a <tt>DEFAULT NEWID()</tt> clause.</p>
+
+<p><code>fgldbsch -ct<br>
+...<br>
+    ------------------------------------------------------------------<br>
+    Informix&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Informix A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Informix B<br>
+    ------------------------------------------------------------------<br>
+  1 BOOLEAN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>BOOLEAN (t=45)</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CHAR(1)<b><br>
+</b>  2 INT8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>INT8</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+DECIMAL(19,0)<b><br>
+</b>  3 SERIAL8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>SERIAL8</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+DECIMAL(19,0)<b><br>
+</b>  4 LVARCHAR(m)&nbsp;&nbsp; LVARCHAR (ns)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<b>VARCHAR2(m)<br>
+</b>  5 BIGINT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>BIGINT</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+DECIMAL(19,0)<b><br>
+</b>  6 BIGSERIAL&nbsp;&nbsp;&nbsp;&nbsp; <b>BIGSERIAL</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+DECIMAL(19,0)<b><br>
+</b>    ------------------------------------------------------------------<br>
+    (ns) = Not supported in 4gl.<br>
+...<br>
+<br>
+fgldbsch -db test1 <b>-cv AAABAA</b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+123456</code></p>
+
+
+<p>In the example above, the -<tt>cv</tt> option instructs <code>fgldbsch</code>
+to use the types of the &quot;Informix A&quot; column for all original column
+types except for LVARCHAR, which must be converted to a VARCHAR2(m), the Genero
+VARCHAR without the 255 bytes limit.</p>
+
+<p>Not all native data types can be converted to Genero BDL types. For example,
+user-defined types or spatial types are not supported by the language. When a
+table column with such unsupported data type is found, <code>fgldbsch</code>
+stops and displays an error to bring the problem to your eyes. You can use the -<tt>ie</tt>
+option to have <code>fgldbsch</code> ignore the database tables having columns
+with unsupported types. When this option is used, none of the table columns
+definition will be written to the schema file.</p>
+
+<p>With some databases, the owner of tables is mandatory to extract a schema,
+otherwise you could get multiple definitions of the same table in the <b>.sch</b>
+schema file if tables with the same name exist in different database user
+schemas. To prevent such mistakes, you can specify the schema owner with the
+<tt>-ow owner</tt> option. If this option is not used, <code>fgldbsch</code>
+will use the database login name passed with the <tt>-un user</tt> option. This
+is usually the case with SQL Server and Sybase, where the owner of tables is
+&quot;dbo&quot;.</p>
+
+<p><code>fgldbsch -db test1 -un scott -up fourjs <b>-ow dbo</b></code></p>
+
+
+<p>By default <code>fgldbsch</code> does not generate system table definitions.
+You may want to use the
+<tt>-st</tt> option to extract schema information of system tables.</p>
+
+<p><code>fgldbsch -db test1 <b>-st</b></code></p>
+
+
+<b><font color="#FF0000">Warning: </font>The <code>fgldbsch</code> tool in <b>BDL
+v1.3x </b>provides the <tt>-ns</tt> option to 
+  generate <u>without</u> the database system tables. This option is no longer 
+  supported in the <code>fgldbsch</code> tool in<b> BDL v2.xx </b>and is replaced 
+  by the <tt>-st</tt> option to generate <u>with</u> the database system tables.</b>
+
+<p>By default, the generated schema files get the name of the database source
+specified with the <tt>-db</tt> option. If needed, you can force the name of the
+schema file with the <tt>-of name</tt>  option. Specify the output file name
+without the <b>.sch</b> extension. Note that this name will also be used to
+extract <a href="#VAL_FILE">syscolval</a> and <a href="#ATT_FILE">syscolatt</a>
+information.</p>
+
+<p><code>fgldbsch -db test1 <b>-of myschema</b></code></p>
+
+
+<p>In some cases, you may just want to extract schema file of new created
+tables. You can achieve this by using the <tt>-tn tabname</tt> option, to extract schema information of a
+specific table.</p>
+
+<p><code>fgldbsch -db test1 <b>-tn customers</b></code></p>
+
+
+<p>By default, table and column names are converted to lower case letters to
+enforce compatibility with Informix. You can force lower case, upper
+case or case-sensitive generation by using the <tt>-cl</tt>, <tt>-cu</tt>
+or <tt>-cc</tt> options.</p>
+
+<p><code>fgldbsch -db test1 <b>-cc</b></code></p>
+
+
+<b><font color="#FF0000">Warning: </font>When using an Informix database, <a href="Tools.html#TL_FGLDBSCH">fgldbsch</a>
+extracts synonyms. By default, only PUBLIC synonyms are extracted to avoid
+duplicates in the .sch file when the same name is used by several synonyms by
+different owners. If you want to extract PRIVATE synonyms, you must use the -ow
+option to specify the owner of the tables and synonyms.</b>
+
+
+<p>Use the <tt>-v</tt> option to get verbose output from <code>fgldbsch</code>:</p>
+
+<p><code>fgldbsch -db test1 <b>-v</b></code></p>
+
+
+<HR>
+
+<h3><a name="SCHEMA_FILES">Schema Files</a></h3>
+
+
+<HR noshade color="#E0E0F0">
+
+
+<h4><a name="SCH_FILE">Column Definition File (.sch)</a></h4>
+
+
+<p>The <b>.sch</b> file contains the data types of table columns.</p>
+
+
+<h5>Example:</h5>
+
+
+<PRE><CODE class=linenumber>01</CODE> customer^customer_num^258^4^1^
+<CODE class=linenumber>02</CODE> customer^customer_name^256^50^2^
+<CODE class=linenumber>03</CODE> customer^customer_address^0^100^3^
+<CODE class=linenumber>04</CODE> order^order_num^258^4^1^
+<CODE class=linenumber>05</CODE> order^order_custnum^258^4^2^
+<CODE class=linenumber>06</CODE> order^order_date^263^4^3^
+<CODE class=linenumber>07</CODE> order^order_total^261^1538^4^</PRE>
+
+
+<h5>Description:</h5>
+
+
+<p>The data type of <a href="Variables.html">program variables</a>  or <a href="FormSpecFiles.html">form
+fields</a>  used to hold data of a given database column must match the data
+    type used in the database. BDL simplifies the definition of these
+    elements by centralizing the information in external <b>.sch</b>  files,
+which contain column data types.</p>
+<p>In form files, you&nbsp;can directly specify the table and column name in the field
+    definition in the <a href="FormSpecFiles.html#SECTION_ATTRIBUTES"> ATTRIBUTES</a>
+ section
+    of forms.
+<p>In programs, you can define variables with the data type of a database
+    column by using the <a href="Variables.html#DATABASE_TYPES">LIKE</a>
+    keyword.
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>As column data types are extracted from the database system tables, you
+    may get different results with different database servers. For example,
+    Informix provides the DATE data type to store simple dates in year, month,
+    and day format (= BDL <a href="DataTypes.html#DT_DATE">DATE</a>), while
+    Oracle stores DATEs as year to second ( = BDL <a href="DataTypes.html#DT_DATETIME">DATETIME
+    YEAR TO SECOND</a>).</li>
+</ol>
+
+
+<p>The following table describes the fields you will find in a row of the <b>.sch</b> file:</p>
+
+
+<table border="0" width="95%">
+  <tr>
+    <td width="5%" bgcolor="#C0C0C0">
+      <p align="center"><b>Pos</b></p>
+    </td>
+    <td width="5%" bgcolor="#C0C0C0"><b>Type</b></td>
+    <td width="40%" bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="5%" valign="top" align="center"><b>1</b></td>
+    <td width="5%" valign="top">STRING</td>
+    <td width="40%">Database table name.</td>
+  </tr>
+  <tr>
+    <td width="5%" valign="top" align="center"><b>2</b></td>
+    <td width="5%" valign="top">STRING</td>
+    <td width="40%">Column name.</td>
+  </tr>
+  <tr>
+    <td width="5%" valign="top" align="center"><b>3</b></td>
+    <td width="5%" valign="top">SMALLINT</td>
+    <td width="40%">Coded column data type. If the column is NOT NULL, you must
+      add 256 to the value.
+    </td>
+  </tr>
+  <tr>
+    <td width="5%" valign="top" align="center"><b>4</b></td>
+    <td width="5%" valign="top">SMALLINT</td>
+    <td width="40%">Coded data type length.
+    </td>
+  </tr>
+  <tr>
+    <td width="5%" valign="top" align="center"><b>5</b></td>
+    <td width="5%" valign="top">SMALLINT</td>
+    <td width="40%">Ordinal position of the column in the table.</td>
+  </tr>
+</table>
+
+
+<p><a name="TYPE_CODES">Next table</a> shows the data types and their
+corresponding type code that can be represented in the <b>.sch</b>
+schema file:</p>
+      <table border="0" cellpadding="0" cellspacing="0" width="95%">
+        <tr>
+          <td width="20%" bgcolor="#C0C0C0"><b>Data type name</b></td>
+          <td width="10%" bgcolor="#C0C0C0" align="center"><b>Data type code<br>
+            &nbsp;(field #3)</b></td>
+          <td bgcolor="#C0C0C0"><b>Data type length (field #4)<br>
+            This is a SMALLINT value encoding the length or composite length of
+            the type.</b></td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">CHAR</td>
+          <td width="10%" valign="top" align="center"><b>0</b></td>
+          <td>Maximum number of characters.</td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">SMALLINT</td>
+          <td width="10%" valign="top" align="center"><b>1</b></td>
+          <td>Fixed length of 2</td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">INTEGER</td>
+          <td width="10%" valign="top" align="center"><b>2</b></td>
+          <td>Fixed length of 4</td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">FLOAT / DOUBLE PRECISION</td>
+          <td width="10%" valign="top" align="center"><b>3</b></td>
+          <td>Fixed length of 8</td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">SMALLFLOAT / REAL</td>
+          <td width="10%" valign="top" align="center"><b>4</b></td>
+          <td>Fixed length of 4</td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">DECIMAL</td>
+          <td width="10%" valign="top" align="center"><b>5</b></td>
+          <td>The length is computed using the following formula:<br>
+            <b>length = ( precision * 256 ) + scale</b></td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">SERIAL</td>
+          <td width="10%" valign="top" align="center"><b>6</b></td>
+          <td>Fixed length of 4</td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">DATE</td>
+          <td width="10%" valign="top" align="center"><b>7</b></td>
+          <td>Fixed length of 4</td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">MONEY</td>
+          <td width="10%" valign="top" align="center"><b>8</b></td>
+          <td>Same as DECIMAL</td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top"><i>Unused</i></td>
+          <td width="10%" valign="top" align="center"><b>9</b></td>
+          <td><i>N/A</i></td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">DATETIME</td>
+          <td width="10%" valign="top" align="center"><b>10</b></td>
+          <td>For DATETIME and INTERVAL types, the length is determined using
+            the next formula:<br>
+            <b>length = ( digits * 256 ) + ( qual1 * 16 ) + qual2</b><br>
+            where <i>digits</i> is the total number of digits used when
+            displaying the date-time value. For example, a DATETIME YEAR TO
+            MINUTE (YYYY-MM-DD hh:mm) uses 12 digits. The <i>qual1</i> and <i>qual2</i> 
+            elements identify date-time qualifiers according to the following list:
+            <div align="center">
+              <center>
+              <table border="0" cellpadding="0" cellspacing="0" width="80%">
+                <tr>
+                  <td width="100%">0 = YEAR</td>
+                </tr>
+                <tr>
+                  <td width="100%">2 = MONTH</td>
+                </tr>
+                <tr>
+                  <td width="100%">4 = DAY</td>
+                </tr>
+                <tr>
+                  <td width="100%">6 = HOUR</td>
+                </tr>
+                <tr>
+                  <td width="100%">8 = MINUTE</td>
+                </tr>
+                <tr>
+                  <td width="100%">10 = SECOND</td>
+                </tr>
+                <tr>
+                  <td width="100%">11 = FRACTION(1)</td>
+                </tr>
+                <tr>
+                  <td width="100%">12 = FRACTION(2)</td>
+                </tr>
+                <tr>
+                  <td width="100%">13 = FRACTION(3)</td>
+                </tr>
+                <tr>
+                  <td width="100%">14 = FRACTION(4)</td>
+                </tr>
+                <tr>
+                  <td width="100%">15 = FRACTION(5)</td>
+                </tr>
+              </table>
+              </center>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">BYTE</td>
+          <td width="10%" valign="top" align="center"><b>11</b></td>
+          <td>Length of descriptor</td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">TEXT</td>
+          <td width="10%" valign="top" align="center"><b>12</b></td>
+          <td>Length of descriptor</td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">VARCHAR</td>
+          <td width="10%" valign="top" align="center"><b>13</b></td>
+          <td>If length is positive:<br>
+            <b>length = ( min_space * 256 ) + max_size<br>
+            </b>If length is negative:<br>
+            <b>length + 65536 = ( min_space * 256 ) + max_size</b></td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">INTERVAL</td>
+          <td width="10%" valign="top" align="center"><b>14</b></td>
+          <td>Same as DATETIME</td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">NCHAR</td>
+          <td width="10%" valign="top" align="center"><b>15</b></td>
+          <td>Same as CHAR</td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">NVARCHAR</td>
+          <td width="10%" valign="top" align="center"><b>16</b></td>
+          <td>Same as VARCHAR</td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">INT8</td>
+          <td width="10%" valign="top" align="center"><b>17</b></td>
+          <td>Fixed length of 10 (sizeof int8 structure)<br>
+            <b>Will be converted to a Genero BDL <a href="DataTypes.html#DT_BIGINT">BIGINT</a> type!</b></td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">SERIAL8</td>
+          <td width="10%" valign="top" align="center"><b>18</b></td>
+          <td>Fixed length of 10 (sizeof int8 structure)<br>
+            <b>Will be converted to Genero BDL <a href="DataTypes.html#DT_BIGINT">BIGINT</a> type!</b></td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">SET</td>
+          <td width="10%" valign="top" align="center"><b>19</b></td>
+          <td><i>Not used by Genero BDL</i></td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">MULTISET</td>
+          <td width="10%" valign="top" align="center"><b>20</b></td>
+          <td><i>Not used by Genero BDL</i></td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">LIST</td>
+          <td width="10%" valign="top" align="center"><b>21</b></td>
+          <td><i>Not used by Genero BDL</i></td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">Unnamed ROW</td>
+          <td width="10%" valign="top" align="center"><b>22</b></td>
+          <td><i>Not used by Genero BDL</i></td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">Variable-length opaque type</td>
+          <td width="10%" valign="top" align="center"><b>40</b></td>
+          <td><i>Not used by Genero BDL</i></td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">Fixed-length opaque type</td>
+          <td width="10%" valign="top" align="center"><b>41</b></td>
+          <td><i>Not used by Genero BDL</i></td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">BOOLEAN (SQLBOOL)</td>
+          <td width="10%" valign="top" align="center"><b>45</b></td>
+          <td>Boolean type, in the meaning of Informix front-end SQLBOOL (sqltype.h)</td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">BIGINT</td>
+          <td width="10%" valign="top" align="center"><b>52</b></td>
+          <td>Fixed length of 8 (bytes)</td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">BIGSERIAL</td>
+          <td width="10%" valign="top" align="center"><b>53</b></td>
+          <td>Fixed length of 8 (bytes)</td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">VARCHAR2</td>
+          <td width="10%" valign="top" align="center"><b>201</b></td>
+          <td>Maximum number of characters<br>
+            <b>Will be converted to a Genero BDL <a href="DataTypes.html#DT_VARCHAR">VARCHAR</a> type!</b></td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">NVARCHAR2</td>
+          <td width="10%" valign="top" align="center"><b>202</b></td>
+          <td>Maximum number of characters<br>
+            <b>Will be converted to a Genero BDL <a href="DataTypes.html#DT_VARCHAR">VARCHAR</a> type!</b></td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">IDSSECURITYLABEL</td>
+          <td width="10%" valign="top" align="center"><b>2061</b></td>
+          <td>DISTINCT type of VARCHAR(128)</td>
+        </tr>
+        <tr>
+          <td width="20%" valign="top">Named ROW</td>
+          <td width="10%" valign="top" align="center"><b>4118</b></td>
+          <td><i>Not used by Genero BDL</i></td>
+        </tr>
+      </table>
+
+
+<h5><a name="IFX_DISTINCT_TYPES">Informix DISTINCT types</a></h5>
+<p>Informix IDS version 9.x and higher allow you to define DISTINCT types from a base
+types with the CREATE DISTINCT TYPE instruction. In the <i>syscolumns</i> table,
+Informix identifies distinct types in the <i>coltype</i> column by adding the <b>0x0800</b>
+bit (2048) to the base type code.
+For example, a distinct type defined with the VARCHAR <u>built-in type</u> (i.e. code <b>13</b>) will
+be identified with the code <b>2061</b> (13 + 2048). Informix sets additional bits when the distinct type is based on
+the LVARCHAR or BOOLEAN <u>opaque types</u>: If the base type is an LVARCHAR, the type code used in <i>coltype</i> gets the <b>0x2000</b> bit set
+(8192) and when the base type is BOOLEAN, the type code gets the <b>0x4000</b> bit
+(16384).</p>
+<p>When extracting a schema from an Informix database defining columns with
+DISTINCT types, the schema extractor will keep the original type code of the
+distinct type in the <b>.sch</b>  file for columns using distinct types based on <u>built-in types</u>
+(with the 0x0800 bit set). Regarding the
+exception of <u>opaque types</u>, BOOLEAN-based distinct types get the
+code <b>45</b> ( + 256 if NOT NULL), and LVARCHAR-based distinct types are mapped to
+the code <b>201</b> (+ 256 if NOT NULL) if the -cv option enables conversion
+from LVARCHAR to VARCHAR2.</p>
+<p>The <a href="Tools.html#TL_FGLCOMP"> fglcomp</a> and <a href="Tools.html#TL_FGLFORM"> fglform</a> compilers understand the distinct type code bit <b>0x0800</b>,
+so you can define program variables with a DEFINE LIKE instruction based on a
+column that was created with a distinct Informix type.</p>
+
+
+<HR noshade color="#E0E0F0">
+
+
+<h4><a name="VAL_FILE">Column Validation File (.val)</a></h4>
+
+
+<p>The <b>.val</b> file holds functional and display attributes of columns.</p>
+
+
+<h5>Example:</h5>
+
+
+<PRE><CODE class=linenumber>01</CODE> customer^customer_name^STYLE^&quot;important&quot;^
+<CODE class=linenumber>02</CODE> customer^customer_name^SHIFT^UP^
+<CODE class=linenumber>03</CODE> customer^customer_name^COMMENTS^&quot;Name of the customer&quot;^
+<CODE class=linenumber>04</CODE> order^order_date^DEFAULT^TODAY^
+<CODE class=linenumber>05</CODE> order^order_date^COMMENTS^&quot;Creation date of the order&quot;^</PRE>
+
+
+<h5>Description:</h5>
+
+
+<p>The <b>.val</b> file holds default attributes and validation rules for
+database columns.</p>
+<p>In form files, the attributes are taken from the <b>.val</b> file as defaults
+    if the corresponding attribute is not&nbsp;explicitly specified in the
+    field definition of the <a href="FormSpecFiles.html#SECTION_ATTRIBUTES">ATTRIBUTES</a>
+    section.
+<p>In programs, you can validate variable values in accordance with the <a href="FSFAttributes.html#FA_INCLUDE">INCLUDE</a>
+    attribute by using the <a href="Variables.html#VA_VALIDATE">VALIDATE</a>
+    instruction.</p>
+
+
+<p>The <b>.val</b> file can be generated by <a href="Tools.html#TL_FGLDBSCH">fgldbsch</a>
+    from the
+     Informix-specific <tt>syscolval</tt>  table, or can be edited by an
+external column attributes editor.</p>
+<p>The following table describes the structure of the <b>.val</b>
+file:</p>
+
+
+<table border="0" width="95%">
+  <tr>
+    <td width="5%" bgcolor="#C0C0C0"><b>Pos</b></td>
+    <td width="5%" bgcolor="#C0C0C0"><b>Type</b></td>
+    <td width="40%" bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="5%"><code>1</code></td>
+    <td width="5%">STRING</td>
+    <td width="40%">Database table name.&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>2</code></td>
+    <td width="5%">STRING</td>
+    <td width="40%">Column name.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>3</code></td>
+    <td width="5%">STRING</td>
+    <td width="40%">Column property name.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>4</code></td>
+    <td width="5%">STRING</td>
+    <td width="40%">Column property value.</td>
+  </tr>
+</table>
+
+
+<p>The supported attribute definitions are:</p>
+
+
+<table border="0" width="95%">
+  <tr>
+    <td width="5%" bgcolor="#C0C0C0"><b>Attribute Name</b></td>
+    <td width="40%" bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="5%"><code>ACTION</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_ACTION">ACTION</a>
+      attribute.<br>
+      Value must be an identifier.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>AUTONEXT</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_AUTONEXT">AUTONEXT</a>
+      attribute.<br>
+      When this attribute is defined, value is <code>YES</code>.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>AUTOSCALE</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_AUTOSCALE">AUTOSCALE</a>
+      attribute.<br>
+      When this attribute is defined, value is <code>YES</code>.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>CENTURY</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_CENTURY">CENTURY</a>
+      attribute.<br>
+      The value must be one of: <code>R</code>, <code>C</code>, <code>F</code>,
+      or <code>P</code>.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>COLOR</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_COLOR">COLOR</a>
+      attribute.<br>
+      The value is a color identifier (RED, GREEN, BLUE, ...)</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>COMMENTS</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_COMMENT">COMMENTS</a>
+      attribute.<br>
+      The value is a quoted string or Localized String (<code>%&quot;xxx&quot;</code>).</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>DEFAULT</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_DEFAULT">DEFAULT</a>
+      attribute.<br>
+      Number, quoted string or identifier (<code>TODAY</code>).</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>FORMAT</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_FORMAT">FORMAT</a>
+      attribute.<br>
+      The value is a quoted string.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>HEIGHT</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_HEIGHT">HEIGHT</a>
+      attribute.<br>
+      The value is an integer followed by: { <code>CHARACTERS</code>, <code>COLUMNS</code>,
+      <code>LINES</code>, <code>POINTS</code>, or <code>PIXELS</code> }</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>IMAGE</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_IMAGE">IMAGE</a>
+      attribute.<br>
+      The value is a quoted string.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>INCLUDE</code></td>
+    <td width="40%">Defines an include list as the <a href="FSFAttributes.html#FA_INCLUDE">INCLUDE</a>
+      attribute.<br>
+      Value must be a list: <code>(<i>value</i> <u>[</u>,...<u>]</u>)</code>,
+      where <code><i>value</i></code> can be a number, quoted string or
+      identifier (<code>TODAY</code>).</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>INITIALIZER</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_INITIALIZER">INITIALIZER</a>
+      attribute.<br>
+      Value must be an identifier.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>INVISIBLE</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_INVISIBLE">INVISIBLE</a>
+      attribute.<br>
+      When this attribute is defined, value is <code>YES</code>.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>ITEMS</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_VALUEUNCHECKED">VALUEUNCHECKED</a>
+      attribute.<br>
+      The value must be a list: <code>(<i>item</i> <u>[</u>,...<u>]</u>)</code>,
+      where <code><i>item</i></code> can be a number, a quoted string or <code>(<i>value</i>,&quot;label&quot;)</code>.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>ITEMTYPE</code></td>
+    <td width="40%">Defines the Form Item Type to be used when the column is
+      used as <a href="FormSpecFiles.html#FF_ITEMTYPE_FIELD">FIELD</a> in forms.<br>
+      Value must be an identifier defining the item type (case sensitive!):<br>
+      <code>Edit</code>,<code> ButtonEdit</code>,<code> Label</code>,<code>
+      Image</code>,<code> DateEdit</code>,<code> TextEdit</code>,<code> ComboBox</code>,<code>
+      RadioGroup</code>,<code> CheckBox</code>,<code> Slider</code>,<code>
+      SpinEdit</code>,<code> TimeEdit</code>,<code> ProgressBar</code></td>
+  </tr>
+  <tr>
+    <td width="5%"><code>JUSTIFY</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_JUSTIFY">JUSTIFY</a>
+      attribute.<br>
+      The value must be one of: <code>LEFT</code>, <code>CENTER</code> or <code>RIGHT</code>.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>ORIENTATION</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_ORIENTATION">ORIENTATION</a>
+      attribute.<br>
+      The value must be one of: <code>VERTICAL</code> or <code>HORIZONTAL</code>.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>PICTURE</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_PICTURE">PICTURE</a>
+      attribute.<br>
+      The value is a quoted string.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>SAMPLE</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_SAMPLE">SAMPLE</a>
+      attribute.<br>
+      The value is a quoted string.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>SCROLL</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_SCROLL">SCROLL</a>
+      attribute.<br>
+      When this attribute is defined, value is <code>YES</code>.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>SCROLLBARS</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_SCROLLBARS">SCROLLBARS</a>
+      attribute.<br>
+      The value must be one of: <code>X</code>, <code>Y</code> or <code>BOTH</code>.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>SHIFT</code></td>
+    <td width="40%">Corresponds to the <a href="FSFAttributes.html#FA_UPSHIFT">UPSHIFT</a>
+      and <a href="FSFAttributes.html#FA_DOWNSHIFT">DOWNSHIFT</a> attributes.<br>
+      Values can be <code>UP</code> or <code>DOWN</code>.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>SIZEPOLICY</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_SIZEPOLICY">SIZEPOLICY</a>
+      attribute.<br>
+      The value must be one of: <code>INITIAL</code>, <code>DYNAMIC</code> or <code>FIXED</code>.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>STEP</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_STEP">STEP</a>
+      attribute.<br>
+      The value must be an integer.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>STRECH</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_STRETCH">STRETCH</a>
+      attribute.<br>
+      The value must be one of: <code>X</code>, <code>Y</code> or <code>BOTH</code>.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>STYLE</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_STYLE">STYLE</a>
+      attribute.<br>
+      The value is a quoted string.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>TAG</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_TAG">TAG</a>
+      attribute.<br>
+      The value is a quoted string.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>TEXT</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_TEXT">TEXT</a>
+      attribute.<br>
+      The value is a quoted string or Localized String (<code>%&quot;xxx&quot;</code>).</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>TITLE</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_TITLE">TITLE</a>
+      attribute.<br>
+      The value is a quoted string or Localized String (<code>%&quot;xxx&quot;</code>).</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>VALUEMIN</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_VALUEMIN">VALUEMIN</a>
+      attribute.<br>
+      The value must be an integer.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>VALUEMAX</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_VALUEMAX">VALUEMAX</a>
+      attribute.<br>
+      The value must be an integer.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>VALUECHECKED</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_VALUECHECKED">VALUECHECKED</a>
+      attribute.<br>
+      The value must be an number or a quoted string.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>VALUEUNCHECKED</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_VALUEUNCHECKED">VALUEUNCHECKED</a>
+      attribute.<br>
+      The value must be an number or a quoted string.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>VERIFY</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_VERIFY">VERIFY</a>
+      attribute.<br>
+      When this attribute is defined, value is <code>YES</code>.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>WANTTABS</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_WANTTABS">WANTTABS</a>
+      attribute.<br>
+      When this attribute is defined, value is <code>YES</code>.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>WANTNORETURNS</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_WANTNORETURNS">WANTNORETURNS</a>
+      attribute.<br>
+      When this attribute is defined, value is <code>YES</code>.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>WIDTH</code></td>
+    <td width="40%">Defines the <a href="FSFAttributes.html#FA_WIDTH">WIDTH</a>
+      attribute.<br>
+      The value is an integer followed by: { <code>CHARACTERS</code>, <code>COLUMNS</code>,
+      <code>LINES</code>, <code>POINTS</code>, or <code>PIXELS</code> }</td>
+  </tr>
+</table>
+
+
+<HR noshade color="#E0E0F0">
+
+<h4><a name="ATT_FILE">Column Video Attributes File (.att)</a></h4>
+
+
+<p>The <b>.att</b> file contains the default video attributes of columns.</p>
+
+
+<p>This file is generated by <a href="Tools.html#TL_FGLDBSCH">fgldbsch</a>
+    from the
+     Informix-specific <tt>syscolatt</tt> table.</p>
+
+
+<p>The following table describes the structure of the <b>.att</b> file:</p>
+
+
+<table border="0" width="95%">
+  <tr>
+    <td width="5%" bgcolor="#C0C0C0"><b>Pos</b></td>
+    <td width="5%" bgcolor="#C0C0C0"><b>Type</b></td>
+    <td width="40%" bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="5%"><code>1</code></td>
+    <td width="5%">STRING</td>
+    <td width="40%">Database table name.&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>2</code></td>
+    <td width="5%">STRING</td>
+    <td width="40%">Column name.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>3</code></td>
+    <td width="5%">SMALLINT</td>
+    <td width="40%">Ordinal number of the attribute record.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>4</code></td>
+    <td width="5%">STRING</td>
+    <td width="40%">COLOR attribute (coded).</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>5</code></td>
+    <td width="5%">CHAR(1)</td>
+    <td width="40%">INVERSE attribute (y/n).</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>6</code></td>
+    <td width="5%">CHAR(1)</td>
+    <td width="40%">UNDERLINE attribute (y/n).</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>7</code></td>
+    <td width="5%">CHAR(1)</td>
+    <td width="40%">BLINK attribute (y/n).</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>8</code></td>
+    <td width="5%">CHAR(1)</td>
+    <td width="40%">LEFT attribute (y/n).</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>9</code></td>
+    <td width="5%">STRING</td>
+    <td width="40%">FORMAT attribute.</td>
+  </tr>
+  <tr>
+    <td width="5%"><code>10</code></td>
+    <td width="5%">STRING</td>
+    <td width="40%">Condition.</td>
+  </tr>
+</table>
+
+
+<p>
+<b><font color="#FF0000">Warning: </font>This feature is supported for compatibility with Informix 4GL only.</b></p>
+
+
+
+
+</BODY>
+</HTML>

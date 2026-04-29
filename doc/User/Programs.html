@@ -1,0 +1,1399 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+  <title>Programs</title>
+  <meta http-equiv="Content-Type" content="text/html">
+  <link href="../FglTechRef.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+  <p><a href="../index.html">Back to Contents</a></p>
+  <hr>
+
+  <h1><a name="PAGE_HEADER" id="PAGE_HEADER">Programs</a></h1>
+
+  <p>Summary:</p>
+
+  <ul>
+    <li><a href="#RUNTIMECONFIG">Runtime Configuration</a></li>
+
+    <li><a href="#START_FGLRUN">Executing Genero BDL Programs</a></li>
+
+    <li><a href="#MAIN_BLOCK">The MAIN block</a></li>
+
+    <li><a href="#SIGNAL_HANDLING">Signal Handling</a> (<tt>DEFER</tt>)</li>
+
+    <li><a href="#PV_STATUS">The STATUS variable</a></li>
+
+    <li><a href="#PV_INT_FLAG">The INT_FLAG variable</a></li>
+
+    <li><a href="#PV_QUIT_FLAG">The QUIT_FLAG variable</a></li>
+
+    <li><a href="#IMPORT">Importing modules</a> (<tt>IMPORT</tt>)
+      <ul>
+        <li><a href="#import_fgl">Importing BDL modules</a></li>
+        <li><a href="#import_java">Importing Java classes</a></li>
+        <li><a href="#import_cext">Imporint C Extensions</a></li>
+      </ul>
+    </li>
+
+    <li>
+      <a href="#PROGRAM_OPTIONS">Program Options</a> (<tt>OPTIONS</tt>)
+
+      <ul>
+        <li><a href="#options-lines">OPTIONS form-element LINE</a></li>
+
+        <li><a href="#options-attributes">OPTIONS DISPLAY ATTRIBUTES</a></li>
+
+        <li><a href="#options-attributes">OPTIONS INPUT ATTRIBUTES</a></li>
+
+        <li><a href="#options-input-wrap">OPTIONS INPUT WRAP</a></li>
+
+        <li><a href="#options-on-terminate">OPTIONS ON TERMINATE</a></li>
+
+        <li><a href="#options-on-close-application">OPTIONS ON CLOSE APPLICATION</a></li>
+
+        <li><a href="#options-help-file">OPTIONS HELP FILE</a></li>
+
+        <li><a href="#options-field-order">OPTIONS FIELD ORDER</a></li>
+
+        <li><a href="#options-keys">OPTIONS control keys</a></li>
+
+        <li><a href="#options-run">OPTIONS RUN IN</a></li>
+      </ul>
+    </li>
+
+    <li><a href="#RUN">Running Sub-programs</a> (<tt>RUN</tt>)</li>
+
+    <li><a href="#EXIT_PROGRAM">Stop Program Execution</a> (<tt>EXIT PROGRAM</tt>)</li>
+
+    <li><a href="#DB_SCHEMA">Database Schema Specification</a> (<tt>SCHEMA</tt>)</li>
+
+    <li><a href="#PC_NULL">The NULL Constant</a></li>
+
+    <li><a href="#PC_TRUE">The TRUE Constant</a></li>
+
+    <li><a href="#PC_FALSE">The FALSE Constant</a></li>
+
+    <li><a href="#PC_NOTFOUND">The NOTFOUND Constant</a></li>
+
+    <li><a href="#BREAKPOINT">The BREAKPOINT instruction</a></li>
+
+    <li><a href="#CTRL_LOGOFF_EVENT">Responding to CTRL_LOGOFF_EVENT</a></li>
+  </ul>
+
+  <p><i>See also</i>: <a href="CompilingPrograms.html">Compiling Programs</a>, <a href="Preprocessor.html">Preprocessor</a>, <a href=
+  "DatabaseSchema.html">Database Schema Files</a>, <a href="FlowControl.html">Flow Control</a>, <a href="ClassApplication.html">The Application
+  class</a>, <a href="LocalizedStrings.html">Localized Strings</a>.</p>
+  <hr>
+
+  <h3><a name="RUNTIMECONFIG" id="RUNTIMECONFIG">Runtime Configuration</a></h3>
+
+  <p>You can control the behavior of the runtime system with some <a href="FglProfile.html">FGLPROFILE</a> configuration parameters.</p>
+
+  <h4><a name="Dialog_fieldOrder" id="Dialog_fieldOrder">Intermediate field trigger execution</a></h4>
+
+  <p><code>Dialog.fieldOrder = <u>{</u>true<u>|</u>false<u>}</u></code></p>
+
+  <p>When this parameter is set to <b>true</b>, intermediate triggers are executed. As the user moves to a new field with a mouse click, the runtime
+  system executes the <tt>BEFORE FIELD</tt> / <tt>AFTER FIELD</tt> triggers of the input fields between the source field and the destination field.
+  When the parameter is set to <b>false</b>, intermediate triggers are not executed.</p>
+
+  <p><b><font color="#FF0000">Warning:</font> The <code>Dialog.fieldOrder</code> configuration parameter is ignored
+  by the <a href="MultipleDialogs.html">DIALOG</a> multiple-dialog instruction
+  or when using the <a href=
+  "RecordInput.html#FIELD_ORDER">FIELD ORDER FORM</a>  option in singular
+  dialogs (like <a href="RecordInput.html">INPUT</a>).</b></p>
+
+  <p>For new applications, it is recommended that you set the parameter to <b>false</b>. GUI applications allow users to jump from one field to any
+  other field of the form by using the mouse. Therefore, it makes no sense to execute the <tt>BEFORE FIELD</tt> / <tt>AFTER FIELD</tt> triggers of
+  intermediate fields.</p>
+
+  <p><b>Important note:</b> The default setting for the runtime system is <b>false</b>; while the default setting in FGLPROFILE for
+  <code>Dialog.fieldOrder</code> is <b>true</b>. As a result, the overall setting after installation is <b>true</b>. To modify the behavior of
+  intermediate field trigger execution, change the setting of <code>Dialog.fieldOrder</code> in FGLPROFILE to <b>false</b>.</p>
+
+  <h4><a name="Dialog_currentRowVisibleAfterSort" id="Dialog_currentRowVisibleAfterSort">Make current row visible after sort in tables</a></h4>
+
+  <p><code>Dialog.currentRowVisibleAfterSort = <u>{</u>true<u>|</u>false<u>}</u></code></p>
+
+  <p>When this parameter is set to <b>true</b>, the offset of table page is automatically adapted to show the current row after a sort. By default,
+  the offset is not changed and current row may not be visible after sorting rows of a table. Changing this parameter has no impact on existing code,
+  it is just an indicator to force the dialog to shift to the page of rows having the current row, as if the end-user had scrollbar. You can use this
+  parameter to get the same behavior as well known e-mail readers.&nbsp;</p>
+  <hr>
+
+  <h3><a name="START_FGLRUN" id="START_FGLRUN">Executing Genero BDL Programs</a></h3>
+
+  <p>After programs and forms <a href="CompilingPrograms.html">have been compiled</a>, you can start the execution with the <a href=
+  "Tools.html#TL_FGLRUN">fglrun</a> tool. Make sure that all required environment variables are properly defined, like <a href=
+  "EnvironmentVariables.html#EV_FGLPROFILE">FGLPROFILE</a>, <a href="EnvironmentVariables.html#EV_FGLGUI">FGLGUI</a>, <a href=
+  "EnvironmentVariables.html#EV_FGLSERVER">FGLSERVER</a>, <a href="EnvironmentVariables.html#EV_FGLLDPATH">FGLLDPATH</a> and <a href=
+  "Localization.html">LANG/LC_ALL</a>.</p>
+
+  <p>The GUI client must run on the workstation defined by <a href="EnvironmentVariables.html#EV_FGLSERVER">FGLSERVER</a>, and all network security
+  components (i.e. firewalls) must allow TCP connections on the port defined by this environment variable.</p>
+
+  <p>Verify the database client environment settings, and check that the database server is running and can be accessed, for example by using a DB
+  vendor specific tool to execute SQL commands.</p>
+
+  <p>On the application server host, enter the following command in the shell:</p>
+
+  <p><code>fglrun <i>program-name</i>.42r</code></p>
+
+  <p>Note that it's not needed to build a <b>.42r</b> program, you can also start a <b>.42m</b> module if the <a href="#MAIN_BLOCK">MAIN block</a> is
+  defined in that module.</p>
+
+  <p>It is also possible to start programs on the application server <u>from the workstation where the GUI client resides</u>, by using for example
+  rlogin or ssh network protocols. This is actually the typical way to start applications in a production environment. For more details, see
+  front-end manuals.</p>
+  <hr>
+
+  <h3><a name="MAIN_BLOCK" id="MAIN_BLOCK">The MAIN block</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>The <tt>MAIN</tt> block is the starting point of the application. When the runtime system executes a program, after some initialization, it
+  gives control to this program block.</p>
+
+  <h4>Syntax:</h4><code>MAIN<br>
+  &nbsp; <u>[</u> <i>define-statement</i> <u>|</u> <i>constant-statement</i> <u>]</u><br>
+  &nbsp; <u>{</u> <u>[</u><i>defer-statement</i><u>]</u>&nbsp;<u>|</u> <i>fgl-statement&nbsp;</i><u>|</u> <i>sql-statement</i> <u>}</u><br>
+  &nbsp; <u>[...]</u><br>
+  END MAIN</code>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>define-statement</i> defines function arguments and local <a href="Variables.html">variables</a>.</li>
+
+    <li><i>constant-statement</i> can be used to declare local <a href="Constants.html">constants</a>.</li>
+
+    <li><i>defer-statement</i> defines how to <a href="#SIGNAL_HANDLING">handle signals</a> in the program.</li>
+
+    <li><i>fgl-statement</i> is any instruction supported by the language.</li>
+
+    <li><i>sql-statement</i> is any static SQL instruction supported by the language.</li>
+  </ol>
+  <hr>
+
+  <h3><a name="SIGNAL_HANDLING" id="SIGNAL_HANDLING">Signal Handling</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>The <tt>DEFER</tt> instruction allows you to control the behavior of the program when an <i>interruption</i> or <i>quit</i> signal has been
+  received.</p>
+
+  <h4>Syntax:</h4><code>DEFER <u>{</u> INTERRUPT <u>|</u> QUIT <u>}</u></code>
+
+  <h4>Usage:</h4>
+  <p><tt>DEFER INTERRUPT</tt> and <tt>DEFER QUIT</tt> instructions can only appear in the MAIN block.</p>
+  <tt>DEFER INTERRUPT</tt> indicates that the program must continue when it receives an <i>interrupt</i> signal. By default, the
+  program stops when it receives an <i>interrupt</i> signal.
+
+  <p><b><font color="#FF0000">Warning: </font>Once deferred, you cannot reset to the default behavior.</b></p>
+
+  <p>When an <i>interrupt</i> signal is caught by the runtime system and <tt>DEFER INTERRUPT</tt> is used, the <tt><a href=
+  "#PV_INT_FLAG">INT_FLAG</a></tt> global variable is set to <a href="#PC_TRUE">TRUE</a> by the runtime system.</p>
+
+  <p>Interrupt signals are raised on terminal consoles when the user presses a key like CTRL-C, depending on the stty configuration. When a BDL
+  program is displayed through a front end, no terminal console is used; therefore, users cannot send interrupt signals with the CTRL-C key. To send
+  an interruption request from the front end, you must define an 'interrupt' action view. For more details, refer to <a href=
+  "InteractionModel.html#INTERRUPTION">Interruption Handling in the Dynamic User Interface</a>.</p>
+
+  <p><tt>DEFER QUIT</tt> indicates that the program must continue when it receives a <i>quit</i> signal. By default, the program stops when it
+  receives a <i>quit</i> signal.</p>
+
+  <p>When a <i>quit</i> signal is caught by the runtime system and <tt>DEFER QUIT</tt> is used, the <a href="#PV_QUIT_FLAG">QUIT_FLAG</a> global
+  variable is set to <a href="#PC_TRUE">TRUE</a> by the runtime system.</p>
+  <hr>
+
+  <h3><a name="PV_STATUS" id="PV_STATUS">STATUS</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p><tt>STATUS</tt> is a predefined variable that contains the execution status of the last instruction.</p>
+
+  <h4>Syntax:</h4><code>STATUS</code>
+
+  <h4>Definition:</h4>
+  <pre>
+<tt>DEFINE</tt> STATUS <tt>INTEGER</tt>
+</pre>
+
+  <h4>Usage:</h4>
+
+  The data type of <tt>STATUS</tt> is <a href="DataTypes.html#DT_INTEGER">INTEGER</a>.
+  <p><tt>STATUS</tt> is typically used with <a href="Exceptions.html"><tt>WHENEVER ERROR CONTINUE</tt></a> (or <tt><a href=
+    "Exceptions.html">CALL</a></tt>).
+  <p><tt>STATUS</tt> is set by expression evaluation errors only when <tt>WHENEVER ANY ERROR</tt> is used.
+  <p>After an SQL statement execution, <tt>STATUS</tt> contains the value of <a href="Connections.html#SQLCA_RECORD">SQLCA</a>.SQLCODE. Use
+    <tt>SQLCA.SQLCODE</tt> for SQL error management, and <tt>STATUS</tt> for 4gl errors.
+  <p><tt>STATUS</tt> is updated after any instruction execution. A typical mistake is to test <tt>STATUS</tt> after a <tt>DISPLAY STATUS</tt>
+    instruction, written after an SQL statement.</p>
+
+  <p><b><font color="#FF0000">Warning: </font>While <tt>STATUS</tt> can be modified by hand, it is not recommended, as <tt>STATUS</tt> may become read-only in a later release.</b></p>
+
+  <h4>Example:</h4>
+  <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> n <tt>INTEGER</tt>
+<code class="linenumber">03</code>   <tt>WHENEVER ANY ERROR CONTINUE</tt>
+<code class="linenumber">04</code>   <tt>LET</tt> n = 10/0
+<code class="linenumber">05</code>   <tt>DISPLAY</tt> STATUS
+<code class="linenumber">06</code> <tt>END MAIN</tt>
+</pre>
+  <hr>
+
+  <h3><a name="PV_INT_FLAG" id="PV_INT_FLAG">INT_FLAG</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p><tt>INT_FLAG</tt> is a predefined variable that is automatically set to <a href="#PC_TRUE">TRUE</a> when the user presses the interruption
+  key.</p>
+
+  <h4>Syntax:</h4><code>INT_FLAG</code>
+
+  <h4>Definition:</h4>
+  <pre>
+<tt>DEFINE</tt> INT_FLAG <tt>INTEGER</tt>
+</pre>
+
+  <h4>Usage:</h4>
+
+  <p><tt>INT_FLAG</tt> is typically used with <a href="#SIGNAL_HANDLING">DEFER INTERRUPT</a>.
+  <tt>INT_FLAG</tt> is set to <a href="#PC_NULL">TRUE</a> when an interruption event is detected by the runtime system. The interruption event
+    is raised when the user presses the interruption key.</p>
+  If <tt>DEFER INTERRUPT</tt> is enabled and the interruption event arrives during a procedural instruction (<tt>FOR</tt> loop), the runtime
+    system sets <tt>INT_FLAG</tt> to <tt>TRUE</tt>; it is up to the programmer to manage the interruption event (stop or continue with the
+    procedure).
+  <p>If <tt>DEFER INTERRUPT</tt> is enabled and the interruption event arrives during an interactive instruction (<tt>INPUT</tt>,
+    <tt>CONSTRUCT</tt>), the runtime system sets <tt>INT_FLAG</tt> to <tt>TRUE</tt> and exits from the instruction. It is recommended that you test
+    <tt>INT_FLAG</tt> after an interactive instruction to check whether the input has been cancelled.
+
+  <p><b><font color="#FF0000">Warning: </font>Once <tt>INT_FLAG</tt> is set to <tt>TRUE</tt>, it must be reset to <tt>FALSE</tt> to detect a new interruption event. It is the programmer's
+    responsibility to reset the <tt>INT_FLAG</tt> to <tt>FALSE</tt>.</b></p>
+
+  <h4>Example:</h4>
+  <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> n <tt>INTEGER</tt>
+<code class="linenumber">03</code>   <tt>DEFER INTERRUPT</tt>
+<code class="linenumber">04</code>   <tt>LET</tt> INT_FLAG = <tt>FALSE</tt>
+<code class="linenumber">05</code>   <tt>FOR</tt> n = 1 <tt>TO</tt> 1000
+<code class="linenumber">06</code>      <tt>IF</tt> INT_FLAG <tt>THEN EXIT FOR END IF</tt>
+<code class="linenumber">07</code>      ...
+<code class="linenumber">08</code>   <tt>END FOR</tt>
+<code class="linenumber">09</code> <tt>END MAIN</tt>
+</pre>
+  <hr>
+
+  <h3><a name="PV_QUIT_FLAG" id="PV_QUIT_FLAG">QUIT_FLAG</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p><tt>QUIT_FLAG</tt> is a predefined variable that is automatically set to <a href="#PC_TRUE">TRUE</a> when a 'quit event' arrives.</p>
+
+  <h4>Syntax:</h4><code>QUIT_FLAG</code>
+
+  <h4>Definition:</h4>
+  <pre>
+<tt>DEFINE</tt> QUIT_FLAG <tt>INTEGER</tt>
+</pre>
+
+  <h4>Usage:</h4>
+
+  <p><tt>QUIT_FLAG</tt> is typically used with <a href="#SIGNAL_HANDLING">DEFER QUIT</a>.
+  <tt>QUIT_FLAG</tt> is set to <a href="#PC_NULL">TRUE</a> when a quit event is detected by the runtime system. The quit event is raised when
+    the user presses the QUIT signal key (Control+Backslash).</p>
+  If <tt>DEFER QUIT</tt> is enabled and the quit event arrives during a procedural instruction (<tt>FOR</tt> loop), the runtime system sets
+    <tt>QUIT_FLAG</tt> to <tt>TRUE</tt>. It is the programmer's responsibility to manage the quit event (whether to stop or continue with the
+    procedure).
+  <p>If <tt>DEFER QUIT</tt> is enabled and the quit event arrives during an interactive instruction (<tt>INPUT</tt>, <tt>CONSTRUCT</tt>), the
+    runtime system sets <tt>QUIT_FLAG</tt> to <tt>TRUE</tt> and exits from the instruction. It is recommended that you test <tt>QUIT_FLAG</tt> after
+    an interactive instruction to check whether the input has been cancelled.
+
+  <p><b><font color="#FF0000">Warning: </font>Once <tt>QUIT_FLAG</tt> is set to <tt>TRUE</tt>, it must be reset to <tt>FALSE</tt> to detect a new quit event. It is the programmer's
+    responsibility to reset the <tt>QUIT_FLAG</tt> to <tt>FALSE</tt>.</b></p>
+
+  <h4>Example:</h4>
+  <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFER QUIT</tt>
+<code class="linenumber">03</code>   <tt>LET</tt> QUIT_FLAG = <tt>FALSE</tt>
+<code class="linenumber">04</code>   <tt>INPUT BY NAME ...</tt>
+<code class="linenumber">05</code>   <tt>IF</tt> QUIT_FLAG <tt>THEN</tt>
+<code class="linenumber">06</code>      ...
+<code class="linenumber">07</code>   <tt>END IF</tt>
+<code class="linenumber">08</code> <tt>END MAIN</tt>
+</pre>
+  <hr>
+
+  <h3><a name="IMPORT" id="IMPORT">Importing modules</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>The <tt>IMPORT</tt> instruction imports module elements to be used by the current module.</p>
+
+  <h4>Syntax:</h4><code>IMPORT [<i>language</i>] <i>filename</i> </code>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>language</i> defines the programming language of the module; by default it is a C extension, but it can also be
+      <tt>
+      FGL</tt> or <tt>JAVA</tt>.</li>
+
+    <li><i>filename</i> is the identifier (without the file extension) of the module,
+      Java class or C Extension to be imported.</li>
+  </ol>
+
+  <h4>Usage:</h4>
+
+  <p>The <tt>IMPORT</tt> instruction is used to define a dependency with an
+  external module. All (public) symbols of the external module can be shared and
+  used the current module. The <tt> IMPORT</tt> instruction can import a 4gl module, a
+  Java class or a C Extension library.</p>
+
+  <p> The <tt>IMPORT</tt> instruction must be the first instruction in the current module. If you specify this instruction after <tt>DEFINE</tt>,
+    <tt>CONSTANT</tt> or <tt>GLOBALS</tt>, you will get a syntax error.</p>
+
+  <p>The module specified with the <tt>IMPORT</tt> instruction can be:</p>
+
+  <ul>
+
+    <li>Using <tt>IMPORT FGL <i>modulename</i></tt>: A Genero BDL module (.4gl) implementing Genero BDL functions, reports, types and
+      variables.</li>
+
+    <li>Using <tt>IMPORT JAVA <i>classname</i></tt>: A Java class or class element.</li>
+
+    <li>Using <tt>IMPORT <i>libname</i></tt> (without language specification): A C extension implementing Genero BDL functions and variables.</li>
+
+  </ul>
+
+  <p> The name specified
+  after <tt>IMPORT [FGL|JAVA]</tt> is case-sensitive: BDL
+  module or Java class must exactly match the file name. However, for backward
+  compatibility, C Extension library names are converted to lowercase by the
+  compiler (therefore, we recommend you to use lowercase file names for C
+  Extensions). Note that a character
+  case mismatch will be detected on UNIX platforms, but not on Windows where the
+  file system is not case-sensitive. Regarding the usage of imported elements in
+  the rest of the code (i.e. not the <tt>IMPORT</tt> instruction): C Extensions and BDL elements are case-insensitive,
+  while Java elements are case-sensitive.</p>
+
+  <p><b><a name="import_fgl">Importing Genero BDL modules:</a></b></p>
+
+  <p>With <tt>IMPORT FGL <i>modulename</i></tt>, you declare that elements of
+  the named .42m module can be used in
+  the current module, without needing to link the imported module with <a href="Tools.html#TL_FGLLINK">fgllink</a>
+  as in previous versions of Genero BDL.</p>
+
+  <p>The imported module elements that can be referenced are:</p>
+
+  <ul>
+    <li>Public <a href="Functions.html">functions</a></li>
+    <li>Public <a href="Constants.html">constants</a></li>
+    <li>Public <a href="UserTypes.html">user types</a></li>
+    <li>Public <a href="Variables.html">module variables</a></li>
+  </ul>
+  <p>Note that imported modules must be compiled
+  before compiling the importing module: The <a href="Tools.html#TL_FGLCOMP">fglcomp</a>
+  compiler does not do do recursive compilation.</p>
+
+  <p>The <a href="EnvironmentVariables.html#EV_FGLLDPATH">FGLLDPATH</a> environment variable specifies the directories to search for the
+  42m compiled
+  Genero BDL modules used by <tt>IMPORT FGL</tt>.</p>
+
+  <p> No circular references are allowed. For example when module A imports module B, which
+  in turn imports module A, you cannot compile one of the modules because the
+  42m file of the imported module is needed. Thus fglcomp will give error <a href="FglErrors.html#-8403">-8403</a>,
+  indicating that the imported module cannot be found:</p>
+
+  <pre><code class="linenumber">01</code> <tt>IMPORT FGL </tt>module_b
+<code class="linenumber">02</code> <tt>FUNCTION</tt> func_a()
+<code class="linenumber">03</code>   <tt>CALL </tt>func_b()
+<code class="linenumber">04</code> <tt>END FUNCTION</tt></pre>
+
+  <pre><code class="linenumber">01</code> <tt>IMPORT FGL </tt>module_a
+<code class="linenumber">02</code> <tt>FUNCTION</tt> func_b()
+<code class="linenumber">03</code>   <tt>CALL </tt>func_a()
+<code class="linenumber">04</code> <tt>END FUNCTION</tt></pre>
+
+  <p>Traditional linking is still
+  supported for backward compatibility. To ease migration from traditional
+  linking to imported modules, you can mix <tt>IMPORT FGL</tt> usage with <a href="Tools.html#TL_FGLLINK">fgllink</a>.
+  To support traditional linking when <tt>IMPORT FGL</tt> is used, <a href="Tools.html#TL_FGLCOMP">fglcomp</a>
+  does not raise an error if a referenced function is not found in the imported
+  modules. This is mandatory to compile the 42m file to be linked later with the
+  module defining the missing function. With the <i>-Wimplicit</i> option, you
+  can force fglcomp to be more strict and to detect undefined functions when
+  compiling a module. When this option is used, fglcomp will print warning <a href="FglErrors.html#-8406">-8406</a>
+  if a referenced function is not defined.</p>
+
+  <p> The module specified in the <tt>IMPORT
+  FGL</tt> instruction cannot be a 42x
+      library.</p>
+
+  <p>It is allowed to write several <tt>IMPORT FGL</tt> instruction with the
+  same module; Compilation will succeed to mimic the Java import rules. However,
+  you should avoid this.</p>
+
+  <pre><code class="linenumber">01</code> <tt>IMPORT FGL </tt>orders
+<code class="linenumber">02</code> <tt>IMPORT FGL </tt>orders</pre>
+
+  <p>If a symbol is defined twice with the same name in two different modules,
+  the symbol must be qualified by the name of the module. This feature overcomes
+  the traditional 4gl limitation requiring unique function names within a
+  program. In the next example, both imported modules define the same
+  &quot;init()&quot; function, but this can be resolved by adding the module
+  name followed by a dot before the function names:&nbsp;</p>
+
+<pre><code class="linenumber">01</code> <tt>IMPORT FGL </tt>orders
+<code class="linenumber">02</code> <tt>IMPORT FGL </tt>customers
+<code class="linenumber">03</code> <tt>MAIN</tt>
+<code class="linenumber">04</code>   <tt>CALL </tt>orders.init()
+<code class="linenumber">05</code>   <tt>CALL </tt>customers.init()
+<code class="linenumber">06</code>   ...
+<code class="linenumber">07</code> <tt>END MAIN</tt></pre>
+
+  <p>If a symbol is defined twice with the same name in the current and the
+  imported module, an unqualified symbol will reference the current module
+  symbol. The next example calls the &quot;init()&quot; function with and
+  without a module qualifier, the second call will reference the local function:</p>
+
+<pre><code class="linenumber">01</code> <tt>IMPORT FGL </tt>orders
+<code class="linenumber">02</code> <tt>MAIN</tt>
+<code class="linenumber">03</code>   <tt>CALL </tt>orders.init()  -- orders module function
+<code class="linenumber">04</code>   <tt>CALL </tt>init()  -- local function
+<code class="linenumber">05</code>   ...
+<code class="linenumber">06</code> <tt>END MAIN</tt>
+<code class="linenumber">07</code> <tt>FUNCTION </tt>init()
+<code class="linenumber">08</code>   ...
+<code class="linenumber">09</code> <tt>END FUNCTION</tt></pre>
+
+  <p><b><a name="import_java">Importing Java classes:</a></b></p>
+
+  <p>Using <tt>IMPORT JAVA <i>classname</i></tt>, you can import and use a Java class.
+  The CLASSPATH environment variable defines the directories for Java packages. See
+  the Java documentation for more details.</p>
+
+  <p>Actually <i>classname</i> must be a path with package names separated by a
+  dot, so the actual syntax for <tt>IMPORT JAVA</tt> is:</p>
+
+  <code>IMPORT JAVA <u>[</u> <i>packagename . </i><u>[...]</u> <u>]</u> <i>filename</i></code>
+
+  <p>For more details, see <a href="JavaBridge.html">Java Interface</a>.</p>
+
+  <p>It is allowed to write several <tt>IMPORT JAVA</tt> instruction with the
+  same class; Compilation will succeed to mimic the Java import rules. However,
+  you should avoid this:</p>
+
+  <pre><code class="linenumber">01</code> <tt>IMPORT JAVA </tt>java.util.regex.Matcher
+<code class="linenumber">02</code> <tt>IMPORT JAVA </tt>java.util.regex.Matcher</pre>
+
+  <h5><a name="import_cext">Importing C Extensions:</a></h5>
+
+  <p>Using <tt>IMPORT <i>libname</i></tt> instructs the compiler and runtime
+  system to use the <i>libname</i> C Extension for the current module. This C
+  Extension must exist as a shared library (.DLL or .so) and be loadable (environment
+  variables must be set properly). C Extension modules used with the <tt>IMPORT</tt> instruction do not have to be linked to
+  fglrun as with previous versions of Genero: The runtime system loads
+  dependent C extension modules dynamically.</p>
+
+<p> The name of the module specified
+after the <tt>IMPORT</tt> keyword is converted to lowercase by the compiler.
+Therefore it is recommended to use lowercase file names only.</p>
+
+  <p>The <a href="EnvironmentVariables.html#EV_FGLLDPATH">FGLLDPATH</a> environment variable specifies the directories to search for the C
+  extension modules. Note that you may also have to setup the system environment
+  properly (i.e. PATH on Windows and LD_LIBRARY_PATH on UNIX) if the C Extension library
+  depends from other libraries.</p>
+
+  <p>By default, the runtime system tries to load a C extension module with the name <b>userextension,</b> if it exists. This simplifies the migration of
+  existing C extensions; you just need to create a shared library named userextension.so (or userextension.dll on Windows), and copy the file to one
+  of the directories defined in <a href="EnvironmentVariables.html#EV_FGLLDPATH">FGLLDPATH</a>.</p>
+
+  <p>For more details, see <a href="CExtensions.html">C Extensions</a>.&nbsp;</p>
+
+  <h4>Example:</h4>
+
+<p>-- File: account.4gl</p>
+<pre><code class="linenumber">01</code> <tt>PRIVATE DEFINE </tt>current_account <tt>VARCHAR</tt>(20)
+<code class="linenumber">02</code> 
+<code class="linenumber">03</code> <tt>PUBLIC FUNCTION</tt> set_account(id)
+<code class="linenumber">04</code>   <tt>DEFINE </tt>id <tt>VARCHAR</tt>(20)
+<code class="linenumber">05</code>   <tt>LET </tt>current_account = id
+<code class="linenumber">06</code> <tt>END FUNCTION</tt>
+<code class="linenumber">07</code> ...  -- File: myutils.4gl
+<code class="linenumber">01</code> <tt>PRIVATE DEFINE </tt>initialized <tt>BOOLEAN</tt>
+<code class="linenumber">02</code> 
+<code class="linenumber">03</code> <tt>PUBLIC TYPE</tt> t_prog_info <tt>RECORD</tt>
+<code class="linenumber">04</code>        name <tt>STRING</tt>,
+<code class="linenumber">05</code>        version <tt>STRING</tt>,
+<code class="linenumber">06</code>        author <tt>STRING</tt>
+<code class="linenumber">07</code>      <tt>END RECORD</tt>
+<code class="linenumber">08</code> 
+<code class="linenumber">09</code> <tt>PUBLIC FUNCTION</tt> init()
+<code class="linenumber">10</code>   <tt>LET </tt>initialized = <tt>TRUE</tt>
+<code class="linenumber">11</code>   ...
+<code class="linenumber">12</code> <tt>END FUNCTION</tt>
+<code class="linenumber">13</code> 
+<code class="linenumber">14</code> <tt>PUBLIC FUNCTION</tt> fini()
+<code class="linenumber">15</code>   <tt>LET </tt>initialized = <tt>FALSE</tt>
+<code class="linenumber">16</code>   ...
+<code class="linenumber">17</code> <tt>END FUNCTION</tt></pre>
+
+<p>-- File: program.4gl</p>
+<pre><code class="linenumber">01</code> <tt>IMPORT FGL </tt>myutils
+<code class="linenumber">02</code> <tt>IMPORT FGL </tt>account
+<code class="linenumber">03</code> <tt>DEFINE </tt>filename <tt>STRING</tt>
+<code class="linenumber">04</code> <tt>DEFINE </tt>proginfo t_prog_info  -- defined in myutils
+<code class="linenumber">05</code> <tt>MAIN</tt>
+<code class="linenumber">06</code>   <tt>LET </tt>proginfo.name = &quot;program&quot;
+<code class="linenumber">07</code>   <tt>LET </tt>proginfo.version = &quot;0.99&quot;
+<code class="linenumber">08</code>   <tt>LET </tt>proginfo.author = &quot;scott&quot;
+<code class="linenumber">09</code>   <tt>CALL </tt>myutils.init()  -- with <a href="CompilingPrograms.html#IMPORT">module prefix</a>
+<code class="linenumber">10</code>   <tt>CALL </tt>set_account(&quot;CFX4559&quot;)  -- without module prefix
+<code class="linenumber">11</code> <tt>END MAIN</tt></pre>
+
+  <p><i>See also</i>:
+  <a href="CompilingPrograms.html">Compiling Programs</a>,
+  <a href="CExtensions.html">C Extensions</a>,
+  <a href="JavaBridge.html">Java Interface</a>,
+  <a href="Functions.html">Functions</a>,
+  <a href="Reports.html">Reports</a>,
+  <a href="UserTypes.html">User Types</a>,
+  <a href="Variables.html">Variables</a>.</p>
+
+  <hr>
+
+  <h3><a name="PROGRAM_OPTIONS" id="PROGRAM_OPTIONS">Program Options</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>The <tt>OPTIONS</tt> instruction allows you to change default program options.</p>
+
+  <h4>Syntax:</h4><code>OPTIONS<br>
+  <u>{</u> INPUT <u>[</u>NO<u>]</u> WRAP<br>
+  <u>|</u> HELP FILE <i>help-filename</i><br>
+  <u>|</u> INPUT ATTRIBUTE ( <u>{</u>FORM<u>|</u>WINDOW<u>|</u><i>input-attributes</i><u>}</u> )<br>
+  <u>|</u> DISPLAY ATTRIBUTE ( <u>{</u>FORM<u>|</u>WINDOW<u>|</u><i>display-attributes</i><u>}</u> <i>)</i><br>
+  <u>|</u> SQL INTERRUPT <u>{</u>ON<u>|</u>OFF<u>}</u><br>
+  <u>|</u> FIELD ORDER <u>{</u>CONSTRAINED<u>|</u>UNCONSTRAINED|FORM<u>}</u><br>
+  <u>|</u> ON TERMINATE SIGNAL CALL <i>user-function</i><br>
+  <u>|</u> ON CLOSE APPLICATION <u>{</u>CALL <i>user-function</i>|STOP<u>}</u><br>
+  <u>|</u> RUN IN <u>{</u>FORM<u>|</u>LINE<u>}</u> MODE<br>
+  <u>|</u> MESSAGE LINE <i>line-value</i></code> <b><font color="#FF0000">TUI Only!</font></b> <code><br>
+  <u>|</u> COMMENT LINE <u>{</u>OFF<u>|</u><i>line-value</i><u>}</u></code> <b><font color="#FF0000">TUI Only!</font></b> <code><br>
+  <u>|</u> PROMPT LINE <i>line-value</i></code> <b><font color="#FF0000">TUI Only!</font></b> <code><br>
+  <u>|</u> ERROR LINE <i>line-value</i></code> <b><font color="#FF0000">TUI Only!</font></b> <code><br>
+  <u>|</u> FORM LINE <i>line-value</i></code> <b><font color="#FF0000">TUI Only!</font></b> <code><br>
+  <u>|</u> INSERT KEY <i>key-name</i></code> <b><font color="#FF0000">TUI Only!</font></b> <code><br>
+  <u>|</u> DELETE KEY <i>key-name</i></code> <b><font color="#FF0000">TUI Only!</font></b> <code><br>
+  <u>|</u> NEXT KEY <i>key-name</i></code> <b><font color="#FF0000">TUI Only!</font></b> <code><br>
+  <u>|</u> PREVIOUS KEY <i>key-name</i></code> <b><font color="#FF0000">TUI Only!</font></b> <code><br>
+  <u>|</u> ACCEPT KEY <i>key-name</i></code> <b><font color="#FF0000">TUI Only!</font></b> <code><br>
+  <u>|</u> HELP KEY <i>key-name</i></code> <b><font color="#FF0000">TUI Only!</font></b> <code><br>
+  <u>}</u> <u>[,...]</u></code>
+
+  <h4>Usage:</h4>
+
+  <p>A program can include several <tt>OPTIONS</tt> statements. If these statements conflict in their specifications, the
+  <tt> OPTIONS</tt> statement most
+  recently encountered at runtime prevails. <tt>OPTIONS</tt> can specify the following features of other statements (such as <a href=
+  "Construct.html">CONSTRUCT</a>, <a href="RecordDisplay.html">DISPLAY</a>, <a href="DisplayArray.html">DISPLAY ARRAY</a>, <a href=
+  "WindowsAndForms.html">DISPLAY FORM</a>, <a href="MessageDisplay.html#ERROR">ERROR</a>, <a href="RecordInput.html">INPUT</a>, <a href=
+  "InputArray.html">INPUT ARRAY</a>, <a href="MessageDisplay.html#MESSAGE">MESSAGE</a>, <a href="WindowsAndForms.html">OPEN FORM</a>, <a href=
+  "WindowsAndForms.html">OPEN WINDOW</a>, <a href="Prompt.html">PROMPT</a> and <a href="#RUN">RUN</a> ):</p>
+
+  <ul>
+    <li>Positions of the reserved lines</li>
+    <li>Input and display attributes</li>
+    <li>Logical key assignments</li>
+    <li>The name of the Help file</li>
+    <li>SQL statement interruption</li>
+    <li>Field traversal constraints</li>
+    <li>Default screen display mode</li>
+  </ul>
+
+  <h4><a name="options-lines" id="options-lines">Defining the default position of reserved lines</a> <b><font color="#FF0000">TUI
+  Only!</font></b></h4>
+
+  <p>The following options define the positions of reserved lines in <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a> mode. Is it not recommended
+  that you use these options in <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a> mode, as most have no effect on the display.</p>
+
+  <ul>
+    <li><tt>COMMENT LINE</tt> specifies the position of the Comment line. The comment line displays messages defined with the <tt>COMMENT</tt>
+    attribute in the form specification file. The default is (<tt>LAST-1</tt>) for the SCREEN, and <tt>LAST</tt> for all other <a href=
+    "WindowsAndForms.html">windows</a>. You can hide the comment line with <tt>COMMENT LINE OFF</tt>.</li>
+
+    <li><tt>ERROR LINE</tt> specifies the position on the screen of the Error line that displays the text of the <a href=
+    "MessageDisplay.html#ERROR">ERROR</a> statement. The default is the <tt>LAST</tt> line of the SCREEN.</li>
+
+    <li><tt>FORM LINE</tt> specifies the position of the first line of a form. The default is (<tt>FIRST+2</tt>), or line 3 of the <a href=
+    "WindowsAndForms.html">current window</a>.</li>
+
+    <li><tt>MENU LINE</tt> specifies the position of the Menu line. This displays the menu name and options, as defined by the <a href=
+    "Menus.html">MENU</a> statement. The default is the <tt>FIRST</tt> line in the <a href="WindowsAndForms.html">window</a>.</li>
+
+    <li><tt>MESSAGE LINE</tt> specifies the position of the Message line. This reserved line displays the text of the <a href=
+    "MessageDisplay.html#MESSAGE">MESSAGE</a> statement. The default is (<tt>FIRST+1</tt>), or line 2 of the <a href="WindowsAndForms.html">current
+    window</a>.</li>
+
+    <li><tt>PROMPT LINE</tt> specifies the position of the Prompt line where the text of <a href="Prompt.html">PROMPT</a> statements is displayed.
+    The default value is the <tt>FIRST</tt> line in the <a href="WindowsAndForms.html">window</a>.</li>
+  </ul>
+
+  <p>You can specify any of the following positions for each reserved line:</p>
+
+  <div align="center">
+    <center>
+      <table border="0" cellpadding="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="30%"><b>Expression</b></td>
+
+          <td bgcolor="#C0C0C0"><b>Description</b></td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>FIRST</tt></td>
+
+          <td>The first line of the screen or window.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>FIRST + <i>integer</i></tt></td>
+
+          <td>A relative line position from the first line.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt><i>integer</i></tt></td>
+
+          <td>An absolute line position in the screen or window.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>LAST - <i>integer</i></tt></td>
+
+          <td>A relative line position from the last line.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>LAST</tt></td>
+
+          <td>The last line of the screen or window.</td>
+        </tr>
+      </table>
+    </center>
+  </div>
+
+  <h4><a name="options-attributes" id="options-attributes">Defining the default display and the input attributes</a></h4>
+
+  <p>Any attribute defined by the <tt>OPTIONS</tt> statement remains in effect until the runtime system encounters a statement that redefines the
+  same attribute. This can be another OPTIONS statement, or an <tt>ATTRIBUTE</tt> clause in one of the following statements:</p>
+
+  <ul>
+    <li><a href="Construct.html">CONSTRUCT</a>, <a href="RecordInput.html">INPUT</a>, <a href="RecordDisplay.html">DISPLAY</a>, <a href=
+    "MultipleDialogs.html">DIALOG</a>, <a href="InputArray.html">INPUT ARRAY</a> or <a href="DisplayArray.html">DISPLAY ARRAY</a></li>
+
+    <li><a href="WindowsAndForms.html#OPEN_WINDOW">OPEN WINDOW</a></li>
+  </ul>
+
+  <p>The <tt>ATTRIBUTE</tt> clause in these statements only redefines the attributes temporarily. After the window closes (in the case of an <a href=
+  "WindowsAndForms.html#OPEN_WINDOW">OPEN WINDOW</a> statement) or after the statement terminates (in the case of a <a href=
+  "Construct.html">CONSTRUCT</a>, <a href="RecordInput.html">INPUT</a>, <a href="RecordDisplay.html">DISPLAY</a>, <a href=
+  "MultipleDialogs.html">DIALOG</a>, <a href="InputArray.html">INPUT ARRAY</a>, or <a href="DisplayArray.html">DISPLAY ARRAY</a> statement), the
+  runtime system restores the attributes from the most recent <tt>OPTIONS</tt> statement.</p>
+
+  <p>The <tt>FORM</tt> keyword in <tt>INPUT ATTRIBUTE</tt> or <tt>DISPLAY ATTRIBUTE</tt> clauses instructs the runtime system to use the input or
+  display attributes of the <a href="WindowsAndForms.html">current form</a>. Similarly, you can use the <tt>WINDOW</tt> keyword of the same clauses
+  to instruct the program to use the input or display attributes of the <a href="WindowsAndForms.html">current window</a>. You cannot combine the
+  <tt>FORM</tt> or <tt>WINDOW</tt> attributes with any other attributes.</p>
+
+  <p>The following table shows the valid <i>input-attributes</i> and <i>display-attributes</i>:</p>
+
+  <div align="center">
+    <center>
+      <table border="0" cellpadding="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="30%"><b>Attribute</b></td>
+
+          <td bgcolor="#C0C0C0"><b>Description</b></td>
+        </tr>
+
+        <tr>
+          <td width="40%"><tt>BLACK, BLUE, CYAN, GREEN, MAGENTA, RED, WHITE, YELLOW</tt></td>
+
+          <td>The TTY color of the displayed text.</td>
+        </tr>
+
+        <tr>
+          <td width="40%"><tt>BOLD, DIM, INVISIBLE, NORMAL</tt></td>
+
+          <td>The TTY font attribute of the displayed text.</td>
+        </tr>
+
+        <tr>
+          <td width="40%"><tt>REVERSE, BLINK, UNDERLINE</tt></td>
+
+          <td>The TTY video attribute of the displayed text.</td>
+        </tr>
+      </table>
+    </center>
+  </div>
+
+  <h4><a name="options-input-wrap" id="options-input-wrap">Defining the form input loop</a></h4>
+
+  <p>The tab order in which the screen cursor visits fields of a form is that of the <i>field list</i> of currently executing <a href=
+  "Construct.html">CONSTRUCT</a>, <a href="RecordInput.html">INPUT</a>, and <a href="InputArray.html">INPUT ARRAY</a> statements, unless the tab
+  order has been modified by a <tt>NEXT FIELD</tt> clause. By default, the interactive statement terminates if the user presses RETURN in the last
+  field (or if the entered data fills the last field and that field has the <a href="FSFAttributes.html#FA_AUTONEXT">AUTONEXT</a> attribute).</p>
+
+  <p>The <tt>INPUT WRAP</tt> keywords change this behavior, causing the cursor to move from the last field to the first, repeating the sequence of
+  fields until the user presses the Accept key. The <tt>INPUT NO WRAP</tt> option restores the default input loop behavior.</p>
+
+  <h4><a name="options-on-terminate" id="options-on-terminate">Application Termination</a></h4>
+
+  <p>The <tt>OPTIONS ON TERMINATE SIGNAL CALL <i>function</i></tt> defines the function that must be called when the application receives the SIGTERM
+  signal. With this option, you can control program termination - for example, by using <a href="Transactions.html#TI_ROLLBACK_WORK">ROLLBACK
+  WORK</a> to cancel all pending SQL operations. If this statement is not called, the program is stopped with an exit value of SIGTERM (15).</p>
+
+  <p>On Microsoft Windows platforms, the function will be called in the following cases:</p>
+
+  <ul>
+    <li>The console window that the program was started from is closed.</li>
+
+    <li>The current user session is terminated (i.e. the user logs off).</li>
+
+    <li>The system is shut down.</li>
+  </ul>
+
+  <h4><a name="options-on-close-application" id="options-on-close-application">Front-End Termination</a></h4>
+
+  <p>The <tt>OPTIONS ON CLOSE APPLICATION CALL <i>function</i></tt> can be used to execute specific code when the front-end stops. For example, when
+  the client program is stopped, when the user session is ended, or when the workstation is shut down.</p>
+
+  <p>Before stopping, the front-end sends a internal event that is trapped by the runtime system. When a callback function is specified with the
+  above program option command, the application code that was executing is canceled, and the callback function is executed before the program
+  stops.</p>
+
+  <p>You typically do a <a href="Transactions.html#TI_ROLLBACK_WORK">ROLLBACK WORK</a>, close all files, and release all resources in that
+  function.</p>
+
+  <p>The default is <tt>OPTIONS ON CLOSE APPLICATION STOP</tt>. This instructs the runtime system to stop without any error message if the front end
+  program is stopped.</p>
+
+  <p>Note that a front-end program crash or network failure is not detected and cannot be handled by this instruction.</p>
+
+  <h4><a name="options-help-file" id="options-help-file">Defining the message file</a></h4>
+
+  <p>The <tt>HELP FILE</tt> clause specifies an expression that returns the filename of a help file. This filename can also include a pathname.
+  Messages in this file can be referenced by number in form-related statements, and are displayed at runtime when the user presses the Help key.</p>
+
+  <p>By default, message files are searched in the current directory, then <a href="EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href=
+  "EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a> environment variable is scanned to find the file.</p>
+
+  <p>See also <a href="MessageFiles.html">Message Files</a>.</p>
+
+  <h4><a name="options-field-order" id="options-field-order">Defining field tabbing order</a></h4>
+
+  <p>Tabbing order is used in dialogs where individual fields can get the focus, like in <a href="RecordInput.html">INPUT</a>, <a href=
+  "InputArray.html">INPUT ARRAY</a> or <a href="Construct.html">CONSTRUCT</a>. The <tt>FIELD ORDER</tt> program option defines the default behavior
+  when moving from field to field with the TAB key or UP/DOWN ARROW keys in <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI mode</a>.</p>
+
+  <p>By default, the tabbing order is defined by the list of fields used by the program instruction. This corresponds to <tt>FIELD ORDER
+  CONSTRAINED</tt> option, which is the default.</p>
+
+  <p>When using <tt>FIELD ORDER UNCONSTRAINED</tt> in <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI mode</a>,&nbsp;the UP ARROW and DOWN ARROW keys
+  will move the cursor to the field above or below the current field, respectively. Note that when using the default <tt>FIELD ORDER CONSTRAINED</tt>
+  option, the UP ARROW and DOWN ARROW keys move the cursor to the previous or next field, respectively. If <tt>FIELD ORDER UNCONSTRAINED</tt> is
+  used, the <a href="Programs.html#Dialog_fieldOrder">Dialog.fieldOrder</a> FGLPROFILE entry is ignored.</p>
+
+  <p>Note that the <tt>UNCONSTRAINED</tt> option can only be supported in <a href=
+  "FglTerms.html#TEXT_USER_INTERFACE">TUI mode</a>, with a simple form layout. It is not recommended to use this option in <a href=
+  "FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI mode</a>.</p>
+
+  <p>When you specify <tt>FIELD ORDER FORM</tt>,&nbsp; the tabbing order is defined by the <a href="FSFAttributes.html#FA_TABINDEX">TABINDEX</a>
+  attributes of the current form fields. This allows you to define a tabbing order specific to the layout of the form, independent of the program
+  instruction, and is the preferred way to define tabbing order in GUI mode. If <tt>FIELD ORDER FORM</tt> is used, the <a href=
+  "Programs.html#Dialog_fieldOrder">Dialog.fieldOrder</a> FGLPROFILE entry is ignored.</p>
+
+  <p>The next example shows the effect of the <tt>FIELD ORDER</tt> program option, not that the .per file defines tab indexes:</p>
+
+  <p>Form file:</p>
+  <pre>
+<code class="linenumber">01</code> <tt>LAYOUT</tt>
+<code class="linenumber">02</code> <tt>GRID</tt>
+<code class="linenumber">03</code> {
+<code class="linenumber">04</code>   First name:  [f001            ] Last name:   [f002            ]
+<code class="linenumber">05</code>   Address:     [f003                                            ]
+<code class="linenumber">06</code> }
+<code class="linenumber">07</code> <tt>END</tt>
+<code class="linenumber">08</code> <tt>END</tt>
+<code class="linenumber">09</code> <tt>ATTRIBUTES</tt>
+<code class="linenumber">10</code> <tt>EDIT </tt>f001 = <tt>FORMONLY</tt>.fname, <tt>TABINDEX</tt> = 2;
+<code class="linenumber">11</code> <tt>EDIT </tt>f002 = <tt>FORMONLY</tt>.lname, <tt>TABINDEX</tt> = 1;
+<code class="linenumber">12</code> <tt>EDIT </tt>f003 = <tt>FORMONLY</tt>.address, <tt>TABINDEX</tt> = 0;
+<code class="linenumber">13</code> <tt>END</tt>
+</pre>
+
+  <p>Program file:</p>
+  <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> fname, lname <tt>CHAR</tt>(20), address <tt>CHAR</tt>(50)
+<code class="linenumber">03</code>   <tt>OPTIONS INPUT WRAP</tt>
+<code class="linenumber">04</code>   <tt>OPEN FORM</tt> f1 <tt>FROM</tt> &quot;f1&quot;
+<code class="linenumber">05</code>   <tt>DISPLAY FORM</tt> f1
+<code class="linenumber">06</code>   <tt>OPTIONS FIELD ORDER CONSTRAINED</tt>
+<code class="linenumber">07</code>   <tt>INPUT BY NAME</tt> fname, address, lname
+<code class="linenumber">08</code>   <tt>OPTIONS FIELD ORDER UNCONSTRAINED</tt>
+<code class="linenumber">09</code>   <tt>INPUT BY NAME</tt> fname, address, lname
+<code class="linenumber">10</code>   <tt>OPTIONS FIELD ORDER FORM</tt>
+<code class="linenumber">11</code>   <tt>INPUT BY NAME</tt> fname, address, lname
+<code class="linenumber">12</code> <tt>END MAIN</tt>
+</pre>
+
+  <h4><a name="options-keys" id="options-keys">Defining control keys</a> <b><font color="#FF0000">TUI Only!</font></b></h4>
+
+  <p>The <tt>OPTIONS</tt> instruction can specify physical keys to support logical key functions in the interactive instructions.</p>
+
+  <p> The physical key definition options are only provided for backward compatibility with the character
+  mode. These as not supported in <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a> mode. Use the <a href="ActionDefaults.html">Action
+  Defaults</a> to define accelerator keys for actions. In TUI mode, action defaults accelerators are ignored.</p>
+
+  <p>Description of the keys:</p>
+
+  <ul>
+    <li>The <tt>ACCEPT KEY</tt> specifies the key that validates a <a href="Construct.html">CONSTRUCT</a>, <a href="RecordInput.html">INPUT</a>,
+    <a href="MultipleDialogs.html">DIALOG</a>, <a href="InputArray.html">INPUT ARRAY</a>, or <a href="DisplayArray.html">DISPLAY ARRAY</a>
+    statement.<br>
+    The default <tt>ACCEPT KEY</tt> is <tt>ESCAPE</tt>.</li>
+
+    <li>The <tt>DELETE KEY</tt> specifies the key in <a href="InputArray.html">INPUT ARRAY</a> statements that deletes a screen record.<br>
+    The default <tt>DELETE KEY</tt> is <tt>F2</tt>.</li>
+
+    <li>The <tt>INSERT KEY</tt> specifies the key that opens a screen record for data entry in <a href="InputArray.html">INPUT ARRAY</a>.<br>
+    The default <tt>INSERT KEY</tt> is <tt>F1</tt>.</li>
+
+    <li>The <tt>NEXT KEY</tt> specifies the key that scrolls to the next page of a program array of records in an <a href="InputArray.html">INPUT
+    ARRAY</a> or <a href="DisplayArray.html">DISPLAY ARRAY</a> statement.<br>
+    The default <tt>NEXT KEY</tt> is <tt>F3</tt>.</li>
+
+    <li>The <tt>PREVIOUS KEY</tt> specifies the key that scrolls to the previous page of program records in an <a href="InputArray.html">INPUT
+    ARRAY</a> or <a href="DisplayArray.html">DISPLAY ARRAY</a> statement.<br>
+    The default <tt>PREVIOUS KEY</tt> is <tt>F4</tt>.</li>
+
+    <li>The <tt>HELP KEY</tt> specifies the key to display help messages.<br>
+    The default <tt>HELP KEY</tt> is <tt>CONTROL-W</tt>.</li>
+  </ul>
+
+  <p>You can specify the following keywords for the physical key names:</p>
+
+  <div align="center">
+    <center>
+      <table border="0" cellpadding="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="30%"><b>Key Name</b></td>
+
+          <td bgcolor="#C0C0C0"><b>Description</b></td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>ESC</tt> or <tt>ESCAPE</tt></td>
+
+          <td>The ESC key (not recommended, use <tt>ACCEPT</tt> instead).</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>INTERRUPT</tt></td>
+
+          <td>The interruption key (on UNIX, interruption signal).</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>TAB</tt></td>
+
+          <td>The TAB key (not recommended).</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>CONTROL-<i>char</i></tt></td>
+
+          <td>A control key where <i>char</i> can be any character except A, D, H, I, J, K, L, M, R, or X</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>F1</tt> through <tt>F255</tt></td>
+
+          <td>A function key.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>LEFT</tt></td>
+
+          <td>The left arrow key.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>RETURN</tt> or <tt>ENTER</tt></td>
+
+          <td>The return key.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>RIGHT</tt></td>
+
+          <td>The right arrow key.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>DOWN</tt></td>
+
+          <td>The down arrow key.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>UP</tt></td>
+
+          <td>The up arrow key.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>PREVIOUS</tt> or <tt>PREVPAGE</tt>&nbsp;</td>
+
+          <td>The previous page key.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>NEXT</tt> or <tt>NEXTPAGE</tt>&nbsp;</td>
+
+          <td>The next page key.</td>
+        </tr>
+      </table>
+    </center>
+  </div>
+
+  <p>You might not be able to use other keys that have special meaning to your version of the operating system. For example, CONTROL-C, CONTROL-Q,
+  and CONTROL-S specify the Interrupt, XON, and XOFF signals on many UNIX systems.</p>
+
+  <h4><a name="options-run" id="options-run">Setting default screen modes</a></h4>
+
+  <p>When using character terminals, BDL recognizes two screen display modes: line mode (<tt>IN LINE MODE</tt>) and formatted mode (<tt>IN FORM
+  MODE</tt>). The <tt>OPTIONS</tt> and <tt>RUN</tt> statements can explicitly specify a screen mode. The <tt>OPTIONS</tt> statement can set separate
+  defaults for these statements.</p>
+
+  <p>After <tt>IN LINE MODE</tt> is specified, the terminal is in the same state (in terms of stty options) as when the program began. This usually
+  means that the terminal input is in cooked mode, with interruption enabled, and input not available until after a newline character has been
+  typed.</p>
+
+  <p>The <tt>IN FORM MODE</tt> keywords specify raw mode, in which each character of input becomes available to the program as it is typed or
+  read.</p>
+
+  <p>By default, a program operates in line mode, but so many statements take it into formatted mode (including <tt>OPTIONS</tt> statements that set
+  keys, <a href="RecordDisplay.html">DISPLAY</a>, <a href="WindowsAndForms.html#OPEN_WINDOW">OPEN WINDOW</a>, <a href=
+  "WindowsAndForms.html#DISPLAY_FORM">DISPLAY FORM</a>, and other screen interaction statements), that typical programs are actually in formatted
+  mode most of the time.</p>
+
+  <p>When the <tt>OPTIONS</tt> statement specifies <tt>RUN IN FORM MODE</tt>, the program remains in formatted mode if it currently is in formatted
+  mode, but it does not enter formatted mode if it is currently in line mode.</p>
+
+  <p>When the <tt>OPTIONS</tt> statement specifies <tt>RUN IN LINE MODE</tt>, the program remains in line mode if it is currently in line mode, and
+  it switches to line mode if it is currently in formatted mode.</p>
+  <hr>
+
+  <h3><a name="RUN" id="RUN">Runing Sub-programs (RUN)</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>The <tt>RUN</tt> instruction creates a new process and executes the command passed as an argument.</p>
+
+  <h4>Syntax:</h4><code>RUN <i>command</i>&nbsp;<br>
+  &nbsp; <u>[</u> IN <u>{</u>FORM<u>|</u>LINE<u>}</u> MODE <u>]</u><br>
+  <i>&nbsp;</i> <u>[</u> RETURNING <i>variable</i> <u>|</u> WITHOUT WAITING <u>]</u></code>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>command</i> is a <a href="Expressions.html#EX_STRING">string expression</a> containing the command to be executed.</li>
+
+    <li><i>variable</i> is an <a href="Variables.html">integer variable</a> receiving the execution status of the command.</li>
+  </ol>
+
+  <h4>Usage:</h4>
+
+  <p>The <tt>RUN</tt> instruction executes an operating system command line;&nbsp; you can even run a second application as a secondary process. When
+  the command terminates, the runtime system resumes execution.</p>
+
+  <p><b><font color="#FF0000">Warning: </font>The execution status in the <tt>RETURNING</tt> clause is system dependent. See below for more details.</b></p>
+
+  <p><u>Defining the command execution shell</u></p>
+
+  <p>In order to execute the command line, the <tt>RUN</tt> instruction uses the OS-specific shell defined in the environment of the current user. On
+  UNIX, this is defined by the <b>SHELL</b> environment variable. On Windows, this is defined by <b>COMSPEC</b>. Note that on Windows, the program
+  defined by the <b>COMSPEC</b> variable must support the <b>/c</b> option as CMD.EXE.</p>
+
+  <p><u>Waiting for the sub-process</u></p>
+
+  <p>By default, the runtime system waits for the end of the execution of the command.</p>
+
+  <p>Unless you specify <tt>WITHOUT WAITING</tt>, the <tt>RUN</tt> instruction also does the following:</p>
+
+  <ol>
+    <li>Causes execution of the current program to pause.</li>
+
+    <li>Displays any output from the specified command in a new window.</li>
+
+    <li>After that command completes execution, closes the new window and restores the previous display in the screen.</li>
+  </ol>
+
+  <p>If you specify <tt>WITHOUT WAITING</tt>, the specified command line is executed as a background process, and generally does not affect the
+  visual display. This clause is useful if you know that the command will take some time to execute, and your program does not need the result to
+  continue.&nbsp;It is also used in <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a> mode to start another Genero program. In <a href=
+  "FglTerms.html#TEXT_USER_INTERFACE">TUI</a> mode, you must not use this clause because two programs cannot run simultaneously on the same
+  terminal.</p>
+
+  <p><u>Catching the execution status</u></p>
+
+  <p>The <tt>RETURNING</tt> clause saves the termination status code of the command that <tt>RUN</tt> executes in a <a href="Variables.html">program
+  variable</a> of type <a href="DataTypes.html#DT_SMALLINT">SMALLINT</a>. You can then examine this variable in your program to determine the next
+  action to take. A status code of zero usually indicates that the command has terminated normally. Non-zero exit status codes usually indicate that
+  an error or a signal caused execution to terminate.</p>
+
+  <p> The execution status provided by the <tt>RETURNING</tt> clause <u>is platform-dependent</u>. On Unix
+  systems, the value is composed of two bytes having different meanings. On Windows platforms, the execution status is usually zero for success, not
+  zero if an error occurred.</p>
+
+  <p>On Unix systems, the lower byte (x mod 256) of the return status defines the termination status of the RUN command. The higher byte (x / 256) of
+  the return status defines the execution status of the program. On Windows systems, the value of the return status defines the execution status of
+  the program.</p>
+
+  <p><u>IN LINE MODE and IN FORM MODE</u></p>
+
+  <p>By default, programs operate in <i>LINE MODE</i>, but as many statements take it into <i>FORM MODE</i> (including <a href=
+  "#PROGRAM_OPTIONS">OPTIONS</a> statements that set keys, <a href="RecordDisplay.html">DISPLAY</a>, <a href="WindowsAndForms.html#OPEN_WINDOW">OPEN
+  WINDOW</a>, <a href="WindowsAndForms.html#DISPLAY_FORM">DISPLAY FORM</a>, and other screen interaction statements), typical programs are actually
+  in <i>FORM MODE</i> most of the time.</p>
+
+  <p>According to the type of command to be executed, you may need to use the <tt>IN <u>{</u>LINE<u>|</u>FORM<u>}</u> MODE</tt> clause with the
+  <tt>RUN</tt> instruction. It defines how the terminal or the graphical front-end behaves when running the child process.</p>
+
+  <p>Besides <tt>RUN</tt>, the <a href="#PROGRAM_OPTIONS">OPTIONS</a>, <a href="Reports.html">START REPORT</a>, and <a href="Reports.html">REPORT</a>
+  statements can explicitly specify a screen mode. If no screen mode is specified in the <tt>RUN</tt> command, the current value from the <a href=
+  "#PROGRAM_OPTIONS">OPTIONS</a> statement is used. This is, by default, <tt>IN LINE MODE</tt>. The default screen mode for <tt>PIPE</tt>
+  specifications in <a href="Reports.html#RPT_DRV_START">REPORT</a>&nbsp; is <tt>IN FORM MODE</tt>.</p>
+
+  <p>When the <tt>RUN</tt> statement specifies <tt>IN FORM MODE</tt>, the program remains in <i>form mode</i> if it is currently in <i>form mode</i>,
+  but it does not enter <i>form mode</i> if it is currently in <i>line mode</i>. When the prevailing <tt>RUN</tt> option specifies <tt>IN LINE
+  MODE</tt>, the program remains in <i>line mode</i> if it is currently in <i>line mode</i>, and it switches to <i>line mode</i> if it is currently
+  in <i>form mode</i>. This also applies to the <tt>PIPE</tt> option.</p>
+
+  <p>Typically, if you need to run another interactive program, you must use the <tt>IN LINE MODE</tt> clause:</p>
+
+  <ul>
+    <li>In a <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a> mode, the terminal is in the same state (in terms if <i>tty</i> options) as when the
+    program began. Usually the terminal input is in cooked mode, with interrupts enabled and input not becoming available until after a new-line
+    character is typed.</li>
+
+    <li>In a Graphical UI, if the <tt>WITHOUT WAITING</tt> clause in used, the front-end is warned before the child process is started (this causes a
+    first network round-trip) After the child is started, the front-end is warned that the command was executed (second network round-trip). If the
+    <tt>RUN</tt> command must wait for child termination (i.e. no <tt>WITHOUT WAITING</tt> clause is used), no particular action is taken.</li>
+  </ul>
+
+  <p>However, if you want to execute a sub-process running silently (batch program without output), you must use the <tt>IN FORM MODE</tt>
+  clause:</p>
+
+  <ul>
+    <li>In a <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a> mode, the screen stays in <i>form mode</i> if it was in <i>form mode</i>, which
+    saves a clear / redraw of the screen. The <tt>FORM</tt> mode specifies the terminal raw mode, in which each character of input becomes available
+    to the program as it is typed or read.</li>
+
+    <li>In a Graphical UI, no particular action is taken to warn the front-end (there is no need to warn the front-end for batch program
+    execution).</li>
+  </ul>
+
+  <p>To summarize, the FORM MODE must be used to optimize programs, if the child program does not do any output.
+  If the child program uses interactive instructions, displays messages to the terminal, or if you don't known what it does, just use the RUN
+  instruction in LINE MODE (which is the default).</p>
+
+  <p>It is recommended that you use functions to encapsulate child program and system command execution:</p>
+  <pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code> <tt>  DEFINE </tt>result <tt>SMALLINT</tt>
+<code class="linenumber">03</code>   <tt>CALL </tt>runApplication(&quot;app2 -p xxx&quot;)
+<code class="linenumber">04</code>   <tt>CALL </tt>runBatch(&quot;ls -l&quot;, FALSE) <tt>RETURNING </tt>result
+<code class="linenumber">05</code>   <tt>CALL </tt>runBatch(&quot;ls -l &gt; /tmp/files&quot;, TRUE) <tt>RETURNING </tt>result
+<code class="linenumber">06</code> <tt>END MAIN</tt>
+<code class="linenumber">07</code>
+<code class="linenumber">08</code> <tt>FUNCTION </tt>runApplication(pname)
+<code class="linenumber">09</code> <tt>   DEFINE </tt>pname, cmd <tt>STRING</tt>
+<code class="linenumber">10</code> <tt>   LET </tt>cmd = &quot;fglrun &quot; || pname
+<code class="linenumber">11</code> <tt>   IF </tt>fgl_getenv(&quot;FGLGUI&quot;) == 1 <tt>THEN</tt>
+<code class="linenumber">12</code>    <tt>   RUN </tt>cmd<tt> WITHOUT WAITING</tt>
+<code class="linenumber">13</code> <tt>   ELSE</tt>
+<code class="linenumber">14</code>    <tt>   RUN </tt>cmd
+<code class="linenumber">15</code> <tt>   END IF</tt>
+<code class="linenumber">16</code> <tt>END FUNCTION</tt>
+<code class="linenumber">17</code>
+<code class="linenumber">18</code> <tt>FUNCTION </tt>runBatch(cmd, silent)
+<code class="linenumber">19</code> <tt>   DEFINE </tt>cmd <tt>STRING</tt>
+<code class="linenumber">20</code> <tt>   DEFINE </tt>silent <tt>STRING</tt>
+<code class="linenumber">21</code> <tt>   DEFINE </tt>result <tt>SMALLINT</tt>
+<code class="linenumber">22</code> <tt>   IF </tt>silent <tt>THEN</tt>
+<code class="linenumber">23</code> <tt>      RUN </tt>cmd <tt>IN FORM MODE RETURNING </tt>result
+<code class="linenumber">24</code> <tt>   ELSE</tt>
+<code class="linenumber">25</code> <tt>      RUN </tt>cmd <tt>IN LINE MODE RETURNING </tt>result
+<code class="linenumber">26</code> <tt>   END IF</tt>
+<code class="linenumber">27</code> <tt>   IF</tt> fgl_getenv(&quot;OS&quot;) <tt>MATCHES </tt>&quot;Win*&quot;<tt> THEN</tt>
+<code class="linenumber">28</code> <tt>      RETURN</tt> result
+<code class="linenumber">29</code> <tt>   ELSE</tt>
+<code class="linenumber">30</code> <tt>      RETURN</tt> ( result /<tt> </tt>256 )
+<code class="linenumber">31</code> <tt>   END IF</tt>
+<code class="linenumber">32</code> <tt>END FUNCTION</tt>
+</pre>
+  <hr>
+
+  <h3><a name="EXIT_PROGRAM" id="EXIT_PROGRAM">Stop Program Execution (EXIT PROGRAM)</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>The <tt>EXIT PROGRAM</tt> instruction&nbsp;terminates the execution of the program.</p>
+
+  <h4>Syntax:</h4><code>EXIT PROGRAM&nbsp;<u>[</u> <i>exit-code</i> <u>]</u></code>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>exit-code</i> is a valid <a href="Expressions.html#EX_INTEGER">integer expression</a> that can be read by the process which invoked the
+    program.</li>
+  </ol>
+
+  <h4>Usage:</h4>
+
+  <p>Use the <tt>EXIT PROGRAM</tt> instruction to stop the execution of the
+  current program instance.</p>
+  <p> <i>exit-code</i> must be zero by default for normal, errorless
+  termination.</p>
+
+  <p><b><font color="#FF0000">Warnings: </font><i>exit-code</i> is converted into a positive integer between 0 and 255 (8 bits).</b></p>
+
+  <h4>Example:</h4>
+  <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DISPLAY</tt> &quot;Emergency exit.&quot;
+<code class="linenumber">03</code>   <tt>EXIT PROGRAM</tt> (-1)
+<code class="linenumber">04</code>   <tt>DISPLAY </tt>&quot;This will never be displayed !&quot;
+<code class="linenumber">05</code> <tt>END MAIN</tt>
+</pre>
+  <hr>
+
+  <h3><a name="DB_SCHEMA" id="DB_SCHEMA">Database Schema Specification</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p><b>Database Schema Specification</b> identifies the <a href="DatabaseSchema.html">database schema files</a> to be used for compilation.</p>
+
+  <h4>Syntax 1:</h4><code>SCHEMA <i>dbname</i></code>
+
+  <h4>Syntax 2:</h4><code><u>[</u>DESCRIBE<u>]</u> DATABASE <i>dbname</i></code>
+
+  <h4>Notes:</h4>
+
+  <ol>
+
+    <li><i>dbname</i> identifies the name of the <a href="DatabaseSchema.html">database schema file</a> to be used.</li>
+
+  </ol>
+
+  <h4>Usage:</h4>
+
+  The <tt>SCHEMA <i>dbname</i></tt> instruction defines the database schema files to be used for
+  compilation, where <i>dbname</i> identifies the name of the <a href="DatabaseSchema.html">database schema file</a> to be
+  used.
+
+  <p><tt><u>[</u>DESCRIBE<u>]</u> 
+  DATABASE</tt>  is supported for backward compatibility, but it is strongly
+  recommended that you use
+    <tt>SCHEMA</tt>  instead.&nbsp; The <tt>SCHEMA</tt>  instruction defines
+  only the database schema for compilation, and not the default database to
+  connect to at runtime, which can have a different name than the development
+  database.</p>
+
+  <p><font color="#000000">The <i>dbname</i> database name must be expressed explicitly and not as a
+  variable, as it can be in a <a href="Connections.html">regular DATABASE</a>
+  instruction inside a program block.</font>
+  <p>Use this instruction outside any program block, before a <a href="Variables.html">variable</a> declaration with <tt>DEFINE LIKE</tt>
+    instructions. It must precede any program block in each module that includes a <tt>DEFINE&hellip;LIKE</tt> declaration or
+    <tt>INITIALIZE&hellip;LIKE</tt> and <tt>VALIDATE&hellip;LIKE</tt> statements. It must precede any <tt>GLOBALS&hellip;END GLOBALS</tt> block. It
+    must also precede any <tt>DEFINE&hellip;LIKE</tt> declaration of module variables.
+  <p>The <tt><u>[</u>DESCRIBE<u>]</u> DATABASE</tt> instruction defines both the database schema files for compilation and the default database to
+    connect to at runtime when the <tt>MAIN</tt> block is executed, while <tt>SCHEMA</tt>
+  defines only the database schema to be used during compilation.
+
+  <p><font color="#000000">For backward compatibility reasons, <i>dbname</i> can
+  actually be written with different syntaxes:</font>
+  <p><code><i>&nbsp; database<br>
+  | database</i> @ <i>server<br>
+  | &quot;string</i>&quot;&nbsp;&nbsp; -- where <i>string</i> can be for ex
+  //server/database</code><p><font color="#000000">However, such database
+  specification is Informix specific and should be avoided. Use simple database
+  identifiers only, in lowercase.</font>
+
+  <p>When using a simple identifier for
+  the database name, the compiler converts the name to lowercase before
+  searching the schema file. However, if a double quoted string is used as
+  database name, the name will be used as is to find the schema file.
+
+  <h4>Example:</h4>
+  <pre>
+<code class="linenumber">01</code> <tt>SCHEMA </tt>dbdevelopment -- Compilation database schema<tt>
+</tt><code class="linenumber">02</code> <tt>DEFINE</tt> rec <tt>RECORD LIKE</tt> customer.*<tt>
+</tt><code class="linenumber">03</code> <tt>MAIN
+</tt><code class="linenumber">04</code> <tt>   DATABASE</tt> dbproduction -- Runtime database specification<tt>
+</tt><code class="linenumber">05</code> <tt>   SELECT</tt> * <tt>INTO </tt>rec.* <tt>FROM</tt> customer <tt>WHERE</tt> custno=1<tt>
+</tt><code class="linenumber">06</code> <tt>END MAIN</tt>
+</pre>
+  <hr>
+
+  <h3><a name="PC_NULL" id="PC_NULL">NULL Constant</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>The <tt>NULL</tt> constant is provided as "nil" value.</p>
+
+  <h4>Syntax:</h4><code>NULL</code>
+
+  <h4>Usage:</h4>
+
+  When comparing variables to <tt>NULL</tt>, use the <a href="Operators.html#OP_ISNULL">IS NULL</a> operator, not the equal operator.
+  <p>If an element of an expression is <a href="#PC_NULL">NULL</a>, the expression is evaluated to <tt>NULL</tt>.
+  <p>Variables are initialized to <tt>NULL</tt> or to zero according to their <a href="DataTypes.html">data type</a>.</p>
+  <p>Empty character string literals (<tt>""</tt>) are equivalent to <tt>NULL</tt>.</p>
+
+  <p><b><font color="#FF0000">Warning: </font><tt>NULL</tt> cannot be used with the = equal comparison operation, you must use <a href="Operators.html#OP_ISNULL">IS NULL</a>.</b></p>
+
+  <h4>Example:</h4>
+  <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> s <tt>CHAR</tt>(5)
+<code class="linenumber">03</code>   <tt>LET</tt> s = <tt>NULL</tt>
+<code class="linenumber">04</code>   <tt>DISPLAY</tt> &quot;s IS NULL evaluates to:&quot;
+<code class="linenumber">05</code>   <tt>IF</tt> s <tt>IS NULL THEN 
+</tt><code class="linenumber">06</code>   <tt>   DISPLAY</tt> &quot;TRUE&quot; <tt>
+</tt><code class="linenumber">07</code>   <tt>ELSE 
+</tt><code class="linenumber">08</code>   <tt>   DISPLAY</tt> &quot;FALSE&quot; <tt>
+</tt><code class="linenumber">09</code>   <tt>END IF</tt>
+<code class="linenumber">10</code> <tt>END MAIN</tt>
+</pre>
+  <hr>
+
+  <h3><a name="PC_TRUE" id="PC_TRUE">TRUE Constant</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>The <tt>TRUE</tt> constant is a predefined boolean value that evaluates to 1.</p>
+
+  <h4>Syntax:</h4><code>TRUE</code>
+
+  <h4>Example:</h4>
+  <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>IF FALSE</tt> = <tt>TRUE</tt> <tt>THEN</tt>
+<code class="linenumber">03</code>   <tt>   DISPLAY</tt> &quot;Something wrong here&quot;
+<code class="linenumber">04</code>   <tt>END IF</tt>
+<code class="linenumber">05</code> <tt>END MAIN</tt>
+</pre>
+  <hr>
+
+  <h3><a name="PC_FALSE" id="PC_FALSE">FALSE Constant</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>The <tt>FALSE</tt> constant is a predefined boolean value that evaluates to 0.</p>
+
+  <h4>Syntax:</h4><code>FALSE</code>
+
+  <h4>Example:</h4>
+  <pre>
+<code class="linenumber">01</code> <tt>FUNCTION isodd( </tt>value <tt>)</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> value <tt>INTEGER</tt>
+<code class="linenumber">03</code>   <tt>IF</tt> value <tt>MOD</tt> 2 = 1 <tt>THEN</tt>
+<code class="linenumber">04</code>      <tt>RETURN TRUE</tt>
+<code class="linenumber">05</code>   <tt>ELSE</tt>
+<code class="linenumber">06</code>      <tt>RETURN FALSE</tt>
+<code class="linenumber">07</code>   <tt>END IF</tt>
+<code class="linenumber">08</code> <tt>END FUNCTION</tt>
+</pre>
+  <hr>
+
+  <h3><a name="PC_NOTFOUND" id="PC_NOTFOUND">NOTFOUND Constant</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>The <tt>NOTFOUND</tt> constant is a predefined integer value that evaluates to 100.</p>
+
+  <h4>Syntax:</h4><code>NOTFOUND</code>
+
+  <h4>Usage:</h4>
+
+  This constant is used to test the execution status of an SQL statement returning a result set, to check whether rows have been found.
+
+  <h4>Example:</h4>
+  <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DATABASE </tt>stores
+<code class="linenumber">03</code>   <tt>SELECT </tt>tabid<tt> FROM </tt>systables<tt> WHERE </tt>tabid = 1
+<code class="linenumber">04</code>   <tt>IF</tt> SQLCA.SQLCODE =<tt> NOTFOUND THEN</tt>
+<code class="linenumber">05</code>   <tt>   DISPLAY</tt> &quot;No row was found&quot;
+<code class="linenumber">06</code>   <tt>END IF</tt>
+<code class="linenumber">07</code> <tt>END MAIN</tt>
+</pre>
+  <hr>
+
+  <h3><a name="BREAKPOINT" id="BREAKPOINT">BREAKPOINT</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>The <tt>BREAKPOINT</tt> instruction sets a program breakpoint when running in debug mode.</p>
+
+  <h4>Syntax:</h4><code>BREAKPOINT</code>
+
+  <h4>Usage:</h4>Normally, to set a breakpoint when you debug a program, you must use the <a href="Debugger.html#CMD_BREAK">break command</a> of the
+  debugger. But in some situations, you might need to set the breakpoint programmatically. Therefore, the <tt>BREAKPOINT</tt> instruction has been
+  added to the language.
+
+  <p>When you start <a href="Tools.html#TL_FGLRUN">fglrun</a> in debug mode, if the program flow encounters a <tt>BREAKPOINT</tt> instruction, the
+  program execution stops and the debug prompt is displayed, to let you enter a debugger command.</p>
+
+  <p>The <tt>BREAKPOINT</tt> instruction is ignored when not running in debug mode.</p>
+
+  <h4>Example:</h4>
+  <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE </tt>i <tt>INTEGER</tt>
+<code class="linenumber">03</code>   <tt>LET </tt>i=123
+<code class="linenumber">04</code>   <tt>BREAKPOINT</tt>
+<code class="linenumber">05</code>   <tt>DISPLAY</tt> i
+<code class="linenumber">06</code> <tt>END MAIN</tt>
+</pre>
+  <hr>
+
+  <h3><a name="CTRL_LOGOFF_EVENT" id="CTRL_LOGOFF_EVENT">Responding to CTRL_LOGOFF_EVENT</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>On Windows platforms, when the user disconnects, the system sends a CTRL_LOGOFF_EVENT event to all console applications. When the DVM receives
+  this event, it stops immediately (a simple exit(0) system call is done).</p>
+
+  <p>On a Windows Terminal Server, if an Administrator user closes his session, a CTRL_LOGOFF_EVENT is sent to all console applications started by
+  ANY user connected to the machine (even if these applications were not started by the Administrator).</p>
+
+  <p>To prevent the DVM from stopping on a logoff event, you can use the <tt>fglrun.ignoreLogoffEvent</tt> entry in the <a href=
+  "FglProfile.html">FGLPROFILE</a> configuration file. If this entry is set to <tt>true</tt>, the CTRL_LOGOFF_EVENT event is ignored by the DVM.</p>
+
+  <p><tt>fglrun.ignoreLogoffEvent = true</tt></p>
+
+  <p>As a result, when the Administrator user disconnects on a Windows Terminal Server, programs started by remote users would not stop.</p>
+</body>
+</html>

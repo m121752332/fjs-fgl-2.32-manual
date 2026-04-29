@@ -1,0 +1,808 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Tutorial: Reports</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+<p><a href="TutIndex.html">Back to Summary</a></p>
+<hr>
+<h1>Tutorial Chapter 9: Reports</h1>
+<p>Summary:</p>
+<ul>
+  <li><a href="#Reports">Genero BDL Reports</a></li>
+  <li><a href="#ReportDriver">The Report Driver</a></li>
+  <li><a href="#ReportDefinition">The Report Definition</a>
+    <ul>
+      <li><a href="#DEFINE">DEFINE section</a></li>
+      <li><a href="#OUTPUT">OUTPUT section</a></li>
+      <li><a href="#ORDER">ORDER section</a></li>
+      <li><a href="#FORMAT">FORMAT section</a></li>
+    </ul>
+  </li>
+  <li><a href="#Two-pass">Two-Pass Reports</a></li>
+  <li><a href="#ExCustomerReport">Example:  Customer Report</a></li>
+  <li><a href="#Interrupt">Interrupting a Report</a>
+    <ul>
+      <li><a href="#nterruptactionview">The interrupt Action View</a></li>
+      <li><a href="#Refresh">Refreshing the Display</a></li>
+      <li><a href="#ProgressBar">Using a ProgressBar</a></li>
+    </ul>
+  </li>
+  <li><a href="#Exampleprogbar">Example: Interruption Handling</a></li>
+</ul>
+<hr>
+<p>This program generates a simple report of the data in the <b> customer</b> database
+table.&nbsp;The two parts of a report, the <a href="Reports.html#RPT_DRIVER"> report driver</a> logic and the
+<a href="Reports.html#RPT_DEFINITION"> REPORT</a>
+program block (report definition) are illustrated.&nbsp; Then the program is
+modified to display a window containing a <a href="FormSpecFiles.html#FF_ITEMTYPE_PROGRESSBAR">Progressbar</a>,
+and allowing the user to interrupt the report before it is finished. </p>
+
+<p><img border="0" src="../Images/TUT802.png" width="432" height="288"> </p>
+
+<h2><a name="Reports">BDL Reports</a></h2>
+
+<p>Genero BDL reports are easy to design and generate.&nbsp; The output from
+a report can be formatted so that the eye of the reader can easily pick out the
+important data.</p>
+
+<p>The program logic that specifies what data to report (<a href="#ReportDriver">the report
+driver</a>) is
+separate from the program logic that formats the output of the report (the <a href="#ReportDefinition">
+report definition</a>).&nbsp; This allows the report driver
+to supply data for
+multiple reports simultaneously, if desired.&nbsp; And, you can design template
+report definitions that might be used with report drivers that access different
+database tables.</p>
+
+<h2><a name="ReportDriver">The Report Driver</a></h2>
+
+<p>The part of a program that generates the rows of report data (also known as
+input <a href="TutChap03.html#definerecord">records</a>) is called the <a href="#ReportDriver">report
+driver</a>. The primary concern of the row-producing logic
+is the
+selection of rows of data. The actions of a report
+driver are:</p>
+
+<ol>
+  <li>Use the <a href="Reports.html#RPT_DRV_START"> START REPORT</a> statement to
+initialize each report to be produced. We recommend that clauses regarding page setup
+    and report destination be included in this statement.</li>
+  <li>Use a forward-only database <a href="ResultSets.html#RESULTSET"> cursor</a>
+    to read rows from a database, if that is the source of the report data.</li>
+  <li>Whenever a row of report data is
+available, use <a href="Reports.html#RPT_DRV_OUTPUT"> OUTPUT TO REPORT</a> to send it to the report definition.</li>
+  <li>If an error is detected, use <a href="Reports.html">TERMINATE
+    REPORT</a> to stop the report process.</li>
+  <li>When the
+last row has been sent, use <a href="Reports.html#RPT_DRV_FINISH"> FINISH REPORT</a> to end the report.</li>
+</ol>
+
+<p> From the standpoint
+of the row-producing side, these are the only statements required to create a
+report.</p>
+
+<h2><a name="ReportDefinition">The Report Definition</a></h2>
+
+<p>The report definition uses a <a href="Reports.html#RPT_DEFINITION"> REPORT</a>
+program block to format the input <a href="TutChap03.html#definerecord">records</a>.&nbsp;
+REPORT is global in scope. It is not, however, a function; it is
+not reentrant, and CALL cannot invoke it.</p>
+
+<p>The code within a REPORT
+program block consists of several sections, which
+must appear in the order shown:</p>
+
+<ul>
+  <li>
+
+<h3><a name="DEFINE">The DEFINE section</a></h3>
+
+  </li>
+</ul>
+<blockquote>
+
+<p> Here you define the variables passed as parameter to the report, and the
+local variables.
+A report can have its own local <a href="Variables.html">variables</a>
+for subtotals, calculated results, and
+other uses.</p>
+
+</blockquote>
+<ul>
+  <li>
+
+<h3><a name="OUTPUT">The OUTPUT section (optional)</a></h3>
+
+  </li>
+</ul>
+<blockquote>
+  <p> Although you can define page setup and destination information in this
+  section, the format of the report will be static.&nbsp; Providing this same
+  information in the <a href="Reports.html#RPT_DRV_START"> START REPORT</a>
+  statement provides more flexibility.</p>
+
+</blockquote>
+<ul>
+  <li>
+
+<h3><a name="ORDER">The ORDER BY section (optional)</a></h3>
+
+  </li>
+</ul>
+<blockquote>
+
+<p>
+Here you specify the required order for the data rows, when using grouping.&nbsp; Include
+this <a href="Reports.html#RPT_DF_ORDERBY">ORDER BY</a> section if values that the report definition receives from the
+<a href="Reports.html#RPT_DRIVER"> report driver</a> are significant in determining how
+<a href="#BEFOREGROUPOF"> BEFORE GROUP OF</a> or <a href="#AFTERGROUPOF"> AFTER GROUP OF</a>
+control blocks will process the data in the formatted report output.&nbsp; To
+avoid the creation of additional resources to sort the data, use
+the <a href="Reports.html#RPT_DF_ORDERBY"> ORDER EXTERNAL</a> statement in this section if the
+data to be used in the report has already been sorted by an ORDER BY clause in
+the <a href="StaticSql.html#SS_SELECT"> SQL statement</a>.</p>
+
+</blockquote>
+<ul>
+  <li>
+
+<h3><a name="FORMAT">The FORMAT section</a></h3>
+
+  </li>
+</ul>
+<blockquote>
+
+<p> Here you
+describe what is to be done at a particular stage of report generation. The code
+blocks you write in the <a href="Reports.html#RPT_DF_FORMAT"> FORMAT</a> section are the heart of the report program block
+and contain all its intelligence.&nbsp; You can use most BDL statements
+in the FORMAT section of a report; you cannot, however, include any
+<a href="StaticSql.html"> SQL statements</a>.</p>
+
+<p>BDL invokes the sections and blocks within a report
+program block non-procedurally, at the proper time, as determined by the report
+data. You do not have to write code to calculate when a new page should start,
+nor do you have to write comparisons to detect when a group of rows has started
+or ended. All you have to write are the statements that are appropriate to the
+situation, and BDL supplies the “glue” to make them work.</p>
+
+<p>You can write control blocks in the <a href="Reports.html#RPT_DF_FORMAT"> FORMAT</a>
+section to be executed
+for the following events:</p>
+
+<ul type="circle">
+  <li> Top (header) of the first page of the report (<a name="FIRSTPAGEHEADER" href="Reports.html#RPT_FMT_FPH">FIRST PAGE
+    HEADER)</a></li>
+  <li>
+Top (header) of every page after the first (<a name="PAGEHEADER" href="Reports.html#RPT_FMT_PH">PAGE
+HEADER</a>)</li>
+  <li>Bottom (footer) of every page (<a name="PAGETRAILER" href="Reports.html#RPT_FMT_PT">PAGE
+    TRAILER</a>)</li>
+  <li>
+Each new row as it arrives (<a name="ONEVERYROW" href="Reports.html#RPT_FMT_OEROW">ON EVERY
+ROW)</a></li>
+  <li> The start end of a group of rows&nbsp; (<a name="BEFOREGROUPOF" href="Reports.html#RPT_FMT_BAG">BEFORE GROUP
+    OF</a>) - a group is one or
+more rows having equal values in a particular column.</li>
+  <li> The end of a
+group of rows (<a name="AFTERGROUPOF" href="Reports.html#RPT_FMT_BAG">AFTER GROUP
+    OF</a>) - in this block, you typically print subtotals and other aggregate
+data for the group that is ending. You can use <a href="Reports.html">aggregate functions</a> 
+    to
+  calculate and display frequencies, percentages, sums, averages, minima, and
+  maxima for this information.</li>
+  <li> After the last row has been processed (<a name="ONLASTROW" href="Reports.html#RPT_FMT_LROW">ON LAST
+    ROW</a>) - <a href="Reports.html">aggregate functions</a> calculated over all the rows of the report are typically printed
+  here.</li>
+</ul>
+</blockquote>
+  <h2> <a name="Two-pass"> Two-pass reports</a></h2>
+<p>A two-pass report is one that creates temporary tables, therefore there must
+be an active connection to the database.&nbsp;The two-pass
+report handles sorts internally. During the first pass, the report engine sorts the data and stores the
+sorted values in a temporary file in the database. During the second pass, it
+calculates any aggregate values and produces output from data in the temporary
+files.</p>
+<p>If your <a href="#ReportDefinition"> report definition</a> includes any of the following, a two-pass report is
+required:</p>
+<ul>
+  <li>An <a href="Reports.html#RPT_DF_ORDERBY"> ORDER BY</a> section without the EXTERNAL keyword.</li>
+  <li>The <a href="Reports.html#RPT_AGGR_PERCENT"> GROUP PERCENT(*)</a>
+    <a href="Reports.html">aggregate function</a> anywhere in the report.</li>
+  <li>Any <a href="Reports.html"> aggregate function</a> outside the
+    <a href="#AFTERGROUPOF"> AFTER GROUP OF</a> control block.</li>
+</ul>
+<h4><font color="#FF0000">Warning</font>: Some
+databases do not support temporary tables.&nbsp;Avoid a two-pass report for performance reasons and for
+portability.</h4>
+<hr>
+
+<h2><a name="ExCustomerReport">Example:&nbsp; Customer Report</a> </h2>
+
+<h3> The Report Driver</h3>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="344" bgcolor="#C0C0C0" valign="top"><b>Report Driver
+        (custreport.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01 </CODE><tt>SCHEMA</tt> custdemo<tt>
+</tt><CODE class=linenumber>02</CODE>
+<CODE class=linenumber>03</CODE> <tt>MAIN
+</tt><CODE class=linenumber>04 </CODE><tt> DEFINE</tt> pr_custrec <tt>RECORD</tt>
+<CODE class=linenumber>05</CODE>   store_num  <tt>LIKE </tt>customer.store_num,
+<CODE class=linenumber>06 </CODE>  store_name <tt>LIKE </tt>customer.store_name,
+<CODE class=linenumber>07 </CODE>  addr       <tt>LIKE</tt> customer.addr,
+<CODE class=linenumber>08</CODE>   addr2      <tt>LIKE</tt> customer.addr2,
+<CODE class=linenumber>09 </CODE>  city       <tt>LIKE</tt> customer.city,
+<CODE class=linenumber>10</CODE>   state      <tt>LIKE</tt> customer.state,
+<CODE class=linenumber>11</CODE>   zipcode    <tt>LIKE</tt> customer.zipcode
+<CODE class=linenumber>12</CODE>  <tt>END RECORD
+</tt><CODE class=linenumber>13</CODE>
+<CODE class=linenumber>14</CODE>  <tt>CONNECT TO</tt> &quot;custdemo&quot;
+<CODE class=linenumber>15</CODE>
+<CODE class=linenumber>16</CODE>  <tt>DECLARE</tt> custlist <tt>CURSOR FOR</tt>
+<CODE class=linenumber>17</CODE>     <tt>SELECT </tt>store_num,
+<CODE class=linenumber>18</CODE>            store_name,
+<CODE class=linenumber>19</CODE>            addr,
+<CODE class=linenumber>20</CODE>            addr2,
+<CODE class=linenumber>21</CODE>            city,
+<CODE class=linenumber>22</CODE>            state,
+<CODE class=linenumber>23</CODE>            zipcode
+<CODE class=linenumber>24</CODE>       <tt>FROM </tt>customer 
+<CODE class=linenumber>25</CODE>      <tt> ORDER BY</tt> state, city
+<CODE class=linenumber>26</CODE>
+<CODE class=linenumber>27</CODE>  <tt>START REPORT</tt> cust_list <tt>TO FILE</tt> &quot;customers.txt&quot; 
+<CODE class=linenumber>28</CODE>    <tt>WITH LEFT MARGIN</tt> = 5, <tt>TOP MARGIN </tt>= 2, <tt>
+</tt><CODE class=linenumber>29</CODE><tt>          BOTTOM MARGIN</tt> = 2
+<CODE class=linenumber>30</CODE>
+<CODE class=linenumber>31</CODE>  <tt>FOREACH</tt> custlist <tt>INTO</tt> pr_custrec.*
+<CODE class=linenumber>32</CODE>   <tt>OUTPUT TO REPORT</tt> cust_list(pr_custrec.*)
+<CODE class=linenumber>33</CODE>  <tt>END FOREACH</tt>
+<CODE class=linenumber>34</CODE>
+<CODE class=linenumber>35</CODE>  <tt>FINISH REPORT</tt><CODE class=linenumber> </CODE>cust_list<CODE class=linenumber>
+36</CODE>
+<CODE class=linenumber>37</CODE>  <tt>DISCONNECT CURRENT</tt>
+<CODE class=linenumber>38</CODE>
+<CODE class=linenumber>39</CODE> <tt>END MAIN</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Lines
+<CODE class=linenumber>04</CODE> thru
+<CODE class=linenumber>12</CODE> define a local program <a href="TutChap03.html#definerecord">record</a> 
+            <b>pr_custrec</b>,
+with a structure like the <b> customer</b> database table.</li>
+          <li>Line<b> </b>
+<CODE class=linenumber>14</CODE> connects to the <b>custdemo</b> database.</li>
+          <li>Lines
+<CODE class=linenumber>16</CODE> thru
+<CODE class=linenumber>25</CODE> define a <b>custlist</b>  <a href="ResultSets.html#RESULTSET"> cursor</a>
+ to retrieve the
+<b>customer </b>table data rows, sorted by state, then city.</li>
+          <li>Lines
+<CODE class=linenumber>27 </CODE> thru<CODE class=linenumber>  29</CODE> starts the
+            <a href="Reports.html#RPT_DEFINITION"> REPORT</a> program block named <b>cust_list</b>,<b>
+            </b>and includes a report destination and page formatting
+            information.</li>
+          <li>Lines
+<CODE class=linenumber>31</CODE> thru
+<CODE class=linenumber>33</CODE>  retrieve the data rows one by one into the
+program <a href="TutChap03.html#definerecord">record</a> <b> pr_custrec</b> and pass the
+            record  to the <a href="Reports.html#RPT_DEFINITION"> REPORT</a>
+            program
+block.</li>
+          <li>Line
+<CODE class=linenumber>35</CODE> closes the <a href="Reports.html#RPT_DRIVER"> report driver</a>
+            and executes any final <a href="Reports.html#RPT_DEFINITION"> REPORT</a>
+            control blocks to finish the report.</li>
+          <li>Line<b> </b>
+<CODE class=linenumber>37</CODE> disconnects from the <b>custdemo </b>database.</li>
+        </ul>
+
+
+<hr>
+<h3>The Report Definition </h3>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="430" bgcolor="#C0C0C0" valign="top"><b>Report definition
+        (custreport.4gl</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>REPORT </tt>cust_list(r_custrec)
+<CODE class=linenumber>02</CODE>  <tt>DEFINE</tt> r_custrec <tt>RECORD</tt>
+<CODE class=linenumber>03</CODE>        store_num  <tt>LIKE</tt> customer.store_num,
+<CODE class=linenumber>04</CODE>        store_name <tt>LIKE</tt> customer.store_name,
+<CODE class=linenumber>05</CODE>        addr       <tt>LIKE</tt> customer.addr,
+<CODE class=linenumber>06</CODE>        addr2      <tt>LIKE</tt> customer.addr2,
+<CODE class=linenumber>07</CODE>        city       <tt>LIKE</tt> customer.city,
+<CODE class=linenumber>08 </CODE>       state      <tt>LIKE</tt> customer.state,
+<CODE class=linenumber>09</CODE>        zipcode    <tt>LIKE</tt> customer.zipcode
+<CODE class=linenumber>10</CODE>       <tt>END RECORD</tt>
+<CODE class=linenumber>11</CODE>    
+<CODE class=linenumber>12</CODE>  <tt>ORDER EXTERNAL BY</tt> r_custrec.state, r_custrec.city
+<CODE class=linenumber>13</CODE>
+<CODE class=linenumber>14  </CODE><tt>FORMAT</tt><CODE class=linenumber>
+15</CODE>
+<CODE class=linenumber>16</CODE>   <tt>PAGE HEADER</tt>
+<CODE class=linenumber>17</CODE>    <tt> SKIP</tt> 2 <tt>LINES</tt>
+<CODE class=linenumber>18</CODE>     <tt>PRINT COLUMN</tt> 30, &quot;Customer Listing&quot;
+<CODE class=linenumber>19</CODE>     <tt>PRINT COLUMN</tt> 30, &quot;As of &quot;, <tt>TODAY USING</tt> &quot;mm/dd/yy&quot;
+<CODE class=linenumber>20</CODE>    <tt> SKIP</tt> 2 <tt>LINES</tt>
+<CODE class=linenumber>21</CODE>
+<CODE class=linenumber>22</CODE>   <tt>  PRINT  COLUMN </tt>2, &quot;Store #&quot;,
+<CODE class=linenumber>23</CODE>          <tt> COLUMN </tt>12, &quot;Store Name&quot;,
+<CODE class=linenumber>24</CODE>          <tt> COLUMN </tt>40, &quot;Address&quot;
+<CODE class=linenumber>25</CODE>
+<CODE class=linenumber>26</CODE>   <tt>  SKIP</tt> 2 <tt>LINES   </tt>    
+<CODE class=linenumber>27</CODE>      
+<CODE class=linenumber>28</CODE>   <tt>ON EVERY ROW</tt>
+<CODE class=linenumber>29</CODE>     <tt>PRINT COLUMN </tt>5, r_custrec.store_num <tt>USING</tt> &quot;####&quot;,
+<CODE class=linenumber>30</CODE>          <tt>COLUMN </tt>12, r_custrec.store_name <tt>CLIPPED</tt>,
+<CODE class=linenumber>31</CODE>          <tt>COLUMN</tt> 40, r_custrec.addr <tt>CLIPPED</tt>;
+<CODE class=linenumber>32</CODE>
+<CODE class=linenumber>33</CODE>    <tt> IF</tt> r_custrec.addr2 <tt>IS NOT NULL THEN</tt>
+<CODE class=linenumber>34</CODE>      <tt> PRINT </tt>1<tt> SPACE</tt>, r_custrec.addr2 <tt>CLIPPED</tt>, 1 space;
+<CODE class=linenumber>35</CODE>    <tt> ELSE 
+</tt><CODE class=linenumber>36</CODE><tt>        PRINT </tt>1 <tt>SPACE</tt>;
+<CODE class=linenumber>37</CODE>    <tt> END IF</tt>
+<CODE class=linenumber>38</CODE>
+<CODE class=linenumber>39</CODE>    <tt> PRINT</tt> r_custrec.city <tt>CLIPPED</tt>, 1 <tt>SPACE</tt>, 
+<CODE class=linenumber>40</CODE>          r_custrec.state, 1 <tt>SPACE</tt>, 
+<CODE class=linenumber>41</CODE>          r_custrec.zipcode <tt>CLIPPED</tt>
+<CODE class=linenumber>42</CODE>
+<CODE class=linenumber>43</CODE>   <tt>BEFORE GROUP OF</tt> r_custrec.city
+<CODE class=linenumber>44</CODE>    <tt> SKIP TO TOP OF PAGE</tt>
+<CODE class=linenumber>45</CODE>
+<CODE class=linenumber>46</CODE>   <tt>ON LAST ROW</tt>
+<CODE class=linenumber>47</CODE>    <tt> SKIP</tt> 1 <tt>LINE</tt>
+<CODE class=linenumber>48</CODE>    <tt> PRINT</tt> &quot;TOTAL number of customers: &quot;, <tt>
+</tt><CODE class=linenumber>49</CODE><tt>             COUNT(*) USING</tt> &quot;#,###&quot;
+<CODE class=linenumber>50</CODE>
+<CODE class=linenumber>51</CODE>   <tt>PAGE TRAILER</tt>
+<CODE class=linenumber>52</CODE>    <tt> SKIP</tt> 2 <tt>LINES</tt>
+<CODE class=linenumber>53</CODE>    <tt> PRINT COLUMN</tt> 30, &quot;-&quot;, <tt>PAGENO USING</tt> &quot;&lt;&lt;&quot;, &quot; -&quot;
+<CODE class=linenumber>54</CODE>
+<CODE class=linenumber>55</CODE> <tt>END REPORT</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line
+<CODE class=linenumber>01</CODE>&nbsp; The <a href="Reports.html#RPT_DEFINITION"> REPORT</a>
+            control block has the <b> pr_custrec</b> <a href="TutChap03.html#definerecord">record</a> 
+            passed as an argument.</li>
+          <li>Lines 
+<CODE class=linenumber> 02</CODE>  thru
+<CODE class=linenumber> 10</CODE>  define a local program <a href="TutChap03.html#definerecord">record</a> 
+            <b>r_custrec</b> to store the
+values that the calling routine passes to the report.</li>
+          <li>Line 
+<CODE class=linenumber> 12</CODE>  tells the <a href="Reports.html#RPT_DEFINITION"> REPORT</a>
+            control block that the <a href="TutChap03.html#definerecord">records</a> will be passed
+sorted in order by state, then city.&nbsp; The <a href="Reports.html#RPT_DF_ORDERBY"> ORDER EXTERNAL</a>
+            syntax is used to prevent a second sorting of the
+  program <a href="TutChap03.html#definerecord">records</a>, since they have already been sorted by the
+            <a href="StaticSql.html"> SQL statement</a> in
+  the <a href="Reports.html#RPT_DRIVER"> report driver</a>.</li>
+          <li>Line 
+<CODE class=linenumber> 14</CODE>  is the beginning of the <a href="Reports.html#RPT_DF_FORMAT"> FORMAT</a>
+            section.</li>
+          <li>Lines<b> </b>
+<CODE class=linenumber>16</CODE>  thru <CODE class=linenumber>20</CODE> The <a href="#PAGEHEADER"> PAGE HEADER</a> block specifies the layout
+generated at the top of each page.<br>
+            Each <a href="Reports.html#RPT_STMT_PRINT"> PRINT</a> statement starts a new line containing text or a value. The PRINT statement can have multiple COLUMN clauses, which all print on the same
+  line.&nbsp;&nbsp;<br>
+ The
+            <a href="Operators.html#OP_COLUMN">COLUMN</a>  clause specifies the offset of the first character from
+  the first position after the left margin.&nbsp; The values to be printed can
+  be program <a href="Variables.html">variables</a>, static text, or built-in functions.<br>
+ The built-in <a href="Operators.html#OP_TODAY"> TODAY</a> operator
+            generates the current date; the <a href="Operators.html#OP_USING"> USING</a> clauses formats this.<br>
+            The <a href="Reports.html#RPT_STMT_SKIP"> SKIP</a> statement inserts empty lines.<br>
+            The <a href="#PAGEHEADER"> PAGE HEADER</a> for this report will appear as follows:
+        <pre>  &nbsp; &lt;<i>skipped line</i>&gt;
+ &nbsp;&nbsp; &lt;<i>skipped line</i>&gt;
+           &nbsp;&nbsp; Customer Listing
+          &nbsp;&nbsp;&nbsp; As of &lt;<i>date</i>&gt;
+ &nbsp;&nbsp; &lt;<i>skipped line</i>&gt;
+ &nbsp;&nbsp; &lt;<i>skipped line</i>&gt;
+   &nbsp;Store #&nbsp;&nbsp;  Store Name&nbsp;&nbsp;&nbsp;&nbsp;      Address
+ &nbsp;&nbsp; &lt;<i>skipped line</i>&gt;
+ &nbsp;&nbsp; &lt;<i>skipped line</i>&gt;</pre>
+</li>
+          <li>Lines 
+<CODE class=linenumber> 28</CODE>  thru
+<CODE class=linenumber> 41</CODE>  specifies the layout generated for each row.&nbsp;
+            The data can be read more easily if each program <a href="TutChap03.html#definerecord">record</a> 
+            passed to the
+  report is printed on a single row. Although there are four <a href="Reports.html#RPT_STMT_PRINT"> PRINT</a>
+            statements in this control block, the first three PRINT
+            statements are
+  terminated by semi-colons.&nbsp; This suppresses the new line signal,
+  resulting in just a single row of printing.<br>
+            The <a href="Operators.html#OP_CLIPPED"> CLIPPED</a> keyword eliminates any trailing blanks after the name,
+  addresses, and city values.<br>
+            Any <a href="FlowControl.html#FC_IF">IF</a>  statement that is included in the
+            <a href="Reports.html#RPT_DF_FORMAT"> FORMAT</a> section must contain the
+  same number of <a href="Reports.html#RPT_STMT_PRINT"> PRINT</a>/<a href="Reports.html#RPT_STMT_SKIP">SKIP</a> statements regardless of which condition is
+  met.&nbsp; Therefore, if <b> r_custrec.addr2 </b> is not NULL, a <a href="Reports.html#RPT_STMT_PRINT"> PRINT</a>
+            statement
+  prints the value followed by a single space;&nbsp; if it is NULL, a PRINT
+            statement prints a single space.&nbsp; As mentioned earlier, each PRINT
+            statement is followed by a semicolon to suppress the new-line.<br>
+            The output for each row will be as follows:<pre>  &nbsp; 106 TrueTest Hardware     6123 N. Michigan Ave Chicago IL 60104
+    101 Bandy's Hardware      110 Main Chicago IL 60068</pre>
+          </li>
+        </ul>
+        <ul>
+          <li>Lines 
+<CODE class=linenumber> 43</CODE>  and
+<CODE class=linenumber> 44</CODE>  start a new page for each group containing the same
+value for<b> r_custrec.city</b>.</li>
+          <li>Lines 
+<CODE class=linenumber> 46</CODE>  thru
+<CODE class=linenumber> 49</CODE>  specify a control block to be executed after the
+statements in <a href="Reports.html#RPT_FMT_OEROW">ON EVERY ROW</a>
+            and <a href="Reports.html#RPT_FMT_BAG">AFTER GROUP
+            OF</a> control block. This prints at the end of the report.&nbsp; The aggregate function
+            <a href="Reports.html#RPT_AGGR_COUNT">COUNT(*)</a>
+  is used to print the total number of <a href="TutChap03.html#definerecord">records</a>
+            passed to the report.&nbsp; The <a href="Operators.html#OP_USING"> USING</a>
+            keyword formats the number.&nbsp; This appears as follows:</li>
+        </ul>
+        <blockquote>
+  <pre>  &nbsp; &lt;<i>skipped line</i>&gt;
+ &nbsp;&nbsp; Total number of customers:   &lt;<i>count</i>&gt;</pre>
+        </blockquote>
+        <ul>
+          <li>Lines 
+<CODE class=linenumber> 51</CODE>  thru
+<CODE class=linenumber> 53</CODE>  specifies the layout generated at the bottom of each
+page. The built-in function <a href="Reports.html#RPT_OPER_PAGENO"> PAGENO</a> is used to print the page number.&nbsp; The
+            <a href="Operators.html#OP_USING"> USING</a> keyword formats the number, left-justified.<br>
+            This appears as
+  follows:<pre>    &lt;<i>skipped line</i>&gt;
+    &lt;<i>skipped line</i>&gt;
+                  - &lt;<i>pageno</i>&gt; -</pre>
+          </li>
+        </ul>
+
+<hr>
+  <h2><a name="Interrupt">Interrupting a Report</a></h2>
+  <p>When a program performs a long process like a loop, a report, or a database
+  query,&nbsp; the lack of user interaction statements within the process can
+  prevent the user from interrupting it.&nbsp; In this program, the preceding
+  example is modified to display a form containing start, exit, and interrupt <a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTON">buttons</a>, as well as a
+  <a href="FormSpecFiles.html#FF_ITEMTYPE_PROGRESSBAR"> progress bar</a> showing how close the report is to
+  completion.</p>
+<blockquote>
+  <p><img border="0" src="../Images/TUT803.png" width="308" height="234">
+  &nbsp;</p>
+</blockquote>
+<h2><a name="nterruptactionview">The interrupt action view</a>
+</h2>
+<p>In order to allow a user to stop a long-running report, for example, you can
+define an <a href="InteractionModel.html#CTRLGACTIONS"> action
+            view</a> with the name &quot;interrupt&quot;.&nbsp; When the
+runtime system takes control of the program, the client automatically enables a
+local <a href="InteractionModel.html#INTERRUPTION">interrupt</a> action to let the user send an asynchronous request
+to the program.&nbsp; This interruption request is interpreted by the runtime
+system as a traditional interruption signal, as if it was generated on the
+server side, and the <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a>
+<a href="Variables.html">variable</a> is set to TRUE.
+</p>
+<h2><a name="Refresh">Refreshing the Displa</a>y
+</h2>
+<p>The Abstract User Interface tree on the front end is synchronized with the
+runtime system AUI tree when a user interaction instruction takes the control.
+This means that the user will not see any display as long as the program is
+doing batch processing, until an interactive statement is reached.&nbsp; If you
+want to show something on the screen while the program is running in a batch
+procedure, you must force synchronization with the front end.
+</p>
+<p>The <a href="ClassInterface.html">Interface</a> class is a built-in class provided to manipulate
+the user interface. The <b> refresh()</b> method of this class synchronizes the front
+end with the current AUI tree. You do not need to instantiate this class before
+calling any of its methods:
+</p>
+<pre>     <tt>CALL</tt> ui.Interface.refresh()</pre>
+<h2><a name="ProgressBar">Using a ProgressBar</a>
+</h2>
+<p>One of the form item types is a <a href="FormSpecFiles.html#FF_ITEMTYPE_PROGRESSBAR">PROGRESSBAR</a>, a horizontal line with a
+progress indicator.&nbsp; The position of the PROGRESSBAR
+is defined by the
+value of the corresponding form field. The value can be changed from within a
+BDL program by using the <a href="MessageDisplay.html#DISPLAY">DISPLAY</a>
+ instruction to set the value of the field.
+</p>
+<p>This type of form item does not allow data entry; it is only used to display
+integer values. The <a href="FSFAttributes.html#FA_VALUEMIN"> VALUEMIN</a> and <a href="FSFAttributes.html#FA_VALUEMAX"> VALUEMAX</a> attributes of the PROGRESSBAR
+define the lower and upper
+integer limit of the progress information. Any value outside this range will not
+be displayed.
+</p>
+<hr>
+<h2><a name="Exampleprogbar">Example:&nbsp; Interruption Handling</a>
+</h2>
+<h3><a name="Exampleprogbar">The Form Specification File</a>
+</h3>
+<p>A form containing a progress bar is defined in the <a href="FormSpecFiles.html"> form specification file</a>
+ <b>reportprog.per</b>.
+</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Form (reportprog.per)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>LAYOUT</tt> (<tt>TEXT</tt>=&quot;Report&quot;)
+<CODE class=linenumber>02</CODE>  <tt>GRID</tt>
+<CODE class=linenumber>03</CODE>  {
+<CODE class=linenumber>04</CODE>
+<CODE class=linenumber>05</CODE>        [f001                  ]
+<CODE class=linenumber>06</CODE>
+<CODE class=linenumber>07</CODE>        [ib                    ]
+<CODE class=linenumber>08</CODE>
+<CODE class=linenumber>09</CODE>
+<CODE class=linenumber>10</CODE>  }
+<CODE class=linenumber>11</CODE>  <tt>END</tt>
+<CODE class=linenumber>12</CODE> <tt>END</tt>
+<CODE class=linenumber>13</CODE>
+<CODE class=linenumber>14</CODE> <tt>ATTRIBUTES</tt>
+<CODE class=linenumber>15</CODE> <tt>PROGRESSBAR</tt> f001 = formonly.rptbar, <tt>VALUEMIN</tt>=1,<tt>VALUEMAX</tt>=10;
+<CODE class=linenumber>16</CODE> <tt>BUTTON</tt> ib : interrupt, <tt>TEXT</tt>=&quot;Stop&quot;;
+<CODE class=linenumber>17</CODE> <tt>END</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line
+<CODE class=linenumber>05 </CODE> contains the <a href="FormSpecFiles.html#FF_FORM_FIELD"> form
+            field</a> for the <a href="FormSpecFiles.html#FF_ITEMTYPE_PROGRESSBAR">PROGRESSBAR</a>.</li>
+          <li>Line
+<CODE class=linenumber>07</CODE> contains the form
+            field for the interrupt <a href="InteractionModel.html#CTRLGACTIONS"> action
+            view</a>.</li>
+          <li>Line
+<CODE class=linenumber>15</CODE>  defines the <a href="FormSpecFiles.html#FF_ITEMTYPE_PROGRESSBAR">PROGRESSBAR</a>
+            as formonly since its
+type is not derived from a database column.&nbsp; The values range from 1 to 10.&nbsp;
+            The maximum value for the PROGRESSBAR
+            was chosen arbitrarily, and was set
+  rather low since there aren't many rows in the <b>customer </b>database table.</li>
+          <li>Line
+<CODE class=linenumber>16</CODE> defines the button<b> ib</b> as an interrupt <a href="InteractionModel.html#CTRLGACTIONS"> action
+            view</a> with TEXT of &quot;Stop&quot;.</li>
+        </ul>
+
+
+<hr>
+<h3>Modifications to custreports.4gl</h3>
+<p>The <a href="Programs.html#MAIN_BLOCK">MAIN</a>
+ program block&nbsp; has been modified to open a window containing the form
+with a <a href="FormSpecFiles.html#FF_ITEMTYPE_PROGRESSBAR">PROGRESSBAR</a>
+and a <a href="Menus.html"> MENU</a>, to allow the user to start the report and to exit.
+A new function, <b>cust_report</b>,&nbsp; is added for interruption
+handling.&nbsp; The report definition, the <b>cust_list</b> <a href="Reports.html#RPT_DEFINITION"> REPORT</a>
+block,
+remains the same as in the previous example.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Changes to the MAIN
+        program block (custreport2.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>
+<CODE class=linenumber>03</CODE>   <tt>DEFER INTERRUPT</tt>
+<CODE class=linenumber>04</CODE>   <tt>CONNECT TO</tt> &quot;custdemo&quot;
+<CODE class=linenumber>05</CODE>   <tt>CLOSE WINDOW SCREEN</tt>
+<CODE class=linenumber>06</CODE>   <tt>OPEN WINDOW</tt> w3 <tt>WITH FORM</tt> &quot;reportprog&quot;
+<CODE class=linenumber>07</CODE>
+<CODE class=linenumber>08</CODE>   <tt>MENU</tt> &quot;Reports&quot;
+<CODE class=linenumber>09</CODE>   <tt>ON ACTION</tt> start
+<CODE class=linenumber>10</CODE>      <tt>MESSAGE</tt> &quot;Report starting&quot;
+<CODE class=linenumber>11</CODE>       <tt>CALL</tt> cust_report()
+<CODE class=linenumber>12</CODE>   <tt>ON ACTION</tt> exit
+<CODE class=linenumber>13</CODE>       <tt>EXIT MENU</tt>
+<CODE class=linenumber>14</CODE>   <tt>END MENU</tt>
+<CODE class=linenumber>15</CODE>
+<CODE class=linenumber>16</CODE>   <tt>CLOSE WINDOW</tt> w3
+<CODE class=linenumber>17</CODE>   <tt>DISCONNECT CURRENT</tt>
+<CODE class=linenumber>18</CODE>
+<CODE class=linenumber>19</CODE> <tt>END MAIN</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line
+<CODE class=linenumber>03</CODE>            prevents the user from interrupting
+the program except by using the <a href="InteractionModel.html#INTERRUPTION">interrupt</a>
+            <a href="InteractionModel.html#CTRLGACTIONS"> action
+            view</a>.</li>
+          <li>Line
+<CODE class=linenumber>06</CODE>            Opens the window and form containing
+the <a href="FormSpecFiles.html#FF_ITEMTYPE_PROGRESSBAR">PROGRESSBAR</a>.</li>
+          <li>Lines
+<CODE class=linenumber>08</CODE>            thru
+<CODE class=linenumber>14</CODE>            define a <a href="Menus.html"> MENU</a>
+            with two actions: <b><br>
+            start</b>
+- displays a <a href="MessageDisplay.html#MESSAGE"> MESSAGE</a>   and calls the function <b>cust_report</b>.&nbsp;&nbsp; <b><br>
+            exit</b>
+- quits the <a href="Menus.html"> MENU</a>.</li>
+        </ul>
+
+
+<h3>The cust_report function</h3>
+<p>This new function contains the <a href="Reports.html#RPT_DRIVER"> report driver</a>, together with the logic to
+determine whether the user has attempted to interrupt the report.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function cust_report
+        (custreport2.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>21</CODE> <tt>FUNCTION</tt> cust_report()
+<CODE class=linenumber>22</CODE>
+<CODE class=linenumber>23</CODE> <tt>DEFINE</tt> pr_custrec <tt>RECORD</tt>
+<CODE class=linenumber>24</CODE>       store_num   <tt>LIKE</tt> customer.store_num,
+<CODE class=linenumber>25</CODE>       store_name  <tt>LIKE</tt> customer.store_name,
+<CODE class=linenumber>26</CODE>       addr        <tt>LIKE</tt> customer.addr,
+<CODE class=linenumber>27</CODE>       addr2       <tt>LIKE</tt> customer.addr2,
+<CODE class=linenumber>28        </CODE>city        <tt>LIKE</tt> customer.city,<CODE class=linenumber>
+29</CODE>       state       <tt>LIKE</tt> customer.state,
+<CODE class=linenumber>30</CODE>       zipcode     <tt>LIKE</tt> customer.zipcode
+<CODE class=linenumber>31</CODE>       <tt>END RECORD</tt>,
+<CODE class=linenumber>32</CODE>       rec_count, rec_total, 
+<CODE class=linenumber>33</CODE>       pbar, break_num <tt> INTEGER</tt>
+<CODE class=linenumber>34</CODE>
+<CODE class=linenumber>35</CODE>   <tt>LET</tt> rec_count = 0     
+<CODE class=linenumber>36</CODE>   <tt>LET </tt>rec_total = 0
+<CODE class=linenumber>37</CODE>   <tt>LET</tt> pbar = 0
+<CODE class=linenumber>38</CODE>   <tt>LET</tt> break_num = 0
+<CODE class=linenumber>39</CODE>   <tt>LET</tt> INT_FLAG = FALSE
+<CODE class=linenumber>40</CODE>
+<CODE class=linenumber>41</CODE>   <tt>SELECT COUNT</tt>(*) <tt>INTO</tt> rec_total <tt>FROM</tt> customer
+<CODE class=linenumber>42</CODE>
+<CODE class=linenumber>43</CODE>  <tt> LET</tt> break_num = (rec_total/10)  
+<CODE class=linenumber>44</CODE>
+<CODE class=linenumber>45</CODE>   <tt>DECLARE</tt> custlist <tt>CURSOR FOR</tt>
+<CODE class=linenumber>46</CODE>     <tt>SELECT</tt> store_num, 
+<CODE class=linenumber>47</CODE>        store_name, 
+<CODE class=linenumber>48</CODE>        addr, 
+<CODE class=linenumber>49</CODE>        addr2, 
+<CODE class=linenumber>50</CODE>        city, 
+<CODE class=linenumber>51</CODE>        state, 
+<CODE class=linenumber>52</CODE>        zipcode
+<CODE class=linenumber>53</CODE>     <tt> FROM CUSTOMER</tt>    
+<CODE class=linenumber>54</CODE>      <tt>ORDER BY</tt> state, city
+<CODE class=linenumber>55</CODE>
+<CODE class=linenumber>56</CODE>   <tt>START REPORT</tt> cust_list <tt>TO FILE</tt> &quot;customers.txt&quot;
+<CODE class=linenumber>57</CODE>   <tt>FOREACH</tt> custlist <tt>INTO</tt> pr_custrec.*
+<CODE class=linenumber>58</CODE>     <tt>OUTPUT TO REPORT</tt> cust_list(lr_custrec.*)
+<CODE class=linenumber>59</CODE>     <tt>LET</tt> rec_count = rec_count+1
+<CODE class=linenumber>60</CODE>    <tt> IF</tt> (rec_count MOD break_num)= 0 <tt>THEN </tt>
+<CODE class=linenumber>61</CODE>       <tt>LET</tt> pbar = pbar+1
+<CODE class=linenumber>62</CODE>       <tt>DISPLAY</tt> pbar <tt>TO</tt> rptbar
+<CODE class=linenumber>63</CODE>       <tt>CALL</tt> ui.Interface.refresh() 
+<CODE class=linenumber>64</CODE>      <tt> IF</tt> (INT_FLAG) <tt>THEN</tt>
+<CODE class=linenumber>65</CODE>        <tt> EXIT FOREACH</tt>
+<CODE class=linenumber>66</CODE>       <tt>END IF</tt>
+<CODE class=linenumber>67</CODE>     <tt>END IF</tt>
+<CODE class=linenumber>68</CODE>   <tt>END FOREACH</tt>
+<CODE class=linenumber>69</CODE>
+<CODE class=linenumber>70</CODE>   <tt>IF</tt> (INT_FLAG) <tt>THEN</tt>
+<CODE class=linenumber>71</CODE>    <tt> LET</tt> INT_FLAG = FALSE
+<CODE class=linenumber>72</CODE>    <tt> MESSAGE</tt> &quot;Report cancelled&quot;
+<CODE class=linenumber>73</CODE>  <tt> ELSE</tt>
+<CODE class=linenumber>74</CODE>     <tt>FINISH</tt> <tt>REPORT</tt> cust_list
+<CODE class=linenumber>75</CODE>     <tt>MESSAGE</tt> &quot;Report finished&quot;  
+<CODE class=linenumber>76</CODE>  <tt> END IF</tt>
+<CODE class=linenumber>77</CODE>
+<CODE class=linenumber>78</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Lines
+<CODE class=linenumber>23</CODE> thru
+<CODE class=linenumber>31</CODE>&nbsp;&nbsp;now define the <b> pr_custrec</b> <a href="TutChap03.html#definerecord">record</a> 
+            in
+this function.</li>
+          <li>Lines
+<CODE class=linenumber>32</CODE> thru
+<CODE class=linenumber>33</CODE> define some additional <a href="Variables.html">variables</a>.</li>
+          <li>Lines
+<CODE class=linenumber>35</CODE> thru
+<CODE class=linenumber>39</CODE> initialize the local <a href="Variables.html">variables</a>.</li>
+          <li>Line
+<CODE class=linenumber>38</CODE> sets <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a> 
+            to FALSE.</li>
+          <li>Line
+<CODE class=linenumber>41</CODE> uses an embedded <a href="StaticSql.html"> SQL statement
+            </a> to retrieve the
+count of the rows in the <b> customer</b> table and stores it in the <a href="Variables.html">variable</a>
+            <b>rec_total</b>.</li>
+          <li>Line
+<CODE class=linenumber>43</CODE> calculates the value of <b>break_num</b> based
+on the maximum value of the <a href="FormSpecFiles.html#FF_ITEMTYPE_PROGRESSBAR">PROGRESSBAR</a>, which is set at 10.&nbsp; After <b>break_num</b> rows have been processed, the program will increment
+  the PROGRESSBAR.&nbsp; The front end cannot handle interruption requests
+  properly if the display generates a lot of network traffic, so we do not
+  recommend refreshing the AUI and checking <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a> after every row.</li>
+          <li>Lines
+<CODE class=linenumber>45</CODE> thru
+<CODE class=linenumber>54</CODE> declare the <b>custlist</b>  <a href="ResultSets.html#RESULTSET"> cursor</a>
+ for the
+customer table.</li>
+          <li>Line
+<CODE class=linenumber> 56</CODE> starts the report, sending the output to the
+file <b>custout</b>.</li>
+          <li>Lines
+<CODE class=linenumber>58</CODE> thru
+<CODE class=linenumber> 68</CODE>   contain the <a href="ResultSets.html#RS_FOREACH"> FOREACH</a> 
+            statement to output
+each <a href="TutChap03.html#definerecord">record</a>  to the same report <b>cust_list </b>used in the previous example.</li>
+          <li>Line
+<CODE class=linenumber>59</CODE> increments <b>rec_count</b> to keep track of
+  how many <a href="TutChap03.html#definerecord">records</a> have been output to the report.</li>
+          <li>Line
+<CODE class=linenumber>60</CODE> tests whether a break point has been reached,
+  using the <a href="Operators.html#OP_MODULUS"> MOD</a> (Modulus) function.</li>
+          <li>Line
+<CODE class=linenumber>61</CODE> If a break point has been reached, the value of
+            <b>pbar</b> is incremented.</li>
+          <li>Line
+<CODE class=linenumber>62</CODE> The <b>pbar</b> value is displayed to the <b>rptbar</b>
+            <a href="FormSpecFiles.html#FF_ITEMTYPE_PROGRESSBAR">PROGRESSBAR</a>
+            <a href="FormSpecFiles.html#FF_FORM_FIELD"> form field</a>.</li>
+          <li>Line
+<CODE class=linenumber>63</CODE> The front end is synced with the current AUI
+  tree.</li>
+          <li>Line
+<CODE class=linenumber>64</CODE> thru
+<CODE class=linenumber>66</CODE>&nbsp; The value of <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a> is checked&nbsp; to
+  see whether the user has interrupted the program. If so, the <a href="ResultSets.html#RS_FOREACH"> FOREACH</a> 
+            loop is
+  exited prematurely.&nbsp;</li>
+          <li>Lines
+<CODE class=linenumber> 70</CODE> thru
+<CODE class=linenumber>76</CODE> test <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a> again and display a message
+indicating whether the report finished or was interrupted.&nbsp; If the user did not interrupt the report,&nbsp; the
+            <a href="Reports.html#RPT_DRV_FINISH"> FINISH REPORT</a>
+            statement
+  is executed.</li>
+        </ul>
+
+
+</body>
+</html>

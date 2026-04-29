@@ -1,0 +1,4889 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+  <title>C-Extensions</title>
+  <meta http-equiv="Content-Type" content="text/html">
+  <link href="../FglTechRef.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+  <p><a href="../index.html">Back to Contents</a></p>
+  <hr>
+
+  <h1><a name="PAGE_HEADER">Implementing C-Extensions</a></h1>
+
+  <p>Summary:</p>
+
+  <ul>
+    <li><a href="#BASICS">Basics</a></li>
+    <li><a href="#PREREQ">Prerequisites</a></li>
+    <li><a href="#CREATEEXT">Creating C-Extensions</a>
+      <ul>
+        <li><a href="#CREATESQLCEXT">Creating ESQL/C extensions</a>
+          <ul>
+            <li><a href="#NON_IFX_ESQLC">ESQL/C Extensions with non-Informix databases</a></li>
+            <li><a href="#IFX_ESQLC">ESQL/C Extensions with Informix</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><a href="#CEXTFILE">C interface file</a></li>
+    <li><a href="#LINKING">Linking programs using C-Extensions</a></li>
+    <li><a href="#LOADEXT">Loading C-Extensions</a>
+      <ul>
+        <li><a href="#IMPORT">Using the IMPORT instruction</a></li>
+        <li><a href="#DEFNAME">Using the default extension name</a></li>
+        <li><a href="#E_OPTION">Using the -e fglrun option</a></li>
+      </ul>
+    </li>
+    <li><a href="#STACK">Stack Functions</a></li>
+    <li><a href="#TYPEDEFS">C Data Types and Structures</a></li>
+    <li><a href="#MACROS">Available Macros</a>
+      <ul>
+        <li><a href="#VCMACROS">VARCHAR Macros</a></li>
+        <li><a href="#DECMACROS">DECIMAL Macros</a></li>
+        <li><a href="#DTMACROS">DATETIME/INTERVAL Macros</a></li>
+        <li><a href="#DTCONST">DATETIME/INTERVAL Constants</a></li>
+      </ul>
+    </li>
+    <li><a href="#CFCALL">Calling C functions from BDL</a></li>
+    <li><a href="#FGLCALL">Calling BDL functions from C</a></li>
+    <li><a href="#SHARING_GLOBALS">Sharing global variables</a></li>
+    <li><a href="#EXAMPLE">Example</a></li>
+    <li><a href="#CAPI">C API Functions</a></li>
+    <li><a href="#FMT">Formatting directives</a></li>
+  </ul>
+
+  <p><i>See also:</i> <a href="Programs.html">Programs</a>, <a href="Installation.html">Installation and Setup</a>.</p>
+  <hr>
+
+  <h2><a name="BASICS">Basics</a></h2>
+
+  <p>With C-Extensions, you can integrate your own C libraries in the <a href="FglTerms.html#RUNTIME_SYSTEM">runtime
+  system</a>, to call C function from the BDL code. This feature allows you to extend the language with custom
+  libraries, or existing standard libraries, just by writing some 'wrapper functions' to interface with BDL.</p>
+
+  <p>C-Extensions are implemented with <a href="#CREATEEXT">shared libraries</a>. Using shared libraries avoids the
+  need to re-link the <a href="Tools.html#TL_FGLRUN">fglrun</a> program and simplifies deployment.</p>
+
+  <p>Function parameters and returned values are passed/returned on the legal BDL stack, using <a href=
+  "#STACK">pop/push functions</a>. Be sure to pop and push the exact number of parameters/returns expected by the
+  caller; otherwise, a fatal stack error will be raised at runtime.</p>
+
+  <p>Inside the C Extension, you can manipulate 4GL-specific data types with the
+  <a href="#CAPI">C API functions</a> supported by Genero BDL. For example, you
+  can do DECIMAL computation.</p>
+
+  <p>In order to use a C-Extension in your program, you typically specify the library name with the <a href=
+  "#IMPORT">IMPORT</a> instruction at the beginning of the BDL module calling the C-Extension functions. The compiler
+  can then check for function existence and the library will be automatically loaded at runtime.</p>
+
+  <h4>Notes:</h4>
+
+  <ul>
+    <li>The C code written in C Extensions becomes usually platform specific and
+      does not ease the migration of your application to a different operating
+      system. For example, you can expect problems when porting an application from UNIX to
+  Windows when using UNIX specific system calls. Additionally, C data types that
+      are defined differently according to the processor architecture (32 / 64
+      bits issues) will also be an issue.</li>
+    <li> In earlier versions of Genero, static C extensions could define global
+  variables to be shared between the runtime system and the extension; This was done by using the "userData" structure in
+  the extension interface file. With Dynamic C extensions, global variables cannot be shared any longer. You must use
+  functions to pass global variable values. For an example, see <a href="#SHARING_GLOBALS">Sharing global
+  variables</a>.</li>
+    <li>Make sure that the functions defined in your C Extensions do not conflict
+  with BDL functions. In case of conflict, you will get a compiler or a runtime error, according to the <a href=
+  "#LOADEXT">loading technique used</a>.&nbsp;</li>
+  </ul>
+  <hr>
+
+  <h2><a name="PREREQ">Prerequisites</a></h2>
+  <p>To compile C Extensions using complex data types such as DECIMAL, DATETIME/INTERVAL
+  or BYTE/TEXT, you need IBM Informix ESQL/C data type structure definitions
+  such as dec_t, dtime_t, intrvl_t, as well as macros like DECLEN() or TU_ENCODE().
+  These definitions are not required if you use standard C types such as short,
+  int or char[].</p>
+  <p>The definition of the ESQL/C structures like dec_t are property of IBM and
+  cannot be provided in the Genero BDL package. Note also that some definitions
+  are platform specific, for example, the <i>mlong</i> typedef is different on
+  32bit and 64bit machines.</p>
+  <p>The IBM Informix CSDK must be installed on the development machine in order
+  to get the ESQL/C structures and macro definitions specific to Informix data
+  types. Understand that the IBM Informix CSDK is only required on the computer
+  used for <u>development,</u> where you compile and link your C Extensions
+  shared libraries: It is not required to install the CSDK on the production
+  machines, except of course if you want to connect to an IBM Informix database
+  server.</p>
+  <p>The INFORMIXDIR environment variable must be set and point to the directory
+  where the IBM Informix CSDK is installed.</p>
+  <hr>
+
+  <h2><a name="CREATEEXT">Creating C-Extensions</a></h2>
+
+  <p>Custom C Extensions must be provided to the runtime system as Shared Objects (<b>.so</b>) on UNIX, and as
+  Dynamically Loadable Libraries (<b>.DLL</b>) on Windows.</p>
+
+  <p>In order to create a C-Extension, you must:</p>
+
+  <ol>
+    <li>Define the list of user functions in the <a href="#CEXTFILE">C interface file</a>.</li>
+    <li>Compile the C interface file and the C modules with the position-independent code option, by including the
+    <b>fglExt.h</b> header file.</li>
+    <li>Create the shared library with the compiled C interface file and C modules by linking with the <b>libfgl</b>
+    runtime system library.</li>
+  </ol>
+
+  <p>In your C source files, you must include the <b>fglExt.h</b> header file in the following way:</p>
+  <pre><code class="linenumber">01</code> #include &lt;f2c/fglExt.h&gt;</pre>
+
+  <p> When migrating from IBM Informix 4GL, it is possible that existing C
+  extension sources include Informix specific headers like sqlhdr.h or decimal.h. You
+  can either remove or keep the original includes, but if you want to keep them,
+  the Informix specific
+  header files must be included <u>before</u> the <b> fglExt.h</b> header file, in order to let fglExt.h detect that typedefs such as dec_t or
+  dtime_t are already defined by Informix headers. If you include Informix headers <u>after</u> fglExt.h, you will get
+  a compilation error. As fglExt.h defines all Informix-like typedef structures, you can remove the inclusion of
+  Informix specific header files.</p>
+
+  <p>Your C functions must be known by the runtime system. To do so, each C extension library must publish its
+  functions in a <b>UsrFunction array</b>, which is read by the runtime system when the module is loaded. The
+  UsrFunction array describes the user functions by specifying the name of the function, the C function pointer, the
+  number of parameters and the number of returned values. You typically define the UsrFunction array in the <a href=
+  "#CEXTFILE">C interface file</a>.</p>
+
+  <p>After compiling the C sources, you must link them together with the <b>libfgl</b> runtime system library. See
+  below for examples.</p>
+
+  <p> Carefully read the man page of the ld dynamic loader, and any
+  documentation of your operating system related to shared libraries. Some platforms require specific configuration and
+  command line options when linking a shared library, or when linking a&nbsp; program using a shared library (+s option
+  on HP for example).</p>
+
+  <p>Linux command-line example:</p>
+  <pre>gcc -c -I $FGLDIR/include -fPIC myext.c
+gcc -c -I $FGLDIR/include -fPIC cinterf.c
+gcc -shared -o myext.so myext.o cinterf.o -L$FGLDIR/lib -lfgl</pre>
+
+  <p>Windows command-line example using Visual C 7.1:</p>
+  <pre>cl /DBUILDDLL /I%FGLDIR%/include /c myext.c
+cl /DBUILDDLL /I%FGLDIR%/include /c cintref.c
+link /dll /out:myext.dll myext.obj cinterf.obj %FGLDIR%\lib\libfgl.lib</pre>
+
+  <p>Windows command-line example using Visual C 8.0 (you must create a manifest file for the DLL!):</p>
+  <pre>cl /DBUILDDLL /I%FGLDIR%/include /c myext.c
+cl /DBUILDDLL /I%FGLDIR%/include /c cintref.c
+link /dll /manifest /out:myext.dll myext.obj cinterf.obj %FGLDIR%\lib\libfgl.lib
+mt -manifest myext.dll.manifest -outputresource:myext.dll</pre>
+
+  <h3><a name="CREATESQLCEXT">Creating ESQL/C Extensions</a></h3>
+
+  <p>You can create user extension libraries from ESQL/C sources, as long as you have an ESQL/C compiler which is
+  compatible with your Genero runtime system. In order to create these user extensions, you must first compile the
+  <b>.ec</b> sources to object files by including the <b>fglExt.h</b> header file. Then you must create the shared
+  library by linking with additional SQL libraries to resolve the functions used in the <b>.ec</b> source to execute
+  SQL statements.</p>
+
+  <h4><a name="NON_IFX_ESQLC">ESQL/C extensions with non-Informix databases</a></h4>
+
+  <p>If you need to use ESQL/C extensions with database clients such as Oracle, SQL Server or 
+	Genero db, you must use
+  the <b>fesqlc</b> compiler, and link the objects with the FESQLC libraries in order to use the same SQL API as the
+  Genero BDL runtime system database interface.</p>
+
+  <h4><a name="IFX_ESQLC">ESQL/C extensions with Informix</a></h4>
+
+  <p>You can compile .ec extensions with the native Informix esql compiler, or with the fesqlc compiler provided by
+  Genero. This section describes how to use the Informix esql compiler.</p>
+
+  <p>The following example shows how to compile and link an extension library with Informix <b>esql</b> compiler:</p>
+
+  <p>Linux command-line example:</p>
+  <pre>esql -c -I$FGLDIR/include myext.ec
+gcc -c -I$FGLDIR/include -fPIC cinterf.c
+gcc -shared -o myext.so myext.o cinterf.o -L$FGLDIR/lib -lfgl \
+    -L$INFORMIXDIR/lib -L$INFORMIXDIR/lib/esql `esql -libs`</pre>
+
+  <p>Windows command-line example (using VC 7.1):</p>
+  <pre>esql -c myext.ec -I%FGLDIR%/include
+cl /DBUILDDLL /I%FGLDIR%/include /c cintref.c
+esql -target:dll -o myext.dll myext.obj cinterf.obj %FGLDIR%\lib\libfgl.lib</pre>
+
+  <p>When using Informix <b>esql</b>, you link the extension library with <i>Informix client libraries</i>. These
+  libraries will be shared by the extension module and the Informix database driver loaded by the
+  Genero runtime system. Since
+  both the extension functions and the runtime database driver use the same functions to execute SQL queries, you can
+  share the current SQL connection opened in the Genero program to execute SQL queries in the extension functions.
+  However, mixing connection management instructions (DATABASE, CONNECT TO) as
+  well as database creation can produce unexpected results. For example you
+  cannot do a CREATE DATABASE in your ESQL/C extension, and expect that the
+  Genero BDL code can use it to execute SQL statements.</p>
+  <hr>
+
+  <h2><a name="CEXTFILE">C Interface File</a></h2>
+
+  <p>To make your C functions visible to the runtime system, you must define all the functions in the <b>C Interface
+  File</b>. This is a C source file that defines the <b>usrFunctions</b> array. This array defines C functions that can
+  be called from BDL. The last record of each array must be a line with all the elements set to 0, to define the end of
+  the list.</p>
+
+  <p>The first member of a <b>usrFunctions</b> element is the BDL name of the function, provided as a character string.
+  The second member is the C function symbol. Therefore, you typically do a forward declaration of the C functions
+  before the <b>usrFunctions</b> array initializer. The third member&nbsp;is the number of BDL parameters passed thru
+  the stack to the function. The last member is the number of values returned by the function; you can use -1 to
+  specify a variable number of arguments.</p>
+
+  <h4>Example:</h4>
+  <pre><code class="linenumber">01</code> #include &lt;f2c/fglExt.h&gt;
+<code class="linenumber">02</code> 
+<code class="linenumber">03</code> int c_log(int);
+<code class="linenumber">04</code> int c_cos(int);
+<code class="linenumber">05</code> int c_sin(int);
+<code class="linenumber">06</code> 
+<code class="linenumber">07</code> UsrFunction usrFunctions[]={
+<code class="linenumber">08</code>   {&quot;log&quot;,c_log,1,1},
+<code class="linenumber">09</code>   {&quot;cos&quot;,c_cos,1,1},
+<code class="linenumber">10</code>   {&quot;sin&quot;,c_sin,1,1},
+<code class="linenumber">11</code>   {0,0,0,0}
+<code class="linenumber">12</code> };</pre>
+  <hr>
+
+  <h2><a name="LINKING">Linking programs using C-Extensions</a></h2>
+
+  <p>When <a href="CompilingPrograms.html">creating a 42r program or 42x library</a>, the Genero BDL linker needs to resolve
+  all function names, including C extension functions. Thus, if extension modules are not specified explicitly in the
+  source files with the <a href="#IMPORT">IMPORT</a> directive, you must give the extension modules with the <b>-e</b>
+  option in the command line:</p>
+  <pre>fgllink -e myext1,myext2,myext3   -o myprog.42r   moduleA.42m moduleB.42m ...</pre>
+
+  <p>The <b>-e</b> option is not needed when using the default <a href="#DEFNAME">userextension</a> module, or if C
+  extensions are specified with the <a href="#IMPORT">IMPORT</a> directive.</p>
+  <hr>
+
+  <h2><a name="LOADEXT">Loading C-Extensions</a></h2>
+
+  <p>The runtime system can load several C-Extensions libraries, allowing you to properly split your libraries by
+  defining each group of functions in separate C interface files.</p>
+
+  <p>Directories are searched for the C-Extensions libraries according to the <a href=
+  "EnvironmentVariables.html#EV_FGLLDPATH">FGLLDPATH</a> environment variable
+  rules. See environment variable definition for more details.</p>
+
+  <p>  If the C-Extension library
+  depends from other shared libraries, make sure that the library loader of the
+  operating system can find theses shared objects: You may need to set the
+  LD_LIBRARY_PATH environment variable on UNIX or the PATH environment variable
+  on Windows to point to the directory where these other libraries are located.</p>
+
+  <p>There are three ways to bind a C Extension with the runtime system:</p>
+
+  <ol>
+    <li>Using the <tt><a href="Programs.html#IMPORT">IMPORT</a></tt> instruction in sources.</li>
+    <li>Using the default C Extension name.</li>
+    <li>Using the -e option of <a href="Tools.html#TL_FGLRUN">fglrun</a>.</li>
+  </ol>
+
+  <h3><a name="IMPORT">Using the IMPORT instruction</a></h3>
+
+  <p>The <tt>IMPORT</tt> instruction allows you to declare an external module in a .4gl source file. It must appear at
+  the beginning of the source file.</p>
+
+  <p>Note that the name of the module specified after the <tt>IMPORT</tt> keyword
+  <u> is
+  converted to lowercase</u> by the compiler. Therefore it is recommended to use lowercase file names only.</p>
+
+  <p>The compiler and the runtime system automatically know which C extensions must be loaded, based on the
+  <tt>IMPORT</tt> instruction:</p>
+  <pre><code class="linenumber">01</code> <tt>IMPORT </tt>mylib1
+<code class="linenumber">02</code> <tt>MAIN</tt>
+<code class="linenumber">03</code>   <tt>CALL</tt> myfunc1(&quot;Hello World&quot;)  -- defined in mylib1
+<code class="linenumber">04</code> <tt>END MAIN</tt></pre>
+
+  <p>When the <tt>IMPORT</tt> instruction is used, no other action has to be taken at runtime: The module name is
+  stored in the <b>42m</b> pcode and is automatically loaded when needed.</p>
+
+  <p>For more details, see <a href="Programs.html#IMPORT">Importing modules</a>.</p>
+
+  <h3><a name="DEFNAME">Using the default C Extension name</a></h3>
+
+  <p>Normally, all Genero BDL modules using a function from a C extension should now use the <tt>IMPORT</tt> instruction. This
+  could be a major change in your sources.</p>
+
+  <p>To simplify migration of existing C extensions, the runtime system loads by default a module with the name
+  <b>userextension.</b> Create this shared library with your existing C extensions, and the runtime system will load it
+  automatically if it is in the directories specified by <a href=
+  "EnvironmentVariables.html#EV_FGLLDPATH">FGLLDPATH</a>.</p>
+
+  <h3><a name="E_OPTION">Using the -e fglrun option</a></h3>
+
+  <p>In some cases you need several C extension libraries, which are used by different group of programs, so you can't
+  use the default <b>userextension</b> solution. However, you don't want to review all your sources in order to use the
+  <tt>IMPORT</tt> instruction.</p>
+
+  <p>You can specify the C Extensions to be loaded by using the <b>-e</b> option of <a href=
+  "Tools.html#TL_FGLRUN">fglrun</a>. The -e option takes a comma-separated list of module names, and can be specified
+  multiple times in the command line. The next example loads five extension modules:</p>
+  <pre>fglrun -e myext1,myext2,myext3   -e myext4,myext5   myprog.42r</pre>
+
+  <p>By using the <b>-e</b> option, the runtime system loads the modules specified in the command line instead of
+  loading the default <b>userextension</b> module.</p>
+  <hr>
+
+  <h2><a name="STACK">Stack Functions</a></h2>
+
+  <p>To pass values between a C function and a program, the C function and the runtime system use the BDL stack. The
+  <b>int</b> parameter of the C function defines the number of input parameters passed on the stack, and the function
+  must return an <b>int</b> value defining the number of values returned on the stack. The parameters passed to the C
+  function must be popped from the stack at the beginning of the C function, and the return values expected by the 4gl
+  call must be pushed on the stack before leaving the C function. If you don't pop / push the specified number of
+  parameters / return values, you corrupt the stack and get a fatal error.</p>
+
+  <p>The runtime system library includes a set of functions to retrieve the values passed as parameters on the stack.
+  The following table shows the library functions provided to pop values from the stack into C buffers:</p>
+
+  <table border="0" width="95%">
+    <tr>
+      <td bgcolor="#C0C0C0"><b>Function</b></td>
+      <td bgcolor="#C0C0C0"><b>BDL Type</b></td>
+      <td bgcolor="#C0C0C0"><b>Notes</b></td>
+    </tr>
+    <tr>
+      <td>void popdate(int4 *dst);</td>
+      <td>DATE</td>
+      <td>4-byte integer value corresponding to days since 12/31/1899.</td>
+    </tr>
+    <tr>
+      <td>void popboolean(signed char *dst);</td>
+      <td>BOOLEAN</td>
+      <td>1-byte integer boolean (1/0/-1)</td>
+    </tr>
+    <tr>
+      <td>void popbigint(bigint *dst);</td>
+      <td>BIGINT</td>
+      <td>8-byte integer value</td>
+    </tr>
+    <tr>
+      <td>void popint(mint *dst);</td>
+      <td>INTEGER</td>
+      <td>System dependent integer value (int)</td>
+    </tr>
+    <tr>
+      <td>void popshort(int2 *dst);</td>
+      <td>SMALLINT</td>
+      <td>2-byte integer value</td>
+    </tr>
+    <tr>
+      <td>void poplong(int4 *dst);</td>
+      <td>INTEGER</td>
+      <td>4-byte integer value</td>
+    </tr>
+    <tr>
+      <td>void popflo(float *dst);</td>
+      <td>SMALLFLOAT</td>
+      <td>4-byte floating point value</td>
+    </tr>
+    <tr>
+      <td>void popdub(double *dst);</td>
+      <td>FLOAT</td>
+      <td>8-byte floating point value</td>
+    </tr>
+    <tr>
+      <td>void popdec(dec_t *dst);</td>
+      <td>DECIMAL</td>
+      <td>See structure definition in $FGLDIR/include/f2c headers</td>
+    </tr>
+    <tr>
+      <td>void popquote(char *dst, int len);</td>
+      <td>CHAR(n)</td>
+      <td><font color="#FF0000">len = strlen(val)+1 (for the '/0')</font></td>
+    </tr>
+    <tr>
+      <td>void popvchar(char *dst, int len);</td>
+      <td>VARCHAR(n)</td>
+      <td><font color="#FF0000">len = strlen(val)+1 (for the '/0')</font></td>
+    </tr>
+    <tr>
+      <td>void popdtime(dtime_t *dst, int size);</td>
+      <td>DATETIME</td>
+      <td>See structure definition in $FGLDIR/include/f2c headers<br>
+      <font color="#FF0000">size = TU_DTENCODE(start, end)</font></td>
+    </tr>
+    <tr>
+      <td>void popinv(intrvl_t* dst, int size);</td>
+      <td>INTERVAL</td>
+      <td>See structure definition in $FGLDIR/include/f2c headers<br>
+      <font color="#FF0000">size = TU_IENCODE(len, start, end)</font></td>
+    </tr>
+    <tr>
+      <td>void poplocator(loc_t **dst);</td>
+      <td>BYTE, TEXT</td>
+      <td>See structure definition in $FGLDIR/include/f2c headers<br>
+      <font color="#FF0000">Warning: this function pops the pointer of a loc_t object!</font></td>
+    </tr>
+  </table>
+
+  <p>When using a pop function, the value is copied from the stack to the local C variable and the value is removed
+  from the stack.</p>
+
+  <p>In BDL, Strings (CHAR, VARCHAR) are not terminated by '\0'. Therefore, the C variable must have one additional
+  character to store the '\0'. For example, the equivalent of a VARCHAR(100) in BDL is a char [101] in C.</p>
+
+  <p>To return a value from the C function, you must use one of the following functions provided in the runtime system
+  library:</p>
+
+  <table border="0" width="95%">
+    <tr>
+      <td bgcolor="#C0C0C0"><b>Function</b></td>
+      <td bgcolor="#C0C0C0"><b>BDL Type</b></td>
+      <td bgcolor="#C0C0C0"><b>Notes</b></td>
+    </tr>
+    <tr>
+      <td>void pushdate(int4 val);</td>
+      <td>DATE</td>
+      <td>4-byte integer value corresponding to days since 12/31/1899.</td>
+    </tr>
+    <tr>
+      <td>void pushdec(const dec_t* val, const unsigned decp);</td>
+      <td>DECIMAL</td>
+      <td>See structure definition in $FGLDIR/include/f2c headers</td>
+    </tr>
+    <tr>
+      <td>void pushboolean(const signed char);</td>
+      <td>BOOLEAN</td>
+      <td>1-byte integer boolean (1/0/-1)</td>
+    </tr>
+    <tr>
+      <td>void pushbigint(bigint val);</td>
+      <td>BIGINT</td>
+      <td>8-byte integer value</td>
+    </tr>
+    <tr>
+      <td>void pushint(mint val);</td>
+      <td>INTEGER</td>
+      <td>System dependent integer value (int)</td>
+    </tr>
+    <tr>
+      <td>void pushlong(int4 val);</td>
+      <td>INTEGER</td>
+      <td>4-byte integer value</td>
+    </tr>
+    <tr>
+      <td>void pushshort(int2 val);</td>
+      <td>SMALLINT</td>
+      <td>2-byte integer value</td>
+    </tr>
+    <tr>
+      <td>void pushflo( float* val);</td>
+      <td>SMALLFLOAT</td>
+      <td>4-byte floating point value. <font color="#FF0000">Warning: function takes a pointer!</font></td>
+    </tr>
+    <tr>
+      <td>void pushdub( double* val);</td>
+      <td>FLOAT</td>
+      <td>8-byte floating point value. <font color="#FF0000">Warning: function takes a pointer!</font></td>
+    </tr>
+    <tr>
+      <td>void pushquote(const char *val, int l);</td>
+      <td>CHAR(n)</td>
+      <td><font color="#FF0000">len = strlen(val) (without '\0')</font></td>
+    </tr>
+    <tr>
+      <td>void pushvchar(const char *val, int l);</td>
+      <td>VARCHAR(n)</td>
+      <td><font color="#FF0000">len = strlen(val) (without '\0')</font></td>
+    </tr>
+
+    <tr>
+      <td>void pushdtime(const dtime_t *val);</td>
+      <td>DATETIME</td>
+      <td>See structure definition in $FGLDIR/include/f2c headers</td>
+    </tr>
+
+    <tr>
+      <td>void pushinv(const intrvl_t *val);</td>
+      <td>INTERVAL</td>
+      <td>See structure definition in $FGLDIR/include/f2c headers</td>
+    </tr>
+  </table>
+
+  <p>When using a push function, the value of the C variable is copied at the top of the stack.</p>
+  <hr>
+
+  <h2><a name="TYPEDEFS">C Data Types and Structures</a></h2>
+
+  <p>The fglExt.h header file defines the following C types:</p>
+
+  <table border="0" cellpadding="0" width="90%" bordercolorlight="#FFFFFF" cellspacing="0">
+    <tr>
+      <td width="30%" bgcolor="#C0C0C0"><b>Type name</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="30%">bigint</td>
+      <td>signed integer with a size of 8 bytes</td>
+    </tr>
+    <tr>
+      <td width="30%">ubigint</td>
+      <td>unsigned integer with a size of 8 bytes</td>
+    </tr>
+    <tr>
+      <td width="30%">int4</td>
+      <td>signed integer with a size of 4 bytes</td>
+    </tr>
+    <tr>
+      <td width="30%">uint4</td>
+      <td>unsigned integer with a size of 4 bytes</td>
+    </tr>
+    <tr>
+      <td width="30%">int2</td>
+      <td>signed integer with a size of 2 bytes</td>
+    </tr>
+    <tr>
+      <td width="30%">uint2</td>
+      <td>unsigned integer with a size of 2 bytes</td>
+    </tr>
+    <tr>
+      <td width="30%">int1</td>
+      <td>signed integer with a size of 1 byte</td>
+    </tr>
+    <tr>
+      <td width="30%">uint1</td>
+      <td>unsigned integer with a size of 1 byte</td>
+    </tr>
+    <tr>
+      <td width="30%">mint</td>
+      <td>signed machine-dependent C int</td>
+    </tr>
+    <tr>
+      <td width="30%">muint</td>
+      <td>unsigned machine-dependent C int</td>
+    </tr>
+    <tr>
+      <td width="30%">mlong</td>
+      <td>signed machine-dependent C long</td>
+    </tr>
+    <tr>
+      <td width="30%">mulong</td>
+      <td>unsigned machine-dependent C long</td>
+    </tr>
+    <tr>
+      <td width="30%">dec_t</td>
+      <td>DECIMAL data type structure</td>
+    </tr>
+    <tr>
+      <td width="30%">dtime_t</td>
+      <td>DATETIME data type structure</td>
+    </tr>
+    <tr>
+      <td width="30%">intrvl_t</td>
+      <td>INTERVAL data type structure</td>
+    </tr>
+    <tr>
+      <td width="30%">loc_t</td>
+      <td>TEXT / BYTE Locator structure</td>
+    </tr>
+  </table>
+
+  <h3>Basic data types</h3>
+
+  <p>Basic data types such as <b>bigint</b>, <b>int4</b> and <b>int2</b> are provided to define variables that must
+  hold BIGINT (bigint), SMALLINT (int2), INTEGER (int4) and DATE (int4) values. Standard <b>char</b> array can be used
+  to hold CHAR and VARCHAR data.</p>
+
+  <h3>DATE</h3>
+
+  <p>No specific typedef exists for DATEs; you can use the <b>int4</b> type to store a DATE value.</p>
+
+  <h3>DECIMAL/MONEY</h3>
+
+  <p>The <b>dec_t</b> structure is provided to hold DECIMAL and MONEY values.</p>
+
+  <p>The internals of dec_t structure can be ignored during C extension programming, because decimal API functions are
+  provided to manipulate any aspects of a decimal.</p>
+
+  <h3>DATETIME</h3>
+
+  <p>The <b>dtime_t</b> structure holds a DATETIME value.</p>
+
+  <p>Before manipulating a dtime_t, you must initialize its qualifier qt_qual, by using the TU_DTENCODE macro, as in
+  the following example:</p>
+  <pre><code class="linenumber">01</code> dtime_t dt;
+<code class="linenumber">02</code> dt.dt_qual = TU_DTENCODE(TU_YEAR, TU_SECOND);
+<code class="linenumber">03</code> dtcvasc( &quot;2004-02-12 12:34:56&quot;, &amp;dt );</pre>
+
+  <h3>INTERVAL</h3>
+
+  <p>The <b>intrvl_t</b> structure holds an INTERVAL value.</p>
+
+  <p>Before manipulating a intrvl_t, you must initialize its qualifier in_qual, by using the TU_IENCODE macro, as in
+  the following example:</p>
+  <pre><code class="linenumber">01</code> intrvl_t in;
+<code class="linenumber">02</code> in.in_qual = TU_IENCODE(5, TU_YEAR, TU_MONTH);
+<code class="linenumber">03</code> incvasc( &quot;65234-02&quot;, &amp;in );</pre>
+
+  <h3>TEXT/BYTE Locator</h3>
+
+  <p>The <b>loc_t</b> structure is used to declare host variables for a TEXT/BYTE values (simple large objects).
+  Because the potential size of the data can be quite large, this is a locator structure that contains information
+  about the size and location of the TEXT/BYTE data, rather than containing the actual data.</p>
+
+  <p>The fields of the loc_t structure are:</p>
+
+  <table border="0" cellpadding="0" width="90%" bordercolorlight="#FFFFFF" cellspacing="0" id="table7">
+    <tr>
+      <td width="16%" bgcolor="#C0C0C0"><b>Field name</b></td>
+      <td width="12%" bgcolor="#C0C0C0"><b>Data Type</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="16%" valign="top">loc_indicator</td>
+      <td width="12%" valign="top">int4</td>
+      <td valign="top">Null indicator; a value of -1 indicates a null TEXT/BYTE value. Your program can set the field
+      to indicate the insertion of a null value. FESQLC or ESQL/C libraries set the value for selects and fetches.</td>
+    </tr>
+    <tr>
+      <td width="16%" height="19" valign="top">loc_type</td>
+      <td width="12%" height="19" valign="top">int4</td>
+      <td height="19" valign="top">Data type - SQLTEXT (for TEXT values) or SQLBYTES (for BYTE values).</td>
+    </tr>
+    <tr>
+      <td width="16%" valign="top">loc_size</td>
+      <td width="12%" valign="top">int4</td>
+      <td valign="top">Size of the TEXT/BYTE value in bytes; your program sets the size of the large object for
+      insertions. FESQLC or ESQL/C libraries set the size for selects and fetches.</td>
+    </tr>
+    <tr>
+      <td width="16%" valign="top">loc_loctype</td>
+      <td width="12%" valign="top">int2</td>
+      <td valign="top">Location - LOCMEMORY (in memory) or LOCFNAME (in a named file). Set loc_loctype after you
+      declare the locator variable and before this declared variable receives the large object value.</td>
+    </tr>
+    <tr>
+      <td width="16%" valign="top">loc_buffer</td>
+      <td width="12%" valign="top">char *</td>
+      <td valign="top">If loc_loctype is LOCMEMORY, this is the location of the TEXT/BYTE value; your program must
+      allocate space for the buffer and store its address here.</td>
+    </tr>
+    <tr>
+      <td width="16%" valign="top">loc_bufsize</td>
+      <td width="12%" valign="top">int4</td>
+      <td valign="top">IF loc_loctype is LOCMEMORY, this is the size of the buffer loc_buffer; If you set loc_bufsize
+      to -1, FESQLC or ESQL/C libraries will allocate the memory buffer for selects and fetches. Otherwise, it is
+      assumed that your program will handle memory allocation and de-allocation.</td>
+    </tr>
+    <tr>
+      <td width="16%" valign="top">loc_fname</td>
+      <td width="12%" valign="top">char *</td>
+      <td valign="top">IF loc_loc_type is LOCFNAME, this is the address of the pathname string that contains the
+      file.</td>
+    </tr>
+  </table>
+
+  <p><b>Example:</b></p>
+  <pre><code class="linenumber">01</code> loc_t *pb1
+<code class="linenumber">02</code> double ratio; 
+<code class="linenumber">03</code> char *source = NULL, *psource = NULL;
+<code class="linenumber">04</code> int size; 
+<code class="linenumber">05</code>
+<code class="linenumber">06</code> if (pb1-&gt;loc_loctype == LOCMEMORY) { 
+<code class="linenumber">07</code>     psource = pb1-&gt;loc_buffer; 
+<code class="linenumber">08</code>     size = pb1-&gt;loc_size; 
+<code class="linenumber">09</code> } else if (pb1-&gt;loc_loctype == LOCFNAME) { 
+<code class="linenumber">10</code>     int fd; 
+<code class="linenumber">11</code>     struct stat st; 
+<code class="linenumber">12</code>     fd = open(pb1-&gt;loc_fname, O_RDONLY); 
+<code class="linenumber">13</code>     fstat(fd, &amp;st); 
+<code class="linenumber">14</code>     size = st.st_size; 
+<code class="linenumber">15</code>     psource = source = (char *) malloc(size); 
+<code class="linenumber">16</code>     read(fd, source, size); 
+<code class="linenumber">17</code>     close(fd); 
+<code class="linenumber">18</code> }</pre>
+  <hr>
+
+  <h2><a name="MACROS">Available Macros</a></h2>
+
+  <h3><a name="VCMACROS">Varchar type related macros</a></h3>
+
+  <p>The following macros allow you to obtain the size information stored by the database server for a VARCHAR
+  column:</p>
+
+  <table border="0" cellpadding="0" width="90%" bordercolorlight="#FFFFFF" cellspacing="0">
+    <tr>
+      <td width="30%" bgcolor="#C0C0C0"><b>Macro</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="30%">MAXVCLEN (255)</td>
+      <td>Returns maximum number of characters allowed in a VARCHAR column</td>
+    </tr>
+    <tr>
+      <td width="30%">VCMIN(size)</td>
+      <td>Returns minimum number of characters that you can store in a VARCHAR column</td>
+    </tr>
+    <tr>
+      <td width="30%">VCLENGTH(len)</td>
+      <td>Returns length of the host variable</td>
+    </tr>
+    <tr>
+      <td width="30%">VCMAX(size)</td>
+      <td>Returns maximum number of characters that you can store in a VARCHAR column</td>
+    </tr>
+    <tr>
+      <td width="30%">VCSIZ(max, min)</td>
+      <td>Returns encoded size for the VARCHAR column</td>
+    </tr>
+  </table>
+
+  <h3><a name="DECMACROS">Decimal type related macros</a></h3>
+
+  <p>Decimals are defined by an encoded <b>length</b> - the total number of significant digits (<b>precision</b>), and
+  the significant digits to the right of the decimal (<b>scale</b>). The following macros handle decimal length:</p>
+
+  <table border="0" cellpadding="0" width="90%" bordercolorlight="#FFFFFF" cellspacing="0">
+    <tr>
+      <td width="30%" bgcolor="#C0C0C0"><b>Macro</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="30%">DECLEN(m,n)</td>
+      <td>Calculates the minimum number of bytes necessary to hold a decimal ( m = precision, n = scale)</td>
+    </tr>
+    <tr>
+      <td width="30%">DECLENGTH(length)</td>
+      <td>Calculates the minimum number of bytes necessary to hold a decimal, given the encoded length</td>
+    </tr>
+    <tr>
+      <td width="30%">DECPREC(size)</td>
+      <td>Calculates a default precision, given the size (the number of bytes used to store a number)</td>
+    </tr>
+    <tr>
+      <td width="30%">PRECTOT(length)</td>
+      <td>Returns the precision from an encoded length</td>
+    </tr>
+    <tr>
+      <td width="30%">PRECDEC(length)</td>
+      <td>Returns the scale from an encoded length</td>
+    </tr>
+    <tr>
+      <td width="30%">PRECMAKE(p,s)</td>
+      <td>Returns the encoded decimal length from a precision and scale</td>
+    </tr>
+  </table>
+
+  <h3><a name="DTMACROS">Datetime/Interval related macros</a></h3>
+
+  <p>Datetime and Interval need qualifiers (ex: YEAR TO MONTH) to complete the type definition. The following macros
+  can be used to manage those qualifiers and set the qt_qual or in_qual members of dtime_t and intrvl_t structures.</p>
+
+  <table border="0" cellpadding="0" width="90%" bordercolorlight="#FFFFFF" cellspacing="0" height="272">
+    <tr>
+      <td width="30%" bgcolor="#C0C0C0"><b>Macro</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="30%">TU_YEAR</td>
+      <td>Defines the YEAR qualifier</td>
+    </tr>
+    <tr>
+      <td width="30%">TU_MONTH</td>
+      <td>Defines the MONTH qualifier</td>
+    </tr>
+    <tr>
+      <td width="30%">TU_DAY</td>
+      <td>Defines the DAY qualifier</td>
+    </tr>
+    <tr>
+      <td width="30%">TU_HOUR</td>
+      <td>Defines the HOUR qualifier</td>
+    </tr>
+    <tr>
+      <td width="30%">TU_MINUTE</td>
+      <td>Defines the MINUTE qualifier</td>
+    </tr>
+    <tr>
+      <td width="30%">TU_SECOND</td>
+      <td>Defines the SECOND qualifier</td>
+    </tr>
+    <tr>
+      <td width="30%">TU_FRAC</td>
+      <td>Defines default FRACTION(3) qualifier</td>
+    </tr>
+    <tr>
+      <td width="30%">TU_F1</td>
+      <td>Defines the FRACTION(1) qualifier</td>
+    </tr>
+    <tr>
+      <td width="30%">TU_F2</td>
+      <td>Defines the FRACTION(2) qualifier</td>
+    </tr>
+    <tr>
+      <td width="30%">TU_F3</td>
+      <td>Defines the FRACTION(3) qualifier</td>
+    </tr>
+    <tr>
+      <td width="30%">TU_F4</td>
+      <td>Defines the FRACTION(4) qualifier</td>
+    </tr>
+    <tr>
+      <td width="30%">TU_F5</td>
+      <td>Defines the FRACTION(5) qualifier</td>
+    </tr>
+    <tr>
+      <td width="30%">TU_END(q)</td>
+      <td>Returns the end qualifier of a composed qualifier</td>
+    </tr>
+    <tr>
+      <td width="30%">TU_START(q)</td>
+      <td>Returns the start qualifier of a composed qualifier</td>
+    </tr>
+    <tr>
+      <td width="30%">TU_LEN(q)</td>
+      <td>Returns the length in digits of a datetime qualifier</td>
+    </tr>
+    <tr>
+      <td width="30%">TU_DTENCODE(q1,q2)</td>
+      <td>Build a datetime qualifier as DATETIME q1 TO q2</td>
+    </tr>
+    <tr>
+      <td width="30%">TU_IENCODE(len,q1,q2)</td>
+      <td>Build an interval qualifier as INTERVAL q1(len) TO q2</td>
+    </tr>
+    <tr>
+      <td width="30%">TU_CURRQUAL</td>
+      <td>Default qualifier used by current</td>
+    </tr>
+  </table>
+
+  <h3><a name="DTCONST">Data type identification macros</a></h3>
+
+  <p>The following macros are used by functions like <a href="#rsetnull">rsetnull()</a>, <a href=
+  "#risnull">risnull()</a>, <a href="#rtypalign">rtypalign()</a>, <a href="#rtypmsize">rtypmsize()</a>:</p>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="90%">
+    <tr>
+      <td bgcolor="#FFFFCC" width="30%" colspan="2"><b>SQL Types</b></td>
+    </tr>
+    <tr>
+      <td bgcolor="#C0C0C0" width="30%"><b>Macro name</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="30%">SQLBOOL</td>
+      <td>SQL BOOLEAN data type</td>
+    </tr>
+    <tr>
+      <td width="30%">SQLINFXBIGINT</td>
+      <td>SQL BIGINT data type</td>
+    </tr>
+    <tr>
+      <td width="30%">SQLCHAR</td>
+      <td>SQL CHAR data type</td>
+    </tr>
+    <tr>
+      <td width="30%">SQLSMINT</td>
+      <td>SQL SMALLINT data type</td>
+    </tr>
+    <tr>
+      <td width="30%">SQLINT</td>
+      <td>SQL INTEGER data type</td>
+    </tr>
+    <tr>
+      <td width="30%">SQLFLOAT</td>
+      <td>SQL FLOAT data type</td>
+    </tr>
+    <tr>
+      <td width="30%">SQLSMFLOAT</td>
+      <td>SQL SMALLFLOAT data type</td>
+    </tr>
+    <tr>
+      <td width="30%">SQLDECIMAL</td>
+      <td>SQL DECIMAL data type</td>
+    </tr>
+    <tr>
+      <td width="30%">SQLSERIAL</td>
+      <td>SQL SERIAL data type</td>
+    </tr>
+    <tr>
+      <td width="30%">SQLDATE</td>
+      <td>SQL DATE data type</td>
+    </tr>
+    <tr>
+      <td width="30%">SQLMONEY</td>
+      <td>SQL MONEY data type</td>
+    </tr>
+    <tr>
+      <td width="30%">SQLDTIME</td>
+      <td>SQL DATETIME data type</td>
+    </tr>
+    <tr>
+      <td width="30%">SQLBYTES</td>
+      <td>SQL BYTE data type</td>
+    </tr>
+    <tr>
+      <td width="30%">SQLTEXT</td>
+      <td>SQL TEXT data type</td>
+    </tr>
+    <tr>
+      <td width="30%">SQLVCHAR</td>
+      <td>SQL VARCHAR data type</td>
+    </tr>
+    <tr>
+      <td width="30%">SQLINTERVAL</td>
+      <td>SQL INTERVAL data type</td>
+    </tr>
+    <tr>
+      <td width="30%">SQLNCHAR</td>
+      <td>SQL NCHAR data type</td>
+    </tr>
+    <tr>
+      <td width="30%">SQLNVCHAR</td>
+      <td>SQL NVARCHAR data type</td>
+    </tr>
+    <tr>
+      <td width="30%">SQLINT8</td>
+      <td>SQL INT8 data type</td>
+    </tr>
+    <tr>
+      <td width="30%">SQLSERIAL8</td>
+      <td>SQL SERIAL8 data type</td>
+    </tr>
+    <tr>
+      <td bgcolor="#FFFFCC" width="30%" colspan="2"><b>C Types</b></td>
+    </tr>
+    <tr>
+      <td bgcolor="#C0C0C0" width="30%"><b>Macro name</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="30%">CBOOLTYPE</td>
+      <td>C boolean data type (signed char)</td>
+    </tr>
+    <tr>
+      <td width="30%">CBIGINTTYPE</td>
+      <td>C bigint data type (long long)</td>
+    </tr>
+    <tr>
+      <td width="30%">CCHARTYPE</td>
+      <td>C char data type</td>
+    </tr>
+    <tr>
+      <td width="30%">CSHORTTYPE</td>
+      <td>C short int data type</td>
+    </tr>
+    <tr>
+      <td width="30%">CINTTYPE</td>
+      <td>C int4 data type</td>
+    </tr>
+    <tr>
+      <td width="30%">CLONGTYPE</td>
+      <td>C long data type</td>
+    </tr>
+    <tr>
+      <td width="30%">CFLOATTYPE</td>
+      <td>C float data type</td>
+    </tr>
+    <tr>
+      <td width="30%">CDOUBLETYPE</td>
+      <td>C double data type</td>
+    </tr>
+    <tr>
+      <td width="30%">CDECIMALTYPE</td>
+      <td>C dec_t data type</td>
+    </tr>
+    <tr>
+      <td width="30%">CFIXCHARTYPE</td>
+      <td>C fixchar data type</td>
+    </tr>
+    <tr>
+      <td width="30%">CSTRINGTYPE</td>
+      <td>C string data type</td>
+    </tr>
+    <tr>
+      <td width="30%">CDATETYPE</td>
+      <td>C int4/date data type</td>
+    </tr>
+    <tr>
+      <td width="30%">CMONEYTYPE</td>
+      <td>C dec_t data type</td>
+    </tr>
+    <tr>
+      <td width="30%">CDTIMETYPE</td>
+      <td>C dtime_t data type</td>
+    </tr>
+    <tr>
+      <td width="30%">CLOCATORTYPE</td>
+      <td>C loc_t data type</td>
+    </tr>
+    <tr>
+      <td width="30%">CVCHARTYPE</td>
+      <td>C varchar data type</td>
+    </tr>
+    <tr>
+      <td width="30%">CINVTYPE</td>
+      <td>C intrvl_t data type</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h2><a name="CFCALL">Calling C functions from BDL</a></h2>
+
+  <p>With C-Extensions you can call C functions from the program in the same way that you call normal <a href=
+  "Functions.html">functions</a>.</p>
+
+  <p>The C functions that can be called from BDL must use the following signature:</p>
+  <pre><b>int</b> <i>function-name</i>( <b>int</b> )</pre>
+
+  <p>Note that <i>function-name</i> must be written in lowercase letters. The fglcomp
+  compiler converts all BDL functions names to lowercase.</p>
+
+  <p>The C function must be declared in the <b>usrFunctions</b> array in the <a href="#CEXTFILE">C Interface File</a>,
+  as described below.</p>
+  <hr>
+
+  <h2><a name="FGLCALL">Calling BDL functions from C</a></h2>
+
+  <p>It is possible to call an <a href="Functions.html">BDL function</a> from a C function, by using the
+  <b>fgl_call</b> macro in your C function, as follows:</p>
+  <pre><b>fgl_call ( </b><i>function-name</i>, <i>nbparams</i> <b>);</b></pre>
+
+  <p><i>function-name</i> is the name of the BDL function to call, and <i>nbparams</i> is the number of parameters
+  pushed on the stack for the BDL function.</p>
+
+  <p>Note that <i>function-name</i> must be written in lowercase letters (The fglcomp
+  compiler converts all BDL functions names to lowercase)</p>
+
+  <p>The fgl_call macro is converted to a function that returns the number of values returned on the stack. The BDL
+  function parameters must be pushed on the stack before the call, and the return values must be popped from the stack
+  after returning. See <a href="#CFCALL">Calling C functions from BDL</a> for more details about push and pop library
+  functions.</p>
+
+  <h4>Example:</h4>
+  <pre><code class="linenumber">01</code> #include &lt;stdio.h&gt;
+<code class="linenumber">02</code> #include &lt;f2c/fglExt.h&gt;
+<code class="linenumber">03</code> int c_fct( int n )
+<code class="linenumber">04</code> {
+<code class="linenumber">05</code>    int rc, r1, r2;
+<code class="linenumber">06</code>       pushint(123456);
+<code class="linenumber">07</code>    rc = fgl_call( fgl_fct, 1 );
+<code class="linenumber">08</code>    if (rc != 2) ... error ...
+<code class="linenumber">09</code>    popint(&amp;r1);
+<code class="linenumber">10</code>    popint(&amp;r2);
+<code class="linenumber">11</code>    return 0;
+<code class="linenumber">12</code> }</pre>
+  <hr>
+
+  <h2><a name="SHARING_GLOBALS">Sharing global variables</a></h2>
+
+  <p>In order to share the global variables declared in your BDL program, you must do the following:</p>
+
+  <p>1. Generate the .c and .h interface files by using <b>fglcomp -G</b> with the BDL module defining the global
+  variables:</p>
+  <pre><code class="linenumber">01</code> <tt>GLOBALS</tt>
+<code class="linenumber">02</code> <tt>DEFINE</tt> g_name <tt>CHAR</tt>(100)
+<code class="linenumber">03</code> <tt>END GLOBALS</tt></pre>
+  <pre>fglcomp -G myglobals.4gl</pre>
+
+  <p>This will produce two files named <b>myglobals.h</b> and <b>myglobals.c</b>.</p>
+
+  <p>2. In the C module, include the generated header file and use the global variables directly:</p>
+  <pre><code class="linenumber">01</code> #include &lt;string.h&gt;
+<code class="linenumber">02</code> #include &lt;f2c/fglExt.h&gt;
+<code class="linenumber">03</code> #include <b>&quot;myglobals.h&quot;</b>
+<code class="linenumber">04</code>
+<code class="linenumber">05</code> int myfunc1(int c)
+<code class="linenumber">06</code> {
+<code class="linenumber">07</code>    strcpy(g_name, &quot;new name&quot;);
+<code class="linenumber">08</code>    return 0;
+<code class="linenumber">09</code> }</pre>
+
+  <p>3. When creating the C Extension library, compile and link with the myglobals.c generated file.</p>
+
+  <p><b><font color="#008000">Tip:</font></b> It is not recommended to use global variables, because it makes your code
+  much more difficult to maintain. If you need persistent variables, use BDL module variables and write set/get
+  functions that you can interface with.</p>
+  <hr>
+
+  <h2><a name="EXAMPLE">Example</a></h2>
+
+  <p> This example shows how to create a C extension library on Linux using
+  gcc. The command line options to compile and link shared libraries can change depending on the operating system and
+  compiler/linker used.</p>
+
+  <h4>Create the "split.c" file:</h4>
+  <pre><code class="linenumber">01</code> #include &lt;string.h&gt;
+<code class="linenumber">02</code> #include &lt;f2c/fglExt.h&gt;
+<code class="linenumber">03</code>
+<code class="linenumber">04</code> int fgl_split( int in_num );
+<code class="linenumber">05</code> int fgl_split( int in_num )
+<code class="linenumber">06</code> {
+<code class="linenumber">07</code>        char c1[101];
+<code class="linenumber">08</code>        char c2[101];
+<code class="linenumber">09</code>        char z[201];
+<code class="linenumber">10</code>        char *ptr_in;
+<code class="linenumber">11</code>        char *ptr_out;
+<code class="linenumber">12</code>        popvchar(z, 200); /* Getting input parameter */
+<code class="linenumber">13</code>        strcpy(c1, &quot;&quot;);
+<code class="linenumber">14</code>        strcpy(c2, &quot;&quot;);
+<code class="linenumber">15</code>        ptr_out = c1;
+<code class="linenumber">16</code>        ptr_in = z;
+<code class="linenumber">17</code>        while (*ptr_in != ' ' &amp;&amp; *ptr_in != '\0')
+<code class="linenumber">18</code>        {
+<code class="linenumber">19</code>                *ptr_out = *ptr_in;
+<code class="linenumber">20</code>                ptr_out++;
+<code class="linenumber">21</code>                ptr_in++;
+<code class="linenumber">22</code>        }
+<code class="linenumber">23</code>        *ptr_out=0;
+<code class="linenumber">24</code>        ptr_in++;
+<code class="linenumber">25</code>        ptr_out = c2;
+<code class="linenumber">26</code>        while (*ptr_in != '\0')
+<code class="linenumber">27</code>        {
+<code class="linenumber">28</code>                *ptr_out = *ptr_in;
+<code class="linenumber">29</code>                ptr_out++;
+<code class="linenumber">30</code>                ptr_in++;
+<code class="linenumber">31</code>        }
+<code class="linenumber">32</code>        *ptr_out=0;
+<code class="linenumber">33</code>        pushvchar(c1, 100); /* Returning the first output parameter */
+<code class="linenumber">34</code>        pushvchar(c2, 100); /* Returning the second output parameter */
+<code class="linenumber">35</code>        return 2; /* Returning the number of output parameters (MANDATORY) */
+<code class="linenumber">36</code> }</pre>
+
+  <h4>Create the "splitext.c" C interface file:</h4>
+  <pre><code class="linenumber">01</code> #include &lt;f2c/fglExt.h&gt;
+<code class="linenumber">02</code> 
+<code class="linenumber">03</code> int fgl_split(int);
+<code class="linenumber">04</code> 
+<code class="linenumber">05</code> UsrFunction usrFunctions[]={
+<code class="linenumber">06</code>   { &quot;fgl_split&quot;, fgl_split, 1, 2 },
+<code class="linenumber">07</code>   { 0,0,0,0 }
+<code class="linenumber">08</code> };</pre>
+
+  <h4>Compile the C Module and the interface file:</h4>
+  <pre>gcc -c -I $FGLDIR/include -fPIC split.c
+gcc -c -I $FGLDIR/include -fPIC splitext.c</pre>
+
+  <h4>Create the shared library:</h4>
+  <pre>gcc -shared -o libsplit.so split.o splitext.o -L$FGLDIR/lib -lfgl</pre>
+
+  <h4>Create the BDL program "split.4gl":</h4>
+  <pre><code class="linenumber">01</code> <tt>IMPORT</tt> libsplit
+<code class="linenumber">02</code> <tt>MAIN</tt>
+<code class="linenumber">03</code>       <tt>DEFINE</tt> str1, str2 <tt>VARCHAR</tt>(100)
+<code class="linenumber">04</code>       <tt>CALL</tt> fgl_split(&quot;Hello World&quot;) <tt>RETURNING</tt> str1, str2
+<code class="linenumber">05</code>       <tt>DISPLAY</tt> &quot;1: &quot;, str1
+<code class="linenumber">06</code>       <tt>DISPLAY</tt> &quot;2: &quot;, str2
+<code class="linenumber">07</code> <tt>END MAIN</tt></pre>
+
+  <h4>Compile the 4gl module:</h4>
+  <pre>fglcomp split.4gl</pre>
+
+  <h4>Run the program without the -e option:</h4>
+  <pre>fglrun split</pre>
+  <hr>
+
+  <h2><a name="CAPI">C API Functions</a></h2>
+
+  <table border="0" width="95%">
+    <tr>
+      <td bgcolor="#C0C0C0"><b>Function</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td><a href="#bycmpr">bycmpr()</a></td>
+      <td>Compares two groups of contiguous bytes</td>
+    </tr>
+    <tr>
+      <td><a href="#byleng">byleng()</a></td>
+      <td>Returns the number of bytes as significant characters in the specified string</td>
+    </tr>
+    <tr>
+      <td><a href="#bycopy">bycopy()</a></td>
+      <td>Copies a specified number of bytes to another location in memory</td>
+    </tr>
+    <tr>
+      <td><a href="#byfill">byfill()</a></td>
+      <td>Fills a specified number of bytes in memory</td>
+    </tr>
+    <tr>
+      <td><a href="#risnull">risnull()</a></td>
+      <td>Checks whether a given value is NULL</td>
+    </tr>
+    <tr>
+      <td><a href="#rsetnull">rsetnull()</a></td>
+      <td>Sets a variable to NULL for a given data type</td>
+    </tr>
+    <tr>
+      <td><a href="#rgetmsg">rgetmsg()</a></td>
+      <td>Returns a message text</td>
+    </tr>
+    <tr>
+      <td><a href="#rgetlmsg">rgetlmsg()</a></td>
+      <td>Returns a message text</td>
+    </tr>
+    <tr>
+      <td><a href="#rtypalign">rtypalign()</a></td>
+      <td>Returns the position to align a variable at the proper boundary for its data type</td>
+    </tr>
+    <tr>
+      <td><a href="#rtypmsize">rtypmsize()</a></td>
+      <td>Returns the size in bytes required for a specified data type</td>
+    </tr>
+    <tr>
+      <td><a href="#rtypname">rtypname()</a></td>
+      <td>Returns the name of a specified data type</td>
+    </tr>
+    <tr>
+      <td><a href="#rtypwidth">rtypwidth()</a></td>
+      <td>Returns the minimum number of characters required to convert a specified data type to a character data type</td>
+    </tr>
+    <tr>
+      <td><a href="#rdatestr">rdatestr()</a></td>
+      <td>Converts a date to a string</td>
+    </tr>
+    <tr>
+      <td><a href="#rdayofweek">rdayofweek()</a></td>
+      <td>Returns the week day of a date</td>
+    </tr>
+    <tr>
+      <td><a href="#rdefmtdate">rdefmtdate()</a></td>
+      <td>Converts a string to a date by using a specific format</td>
+    </tr>
+    <tr>
+      <td><a href="#ifx_defmtdate">ifx_defmtdate()</a></td>
+      <td>Converts a string to a date by using a specific format, with century option</td>
+    </tr>
+    <tr>
+      <td><a href="#rfmtdate">rfmtdate()</a></td>
+      <td>Converts a date to a string by using a specific format</td>
+    </tr>
+    <tr>
+      <td><a href="#rjulmdy">rjulmdy()</a></td>
+      <td>Extracts month, day and year from a date</td>
+    </tr>
+    <tr>
+      <td><a href="#rleapyear">rleapyear()</a></td>
+      <td>Checks whether a year is a leap year</td>
+    </tr>
+    <tr>
+      <td><a href="#rmdyjul">rmdyjul()</a></td>
+      <td>Builds a date from month, day, year</td>
+    </tr>
+    <tr>
+      <td><a href="#rstrdate">rstrdate()</a></td>
+      <td>Converts a string to a date</td>
+    </tr>
+    <tr>
+      <td><a href="#ifx_strdate">ifx_strdate()</a></td>
+      <td>Converts a date to a string by using a specific format, with the century option</td>
+    </tr>
+    <tr>
+      <td><a href="#rtoday">rtoday()</a></td>
+      <td>Returns the current date</td>
+    </tr>
+    <tr>
+      <td><a href="#ldchar">ldchar()</a></td>
+      <td>Copies a fixed-length string into a null-terminated string without trailing spaces</td>
+    </tr>
+    <tr>
+      <td><a href="#rdownshift">rdownshift()</a></td>
+      <td>Converts a string to lowercase characters</td>
+    </tr>
+    <tr>
+      <td><a href="#rfmtdouble">rfmtdouble()</a></td>
+      <td>Formats a double value in a specified format</td>
+    </tr>
+    <tr>
+      <td><a href="#rfmtint4">rfmtint4()</a></td>
+      <td>Formats a 4-byte int value in a specified format</td>
+    </tr>
+    <tr>
+      <td><a href="#rstod">rstod()</a></td>
+      <td>Converts a string to a double</td>
+    </tr>
+    <tr>
+      <td><a href="#rstoi">rstoi()</a></td>
+      <td>Converts a string to a 2-byte integer (but it takes an int pointer as parameter!)</td>
+    </tr>
+    <tr>
+      <td><a href="#rstol">rstol()</a></td>
+      <td>Converts a string to a 4-byte integer (but it takes an long pointer as parameter!)</td>
+    </tr>
+    <tr>
+      <td><a href="#rupshift">rupshift()</a></td>
+      <td>Converts a string to uppercase characters</td>
+    </tr>
+    <tr>
+      <td><a href="#stcat">stcat()</a></td>
+      <td>Concatenates a null-terminated string to another</td>
+    </tr>
+    <tr>
+      <td><a href="#stchar">stchar()</a></td>
+      <td>Concatenates a null-terminated string to a fixed char</td>
+    </tr>
+    <tr>
+      <td><a href="#stcmpr">stcmpr()</a></td>
+      <td>Compares two strings</td>
+    </tr>
+    <tr>
+      <td><a href="#stcopy">stcopy()</a></td>
+      <td>Copies a string into another</td>
+    </tr>
+    <tr>
+      <td><a href="#stleng">stleng()</a></td>
+      <td>Returns the number of bytes of significant characters, including trailing spaces</td>
+    </tr>
+    <tr>
+      <td><a href="#decadd">decadd()</a></td>
+      <td>Adds two decimals</td>
+    </tr>
+    <tr>
+      <td><a href="#deccmp">deccmp()</a></td>
+      <td>Compares two decimals</td>
+    </tr>
+    <tr>
+      <td><a href="#deccopy">deccopy()</a></td>
+      <td>Copies one decimal into another</td>
+    </tr>
+    <tr>
+      <td><a href="#deccvasc">deccvasc()</a></td>
+      <td>Converts a string to a decimal</td>
+    </tr>
+    <tr>
+      <td><a href="#deccvdbl">deccvdbl()</a></td>
+      <td>Converts a double to a decimal</td>
+    </tr>
+    <tr>
+      <td><a href="#deccvflt">deccvflt()</a></td>
+      <td>Converts a float to a decimal</td>
+    </tr>
+    <tr>
+      <td><a href="#deccvint">deccvint()</a></td>
+      <td>Converts a 4-byte integer to a decimal (parameter is a machine-dependent int pointer)</td>
+    </tr>
+    <tr>
+      <td><a href="#deccvlong">deccvlong()</a></td>
+      <td>Converts a 4-byte integer to a decimal</td>
+    </tr>
+    <tr>
+      <td><a href="#decdiv">decdiv()</a></td>
+      <td>Divides a decimal by another decimal</td>
+    </tr>
+    <tr>
+      <td><a href="#dececvt">dececvt()</a></td>
+      <td>To convert a decimal value to a string value, specifying the length of the string (the total number of
+      digits)</td>
+    </tr>
+    <tr>
+      <td><a href="#decfcvt">decfcvt()</a></td>
+      <td>To convert a decimal value to a string value, specifying the number of digits to the right of the decimal
+      point</td>
+    </tr>
+    <tr>
+      <td><a href="#decmul">decmul()</a></td>
+      <td>Multiplies a decimal by another</td>
+    </tr>
+    <tr>
+      <td><a href="#decround">decround()</a></td>
+      <td>Rounds a decimal to the specified number of digits</td>
+    </tr>
+    <tr>
+      <td><a href="#decsub">decsub()</a></td>
+      <td>Subtracts two decimals</td>
+    </tr>
+    <tr>
+      <td><a href="#dectoasc">dectoasc()</a></td>
+      <td>Formats a decimal</td>
+    </tr>
+    <tr>
+      <td><a href="#dectodbl">dectodbl()</a></td>
+      <td>Converts a decimal to a double</td>
+    </tr>
+    <tr>
+      <td><a href="#dectoflt">dectoflt()</a></td>
+      <td>Converts a decimal to a float</td>
+    </tr>
+    <tr>
+      <td><a href="#dectoint">dectoint()</a></td>
+      <td>Converts a decimal to a 2-byte integer (parameter is machine-dependent int pointer)</td>
+    </tr>
+    <tr>
+      <td><a href="#dectolong">dectolong()</a></td>
+      <td>Converts a decimal to a 4-byte integer</td>
+    </tr>
+    <tr>
+      <td><a href="#dectrunc">dectrunc()</a></td>
+      <td>Truncates a decimal to a given number of digits</td>
+    </tr>
+    <tr>
+      <td><a href="#rfmtdec">rfmtdec()</a></td>
+      <td>Formats a decimal</td>
+    </tr>
+    <tr>
+      <td><a href="#dtaddinv">dtaddinv</a><a href="#dtaddinv">()</a></td>
+      <td>Adds an interval to a datetime</td>
+    </tr>
+    <tr>
+      <td><a href="#dtcurrent">dtcurrent()</a></td>
+      <td>Returns the current datetime</td>
+    </tr>
+    <tr>
+      <td><a href="#dtcvasc">dtcvasc()</a></td>
+      <td>Converts a string in ISO format to a datetime</td>
+    </tr>
+    <tr>
+      <td><a href="#ifx_dtcvasc">ifx_dtcvasc()</a></td>
+      <td>Converts a string in ISO format to a datetime, with century option</td>
+    </tr>
+    <tr>
+      <td><a href="#dtcvfmtasc">dtcvfmtasc()</a></td>
+      <td>Converts a string to a datetime by using a specific format</td>
+    </tr>
+    <tr>
+      <td><a href="#ifx_dtcvfmtasc">ifx_dtcvfmtasc()</a></td>
+      <td>Converts a string to a datetime by using a specific format, with the century option</td>
+    </tr>
+    <tr>
+      <td><a href="#dtextend">dtextend()</a></td>
+      <td>Extends a datetime</td>
+    </tr>
+    <tr>
+      <td><a href="#dtsub">dtsub()</a></td>
+      <td>Subtracts a datetime from another datetime</td>
+    </tr>
+    <tr>
+      <td><a href="#dtsubinv">dtsubinv()</a></td>
+      <td>Subtracts an interval from a datetime</td>
+    </tr>
+    <tr>
+      <td><a href="#dttoasc">dttoasc()</a></td>
+      <td>Formats a datetime in ISO format</td>
+    </tr>
+    <tr>
+      <td><a href="#dttofmtasc">dttofmtasc()</a></td>
+      <td>Formats a datetime in a specified format</td>
+    </tr>
+    <tr>
+      <td><a href="#ifx_dttofmtasc">ifx_dttofmtasc()</a></td>
+      <td>Formats a datetime in a specified format, with the century option</td>
+    </tr>
+    <tr>
+      <td><a href="#incvasc">incvasc()</a></td>
+      <td>Converts a string in ISO format to an interval</td>
+    </tr>
+    <tr>
+      <td><a href="#incvfmtasc">incvfmtasc()</a></td>
+      <td>Converts a string to an interval by using a specific format</td>
+    </tr>
+    <tr>
+      <td><a href="#intoasc">intoasc()</a></td>
+      <td>Formats an interval in ISO format</td>
+    </tr>
+    <tr>
+      <td><a href="#intofmtasc">intofmtasc()</a></td>
+      <td>Formats an interval in a specified format</td>
+    </tr>
+    <tr>
+      <td><a href="#invdivdbl">invdivdbl()</a></td>
+      <td>Divides an interval by using a double</td>
+    </tr>
+    <tr>
+      <td><a href="#invdivinv">invdivinv()</a></td>
+      <td>Divides an interval by using another interval</td>
+    </tr>
+    <tr>
+      <td><a href="#invextend">invextend()</a></td>
+      <td>Extends an interval</td>
+    </tr>
+    <tr>
+      <td><a href="#invmuldbl">invmuldbl()</a></td>
+      <td>Multiplies an interval by a double</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="decadd">decadd</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To add two decimal values</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint decadd(dec_t *<i>n1</i>, struct decimal *<i>n2</i>, struct decimal *<i>n3</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>n1</i> is a pointer to the decimal structure of the first operand.</li>
+    <li><i>n2</i> is a pointer to the decimal structure of the second operand.</li>
+    <li><i>n3</i> is a pointer to the decimal structure that contains the sum (<i>n1</i> + <i>n2</i>).</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The operation was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1200</td>
+      <td width="50%">The operation resulted in overflow.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1201</td>
+      <td width="50%">The operation resulted in underflow.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="decsub">decsub</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To subtract two decimal values</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint decsub(dec_t *<i>n1</i>, struct decimal *<i>n2</i>, struct decimal *<i>n3</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>n1</i> is a pointer to the decimal structure of the first operand.</li>
+    <li><i>n2</i> is a pointer to the decimal structure of the number to be subtracted.</li>
+    <li><i>n3</i> is a pointer to the decimal structure that contains the result of (<i>n1</i> minus <i>n2</i>).</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The operation was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1200</td>
+      <td width="50%">The operation resulted in overflow.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1201</td>
+      <td width="50%">The operation resulted in underflow.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="decmul">decmul</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To multiply two decimal values</p>
+
+  <h4>Syntax:</h4>
+  <pre>int decmul(dec_t *<i>n1</i>, struct decimal *<i>n2</i>, struct decimal *<i>n3</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>n1</i> is a pointer to the decimal structure of the first operand.</li>
+    <li><i>n2</i> is a pointer to the decimal structure of the second operand.</li>
+    <li><i>n3</i> is a pointer to the decimal structure that contains the product of (<i>n1</i> times <i>n2</i>).</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The operation was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1200</td>
+      <td width="50%">The operation resulted in overflow.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1201</td>
+      <td width="50%">The operation resulted in underflow.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="decdiv">decdiv</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To divide one decimal value by another(<i>n1</i> divided by <i>n2</i>)</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint decdiv(dec_t *<i>n1</i>, struct decimal *<i>n2</i>, struct decimal *<i>n3</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>n1</i> is a pointer to the decimal structure of the number to be divided.</li>
+    <li><i>n2</i> is a pointer to the decimal structure of the number that is the divisor.</li>
+    <li><i>n3</i> is a pointer to the decimal structure that contains the quotient of (<i>n1</i> divided by
+    <i>n2</i>).</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The operation was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1200</td>
+      <td width="50%">The operation resulted in overflow.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1201</td>
+      <td width="50%">The operation resulted in underflow.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1202</td>
+      <td width="50%">The operation attempted to divide by zero.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="deccmp">deccmp</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To compare two decimal values</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint deccmp(dec_t *<i>n1</i>, struct decimal *<i>n2</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>n1</i> is a pointer to the decimal structure of the first number to compare.</li>
+    <li><i>n2</i> is a pointer to the decimal structure of the second number to compare.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The two values are identical.</td>
+    </tr>
+    <tr>
+      <td width="20%">1</td>
+      <td width="50%">The first value is greater than the second value.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1</td>
+      <td width="50%">The first value is less than the second value.</td>
+    </tr>
+    <tr>
+      <td width="20%">-2</td>
+      <td width="50%">Either value is null.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="deccopy">deccopy</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To copy one decimal value to another</p>
+
+  <h4>Syntax:</h4>
+  <pre>void deccopy(dec_t *<i>n1</i>, struct decimal *<i>n2</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>n1</i> is a pointer to the value held in the source decimal structure.</li>
+    <li><i>n2</i> is a pointer to the target decimal structure.</li>
+  </ol>
+  <hr>
+
+  <h3><a name="deccvasc">deccvasc</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a string value to a decimal</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint deccvasc(char *<i>cp</i>, mint <i>len</i>, dec_t *<i>np</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>cp</i> is a pointer to a string to be converted to a decimal value.</li>
+    <li><i>len</i> is the length of the string.</li>
+    <li><i>np</i> is a pointer to the decimal structure which contains the result of the conversion.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1200</td>
+      <td width="50%">The number is too large to fit into a decimal type structure.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="deccvdbl">deccvdbl</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a double value to a decimal</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint deccvdbl(double <i>dbl</i>, dec_t *<i>np</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>dbl</i> is the double value to convert to a decimal type value.</li>
+    <li><i>np</i> is a pointer to a decimal structure containing the result of the conversion.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="deccvint">deccvint</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a 4-byte integer value to a decimal</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint deccvint(mint <i>in</i>, dec_t *<i>np</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>in</i> is the mint value to convert to a decimal type value.</li>
+    <li><i>np</i> is a pointer to a decimal structure to contain the result of the conversion.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="deccvlong">deccvlong</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a 4-byte integer value to a decimal</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint deccvlong(int4 <i>lng</i>, dec_t *<i>np</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>lng</i> is the int4 value to convert to a decimal type value.<br>
+    <i>np</i> is a pointer to a decimal structure to contain the result of the conversion.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+  </table>
+
+  <p><b><font color="#FF0000">Warning:</font> Even if the function name is "deccvlong", it takes a 4-byte int as
+  argument.</b></p>
+  <hr>
+
+  <h3><a name="dececvt">dececvt</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a decimal value to a string value, specifying the length of the string (the total number of digits)</p>
+
+  <h4>Syntax:</h4>
+  <pre>char *dececvt(dec_t *<i>np</i>, mint <i>ndigit</i>, mint *<i>decpt</i>, mint *<i>sign</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>np</i> is a pointer to a decimal structure that contains the decimal value you want to convert.</li>
+    <li><i>ndigit</i> is the length of the ASCII string.</li>
+    <li><i>decpt</i> is a pointer to an integer that is the position of the decimal point relative to the start of the
+    string. A negative or zero value for<br>
+    <i>decpt</i> means to the left of the returned digits.</li>
+    <li><i>sign</i> is a pointer to the sign of the result. If the sign of the result is negative, <i>sign</i> is
+    nonzero; otherwise, <i>sign</i> is zero.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <p>This function returns a pointer to the result string. This string is temporary and has to be copied into your own
+  string buffer.</p>
+  <hr>
+
+  <h3><a name="decfcvt">decfcvt</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a decimal value to a string value, specifying the number of digits to the right of the decimal
+  point</p>
+
+  <h4>Syntax:</h4>
+  <pre>char *decfcvt(dec_t *<i>np</i>, mint <i>ndigit</i>, mint *<i>decpt</i>, mint *<i>sign</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>np</i> is a pointer to a decimal structure that contains the decimal value you want to convert.</li>
+    <li><i>ndigit</i> is the number of digits to the right of the decimal point.</li>
+    <li><i>decpt</i> is a pointer to an integer that is the position of the decimal point relative to the start of the
+    string. A negative or zero value for<br>
+    <i>decpt</i> means to the left of the returned digits.</li>
+    <li><i>sign</i> is a pointer to the sign of the result. If the sign of the result is negative, <i>sign</i> is
+    nonzero; otherwise, <i>sign</i> is zero.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <p>This function returns a pointer to the result string. This string is temporary and has to be copied into your own
+  string buffer.</p>
+  <hr>
+
+  <h3><a name="decround">decround</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To round a decimal value, specifying the number of digits to the right of the decimal point</p>
+
+  <h4>Syntax:</h4>
+  <pre>void decround(dec_t *<i>np</i>, mint <i>dec_round</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>np</i> is a pointer to a decimal structure whose value is to be rounded. Use a positive number for the
+    <i>np</i> argument.</li>
+    <li><i>dec_round</i> is the number of fractional digits to which the value is rounded.</li>
+  </ol>
+  <hr>
+
+  <h3><a name="dectoasc">dectoasc</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a decimal value to an ASCII string, specifying the length of the string and the number of digits to the
+  right of the decimal point</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint dectoasc(dec_t *<i>np</i>, char *<i>cp</i>, mint <i>len</i>, mint <i>right</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>np</i> is a pointer to the decimal structure to convert to a text string.</li>
+    <li><i>cp</i> is a pointer to the first byte of the character buffer to hold the text string.</li>
+    <li><i>len</i> is the size of strng_val, in bytes, minus 1 for the null terminator.</li>
+    <li><i>right</i> is an integer that indicates the number of decimal places to the right of the decimal point.</li>
+    <li>Because the character string that dectoasc() returns is not null terminated, your program must add a null
+    character to the string before you print it.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="dectodbl">dectodbl</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a decimal value to a double value</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint dectodbl(dec_t *<i>np</i>, double *<i>dblp</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>np</i> is a pointer to the decimal structure to convert to a double type value.</li>
+    <li><i>dblp</i> is a pointer to a double type where dectodbl() places the result of the conversion.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="dectoint">dectoint</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a decimal value to a SMALLINT equivalent (2-byte integer)</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint dectoint2(dec_t *<i>np</i>, mint *<i>ip</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>np</i> is a pointer to the decimal structure to convert to a mint type value.</li>
+    <li><i>ip</i> is a pointer to a mint value where dectoint() places the result of the conversion.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1200</td>
+      <td width="50%">The magnitude of the decimal type number is greater than 32767.</td>
+    </tr>
+  </table>
+
+  <p><b><font color="#FF0000">Warning:</font> This functions takes a machine-dependent int pointer as argument (usually
+  4 bytes), but converts the decimal to a SMALLINT equivalent, with possible overflow errors.</b></p>
+  <hr>
+
+  <h3><a name="dectolong">dectolong</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a decimal value to a long integer</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint dectolong(dec_t *<i>np</i>, int4 *<i>lngp</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>np</i> is a pointer to the decimal structure to convert to an int4 integer.</li>
+    <li><i>lngp</i> is a pointer to an int4 integer where dectolong() places the result of the conversion.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1200</td>
+      <td width="50%">The magnitude of the decimal type number is greater than 2,147,483,647.</td>
+    </tr>
+  </table>
+
+  <p><b><font color="#FF0000">Warning:</font> Even if the function name is "dectolong", it takes a 4-byte int pointer
+  as argument, and converts the decimal to an INTEGER equivalent.</b></p>
+  <hr>
+
+  <h3><a name="dectrunc">dectrunc</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To truncate a decimal value, specifying the number of digits to the right of the decimal point</p>
+
+  <h4>Syntax:</h4>
+  <pre>void dectrunc(dec_t *<i>np</i>, mint <i>trunc</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>np</i> is a pointer to the decimal structure for a rounded number to truncate.</li>
+    <li><i>trunc</i> is the number of fractional digits to which dectrunc() truncates the number. Use a positive number
+    or zero for this argument.</li>
+  </ol>
+  <hr>
+
+  <h3><a name="deccvflt">deccvflt</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p><span style="background-color: #FFFFFF">To convert a float to a decimal value</span></p>
+
+  <h4>Syntax:</h4>
+  <pre>mint deccvflt(float <i>source</i>, dec_t *<i>destination</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>source</i> is the float value to be converted.</li>
+    <li><i>destination</i> is a pointer to the structure where the decimal value is placed.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="dectoflt">dectoflt</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <h4><span style="background-color: #FFFFFF">To convert a decimal value to a float</span></h4>
+
+  <h4>Syntax:</h4>
+  <pre>mint dectoflt(dec_t *<i>source,</i> float *<i>destination</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>source</i> is a pointer to the decimal value to convert.</li>
+    <li><i>destination</i> is a pointer to the resulting float value.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="rfmtdec">rfmtdec</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a decimal value to a string having a specified format</p>
+
+  <h4>Syntax:</h4>
+  <pre>int rfmtdec(dec_t *<i>dec</i>, char *<i>format</i>, char *<i>outbuf</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>dec</i> is a pointer to the decimal value to format.</li>
+    <li><i>format</i> is a pointer to a character buffer that contains the formatting mask to use.</li>
+    <li><i>outbuf</i> is a pointer to a character buffer that receives the resulting formatted string.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1211</td>
+      <td width="50%">The program ran out of memory (memory-allocation error).</td>
+    </tr>
+    <tr>
+      <td width="20%">-1217</td>
+      <td width="50%">The format string is too large.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="bycmpr">bycmpr</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To compare two groups of contiguous bytes, for a specified length, byte-by-byte.</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint bycmpr(char *<i>st1</i>, char *<i>st2</i>, mint <i>count</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>st1</i> is a pointer to the location where the first group of bytes starts.</li>
+    <li><i>st2</i> is a pointer to the location where the second group of bytes starts.</li>
+    <li><i>count</i> is the number of bytes to compare.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The two groups of bytes are identical.</td>
+    </tr>
+    <tr>
+      <td width="20%">1</td>
+      <td width="50%">The <i>st1</i> group of bytes is less than the <i>st2</i> group.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1</td>
+      <td width="50%">The <i>st1</i> group of bytes is greater than the <i>st2</i>group.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="bycopy">bycopy</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To copy a specified number of bytes to another location in memory</p>
+
+  <h4>Syntax:</h4>
+  <pre>void bycopy(char *<i>s1</i>, char *<i>s2</i>, mint <i>n</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>s1</i> is a pointer to the first byte of the group of bytes that you want to copy.</li>
+
+    <li><i>s2</i> is a pointer to the first byte of the destination group of bytes.<br>
+    If the location pointed to by <i>s2</i> overlaps the location pointed to by <i>s1</i>, the function will not
+    preserve the value of <i>s1</i>.</li>
+
+    <li><i>n</i> is the number of bytes to be copied.</li>
+  </ol>
+
+  <p><b><font color="#FF0000">Warning</font>: Do not overwrite the memory areas adjacent to the destination
+  area.</b></p>
+  <hr>
+
+  <h3><a name="byfill">byfill</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To fill a specified number of bytes with a specified character</p>
+
+  <h4>Syntax:</h4>
+  <pre>void byfill(char *<i>s1</i>, mint <i>n</i>, char <i>c</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>s1</i> is a pointer to the first byte of the memory area that you want to fill.<br>
+    <i>n</i> is the number of times that you want to repeat the character within the area.<br>
+    <i>c</i> is the character that you want to use to fill the area.</li>
+  </ol>
+
+  <p><b><font color="#FF0000">Warning</font>: Do not overwrite the memory areas adjacent to the destination
+  area.</b></p>
+  <hr>
+
+  <h3><a name="risnull">risnull</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To check whether a variable is null</p>
+
+  <h4>Syntax:</h4>
+  <pre>int risnull(int <i>vtype</i>, char *<i>pcvar</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>vtype</i> is an integer corresponding to the data type of the variable.<br>
+    This parameter must be one of the <a href="#DTCONST">Date Type Constants</a> defined in fglExt.h.</li>
+
+    <li><i>pcvar</i> is a pointer to the C variable.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">1</td>
+      <td width="50%">The variable does contain a null value.</td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The variable does not contain a null value.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="rsetnull">rsetnull</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To set a variable to NULL</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint rsetnull(mint <i>vtype</i>, char *<i>pcvar</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>type</i> is an integer corresponding to the data type of the variable.<br>
+    This parameter must be one of the <a href="#DTCONST">Date Type Constants</a> defined in fglExt.h.</li>
+    <li><i>pcvar</i> is a pointer to the variable.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The operation was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The operation failed.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="rgetmsg">rgetmsg</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>Returns the error message for a specified error number, restricted to two-byte integers.</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint rgetmsg(int <i>msgnum</i>, char *<i>s</i>, mint <i>maxsize</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>msgnum</i> is the error number, restricted to error numbers between -32768 and +32767.</li>
+    <li><i>s</i> is a pointer to the buffer that receives the message string (the output buffer).</li>
+    <li><i>maxsize</i> is the size of the output buffer. This value should be set to the size of the largest message
+    that you expect to retrieve.</li>
+    <li>The Informix message text files are used to retrieve the message.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The operation was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1227</td>
+      <td width="50%">Message file not found.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1228</td>
+      <td width="50%">Message number not found in message file.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1231</td>
+      <td width="50%">Cannot seek within message file.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1232</td>
+      <td width="50%">Message buffer is too small.</td>
+    </tr>
+  </table>
+
+  <p><b><font color="#FF0000">Warning:</font> This function returns Informix specific messages; it will not work
+  properly if the Informix client software is not installed.</b></p>
+  <hr>
+
+  <h3><a name="rgetlmsg">rgetlmsg</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>Returns the error message for a specified error number, which can be a 4-byte integer.</p>
+
+  <h4>Syntax:</h4>
+  <pre>int4 rgetlmsg(int msgnum, char *<i>s</i>, mint <i>maxsize</i>, mint *<i>msg_length</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>msgnum</i> is the error number. The four-byte parameter provides for the full range of Informix-specific
+    error numbers.</li>
+    <li><i>s</i> is a pointer to the buffer that receives the message string (the output buffer).</li>
+    <li><i>maxsize</i> is the size of the msgstr output buffer. Make this value the size of the largest message that
+    you expect to retrieve.</li>
+    <li><i>msg_length</i> is a pointer to the mint that contains the actual length of the message that rgetlmsg()
+    returns.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The operation was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1227</td>
+      <td width="50%">Message file not found.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1228</td>
+      <td width="50%">Message number not found in message file.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1231</td>
+      <td width="50%">Cannot seek within message file.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1232</td>
+      <td width="50%">Message buffer is too small.</td>
+    </tr>
+  </table>
+
+  <p><b><font color="#FF0000">Warning:</font> This function returns Informix specific messages; it will not work
+  properly if the Informix client software is not installed.</b></p>
+  <hr>
+
+  <h3><a name="rtypalign">rtypalign</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>Returns the position to align a variable at the proper boundary for its data type</p>
+
+  <h4>Syntax:</h4>
+  <pre>mlong rtypalign(mlong <i>pos</i>, mint <i>datatype</i>)</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>pos</i> is the current position in the buffer.</li>
+    <li><i>datatype</i> is an integer code defining the data type.<br>
+    This parameter must be one of the <a href="#DTCONST">Date Type Constants</a> defined in fglExt.h.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">&gt;0</td>
+      <td width="50%">The return value is the offset of the next proper boundary for a variable of type data type.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="rtypmsize">rtypmsize</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>Returns the size in bytes required for a specified data type</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint rtypmsize(mint <i>datatype, </i>mint<i> length</i>)</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>datatype</i> is an integer code defining the data type.<br>
+    This parameter must be one of the <a href="#DTCONST">Date Type Constants</a> defined in fglExt.h.</li>
+    <li><i>length</i> is the number of bytes in the data file for the specified type.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The <i>datatype</i> is not a valid SQL type.</td>
+    </tr>
+    <tr>
+      <td width="20%">&gt;0</td>
+      <td width="50%">The return value is the number of bytes that the data type requires.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="rtypname">rtypname</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>Returns a pointer to a null-terminated string containing the name of the data type</p>
+
+  <h4>Syntax:</h4>
+  <pre>char *rtypname(mint <i>datatype</i>)</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>datatype</i> is an integer code defining the data type.<br>
+    This parameter must be one of the <a href="#DTCONST">Date Type Constants</a> defined in fglExt.h.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <p>The rtypname function returns a pointer to a string that contains the name of the data type specified
+  <i>datatype</i>.</p>
+
+  <p>If <i>datatype</i> is an invalid value, rtypname() returns a null string (" ").</p>
+  <hr>
+
+  <h3><a name="rtypwidth">rtypwidth()</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>Returns the minimum number of characters required to convert a specified data type to a character data type</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint rtypwidth(mint <i>datatype</i>, mint <i>length</i>)</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>datatype</i> is an integer code defining the data type.<br>
+    This parameter must be one of the <a href="#DTCONST">Date Type Constants</a> defined in fglExt.h.</li>
+    <li><i>length</i> is the number of bytes in the data file for the specified data type.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The sqltype is not a valid SQL data type.</td>
+    </tr>
+    <tr>
+      <td width="20%">&gt;0</td>
+      <td width="50%">Minimum number of characters that the sqltype data type requires.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="rdatestr">rdatestr</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a date that is in the native database date format to a string</p>
+
+  <h4>Syntax:</h4>
+
+  <p><code>mint rdatestr(int4 <i>jdate</i>, char *<i>str</i>);</code></p>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>jdate</i> is the internal representation of the date to format.</li>
+    <li><i>str</i> is a pointer to the buffer that receives the string for the date value.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1210</td>
+      <td width="50%">The internal date could not be converted to the character string format.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1212</td>
+      <td width="50%">Data conversion format must contain a month, day, or year component.</td>
+    </tr>
+  </table>
+
+  <h4>Usage:</h4>
+
+  <p>The <a href="EnvironmentVariables.html#EV_DBDATE">DBDATE</a> environment variable specifies the data conversion
+  format.</p>
+  <hr>
+
+  <h3><a name="rdayofweek">rdayofweek</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>Returns the day of the week of a date that is in the native database format</p>
+
+  <h4>Syntax:</h4>
+
+  <p><code>mint rdayofweek(int4 <i>jdate</i>);</code></p>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>jdate</i> is the internal representation of the date.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">Invalid date value</td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">Sunday</td>
+    </tr>
+    <tr>
+      <td width="20%">1</td>
+      <td width="50%">Monday</td>
+    </tr>
+    <tr>
+      <td width="20%">2</td>
+      <td width="50%">Tuesday</td>
+    </tr>
+    <tr>
+      <td width="20%">3</td>
+      <td width="50%">Wednesday</td>
+    </tr>
+    <tr>
+      <td width="20%">4</td>
+      <td width="50%">Thursday</td>
+    </tr>
+    <tr>
+      <td width="20%">5</td>
+      <td width="50%">Friday</td>
+    </tr>
+    <tr>
+      <td width="20%">6</td>
+      <td width="50%">Saturday</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="rdefmtdate">rdefmtdate</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a string in a specified format to the native database date format</p>
+
+  <h4>Syntax:</h4>
+
+  <p><code>mint rdefmtdate(int4 *<i>pdate</i>, char *<i>fmt</i>, char *<i>input</i>);</code></p>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>pdate</i> is a pointer to an int4 integer value that receives the internal DATE value for the <i>input</i>
+    string.</li>
+    <li><i>fmt</i> is a pointer to the buffer that contains the <a href="#FMT_DATE">formatting mask</a> for the
+    string.</li>
+    <li><i>input</i> is a pointer to the buffer that contains the string to convert.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The operation was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1204</td>
+      <td width="50%">The <i>input</i> parameter specifies an invalid year.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1205</td>
+      <td width="50%">The <i>input</i> parameter specifies an invalid month.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1206</td>
+      <td width="50%">The <i>input</i> parameter specifies an invalid day.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1209</td>
+      <td width="50%">Because <i>input</i> does not contain delimiters between the year,month,and day, the length of
+      <i>input</i> must be exactly six or eight bytes.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1212</td>
+      <td width="50%"><i>fmt</i> does not specify a year, a month, and a day.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="rfmtdate">rfmtdate</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a date that is in the native database date format to a string having a specified format</p>
+
+  <h4>Syntax:</h4>
+
+  <p><code>mint rfmtdate(int4 <i>jdate</i>, char *<i>fmt</i>, char *<i>result</i>);</code></p>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>jdate</i> is the internal representation of a date to convert.</li>
+    <li><i>fmt</i> is a pointer to the buffer containing the <a href="#FMT_DATE">formatting mask</a>.</li>
+    <li><i>result</i> is a pointer to the buffer that receives the formatted string.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The operation was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1210</td>
+      <td width="50%">The internal date cannot be converted to month-day-year format.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1211</td>
+      <td width="50%">The program ran out of memory (memory-allocation error).</td>
+    </tr>
+    <tr>
+      <td width="20%">-1212</td>
+      <td width="50%">Format string is NULL or invalid.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="rjulmdy">rjulmdy</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To create an array of short integer values representing year, month, and day from a date that is in the native
+  database date format</p>
+
+  <h4>Syntax:</h4>
+
+  <p><code>mint rjulmdy(int4 <i>jdate</i>, int2 <i>mdy</i>[3]<i>)</i>;</code></p>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>jdate</i> is the internal representation of a date.</li>
+
+    <li><i>mdy</i> is an array of short integers, where mdy[0] is the month (1 to 12), mdy[1] is the day (1 to 31), and
+    mdy[2] is the year (1 to 9999).</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%" id="table8">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">1</td>
+      <td width="50%">The year is a leap year.</td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The operation was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The operation failed.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1210</td>
+      <td width="50%">The internal date could not be converted to the character string format.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="rleapyear">rleapyear</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To determine whether the value passed as a parameter is a leap year; returns 1 when TRUE.</p>
+
+  <h4>Syntax:</h4>
+
+  <p><code>mint rleapyear(mint <i>year</i>);</code></p>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li>year is an integer, representing the year component of a date, in the full form yyyy (i.e., 2004).</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">1</td>
+      <td width="50%">The year is a leap year.</td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The year is not a leap year.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="rmdyjul">rmdyjul</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To create a value in the native database date format from an array of short integer values representing month,
+  day, and year</p>
+
+  <h4>Syntax:</h4>
+
+  <p><code>mint rmdyjul(int2 <i>mdy</i>[3], int4 *<i>jdate</i>);</code></p>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>mdy</i> is an array of short integer values, where <i>mdy</i>[0] is the month (1 to12), <i>mdy</i>[1] is the
+    day (1 to 31), and <i>mdy</i>[2] is the year (1 to 9999).</li>
+
+    <li><i>jdate</i> is a pointer to a long integer that receives the internal DATE value for the <i>mdy</i>
+    array.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The operation was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1204</td>
+      <td width="50%">The <i>mdy</i>[2] variable contains an invalid year.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1205</td>
+      <td width="50%">The <i>mdy</i>[0] variable contains an invalid month.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1206</td>
+      <td width="50%">The <i>mdy</i>[1] variable contains an invalid day.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="rstrdate">rstrdate</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a character string to the native database date format.</p>
+
+  <h4>Syntax:</h4>
+
+  <p><code>mint rstrdate(char *<i>str</i>, int4 *<i>jdate</i>);</code></p>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>str</i> is a pointer to a char string containing the date to convert.</li>
+
+    <li><i>jdate</i> is a pointer to an int4 integer that receives the converted date value.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1204</td>
+      <td width="50%">The <i>str</i> parameter specifies an invalid year.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1205</td>
+      <td width="50%">The <i>str</i> parameter specifies an invalid month.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1206</td>
+      <td width="50%">The <i>str</i> parameter specifies an invalid day.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1212</td>
+      <td width="50%">Data conversion format must contain a month, day, or year component. DBDATE specifies the data
+      conversion format.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1218</td>
+      <td width="50%">The date specified by the <i>str</i> argument does not properly represent a date.</td>
+    </tr>
+  </table>
+
+  <h4>Usage:</h4>
+
+  <p>The <a href="EnvironmentVariables.html#EV_DBDATE">DBDATE</a> environment variable specifies the data conversion
+  format.</p>
+  <hr>
+
+  <h3><a name="rtoday">rtoday</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>Returns the system date in the internal database date format</p>
+
+  <h4>Syntax:</h4>
+
+  <p><code>void rtoday(int4 *<i>today</i>);</code></p>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>today</i> is a pointer to an int4 value that receives the internal date.</li>
+  </ol>
+  <hr>
+
+  <h3><a name="ifx_defmtdate">ifx_defmtdate</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a string in a specified format to the native database date format; allows you to specify the century
+  setting for two-digit dates.</p>
+
+  <h4>Syntax:</h4><code>mint ifx_defmtdate(int4 *<i>pdate</i>, char *<i>fmt</i>, char *<i>input</i>, char
+  <i>c</i>);</code>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>pdate</i> is a pointer to an int4 integer value that receives the internal DATE value for the <i>input</i>
+    string.</li>
+
+    <li><i>fmt</i> is a pointer to the buffer that contains the <a href="#FMT_DATE">formatting mask</a> to use for the
+    <i>input</i> string.</li>
+
+    <li><i>input</i> is a pointer to the buffer that contains the date string to convert.</li>
+
+    <li><i>c</i> is one of <a href="EnvironmentVariables.html#EV_DBCENTURY">CENTURY</a> characters, which determines
+    which century to apply to the year portion of the date.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1204</td>
+      <td width="50%">The <i>str</i> parameter specifies an invalid year.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1205</td>
+      <td width="50%">The <i>str</i> parameter specifies an invalid month.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1206</td>
+      <td width="50%">The <i>str</i> parameter specifies an invalid day.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1212</td>
+      <td width="50%">Data conversion format must contain a month, day, or year component. DBDATE specifies the data
+      conversion format.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1209</td>
+      <td width="50%">Because *input does not contain delimiters between the year, month, and day, the length of *input
+      must be exactly six or eight bytes.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="ifx_strdate">ifx_strdate</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a character string to the native database date format; allows you to specify the century setting for
+  two-digit dates.</p>
+
+  <h4>Syntax:</h4>
+
+  <p><code>mint ifx_strdate(char *<i>str</i>, int4 *<i>jdate</i>, char <i>c</i>);</code></p>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>str</i> is a pointer to the string that contains the date to convert.</li>
+
+    <li><i>jdate</i> is a pointer to a int4 integer that receives the internal DATE value for the <i>str</i>
+    string.</li>
+
+    <li><i>c</i> is one of <a href="EnvironmentVariables.html#EV_DBCENTURY">CENTURY</a> characters, which determines
+    which century to apply to the year portion of the date.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1204</td>
+      <td width="50%">The <i>str</i> parameter specifies an invalid year.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1205</td>
+      <td width="50%">The <i>str</i> parameter specifies an invalid month.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1206</td>
+      <td width="50%">The <i>str</i> parameter specifies an invalid day.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1212</td>
+      <td width="50%">Data conversion format must contain a month, day, or year component. DBDATE specifies the data
+      conversion format.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1218</td>
+      <td width="50%">The date specified by the <i>str</i> argument does not properly represent a date.</td>
+    </tr>
+  </table>
+
+  <h4>Usage:</h4>
+
+  <p>The <a href="EnvironmentVariables.html#EV_DBDATE">DBDATE</a> environment variable specifies the data conversion
+  format.</p>
+  <hr>
+
+  <h3><a name="byleng">byleng</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>Returns the number bytes as significant characters in the specified string; omitting trailing blanks</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint byleng(char *<i>s1</i>, mint <i>count</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>s1</i> is a pointer to a fixed-length string, not null-terminated.</li>
+
+    <li><i>count</i> is the number of bytes in the fixed-length string.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <p>Number of bytes.</p>
+  <hr>
+
+  <h3><a name="ldchar">ldchar(</a>)</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To copy a fixed-length string into a null-terminated string without trailing blanks</p>
+
+  <h4>Syntax:</h4>
+  <pre>void ldchar(char *<i>from</i>, mint <i>count</i>, char *<i>to</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>from</i> is a pointer to a fixed-length source string.</li>
+
+    <li><i>count</i> is the number of bytes in the source string.</li>
+
+    <li><i>to</i> is a pointer to the first byte of a null-terminated destination string. If the <i>to</i> argument
+    points to the same location as the <i>from</i> argument, or to a location that overlaps the <i>from</i> argument,
+    ldchar() does not preserve the original value.</li>
+  </ol>
+  <hr>
+
+  <h3><a name="rdownshift">rdownshift</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert all the characters in a null-terminated string to lowercase.</p>
+
+  <h4>Syntax:</h4>
+  <pre>void rdownshift(char *<i>s</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>s</i> is a pointer to a null-terminated string.</li>
+  </ol>
+  <hr>
+
+  <h3><a name="rupshift">rupshift</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert all the characters in a null-terminated string to uppercase.</p>
+
+  <h4>Syntax:</h4>
+  <pre>void rupshift(char *<i>s</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>s</i> is a pointer to a null-terminated string.</li>
+  </ol>
+  <hr>
+
+  <h3><a name="stcat">stcat</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To concatenate one null-terminated string to another (<i>src</i> is added to the end of <i>dst)</i>.</p>
+
+  <h4>Syntax:</h4>
+  <pre>void stcat(char *<i>src</i>, char *<i>dst</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>src</i> is a pointer to the start of the string that is put at the end of the destination string.</li>
+    <li><i>dst</i> is a pointer to the start of the null-terminated destination string.</li>
+    <li>The resulting string is <i>dstsrc.</i></li>
+  </ol>
+  <hr>
+
+  <h3><a name="stcopy">stcopy</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To copy a string to another location</p>
+
+  <h4>Syntax:</h4>
+  <pre>void stcopy(char *<i>src</i>, char *<i>dst</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>src</i> is a pointer to the string that you want to copy.</li>
+    <li><i>dst</i> is a pointer to a location in memory where the string is copied.</li>
+  </ol>
+  <hr>
+
+  <h3><a name="stleng">stleng</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>Returns the number of bytes of significant characters, including trailing blanks</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint stleng(char *<i>src</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>src</i> is a pointer to a null-terminated string.</li>
+    <li>The length does not include the null terminator.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <p>Number of bytes.</p>
+  <hr>
+
+  <h3><a name="stcmpr">stcmpr</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To compare two strings</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint stcmpr(char *<i>s1</i>, char *<i>s2</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>s1</i> is a pointer to the first null-terminated string.</li>
+    <li><i>s2</i> is a pointer to the second null-terminated string.</li>
+    <li><i>s1</i> is greater than <i>s2</i> when <i>s1</i> appears after <i>s2</i> in the ASCII collation
+    sequence.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The two strings are identical.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The first string is less than the second string.</td>
+    </tr>
+    <tr>
+      <td width="20%">&gt;0</td>
+      <td width="50%">The first string is greater than the second string.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="stchar">stchar</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To copy a null-terminated string into a fixed-length string</p>
+
+  <h4>Syntax:</h4>
+  <pre>void stchar(char *<i>from</i>, char *<i>to</i>, mint <i>count</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>from</i> is a pointer to the first byte of a null-terminated source string.</li>
+
+    <li><i>to</i> is a pointer to a fixed-length destination string. If this argument points to a location that
+    overlaps the location to which the <i>from</i> argument points, the <i>from</i> value is discarded.</li>
+
+    <li><i>count</i> is the number of bytes in the fixed-length destination string.</li>
+  </ol>
+  <hr>
+
+  <h3><a name="rstod">rstod</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a string to a double.</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint rstod(char *<i>str</i>, double *<i>val</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>str</i> is a pointer to a null-terminated string.</li>
+
+    <li><i>val</i> is a pointer to a double value that holds the converted value.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="rstoi">rstoi</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a string to a 2-byte integer.</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint rstoi(char *<i>str</i>, mint *<i>val</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>str</i> is a pointer to a null-terminated string.</li>
+
+    <li><i>val</i> is a pointer to a mint value that holds the converted value.</li>
+  </ol>
+
+  <p><b><font color="#FF0000">Warning:</font> The function takes a machine-dependent int pointer (usually 4 bytes), but
+  the function converts to a 2 byte integer (overflow error may occur if string does not represent a valid 2-byte
+  integer).</b></p>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="rstol">rstol</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a string to a 4-byte integer (machine dependent)</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint rstol(char *<i>str</i>, mlong *<i>val</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>str</i> is a pointer to a null-terminated string.</li>
+
+    <li><i>val</i> is a pointer to an mlong value that holds the converted value.</li>
+  </ol>
+
+  <p><b><font color="#FF0000">Warning:</font> The function takes a machine-dependent long pointer (4 bytes on 32b and 8
+  bytes on 64b architectures), but the function converts to a 4-byte integer (overflow error may occur if string does
+  not represent a valid 2 byte integer).</b></p>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="rfmtdouble">rfmtdouble</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a double value to a character string having a specified format.</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint rfmtdouble(double <i>dvalue</i>, char *<i>format</i>, char *<i>outbuf</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>dvalue</i> is the double value to format.</li>
+
+    <li><i>format</i> is a pointer to a char buffer that contains the <a href="#FMT_NUM">formatting mask</a>.</li>
+
+    <li><i>outbuf</i> is a pointer to a char buffer that receives the formatted string.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1211</td>
+      <td width="50%">The program ran out of memory (memory-allocation error).</td>
+    </tr>
+    <tr>
+      <td width="20%">-1217</td>
+      <td width="50%">The format string is too large.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="rfmtint4">rfmtint4</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a 4-byte integer to a character string having a specified format</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint rfmtint4(int4 <i>lvalue</i>, char *<i>format</i>, char *<i>outbuf</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>lvalue</i> is the int4 integer to convert.</li>
+
+    <li><i>format</i> is a pointer to the char buffer that contains the <a href="#FMT_NUM">formatting mask</a>.</li>
+
+    <li><i>outbuf</i> is a pointer to a char buffer that receives the formatted string for the integer value.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1211</td>
+      <td width="50%">The program ran out of memory (memory-allocation error).</td>
+    </tr>
+    <tr>
+      <td width="20%">-1217</td>
+      <td width="50%">The format string is too large.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="dtaddinv">dtaddinv</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To add an interval value to a datetime value</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint dtaddinv(dtime_t *<i>d</i>, intrvl_t *<i>i</i>, dtime_t *<i>r</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>d</i> is a pointer to the initialized datetime host variable. The variable must include all the fields
+    present in the interval value.</li>
+
+    <li><i>i</i> is a pointer to the initialized interval host variable. The interval value must be in the year to
+    month or the day to fraction(5) range.</li>
+
+    <li><i>r</i> is a pointer to the result. The result inherits the qualifier of <i>d</i>.</li>
+
+    <li>Failure to initialize the host variables can produce unpredictable results.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The addition was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The addition failed.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="dtcurrent">dtcurrent</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>Returns the current date and time</p>
+
+  <h4>Syntax:</h4>
+  <pre>void dtcurrent(dtime_t *<i>d</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>d</i> is a pointer to the initialized datetime host variable.</li>
+
+    <li>The function extends the current date and time to agree with the qualifier of the host variable.</li>
+  </ol>
+  <hr>
+
+  <h3><a name="dtcvasc">dtcvasc</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert an ASCII-standard character string to a datetime value</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint dtcvasc(char *<i>str</i>, dtime_t *<i>d</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>str</i> is a pointer to the buffer that contains the ASCII-standard datetime string.</li>
+
+    <li><i>d</i> is a pointer to a datetime variable, initialized with the qualifier that you want the datetime value
+    to have.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1260</td>
+      <td width="50%">It is not possible to convert between the specified types.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1261</td>
+      <td width="50%">Too many digits in the first field of datetime or interval.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1262</td>
+      <td width="50%">Non-numeric character in datetime or interval.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1263</td>
+      <td width="50%">A field in a datetime or interval value is out of range or incorrect.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1264</td>
+      <td width="50%">Extra characters exist at the end of a datetime or interval.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1265</td>
+      <td width="50%">Overflow occurred on a datetime or interval operation.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1266</td>
+      <td width="50%">A datetime or interval value is incompatible with the operation.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1267</td>
+      <td width="50%">The result of a datetime computation is out of range.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1268</td>
+      <td width="50%">A parameter contains an invalid datetime qualifier.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="ifx_dtcvasc">ifx_dtcvasc</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a character string to a datetime value; allows you to specify the century setting for 2-digit years</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint ifx_dtcvasc(char *<i>str</i>, dtime_t *<i>d</i>, char <i>c</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>str</i> is a pointer to a buffer that contains an ANSI-standard datetime string.</li>
+
+    <li><i>d</i> is a pointer to a datetime variable, initialized with the desired qualifier.</li>
+
+    <li><i>c</i> is one of <a href="EnvironmentVariables.html#EV_DBCENTURY">CENTURY</a> characters, which determines
+    which century to apply to the year portion of the date.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1260</td>
+      <td width="50%">It is not possible to convert between the specified types.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1261</td>
+      <td width="50%">Too many digits in the first field of datetime or interval.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1262</td>
+      <td width="50%">Non-numeric character in datetime or interval.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1263</td>
+      <td width="50%">A field in a datetime or interval value is out of range or incorrect.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1264</td>
+      <td width="50%">Extra characters exist at the end of a datetime or interval.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1265</td>
+      <td width="50%">Overflow occurred on a datetime or interval operation.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1266</td>
+      <td width="50%">A datetime or interval value is incompatible with the operation.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1267</td>
+      <td width="50%">The result of a datetime computation is out of range.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1268</td>
+      <td width="50%">A parameter contains an invalid datetime qualifier.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="dtcvfmtasc">dtcvfmtasc</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a character string to a datetime value, specifying the format of the string</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint dtcvfmtasc(char *<i>input</i>, char *<i>fmt</i>, dtime_t *<i>d</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>input</i> is a pointer to a buffer that contains the string to convert.</li>
+
+    <li><i>fmt</i> is a pointer to a buffer containing the <a href="#FMT_DATETIME">formatting mask</a>.<br>
+    The default date format conforms to the standard ANSI SQL format: <tt>%Y-%m-%d %H:%M:%S</tt></li>
+
+    <li><i>d</i> is a pointer to the datetime variable, which must be initialized with the desired qualifier.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="ifx_dtcvfmtasc">ifx_dtcvfmtasc</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a character string to a datetime value, specifying the format of the string</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint ifx_dtcvfmtasc(char *<i>input</i>, char *<i>fmt</i>, dtime_t *<i>d</i>, char <i>c</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>input</i> is a pointer to a buffer that contains the string to convert.</li>
+
+    <li><i>fmt</i> is a pointer to a buffer containing the <a href="#FMT_DATETIME">formatting mask</a>.<br>
+    The default date format conforms to the standard ANSI SQL format: <tt>%Y-%m-%d %H:%M:%S</tt></li>
+
+    <li><i>d</i> is a pointer to the datetime variable, which must be initialized with the desired qualifier.</li>
+
+    <li><i>c</i> is one of <a href="EnvironmentVariables.html#EV_DBCENTURY">CENTURY</a> characters, which determines
+    which century to apply to the year portion of the date.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="dtextend">dtextend</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To copy a datetime value <i>id</i> to the datetime value <i>od</i>, adding or dropping fields based on the
+  qualifier of <i>od</i></p>
+
+  <h4>Syntax:</h4>
+  <pre>mint dtextend(dtime_t *<i>id</i>, dtime_t *<i>od</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>id</i> is a pointer to the datetime variable to extend.</li>
+
+    <li><i>od</i> is a pointer to the datetime variable containing a valid qualifier to use for the extension.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The operation was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The operation failed.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1268</td>
+      <td width="50%">A parameter contains an invalid datetime qualifier</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="dtsub">dtsub</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To subtract one datetime value from another</p>
+
+  <h4>Syntax:</h4>
+  <pre>
+mint dtsub(dtime_t *<i>d1</i>, dtime_t *<i>d2</i>, intrvl_t *<i>i</i>);
+</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>d1</i> is a pointer to an initialized datetime host variable.</li>
+
+    <li><i>d2</i> is a pointer to an initialized datetime host variable.</li>
+
+    <li><i>i</i> is a pointer to the interval host variable that contains the result.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The subtraction was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The subtraction failed.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="dtsubinv">dtsubinv</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To subtract an interval value from a datetime value</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint dtsubinv(dtime_t *<i>d</i>, intrvl_t *<i>i</i>, dtime_t *<i>r</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>d</i> is a pointer to an initialized datetime host variable. This must include all the fields present in the
+    interval value <i>i</i>.</li>
+
+    <li><i>i</i> is a pointer to an initialized interval host variable.</li>
+
+    <li><i>r</i> is a pointer to the datetime host variable that contains the result.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The subtraction was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The subtraction failed.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="dttoasc">dttoasc</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a datetime value to an ANSI-standard character string</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint dttoasc(dtime_t *<i>d</i>, char *<i>str</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>d</i> is a pointer to the initialized datetime variable to convert.</li>
+
+    <li><i>str</i> is a pointer to the buffer that receives the ANSI-standard DATETIME string for the value in
+    <i>d</i>.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+  </table>
+
+  <h4>Usage:</h4>The <i>str</i> parameter includes one character for each delimiter, plus the fields, which are of the
+  following sizes:
+
+  <table border="0" cellpadding="0" width="48%" id="table4">
+    <tr>
+      <td bgcolor="#C0C0C0" width="179" align="center"><b>Field</b></td>
+      <td bgcolor="#C0C0C0" width="409"><b>&nbsp;Field Size</b></td>
+    </tr>
+    <tr>
+      <td align="center">year</td>
+      <td>&nbsp; four digits</td>
+    </tr>
+    <tr>
+      <td align="center">fraction of datetime</td>
+      <td>&nbsp; as specified by precision</td>
+    </tr>
+    <tr>
+      <td align="center">all other fields</td>
+      <td>&nbsp; two digits</td>
+    </tr>
+  </table>
+
+  <p>For example, datetime year to fraction(5):</p>
+  <pre>
+YYYY-MM-DD HH:MM:SS.FFFFF
+</pre>
+  <hr>
+
+  <h3><a name="dttofmtasc">dttofmtasc()</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a datetime value to a character string, specifying the format</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint dttofmtasc(dtime_t *<i>d</i>, char *<i>output</i>, mint <i>len</i>, char *<i>fmt</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>d</i> is a pointer to the initialized datetime variable to convert.</li>
+
+    <li><i>output</i> is a pointer to the buffer that receives the string for the value in <i>d</i>.</li>
+
+    <li><i>len</i> is the length of the <i>output</i> buffer.</li>
+
+    <li><i>fmt</i> is a pointer to a buffer containing the <a href="#FMT_DATETIME">formatting mask</a>.<br>
+    The default date format conforms to the standard ANSI SQL format: <tt>%Y-%m-%d %H:%M:%S</tt></li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="ifx_dttofmtasc">ifx_dttofmtasc()</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a datetime value to a character string, specifying the format</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint ifx_dttofmtasc(dtime_t *<i>d</i>, char *<i>output</i>, mint <i>len</i>, char *<i>fmt</i>, char <i>c</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>d</i> is a pointer to the initialized datetime variable to convert.</li>
+
+    <li><i>output</i> is a pointer to the buffer that receives the string for the value in <i>d</i>.</li>
+
+    <li><i>len</i> is the length of the <i>output</i> buffer.</li>
+
+    <li><i>fmt</i> is a pointer to a buffer containing the <a href="#FMT_DATETIME">formatting mask</a>.<br>
+    The default date format conforms to the standard ANSI SQL format: <tt>%Y-%m-%d %H:%M:%S</tt></li>
+
+    <li><i>c</i> is one of <a href="EnvironmentVariables.html#EV_DBCENTURY">CENTURY</a> characters, which determines
+    which century to apply to the year portion of the date.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="incvasc">incvasc</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert an ANSI-standard character string to an interval value</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint incvasc(char *<i>str</i>, intrvl_t *<i>i</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>str</i> a pointer to a buffer containing an ANSI-standard INTERVAL string.</li>
+
+    <li><i>i</i> is a pointer to an initialized interval variable.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1260</td>
+      <td width="50%">It is not possible to convert between the specified types.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1261</td>
+      <td width="50%">Too many digits in the first field of datetime or interval.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="incvfmtasc">incvfmtasc</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert a character string having the specified format to an interval value</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint incvfmtasc(char *<i>input</i>, char *<i>fmt</i>, intrvl_t *<i>intvl</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>input</i> is a pointer to the string to convert.</li>
+
+    <li><i>fmt</i> is a pointer to the buffer containing the <a href="#FMT_INTERVAL">formatting mask</a> to use for the
+    input string.<br>
+    It must be either in year to month, or in day to fraction ranges.</li>
+
+    <li><i>intvl</i> is a pointer to the initialized interval variable.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="intoasc">intoasc</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert an interval value to an ANSI-standard character string</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint intoasc(intrvl_t *<i>i</i>, char *<i>str</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>i</i> is a pointer to the initialized interval variable.</li>
+
+    <li><i>str</i> is a pointer to the buffer containing the ANSI-standard interval string.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="intofmtasc">intofmtasc</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To convert an interval value to a character string, specifying the format&nbsp;</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint intofmtasc(intrvl_t *<i>i</i>, char *<i>output</i>, mint <i>len</i>, char *<i>fmt</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>i</i> is a pointer to an initialized interval variable to convert.</li>
+
+    <li><i>output</i> is a pointer to the buffer that receives the string for the value in i.</li>
+
+    <li><i>strlen</i> is the length of the outbuf buffer.</li>
+
+    <li><i>fmt</i> is a pointer to the buffer containing the <a href="#FMT_INTERVAL">formatting mask</a>.<br>
+    It must be either in year to month, or in day to fraction ranges.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="invdivdbl">invdivdbl</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To divide an interval value by a numeric value</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint invdivdbl(intrvl_t *<i>iv,</i> double <i>dbl</i>, intrvl_t *<i>ov</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li>iv is a pointer to an initialized interval variable to be divided.</li>
+
+    <li><i>dbl</i> is a numeric divisor value, which can be a positive or negative number.</li>
+
+    <li><i>ov</i> is a pointer to an interval variable with a valid qualifier in the year to month class or the day to
+    fraction(5) class.</li>
+
+    <li>Both th<i>e iv</i> and <i>ov</i> qualifiers must belong to the same qualifier class</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The division was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The division failed.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1200</td>
+      <td width="50%">A numeric value is too large (in magnitude).</td>
+    </tr>
+    <tr>
+      <td width="20%">-1201</td>
+      <td width="50%">A numeric value is too small (in magnitude).</td>
+    </tr>
+    <tr>
+      <td width="20%">-1202</td>
+      <td width="50%">The <i>dbl</i> parameter is zero (0).</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="invdivinv">invdivinv</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To divide one interval value by another</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint invdivinv(intrvl_t *<i>i1</i>, intrvl_t *i2, double *<i>res</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>i1</i> is a pointer to an initialized interval variable that is the dividend.</li>
+
+    <li><i>i2</i> is a pointer to an initialized interval variable that is the divisor.</li>
+
+    <li><i>res</i> is a pointer to the double value that is the quotient.</li>
+
+    <li>The qualifiers for <i>i1</i> and <i>i2</i> must belong to the same interval class, either year to month or day
+    to fraction(5).</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The division was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The division failed.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1200</td>
+      <td width="50%">A numeric value is too large (in magnitude).</td>
+    </tr>
+    <tr>
+      <td width="20%">-1201</td>
+      <td width="50%">A numeric value is too small (in magnitude).</td>
+    </tr>
+    <tr>
+      <td width="20%">-1266</td>
+      <td width="50%">An interval value is incompatible with the operation.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1268</td>
+      <td width="50%">A parameter contains an invalid interval qualifier.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="invextend">invextend</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To copy an interval value <i>i</i> to the interval value <i>o</i>, adding or dropping fields based on the
+  qualifier of <i>o</i></p>
+
+  <h4>Syntax:</h4>
+  <pre>mint invextend(intrvl_t *<i>i</i>, intrvl_t *<i>o</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>i</i> a pointer to the initialized interval variable to extend.</li>
+
+    <li><i>o</i> is a pointer to the interval variable with a valid qualifier to use for the extension.</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The conversion was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The conversion failed.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1266</td>
+      <td width="50%">An interval value is incompatible with the operation.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1268</td>
+      <td width="50%">A parameter contains an invalid interval qualifier.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="invmuldbl">invmuldbl</a>()</h3>
+
+  <h4>Purpose:</h4>
+
+  <p>To multiply an interval value by a numeric value</p>
+
+  <h4>Syntax:</h4>
+  <pre>mint invmuldbl(intrvl_t *<i>iv</i>, double <i>dbl</i>, intrvl_t *<i>ov</i>);</pre>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>iv</i> is a pointer to the interval variable to multiply.</li>
+
+    <li><i>dbl</i> is the numeric double value, which can be a positive or negative number.</li>
+
+    <li><i>ov</i> is a pointer to the resulting interval variable containing a valid qualifier.</li>
+
+    <li>Both <i>iv</i> and <i>ov</i> must belong to the same interval class, either year to month or day to
+    fraction(5).</li>
+  </ol>
+
+  <h4>Returns:</h4>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="60%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Code</b></td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%">0</td>
+      <td width="50%">The multiplication was successful.</td>
+    </tr>
+    <tr>
+      <td width="20%">&lt;0</td>
+      <td width="50%">The multiplication failed.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1200</td>
+      <td width="50%">A numeric value is too large (in magnitude).</td>
+    </tr>
+    <tr>
+      <td width="20%">-1201</td>
+      <td width="50%">A numeric value is too small (in magnitude).</td>
+    </tr>
+    <tr>
+      <td width="20%">-1266</td>
+      <td width="50%">An interval value is incompatible with the operation.</td>
+    </tr>
+    <tr>
+      <td width="20%">-1268</td>
+      <td width="50%">A parameter contains an invalid interval qualifier.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h3><a name="FMT">Formatting Directives</a></h3>
+
+  <h4><a name="FMT_NUM">Numeric Formatting Mask</a></h4>
+
+  <p>A numeric-formatting mask specifies a format to apply to some numeric value.</p>
+
+  <p>This mask is a combination of the following formatting directives:</p>
+
+  <table border="0" cellpadding="0" width="63%" id="table5">
+    <tr>
+      <td bgcolor="#C0C0C0" width="107" align="center"><b>Character</b></td>
+      <td bgcolor="#C0C0C0" width="678"><b>&nbsp;Description</b></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">*&nbsp;&nbsp;</td>
+      <td>This character fills with asterisks any positions in the display field that would otherwise be blank.</td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">&amp;&nbsp;&nbsp;</td>
+      <td>This character fills with zeros any positions in the display field that would otherwise be blank.</td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">#&nbsp;&nbsp;</td>
+      <td>This character changes leading zeros to blanks. Use this character to specify the maximum leftward extent of
+      a field.</td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">&lt;&nbsp;&nbsp;</td>
+      <td>This character left-justifies the numbers in the display field. It changes leading zeros to a null
+      string.</td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">,&nbsp;<br>
+      <br>
+      &nbsp;</td>
+      <td>This character indicates the symbol that separates groups of three digits (counting leftward from the units
+      position) in the whole-number part of the value. By default, this symbol is a comma. You can set the symbol with
+      the <a href="EnvironmentVariables.html#EV_DBMONEY">DBMONEY</a> environment variable. In a formatted number, this
+      symbol appears only if the whole-number part of the value has four or more digits.</td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">.&nbsp;&nbsp;<br>
+      <br>
+      &nbsp;</td>
+      <td>This character indicates the symbol that separates the whole-number part of a money value from the fractional
+      part. By default, this symbol is a period. You can set the symbol with the <a href=
+      "EnvironmentVariables.html#EV_DBMONEY">DBMONEY</a> environment variable. You can have only one period in a format
+      string.</td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">-&nbsp;&nbsp;<br>
+      <br>
+      &nbsp;</td>
+      <td>This character is a literal. It appears as a minus sign when the expression&nbsp; is less than zero. When you
+      group several minus signs in a row, a single minus sign floats to the rightmost position that it can occupy; it
+      does not interfere with the number and its currency symbol.</td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">+&nbsp;<br>
+      <br>
+      &nbsp;</td>
+      <td>This character is a literal. It appears as a plus sign when the expression is greater than or equal to zero
+      and as a minus sign when expr1 is less than zero. When you group several plus signs in a row, a single plus or
+      minus sign floats to the rightmost position that it can occupy; it does not interfere with the number and its
+      currency symbol.</td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">(&nbsp;<br>
+      <br>
+      &nbsp;</td>
+      <td>This character is a literal. It appears as a left parenthesis to the left of a negative number. It is one of
+      the pair of accounting parentheses that replace a minus sign for a negative number. When you group several in a
+      row, a single left parenthesis floats to the rightmost position that it can occupy; it does not interfere with
+      the number and its currency symbol.</td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">)&nbsp;&nbsp;</td>
+      <td>This is one of the pair of accounting parentheses that replace a minus sign for a negative value.</td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">$&nbsp;&nbsp;<br>
+      <br>
+      <br>
+      &nbsp;</td>
+      <td>This character displays the currency symbol that appears at the front of the numeric value. By default, the
+      currency symbol is the dollar sign ($). You can set the currency symbol with the <a href=
+      "EnvironmentVariables.html#EV_DBMONEY">DBMONEY</a> environment variable. When you group several dollar signs in a
+      row, a single currency symbol floats to the rightmost position that it can occupy; it does not interfere with the
+      number.</td>
+    </tr>
+  </table>
+
+  <p>Any other characters in the formatting mask are reproduced literally in the result.</p>
+
+  <h4>Examples:</h4>
+
+  <table border="0" cellpadding="0" width="32%" id="table3">
+    <tr>
+      <td bgcolor="#C0C0C0" width="125" align="center"><b>Mask</b></td>
+      <td bgcolor="#C0C0C0" width="129"><b>&nbsp;Numeric value</b></td>
+      <td bgcolor="#C0C0C0" width="141" align="right">&nbsp;<b>Formatted String</b></td>
+    </tr>
+    <tr>
+      <td align="center">-##,###.##<br>
+      <br>
+      &nbsp;&nbsp;</td>
+      <td align="right">&nbsp;-12345.67<br>
+      &nbsp;&nbsp; 12345.67<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 113.11</td>
+      <td align="right">-12,234.67<br>
+      b12,345.67<br>
+      bbbb113.11</td>
+    </tr>
+    <tr>
+      <td align="center">##,###.##<br>
+      &nbsp;</td>
+      <td align="right">&nbsp;-12345.67<br>
+      &nbsp;&nbsp; 12345.67</td>
+      <td align="right">12,345.67<br>
+      12,345.67</td>
+    </tr>
+    <tr>
+      <td align="center">--,---.&amp;&amp;</td>
+      <td align="right">&nbsp;-445.67</td>
+      <td align="right">&nbsp;bb-445.67</td>
+    </tr>
+    <tr>
+      <td align="center">$$,$$$.&amp;&amp;<br>
+      &nbsp;</td>
+      <td align="right">2345.67<br>
+      445.67</td>
+      <td align="right">$2,345.67<br>
+      bb$445.67</td>
+    </tr>
+  </table>
+
+  <h4><a name="FMT_DATE">Date Formatting Mask</a></h4>
+
+  <p>A date-formatting mask specifies a format to apply to some date value.</p>
+
+  <p>This mask is a combination of the following formatting directives:</p>
+
+  <table border="0" cellpadding="0" width="59%" id="table2">
+    <tr>
+      <td bgcolor="#C0C0C0" width="107" align="center"><b>Character</b></td>
+      <td bgcolor="#C0C0C0" width="628"><b>&nbsp;Description</b></td>
+    </tr>
+    <tr>
+      <td align="center">dd</td>
+      <td>&nbsp;Day of the month as a two-digit number (01 through 31)</td>
+    </tr>
+    <tr>
+      <td align="center">ddd</td>
+      <td>&nbsp;Day of the week as a three-letter abbreviation (Sun through Sat)</td>
+    </tr>
+    <tr>
+      <td align="center">mm</td>
+      <td>&nbsp;Month as a two-digit number (01 through 12)</td>
+    </tr>
+    <tr>
+      <td align="center">mmm</td>
+      <td>&nbsp;Month as a three-letter abbreviation (Jan through Dec)</td>
+    </tr>
+    <tr>
+      <td align="center">yy</td>
+      <td>&nbsp;Year as a two-digit number (00 through 99)</td>
+    </tr>
+    <tr>
+      <td align="center">yyyy</td>
+      <td>&nbsp;Year as a four-digit number (0001 through 9999)</td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">ww</td>
+      <td>&nbsp;Day of the week as a two-digit number (00 for Sunday, 01 for Monday, 02 for Tuesday &#8230; 06 for
+      Saturday)</td>
+    </tr>
+  </table>
+
+  <p>Any other characters in the formatting mask are reproduced literally in the result.</p>
+
+  <h4><a name="FMT_DATETIME">Datetime Formatting Mask</a></h4>
+
+  <p>A datetime-formatting mask specifies a format to apply to some datetime value.</p>
+
+  <p>This mask is a combination of the following formatting directives:&nbsp;</p>
+
+  <table border="0" cellpadding="0" width="70%" id="table6">
+    <tr>
+      <td bgcolor="#C0C0C0" width="107" align="center"><b>Directive</b></td>
+      <td bgcolor="#C0C0C0" width="628"><b>&nbsp;Description</b></td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2" bgcolor="#FFFFCC">Date related directives</td>
+    </tr>
+    <tr>
+      <td align="center">%a</td>
+      <td>Identifies abbreviated weekday name as defined in locale.</td>
+    </tr>
+    <tr>
+      <td align="center">%A</td>
+      <td>Identifies full weekday name as defined in locale.</td>
+    </tr>
+    <tr>
+      <td align="center">%b</td>
+      <td>Identifies abbreviated month name as defined in locale.</td>
+    </tr>
+    <tr>
+      <td align="center">%B</td>
+      <td>Identifies full month name as defined in locale.</td>
+    </tr>
+    <tr>
+      <td align="center">%C</td>
+      <td>Identifies century number (year divided by 100 and truncated to an integer)</td>
+    </tr>
+    <tr>
+      <td align="center">%d</td>
+      <td>Identifies the day of the month (01 to 31). Single digit is preceded by zero.</td>
+    </tr>
+    <tr>
+      <td align="center">%D</td>
+      <td>Identifies commonly used date format (%m/%d/%y).</td>
+    </tr>
+    <tr>
+      <td align="center">%e</td>
+      <td>Identifies the day of the month as a number (1 to 31). Single digit is preceded by space.</td>
+    </tr>
+    <tr>
+      <td align="center">%h</td>
+      <td>Same as %b.</td>
+    </tr>
+    <tr>
+      <td align="center">%iy</td>
+      <td>Identifies the year as a 2-digit number (00 to 99).</td>
+    </tr>
+    <tr>
+      <td align="center">%iY</td>
+      <td>Identifies the year as a 4-digit number (0000 to 9999).</td>
+    </tr>
+    <tr>
+      <td align="center">%m</td>
+      <td>Identifies the month as a number (01 to 12). Single digit is preceded by zero.</td>
+    </tr>
+    <tr>
+      <td align="center">%w</td>
+      <td>Identifies the weekday as a number (0 to 6), where 0 is the locale equivalent of Sunday.</td>
+    </tr>
+    <tr>
+      <td align="center">%x</td>
+      <td>Identifies a special date representation that the locale defines.</td>
+    </tr>
+    <tr>
+      <td align="center">%y</td>
+      <td>Identifies the year as a 2-digit number (00 to 99).</td>
+    </tr>
+    <tr>
+      <td align="center">%Y</td>
+      <td>Identifies the year as a 4-digit number (0000 to 9999).</td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2" bgcolor="#FFFFCC">Time related directives</td>
+   </tr>
+   <tr>
+      <td align="center">%c</td>
+      <td>Identifies special date/time representation that locale defines.</td>
+    </tr>
+      <tr>
+      <td align="center">%Fn</td>
+      <td>Identifies value of the fraction of a second, with precision specified by integer <i>n</i>. Range of <i>n</i>
+      is 0 to 5.<br>
+        Note that the %Fn directive includes the dot character: For example, if
+        you want to specify a format a time value as 23:35:17.9123, you must use
+        %H:%M:%S%F4</td>
+    </tr>
+    <tr>
+      <td align="center">%H</td>
+      <td>Identifies the hour as 24-hour clock integer (00-23).</td>
+    </tr>
+    <tr>
+      <td align="center">%I</td>
+      <td>Identifies the hour as 12-hour clock integer (00-12).</td>
+    </tr>
+    <tr>
+      <td align="center">%M</td>
+      <td>Identifies the minute as an integer (00-59).</td>
+    </tr>
+    <tr>
+      <td align="center">%p</td>
+      <td>Identifies AM or PM equivalent as defined in locale.</td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">%r&nbsp;&nbsp;</td>
+      <td>Identifies commonly used time representation for a 12-hour clock.</td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">%R</td>
+      <td>Identifies commonly used time representation for a 24-hour clock (%H:%M).</td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">%S</td>
+      <td>Identifies the second as an integer (00-61). Second can be up to 61 instead of 59 to allow for the occasional
+      leap second and double leap second.</td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">%T</td>
+      <td>Identifies commonly used time format (%H:%M:%S).</td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">%X</td>
+      <td>Identifies commonly used time representation as defined in the locale.</td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2" bgcolor="#FFFFCC">Specials</td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">%%</td>
+      <td>Identifies the % character.</td>
+    </tr>
+    <tr>
+      <td align="center">%n</td>
+      <td>Identifies a new-line character.</td>
+    </tr>
+    <tr>
+      <td align="center">%t</td>
+      <td>Identifies a TAB character.</td>
+    </tr>
+  </table>
+
+  <p>Any other characters in the formatting mask are reproduced literally in the result.</p>
+
+  <h4><a name="FMT_INTERVAL">Interval Formatting Mask</a></h4>
+
+  <p>An interval-formatting mask specifies a format to apply to some interval value.</p>
+
+  <p>This mask must be combination of Class 1 interval or Class 2 interval formatting directives:</p>
+
+  <table border="0" cellpadding="0" width="70%" id="table6">
+    <tr>
+      <td bgcolor="#C0C0C0" width="107" align="center"><b>Character</b></td>
+      <td bgcolor="#C0C0C0" width="628"><b>&nbsp;Description</b></td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2" bgcolor="#FFFFCC">Class 1 formatting directives ( YEAR to MONTH )</td>
+    </tr>
+    <tr>
+      <td align="center">%C</td>
+      <td>Identifies century number (year divided by 100 and truncated to an integer)</td>
+    </tr>
+    <tr>
+      <td align="center">%iy</td>
+      <td>Identifies the year as a 2-digit number (00 to 99).</td>
+    </tr>
+    <tr>
+      <td align="center">%iY</td>
+      <td>Identifies the year as a 4-digit number (0000 to 9999).</td>
+    </tr>
+    <tr>
+      <td align="center">%m</td>
+      <td>Identifies the month as a number (01 to 12). Single digit is preceded by zero.</td>
+    </tr>
+    <tr>
+      <td align="center">%y</td>
+      <td>Identifies the year as a 2-digit number (00 to 99).</td>
+    </tr>
+    <tr>
+      <td align="center">%Y</td>
+      <td>Identifies the year as a 4-digit number (0000 to 9999).</td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2" bgcolor="#FFFFCC">Class 2 formatting directives ( DAY to FRACTION )</td>
+    </tr>
+    <tr>
+      <td align="center">%a</td>
+      <td>Identifies abbreviated weekday name as defined in locale.</td>
+    </tr>
+    <tr>
+      <td align="center">%A</td>
+      <td>Identifies full weekday name as defined in locale.</td>
+    </tr>
+    <tr>
+      <td align="center">%d</td>
+      <td>Identifies the day of the month (01 to 31). Single digit is preceded by zero.</td>
+    </tr>
+    <tr>
+      <td align="center">%e</td>
+      <td>Identifies the day of the month as a number (1 to 31). Single digit is preceded by space.</td>
+    </tr>
+    <tr>
+      <td align="center">%Fn</td>
+      <td>Identifies value of the fraction of a second, with precision specified by integer <i>n</i>. Range of <i>n</i>
+      is 0 to 5.</td>
+    </tr>
+    <tr>
+      <td align="center">%H</td>
+      <td>Identifies the hour as 24-hour clock integer (00-23).</td>
+    </tr>
+    <tr>
+      <td align="center">%I</td>
+      <td>Identifies the hour as 12-hour clock integer (00-12).</td>
+    </tr>
+    <tr>
+      <td align="center">%M</td>
+      <td>Identifies the minute as an integer (00-59).</td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">%S</td>
+      <td>Identifies the second as an integer (00-61). Second can be up to 61 instead of 59 to allow for the occasional
+      leap second and double leap second.</td>
+    </tr>
+    <tr>
+      <td align="center">%w</td>
+      <td>Identifies the weekday as a number (0 to 6), where 0 is the locale equivalent of Sunday.</td>
+    </tr>
+    <tr>
+      <td align="center" colspan="2" bgcolor="#FFFFCC">Specials</td>
+    </tr>
+    <tr>
+      <td align="center" valign="top">%%</td>
+      <td>Identifies the % character.</td>
+    </tr>
+    <tr>
+      <td align="center">%n</td>
+      <td>Identifies a new-line character.</td>
+    </tr>
+    <tr>
+      <td align="center">%t</td>
+      <td>Identifies a TAB character.</td>
+    </tr>
+  </table>
+</body>
+</html>

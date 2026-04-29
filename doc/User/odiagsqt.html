@@ -1,0 +1,1047 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<TITLE>ODI Adaptation Guide for SQLite</TITLE>
+<meta http-equiv="Content-Type" content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p><a href="../index.html">Back to Contents</a></p>
+
+<HR>
+
+<H1>ODI Adaptation Guide For SQLite 3.5.x, 3.6.x</H1>
+
+<p><font color="#000080">Installation</font></p>
+
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODISQT_PREP01">Install SQLite and create a database</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT_PREP02">Prepare the runtime environment</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">Database concepts</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODISQT007a">Database concepts</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT008a">Concurrency management</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT009a">Transactions handling</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT016a">Defining database users</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">Data dictionary </font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODISQT011a">CHARACTER data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT021">NUMERIC data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT001">DATE and DATETIME data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT036">INTERVAL data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT005">SERIAL data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT004">ROWIDs</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT030">Very large data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT100">Data type conversion table</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">Data manipulation</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODISQT006">Outer joins</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT009a">Transactions handling</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT017">Temporary tables</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT024">MATCHES and LIKE conditions</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT034">Syntax of UPDATE statements</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">BDL programming</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODISQT005">SERIAL data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT025">INFORMIX specific SQL statements in BDL</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT028">INSERT cursors</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT008b">SELECT FOR UPDATE</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT032">UPDATE/DELETE WHERE CURRENT OF &lt;cursor&gt;</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT046">The LOAD and UNLOAD instructions</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODISQT048">Scrollable Cursors</a></td>
+  </tr>
+</table>
+</center></div>
+
+<hr>
+
+<h2 align="left"><a name="ODISQT_PREP">Runtime configuration</a></h2>
+
+<blockquote>
+  <h3 align="left"><a name="ODISQT_PREP01">Install SQLite and create a database</a></h3>
+  <ol>
+    <li><p>Install the SQLite software on your computer. The minimum required
+      version is SQLite <b>3.5.9</b>.</p>
+    </li>
+    <li><p>To create a new database with SQLite, you just need to start the
+      sqlite3 command line tool and issue an SQL statement.<br><br>
+      <font face="Courier New">&nbsp;&nbsp; $ sqlite3-3.5.9.bin /var/data/stores.db<br>
+      &nbsp;&nbsp; sqlite&gt; CREATE TABLE customer ( cust_id INT PRIMARY KEY,
+      ... );<br>
+      &nbsp;&nbsp; $ .exit</font>&nbsp;
+    </li>
+  </ol>
+</blockquote>
+
+<blockquote>
+  <h3 align="left"><a name="ODISQT_PREP02">Prepare the runtime environment</a></h3>
+  <ol>
+    <li><p>In order to connect to SQLite, you must have a database driver &quot;<b>dbmsqt*</b>&quot;
+      in FGLDIR/dbdrivers.</p>
+
+    </li>
+    <li><p>Make sure that the SQLite environment variables are properly set. You
+      may want to define an environment variable such as <b>SQLITEDIR</b> the
+      hold the installation directory of SQLite, which can then be used to set PATH
+      and LD_LIBRARY_PATH. See SQLite documentation for more details.</p>
+
+    </li>
+    <li><p>Verify the environment variable
+      defining the search path for database client shared library. On UNIX platforms, the variable is specific to the operating system. 
+	For example, on Solaris and Linux systems, it is <b>LD_LIBRARY_PATH</b>, on
+      AIX it is <b>LIBPATH</b>, or HP/UX it is <b>SHLIB_PATH</b>. On Windows,
+      you define the DLL search path in the <b>PATH</b> environment variable.</p>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0">
+      <p align="center"><font color="#0000FF"><b>SQLite version</b></font></td>
+    <td bgcolor="#C0C0C0" width="70%">
+      <p align="center"><font color="#0000FF"><b>Shared library environment
+      setting</b></font></td>
+  </tr>
+  <tr>
+    <td><font color="#0000FF"><b>SQLite 3.5 and higher</b></font></td>
+    <td align="center" width="70%">
+      <p align="left"><i>UNIX</i>: Add <b>$SQLITEDIR/lib</b> to
+      LD_LIBRARY_PATH (or its equivalent).<br>
+      <i>Windows</i>: Add <b>%SQLITEDIR%\bin</b> to PATH.</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td align="center" width="70%"></td>
+  </tr>
+</table>
+    </li>
+    <li><p>Make sure that all operating system users running the application
+      have read/write access to the database file.</p>
+    </li>
+    <li><p>SQLite uses UTF-8 encoding. If the locale used by
+      the runtime system (<b>LANG/LC_ALL</b>) is not compatible to UTF-8 (for
+      example, fr_FR.iso88591), you need the <b>iconv</b> library to be installed on the
+      system. The iconv library will be automatically used if the current character set is
+      not compatible with UTF-8, to make charset conversion between the
+      application locale and the SQLite UTF-8 charset.&nbsp;</p>
+    </li>
+    <li><p>Set up the <b>fglprofile</b> entries for <a href="Connections.html#DS_ODI_DBVSPEC"> database
+      connections</a>.<br>
+      <br>
+      <b><font color="#FF0000">Warning:</font></b> <b>Make sure that you are
+      using the ODI driver corresponding to the database client and server
+      version. Because Informix features emulation are dependant from the
+      database server version, it is mandatory to use the same version of the
+      database client and ODI driver as the server version.</b><br>
+      <br>
+      Note that the '<b>source</b>'
+      parameter defines the path to the SQLite database file.
+    </li>
+  </ol>
+</blockquote>
+
+<hr>
+
+<h2><a name="ODISQT001">ODISQT001 - DATE and DATETIME data types</a>
+
+</h2>
+
+<p>INFORMIX provides two data types to store date and time information: 
+
+<ul>
+  <li><b>DATE</b> = for year, month and day storage.</li>
+  <li><b>DATETIME</b> = for year to fraction(1-5) storage.</li>
+</ul>
+
+<p>SQLite 3 does not have a native type for date/time storage, but you can use
+data/time type names and functions based on the string representation of dates
+and times. The date/time values are stored in the TEXT native type. The
+date/time functions of SQLite are based on standard DATE (YYYY-MM-DD), TIME (hh:mm:ss)
+and TIMESTAMP (YYYY-MM-DD hh:mm:ss) concepts.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>INFORMIX DATE type is not translated, it will be used as is by SQLite.</p>
+<p>INFORMIX DATETIME HOUR TO SECOND type is translated to TIME.</p>
+<p>INFORMIX DATETIME YEAR TO FRACTION and all other combinations are translated
+to TIMESTAMP.</p>
+
+<hr>
+
+<h2><a name="ODISQT004">ODISQT004 - ROWIDs</a>
+
+</h2>
+
+<p>When creating a table, INFORMIX automatically adds a
+&quot;ROWID&quot; integer column (applies to non-fragmented tables only). The
+ROWID column is auto-filled with a unique number and can be used
+like a primary key to access a given row.</p>
+
+<p>SQLite supports ROWIDs columns as 64-bit integers. INFORMIX ROWIDs are 16-bit
+integers. </p>
+
+<p>With INFORMIX, SQLCA.SQLERRD[6] contains the ROWID of the last  INSERTed or UPDATEd row. This is not supported with SQLite because SQLite ROWID are not
+INTEGERs.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>If the BDL application uses INFORMIX ROWIDs as primary keys, the program logic should be reviewed in order to use the real primary keys.</p>
+
+<p>If you cannot avoid the use of rowids, you must change the type of the variables which hold ROWID values. Instead of using INTEGER, you must use
+DECIMAL(20).</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> All references to SQLCA.SQLERRD[6] must be removed because this variable will not contain the ROWID of the last INSERTed or UPDATEd row when using the SQLite interface.</p>
+
+<hr>
+
+<h2><a name="ODISQT005">ODISQT005 - SERIAL data types</a>
+
+</h2>
+
+<p>INFORMIX supports the SERIAL, SERIAL8 and BIGSERIAL data types to produce automatic
+integer sequences. SERIAL is based on INTEGER (32 bit), while SERIAL8 and
+BIGSERIAL can store 64 bit integers: </p>
+<ul>
+	<li>The table column must be of type SERIAL, SERIAL8 or BIGSERIAL.</li>
+	<li>To generate a new serial, no value or a zero 
+	value is specified in the INSERT statement:<br>
+	<font size="2" face="Courier New">&nbsp;&nbsp; INSERT INTO tab1 ( c ) VALUES (
+    'aa' )<br>
+	&nbsp;&nbsp; INSERT INTO tab1 ( k, c ) VALUES ( 0, 'aa' )</font></li>
+	<li>After INSERT, the new SERIAL value is provided in
+	<font face="Courier New" color="#FF0000">SQLCA.SQLERRD[2]</font>, while the
+      new SERIAL8 and BIGSERIAL value must be fetched with a <font face="Courier New" color="#FF0000">SELECT
+      dbinfo('bigserial')</font> query.</li>
+</ul>
+<p>INFORMIX allows you to insert rows with a value different from zero for
+    a serial column. Using an explicit value will automatically increment the internal serial
+    counter, to avoid conflicts with future INSERT statements that are using a zero value : <br>
+    <font face="Courier New">&nbsp;&nbsp;&nbsp; CREATE TABLE tab ( k SERIAL ); --&gt; internal counter = 0<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 1<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 10 );&nbsp; --&gt; internal counter = 10<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 11<br>
+&nbsp;&nbsp;&nbsp; DELETE FROM tab;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; --&gt;
+internal counter = 11<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 12</font></p>
+
+<p>SQLite supports the <b>AUTOINCREMENT</b> attribute for columns: 
+
+<ul>
+  <li>Only one column must be declared as INTEGER PRIMARY KEY AUTOINCREMENT.</li>
+  <li>To get the last generated number, SQLite provides the <b>sqlite_sequence</b>
+    table:<br>
+    <font face="Courier New">&nbsp;&nbsp;&nbsp;SELECT seq FROM sqlite_sequence
+    WHERE name='table_name';</font></li>
+  <li>When inserting a zero in the auto-increment column, SQLite will not
+    generate a new sequence like Informix.</li>
+  <li>When inserting a NULL in the auto-increment column, SQLite generates a new
+    sequence, Informix denies NULLs in SERIALs.</li>
+</ul>
+
+<p>INFORMIX allows you to insert rows with a value different from zero for
+a serial column. Using an explicit value will automatically increment the internal serial
+counter, to avoid conflicts with future INSERTs that are using a zero value:<br>
+
+<font face="Courier New">&nbsp;&nbsp;&nbsp; CREATE TABLE tab ( k SERIAL );&nbsp;
+--&gt; internal counter = 0<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 1<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 10 );&nbsp; --&gt; internal counter = 10<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 11<br>
+&nbsp;&nbsp;&nbsp; DELETE FROM tab;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; --&gt;
+internal counter = 11<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 12</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>When using SQLite, the SERIAL data type is converted to INTEGER PRIMARY KEY
+AUTOINCREMENT.</p>
+
+<p><b><font color="#ff0000">Warning:</font></b>  Because SQLite does not behave
+like Informix regarding zero and NULL value specification for auto-incremented
+columns, all INSERT statements must be reviewed to remove the SERIAL column from
+the list.<br>
+For example, the following statement:<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col1,col2) VALUES (<b>0</b>,
+p_value)</font><br>
+can be converted to :<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col2) VALUES (p_value)<br>
+</font>Static SQL INSERT using records defined from the schema file must also be
+reviewed :<br>
+<font face="Courier New">&nbsp;&nbsp; DEFINE rec LIKE tab.*</font><br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab VALUES ( rec.*
+)&nbsp;&nbsp; -- will use the serial column</font><br>
+can be converted to :<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab VALUES rec.* -- without
+braces, serial column is removed</font></p>
+
+<hr>
+
+<h2><a name="ODISQT006">ODISQT006 - Outer joins</a></h3>
+
+</h2>
+
+<p>The original syntax of OUTER joins of INFORMIX is different from the SQLite
+outer join syntax:</p>
+
+<p>In INFORMIX SQL, outer tables are defined in the FROM clause with the <b>OUTER</b> keyword :</p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM a, <b><font color="#0000A0">OUTER(b)</font></b> WHERE a.key = b.akey</font></pre>
+  <pre><font face="Courier New">SELECT ... FROM a, <b><font color="#0000A0">OUTER(b,OUTER(c))</font></b> WHERE a.key = b.akey AND b.key1 = c.bkey1 AND b.key2 = c.bkey2 </font></pre>
+</blockquote>
+
+<p>SQLite 3 supports the ANSI outer join syntax:</p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM <b><font color="#0000A0">cust LEFT OUTER JOIN order
+                     ON cust.key = order.custno</font></b></font></pre>
+  <pre><font face="Courier New">SELECT ...
+  FROM <b><font color="#0000A0">cust</font></b></font><b><font
+face="Courier New" color="#0000A0"> LEFT OUTER JOIN order
+                 LEFT OUTER JOIN item
+                 ON order.key = item.ordno
+            ON cust.key = order.custno</font></b><font
+face="Courier New">
+ WHERE order.accepted = 1</font></pre>
+</blockquote>
+
+<p>See the SQLite 3 SQL reference for a complete description of the syntax.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>For better SQL portability, you should use the ANSI outer join syntax instead
+of the old Informix OUTER syntax.</p>
+
+<p>The SQLite 3 interface can convert most INFORMIX OUTER specifications to
+SQLite 3 outer joins.</p>
+
+<p>Prerequisites : 
+
+<ol>
+  <li>In the FROM clause, the main table must be the first item and the outer tables must figure from left to right in the order of outer levels.<br>
+    &nbsp;&nbsp; Example which does not work : &quot;FROM OUTER(tab2), tab1&quot;.</li>
+  <li>The outer join in the WHERE clause must use the table name as prefix.<br>
+    &nbsp;&nbsp; Example : &quot;WHERE tab1.col1 = tab2.col2&quot;.</li>
+</ol>
+
+<p>Restrictions : 
+
+<ol>
+  <li>Additional conditions on outer table columns cannot be detected and therefore are not supported :<br>
+    &nbsp;&nbsp;Example : &quot;... FROM tab1, OUTER(tab2) WHERE tab1.col1 = tab2.col2 AND tab2.colx &gt; 10&quot;.</li>
+  <li>Statements composed by 2 or more SELECT instructions using OUTERs are not supported.<br>
+    &nbsp; Example : &quot;SELECT ... UNION SELECT&quot; or &quot;SELECT ... WHERE col IN (SELECT...)&quot;</li>
+</ol>
+
+<p>Remarks : 
+
+<ol>
+  <li>Table aliases are detected in OUTER expressions.<br>
+    &nbsp;&nbsp; OUTER example with table alias : &quot;OUTER( tab1 alias1)&quot;.</li>
+  <li>In the outer join, &lt;outer table&gt;.&lt;col&gt; can be placed on
+    both right or left  sides of the equal sign.<br>
+    &nbsp;&nbsp; OUTER join example with table on the left : &quot;WHERE outertab.col1 =
+    maintab.col2 &quot;.</li>
+  <li>Table names detection is not case-sensitive.<br>
+    &nbsp;&nbsp; Example : &quot;SELECT ... FROM tab1, TAB2 WHERE tab1.col1 = tab2.col2&quot;.</li>
+  <li><a href="#ODISQT017">Temporary tables</a> are supported in OUTER specifications.</li>
+</ol>
+
+<hr>
+
+<h2><a name="ODISQT007a">ODISQT007a - Database concepts</a></h3>
+
+</h2>
+
+<p>INFORMIX servers can handle multiple database entities, while SQLite can manage
+several database files.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Map each INFORMIX database to a SQLite database file.</p>
+
+<hr>
+
+<h2><a name="ODISQT008a">ODISQT008a - Concurrency management</a>
+
+</h2>
+
+<p>INFORMIX is a multi-user database engine, while SQLite is typically used for
+a single-user application. SQLite 3 supports multi-user access to the same
+database file, but this lightweight database engine is not designed for large
+multi-user applications.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>We recommend to use SQLite for single-user DB applications.</p>
+
+<hr>
+
+<h2><a name="ODISQT008b">ODISQT008b - SELECT FOR UPDATE</a></h3>
+
+</h2>
+
+<p>A lot of BDL programs use pessimistic locking in order to prevent several users editing the same rows at the same time.</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;DECLARE cc CURSOR FOR<br>
+&nbsp;&nbsp; &nbsp; SELECT ... FOR UPDATE [OF col-list]<br>
+&nbsp;&nbsp;OPEN cc<br>
+&nbsp;&nbsp;FETCH cc &lt;-- lock is acquired<br>
+&nbsp;&nbsp;CLOSE cc &lt;-- lock is released</font> 
+
+<ul>
+  <li>The row must be fetched in order to set the lock.</li>
+  <li>If the cursor is local to a transaction, the lock is released when
+    the transaction ends.<br>
+    If the cursor is declared &quot;WITH HOLD&quot;, the lock is released when
+    the cursor is closed.</li>
+</ul>
+
+<p>SQLite does not support the FOR UPDATE close in SELECT syntax.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  You must review the program
+logic and remove SELECT ... FOR UPDATE statements.</p>
+
+<hr>
+
+<h2><a name="ODISQT009a">ODISQT009a - Transactions handling</a></h3>
+
+</h2>
+
+<p>INFORMIX and SQLite have similar commands to begin, commit or rollback
+transaction. There are however some important differences you must be aware of. </p>
+
+<p>With SQLite, DDL statements can be executed (and canceled) in
+transaction blocks, as with INFORMIX. </p>
+
+<p>INFORMIX version 11.50 introduces savepoints with the following instructions:</p>
+
+<pre>    SAVEPOINT <i>name</i> <u>[</u>UNIQUE<u>]</u>
+    ROLLBACK <u>[</u>WORK<u>]</u> TO SAVEPOINT <u>[</u><i>name</i><u>]</u> <u>]</u>
+    RELEASE SAVEPOINT <i>name</i></pre>
+
+<p>SQLite supports savepoints too. However, there are differences:</p>
+
+<ol>
+  <li>SAVEPOINT can be used instead of BEGIN TRANSACTION. In this case, RELEASE
+    is like a COMMIT.</li>
+  <li>The syntax of rollback to savepoint is ROLLBACK [TRANSACTION] TO [SAVEPOINT]
+    <i>name</i>.</li>
+  <li>The syntax of release to savepoint is RELEASE [SAVEPOINT] <i>name</i>.</li>
+  <li>Rollback must always specify the savepoint name.</li>
+  <li><b>You cannot rollback to a savepoint if cursors are opened.</b></li>
+</ol>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Regarding transaction control instructions, BDL applications
+do not have to be modified in order to work with SQLite. The BEGIN WORK, COMMIT
+WORK and ROLLBACK WORK commands are translated the native commands of SQLite.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b>  If you want to use savepoints,
+always specify the savepoint name in ROLLBACK TO SAVEPOINT and do not open
+cursors during transactions using savepoints.</p>
+
+<p>See also <a href="#ODISQT008b">ODISQT008b</a></p>
+
+<hr>
+
+<h2><a name="ODIMYS010">ODIMYS010 - BOOLEAN data type</a>
+
+</h2>
+
+<p>INFORMIX supports the BOOLEAN data type, which can store 't' or 'f' values.
+Genero BDL implements the BOOLEAN data type in a different way: As in other
+programming languages, Genero BOOLEAN stores integer values 1 or 0 (for TRUE or
+FALSE). The type was designed this way to assign the result of a Boolean
+expression to a BOOLEAN variable.</p>
+
+<p>SQLite does not implement a native BOOLEAN type, but accepts BOOLEAN in the
+SQL syntax.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The SQLite database interface supports the BOOLEAN data type, and converts
+the BDL BOOLEAN integer values to a CHAR(1) of '1' or '0'.</p>
+
+<hr>
+
+<h2><a name="ODISQT011a">ODISQT011a - CHARACTER data types</a></h3>
+
+</h2>
+
+<p>INFORMIX provides the CHAR and VARCHAR data types to store characters. CHAR columns can store up to <b> 32767</b> chars, and
+VARCHARs are limited to <b>255</b>.  Starting with IDS 2000, INFORMIX provides the LVARCHAR data type which is limited to 2K.</p>
+
+<p>SQLite 3 provides the TEXT native data type with no strict size limitation.
+CHAR(n), VARCHAR(n), NCHAR(n) and NVARCHAR(n) type names can be used and will be
+stored as TEXT.</p>
+
+<p>
+SQLite treats empty strings as NOT NULL values like INFORMIX.</p>
+
+<p><font color="#FF0000"><b>Warning</b></font>: When
+comparing VARCHAR <u>or CHAR</u> values in SQLite, the trailing blanks are significant;
+this is not the case when using INFORMIX VARCHAR and CHAR values.</p>
+
+<div align="center">
+  <center>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="15%"><font color="#0000FF"><b>Data type</b></font></td>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>INFORMIX</b></font></td>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>SQLite</b></font></td>
+  </tr>
+  <tr>
+    <td width="15%"><font face="Courier New">CHAR</font></td>
+    <td width="50%"><font face="Courier New">'aaa&nbsp; ' = 'aaa'</font></td>
+    <td width="50%"><font face="Courier New">'aaa&nbsp;&nbsp; ' &lt;&gt; 'aaa'</font></td>
+  </tr>
+  <tr>
+    <td width="15%"><font face="Courier New">VARCHAR</font></td>
+    <td width="50%"><font face="Courier New">'aaa&nbsp; ' = 'aaa'</font></td>
+    <td width="50%"><font face="Courier New">'aaa&nbsp;&nbsp; ' &lt;&gt; 'aaa'</font></td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<p><font color="#FF0000"><b>Warning</b></font> : SQLite supports only the UTF-8
+character encoding. Thus, client applications must provide UTF-8 encoded
+strings.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The database interface supports character string variables in SQL statements for input
+(BDL USING) and output (BDL INTO).</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  Since CHAR and VARCHAR
+comparison in SQLite takes trailing blanks into account, some queries returning
+rows with INFORMIX may not return the same result set with SQLite.</p>
+
+<p>Regarding character sets, the SQLite database driver automatically converts
+character strings used in the Genero programs to/from UTF-8 for SQLite, as long
+as the iconv library is available on the system and can be loaded. For more
+details, see installation &amp; setup at the beginning of this guide.</p>
+
+<p>See also the section about <a href="Localization.html">Localization</a>.</p>
+
+<hr>
+
+<h2><a name="ODISQT016a">ODISQT016a - Defining database users</a></h3>
+
+</h2>
+
+<p>INFORMIX supports database users that must be explicitly declared to the
+database by granting privileges.</p>
+
+<p>SQLite does not have database users concept. However, the operating system
+user must have read/write access to the database file.&nbsp;</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>SQLite is mainly designed for single-user applications.</p>
+
+<hr>
+
+<h2><a name="ODISQT017">ODISQT017 - Temporary tables </a></h3>
+
+</h2>
+
+<p>INFORMIX temporary tables are created through the
+<font face="Courier New" ><b> CREATE TEMP TABLE </b></font>
+DDL instruction or through a <b><font face="Courier New" >SELECT ... INTO TEMP</font></b> statement.
+Temporary tables are automatically dropped when the SQL session ends, but they can
+also be dropped with the DROP TABLE command. There is no name conflict when several users create
+temporary tables with the same name.</p>
+
+<p>Remark: BDL reports create a temporary table when the rows are not
+sorted externally (by the source SQL statement).</p>
+
+<p>INFORMIX allows you to create indexes on temporary tables. No name conflict occurs when several users create an index on a temporary table by using the same index identifier.</p>
+
+<p>SQLite supports temporary tables with the <b>CREATE TEMP TABLE</b> statement.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>INFORMIX CREATE TEMP TABLE statements are kept as is and SELECT INTO TEMP
+statements are converted to SQLite native SQL CREATE TEMP TABLE AS SELECT ...</p>
+
+<hr>
+
+<h2><a name="ODISQT021">ODISQT021 - NUMERIC data types</a></h3>
+
+</h2>
+
+<p>INFORMIX supports several data types to store numbers: </p>
+
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><font color="#0000FF"><b>INFORMIX data type</b></font></td>
+    <td width="60%" bgcolor="#C0C0C0"><font color="#0000FF"><b>Description</b></font></td>
+  </tr>
+  <tr>
+    <td width="40%">SMALLINT</td>
+    <td width="60%">16 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">INT/INTEGER</td>
+    <td width="60%">32 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">BIGINT</td>
+    <td width="60%">64 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">INT8</td>
+    <td width="60%">64 bit signed integer (replaced by BIGINT)</td>
+  </tr>
+  <tr>
+    <td width="40%">DEC/DECIMAL(p)</td>
+    <td width="60%">Floating-point decimal number</td>
+  </tr>
+  <tr>
+    <td width="40%">DEC/DECIMAL(p,s)</td>
+    <td width="60%">Fixed-point decimal number</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY</td>
+    <td width="60%">Equivalent to DECIMAL(16,2)</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY(p)</td>
+    <td width="60%">Equivalent to DECIMAL(p,2)</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY(p,s)</td>
+    <td width="60%">Equivalent to DECIMAL(p,s)</td>
+  </tr>
+  <tr>
+    <td width="40%">REAL/SMALLFLOAT</td>
+    <td width="60%">approx floating point (C float)</td>
+  </tr>
+  <tr>
+    <td width="40%">DOUBLE PREC./FLOAT</td>
+    <td width="60%">approx floating point (C double) </td>
+  </tr>
+</table>
+</center></div>
+
+<p>SQLite 3 supports only INTEGER and FLOAT native types to store numbers, but
+allows synonyms for these native types: </p>
+
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><font color="#0000FF"><b>SQLite data type</b></font></td>
+    <td width="60%" bgcolor="#C0C0C0"><font color="#0000FF"><b>Description</b></font></td>
+  </tr>
+  <tr>
+    <td width="40%">INTEGER</td>
+    <td width="60%">4 byte integer like INFORMIX</td>
+  </tr>
+  <tr>
+    <td width="40%">REAL</td>
+    <td width="60%">8 byte floating point like INFORMIX DOUBLE PRECISION / FLOAT</td>
+  </tr>
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><font color="#0000FF"><b>Supported
+      synonyms</b></font></td>
+    <td width="60%" bgcolor="#C0C0C0"><font color="#0000FF"><b>Native type</b></font></td>
+  </tr>
+  <tr>
+    <td width="40%">SMALLINT</td>
+    <td width="60%">INTEGER</td>
+  </tr>
+  <tr>
+    <td width="40%">SMALLFLOAT</td>
+    <td width="60%">FLOAT</td>
+  </tr>
+  <tr>
+    <td width="40%">DECIMAL(p,s)</td>
+    <td width="60%">FLOAT</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY(p,s)</td>
+    <td width="60%">FLOAT</td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  Exact decimal types like
+DECIMAL(p,s) may be stored as floating point numbers (REAL), INTEGERs or TEXT,
+according to the type affinity selected by SQLite. When converted to FLOAT, data
+loss and rounding rule differences are possible with SQLite.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>INFORMIX numeric types are not translated by the database driver.</p>
+<p><font color="#FF0000"><b>Warning:</b></font>  Since SQLite 3 does not have
+exact decimal types like DECIMAL(p,s), you must pay attention to the rounding
+rules and data loss when using numbers with many significant digits. Arithmetic
+operations like division have different results as with INFORMIX. You better
+fetch the original column value into a DECIMAL variable and do arithmetic
+operations in the application program.</p>
+
+<hr>
+
+<h2><a name="ODISQT024">ODISQT024 - MATCHES and LIKE in SQL conditions</a></h3>
+
+</h2>
+
+<p>INFORMIX supports MATCHES and LIKE in SQL statements, while SQLite supports the LIKE statement only.</p>
+
+<p>MATCHES allows you to use brackets to specify a set of matching characters at a given position :<br>
+<font face="Courier New">&nbsp;&nbsp; ( col MATCHES '[Pp]aris' )</font>.<br>
+<font face="Courier New">&nbsp;&nbsp; ( col MATCHES '[0-9][a-z]*' )</font>.<br>
+In this case, the LIKE statement has no equivalent feature.</p>
+
+<p>The following substitutions must be done to convert a MATCHES condition to a LIKE condition: 
+
+<ul>
+  <li>MATCHES keyword must be replaced by LIKE.</li>
+  <li>All '<font face="Courier">*</font>' characters must be replaced by '<font face="Courier">%</font>'.</li>
+  <li>All '<font face="Courier">?</font>' characters must be replaced by '<font face="Courier">_</font>'.</li>
+  <li>Remove all brackets expressions.</li>
+</ul>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> SQL statements
+using MATCHES expressions must be reviewed in order to use LIKE expressions.</p>
+
+<p>See also: <a href="SqlProgramming.html#PORT_MATCHES">MATCHES operator in SQL
+Programming</a>.</p>
+
+<hr>
+
+<h2><a name="ODISQT025">ODISQT025 - INFORMIX specific SQL statements in BDL </a>
+
+</h2>
+
+<p>The BDL compiler supports several INFORMIX specific SQL statements that have no meaning when using
+SQLite:</p>
+
+<p>deleted the next sentence as not necessary 
+
+<ul>
+  <li>CREATE DATABASE</li>
+  <li>DROP DATABASE</li>
+  <li>START DATABASE (SE only)</li>
+  <li>ROLLFORWARD DATABASE</li>
+  <li>SET [BUFFERED] LOG</li>
+  <li>CREATE TABLE with special options (storage, lock mode, etc.)</li>
+</ul>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Review your BDL source and remove all static SQL statements which are INFORMIX specific.</p>
+
+<hr>
+
+<h2><a name="ODISQT028">ODISQT028 - INSERT cursors</a></h3>
+
+</h2>
+
+<p>INFORMIX supports insert cursors. An &quot;insert cursor&quot; is a special BDL cursor declared with an INSERT statement instead of a SELECT statement. When this kind of cursor is open, you can use the PUT instruction to add rows and the FLUSH instruction to insert the records into the database.</p>
+
+<p>For INFORMIX database with transactions, OPEN, PUT and FLUSH instructions must be executed within a transaction.</p>
+
+<p>SQLite does not support insert cursors.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Insert cursors are emulated by the SQLite database interface.</p>
+
+<hr>
+
+<h2><a name="ODISQT030">ODISQT030 - Very large data types</a></h3>
+
+</h2>
+
+<p> INFORMIX uses the TEXT and BYTE data types to store very large texts or images.SQLite
+3 provides TEXT and BLOB native data types.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The SQLite database interface can convert BDL TEXT data to TEXT and BYTE data to BLOB.</p>
+
+<hr>
+
+<h2><a name="ODISQT032">ODISQT032 - UPDATE/DELETE WHERE CURRENT OF &lt;cursor&gt;</a></h3>
+
+</h2>
+
+<p>INFORMIX allows positioned UPDATEs and DELETEs with the &quot;WHERE CURRENT OF &lt;cursor&gt;&quot; clause, if the cursor has been DECLARED with a SELECT ...  FOR UPDATE statement.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> SELECT ... FOR UPDATE is not supported by
+SQLite.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Review the program logic and use primary keys to update the rows.</p>
+
+<hr>
+
+<h2><a name="ODISQT034">ODISQT034 - Syntax of UPDATE statements</a></h3>
+
+</h2>
+
+<p>INFORMIX allows a  specific syntax for UPDATE statements :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET ( &lt;col-list&gt; ) = ( &lt;val-list&gt; )</font></p>
+
+<p>or</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET table.* =
+myrecord.*<br>
+  &nbsp;&nbsp;&nbsp; UPDATE table SET * = myrecord.*</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Static UPDATE statements using the above syntax are converted <b>by the compiler</b> to the standard form:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET column=value [,...] </font></p>
+
+<hr>
+
+<h2><a name="ODISQT036">ODISQT036 - INTERVAL data type</a></h3>
+
+</h2>
+
+<p>INFORMIX's INTERVAL data type stores a value that represents a span
+of time. INTERVAL types are divided into two classes : <b><i>year-month intervals</i></b> and 
+<b><i>day-time intervals</i>.</b></p>
+
+<p>SQLite 3 does not provide a data type similar to INFORMIX INTERVAL. </p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>It is not recommended that you use the INTERVAL data type because SQLite 3
+has no equivalent native data type. This would cause problems when doing
+INTERVAL arithmetic on the database server side. However, INTERVAL values can be
+stored in CHAR(TEXT) columns.</p>
+
+<hr>
+
+<h2><a name="ODISQT046">ODISQT046 -&nbsp;The LOAD and UNLOAD instructions </a></h3>
+
+</h2>
+
+<p>INFORMIX provides two SQL instructions to export / import data from / into a database table: The UNLOAD instruction copies rows from a database table into a text file and the LOAD instructions insert rows from a text file into a database table.</p>
+
+<p>SQLite 3.0 does not natively provide LOAD / UNLOAD instructions.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>LOAD and UNLOAD instructions are supported.</p>
+
+<hr>
+
+<h2><a name="ODISQT048">ODISQT048 -&nbsp;Scrollable Cursors</a></h2>
+
+<p>The Genero programming language supports scrollable cursors with the <b>SCROLL</b>
+keyword, as shown in the following code example:&nbsp;</p>
+
+<p>
+<font face="Courier New" size="2">
+&nbsp;&nbsp;&nbsp;DECLARE c1 <b>SCROLL</b> CURSOR FOR SELECT * FROM customers
+ORDER BY cust_name<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH FIRST c1 INTO rec_cust.*<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH NEXT c1 INTO rec_cust.*<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH LAST c1 INTO rec_cust.*</font></p>
+
+<p>SQLite 3.x does not support native scrollable cursors.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>The SQLite database driver emulates scrollable cursors with temporary
+files. On UNIX, the temp files are created in the directory defined by the
+DBTEMP, TMPDIR, TEMP or TMP environment variables (the default is /tmp). On
+Windows, the temp files are created with the _tempnam() MSVCRT API call.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Native scrollable cursors are
+normally handled by the database server (only pieces of the result-set are sent
+to the client application). With emulated scrollable cursors, when scrolling to
+the last row, all rows will be fetched into the temporary file. This can
+generate a lot of network traffic and can produce a large temporary file if the
+result-set contains a lot of rows. Additionally, programs are dependent on the
+file system resource allocated to the OS user (ulimit).</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  In case of a runtime system
+crash, the temporary files created for scrollable cursors are not removed
+automatically. Therefore, is it possible that you will find some unexpected files in
+the temp directory. Before removing such files, you must make sure that these
+files are no longer used by running processes. Recent operating systems take care
+of that, by removing unused temp files periodically.</p>
+
+<hr>
+
+<h2><a name="ODISQT100">ODISQT100 - Data type conversion table</a></h3>
+
+</h2>
+
+<div align="center">
+  <center><table border="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>INFORMIX Data Types</b></font></td>
+          <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>SQLite Data Types</b></font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">CHAR(n)</font></td>
+          <td width="50%"><font face="Courier New">CHAR(n)</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">VARCHAR(n)</font></td>
+          <td width="50%"><font face="Courier New">VARCHAR(n)</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">BOOLEAN</font></td>
+          <td width="50%"><font face="Courier New">BOOLEAN</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">SMALLINT</font></td>
+          <td width="50%"><font face="Courier New">SMALLINT</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">INTEGER</font></td>
+          <td width="50%"><font face="Courier New">INTEGER</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">BIGINT</font></td>
+          <td width="50%"><font face="Courier New">BIGINT</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">INT8</font></td>
+          <td width="50%"><font face="Courier New">BIGINT</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">FLOAT[(n)]</font></td>
+          <td width="50%"><font face="Courier New">FLOAT</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">SMALLFLOAT</font></td>
+          <td width="50%"><font face="Courier New">SMALLFLOAT</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">DECIMAL(p,s)</font></td>
+          <td width="50%"><font face="Courier New">DECIMAL(p,s)</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">DECIMAL(p)</font></td>
+          <td width="50%"><font face="Courier New">DECIMAL(p,s)</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">MONEY(p,s)</font></td>
+          <td width="50%"><font face="Courier New">DECIMAL(p,s)</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">TEXT</font></td>
+          <td width="50%"><font face="Courier New">TEXT</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">BYTE</font></td>
+          <td width="50%"><font face="Courier New">BLOB</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">DATE</font></td>
+          <td width="50%"><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">DATETIME HOUR TO SECOND</font></td>
+          <td width="50%"><font face="Courier New">TIME</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">DATETIME YEAR TO FRACTION</font></td>
+          <td width="50%"><font face="Courier New">TIMESTAMP</font></td>
+        </tr>
+      </table>
+  </center>
+</div>
+</body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+  <title>Tutorial: Localization</title>
+  <meta http-equiv="Content-Type" content="text/html">
+  <link href="../FglTechRef.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+  <p><a href="TutIndex.html">Back to Summary</a></p>
+  <hr>
+
+  <h1>Tutorial Chapter 10: Localization</h1>
+
+  <p>Summary:</p>
+
+  <ul>
+    <li><a href="#Localization">Localization Support</a></li>
+
+    <li><a href="#LocalizedStrings">Localized Strings</a></li>
+
+    <li><a href="#ProgrammingSteps">Programming Steps</a>&nbsp;</li>
+
+    <li><a href="#StringsInSources">Strings in Sources</a></li>
+
+    <li><a href="#Extracting">Generating Source String Files</a></li>
+
+    <li><a href="#Compiling">Compiling&nbsp;Source String Files</a></li>
+
+    <li><a href="#Deploying">Deploying Compiled String Files</a></li>
+
+    <li><a href="#Example">Example</a></li>
+  </ul>
+  <hr>
+
+  <h2><a name="Localization" id="Localization">Localization Support</a></h2>
+
+  <p>Localization Support is a feature of the language that allows you to write application supporting multi-byte character sets
+  as well as date, numeric and currency formatting in accordance with a <u>locale</u>.</p>
+
+  <p>Localization Support is based on the system libraries handling the locale, a set of language and cultural rules.</p>
+
+  <p>See <a href="Localization.html">Localization</a> for more details.</p>
+  <hr>
+
+  <h2><a name="LocalizedStrings" id="LocalizedStrings">Localized Strings</a></h2>
+
+  <p><a href="LocalizedStrings.html#DEFINITION">Localized Strings</a> allow you to internationalize your application using
+  different languages, and to customize it for specific industry markets in your user population.&nbsp; Any <a href=
+  "DataTypes.html#DT_STRING">string</a> that is used in your Genero BDL program, such as messages to be displayed or the text on
+  a form, can be defined as a Localized String. At runtime, the Localized String is replaced with text stored in a <a href=
+  "LocalizedStrings.html#SOURCES">String File</a>.</p>
+
+  <p>String Files must be compiled, and then deployed at the user site.</p>
+
+  <p><img border="0" src="../Images/TUT901.png" width="576" height="504"></p>
+  <hr>
+
+  <h2><a name="ProgrammingSteps" id="ProgrammingSteps">Programming Steps</a></h2>
+
+  <p>The following steps describe how to use localized strings in your sources:</p>
+
+  <ol>
+    <li>Modify your <a href="FormSpecFiles.html">form specification files</a> and program module files to contain <a href=
+    "LocalizedStrings.html#DEFINITION">Localized Strings</a> by inserting the % sign in front of the strings that you wish to be
+    replaced.</li>
+
+    <li>Use the <b>-m</b> option of <b>fglform</b> to extract the <a href="LocalizedStrings.html#DEFINITION">Localized
+    Strings</a> from each form specification file into a separate <a href="LocalizedStrings.html#SOURCES">Source String File</a>
+    (extension <b>.str</b>).</li>
+
+    <li>Use the -<b>m</b> option of <b>fglcomp</b> to extract the <a href="LocalizedStrings.html#DEFINITION">Localized
+    Strings</a> from each program module into a separate Source String File (extension <b>.str</b>).</li>
+
+    <li>Concatenate the <a href="LocalizedStrings.html#SOURCES">Source String Files</a> together logically; for example, you may
+    have a <b>common.str</b>&nbsp; file containing the strings common to all applications, a <b>utility.str</b> file containing
+    the strings common to utilities, and an <b>application.str</b> file&nbsp; with the strings specific to the particular
+    application.</li>
+  </ol>
+
+  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img border="0" src="../Images/TUT904.png" width="504" height="288"></p>
+
+  <ol start="5">
+    <li>At this point the names of the <a href="LocalizedStrings.html#DEFINITION">Localized Strings</a> may be unwieldy, since
+    they were derived from the actual strings in the program files.&nbsp; You can modify the string names in your <a href=
+    "LocalizedStrings.html#SOURCES">Source String Files</a> and the corresponding program files so they form keys that are
+    logical.&nbsp; For example:</li>
+  </ol>
+  <pre>
+         $"common.accept" = "OK"
+         $"common.cancel"= "Cancel"
+         $"common.quit" = "Quit"
+</pre>
+
+  <ol start="6">
+    <li>Make the <a href="LocalizedStrings.html#SOURCES">Source String Files</a> available to the programming teams for use as a
+    reference when creating or modifying programs.</li>
+
+    <li>Copy the Source String Files, and modify the replacement text for each of your market segments or user languages.</li>
+
+    <li>Compile the Source String Files (<b>.42s</b>).</li>
+
+    <li>Create the entries in <a href="FglProfile.html">FGLPROFILE</a> to specify what string files must be used at runtime.</li>
+
+    <li>Deploy <b>.42s</b> compiled string files to user sites.</li>
+  </ol>
+  <hr>
+
+  <h2><a name="StringsInSources" id="StringsInSources">Strings in Sources</a></h2>
+
+  <p>A <a href="LocalizedStrings.html#DEFINITION">Localized String</a> begins with a percent sign (%), followed by the name of
+  the string identifying the replacement text to be loaded from the <a href="LocalizedStrings.html#COMPILING">Compiled String
+  File</a>.&nbsp; Since the name is a <a href="DataTypes.html#DT_STRING">string</a>, you can use any characters in the name,
+  including blanks.</p>
+
+  <blockquote>
+    <pre>
+<tt>LET</tt> s1 = %"Greetings"
+</pre>
+  </blockquote>
+
+  <p>The <a href="DataTypes.html#DT_STRING">string</a> "Greetings" is both the name of the string and the default text which
+  would be used if no string resource files are provided at runtime.</p>
+
+  <p><a href="LocalizedStrings.html#DEFINITION">Localized Strings</a> can be used any place where a <a href=
+  "DataTypes.html#DT_STRING">STRING</a> literal can be used, including <a href="FormSpecFiles.html">form specification
+  files</a>.</p>
+
+  <p>&nbsp;The <a href="Operators.html#OP_SFMT">SFMT()</a> and <a href="Operators.html#OP_LSTR">LSTR()</a> operators can be used
+  to manipulate the contents of <a href="LocalizedStrings.html#DEFINITION">Localized Strings</a>.&nbsp; For example, the program
+  line:</p>
+  <pre>
+     <tt>DISPLAY</tt> SFMT( %"cust.valid", custnum )
+</pre>
+
+  <p>reads from the associated <a href="LocalizedStrings.html#COMPILING">Compiled String File</a>:</p>
+  <pre>
+     "cust.valid"="customer %1 is valid"
+</pre>
+
+  <p>resulting in the following display when the value of custnum is 200:</p>
+  <pre>
+     "customer 200 is valid"
+</pre>
+  <hr>
+
+  <h2><a name="Extracting" id="Extracting">Extracting Strings</a></h2>
+
+  <p>You can generate a <a href="LocalizedStrings.html#SOURCES">Source String File</a> by extracting all of the <a href=
+  "LocalizedStrings.html#DEFINITION">Localized Strings</a> from your program module or form specification file, using the
+  <b>-m</b> option of <a href="Tools.html#TL_FGLCOMP">fglcomp</a> or <a href="Tools.html#TL_FGLFORM">fglform</a>:</p>
+  <pre>
+    fglcomp -m mystring.4gl &gt; mystring.str
+</pre>
+
+  <p>The generated file would have the format:</p>
+  <pre>
+    "Greetings" = "Greetings"
+</pre>
+
+  <p>You could then change the replacement text in the file:</p>
+  <pre>
+    "Greetings" = "Hello"
+</pre>
+
+  <p>The source string file must have the extension <b>.str</b>.</p>
+  <hr>
+
+  <h2><a name="Compiling" id="Compiling">Compiling Source String Files</a> (<a href=
+  "LocalizedStrings.html#COMPILING">fglmkstr</a>)</h2>
+
+  <p><a href="LocalizedStrings.html#SOURCES">Source String Files</a> must be compiled to binary files in order to be used at
+  runtime:</p>
+  <pre>
+     fglmkstr mystring.str
+</pre>
+
+  <p>The resulting <a href="LocalizedStrings.html#COMPILING">Compiled String File</a> has the extension <b>.42s</b>&nbsp;
+  (<b>mystring.42s</b>).</p>
+  <hr>
+
+  <h2><a name="Deploying" id="Deploying">Deploying String Files</a></h2>
+
+  <p>The <a href="LocalizedStrings.html#COMPILING">Compiled String Files</a>, produced by the <a href=
+  "Tools.html#TL_FGLMKSTR">fglmkstr</a> tool, must be deployed on the production sites. The file extension is <b>.42s</b>.</p>
+
+  <p>By default, the runtime system searches for a <b>.42s</b> file with the same name prefix as the current <b>.42r</b>
+  program.</p>
+
+  <p>You can specify a list of string files with entries in the <a href="EnvironmentVariables.html#EV_FGLPROFILE">FGLPROFILE</a>
+  configuration file:</p>
+  <pre>
+     fglrun.localization.file.count = 2
+     fglrun.localization.file.1.name = "<i>firstfile</i>"
+     fglrun.localization.file.2.name = "<i>secondfile</i>"
+</pre>
+
+  <p>The current directory and the path defined in the <a href="EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href=
+  "EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a>environment variable, are searched for the <b>.42s</b>
+  Compiled String File.</p>
+
+  <p><b><font color="#008000">Tip:</font></b></p>
+
+  <ol>
+    <li>Create several string files with the same names, but locate them in different directories. You can then easily switch
+    from one set of string files to another, just by changing the <a href=
+    "EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href="EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a>
+    environment variable. You typically create one string file directory per language, and if needed, you can create
+    subdirectories for each code-set (strings/english/iso8859-1, strings/french/windows1252).</li>
+  </ol>
+  <hr>
+
+  <h2><a name="Example" id="Example">Example:</a></h2>
+
+  <h3><b>form.per</b>&nbsp; - the form specification file</h3>
+
+  <p>This <a href="FormSpecFiles.html">form specification file</a> uses the <a href=
+  "FormSpecFiles.html#FF_ITEMTYPE_LABEL">LABEL</a> form <a href="FormSpecFiles.html#SECTION_ATTRIBUTES">item type</a> to display
+  the text associated with the <a href="FormSpecFiles.html#FF_FORM_FIELD">form fields</a> containing data from the
+  <b>customer</b> database table.&nbsp; <a href="FormSpecFiles.html#FF_ITEMTYPE_LABEL">LABEL</a> <a href=
+  "FormSpecFiles.html#SECTION_ATTRIBUTES">item types</a> contain read-only values.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="362" bgcolor="#C0C0C0" valign="top"><b>form.per</b></td>
+    </tr>
+
+    <tr>
+      <td width="100%" valign="top">
+        <pre>
+<code class="linenumber">01</code> <tt>SCHEMA</tt> custdemo
+<code class="linenumber">02</code>
+<code class="linenumber">03</code> <tt>LAYOUT</tt>
+<code class="linenumber">04</code>  <tt> GRID</tt>
+<code class="linenumber">05</code>   {
+<code class="linenumber">06</code>    [lab1      ] [f01  ]
+<code class="linenumber">07</code>
+<code class="linenumber">08</code>    [lab2      ] [f02                 ]
+<code class="linenumber">09</code>
+<code class="linenumber">10</code>    [lab3      ] [f03             ]
+<code class="linenumber">11</code>   }   
+<code class="linenumber">12</code>   <tt>END</tt>   --grid
+<code class="linenumber">13</code> <tt>END</tt>  -- layout
+<code class="linenumber">14</code>
+<code class="linenumber">15</code> <tt>TABLES</tt> customer
+<code class="linenumber">16</code>
+<code class="linenumber">17</code> <tt>ATTRIBUTES</tt>
+<code class="linenumber">18</code> <tt>LABEL</tt> lab1 : <tt>TEXT</tt>=%"customer.store_num";
+<code class="linenumber">19</code> <tt>EDIT </tt> f01  = customer.store_num, 
+<code class="linenumber">20</code>             <tt>COMMENT</tt>=%"customer.dealermsg";
+<code class="linenumber">21</code> <tt>LABEL</tt> lab2 : <tt>TEXT</tt>=%"customer.store_name";
+<code class="linenumber">22</code> <tt>EDIT </tt> f02  = customer.store_name;
+<code class="linenumber">23</code> <tt>LABEL</tt> lab3 : <tt>TEXT</tt>=%"customer.city";
+<code class="linenumber">24</code> <tt>EDIT </tt> f03  = customer.city;
+<code class="linenumber">25</code> <tt>END</tt>  -- attributes
+</pre>
+      </td>
+    </tr>
+  </table>
+
+  <p><b>Notes:</b></p>
+
+  <ul>
+    <li>Lines <code class="linenumber">06</code> and <code class="linenumber">18</code>:&nbsp; The form contains a <a href=
+    "FormSpecFiles.html#FF_ITEMTYPE_LABEL">LABEL</a>, <b>lab1</b>; the TEXT of the <a href=
+    "FormSpecFiles.html#FF_ITEMTYPE_LABEL">LABEL</a> is a <a href="LocalizedStrings.html#DEFINITION">Localized String</a>,
+    <b>customer.store_num</b>.</li>
+
+    <li>Line <code class="linenumber">20</code>:&nbsp; The COMMENT of the <a href="FormSpecFiles.html#FF_ITEMTYPE_EDIT">EDIT</a>
+    <b>f01</b> is a <a href="LocalizedStrings.html#DEFINITION">Localized String</a>, <b>customer.dealermsg</b>.</li>
+
+    <li>Lines <code class="linenumber">08</code> and <code class="linenumber">21</code>:&nbsp; The TEXT of the <a href=
+    "FormSpecFiles.html#FF_ITEMTYPE_LABEL">LABEL</a> <b>lab2</b> is a <a href="LocalizedStrings.html#DEFINITION">Localized
+    String</a>, <b>customer.store_name</b>.</li>
+
+    <li>Lines <code class="linenumber">10</code> and <code class="linenumber">23</code>: The TEXT of the <a href=
+    "FormSpecFiles.html#FF_ITEMTYPE_LABEL">LABEL</a> <b>lab3</b> is a <a href="LocalizedStrings.html#DEFINITION">Localized
+    String</a>, <b>customer.city</b>.</li>
+  </ul>
+
+  <p>These strings will be replaced at runtime.</p>
+
+  <h3>form.str - the <a href="LocalizedStrings.html#SOURCES">String File</a> associated with this form</h3>
+
+  <p>After translation, the string source file would look like this:</p>
+  <pre>
+<code class="linenumber">01</code> "customer.store_num"="Store No"
+<code class="linenumber">02</code> "customer.dealernummsg"="This is the dealer number"
+<code class="linenumber">03</code> "customer.store_name"="Store Name"
+<code class="linenumber">04</code> "customer.city"="City"
+</pre>
+
+  <h3>prog.4gl - the program module</h3>
+
+  <p>This program module opens the form containing <a href="LocalizedStrings.html#DEFINITION">Localized Strings</a>:</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="362" bgcolor="#C0C0C0" valign="top"><b>Module prog.4gl</b></td>
+    </tr>
+
+    <tr>
+      <td width="100%" valign="top">
+        <pre>
+<code class="linenumber">01</code> <tt>SCHEMA</tt> custdemo
+<code class="linenumber">02</code>
+<code class="linenumber">03</code> <tt>MAIN</tt>
+<code class="linenumber">04</code>  <tt>CONNECT TO</tt> "custdemo"
+<code class="linenumber">05</code>  <tt>CLOSE WINDOW SCREEN</tt>
+<code class="linenumber">06</code>  <tt>OPEN WINDOW </tt>w1 <tt>WITH FORM</tt> "stringform"
+<code class="linenumber">07</code>  <tt>MESSAGE</tt> %"customer.msg"
+<code class="linenumber">08</code>  <tt>MENU</tt> %"customer.menu" 
+<code class="linenumber">09</code>     <tt>ON ACTION</tt> query 
+<code class="linenumber">10</code>       <tt>CALL</tt> query_cust()
+<code class="linenumber">11</code>     <tt>ON ACTION</tt> exit 
+<code class="linenumber">12</code>       <tt>EXIT MENU</tt>
+<code class="linenumber">13</code>  <tt>END MENU</tt>
+<code class="linenumber">14</code>  <tt>CLOSE WINDOW</tt> w1
+<code class="linenumber">15</code>  <tt>DISCONNECT CURRENT</tt>
+<code class="linenumber">16</code> <tt>END MAIN</tt>
+<code class="linenumber">17</code>
+<code class="linenumber">18</code> <tt>FUNCTION</tt> query_cust() -- displays one row
+<code class="linenumber">19</code>   <tt>DEFINE</tt> l_custrec <tt>RECORD</tt>
+<code class="linenumber">20</code>          store_num <tt>LIKE</tt> customer.store_num,
+<code class="linenumber">21</code>          store_name <tt>LIKE</tt> customer.store_name,
+<code class="linenumber">22</code>          city <tt>LIKE</tt> customer.city
+<code class="linenumber">23</code>   <tt>END RECORD</tt>,
+<code class="linenumber">24</code>   msg <tt>STRING</tt>
+<code class="linenumber">25</code> 
+<code class="linenumber">26</code>   <tt>WHENEVER ERROR CONTINUE</tt>
+<code class="linenumber">27</code>   <tt>SELECT </tt>store_num, store_name, city
+<code class="linenumber">28</code>   <tt>  INTO </tt>l_custrec.*
+<code class="linenumber">29</code>   <tt>  FROM </tt>customer
+<code class="linenumber">30</code>   <tt>  WHERE </tt>store_num = 101
+<code class="linenumber">31</code>   <tt>WHENEVER ERROR STOP</tt>
+<code class="linenumber">32</code>
+<code class="linenumber">33</code>   <tt>IF</tt> SQLCA.SQLCODE = 0 <tt>THEN</tt>
+<code class="linenumber">34</code>      <tt>LET</tt> msg = SFMT( %"customer.valid",
+<code class="linenumber">35</code>                      l_custrec.store_num )
+<code class="linenumber">36</code>      <tt>MESSAGE</tt> msg
+<code class="linenumber">37</code>      <tt>DISPAY BY NAME</tt> l_custrec.*
+<code class="linenumber">38</code>   <tt>ELSE</tt>
+<code class="linenumber">39</code>      <tt>MESSAGE</tt> %"customer.notfound"
+<code class="linenumber">40</code>   <tt>END IF</tt>
+<code class="linenumber">41</code> 
+<code class="linenumber">42</code> <tt>END FUNCTION</tt>
+</pre>
+      </td>
+    </tr>
+  </table>
+
+  <p><b>Notes:</b></p>
+
+  <ul>
+    <li>Lines <code class="linenumber">07</code>, <code class="linenumber">08</code>, <code class="linenumber">34</code> and
+    <code class="linenumber">39</code> contain <a href="LocalizedStrings.html#DEFINITION">Localized Strings</a> for the messages
+    that the program displays.</li>
+  </ul>
+
+  <p>These strings will be replaced at runtime.</p>
+
+  <h3>prog.str - the <a href="LocalizedStrings.html#SOURCES">String File</a> associated with this program module</h3>
+
+  <p>After translation, the string source file would look like this:</p>
+  <pre>
+<code class="linenumber">01</code> "customer.msg"="Displays a Dealer"
+<code class="linenumber">02</code> "customer.menu"="Dealer"
+<code class="linenumber">03</code> "customer.valid"="Customer %1 is valid"
+<code class="linenumber">04</code> "customer.notfound"="Customer was not found"
+</pre>
+  <hr>
+
+  <h3>Compiling the program</h3>
+
+  <p>The program is compiled into <b>cust.42r.&nbsp;</b></p>
+  <pre>
+     fgl2p -o cust.42r prog.4gl
+</pre>
+
+  <h3>Compiling the string files</h3>
+
+  <p>Both string files must be compiled:</p>
+
+  <blockquote>
+    <pre>
+fglmkstr form.str
+fglmkstr prog.str
+</pre>
+  </blockquote>
+
+  <p>The resulting <a href="LocalizedStrings.html#COMPILING">Compiled String Files</a> are <b>form.42s</b> and
+  <b>prog.42s</b>.</p>
+
+  <h3>Setting the list of compiled string files in FGLPROFILE&nbsp;</h3>
+
+  <p>The list of Compiled String Files is specified in the <a href="FglProfile.html">FGLPROFILE</a> configuration file. The
+  runtime system searches for a file with the "<code>42s</code>" extension in the current directory and in the path list defined
+  in the <a href="EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href=
+  "EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a> environment variable. Specify the total number of files, and
+  list each file with an index number.&nbsp;&nbsp;</p>
+
+  <h4>Example file fglprofile:&nbsp;</h4>
+  <pre>
+<code class="linenumber">01</code> fglrun.localization.file.count = 2
+<code class="linenumber">02</code> fglrun.localization.file.1.name = "form"
+<code class="linenumber">03</code> fglrun.localization.file.2.name = "prog"
+</pre>
+
+  <h3>Setting the environment</h3>
+
+  <p>Set the FGLPROFILE environment variable:</p>
+  <pre>
+     export FGLPROFILE=./fglprofile
+</pre>
+
+  <h3>Running the program</h3>
+
+  <p>Run the program:</p>
+  <pre>
+     fglrun cust
+</pre>
+
+  <h3>The Resulting Form Display</h3>
+
+  <p>Display of the form using the default values for the strings:</p>
+
+  <p><img border="0" src="../Images/TUT902.png"></p>
+
+  <p>Display of the form when the <a href="LocalizedStrings.html#COMPILING">Compiled String File</a> is deployed:</p>
+
+  <p><img border="0" src="../Images/TUT903.png"></p>
+</body>
+</html>

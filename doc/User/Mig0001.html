@@ -1,0 +1,543 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>1.3x Upgrade Guide</TITLE>
+<META http-equiv="Content-Type" content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+
+<HR>
+
+<H1>1.3x Upgrade Guide</H1>
+
+<p>This page describes product changes you must be aware of when upgrading from version <b>1.2x</b> to version
+<b>1.3x</b> of Genero BDL.</p>
+
+<p><b><font color="#FF0000">Warning:</font> This is an incremental upgrade guide
+that covers only topics related to a specific version of Genero. Also check
+prior upgrade guides if you migrate from an earlier version.</b></p>
+
+<p>Summary:</p>
+<ol>
+  <li><a href="#FrontEndCompatibility">Front-end compatibility</a></li>
+  <li><a href="#ActionAndFieldActivation">Action and Field activation</a></li>
+  <li><a href="#HBoxTags">HBox Tags</a>
+    <ul>
+      <li><a href="#HBoxLimit">HBox Tags limitations</a></li>
+    </ul>
+  </li>
+  <li><a href="#RealSize">Elements inside HBoxes get their real sizes</a></li>
+  <li><a href="#Button">Width of ButtonEdit/DateEdit/ComboBox</a></li>
+  <li><a href="#sample">Default Sample</a></li>
+  <li><a href="#SizePolicy">SizePolicy for ComboBoxes</a></li>
+  <li><a href="#ActionDefaults">Action Defaults at Form level</a></li>
+  <li><a href="#DesupMySQL323">MySQL 3.23 is desupported</a></li>
+</ol>
+
+<HR>
+
+<h2><a name="FrontEndCompatibility">1. Front-end compatibility</a></h2>
+<p>When migrating to a <b>1.3x</b> runtime system, you need to upgrade all
+front-end clients to any <b>1.3x</b> version. Front-end clients and runtime
+systems are compatible if the major version number and the first minor number
+are the same (<b>X.Y?</b>). A front-end of version <b>1.31</b> works with a <b>1.30</b>
+runtime system, but if you try to use a <b>1.20</b> client with a <b>1.30</b>
+runtime system, you will get an error message.</p>
+
+<HR>
+
+<h2><a name="ActionAndFieldActivation">2. Action and Field activation</a></h2>
+<p>Version <b>1.30</b> provides dialog methods to control action and field
+activation:</p>
+<p><a href="ClassDialog.html#setActionActive">ui.Dialog.setActionActive( <i>action-name</i>,
+TRUE/FALSE )</a><br>
+<a href="ClassDialog.html#setFieldActive">ui.Dialog.setFieldActive( <i>field-name</i>,
+TRUE/FALSE )</a></p>
+<p>Previous versions allowed to modify directly the 'active' attribute of the
+underlying DOM node in the AUI tree; This is now forbidden: It is mandatory to
+use the above methods to enable/disable action or fields. The dialog will
+synchronize the 'active' attribute in the AUI tree according to the value passed
+to the methods and according to the context (some actions or fields can be
+automatically disabled).&nbsp;</p>
+
+<HR>
+
+<H2><a name="HBoxTags">3. HBox tags</a></H2>
+
+<p>HBox Tags allow you to stack form items horizontally without being influenced by elements above or
+below. In an HBox there is a free mix of Form Fields, labels, and Spacer Items possible.</p>
+<p>A typical usage of an HBox Tag is to have zip-code/city form fields side by side with
+predictable spacing in-between.</p>
+<p>The &quot;classic&quot; layout would look like the following form definition:</p>
+
+<p><code>
+&lt;G "User Data(version 1.20)"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;><br>
+&nbsp;Last Name&nbsp;&nbsp;&nbsp;&nbsp; [l_name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+]First Name[f_name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+&nbsp;Street&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[street&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]<br>
+&nbsp;City&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[city&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]Zip Code[zip&nbsp;&nbsp;]<br>
+&nbsp;Phone(private)[phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ] At work [&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+&nbsp;Code&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[aa]-[ab]-[ac]</code></p>
+
+<p>In <a href="#Picture1">the screenshot</a> you will notice that the distance
+between &quot;<code>l_name</code>&quot; and &quot;<code>First Name</code>&quot; is smaller than between
+&quot;<code>First Name</code>&quot; and&nbsp;&quot;<code>f_name</code>&quot;. How can this be?
+Two lines below there is the "zip" field which affects this distance.</p>
+
+<p>If we put HBox Tags around the fields we want to group horizontally
+together, we get the predictable spacing between&nbsp;&quot;<code>l_name</code>&quot;,
+&quot;<code>First Name</code>&quot; and &quot;<code>f_name</code>&quot;.</p>
+
+<p><code>
+&lt;G "User Data in HBoxes stacked&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;><br>
+Last Name&nbsp;&nbsp;&nbsp;&nbsp; [l_nameh&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&quot;First
+Name&quot;:f_nameh&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]<br>
+Street&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[streeth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :]<br>
+City&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[cityh&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :"Zip
+Code&quot;:ziph :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]<br>
+Phone(private)[phoneh&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&quot;At
+work&quot;:phonewh&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : ]<br>
+Code&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ba:&quot;-&quot;:bb:&quot;-&quot;:bc:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
+</code></p>
+
+<p>Here &quot;<code>l_nameh</code>&quot;,&quot;<code>First Name</code>&quot; and &quot;<code>f_nameh</code>&quot; are together in
+one HBox; the &quot;<code>:</code>&quot; colon acts as a separator between the 3 elements.</p>
+
+<p>The width of an element is calculated from the space&nbsp;between &quot;<code>[</code>&quot; and&nbsp;&nbsp;&quot;<code>:&quot;</code>
+(width of <code>cityh</code> is 14),&nbsp;or from the space between &quot;<code>:</code>&quot;
+and &quot;<code>:</code>&quot; (width of &quot;<code>bb</code>&quot; is 2), or from the space between
+&quot;<code>:</code>&quot; and &quot;<code>]</code>&quot;
+(width of &quot;<code>f_nameh</code>&quot; is 16). The &quot;<code>zip</code>&quot; field in the version 1.20 example has
+a width of five and the &quot;<code>ziph</code>&quot; field has also a width of five.<p>In the second
+Groupbox in <a href="#Picture1">the screenshot</a> you will notice that the HBox is smaller than the first one, even
+though it uses two characters more in the screen definition. The reason is that each HBox occupies only ONE cell in the parent grid, and the content in one
+HBox is independent of the content in another HBox. This relaxes the parent grid;
+it has to align only the edges of the HBoxes and the labels left of the HBoxes. The two extra characters in the Form file for the
+second Group come from the&nbsp;fact that the labels need quoting to distinguish them from field definitions.
+Of course, you could use a Label field if the two extra characters are unwanted
+(which is done in the third Groupbox).</p>
+
+<p>The third Groupbox shows how the alignment in an HBox can be affected by
+putting empty elements (<code>:&nbsp;&nbsp;:)</code> inside the HBox Tag:</p>
+
+<p><code>
+&lt;G "User Data in HBoxes right part right aligned&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ><br>
+Last Name&nbsp;&nbsp;&nbsp;&nbsp; [l_nameh2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : :lfirsth2:f_nameh2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+Street&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[streeth2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]<br>
+City&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[cityh2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+:lzip:ziph2]<br>
+Phone(private)[phoneh2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp;&nbsp;&nbsp;&nbsp;
+:latw:phonewh2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]<br>
+Code&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ca:&nbsp;&nbsp; "-"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:cb:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "-"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+:cc]
+</code></p>
+
+<p>Between &quot;<code>l_nameh2</code>&quot; and &quot;<code>lfirsth2</code>&quot; there are
+two &quot;<code>:</code>&quot; signs with a white space between them.&nbsp;This means: put a Spacer Item
+between <code>l_nameh2</code> and <code>lfirsth2</code>, which gets all the additional space if the
+HBox is bigger than the sum of&nbsp; <code>l_nameh2</code>, <code>lfirsth2</code> and
+<code>f_nameh2</code>. The number of spaces, however, has no effect. The spacer item between
+<code> cityh2</code> and <code> lzip</code> has the same force as the spacer between
+<code> l_nameh2</code> and <code>lfirsth2</code>.</p>
+
+<p>You can treat a spacer item like a spring. The spacer item between <code> cityh2</code>
+and <code> lzip</code> presses <code> cityh2</code> to the left-hand side, and the rest of the fields
+to the right-hand side. In the &quot;<code>Code</code>&quot; line there is more than one spacer
+item; they share the additional space among them. (The &quot;<code>Code</code>&quot; HBox sample in the
+third line is only to show how spacer items work; we always advise using &quot;<code>Code</code>&quot;
+as in the second Groupbox, or to use a picture)<p>
+
+<p>In general we advise using the approach shown in the second Groupbox: stack the items
+horizontally by replacing field ends with &quot;<code>:</code>&quot;. This is the easy way
+to remove unwanted horizontal spacing.</p>
+
+<p>The resulting screenshot:
+
+<p align="center"><a name="Picture1"><img border="0" src="../Images/NFHbox.png" width="553" height="544"></a></p>
+
+<h3><a name="HBoxLimit">HBox Tags limitations</a></h3>
+
+<ul>
+  <li>HBox Tags don't work for fields of Screen Arrays or Tables; you will get a
+    form compiler error. The reason is that the current AUI structure
+    does not allow this. The front end needs a
+    <tt> Matrix</tt>   element directly in a <tt> Grid</tt>  or a <tt> ScrollGrid</tt> 
+    to perform the necessary positioning calculations for the individual fields.</li>
+</ul>
+
+<HR>
+
+<h2><a name="RealSize">4. Elements inside HBoxes get their real sizes</a></h2>
+
+<p>A big advantage in using elements in&nbsp;an HBox is that the fields get their
+real sizes according to the .per definition.</p>
+
+<p><code>
+LAYOUT<br>
+GRID<br>
+{<br>
+&lt;G g1                                                          ><br>
+ [a&nbsp;&nbsp;&nbsp; ] single Edit Field<br>
+<br>
+&lt;G g2                                                          ><br>
+&nbsp;MMMMM<br>
+ [b&nbsp;&nbsp;&nbsp; ] The large label expands the Edit Field<br>
+<br>
+&lt;G g3                                                          ><br>
+&nbsp;MMMMM<br>
+ [c&nbsp;&nbsp; :]The large label has no influence on the Edit width&nbsp;<br>
+<br>
+}
+<br>
+END<br>
+END<br>
+ATTRIBUTES<br>
+EDIT a = formonly.a, sample=&quot;0&quot;, default=&quot;12345&quot;;<br>
+EDIT b = formonly.b, sample=&quot;0&quot;, default=&quot;12345&quot;;<br>
+EDIT c = formonly.c, sample=&quot;0&quot;, default=&quot;12345&quot;;<br>
+END</code></p>
+
+<p>In the second Groupbox, the edit field is expanded to be as large&nbsp;as the label
+above; using an HBox prevents this:
+
+<p align="center"><img border="0" src="../Images/NFRealSize.png" width="433" height="257"></p>
+
+<p align="left">Note: in this example, we use a sample of &quot;0&quot; to
+display <i>exactly</i> five numbers.</p>
+
+<HR>
+
+<h2><a name="Button">5. Width of ButtonEdit/DateEdit/ComboBox</a></h2>
+
+<p>The problem with BUTTONEDIT, DATEEDIT and COMBOBOX in previous versions is that a field <code>[b&nbsp;&nbsp;]</code>
+got the width 3, the same width as an edit field with the same layout.</p>
+
+<p>For example:</p>
+
+<p><code>LAYOUT<br>
+GRID<br>
+{<br>
+&nbsp;&nbsp;[e&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;[b&nbsp;&nbsp;]<br>
+}<br>
+END<br>
+END<br>
+ATTRIBUTES<br>
+EDIT e=formonly.e;<br>
+BUTTONEDIT b=formonly.b;<br>
+END</code></p>
+
+<p>In this example, the outer (visual) width of both elements was the same, but the edit portion of
+&quot;<code>b</code>&quot; was much smaller, because the button did not count at all. (In practice this
+meant that on average&nbsp;only one and a half characters of
+&quot;<code>b</code>&quot; was visible). However, you could input 3 characters!&nbsp;This made a
+<tt>BUTTONEDIT</tt>  where you could see only one character and input only one character without
+tricks impossible.</p>
+
+<p>Now, for the Button,&nbsp; the Form Compiler subtracts two character positions from the width of
+<tt>BUTTONEDIT</tt>/<tt>COMBOBOX</tt>/<tt>DATEEDIT</tt>. This is possible because
+now the form compiler differentiates the width of the widget from the width of
+the entry part.</p>
+
+<p>In fact, there is no <i>visual</i> difference between version 1.20 and 1.30 regarding this
+example, but in version 1.30 you can only enter one character, which is visually more correct.</p>
+
+<p>In the example the <tt> BUTTONEDIT</tt> aligns with the Edit; that's why the Edit
+part of the <tt> BUTTONEDIT</tt> is usually still a bit bigger than one character (this
+depends on the button size, but if a button edit is contained by an HBox, it will get
+the exact size of "width" multiplied by the <a href="#sample"> average character pixel
+width</a>.&nbsp;</p>
+
+<p>To express&nbsp; the <tt>BUTTONEDIT</tt>/<tt>COMBOBOX</tt>/<tt>DATEEDIT</tt>
+layout more visually,&nbsp;it is possible to specify:</p>
+
+<p><code>
+&nbsp;&nbsp;[e&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;[b- ]
+</code></p>
+
+<p>the &quot;<code>-</code>&quot; sign marks the end of the edit portion and the beginning of
+the button portion ( edit width =&quot;1&quot;, widget width =&quot;3&quot; ).<p>
+The two characters are also subtracted for a <tt>BUTTONEDIT</tt> which is child
+of an HBox.</p>
+
+<p><code> &nbsp; [b&nbsp;&nbsp;:]</code></p>
+
+<p>gets also width="1" , but no widget width, because the HBox stacks the elements horizontally without needing
+widget width definition.&nbsp;</p>
+
+<p>The two extra characters are only used to show the real size relations more WYSIWYG, and to have the same calculation as
+in a field without an HBox parent.</p>
+
+<p><code>
+&nbsp;&nbsp;[e1:e2:e3:&nbsp;&nbsp;&nbsp;&nbsp; ]<br>
+&nbsp;&nbsp;[b1&nbsp;&nbsp;:b2&nbsp;&nbsp;:b3&nbsp;&nbsp;]</code></p>
+
+<p>shows that three <tt>BUTTONEDIT</tt> fields are much larger than three <tt>EDIT</tt> fields with the same width.</p>
+
+<p>You can even write:</p>
+
+<p><code>
+&nbsp;&nbsp;[e1:e2:e3:&nbsp;&nbsp;&nbsp;&nbsp; ]<br>
+&nbsp;&nbsp;[b1- :b2- :b3- ]</code></p>
+
+<p>or:&nbsp;</p>
+
+<p><code>&nbsp;&nbsp;[e1:e2:e3:&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;[b1-:b2-:b3-] </code></p>
+
+<p>to use slim buttons and</p>
+
+<p><code>
+&nbsp;&nbsp;[e1:e2:e3:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;[b1-&nbsp;&nbsp;:b2-&nbsp;&nbsp;:b3-&nbsp;&nbsp;]</code></p>
+
+<p>if one uses large buttons to get the maximum WYSIWYG effect.</p>
+
+<p>Please note that buttons do not grow if two characters &quot;<code>- </code> " is
+expanded to three characters &quot;<code>-&nbsp;&nbsp;</code>&quot;;
+the button always computes its size from the image used, it's just to reserve more
+space in the form to match the real size.</p>
+
+<HR>
+
+<h2><a name="sample">6. Default Sample</a></h2>
+
+<p>If no <a href="FSFAttributes.html#FA_SAMPLE">SAMPLE</a> attribute is
+specified in the form files, the client uses an
+algorithm to compute the field width. In this case, a very pessimistic algorithm
+is used to compute the field widths: The client assumes a default <a href="FSFAttributes.html#FA_SAMPLE">SAMPLE</a>
+of "M" for the first six characters
+and then "0" for the subsequent characters  and applies this algorithm to
+all fields, except some field types like <tt>DATEEDIT</tt> fields.</p>
+
+<p>The default algorithm tends to produce larger forms compared to forms used in
+BDL V3 and very first versions of Genero. Do not hesitate to modify the <a href="FSFAttributes.html#FA_SAMPLE">SAMPLE</a>
+attribute in the form file,  to make your fields shorter.</p>
+
+<p>If you do not want to touch all your forms, a more tailored automatic solution would be to specify a
+ui.form.setDefaultInitiallizer() function, to set the <a href="FSFAttributes.html#FA_SAMPLE">SAMPLE</a>
+depending on the AUI tag. In the following example small <tt> UPSHIFT</tt> fields get a <a href="FSFAttributes.html#FA_SAMPLE"> sample</a> 
+of &quot;M&quot;; all other fields get a sample of&nbsp; &quot;0&quot;.
+This will preserve the original width for <tt> UPSHIFT</tt> fields, however numeric and
+normal String fields will get the sample of&nbsp; &quot;0&quot; and make the
+overall width of the form smaller.</p>
+
+<p>Program:</p>
+
+<p><code># this demo program shows how to affect the "sample" attribute in a<br>
+#  ui.form.setDefaultInitializer function<br>
+# the main concern is to set a default sample of "0" and to<br>
+# correct the sample attribute for small UPSHIFT fields to "M"<br>
+# to be able to display full uppercase letter for fields with a small width<br>
+<br>
+MAIN<br>
+&nbsp; DEFINE three_char_upshift CHAR(3)<br>
+&nbsp; DEFINE three_digit_number Integer<br>
+&nbsp; DEFINE longstring CHAR(100)<br>
+&nbsp; CALL ui.form.setDefaultInitializer("myinit")<br>
+&nbsp; OPEN form f from "sampletest2"<br>
+&nbsp; DISPLAY form f<br>
+&nbsp; INPUT BY NAME three_char_upshift,three_digit_number,longstring<br>
+END MAIN<br>
+<br>
+FUNCTION myInit(f)<br>
+&nbsp; DEFINE f ui.Form<br>
+&nbsp; CALL checkSampleRecursive(f.getNode())<br>
+END FUNCTION<br>
+<br>
+FUNCTION checkSampleRecursive(node)<br>
+&nbsp; DEFINE node,child om.DomNode<br>
+&nbsp; LET child= node.getFirstChild()<br>
+&nbsp; WHILE child IS NOT NULL<br>
+&nbsp;&nbsp;&nbsp; CALL checkSampleRecursive(child)<br>
+&nbsp;&nbsp;&nbsp; CALL setSample(child)<br>
+&nbsp;&nbsp;&nbsp; LET child=child.getNext()<br>
+&nbsp; END WHILE<br>
+END FUNCTION<br>
+<br>
+FUNCTION setSample(node)<br>
+&nbsp; DEFINE node,parent om.DomNode<br>
+&nbsp; LET parent=node.getParent()<br>
+&nbsp; -- only set the "sample" for FormFields in this example<br>
+&nbsp; IF parent.getTagName()&lt;>"FormField" THEN<br>
+&nbsp;&nbsp;&nbsp; RETURN<br>
+&nbsp; END IF<br>
+&nbsp; IF node.getAttribute("shift")="up" AND node.getAttribute("width")&lt;=6 THEN<br>
+&nbsp;&nbsp;&nbsp; CALL node.setAttribute(&quot;sample&quot;,&quot;M&quot;)<br>
+&nbsp; ELSE<br>
+&nbsp;&nbsp;&nbsp; CALL node.setAttribute(&quot;sample&quot;,&quot;0&quot;)<br>
+&nbsp; END IF<br>
+&nbsp; DISPLAY "set sample attribute of ",node.getId()," to \"",node.getAttribute("sample"),"\""<br>
+END FUNCTION</code></p>
+
+<p>Form File:</p>
+
+<p><code> 
+LAYOUT(text=&quot;sampletest2&quot;)<br>
+GRID<br>
+{<br>
+&nbsp;&lt;G sampletest&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ ><br>
+&nbsp; 3 Letter Code: [a  ] 3 digit code:[b  ]  Description:[longstring               ]<br>
+<br>
+&nbsp;&lt;G &quot;What can be
+seen&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+><br>
+&nbsp; There is no default sample set in this form, but due to a<br>
+&nbsp; ui.form.setDefaultInitializer function, small UPSHIFT fields<br>
+&nbsp; are adjusted to a sample of "M", all other fields get the sample "0"<br>
+&nbsp; -----------------------------------------------------------------------------------<br>
+&nbsp; 1. The 3 letter code should show up exactly "MMM" because of the applied sample="M"<br>
+&nbsp; 2. The 3 letter digit code should show up exactly "123" without additional&nbsp;
+spacing<br>
+}<br>
+END<br>
+END<br>
+ATTRIBUTES<br>
+EDIT a=formonly.three_char_upshift,UPSHIFT,default=&quot;MMM&quot;;<br>
+EDIT b=formonly.three_digit_number,default=&quot;123&quot;;<br>
+EDIT longstring=formonly.longstring,UPSHIFT,default=&quot;DESCRIPTION OF THE
+ITEM&quot;,SCROLL;<br>
+END</code></p>
+
+<p align="center"><img border="0" src="../Images/NFSampleTest.png" width="569" height="240"></p>
+
+<p><i>Please refer to the </i><a href="FSFAttributes.html#FA_SAMPLE"><i>SAMPLE</i></a><i>
+documentation for more information.</i></p>
+
+<HR>
+
+<h2><a name="SizePolicy">7. Size Policy for comboboxes</a></h2>
+
+<p><tt>COMBOBOX</tt> items were VERY special in previous versions because they adapted their
+size to the maximum item of the value list. On one hand, this is very convenient because the
+programmer doesn't have to find the biggest string
+in the value list, and to estimate how large it will be on the screen (with proportional fonts the string with the highest number of&nbsp;
+characters is not automatically the largest string). On the other hand,  this
+behavior often led to an unpredictable layout
+if the programmer didn't reserve enough space for the <tt>COMBOBOX</tt>.</p>
+
+<p>The <a href="FSFAttributes.html#FA_SIZEPOLICY">SIZEPOLICY</a> attribute gives
+better control of the result.</p>
+
+<p><code>&lt;G "Combo makes edit2 too big"                     ><br>
+&nbsp;[edit1]<br>
+&nbsp;[combo&nbsp;&nbsp; ]<br>
+&nbsp;[edit2&nbsp;&nbsp; ]<br>
+...<br>
+ATTRIBUTES<br>
+EDIT edit1=formonly.edit1;<br>
+COMBOBOX combo=formonly.combo,<br>
+&nbsp;&nbsp; ITEMS=((0,&quot;Veeeeeeeery Loooooooooooooooong Item&quot;),(1,&quot;hallo&quot;)),<br>
+&nbsp;&nbsp; DEFAULT=0;<br>
+EDIT edit2=formonly.edit2;<br>
+END</code></p>
+
+<p align="center"><img border="0" src="../Images/NFCombo1.png" width="425" height="159"></p>
+
+<p>In this case, the &quot;<code>combo&quot;</code> field gets very large as
+does &quot;<code>edit2</code>&quot;, because it ends&nbsp; in the same grid
+column.
+It will confuse the end user if he can input only eight characters and the field is apparently much bigger.
+Two possibilities exist to surround this:</p>
+
+<p>Use an HBox to prevent the <code>edit2</code> from growing, and use HBoxes
+for all fields which start together with <code>combo</code> and are as large or bigger than
+<code>combo</code></p>
+
+<p><code>
+ &lt;G &quot;Edit2 in HBox doesn't grow&quot;                     ><br>
+ [edit1]<br>
+ [combo&nbsp;&nbsp; :]<br>
+ [edit2&nbsp;&nbsp; :]<br>
+ ...</code></p>
+
+<p align="center"><img border="0" src="../Images/NFCombo2.png" width="425" height="159"></p>
+
+<p>Use the new <a href="FSFAttributes.html#FA_SIZEPOLICY">SIZEPOLICY</a> attribute,
+and set it to <code>fixed</code> to prevent
+<code>combo</code> from getting bigger than the initial six characters (6+Button)</p>
+
+<p><code>
+ &lt;G &quot;Combo has a fixed size&quot;                     ></code><br>
+<code>...<br>
+[combo&nbsp;&nbsp; ]<br>
+[edit2&nbsp;&nbsp; ]<br>
+...<br>
+ATTRIBUTES<br>
+...</code><code><br>
+COMBOBOX combo=formonly.combo,<br>
+&nbsp;&nbsp; ITEMS = ((0,&quot;Veeeeeeeery Looooooooooooooooong
+Item&quot;),(1,&quot;hallo&quot;)),<br>
+&nbsp;&nbsp; DEFAULT=0, SIZEPOLOCY=FIXED ;</code><code><br>
+....</code></p>
+
+<p align="center"><img border="0" src="../Images/NFCombo3.png" width="280" height="159"></p>
+
+<p>Note that in this example the <code>edit2</code> dictates the
+maximum size of <code>combo</code>, because even if the SIZEPOLICY is <i>fixed</i>, the elements are aligned by the Grid.</p>
+
+<p>To prevent this and&nbsp; have <i>exactly</i> six characters (numbers) in the
+ComboBox, you need to decouple <code>combo</code> from <code>edit2 </code>by
+using an HBox.</p>
+
+<p><code>
+&lt;G "Combo has a fixed size,sample 0,in HBox"          ></code><code><br>
+...<br>
+  Combo [combo&nbsp;&nbsp; :]<br>
+  Edit2 [edit2&nbsp;&nbsp; :]<br>
+...<br>
+COMBOBOX combo=formonly.combo,<br>
+&nbsp;&nbsp; ITEMS = ((0,"12345678 Looooooooooooooooong
+Item&quot;),(1,&quot;hallo&quot;)),<br>
+&nbsp;&nbsp; DEFAULT=0, SIZEPOLICY=FIXED, SAMPLE=&quot;0&quot;;</code></p>
+
+<p align="center"><img border="0" src="../Images/NFCombo4.png" width="344" height="159"></p>
+
+<p>Now the wanted six numbers are displayed and <code>combo</code> does not grow
+to the size of <code>edit2</code>.</p>
+
+<p><i>Please refer to the <a href="FSFAttributes.html#FA_SIZEPOLICY">SIZEPOLICY</a>
+documentation for more information. </i></p>
+
+<HR>
+
+<h2><a name="ActionDefaults">8. Action Defaults at Form level</a></h2>
+
+<p>It is now possible to define <a href="ActionDefaults.html">action defaults</a>
+in forms. In previous versions you had to define a global action default file;
+this works for defining common global action attributes, but there is a need to
+define specific action attributes in some forms. A typical zoom window may have
+search and navigation actions, while data input windows need to define
+add/delete/update actions instead.</p>
+
+<p>It is now possible to define an <a href="FormSpecFiles.html#SECTION_ACTDEFS">action
+default section in the form file</a>, and you can also load action defaults with
+<a href="ClassForm.html">ui.Form.loadActionDefaults()</a>.</p>
+
+<h4><font color="#008000">Tips:</font></h4>
+
+<ol>
+  <li>Use the preprocessor to include action default sections in your forms.</li>
+</ol>
+
+<HR>
+
+<h2><a name="DesupMySQL323">9. MySQL 3.23 is de-supported</a></h2>
+<p>Version <b>1.32</b> supports <b>MySQL 3.23.x</b>, but there is no
+support for recent MySQL versions.</p>
+
+<p>Version <b>1.33</b> now de-supports MySQL <b>3.23.x</b>, but supports <b>MySQL
+4.1.2</b> and higher (<b>5.0</b>).</p>
+
+<p>For technical reasons, MySQL <b> 4.0.x</b> cannot be supported.</p>
+
+</BODY>
+
+</HTML>
+

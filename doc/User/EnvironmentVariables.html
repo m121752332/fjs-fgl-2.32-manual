@@ -1,0 +1,1187 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Environment Variables</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Environment Variables</a></H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#SETTING_ON_UNIX">Setting Environment Variables on UNIX</a></li>
+  <li><a href="#SETTING_ON_WINDOWS">Setting Environment Variables on Windows</a></li>
+  <li><a href="#EV_OPSYS">Operating System Environment Variables</a>
+    <ul>
+      <li><a href="#EV_PATH">PATH</a></li>
+      <li><a href="#EV_LD_LIBRARY_PATH">LD_LIBRARY_PATH</a></li>
+      <li><a href="#EV_LC_ALL"> LC_ALL</a></li>
+      <li><a href="#EV_TERM">TERM</a></li>
+      <li><a href="#EV_TERMCAP">TERMCAP</a></li>
+      <li><a href="#EV_TMPDIR">TMPDIR, TEMP, TMP</a></li>
+    </ul>
+  </li>
+  <li><a href="#EV_DBCLI">Database Client Environment Variables</a></li>
+  <li><a href="#EV_FGL">Genero BDL Environment Variables</a>
+  <ul>
+    <li><a href="#EV_DBDATE">DBDATE</a></li>
+    <li><a href="#EV_DBCENTURY">DBCENTURY</a></li>
+    <li><a href="#EV_DBDELIMITER">DBDELIMITER</a></li>
+    <li><a href="#EV_DBEDIT">DBEDIT</a></li>
+    <li><a href="#EV_DBFORMAT">DBFORMAT</a></li>
+    <li><a href="#EV_DBMONEY">DBMONEY</a></li>
+    <li><a href="#EV_DBPATH">DBPATH</a></li>
+    <li><a href="#EV_DBPRINT">DBPRINT</a></li>
+    <li><a href="#EV_DBSCREENDUMP">DBSCREENDUMP</a></li>
+    <li><a href="#EV_DBSCREENOUT">DBSCREENOUT</a></li>
+    <li><a href="#EV_DBTEMP">DBTEMP</a></li>
+    <li><a href="#EV_FGLDBPATH">FGLDBPATH</a></li>
+    <li><a href="#EV_FGLDIR">FGLDIR</a></li>
+    <li><a href="#EV_FGLIMAGEPATH">FGLIMAGEPATH</a></li>
+    <li><a href="#EV_FGLLDPATH">FGLLDPATH</a></li>
+    <li><a href="#EV_FGLGUI">FGLGUI</a></li>
+    <li><a href="#EV_FGLGUIDEBUG">FGLGUIDEBUG</a></li>
+    <li><a href="#EV_FGLPROFILE">FGLPROFILE</a></li>
+    <li><a href="#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a></li>
+    <li><a href="#EV_FGLSERVER">FGLSERVER</a></li>
+    <li><a href="#EV_FGLSOURCEPATH">FGLSOURCEPATH</a></li>
+    <li><a href="#EV_FGLSQLDEBUG">FGLSQLDEBUG</a></li>
+    <li><a href="#EV_FGLWRTUMASK">FGLWRTUMASK</a></li>
+  </ul>
+</ul>
+
+<p><i>See also:</i> <a href="Tools.html">Tools</a>, <a href="Localization.html">Localization
+Support</a>, <a href="Connections.html">Connections</a>, <a href="Installation.html">Installation
+and Setup</a></p>
+
+
+<HR>
+
+<h2><a name="SETTING_ON_UNIX">Setting Environment Variables on UNIX</a></h2>
+
+<p>On UNIX platforms, environment variables can be set through the following methods,
+depending on to the command interpreter used:</p>
+
+<p>Bourne shell:</p>
+<p><code>&nbsp; VAR=<i>value</i>; export VAR</code></p>
+
+<p>Korn shell:</p>
+<p><code>&nbsp; export VAR=<i>value</i></code></p>
+
+<p>C shell:</p>
+<p><code>&nbsp; setenv VAR=<i>value</i></code></p>
+
+<p>For more details, refer to the documentation for your UNIX system.</p>
+
+
+<HR>
+
+<h2><a name="SETTING_ON_WINDOWS">Setting Environment Variables on Windows</a></h2>
+
+<p>On Windows platforms, environment variables can be set by one of the 
+following methods:</p>
+<ul>
+  <li>In a command window, with the SET command.</li>
+  <li>In the registry, for the current user in <tt>HKEY_CURRENT_USER</tt> or a global setting in <tt>HKEY_LOCAL_MACHINE</tt>.</li>
+</ul>
+
+<p>For more details, refer to the documentation of your Windows system.</p>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>When using Informix, some variables related to the database engine must be
+    set using the SETNET32 utility.</li>
+  <li>On Windows, double quotes do not have the same meaning as on UNIX systems. For example, if you
+    set a variable with the command <tt>SET VAR=&quot;abc&quot;</tt>, the value of the
+    variable will be <tt>&quot;abc&quot;</tt> (with double quotes), and not <tt>abc</tt>.</li>
+</ol>
+
+
+<HR>
+
+<h2><a name="EV_OPSYS">Operating System Environment Variables</a></h2>
+
+
+<p>This section describes a couple of well-known system environment variables
+that are used by Genero software components.</p>
+
+
+<HR>
+
+<h3><a name="EV_PATH">PATH</a></h3>
+
+<h4>Purpose:</h4>
+<p>This variable defines the list of search paths for executables files.</p>
+
+<h4>Notes:</h4>
+<ol>
+  <li>On Unix platforms, <b>PATH</b> defines the search path list for executable
+    programs.</li>
+  <li>On Windows platforms, <b>PATH</b> defines the search path for programs and
+    DLLs.</li>
+  <li>The path separator is a colon (<tt>:</tt>) on UNIX and a semicolon <tt>(;)</tt>
+    on Windows.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="EV_LD_LIBRARY_PATH">LD_LIBRARY_PATH</a></h3>
+
+<h4>Purpose:</h4>
+<p>This variable defines the list of search paths for shared libraries loaded by
+the <i>dynamic linker</i> on Unix
+platforms.</p>
+
+<h4>Notes:</h4>
+<ol>
+  <li>On some operating systems, the environment variable defining the shared
+    library search path may have a different name. For example, on a system
+    where a 32b and a 64b environment coexist, you may need to set
+    LD_LIBRARY_PATH_64 to execute the 64b programs. On HP/UX, you must set
+    SHLIB_PATH. On AIX, use LIBPATH. On Mac OS/X, use DYLD_LIBRARY_PATH.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="EV_LC_ALL">LC_ALL</a></h3>
+
+<h4>Purpose:</h4>
+<p>This variable defines the locale (language, territory and code-set) for Unix
+programs.</p>
+
+<h4>Notes:</h4>
+<ol>
+  <li>This variable is used by the runtime system to handle character strings.
+    It is important to set this variable properly according to the character set
+    used by your application.</li>
+  <li>If LC_ALL is not defined, LANG is used instead.</li>
+  <li>Read the Unix manual of the setlocale C function for more details about
+    this variable. See also the <a href="Localization.html">Localization</a>
+    page.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="EV_TERM">TERM</a></h3>
+
+<h4>Purpose:</h4>
+<p>This variable defines terminal type (vt100, xterm, xtermix) for terminal
+capabilities.</p>
+
+<h4>Notes:</h4>
+<ol>
+  <li>The <b>TERM</b> variable is used by UNIX and Genero applications to
+    identify the terminal type when running in <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a>
+    mode.</li>
+  <li>Genero reads terminal capabilities from the file defined by the <a href="#EV_TERMCAP">TERMCAP</a>
+    environment variable.<br>
+    Note that recent applications use the TERMINFO database for terminal
+    capabilities.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>It is important to define this variable properly to match the text
+    terminal hardware or the terminal emulation you are using.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="EV_TERMCAP">TERMCAP</a></h3>
+
+<h4>Purpose:</h4>
+<p>This variable defines the terminal capabilities file to be used with <a href="#EV_TERM">TERM</a>.</p>
+
+<h4>Notes:</h4>
+<ol>
+  <li>The <b>TERMCAP</b> environment variable points to the terminal
+    capabilities file.</li>
+  <li>The default with Genero is $FGLDIR/etc/termcap.</li>
+  <li>You can define additional terminal in this file.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>It is important to define terminal capabilities properly according to the
+    text terminal hardware or the terminal emulation you are using.<br>
+    Especially function keys (F1, F16) and display attributes (bold, reverse,
+    colors) may not work if the escape sequences do not correspond to the
+    terminal used.</li>
+</ol>
+
+<p>For more details about terminal capability configuration, see <a href="DynamicUI.html">Dynamic
+User Interface</a>.</p>
+
+
+<HR>
+
+<h3><a name="EV_TMPDIR">TMPDIR, TEMP, TMP</a></h3>
+
+<h4>Purpose:</h4>
+<p>Those environment variables define the directory for temporary files.</p>
+
+<h4>Notes:</h4>
+<ol>
+  <li><b>TMPDIR</b> and <b>TMP</b> are mainly used on Unix platforms, <b>TEMP</b>
+    and <b>TMP</b> are used on Windows.</li>
+  <li>You should use <a href="#EV_DBTEMP">DBTEMP</a> to define the temp file
+    directory for Genero files.</li>
+</ol>
+
+
+<HR>
+
+<h2><a name="EV_DBCLI">Database Client Environment Variables</a></h2>
+<p>If your Genero programs connect to a database server, you will probably have
+to set database vendor specific environment variables (or registry settings on
+Windows platforms). You must for example set INFORMIXDIR for an Informix client,
+ORACLE_HOME for Oracle, etc. Read carefully the database client software
+documentation. You get also some details in the <a href="Connections.html#DBCENV">Database
+Connections</a> page of this documentation.</p>
+
+
+<HR>
+
+<h2><a name="EV_FGL">Genero Environment Variables</a></h2>
+
+
+<p>This section lists and describes in detail all Genero specific environment
+variables.</p>
+
+
+<HR>
+
+<h3><a name="EV_DBDATE">DBDATE</a></h3>
+
+<h4>Purpose:</h4>
+<p>Defines the default display format for <a href="DataTypes.html#DT_DATE">DATE</a>
+values and the default picture for automatic string-to-DATE conversions.</p>
+
+<h4>Values:</h4>
+<p>Values can be a restricted combination of several symbols described in the
+following table: </p>
+
+<div align="center">
+  <center>
+  <table border="0" width="90%">
+    <tr>
+      <td align="left"><b>Symbol</b></td>
+      <td><b>Meaning in DBDATE format string</b></td>
+    </tr>
+    <tr>
+      <td align="left"><tt>D</tt></td>
+      <td>Day of month as one or two digits</td>
+    </tr>
+    <tr>
+      <td align="left"><tt>M</tt>
+      </td><td>Month as one or two digits</td>
+    </tr>
+    <tr>
+      <td align="left"><tt>Y2</tt></td>
+      <td>Year as two digits</td>
+    </tr>
+    <tr>
+      <td align="left"><tt>Y3</tt></td>
+      <td>Year as three digits <i>(Ming Guo format only)</i></td>
+    </tr>
+    <tr>
+      <td align="left"><tt>Y4</tt></td>
+      <td>Year as four digits</td>
+    </tr>
+    <tr>
+      <td align="left"><tt>/</tt></td>
+      <td>Default time-unit separator for the default locale</td>
+    </tr>
+    <tr>
+      <td align="left"><tt>C1</tt></td>
+      <td>Ming Guo format modifier (years as digits)</td>
+    </tr>
+    <tr>
+      <td align="left"><tt>-</tt></td>
+      <td>Minus time-unit separator</td>
+    </tr>
+    <tr>
+      <td align="left"><tt>,</tt></td>
+      <td>Coma time-unit separator</td>
+    </tr>
+    <tr>
+      <td align="left"><tt>.</tt></td>
+      <td>Period time-unit separator</td>
+    </tr>
+    <tr>
+      <td align="left"><tt>0</tt></td>
+      <td>Indicates no time-unit separator</td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<p>The combinations must follow a specific order:</p>
+<code>&nbsp; <u>{</u> DM <u>|</u> MD <u>}</u> <u>{</u> Y2 <u>|</u>  Y3 <u>|</u> Y4 <u>}</u> <u>{</u>
+/ <u>|</u> - <u>|</u> , <u>|</u> . <u>|</u> 0 <u>}
+</u> <u>[</u>C1<u>]<br>
+</u>&nbsp; <u>{</u> Y2 <u>|</u>  Y3 <u>|</u> Y4 <u>}</u> <u>{</u> DM <u>|</u> MD <u>}</u> <u>{</u>
+/ <u>|</u> - <u>|</u> , <u>|</u> . <u>|</u> 0 <u>}</u> <u>[</u>C1<u>]</u></code>
+
+<h4>Usage:</h4>
+<b>DBDATE</b> defines the order of the <i>month</i>, <i>day</i>, and <i>year </i>time
+    units within a date, whether the <i>year </i>is printed with two digits (Y2),
+three (Y3+C1) or four digits (Y4) and the time-unit separator between the <i>month</i>, <i>da</i>y,
+    and <i>year.</i>
+<p>In programs, when you assign a string representing a date to a variable
+    defined with the <a href="DataTypes.html#DT_DATE">DATE</a> data type,
+    automatic string-to-DATE conversion takes place based on the <b>DBDATE</b>
+    definition.
+<p>In the default locale, the default setting for <b>DBDATE</b> is <tt>DMY4/</tt>.
+<p>The C1 modifier can be used at the end of the DBDATE value in order to use 
+<a href="Localization.html#MING_GUO">MingGuo</a> date format with digit-based years. 
+When using C1, you can use one of the Y4, Y3 or Y2 symbols for the year.</p>
+Date formatting specified in a <a href="Operators.html#OP_USING">USING</a> clause 
+or FORMAT attribute overrides the formatting specified in <b>DBDATE</b>.
+
+<h4>Example:</h4>
+<p>Gregorian date format:</p>
+
+
+<p><CODE><tt>DBDATE=&quot;DMY4/&quot;</tt><br></CODE>
+<CODE><tt>export DBDATE</tt></CODE></p>
+
+
+<p>Migng Guo date format:</p>
+
+
+<p><CODE><tt>DBDATE=&quot;Y3MD/C1&quot;</tt><br><tt>export DBDATE</tt></CODE>
+</p>
+
+
+<HR>
+
+<h3><a name="EV_DBDELIMITER">DBDELIMITER</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <b>DBDELIMITER </b>environment variable defines the value delimiter for
+<a href="InOutSql.html">LOAD and UNLOAD instructions</a>.</p>
+
+<h4>Usage:</h4>
+If <b>DBDELIMITER</b> is not defined, the default delimiter is a (<tt>|</tt>) pipe.
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>Do not use backslash or hex digits (0-9, A-F, a-f).</li>
+</ol>
+
+<h4>Example:</h4>
+<p><CODE><tt>DBDELIMITER=&quot;@&quot;</tt><br><tt>export DBDELIMITER</tt></CODE></p>
+
+
+<HR>
+
+<h3><a name="EV_DBCENTURY">DBCENTURY</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <b>DBCENTURY </b>environment variable specifies how to expand abbreviated
+one- and two-digit <i>year </i>specifications within DATE and DATETIME values.</p>
+
+<h4>Values:</h4>
+<div align="center">
+  <center>
+  <table border="0" width="90%">
+    <tr>
+      <td align="left"><b>Symbol</b></td>
+      <td><b>Algorithm for Expanding Abbreviated Years</b></td>
+    </tr>
+    <tr>
+      <td align="left"><tt>C</tt></td>
+      <td>Use the past, future, or current year closest to the current date.</td>
+    </tr>
+    <tr>
+      <td align="left"><tt>F</tt></td>
+      <td>Use the nearest year in the future to expand the entered value.</td>
+    </tr>
+    <tr>
+      <td align="left"><tt>P</tt></td>
+      <td>Use the nearest year in the past to expand the entered value.</td>
+    </tr>
+    <tr>
+      <td align="left"><tt>R</tt></td>
+      <td>Prefix the entered value with the first two digits of the current year.</td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<h4>Usage:</h4>
+Default value is &quot;R&quot; (prefix the entered value with the first 
+	two digits of the current year).
+<p>Values are case sensitive; only the four uppercase letters are valid.
+<p>Three-digit years are not expanded.
+<p>If a year is entered as a single digit, it is first expanded to two digits
+    by prefixing it with a zero; <b>DBCENTURY </b>then expands this value to
+    four digits.
+<p>Years before 99 AD (or CE) require leading zeros (to avoid expansion).
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>If the database server and the client system have different settings for
+    DBCENTURY, the client system setting takes precedence for abbreviations of
+    years in dates entered through the application. Expansion is sensitive to
+    the time of execution and to the accuracy of the system clock-calendar. You
+    can avoid the need to rely on DBCENTURY by requiring the user to enter
+    four-digit years or by setting the CENTURY attribute in the form
+    specification of DATE and DATETIME fields.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="EV_DBEDIT">DBEDIT</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <b>DBEDIT</b> environment variable defines the editor program to be
+used for <a href="DataTypes.html#DT_TEXT">TEXT</a> fields.</p>
+
+
+<HR>
+
+<h3><a name="EV_DBFORMAT">DBFORMAT</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <b>DBFORMAT</b> environment variable defines the input and display format
+for numeric values.</p>
+
+<p>See also <a href="#EV_DBMONEY">DBMONEY</a>.</p>
+
+<h4>Syntax:</h4>
+<code><i>front</i>:<i>thousands</i>:<i>decimal</i>:<i>back</i></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>front</i> is the leading currency symbol, can be an asterisk ( * ).</li>
+  <li><i>throusands</i> is a character that you specify as a valid thousands
+    separator, can be an asterisk ( * ).</li>
+  <li><i>dec</i><i>imal</i> is a character that you specify as a valid decimal
+    separator.</li>
+  <li><i>back</i> is the trailing currency symbol, can be an asterisk ( * ).</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The DBFORMAT environment variable can be set to define the input and display
+format for values of the following types:</p>
+<ul>
+  <li> <a href="DataTypes.html#DT_MONEY">MONEY</a>
+    (thousands separator, decimal separator and currency symbol)</li>
+  <li><a href="DataTypes.html#DT_DECIMAL">DECIMAL</a> (thousands separator,
+    decimal separator)</li>
+  <li><a href="DataTypes.html#DT_SMALLFLOAT">SMALLFLOAT</a> (thousands
+    separator, decimal separator)</li>
+  <li><a href="DataTypes.html#DT_FLOAT">FLOAT</a> (thousands separator, decimal
+    separator)</li>
+  <li><a href="DataTypes.html#DT_SMALLINT">SMALLINT</a> (thousands separator)</li>
+  <li><a href="DataTypes.html#DT_INTEGER">INTEGER</a> (thousands separator)</li>
+  <li><a href="DataTypes.html#DT_BIGINT">BIGINT</a> (thousands separator)</li>
+</ul>
+<p>DBFORMAT can specify the leading and trailing currency symbols (but not their
+default positions within a monetary value) and the decimal and thousands
+separators. The decimal and thousands separators defined by DBFORMAT apply to
+both monetary and other numeric data.</p>
+<p>BDL instructions affected by the setting in DBFORMAT include (but are not
+restricted to) the following items:</p>
+<ul>
+  <li><a href="Operators.html#OP_USING">USING</a> operator.</li>
+  <li> <a href="FSFAttributes.html#FA_FORMAT">FORMAT</a>
+    field attribute.</li>
+  <li><a href="RecordDisplay.html">DISPLAY</a> or <a href="Reports.html">PRINT</a>
+    statement (default formatting of numeric values).</li>
+  <li><a href="Variables.html#VA_LET">LET</a> statement, where a <a href="DataTypes.html#DT_CHAR">CHAR</a>,
+    <a href="DataTypes.html#DT_VARCHAR">VARCHAR</a> or <a href="DataTypes.html#DT_STRING">STRING</a>
+    variable is assigned a monetary or number value.</li>
+  <li><a href="InOutSql.html#IO_LOAD">LOAD</a> and <a href="InOutSql.html#IO_LOAD">UNLOAD</a>
+    statements that use ASCII files (or whatever the locale regards as a <i>flat
+    </i>file) to pass data to or from the database.</li>
+</ul>
+<p>The asterisk ( * ) specifies that a symbol or separator is not applicable; it
+is the default for any <i>fron</i>t, <i>thousand</i>s, or <i>back </i>term that
+you do not define.</p>
+<p>If you specify more than one character for <i>decimal </i>or <i>thousand</i>s,
+the values in the <i>decimal </i>or <i>thousands </i>list cannot be separated by
+spaces (nor by any other symbols). BDL uses the first value specified as the
+thousands or decimal separator when displaying the number or currency value in
+output. The user can include any of the decimal or thousands separators when
+entering values.</p>
+<p>Any printable character that your locale supports is valid for the thousands
+separator or for the decimal separator, except:</p>
+<ul>
+  <li>Digits (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)</li>
+  <li>&lt;, &gt;, |, ?, !, =, [, ]</li>
+</ul>
+<p>The same character cannot be both the thousands and decimal separator. A
+blank space (ASCII 32) can be the thousands separator (and is conventionally
+used for this purpose in some locales). The asterisk ( * ) symbol is valid as
+the decimal separator, but is not valid as the thousands separator.</p>
+<p>The colon ( : ) symbol is supported as <i>thousands</i> or <i> decimal</i> separator but must be
+preceded by a backslash ( \ ) symbol, as in the specification <code><tt>:\::.:DM</tt></code>.
+.</p>
+<p>You must include all three colons. Enclosing the DBFORMAT specification in a
+pair of single quotation marks is recommended to prevent the shell from
+attempting to interpret (or execute) any of the DBFORMAT characters.</p>
+<p>The setting in DBFORMAT affects how formatting masks of the <a href="FSFAttributes.html#FA_FORMAT"> FORMAT</a>
+attribute and <a href="Operators.html#OP_USING">USING</a> operator are
+interpreted. In formatting masks of <a href="FSFAttributes.html#FA_FORMAT">FORMAT</a>
+and <a href="Operators.html#OP_USING">USING</a>, the following symbols are not
+literal characters but are placeholders for what DBFORMAT specifies:</p>
+<ul>
+  <li>The dollar ($) sign is a placeholder for the <i>front </i>currency symbol.</li>
+  <li>The comma (,) is a placeholder for the thousands separator.</li>
+  <li>The period (.) is a placeholder for the decimal separator.</li>
+  <li>The at (@) sign is a placeholder for the <i>back </i>currency symbol.</li>
+</ul>
+<p>The following table illustrates the results of different combinations of
+DBFORMAT setting and format string on the same value.</p>
+  <table border="0" width="90%">
+    <tr>
+      <td align="left" width="25%" bgcolor="#C0C0C0"><b>Value</b></td>
+      <td align="left" width="25%" bgcolor="#C0C0C0"><b>Format String</b></td>
+      <td align="left" width="25%" bgcolor="#C0C0C0"><b>DBFORMAT</b></td>
+      <td width="25%" bgcolor="#C0C0C0"><b>Result</b></td>
+    </tr>
+    <tr>
+      <td align="left" width="25%"><code><tt>1234.56</tt></code></td>
+      <td align="left" width="25%"><code><tt>$#,###.##</tt></code></td>
+      <td align="left" width="25%"><code><tt>$:,:.:</tt></code></td>
+      <td width="25%"><code><tt>$1,234.56</tt></code></td>
+    </tr>
+    <tr>
+      <td align="left" width="25%"><code><tt>1234.56</tt></code>
+      </td>
+      <td align="left" width="25%"><code><tt>$#,###.##</tt></code>
+      </td>
+      <td align="left" width="25%"><code><tt>:.:,:DM</tt></code>
+      </td><td width="25%"><code><tt>1.234,56</tt></code></td>
+    </tr>
+    <tr>
+      <td align="left" width="25%"><code><tt>1234.56</tt></code></td>
+      <td align="left" width="25%"><code><tt>#,###.##@</tt></code></td>
+      <td align="left" width="25%"><code><tt>$:,:.:</tt></code></td>
+      <td width="25%"><code><tt>1,234.56</tt></code></td>
+    </tr>
+    <tr>
+      <td align="left" width="25%"><code><tt>1234.56</tt></code></td>
+      <td align="left" width="25%"><code><tt>#,###.##@</tt></code></td>
+      <td align="left" width="25%"><code><tt>:.:,:DM</tt></code></td>
+      <td width="25%"><code><tt>1.234,56DM</tt></code></td>
+    </tr>
+  </table>
+<p>When the user enters numeric or currency values in fields, the runtime system
+behaves as follows:</p>
+<ul>
+  <li>If a symbol is entered that was defined as a decimal separator in 
+    <a href="EnvironmentVariables.html#EV_DBFORMAT">DBFORMAT</a>, it is interpreted as the decimal separator.</li>
+  <li>For <a href="DataTypes.html#DT_MONEY">MONEY</a> fields, it disregards any <i>front </i>(leading)
+    or <i>back </i>(trailing) currency symbol and any thousands separators that
+    the user enters.</li>
+  <li>For <a href="DataTypes.html#DT_DECIMAL">DECIMAL</a> fields, the user must
+    enter values without currency symbols.</li>
+</ul>
+<p>When the runtime system displays or prints values:</p>
+<ul>
+  <li>The DBFORMAT-defined leading or trailing currency symbol is displayed for <a href="DataTypes.html#DT_MONEY">MONEY</a> 
+    values.</li>
+  <li>If a leading or trailing currency symbol is specified by the <a href="FSFAttributes.html#FA_FORMAT"> FORMAT</a>
+    attribute for non-MONEY data types, the symbol is displayed.</li>
+  <li>The thousands separator is not displayed unless it is included in a
+    formatting mask of the <a href="FSFAttributes.html#FA_FORMAT">FORMAT</a>
+    attribute or of the <a href="Operators.html#OP_USING">USING</a> operator.</li>
+</ul>
+<p>When <a href="DataTypes.html#DT_MONEY">MONEY</a> values are converted to
+character strings by the <a href="Variables.html#VA_LET">LET</a> statement, both
+automatic data type conversion and explicit conversion with a <a href="Operators.html#OP_USING">USING</a>
+clause insert the DBFORMAT-defined separators and currency symbol into the
+converted strings.</p>
+<p>For example, suppose DBFORMAT is set as follows:</p>
+<p><code><tt>*:.:,:DM</tt></code></p>
+<p>The value 1234.56 will print or display as follows:</p>
+<p><code><tt>1234,56DM</tt></code></p>
+<p>Here DM stands for deutsche marks. Values input by the user into a screen
+form are expected to contain commas, not periods, as their decimal separator
+because DBFORMAT has <code><tt>*:.:,:DM</tt></code> as its setting in this
+example.</p>
+
+
+<p>When using a graphical front-end, the decimal separator of the numeric keypad
+will produce the character defined by this environment variable.</p>
+
+
+<HR>
+
+<h3><a name="EV_DBMONEY">DBMONEY</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <b>DBMONEY </b>environment variable defines the currency symbol and the
+decimal separator for numeric values.</p>
+
+<p>See also <a href="#EV_DBFORMAT">DBFORMAT</a>.</p>
+
+<h4>Syntax:</h4>
+<code><i>front</i><u>{</u>.<u>|</u>,<u>}</u><i>back</i></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>front</i> is a character string representing a leading currency symbol
+    that precedes the  value.</li>
+  <li><i>back </i>is a character string representing a trailing currency symbol
+    that follows the  value.</li>
+  <li>The currency symbol can be up to seven characters long and can contain any character
+    except a comma or a period.</li>
+  <li>The currency symbol can be non-ASCII characters if your <a href="Localization.html">current
+    locale</a> supports a code set that defines the non-ASCII characters you
+    use.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The DBMONEY environment variable can be set to define the input and display
+format for values of the following types:</p>
+<ul>
+  <li> <a href="DataTypes.html#DT_MONEY">MONEY</a>
+    (thousands separator, decimal separator and currency symbol)</li>
+  <li><a href="DataTypes.html#DT_DECIMAL">DECIMAL</a> (thousands separator,
+    decimal separator)</li>
+  <li><a href="DataTypes.html#DT_SMALLFLOAT">SMALLFLOAT</a> (thousands
+    separator, decimal separator)</li>
+  <li><a href="DataTypes.html#DT_FLOAT">FLOAT</a> (thousands separator, decimal
+    separator)</li>
+  <li><a href="DataTypes.html#DT_SMALLINT">SMALLINT</a> (thousands separator)</li>
+  <li><a href="DataTypes.html#DT_INTEGER">INTEGER</a> (thousands separator)</li>
+  <li><a href="DataTypes.html#DT_BIGINT">BIGINT</a> (thousands separator)</li>
+</ul>
+<p>Numeric values will be displayed in forms and reports according to this
+environment variable.</p>
+<p>DBMONEY will also be used for implicit <a href="DataConversions.html">data conversion</a>
+    between numeric values and character
+    strings.</p>
+<p>DBMONEY can only define the currency symbol and decimal separator characters must be specified in this
+    environment variable. If you want to define the thousands separator, use the
+<a href="#EV_DBFORMAT">DBFORMAT</a> environment variable instead. However, if
+only DBMONEY is used, an implicit thousands separator is selected.</p>
+<p>The position of the currency symbol (relative to the decimal separator)
+    indicates whether the currency symbol appears before or after the
+    <a href="DataTypes.html#DT_MONEY">MONEY</a>
+    value. When the currency symbol is positioned in DBMONEY <u>before</u> the
+    decimal separator, it is displayed before the value ($1234.56). When it is
+    positioned <u>after</u> the decimal separator, it is displayed after the
+    value (1234.56F).
+<p>The runtime system recognizes the period ( . ) and
+    the comma ( , ) as decimal separators. All other characters are considered to be part of the
+    currency symbol. For example, &quot;, FR&quot; defines a MONEY format with
+    the comma as decimal separator and the string &quot; FR&quot; (including the
+    space) as the currency symbol.
+<p>The default value for DBMONEY is &quot;$.&quot;, defining the currency
+    symbol as the dollar sign ( $ ) and the decimal separator as the period ( .
+    ).
+<p>Because only its position within a DBMONEY setting indicates whether a symbol
+is the <i>front </i>or <i>back </i>currency symbol, the decimal separator is 
+required. If you use DBMONEY to specify a <i>back </i>symbol, for example, you
+must supply a decimal separator (a comma or period). Similarly, if you use DBMONEY to 
+change the decimal separator from a period to a comma, you must also supply a 
+currency<i> </i>symbol.</p>
+<p>To avoid ambiguity in displayed numbers and currency values, do not use the
+thousands separator of <a href="#EV_DBFORMAT">DBFORMAT</a> as the decimal
+separator of DBMONEY. For example, specifying comma as the DBFORMAT thousands
+separator dictates using the period as the DBMONEY decimal separator.</p>
+
+<p>When using a graphical front-end, the decimal separator of the numeric keypad
+will produce the character defined by this environment variable.</p>
+
+<h4>Example:</h4>
+<p><CODE><tt>DBMONEY=&quot;$.&quot;</tt><br><tt>export DBMONEY<br>
+DBMONEY=&quot;,F&quot;</tt><br><tt>export DBMONEY</tt></CODE></p>
+
+
+<HR>
+
+<h3><a name="EV_DBPATH">DBPATH</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <b>DBPATH</b> environment variable defines the paths to search for
+program resource files.</p>
+
+<h4>Usage:</h4>
+<p>The <b>DBPATH</b> environment variable contains the search paths for the
+following type of files:</p>
+
+<ol>
+  <li>Form
+files loaded by <a href="WindowsAndForms.html#OPEN_FORM">OPEN FORM</a>,</li>
+  <li>Message files used by <a href="Programs.html#PROGRAM_OPTIONS">OPTIONS HELP
+    FILE</a>,</li>
+  <li><a href="ActionDefaults.html">Action Defaults</a> files,</li>
+  <li><a href="PresentationStyles.html">Presentation Styles</a> files,</li>
+  <li><a href="StartMenus.html">Start Menu</a> files,</li>
+  <li><a href="Toolbars.html">Toolbar</a> files,</li>
+  <li><a href="Topmenus.html">TopMenu</a> files,</li>
+  <li> <a href="LocalizedStrings.html">Localized
+strings</a> files.</li>
+</ol>
+
+<p>If <b>DBPATH</b>  is not defined, the default is the current directory.</p>
+
+<p>You can provide a list of paths, separated by the operating system specific
+path separator.</p>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The path separator is platform specific ( <b>&quot;:&quot;</b> on UNIX
+    platforms and <b>&quot;;&quot;</b> on Windows platforms).</li>
+  <li>If <a href="#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a> is defined, <b>DBPATH</b>
+    is ignored by the runtime system and <b>FGLRESOURCEPATH</b> is used instead.</li>
+</ol>
+
+<h4>Examples:</h4>
+
+<p>Unix example:</p>
+<p><CODE><tt>DBPATH=&quot;/user/forms1:/user/forms2:/usr/strings/french&quot;</tt><br><tt>export
+DBPATH</tt></CODE></p>
+
+
+<p>Windows example:</p>
+<p><CODE><tt>set DBPATH=C:\user\forms1;C:\user\forms2;C:\usr\strings\french</tt></CODE></p>
+
+
+<p>See also: <a href="#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a>.</p>
+
+
+<HR>
+
+<h3><a name="EV_DBPRINT">DBPRINT</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <b>DBPRINT</b> environment variable specifies the print device to be used
+by <a href="Reports.html">reports</a> defined <tt>TO PRINTER</tt>.</p>
+
+<h4>Usage:</h4>
+On UNIX systems, the <b>DBPRINT</b> environment variable typically contains the printer queue
+    command (such as <b>lp</b>).
+<p>To have the DVM print to the printer on the client running the Genero 
+    Desktop Client (GDC), set <CODE><tt>DBPRINT=FGLSERVER</tt></CODE>.
+
+<h4>Example (UNIX):</h4>
+<p><CODE><tt>DBPRINT=&quot;lpr&quot;</tt><br><tt>export DBPRINT</tt></CODE></p>
+
+<h4>Example (Client):</h4>
+<p><CODE><tt>DBPRINT=FGLSERVER</tt><br><tt>export DBPRINT</tt></CODE></p>
+
+
+<HR>
+
+<h3><a name="EV_DBSCREENDUMP">DBSCREENDUMP</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <b>DBSCREENDUMP</b> environment variable defines the output file name for
+text screen shots when pressing CONTROL-P.</p>
+
+<h4>Usage:</h4>
+When using the TUI mode, if the user pressed the CONTROL-P key, the runtime
+system will dump the current screen into the file defined by this variable.
+Unlike <a href="#EV_DBSCREENOUT">DBSCREENOUT</a>, the output of <b> DBSCREENDUMP</b>
+includes the escape sequences of TTY attributes, which makes it less readable.
+
+
+<HR>
+
+<h3><a name="EV_DBSCREENOUT">DBSCREENOUT</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <b>DBSCREENOUT</b> environment variable defines the output file name for
+text screen shots when pressing CONTROL-P.</p>
+
+<h4>Usage:</h4>
+When using the TUI mode, if the user pressed the CONTROL-P key, the runtime
+system will dump the current screen into the file defined by this variable.
+Unlike <a href="#EV_DBSCREENDUMP">DBSCREENDUMP</a>, the output of <b>DBSCREENOUT</b>
+excludes the escape sequences of TTY attributes.
+
+
+<HR>
+
+<h3><a name="EV_DBTEMP">DBTEMP</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <b>DBTEMP</b> environment variable defines the directory for temporary
+files.</p>
+
+<h4>Usage:</h4>
+This environment variable is use to create temporary files for:
+<ol>
+  <li> <a href="DataTypes.html#DT_TEXT">TEXT</a>
+    or <a href="DataTypes.html#DT_BYTE">BYTE</a> data located in a temporary
+    file (LOCATE IN FILE without file name specification).</li>
+  <li>Temporary files of emulated scrollable cursors. See for example <a href="odiagora.html#ODIORA057">Oracle
+    scrollable cursors</a>.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="EV_FGLDIR">FGLDIR</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <b>FGLDIR</b> environment variable defines the Genero BDL software installation
+directory.</p>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The <b>FGLDIR</b> environment variable must be set in order to use the product components.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="EV_FGLIMAGEPATH">FGLIMAGEPATH</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <b>FGLIMAGEPATH</b> environment variable defines the search paths to find
+images for the front-end.</p>
+
+<h4>Usage:</h4>
+
+<p>When the front-end needs to display an image which is specified with a simple
+file name (not an URL), the front end first looks for local image files on the
+user workstation. If the image file is not found locally, the front-end sends an
+image request to the runtime system, which provides the image from the server
+file-system.</p>
+
+<p>You define the search path for images with the <b>FGLIMAGEPATH</b> environment variable.</p>
+
+<p>By default, the image directory is the current directory where the program
+    was started.</p>
+
+<p>You can provide a list of paths, separated by the operating system specific
+path separator.</p>
+<p>The runtime system searches for image files in the locations described below.
+The search depends on the name of the image file, the list of directories
+defined in <b>FGLIMAGEPATH</b>, and the expected file extensions provided by the
+front-end:</p>
+<ul>
+  <li>Name of the image file is: &quot;<i>file</i>&quot;</li>
+  <li>Content of FGLIMAGEPATH: &quot;<i>dir1</i>:<i>dir2</i>&quot;</li>
+  <li>List of extensions provided by the front-end: .gif, .png</li>
+</ul>
+<p>The search for the image file would be as follows:</p>
+<ol>
+  <li><i>dir1</i>/<i>file</i></li>
+  <li><i>dir1</i>/<i>file</i>.gif</li>
+  <li><i>dir1</i>/<i>file</i>.png</li>
+  <li><i>dir2</i>/<i>file</i></li>
+  <li><i>dir2</i>/<i>file</i>.gif</li>
+  <li><i>dir2</i>/<i>file</i>.png</li>
+</ol>
+
+<p>When <b>FGLIMAGEPATH</b> is defined, the current working directory is not searched. If you want to 
+look for image files in the current working directory and in other directories, add &quot;.&quot; to 
+the <b>FGLIMAGEPATH</b> path list.</p>
+<p>For security reasons, if <b>FGLIMAGEPATH</b> is defined, <a href="FormSpecFiles.html#FF_STATIC_IMAGE">static
+image</a> files must be located below one of the directories listed in this
+environment variable. For example, you cannot use an image file &quot;/home/scott/myicons/smiley&quot;
+when <b>FGLIMAGEPATH</b> contains &quot;/home/myke:/app/icons&quot;.
+However, this security restriction does only apply to static images: When an
+filename is displayed by program to an <a href="FormSpecFiles.html#FF_IMAGE_FIELD">image
+field</a> with DISPLAY TO / BY NAME or a field used by a dialog with UNBUFFERED mode, the runtime system 
+considers that the file can be transferred to the front-end without risk.</p>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The path separator is platform specific ( <b>&quot;:&quot;</b> on UNIX
+      platforms and <b> &quot;;&quot;</b> on Windows platforms).</li>
+  <li>Image files for <a href="FormSpecFiles.html#FF_STATIC_IMAGE">static images</a>
+    must be located in a directory of <b>FGLIMAGEPATH</b>, see below for
+    details.</li>
+</ol>
+
+<h4>Example:</h4>
+<p><CODE><tt>FGLIMAGEPATH=&quot;/user/myimages:/user/myicones&quot;</tt><br>
+<tt>export FGLIMAGEPATH</tt></CODE></p>
+
+
+<p>See also the <a href="FSFAttributes.html#FA_IMAGE">IMAGE</a> attribute.</p>
+
+
+<HR>
+
+<h3><a name="EV_FGLLDPATH">FGLLDPATH</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <b>FGLLDPATH </b>environment variable defines the search paths to load C extensions and modules.</p>
+
+<h4>Usage:</h4>
+<p>A Genero program can be composed by several p-code modules (<b>42m</b>) and
+can use <a href="CExtensions.html">C extensions</a>. When linking and when
+executing the program, the runtime system must known where to search for these
+modules. You can use the <b>FGLLDPATH </b>environment variable to define the search paths to load
+C extensions and p-code modules.</p>
+
+<p>The directories are searched for the modules in the following order:</p>
+
+<ol>
+  <li>The current directory.</li>
+  <li>The directory where the program (<b>42r</b>) file resides.</li>
+  <li>A path defined in the <b>FGLLDPATH </b>environment variable.</li>
+  <li>The <a href="#EV_FGLDIR">FGLDIR</a>/lib directory.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The path separator is platform specific ( <b>&quot;:&quot;</b> on UNIX
+     platforms and <b> &quot;;&quot;</b> on Windows platforms).</li>
+  <li>This variable is used at <u> link time and at run time</u>.</li>
+</ol>
+
+<h4>Example:</h4>
+<p><CODE><tt>FGLLDPATH=&quot;/user/modules1:/user/modules2&quot;</tt><br>
+<tt>export FGLLDPATH</tt></CODE></p>
+
+
+<p><i>See also</i>: <a href="Programs.html#IMPORT">IMPORT</a>.</p>
+
+
+<HR>
+
+<h3><a name="EV_FGLGUI">FGLGUI</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <b>FGLGUI </b>environment variable indicates whether the applications are run
+in <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a> or <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a>
+mode.</p>
+
+<h4>Usage:</h4>
+When set to 0 (zero), the application executes in <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a>
+    mode.
+<p>When set to 1 (one), the application executes in <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a>
+    mode.
+
+
+<HR>
+
+<h3><a name="EV_FGLGUIDEBUG">FGLGUIDEBUG</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <b>FGLGUIDEBUG</b> environment variable defines the debug level in 
+<a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a> mode.</p>
+
+
+<h4>Usage:</h4>
+<p>By default, the GUI protocol commands are compressed and not easy to read on
+the client debug log. If you set this variable to a value different from zero,
+the protocol commands are indented for better read.</p>
+<p>If <b>FGLGUIDEBUG</b> is not set to 0, debug information about the compression
+initialization is generated.</p>
+
+
+<HR>
+
+<h3><a name="EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <b>FGLRESOURCEPATH </b>environment variable can be used as replacement
+for <b>DBPATH</b> when needed.</p>
+
+<h4>Notes:</h4>
+<ol>
+  <li>You can provide a list of paths, separated by the operating system
+    specific path separator.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+
+<p>For compatibility with Informix 4gl, <b>DBPATH</b> is used by default to
+search for resource files such as form files and XML files used by the program.
+<b>DBPATH</b> is also used by the Informix database software to locate databases:
+Informix Dynamic Servers uses <b>DBPATH</b> to let you specify fallback servers
+if <b>INFORMIXSERVER</b> is not available, and former Informix Standard Engine
+needs <b>DBPATH</b> to find <b>.dbs</b> database files. This can be a problem when connecting 
+from a machine where path format is not the same as on the remote database server: It is not 
+possible to mix UNIX and DOS path formats in <b>DBPATH</b>.</p>
+
+<p>To work around this Informix limitation, <b>FGLRESOURCEPATH</b> can be used
+instead of <b>DBPATH</b> to specify the directories of program resource files.
+You are then free to define <b>DBPATH</b> as Informix requires.</p>
+
+<p>For more details about the type of files that this environment
+variable looks for, see <a href="#EV_DBPATH">DBPATH</a>.</p>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The path separator is platform specific ( <b>&quot;:&quot;</b> on UNIX
+    platforms and <b>&quot;;&quot;</b> on Windows platforms).</li>
+</ol>
+
+
+<h4>Example:</h4>
+
+<p>Unix example:</p>
+<p><CODE><tt>DBPATH=&quot;/usr/informix/data&quot;</tt><br><tt>export
+DBPATH<br>
+FGLRESOURCEPATH=&quot;/user/forms1:/user/forms2:/usr/strings/french&quot;</tt><br><tt>export
+FGLRESOURCEPATH</tt></CODE></p>
+
+
+<p>Windows example:</p>
+<p><code><tt>set DBPATH=/usr/informix/data<br>
+set FGLRESOURCEPATH=C:\user\forms1;C:\user\forms2;C:\usr\strings\french</tt></code></p>
+
+
+<p><i>See also</i>: <a href="#EV_DBPATH">DBPATH</a>.</p>
+
+
+<HR>
+
+<h3><a name="EV_FGLSERVER">FGLSERVER</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <b>FGLSERVER</b>  defines the front-end location.</p>
+
+<h4>Syntax:</h4>
+<code><u>{</u><i>hostname</i><u>|</u><i>ipaddress</i><u>}[</u>:<i>servnum</i><u>]</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>hostname</i> is the name of a machine on the network.</li>
+  <li><i>ipaddress</i> is the IP V4 address&nbsp;( Ex: 10:0:0:105 ).</li>
+  <li><i>servnum</i>  identifies the front end.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p><b>FGLSERVER</b> defines the hostname and port of
+the graphical front end to be used by the runtime system to display the
+application windows.</p>
+<p>The servnum parameter implicitly defines the TCP port number the front end is listening to, as an offset
+    for the base port 6400. For example, FGLSERVER=cobra:1 will use the TCP port
+6401 (6400 + 1).</p>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The <i>servnum</i> parameter defines the front end server number (first is
+    0, second is 1, and so on) and implicitly the TCP port. The port number base is
+    6400. For example, when using 1, the runtime system connects to the TCP port
+    6401.</li>
+</ol>
+
+<h4>Example:</h4>
+<p><CODE><tt>FGLSERVER=&quot;mars:0&quot;</tt><br>
+<tt>export FGLSERVER</tt></CODE></p>
+
+
+<p><i>See also</i>: <a href="DynamicUI.html#AUTOSTART">Automatic front-end
+startup</a>.</p>
+
+
+<HR>
+
+<h3><a name="EV_FGLSOURCEPATH">FGLSOURCEPATH</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <b>FGLSOURCEPATH </b>environment variable defines the path to source
+files for the <a href="Debugger.html">debugger</a>.</p>
+
+<h4>Usage:</h4>
+By default, the current directory and the
+    directories defined by <a href="#EV_FGLLDPATH">FGLLDPATH</a> are searched 
+	for the source files. You can provide a list of paths, separated by the
+operating system specific path separator.
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The path separator is platform specific ( <b>&quot;:&quot;</b> on UNIX platforms and <b>
+	&quot;;&quot;</b> on Windows platforms).</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="EV_FGLDBPATH">FGLDBPATH</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <b>FGLDBPATH </b>environment variable contains the path to
+<a href="DatabaseSchema.html">database schema files</a>.</p>
+
+<h4>Usage:</h4>
+If <b>FGLDBPATH</b> is not defined, the current directory is the default path 
+	for the database schema files. You can provide a list of paths, separated by
+the operating system specific path separator. <b>FGLDBPATH</b> is only used in development.
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The path separator is platform specific ( <b>&quot;:&quot;</b> on UNIX platforms and <b>
+	&quot;;&quot;</b> on Windows platforms).</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="EV_FGLSQLDEBUG">FGLSQLDEBUG</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <b>FGLSQLDEBUG </b>environment variable defines the debug level for tracing
+SQL instructions.</p>
+
+<h4>Usage:</h4>
+If <b>FGLSQLDEBUG</b> is set to a value greater than zero, you get a debug
+    trace in the standard error channel.
+<p><b>FGLSQLDEBUG</b> is only used in development.
+
+
+<HR>
+
+<h3><a name="EV_FGLPROFILE">FGLPROFILE</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <b>FGLPROFILE</b> environment variable defines a list of configuration
+files to be used by the runtime system.</p>
+
+<h4>Usage:</h4>
+If <b>FGLPROFILE</b> is not set, the runtime system reads entries from the default
+    configuration file located in <a href="#EV_FGLDIR">FGLDIR</a>/etc/fglprofile.
+<p><b>FGLPROFILE</b> can define one unique configuration file, or a list of
+files to be loaded sequentially.</p>
+For more information, refer to the <a href="FglProfile.html">FGLPROFILE</a> 
+	section of this manual.
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The path separator is platform specific ( <b>&quot;:&quot;</b> on UNIX platforms and <b>
+	&quot;;&quot;</b> on Windows platforms).</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="EV_FGLWRTUMASK">FGLWRTUMASK</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <b>FGLWRTUMASK </b>environment variable defines the umask for the FGLDIR/lock
+directory.</p>
+
+<h4>Usage:</h4>
+The <b>FGLWRTUMASK</b> environment variable is used by the license manager <b>fglWrt</b>.
+This variable defines the umask to create the <b>FGLDIR/lock</b> directory. The default is 000, which creates a directory with <b>rwxrwxrwx</b> rights.
+
+
+<p>For more information, refer to the <a href="Installation.html">Installation</a> 
+section of this manual.</p>
+
+
+<HR>
+
+
+</BODY>
+</HTML>

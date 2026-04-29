@@ -1,0 +1,778 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Variables</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Variables</a></H1>
+<p> Summary:</p>
+
+<ul>
+  <li><a href="#DEFINITION">Definition</a></li>
+  <li><a href="#VA_DEFINE">Defining Variables</a> (<tt>DEFINE</tt>)</li>
+  <li><a href="#CONTEXT">Declaration Context</a></li>
+  <li><a href="#STRUCTURED"> Structured Types</a></li>
+  <li><a href="#DATABASE_TYPES">Database Types</a></li>
+  <li><a href="#USER_TYPES">User Types</a></li>
+  <li><a href="#DEFAULT_VALUES">Default Values</a></li>
+  <li><a href="#VA_INITIALIZE">Variable Initialization</a> (<tt>INITIALIZE</tt>)</li>
+  <li><a href="#VA_LOCATE">LOB Data Localization</a> (<tt>LOCATE</tt>)</li>
+  <li><a href="#VA_FREE">LOB Data Release</a> (<tt>FREE</tt>)</li>
+  <li><a href="#VA_LET">Assigning Values</a> (<tt>LET</tt>)</li>
+  <li><a href="#VA_VALIDATE">Data Validation</a> (<tt>VALIDATE</tt>)</li>
+  <li><a href="#VA_THRU">Specifying a range of record members</a> (<tt>THRU</tt>)</li>
+  <li><a href="#EXAMPLES">Examples</a></li>
+</ul>
+
+
+<p><i>See also:</i> <a href="Records.html">Records</a>, <a href="Arrays.html">Arrays</a>,
+<a href="DataTypes.html">Data Types</a>, <a href="Constants.html">Constants</a>,
+<a href="UserTypes.html">User Types</a>.</p>
+
+
+<HR>
+
+<h3><a name="DEFINITION">Definition</a></h3>
+<p>A <i>variable</i> is a program element that can hold volatile data. The
+following list summarizes variables usage:</p>
+<ul>
+  <li>You must <a href="#VA_DEFINE">DEFINE</a> variables before use.</li>
+  <li>After definition, variables have <a href="#DEFAULT_VALUES">default values</a>
+    according to the <a href="DataTypes.html">data type</a>.</li>
+  <li>The scope of a variable can be <a href="Globals.html">global</a>, local to
+    a module, or local to a <a href="Functions.html">function</a>.</li>
+  <li>You can define structured variables with <a href="Records.html">records</a>
+    and <a href="Arrays.html">arrays</a>.</li>
+  <li>Variables can be initialized with the <a href="#VA_INITIALIZE">INITIALIZE</a>
+    instruction.</li>
+  <li>Variables can be assigned with the <a href="#VA_LET">LET</a> instruction.</li>
+  <li>Variables can be validated with the <a href="#VA_VALIDATE">VALIDATE</a>
+    instruction.</li>
+  <li>Variables can be used as parameters or fetch buffers in <a href="StaticSql.html">Static</a>
+    or <a href="DynamicSql.html">Dynamic</a> SQL statements.</li>
+  <li>Variables can be used as input or display buffers in interactive 
+	instructions such as <a href="RecordInput.html">INPUT</a>, <a href="InputArray.html">INPUT
+    ARRAY</a>, <a href="DisplayArray.html">DISPLAY ARRAY</a>, <a href="Construct.html">CONSTRUCT</a>.</li>
+</ul>
+
+
+<HR>
+
+<h3><a name="VA_DEFINE">DEFINE</a></h3>
+
+<h4>Purpose:</h4><p>A <b>variable</b> contains volatile information of a specific <a href="DataTypes.html">data
+type</a>. </p>
+
+
+<h4>Syntax:</h4>
+<code><u>[</u>PUBLIC<u>|</u>PRIVATE<u>]</u> DEFINE <i>variable-definition </i><u>[,...]</u>   </code>
+
+
+<p>where <i>variable-definition</i> is:</p>
+<code> <i>identifier </i><u>[,...]</u>   <u>{</u>   <i>datatype</i> <u>|</u> LIKE
+<u> [</u><i>dbname</i>:<u>]</u><i>tabname.colname</i> <u>}</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>identifier</i> is the name of the variable to be defined. See
+	<a href="LanguageFeatures.html#LF_IDENTS">Identifiers</a> for naming rules.</li>
+  <li><i>datatype</i> can be:
+    <ul>
+      <li>a primitive <a href="DataTypes.html">data type</a>,</li>
+      <li>a <a href="Records.html">record definition</a>,</li>
+      <li>an
+    <a href="Arrays.html">array definition</a>,</li>
+      <li>a <a href="UserTypes.html">user defined type</a>,</li>
+      <li>a <a href="BuiltInClasses.html"> built-in class</a>,</li>
+      <li>or a <a href="JavaBridge.html">Java class</a>.</li>
+    </ul>
+  </li>
+  <li>When using the <tt> LIKE</tt> clause, the data type is taken from the <a href="DatabaseSchema.html">schema</a>
+    file. Columns defined as <tt> SERIAL</tt> are converted to <a href="DataTypes.html#DT_INTEGER">INTEGER</a>.</li>
+  <li><i>dbname</i> identifies a specific <a href="DatabaseSchema.html">database
+    schema
+    file</a>.</li>
+  <li><i>tabname.colname</i> can be any column reference defined in the <a href="DatabaseSchema.html">database
+    schema file</a>.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+<p>A <i>variable</i> is a named location in memory that can store a single
+value, or an ordered set of values. Variables can be global to the
+<a href="Programs.html">program</a>, module-specific, or local to a
+<a href="Functions.html">function</a>.</p>
+
+
+<p>You cannot reference any program variable
+before it has been declared by the <tt>DEFINE</tt> statement.</p>
+
+
+<p>By default, module-specific variables are private; They cannot be used by an
+other module of the program. In order to improve code reusability by data
+encapsulation, we recommend you to keep module variables private, except if you
+want to share large data (like arrays) between modules. To make a module
+variable public, add the <tt>PUBLIC</tt> keyword before <tt>DEFINE</tt>. When a
+module variable is declared as public, it can be referenced by another module by
+using the <a href="Programs.html#IMPORT">IMPORT</a> instruction.</p>
+
+
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li>To write well-structured programs, it is recommended
+    that you not use global variables. If you need persistent data
+    storage during a program's execution, use variables local to the module and give access to them with <a href="Functions.html">functions</a>.</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning: </font>When defining variables with the <tt><a href="#DATABASE_TYPES">LIKE</a></tt> <a href="#DATABASE_TYPES">
+clause</a>, the data types are taken from the <a href="DatabaseSchema.html">schema</a>
+    file <u>during compilation</u>. Make sure that the schema file of the <a href="FglTerms.html#DEVELOPMENT_DATABASE">
+    development database</a> corresponds to the <a href="FglTerms.html#PRODUCTION_DATABASE">production
+    database</a>;
+    otherwise
+    the variables defined in the compiled version of your modules will not match
+    the table structures of the production database.</b></p>
+
+
+<HR>
+
+
+<h3><a name="CONTEXT">Declaration Context</a></h3>
+<p>The <tt>DEFINE</tt> statement declares the identifier of one or more <i>variables</i>.
+There are two important things to know about these identifiers:</p>
+<ul>
+  <li>Where in the program can they be used? The answer defines the scope of
+    reference of the variable. A point in the program where an identifier can be
+    used is said to be <i>in </i>the scope of the identifier. A point where the
+    identifier is not known is <i>outside </i>the scope of the identifier.</li>
+  <li>When is storage for the variable allocated? Storage can be allocated
+    either statically, when the program is loaded to run (at load time), or
+    dynamically, while the program is executing (at runtime).</li>
+</ul>
+<p>The context of its declaration in the source module determines where a
+variable can be referenced by other language statements, and when storage is
+allocated for the variable in memory. The DEFINE statement can appear in three
+contexts:</p>
+<ol>
+  <li>Within a <tt>FUNCTION</tt>, <tt>MAIN</tt>, or <tt>REPORT</tt> program block,
+  <tt>DEFINE</tt> declares <i>local</i> variables, and causes memory to be allocated
+  for them. These DEFINE declarations of local variables must precede any executable
+  statements within the same program block.
+  <ul>
+    <li>The scope of reference of a local variable is restricted to the same
+    program block. The variable is not visible elsewhere.</li>
+    <li>Storage for local variables is allocated when its <tt>FUNCTION</tt>,
+    <tt>REPORT</tt>, or <tt>MAIN</tt> block is entered during execution.
+    Functions can be called recursively, and each recursive entry creates its
+    own set of local variables. The variable is unique to that invocation of
+    its program block. Each time the block is entered, a new copy of the variable
+    is created.</li>
+	<li>See <a href="Functions.html">Functions</a> for a discussion of local 
+	variables and the <a href="Functions.html#FGL_STACK">BDL stack</a>.</li>
+  </ul>
+  </li>
+  <li>Outside any <tt>FUNCTION</tt>, <tt>REPORT</tt>, or <tt>MAIN</tt> program
+  block, the <tt> DEFINE</tt> statement declares names and data types of <i>module</i>
+  variables, and causes storage to be allocated for them. These declarations must
+  appear before any program blocks.
+  <ul>
+    <li>Scope of reference is from the <tt>DEFINE</tt> statement to the end of
+    the same module. The variable, however, is not visible within this scope in program
+    blocks where a local variable has the same identifier.</li>
+    <li>Memory for variables of modules is allocated statically, when
+    the program starts.</li>
+  </ul>
+  </li>
+  <li>Inside a <tt>GLOBALS</tt> block, the <tt>DEFINE</tt>  statement declares <i>global</i> variables.
+  <ul>
+    <li>Scope of reference is global to the whole program.</li>
+    <li>The memory for global variables is allocated statically, when the
+    program starts.</li>
+    <li>Multiple <tt>GLOBALS</tt>  blocks can be defined for a given module. Use
+      one module to declare all global variables and reference that module
+      within other modules by using the <tt>GLOBALS &quot;<i>filename</i>.4gl&quot;</tt>
+      statement as the first statement in the module, outside any program
+      block.&nbsp;</li>
+  </ul>
+  </li>
+</ol>
+
+
+<p>A compile-time error occurs if you declare the same name for two variables
+that have the same scope. You can, however, declare the same name for variables
+that differ in their scope. For example, you can use the same identifier to
+reference different local variables in different program blocks.</p>
+<p>You can also declare the same name for two or more variables whose scopes of
+reference are different but overlapping. Within their intersection, the compiler
+interprets the identifier as referencing the variable whose scope is smaller,
+and therefore the variable whose scope is a superset of the other is not
+visible.</p>
+<p>If a local variable has the same identifier as a global variable, then the
+local variable takes precedence inside the program block in which it is
+declared. Elsewhere in the program, the identifier references the global
+variable.</p>
+<p>A module variable can have the same name as a global variable that is
+declared in a different module. Within the module where the module variable is declared, 
+the&nbsp;
+module variable takes precedence over the global variable. Statements in that
+module cannot reference the global variable.</p>
+<p>A module variable cannot have the same name as a global variable that is
+declared in the same module.</p>
+<p>If a local variable has the same identifier as a module variable, then the
+local identifier takes precedence inside the program block in which it is
+declared. Elsewhere in the same source-code module, the name references the
+module variable.</p>
+
+
+<HR>
+
+
+<h3><a name="STRUCTURED"> Structured Types</a></h3>
+
+
+<p>You can use the <tt>RECORD</tt> or <tt>ARRAY</tt> keywords to declare a
+structured variable.</p>
+<p>For example:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> myarr <tt>ARRAY</tt>[100] <tt>OF RECORD</tt>
+<CODE class=linenumber>03</CODE>      id <tt>INTEGER</tt>,
+<CODE class=linenumber>04</CODE>      name <tt>VARCHAR</tt>(100)
+<CODE class=linenumber>05</CODE>   <tt>END RECORD</tt>
+<CODE class=linenumber>06</CODE>   <tt>LET</tt> myarr[2].id = 52
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p>For more detail, refer to <a href="Arrays.html">Arrays</a> and <a href="Records.html">Records</a>.</p>
+
+
+<HR>
+
+
+<h3><a name="DATABASE_TYPES">Database Types</a></h3>
+
+
+<p>You can use the <tt>LIKE</tt> keyword to declare a variable that has the same
+data type as a specified column in a <a href="DatabaseSchema.html">database
+schema</a>.</p>
+<p>For example:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>SCHEMA </tt>stores
+<CODE class=linenumber>02</CODE> <tt>DEFINE</tt> cname <tt>LIKE</tt> customer.cust_name
+<CODE class=linenumber>03</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>05</CODE>   <tt>DEFINE</tt> cr <tt>RECORD LIKE</tt> customer.*
+<CODE class=linenumber>06</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p>The following rules apply when using the <tt>LIKE</tt> keyword:</p>
+<ul>
+  <li>A <tt>SCHEMA</tt> statement must define the database name identifying
+    the <a href="DatabaseSchema.html">database schema files</a> to be used.</li>
+  <li>The column data types are read from the schema file <b>during compilation</b>,
+    not at runtime. Make sure that your schema files correspond exactly to the
+    production database.</li>
+  <li>The <a href="DatabaseSchema.html">database schema files</a> must exist and
+    must be available as specified in the
+    <a href="EnvironmentVariables.html#EV_FGLDBPATH">FGLDBPATH</a> variable.</li>
+  <li>The column data type defined by the database schema must be supported by 
+	the language. For more detail about supported types, refer to <a href="DataTypes.html">Data Types</a>.</li>
+  <li>When using database views, the column cannot be based on an
+    aggregate function like <tt>SUM()</tt>.</li>
+  <li>If <tt>LIKE</tt>  references a <tt>SERIAL</tt> column, the variable will
+    be defined with the
+    <a href="DataTypes.html#DT_INTEGER"> INTEGER</a>
+    data type.</li>
+  <li>If <tt>LIKE</tt>  references an <tt>INT8</tt> or <tt>SERIAL8</tt> column, the variable
+    will be defined with the <a href="DataTypes.html#DT_BIGINT">BIGINT</a>
+    data type.</li>
+  <li> The table qualifier
+must specify <i>owner </i>if <i>table.column </i>is not a unique column
+identifier within its database, or if the database is ANSI-compliant and any
+user of your application is not the owner of <i>tabl</i>e.</li>
+</ul>
+
+
+<p>To
+understand how to generate database schema files with the schema extractor tool, 
+refer to <a href="DatabaseSchema.html">Database Schema Files</a></p>
+
+
+<HR>
+
+
+<h3><a name="USER_TYPES">User Types</a></h3>
+
+
+<p>Variables can be defined with a <a href="UserTypes.html">user type</a>:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>TYPE</tt> custlist <tt>DYNAMIC ARRAY OF RECORD LIKE</tt> customer.*
+<CODE class=linenumber>02</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> cl custlist
+<CODE class=linenumber>04</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p>The scope of a user type can be global, local to a module or local to a
+function. Variables can be defined with a user type defined in the same scope, or in a higher level of
+scope.</p>
+
+
+<HR>
+
+
+<h3><a name="DEFAULT_VALUES">Default Values</a></h3>
+<p>After a variable is <a href="#VA_DEFINE">defined</a>, it is automatically
+initialized by the runtime system to a default value based
+on the <a href="DataTypes.html">data type</a>. The following table shows all
+possible default values that variables can take:</p>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="25%" bgcolor="#C0C0C0"><b>Data Type</b></td>
+    <td bgcolor="#C0C0C0"><b>Default Value</b></td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top"><tt>CHAR</tt></td>
+    <td valign="top">NULL</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top"><tt>VARCHAR</tt></td>
+    <td valign="top">NULL</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top"><tt>STRING</tt></td>
+    <td valign="top">NULL</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top"><tt>INTEGER</tt></td>
+    <td valign="top">Zero</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top"><tt>SMALLINT</tt></td>
+    <td valign="top">Zero</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top"><tt>FLOAT</tt></td>
+    <td valign="top">Zero</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top"><tt>SMALLFLOAT</tt></td>
+    <td valign="top">Zero</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top"><tt>DECIMAL</tt></td>
+    <td valign="top">NULL</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top"><tt>MONEY</tt></td>
+    <td valign="top">NULL</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top"><tt>DATE</tt></td>
+    <td valign="top">1899-12-31 (= Zero in number of days)</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top"><tt>DATETIME</tt></td>
+    <td valign="top">NULL</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top"><tt>INTERVAL</tt></td>
+    <td valign="top">NULL</td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top"><tt>TEXT</tt></td>
+    <td valign="top">NULL, See <a href="#VA_LOCATE">LOCATE</a></td>
+  </tr>
+  <tr>
+    <td width="25%" valign="top"><tt>BYTE</tt></td>
+    <td valign="top">NULL, See <a href="#VA_LOCATE">LOCATE</a></td>
+  </tr>
+</table>
+
+
+<HR>
+
+<h3><a name="VA_INITIALIZE">INITIALIZE</a></h3>
+
+<h4>Purpose:</h4><p>The <tt>INITIALIZE</tt> instruction assigns <a href="Programs.html#PC_NULL">NULL</a>
+or default values to variables.</p>
+
+
+<h4>Syntax:</h4>
+<code>INITIALIZE <i>target </i><u>[,...]</u>   <u>{</u>  TO NULL <u>|</u> LIKE   <u>{</u><i>table</i>.*<u>|</u><i>table.column</i><u>}</u> <u>}</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>target</i> is the name of the variable to be initialized.</li>
+  <li><i>target</i> can be a simple variable, a <a href="Records.html">record</a>, a record member,
+    a <a href="#VA_THRU">range of record members</a>, an <a href="Arrays.html">array</a> or an array element.</li>
+  <li>If <i>target</i> is a <a href="Records.html">record</a>, you must use the star notation to
+    reference all record members in the initialization.</li>
+  <li><i>table.column</i> can be any column reference defined in the database schema files.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>The <tt>TO NULL</tt> clause initializes the variable to <a href="Programs.html#PC_NULL">NULL</a>.</p>
+
+<p>When initializing a static array <tt>TO NULL</tt>, all elements will be initialized to NULL.
+When initializing a dynamic array <tt>TO NULL</tt>, all elements will be removed (i.e.
+the dynamic array is cleared).</p>
+
+<p>The <tt>LIKE</tt> clause initializes the variable to the default value defined in the
+ <a href="DatabaseSchema.html#VAL_FILE">database schema validation file</a>.
+This clause works only by specifying the <i>table.column</i> schema entry corresponding to the variable.</p>
+
+<p>To initialize a complete <a href="Records.html">record</a>, you can use the star to reference all members:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>INITIALIZE</tt> record.* <tt>LIKE</tt> table.*</PRE>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>You cannot initialize variables defined with a complex data type (like <a href="DataTypes.html#DT_TEXT">TEXT</a>
+    or <a href="DataTypes.html#DT_BYTE">BYTE</a>) to a non-NULL value.</li>
+</ol>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>DATABASE </tt>stores
+<CODE class=linenumber>02</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> cr <tt>RECORD LIKE</tt> customer.*
+<CODE class=linenumber>04</CODE>   <tt>DEFINE</tt> a1 <tt>ARRAY</tt>[100] <tt>OF INTEGER</tt>
+<CODE class=linenumber>05</CODE>   <tt>INITIALIZE</tt> cr.cust_name <tt>TO NULL</tt>
+<CODE class=linenumber>06</CODE>   <tt>INITIALIZE</tt> cr.cust_name <tt>THRU </tt>cr.cust_address<tt> TO NULL</tt>
+<CODE class=linenumber>07</CODE>   <tt>INITIALIZE</tt> cr.* <tt>LIKE</tt> customer.*
+<CODE class=linenumber>08</CODE>   <tt>INITIALIZE</tt> a1 <tt>TO NULL</tt>
+<CODE class=linenumber>09</CODE>   <tt>INITIALIZE</tt> a1[10] <tt>TO NULL</tt>
+<CODE class=linenumber>10</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="VA_VALIDATE">VALIDATE</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>VALIDATE</tt> statement tests whether the value of a variable is within the
+range of values for a corresponding column in <a href="DatabaseSchema.html">database schema files</a>.</p>
+
+
+<h4>Syntax:</h4>
+<code>VALIDATE <i>target </i><u>[,...]</u> LIKE <i></i> <u>{</u><i>table</i>.*<u>|</u><i>table</i>.<i>column</i><u>}</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>target</i> is the name of the variable to be validated.</li>
+  <li><i>target</i> can be a simple variable, a <a href="Records.html">record</a>,,
+    a <a href="#VA_THRU">range of record members</a>
+    or an <a href="Arrays.html">array element</a>.</li>
+  <li>If target is a <a href="Records.html">record</a>, you can use the star to
+    reference all record members in the validation.</li>
+  <li>Values are compared to the value defined in the <a href="DatabaseSchema.html#VAL_FILE">database
+    schema validation file</a>.</li>
+  <li><i>table.column</i> can be any column reference defined in the <a href="DatabaseSchema.html">database
+    schema file</a>.</li>
+</ol>
+
+
+<h4>Errors:</h4>
+<ol>
+  <li>If the value does not match any value defined in the INCLUDE attribute of
+    the corresponding column, the runtime system raises an <a href="Exceptions.html">exception</a>
+    with error code <b>-1321</b>.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The <tt>LIKE</tt> clause requires the IBM Informix <b>upscol</b> utility
+    to populate the <b>syscolval</b> table. See&nbsp; the <a href="DatabaseSchema.html">database
+    schema files</a> for more details. <b><font color="#FF0000">Informix only!</font></b></li>
+  <li>You cannot initialize variables defined with a complex data type (like <a href="DataTypes.html#DT_TEXT">TEXT</a>
+    or <a href="DataTypes.html#DT_BYTE">BYTE</a>) to a non-NULL value.</li>
+</ol>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>DATABASE </tt>stores
+<CODE class=linenumber>02</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> cname <tt>LIKE</tt> customer.cust_name
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> cname = &quot;aaa&quot;
+<CODE class=linenumber>05</CODE>   <tt>VALIDATE</tt> cname <tt>LIKE</tt> customer.cust_name
+<CODE class=linenumber>06</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="VA_THRU">THRU</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>THRU</tt> keyword can be used to specify a range of members of a <a href="Records.html">record</a>.</p>
+
+
+<h4>Syntax:</h4>
+<code><i>record.first-member </i><u>[</u> THRU <u>|</u> THROUGH <u>]</u> <i>record.last-member</i></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>record</i> defines the record to be used.</li>
+  <li><i>first-member</i> defines the member of the record starting the group of
+    variables.</li>
+  <li><i>last-member</i> defines the member of the record ending the group of
+    variables.</li>
+  <li><tt>THROUGH</tt> is a synonym for <tt>THRU</tt>.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+<p align="left">The <tt>THRU</tt> keyword can be used in several instructions such as <a href="#VA_INITIALIZE">INITIALIZE</a>,
+<a href="#VA_VALIDATE">VALIDATE</a>, <a href="#VA_LOCATE">LOCATE</a>.</p>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>DATABASE </tt>stores
+<CODE class=linenumber>02</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> cust <tt>LIKE</tt> customer.*
+<CODE class=linenumber>04</CODE>   <tt>INITIALIZE</tt> cust.cust_name <tt>THRU</tt> customer.cust_address <tt>TO NULL</tt>
+<CODE class=linenumber>05</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="VA_LET">LET</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>LET</tt> statement assigns a value to a variable, or a set of values
+to a <a href="Records.html">record</a>.</p>
+
+
+<h4>Syntax:</h4>
+<code>LET <i>target</i> = <i>expression</i> <u>[</u>,...<u>]</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>target</i> is the name of the variable to be assigned.</li>
+  <li><i>target</i> can be a simple variable, a <a href="Records.html">record</a>,
+    or an <a href="Arrays.html">array element</a>.</li>
+  <li><i>expression</i> is any valid <a href="Expressions.html">expression</a>
+    supported by the language.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+The <tt>LET</tt> statement assigns a value to a variable. Values of <i>expression</i>
+are formatted for display. For example, numeric data if right-aligned.
+<p>When specifying a comma-separated list of expressions for the right operand,
+the <tt>LET</tt> statement concatenates all expressions together. Unlike the <tt>||</tt>
+operator, if an expression in the comma-separated list evaluates to <a href="Programs.html#PC_NULL">NULL</a>,
+the concatenation result will not be null, except if all expressions to the
+right of the equal sign are null.</p>
+<p>The runtime system applies <a href="DataConversions.html">data type
+    conversion rules</a> if the data type of <i>expression</i> does not
+    correspond to the data type of <i>target</i>.</p>
+<p>You can use most of the <a href="BuiltInFunctions.html">built-in functions</a>
+and character <a href="Operators.html#STRING_OPERATORS">string operators</a>
+like <tt>CLIPPED</tt> or <tt>USING</tt> within the <tt>LET</tt> statement.</p>
+<i>target</i> can be <a href="Records.html">record</a> followed by dot + star (<tt>record.*</tt>)
+to
+    reference all record members of the record. In this case, the right operand
+must also be a record using this notation (see example below).
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>Variables defined with a complex data type (like <a href="DataTypes.html#DT_TEXT">TEXT</a>
+    or <a href="DataTypes.html#DT_BYTE">BYTE</a>) can only be assigned to <a href="Programs.html#PC_NULL">NULL</a>.</li>
+  <li>For more details, refer to the <a href="Operators.html#OP_ASSIGN">assignment operator</a>.</li>
+</ol>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>DATABASE </tt>stores
+<CODE class=linenumber>02</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> c1, c2 <tt>RECORD LIKE</tt> customer.*
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> c1.* = c2.*
+<CODE class=linenumber>05</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="VA_LOCATE">LOCATE</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>LOCATE</tt> statement specifies where to store data of <a href="DataTypes.html#DT_TEXT">TEXT</a>
+and <a href="DataTypes.html#DT_BYTE">BYTE</a> variables.</p>
+
+
+<h4>Syntax 1: Locate in memory</h4>
+<code>LOCATE <i>target </i><u>[,...]</u> IN MEMORY</code>
+
+
+<h4>Syntax 2: Locate in a specific file</h4>
+<code>LOCATE <i>target </i><u>[,...]</u> IN FILE <i>filename</i>
+</code>
+
+
+<h4>Syntax 3: Locate in a temporary file</h4>
+<code>LOCATE <i>target </i><u>[,...]</u> IN FILE</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>target</i> is the name of a <a href="DataTypes.html#DT_TEXT">TEXT</a>
+    or <a href="DataTypes.html#DT_BYTE">BYTE</a> variable to be located. It can
+    be a simple variable, a <a href="Records.html">record
+    member</a>,
+    a <a href="#VA_THRU">range of record members</a>, or an <a href="Arrays.html">array element</a>.</li>
+  <li><i>filename</i> is a <a href="Expressions.html#EX_STRING">string
+    expression</a> defining the name of a file.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+Defining the location of large object data is mandatory before usage. After defining the data storage, the variable can be used as
+input parameter or
+    as a fetch buffer in SQL statements, as well as in interaction statements
+and reports.
+
+
+<p><b><font color="#FF0000">Warning: </font>You cannot use a large object variable if the data storage location is not
+    defined.</b></p>
+<p>The first syntax using the <tt>IN MEMORY</tt> clause specifies that the large object data must be
+    located in memory. The second syntax using the <tt>IN FILE <i>filename</i></tt>
+clause specifies that the large object data must be
+    located in a specific file. The third syntax using the <tt>IN FILE</tt> clause specifies that the large object data must be
+    located in a temporary file.</p>
+<p>When using a temporary file, the location of the temporary file can be
+defined with the <a href="EnvironmentVariables.html#EV_DBTEMP">DBTEMP</a> environment
+variable. By default, the runtime system will use /tmp on UNIX and %TMP% or
+%TEMP% on Windows. The temporary files are automatically dropped by the runtime
+system when the program terminates.</p>
+You can free the resources allocated to the large object variable with the
+    <a href="#VA_FREE">FREE</a> instruction.
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> ctext1, ctext2 <tt>TEXT</tt>
+<CODE class=linenumber>03</CODE>   <tt>DATABASE</tt> stock
+<CODE class=linenumber>04</CODE>   <tt>LOCATE</tt> ctext1 <tt>IN MEMORY</tt>
+<CODE class=linenumber>05</CODE>   <tt>LOCATE</tt> ctext2 <tt>IN FILE</tt> &quot;/tmp/data1.txt&quot;
+<CODE class=linenumber>06</CODE>   <tt>CREATE TABLE</tt> lobtab ( key <tt>INTEGER</tt>, col1 <tt>TEXT</tt>, col2 <tt>TEXT</tt> )
+<CODE class=linenumber>06</CODE>   <tt>INSERT INTO</tt> lobtab <tt>VALUES</tt> ( 123, ctext1, ctext2 )
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="VA_FREE">FREE</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>FREE</tt> statement releases resources allocated to store the data of <a href="DataTypes.html#DT_TEXT">TEXT</a>
+and <a href="DataTypes.html#DT_BYTE">BYTE</a> variables.</p>
+
+
+<h4>Syntax:</h4>
+<code>FREE <i>target </i></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>target</i> is the name of a <a href="DataTypes.html#DT_TEXT">TEXT</a>
+    or <a href="DataTypes.html#DT_BYTE">BYTE</a> variable to be freed.</li>
+  <li><i>target</i>  can be a simple variable, a <a href="Records.html">record
+    member</a>, or an <a href="Arrays.html">array element</a>.</li>
+  <li>If the variable was <a href="#VA_LOCATE"> located</a> in memory, the runtime system releases the
+    memory.</li>
+  <li>If the variable was <a href="#VA_LOCATE"> located</a> in a file, the runtime system deletes the
+    named file.</li>
+  <li>For variables declared in a local scope of reference, the resources are
+    automatically freed by the runtime system when returning from the <a href="Functions.html">function</a>
+    or <a href="Programs.html">MAIN</a> block.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>After freeing a large object, you must <a href="#VA_LOCATE">LOCATE</a> the
+    variable again before usage.</li>
+</ol>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> ctext <tt>TEXT</tt>
+<CODE class=linenumber>03</CODE>   <tt>DATABASE</tt> stock
+<CODE class=linenumber>03</CODE>   <tt>LOCATE</tt> ctext <tt>IN FILE</tt> &quot;/tmp/data1.txt&quot;
+<CODE class=linenumber>04</CODE>   <tt>SELECT</tt> col1<tt> INTO</tt> ctext <tt>FROM</tt> lobtab <tt>WHERE</tt> key=123
+<CODE class=linenumber>05</CODE>   <tt>FREE</tt> ctext
+<CODE class=linenumber>06</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+<h4>Example 1: Function variables</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> myfunc( )
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <tt>FOR</tt> i=1 <tt>TO</tt> 10
+<CODE class=linenumber>04</CODE>       <tt>DISPLAY</tt> i
+<CODE class=linenumber>05</CODE>   <tt>END FOR</tt>
+<CODE class=linenumber>06</CODE> <tt>END FUNCTION</tt></PRE>
+
+<h4>Example 2: Module variables</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>DEFINE</tt> s <tt>VARCHAR</tt>(100)
+<CODE class=linenumber>02</CODE> 
+<CODE class=linenumber>03</CODE> <tt>FUNCTION</tt> myfunc( )
+<CODE class=linenumber>04</CODE>   <tt>DEFINE </tt>i<tt> INTEGER</tt>
+<CODE class=linenumber>05</CODE>   <tt>FOR</tt> i=1 <tt>TO</tt> 10
+<CODE class=linenumber>06</CODE>       <tt>LET</tt> s = &quot;item #&quot; || i
+<CODE class=linenumber>07</CODE>   <tt>END FOR</tt>
+<CODE class=linenumber>08</CODE> <tt>END FUNCTION</tt></PRE>
+
+<h4>Example 3: Global variables</h4>
+
+<p>File &quot;myglobs.4gl&quot;:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>GLOBALS</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> userid <tt>CHAR</tt>(20)
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> extime <tt>DATETIME YEAR TO SECOND</tt>
+<CODE class=linenumber>04</CODE> <tt>END GLOBALS</tt></PRE>
+
+<p>File &quot;mylib.4gl&quot;:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>GLOBALS</tt> &quot;myglobs.4gl&quot;
+<CODE class=linenumber>02</CODE> 
+<CODE class=linenumber>03</CODE> <tt>DEFINE</tt> s <tt>VARCHAR</tt>(100)
+<CODE class=linenumber>04</CODE> 
+<CODE class=linenumber>05</CODE> <tt>FUNCTION</tt> myfunc( )
+<CODE class=linenumber>06</CODE>   <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<CODE class=linenumber>07</CODE>   <tt>DISPLAY</tt> &quot;User Id = &quot; || userid
+<CODE class=linenumber>08</CODE>   <tt>FOR</tt> i=1 <tt>TO</tt>10
+<CODE class=linenumber>09</CODE>       <tt>LET</tt> s = &quot;item #&quot; || i
+<CODE class=linenumber>10</CODE>   <tt>END FOR</tt>
+<CODE class=linenumber>11</CODE> <tt>END FUNCTION</tt></PRE>
+
+<p>File &quot;mymain.4gl&quot;:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>GLOBALS</tt> &quot;myglobs.4gl&quot;
+<CODE class=linenumber>02</CODE> 
+<CODE class=linenumber>03</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> userid = fgl_getenv(&quot;LOGNAME&quot;)
+<CODE class=linenumber>05</CODE>   <tt>LET</tt> extime = <tt>CURRENT YEAR TO SECOND</tt>
+<CODE class=linenumber>06</CODE>   <tt>CALL</tt> myfunc()
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt></PRE>
+
+
+</BODY>
+</HTML>

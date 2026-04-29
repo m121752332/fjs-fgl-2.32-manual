@@ -1,0 +1,863 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+  <title>Windows and Forms</title>
+  <meta http-equiv="Content-Type" content="text/html">
+  <link href="../FglTechRef.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+  <p><a href="../index.html">Back to Contents</a></p>
+  <hr>
+
+  <h1><a name="PAGE_HEADER" id="PAGE_HEADER">Using Windows and Forms</a></h1>
+
+  <p>Summary:</p>
+
+  <ul>
+    <li>
+      <a href="#WHAT_IS">Windows and Forms Concepts</a>
+
+      <ul>
+        <li><a href="#CONCEPTS_WINDOWS">Windows</a></li>
+
+        <li><a href="#CONCEPTS_FORMS">Forms</a></li>
+
+        <li><a href="#CONCEPTS_MDI">Windows in MDI mode</a></li>
+
+        <li><a href="#CONCEPTS_TRADITIONAL">Traditional text mode</a></li>
+      </ul>
+    </li>
+
+    <li>
+      <a href="#OPEN_WINDOW">Opening a Window</a> (<tt>OPEN WINDOW</tt>)
+
+      <ul>
+        <li><a href="#POSDIM">Window Position and Dimensions</a></li>
+
+        <li><a href="#WITHFORM">Open With Form</a></li>
+
+        <li><a href="#WINDOW_STYLES">Window Styles</a></li>
+
+        <li><a href="#WINDOW_TITLES">Window Titles</a></li>
+
+        <li><a href="#WINDOW_ICONS">Window Icons</a></li>
+
+        <li><a href="#ATTRIBUTES">OPEN WINDOW attributes</a></li>
+      </ul>
+    </li>
+
+    <li><a href="#CLOSE_WINDOW">Closing a Window</a> (<tt>CLOSE WINDOW</tt>)</li>
+
+    <li><a href="#CURRENT_WINDOW">Selecting a Window</a> (<tt>CURRENT WINDOW IS</tt>)</li>
+
+    <li><a href="#OPEN_FORM">Opening a Form</a> (<tt>OPEN FORM</tt>)</li>
+
+    <li><a href="#DISPLAY_FORM">Displaying a Form</a> (<tt>DISPLAY FORM</tt>)</li>
+
+    <li><a href="#CLOSE_FORM">Closing a Form</a> (<tt>CLOSE FORM</tt>)</li>
+
+    <li><a href="#CLEAR_WINDOW">Clearing a Window</a> (<tt>CLEAR WINDOW</tt>) <b><font color="#FF0000">TUI Only!</font></b></li>
+
+    <li><a href="#CLEAR_SCREEN">Clearing the screen</a> (<tt>CLEAR SCREEN</tt>) <b><font color="#FF0000">TUI
+    Only!</font></b></li>
+
+    <li><a href="#DISPLAY_AT">Displaying text by position</a> (<tt>DISPLAY AT</tt>) <b><font color="#FF0000">TUI
+    Only!</font></b></li>
+  </ul>
+
+  <p><i>See also:</i> <a href="PresentationStyles.html">Presentation Styles</a>, <a href="ClassWindow.html">Window class</a>,
+  <a href="ClassForm.html">Form class</a>, <a href="FlowControl.html">Flow Control</a>, <a href="FormSpecFiles.html">Forms</a>,
+  <a href="InputArray.html">Input Array</a>, <a href="DisplayArray.html">Display Array</a>, <a href="RecordInput.html">Record
+  Input</a>, <a href="Construct.html">Construct</a>.</p>
+  <hr>
+
+  <h3><a name="WHAT_IS" id="WHAT_IS">Windows and Forms Concepts</a></h3>
+
+  <p>Programs manipulate "Window" and "Form" objects to define display areas for interactive instructions like <a href=
+  "InputArray.html">INPUT ARRAY</a>, <a href="DisplayArray.html">DISPLAY ARRAY</a>, <a href="MultipleDialogs.html">DIALOG</a>,
+  <a href="RecordInput.html">INPUT</a> and <a href="Construct.html">CONSTRUCT</a>. When an interactive instruction takes control,
+  it uses the Form associated with the current window.</p>
+
+  <h4><a name="CONCEPTS_WINDOWS" id="CONCEPTS_WINDOWS">Windows</a></h4>
+
+  <p>Windows are created from programs; they define a display context for sub-elements like forms, ring menus, message and error
+  lines. A window can contain only one form at a time.</p>
+
+  <p>When using a character terminal, windows are displayed as fixed-size boxes, at a given line and column position, with a
+  given width and height. When using a graphical front end, windows are displayed as independent resizable windows by default.
+  This behavior is needed to create real graphical applications, but it breaks the old-mode layout implementations.</p>
+
+  <p>When a Genero program starts, it creates a default window named SCREEN. This default window can be used as another window
+  (it can hold a Ring Menu and a Form), but it can also be closed, with <tt>CLOSE WINDOW SCREEN</tt>. You can display the main
+  form of your program in the SCREEN window, by using <a href="#OPEN_FORM">OPEN FORM</a> + <a href="#DISPLAY_FORM">DISPLAY
+  FORM</a>.</p>
+
+  <p>A program creates a new window with the <a href="#OPEN_WINDOW">OPEN WINDOW</a> instruction, which also defines the window
+  identifier. The program destroys a Window with the <a href="#CLOSE_WINDOW">CLOSE WINDOW</a> instruction. One or more windows
+  can be displayed concurrently, but there can be only one current Window. You can use the <a href="#CURRENT_WINDOW">CURRENT
+  WINDOW</a> instruction to make a specific window current. This is however not typical and is not recommended, since the last
+  created window becomes the current window. When the last created window is closed, the previous window in the window stack
+  becomes the current window.</p>
+
+  <p>When opening a window, the <a href="#WINDOW_STYLES">window style</a> is used to specify the type and the decoration of the
+  window.</p>
+
+  <p>You can also use the <a href="ClassWindow.html">ui.Window</a> class to manipulate windows as objects.</p>
+
+  <h4><a name="CONCEPTS_FORMS" id="CONCEPTS_FORMS">Forms</a></h4>
+
+  <p>Forms define the layout and presentation of areas used by the program to display or input data. Typically, Forms are loaded
+  by programs from external files with the <b>42f</b> extension, the compiled version of <a href="FormSpecFiles.html">Form
+  Specification Files</a>.</p>
+
+  <p>Forms files are identified by the file name, but you can also specify a form version with the <a href=
+  "FSFAttributes.html#FA_VERSION">VERSION</a> attribute. The form version attribute is typically used to indicate that the form
+  content has changed. The front-end is then able to distinguish different form versions and avoid saved settings being reloaded
+  for new form versions.</p>
+
+  <p>A program can load a Form file with the <a href="#OPEN_FORM">OPEN FORM</a> instruction, then display the Form with <a href=
+  "#DISPLAY_FORM">DISPLAY FORM</a> into the current window, and release resources with <a href="#CLOSE_FORM">CLOSE FORM</a>. For
+  temporary popup windows (typical record list where the user can select a row), you must dedicate a new window for the form.
+  This can be done wit a unique instruction: <a href="#OPEN_WINDOW">OPEN WINDOW WITH FORM</a>.</p>
+
+  <p>When a Form is displayed, it is attached to the current window and a <a href="ClassForm.html">ui.Form</a> object is created
+  internally. You can get this object with the <a href="ClassWindow.html">ui.Window.getForm()</a> method. The <a href=
+  "ClassForm.html">ui.Form</a> built-in class is provided to handle form elements. You can, for example, hide some parts of a
+  form.</p>
+
+  <p>The Form that is used by interactive instructions like <a href="RecordInput.html">INPUT</a> is defined by the <a href=
+  "#CURRENT_WINDOW">current window</a>.</p>
+
+  <h4><a name="CONCEPTS_MDI" id="CONCEPTS_MDI">Windows in MDI mode</a></h4>
+
+  <p>Windows can be displayed in an MDI container application; see <a href="MDIWindows.html">MDI Windows</a> for more
+  details.</p>
+
+  <h4><a name="CONCEPTS_TRADITIONAL" id="CONCEPTS_TRADITIONAL">Traditional text mode</a></h4>
+
+  <p>To simplify migration from Informix 4GL or Four
+  Js BDS, you can run GUI application in
+  traditional text mode, displaying windows as simple boxes. For more details, see <a href=
+  "DynamicUI.html#TRADITIONAL_MODE">Compatibility with traditional text mode</a>.</p>
+  <hr>
+
+  <h3><a name="OPEN_WINDOW" id="OPEN_WINDOW">OPEN WINDOW</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>Creates and displays a new <a href="#WHAT_IS">Window</a>.</p>
+
+  <h4>Syntax:</h4><code>OPEN WINDOW <i>identifier<br>
+  &nbsp;</i> <u>[</u> AT <i>line</i>, <i>column</i> <u>]</u> <i><br>
+  &nbsp;&nbsp;</i>WITH <u>[</u> FORM <i>form-file</i> <u>|</u> <i>height</i> ROWS, <i>width</i> COLUMNS
+  <u>]<br></u><i>&nbsp;&nbsp;</i><u>[</u> ATTRIBUTE ( <i>window-attributes</i> ) <u>]</u></code>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>identifier</i> is the name of the window. It is always converted to lowercase by the compiler.</li>
+
+    <li><i>line</i> is the integer defining the top position of the window.<br>
+    The first line in the screen is 1, while the relative line number inside the window is zero.</li>
+
+    <li><i>column</i> is the integer defining the position of the left margin.<br>
+    The first column in the screen is 1, while the relative column number inside the window is zero.</li>
+
+    <li><i>form-file</i> is a string <a href="Literals.html#LT_STRING">literal</a> or <a href="Variables.html">variable</a>
+    defining the <a href="FormSpecFiles.html">form specification file</a> to be used, without the file extension.</li>
+
+    <li><i>height</i> defines the number of lines of the window in character units; includes the borders in character mode.</li>
+
+    <li><i>width</i> defines the number of lines of the window in character units; includes the borders in character mode.</li>
+
+    <li><i>window-attributes</i> defines the window attributes. See <a href="#ATTRIBUTES">below</a> for more details.</li>
+  </ol>
+
+  <h4><font color="#008000">Tips:</font></h4>
+
+  <ol>
+    <li>For graphical applications, use this instruction without the <tt>AT</tt> clause, and with the <tt>WITH FORM</tt>
+    clause.</li>
+  </ol>
+
+  <h4><font color="#FF0000">Warnings:</font></h4>
+
+  <ol>
+    <li>The compiler converts the window identifier to lowercase for internal storage. When using functions or methods receiving
+    the window identifier as a string parameter, the window name is case-sensitive. We recommend that you always specify the
+    window identifier in lowercase letters.&nbsp;</li>
+  </ol>
+
+  <h4>Usage:</h4>
+
+  <p>An <tt>OPEN WINDOW</tt> statement can have the following effects:</p>
+
+  <ul>
+    <li>Declares a name (the <i>identifier</i>) for the window.</li>
+
+    <li>Indicates which <a href="FormSpecFiles.html">form</a> has to be used in that window.</li>
+
+    <li>Specifies the display attributes of the window.</li>
+
+    <li>When using character mode, specifies the position and dimensions of the window, in character units.</li>
+  </ul>
+
+  <p>The window identifier must follow the rules for <a href="LanguageFeatures.html#LF_IDENTS">identifiers</a> and be unique
+  among all windows defined in the program. Its scope is the entire program. You can use this identifier to reference the same
+  Window in other modules with other statements (for example, <a href="#CURRENT_WINDOW">CURRENT WINDOW</a> and <a href=
+  "#CLOSE_WINDOW">CLOSE WINDOW</a>).</p>
+
+  <p>The runtime system maintains a stack of all open windows. If you execute <tt>OPEN WINDOW</tt> to open a new window, it is
+  added to the window stack and becomes the current window. Other statements that can modify the window stack are <a href=
+  "#CURRENT_WINDOW">CURRENT WINDOW</a> and <a href="#CLOSE_WINDOW">CLOSE WINDOW</a>.</p>
+
+  <h4><a name="POSDIM" id="POSDIM">Window Position and Dimensions</a></h4>
+
+  <p>When using the Genero <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a> mode (without <a href=
+  "DynamicUI.html#TRADITIONAL_MODE">traditional rendering mode</a>), the <tt>AT <i>line</i>, <i>column</i></tt> clause is
+  optional and if used, the <tt>WITH <i>lines</i> ROWS, <i>characters</i> COLUMNS</tt> clause is ignored, because the size of the
+  window is automatically calculated according to its contents.</p>
+
+  <p>When using the <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a> mode, the the <tt>AT <i>line</i>, <i>column</i></tt>
+  clause defines the position of the top-left corner of the window on the terminal screen and <tt>WITH <i>lines</i> ROWS,
+  <i>characters</i> COLUMNS</tt> clause specifies explicit vertical and horizontal dimensions for the window. The expression at
+  the left of the <tt>ROWS</tt> keyword specifies the height of the window, in character unit lines. This must be an integer
+  between 1 and max, where max is the maximum number of lines that the screen can display. The integer expression after the comma
+  at the left of the <tt>COLUMNS</tt> keyword specifies the width of the window, in character unit columns. This must return a
+  whole number between 1 and length, where length is the number of characters that your monitor can display on one line. In
+  addition to the lines needed for a form, allow room for the Comment line, the Menu line, the Menu comment line and the Error
+  line. The runtime system issues a runtime error if the window does not include sufficient lines to display both the form and
+  these additional reserved lines. The minimum number of lines required to display a form in a window is the number of lines in
+  the form, plus an additional line below the form for prompts, messages, and comments.</p>
+
+  <h4><a name="WITHFORM" id="WITHFORM">Open With Form</a></h4>
+
+  <p>As an alternative to specifying explicit dimensions, the <tt>WITH FORM</tt> clause can specify a <a href=
+  "Literals.html">quoted string</a> or a <a href="Variables.html">character variable</a> that specifies the name of a file that
+  contains the compiled <a href="FormSpecFiles.html">screen form</a>. The runtime system expects the compiled version of the
+  form, but the file name should not include the <b>.42f</b> file extension. A window is automatically opened and sized to the
+  <a href="FormSpecFiles.html#SECTION_LAYOUT">screen layout of the form</a>. When using character mode, the width of the window
+  is from the left-most character on the screen form (including leading blank spaces) to the right-most character on the screen
+  form (truncating trailing blank spaces). The length of the window is calculated as (form line) + (form length).</p>
+
+  <p>It is recommended that you use the <tt>WITH FORM</tt> clause, especially in the standard <a href=
+  "FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a> mode, because the window is created in accordance with the form. If you use
+  this clause, you do not need the <a href="#OPEN_FORM">OPEN FORM</a>, <a href="#DISPLAY_FORM">DISPLAY FORM</a>, or <a href=
+  "#CLOSE_FORM">CLOSE FORM</a> statement to open and close the form. The <a href="#CLOSE_WINDOW">CLOSE WINDOW</a> statement
+  closes the window and the form.</p>
+
+  <h4><a name="WINDOW_STYLES" id="WINDOW_STYLES">Window Styles</a></h4>
+
+  <p>By default windows are displayed as normal application windows, but you can use the window style to show a window at the top
+  of all other windows, as a "modal window".</p>
+
+  <p>The window style defines the type of the window (normal, modal) and its decoration, via a <a href=
+  "PresentationStyles.html">Presentation Style</a>. The Presentation Style specifies a set of attributes in an external file
+  (.4st).</p>
+
+  <p>The <tt>STYLE</tt> attribute can be used in the <a href="#OPEN_WINDOW">OPEN WINDOW</a> instruction to define the default
+  style for a Window, but it is better to specify the window style in the form file, with the <tt>WINDOWSTYLE</tt> attribute of
+  the <a href="FormSpecFiles.html#SECTION_LAYOUT">LAYOUT</a> section. This avoids decoration-specific code in the programs.</p>
+
+  <h4><font color="#FF0000">Warnings:</font></h4>
+
+  <ol>
+    <li>If you open and display a second form in an existing window, the window style of the second form is not applied.</li>
+  </ol>
+
+  <p>The following standard window styles are defined in the default presentation style file (FGLDIR/lib/default.4st):</p>
+
+  <table border="0" cellpadding="0" width="90%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="15%"><b>STYLE attribute</b></td>
+
+      <td bgcolor="#C0C0C0" width="20%"><b>Style name in 4st file</b></td>
+
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+
+    <tr>
+      <td width="15%" valign="top"><tt><i>none</i></tt></td>
+
+      <td width="20%" valign="top"><tt>Window</tt></td>
+
+      <td align="left" valign="top">Defines presentation attributes for common application windows. When using MDI containers,
+      normal windows are displayed as MDI children.</td>
+    </tr>
+
+    <tr>
+      <td width="15%" valign="top"><tt>main</tt></td>
+
+      <td width="20%" valign="top"><tt>Window.main<br>
+      Window.main2</tt></td>
+
+      <td align="left" valign="top">Defines presentation attributes for starter applications, where the main window shows a
+      <a href="StartMenus.html">startmenu</a> if one is defined by the application.</td>
+    </tr>
+
+    <tr>
+      <td width="15%" valign="top"><tt>dialog</tt></td>
+
+      <td width="20%" valign="top"><tt>Window.dialog<br>
+      Window.dialog2<br>
+      Window.dialog3<br>
+      Window.dialog4</tt></td>
+
+      <td align="left" valign="top">Defines presentation attributes for typical OK/Cancel modal windows.</td>
+    </tr>
+
+    <tr>
+      <td width="15%" valign="top"><tt>naked</tt></td>
+
+      <td width="20%" valign="top"><tt>Window.naked</tt></td>
+
+      <td align="left" valign="top">Defines presentation attributes for windows that should not show the default view for ring
+      menus and action buttons (OK/Cancel).</td>
+    </tr>
+
+    <tr>
+      <td width="15%" valign="top" height="19"><tt>viewer</tt></td>
+
+      <td width="20%" valign="top" height="19"><tt>Window.viewer</tt></td>
+
+      <td height="19" align="left" valign="top">Defines presentation attributes for viewers as the report pager
+      (fglreport.per).</td>
+    </tr>
+  </table>
+
+  <h4><font color="#FF0000">Warnings:</font></h4>
+
+  <ol>
+    <li>It is recommended that you NOT change the default settings of windows styles in the <b>default.4st</b> file.</li>
+
+    <li>If you create your own style file, copy the default styles into your file.</li>
+
+    <li>It is not possible to change the presentation attributes of windows in the AUI tree.</li>
+  </ol>
+
+  <p>For more details about the attributes you can set for Windows, see <a href="PresentationStyles.html">Presentation
+  Styles</a>.</p>
+
+  <h4><a name="WINDOW_TITLES" id="WINDOW_TITLES">Window Titles</a></h4>
+
+  <p>The <tt>TEXT</tt> attribute in the <tt>ATTRIBUTE</tt> clause defines the default title of the window. If the window is
+  opened with a form (<tt>WITH FORM</tt>) that defines a <tt>TEXT</tt> attribute in the <a href=
+  "FormSpecFiles.html#SECTION_LAYOUT">LAYOUT</a> section, the default is ignored. Subsequent <a href="#OPEN_FORM">OPEN
+  FORM</a>/<a href="#DISPLAY_FORM">DISPLAY FORM</a> instructions may change the window title if the new form defines a different
+  title in the <a href="FormSpecFiles.html#SECTION_LAYOUT">LAYOUT</a> section.</p>
+
+  <p>It is recommended that you specify the window title in the form file, not with the <tt>TEXT</tt> attribute of the <tt>OPEN
+  WINDOW</tt> instruction.</p>
+
+  <p>If you want to set a window title dynamically, you can use the <a href="ClassWindow.html">Window</a> built-in class.</p>
+
+  <h4><a name="WINDOW_ICONS" id="WINDOW_ICONS">Window Icons</a></h4>
+
+  <p>If the window is opened with a form (<tt>WITH FORM</tt>) that defines an <tt>IMAGE</tt> attribute in the <a href=
+  "FormSpecFiles.html#SECTION_LAYOUT">LAYOUT</a> section, the window will use this image as icon. Subsequent <a href=
+  "#OPEN_FORM">OPEN FORM</a>/<a href="#DISPLAY_FORM">DISPLAY FORM</a> instructions may change the window icon if the new form
+  defines a different image in the <a href="FormSpecFiles.html#SECTION_LAYOUT">LAYOUT</a> section.</p>
+
+  <p>If you want to set a window icon dynamically, you can use the <a href="ClassWindow.html">Window</a> built-in class.</p>
+
+  <h4><a name="ATTRIBUTES" id="ATTRIBUTES">OPEN WINDOW attributes</a></h4>
+
+  <p>The following table shows the <i>window-attributes</i> supported by the <tt>OPEN WINDOW</tt> statement:</p>
+
+  <div align="center">
+    <center>
+      <table border="0" cellpadding="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="35%"><b>Attribute</b></td>
+
+          <td bgcolor="#C0C0C0"><b>Description</b></td>
+        </tr>
+
+        <tr>
+          <td width="35%" valign="top"><tt>TEXT = <i>string</i></tt></td>
+
+          <td>Defines the default title of the window. When a form is displayed, the form title (<tt>LAYOUT(TEXT="mytitle")</tt>)
+          will be used as window title.<br>
+          <b><i>We recommend that you define the window title in the form file!</i></b></td>
+        </tr>
+
+        <tr>
+          <td width="35%" valign="top"><tt>STYLE = <i>string</i></tt></td>
+
+          <td>Defines the default style of the window. If the form defines a window style,
+          (<tt>LAYOUT(WINDOWSTYLE="mystyle")</tt>), it overwrites the default window style.<br>
+          See <a href="#WINDOW_STYLES">Window Styles</a> for more details.<br>
+          <b><i>We recommend that you define the window style in the form file!</i></b></td>
+        </tr>
+
+        <tr>
+          <td width="35%" valign="top"><tt>BLACK, BLUE, CYAN, GREEN, MAGENTA, RED, WHITE, YELLOW</tt></td>
+
+          <td>Default TTY color of the data displayed in the window.</td>
+        </tr>
+        <tr>
+          <td width="35%" valign="top"><tt>BOLD, DIM, INVISIBLE, NORMAL</tt></td>
+
+          <td>Default TTY font attribute of the data displayed in the window.</td>
+        </tr>
+        <tr>
+          <td width="35%" valign="top"><tt>REVERSE, BLINK, UNDERLINE</tt></td>
+
+          <td>Default TTY video attribute of the data displayed in the window.</td>
+        </tr>
+
+        <tr>
+          <td width="35%" valign="top"><tt>PROMPT LINE <i>integer<br></i> <b><font color="#FF0000">TUI Only!</font></b></tt></td>
+
+          <td>In character mode, indicates the position of the prompt line for this window. The position can be specified with
+          <tt>FIRST</tt> and <tt>LAST</tt> predefined line positions.</td>
+        </tr>
+
+        <tr>
+          <td width="35%" valign="top"><tt>FORM LINE <i>integer<br></i> <b><font color="#FF0000">TUI Only!</font></b></tt></td>
+
+          <td>In character mode, indicates the position of the form line for this window. The position can be specified with
+          <tt>FIRST</tt> and <tt>LAST</tt> predefined line positions.</td>
+        </tr>
+
+        <tr>
+          <td width="35%" valign="top"><tt>MENU LINE <i>integer<br></i> <b><font color="#FF0000">TUI Only!</font></b></tt></td>
+
+          <td>In character mode, indicates the position of the ring menu line for this window. The position can be specified with
+          <tt>FIRST</tt> and <tt>LAST</tt> predefined line positions.</td>
+        </tr>
+
+        <tr>
+          <td width="35%" valign="top"><tt>MESSAGE LINE <i>integer<br></i> <b><font color="#FF0000">TUI
+          Only!</font></b></tt></td>
+
+          <td>In character mode, indicates the position of the message line for this window. The position can be specified with
+          <tt>FIRST</tt> and <tt>LAST</tt> predefined line positions.</td>
+        </tr>
+
+        <tr>
+          <td width="35%" valign="top"><tt>ERROR LINE <i>integer<br></i> <b><font color="#FF0000">TUI Only!</font></b></tt></td>
+
+          <td>In character mode, indicates the position of the error line for this window. The position can be specified with
+          <tt>FIRST</tt> and <tt>LAST</tt> predefined line positions.</td>
+        </tr>
+
+        <tr>
+          <td width="35%" valign="top"><tt>COMMENT LINE <u>{</u>OFF<u>|</u><i>integer</i><u>}<br></u> <b><font color=
+          "#FF0000">TUI Only!</font></b></tt></td>
+
+          <td>In character mode, indicates the position of the comment line or no comment line at all, for this window. The
+          position can be specified with <tt>FIRST</tt> and <tt>LAST</tt> predefined line positions.</td>
+        </tr>
+
+        <tr>
+          <td width="35%" valign="top"><tt>BORDER<br>
+          <b><font color="#FF0000">TUI Only!</font></b></tt></td>
+
+          <td>Indicates if the window must be created with a border in character mode. A border frame is drawn <u>outside</u> the
+          specified window. This means, that the window needs 2 additional lines and columns on the screen.</td>
+        </tr>
+
+      </table>
+    </center>
+  </div>
+
+  <p>The following list describes the default line positions in character mode:</p>
+
+  <ul>
+    <li><b>First line:</b> Prompt line (output from <a href="Prompt.html">PROMPT</a> statement) and Menu line (command value from
+    <a href="Menus.html">MENU</a> statement).</li>
+
+    <li><b>Second line:</b> Message line (output from <a href="MessageDisplay.html#MESSAGE">MESSAGE</a> statement; also the
+    descriptions of <a href="Menus.html">MENU</a> options).</li>
+
+    <li><b>Third line:</b> Form line (output from <a href="#DISPLAY_FORM">DISPLAY FORM</a> statement).</li>
+
+    <li><b>Last line:</b> Error line (output from <a href="MessageDisplay.html#ERROR">ERROR</a> statement); also comment line in
+    any window except SCREEN.</li>
+  </ul>
+
+  <h4>Example:</h4>
+  <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02   </code> <tt>OPEN WINDOW</tt> w1<tt> WITH FORM</tt> &quot;customer&quot;
+<code class="linenumber">03   </code> <tt>MENU</tt> &quot;Test&quot;
+<code class="linenumber">04      </code> <tt>COMMAND KEY(INTERRUPT)</tt> &quot;exit&quot; <tt>EXIT MENU</tt>
+<code class="linenumber">05   </code> <tt>END MENU</tt>
+<code class="linenumber">06   </code> <tt>CLOSE WINDOW</tt> w1
+<code class="linenumber">07</code> <tt>END MAIN</tt>
+</pre>
+  <hr>
+
+  <h3><a name="CLOSE_WINDOW" id="CLOSE_WINDOW">CLOSE WINDOW</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>Closes and destroys a window.&nbsp;</p>
+
+  <h4>Syntax:</h4><code>CLOSE WINDOW <i>identifier</i></code>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>identifier</i> is the name of the window.</li>
+
+    <li>If the <tt>OPEN WINDOW</tt> statement includes the <tt>WITH FORM</tt> clause, it closes both the form and the
+    window.</li>
+
+    <li>Closing a window has no effect on variables that were set while the window was open.</li>
+
+    <li>Closing the current window makes the next window on the stack the new current window. If you close any other window, the
+    runtime system deletes it from the stack, leaving the current window unchanged.</li>
+  </ol>
+
+  <h4><font color="#008000">Tips:</font></h4>
+
+  <ol>
+    <li>You can close the default screen window with the <tt>CLOSE WINDOW SCREEN</tt> instruction.</li>
+  </ol>
+
+  <h4><font color="#FF0000">Warnings:</font></h4>
+
+  <ol>
+    <li>If the window is currently being used for input, <tt>CLOSE WINDOW</tt> generates a runtime error.</li>
+  </ol>
+
+  <h4>Example:</h4>
+  <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02   </code> <tt>OPEN WINDOW</tt> w1<tt> WITH FORM</tt> &quot;customer&quot;
+<code class="linenumber">03   </code> <tt>MENU</tt> &quot;Test&quot;
+<code class="linenumber">04      </code> <tt>COMMAND KEY(INTERRUPT)</tt> &quot;exit&quot; <tt>EXIT MENU</tt>
+<code class="linenumber">05   </code> <tt>END MENU</tt>
+<code class="linenumber">06   </code> <tt>CLOSE WINDOW</tt> w1
+<code class="linenumber">07</code> <tt>END MAIN</tt>
+</pre>
+  <hr>
+
+  <h3><a name="CURRENT_WINDOW" id="CURRENT_WINDOW">CURRENT WINDOW</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>Makes a specified window the <a href="#WHAT_IS">current window</a>.</p>
+
+  <h4>Syntax:</h4><code>CURRENT WINDOW IS <i>identifier</i></code>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>identifier</i> is the name of the window or the <tt>SCREEN</tt> keyword.</li>
+  </ol>
+
+  <h4>Usage:</h4>
+
+  <p>Programs with multiple windows might need to switch to a different open window so that input and output occur in the
+  appropriate window. To make a window the current window, use the <tt>CURRENT WINDOW</tt> statement.</p>
+
+  <p>When a program starts, the screen is the current window. Its name is SCREEN. To make this the current window, specify the
+  keyword <tt>SCREEN</tt> instead of a window identifier.</p>
+
+  <p>If the window contains a form, that form becomes the current form when a CURRENT WINDOW statement specifies the name of that
+  window. The CONSTRUCT, DISPLAY ARRAY, INPUT, INPUT ARRAY, and MENU statements use only the current window for input and output.
+  If the user displays another form (for example, through an ON KEY clause) in one of these statements, the window containing the
+  new form becomes the current window. When the CONSTRUCT, DISPLAY ARRAY, INPUT, INPUT ARRAY, or MENU statement resumes, its
+  original window becomes the current window.</p>
+
+  <h4>Example:</h4>
+  <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02   </code> <tt>OPEN WINDOW</tt> w1<tt> WITH FORM</tt> &quot;customer&quot;
+<code class="linenumber">03   </code> ...
+<code class="linenumber">04   </code> <tt>OPEN WINDOW</tt> w2<tt> WITH FORM</tt> &quot;custlist&quot;
+<code class="linenumber">05   </code> ...
+<code class="linenumber">06   </code> <tt>CURRENT WINDOW IS</tt> w1
+<code class="linenumber">07   </code> ...
+<code class="linenumber">08   </code> <tt>CURRENT WINDOW IS</tt> w2
+<code class="linenumber">09   </code> ...
+<code class="linenumber">10   </code> <tt>CLOSE WINDOW</tt> w1
+<code class="linenumber">11   </code> <tt>CLOSE WINDOW</tt> w2
+<code class="linenumber">12</code> <tt>END MAIN</tt>
+</pre>
+  <hr>
+
+  <h3><a name="CLEAR_WINDOW" id="CLEAR_WINDOW">CLEAR WINDOW</a> <font color="#FF0000">TUI Only!</font></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>Clears the contents of a window in character mode.</p>
+
+  <h4>Syntax:</h4><code>CLEAR WINDOW <i>identifier</i></code>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>identifier</i> is the name of the window, or the <tt>SCREEN</tt> keyword.</li>
+  </ol>
+
+  <h4><font color="#FF0000">Warnings:</font></h4>
+
+  <ol>
+    <li>This instruction is provided for backward compatibility; it is only supported to clear windows created in <a href=
+    "FglTerms.html#TEXT_USER_INTERFACE">TUI</a> mode.</li>
+  </ol>
+  <hr>
+
+  <h3><a name="OPEN_FORM" id="OPEN_FORM">OPEN FORM</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>Declares a compiled form in the program.</p>
+
+  <h4>Syntax:</h4><code>OPEN FORM <i>identifier</i> FROM <i>file-name</i></code>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>identifier</i> is the name of the window object.</li>
+
+    <li>The scope of reference of <i>identifier</i> is the entire program.</li>
+
+    <li><i>file-name</i> is a string <a href="Literals.html">literal</a> or <a href="Variables.html">variable</a> defining the
+    name of the compiled <a href="FormSpecFiles.html">Form Specification File</a>.</li>
+
+    <li>Form files are found by using the directory paths defined in the <a href=
+    "EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href="EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a>
+    environment variable.</li>
+  </ol>
+
+  <h4><font color="#008000">Tips:</font></h4>
+
+  <ol>
+    <li>When the window is dedicated to the form, use the <tt>OPEN WINDOW WITH FORM</tt> instruction to create the window and the
+    form object in one statement.</li>
+
+    <li>It is not recommended that you provide a path for <i>file-name</i>; You should use the <a href=
+    "EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href="EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a>
+    environment variable instead.</li>
+  </ol>
+
+  <h4>Usage:</h4>
+
+  <p>In order to use a <b>42f</b> compiled version of a <a href="FormSpecFiles.html">Form Specification File</a>, the programs
+  must declare the form with the <tt>OPEN FORM</tt> instruction and then display the form in the current window by using the
+  <a href="#DISPLAY_FORM">DISPLAY FORM</a> instruction. <tt>OPEN FORM</tt> / <tt>DISPLAY FORM</tt> are typically used at the
+  beginning of programs to display the main form in the default <tt>SCREEN</tt> window:</p>
+  <pre>
+<code class="linenumber">01</code> <tt>OPEN FORM</tt> f <tt>FROM</tt> &quot;customer&quot;<code class="linenumber">
+02</code> <tt>DISPLAY FORM</tt> f
+</pre>
+
+  <p>If you execute an <tt>OPEN FORM</tt> with the name of an open form, the runtime system first closes the existing form before
+  opening the new form.</p>
+
+  <p>In character mode, the form is displayed in the current window at the position defined by the <tt>FORM LINE</tt> attribute
+  that can be specified in the <tt>ATTRIBUTE</tt> clause of <a href="#OPEN_WINDOW">OPEN WINDOW</a> or as default with the
+  <a href="Programs.html#PROGRAM_OPTIONS">OPTIONS</a> instruction.&nbsp;</p>
+
+  <p>After the form is loaded, you can activate the form by executing a <a href="Construct.html">CONSTRUCT</a>, <a href=
+  "DisplayArray.html">DISPLAY ARRAY</a>, <a href="RecordInput.html">INPUT</a>, <a href="InputArray.html">INPUT ARRAY</a>, or
+  <a href="MultipleDialogs.html">DIALOG</a> statement. When the runtime system executes the <tt>OPEN FORM</tt> instruction, it
+  allocates resources and loads the form into memory. To release the allocated resources when the form is no longer needed,&nbsp;
+  the program must execute the <a href="#CLOSE_FORM">CLOSE FORM</a> instruction. This is a memory-management feature to recover
+  memory from forms that the program no longer displays on the screen. If the form was loaded with a window by using the <tt>WITH
+  FORM</tt> clause, it is automatically closed when the window is closed with a <a href="#CLOSE_WINDOW">CLOSE WINDOW</a>
+  instruction.</p>
+
+  <p>The quoted string that follows the FROM keyword must specify the name of the file that contains the compiled screen form.
+  This filename can include a pathname, but this is not recommended.</p>
+
+  <p>The form <i>identifier</i> does not need to match the name of the <a href="FormSpecFiles.html">Form Specification File</a>,
+  but it must be unique among form names in the program. Its scope of reference is the entire program.</p>
+
+  <h4>Example:</h4>
+  <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02   </code> <tt>OPEN FORM</tt> f1<tt> FROM </tt>&quot;customer&quot;
+<code class="linenumber">03   </code> <tt>DISPLAY FORM</tt> f1
+<code class="linenumber">04   </code> <tt>CALL</tt> input_customer()
+<code class="linenumber">05   </code> <tt>CLOSE FORM</tt> f1
+<code class="linenumber">06   </code> <tt>OPEN FORM</tt> f2<tt> FROM </tt>&quot;custlist&quot;
+<code class="linenumber">07   </code> <tt>DISPLAY FORM</tt> f2
+<code class="linenumber">08   </code> <tt>CALL</tt> input_custlist()
+<code class="linenumber">09   </code> <tt>CLOSE FORM</tt> f2
+<code class="linenumber">10</code> <tt>END MAIN</tt>
+</pre>
+  <hr>
+
+  <h3><a name="DISPLAY_FORM" id="DISPLAY_FORM">DISPLAY FORM</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>Displays and associates a form with the <a href="#WHAT_IS">current window</a>.</p>
+
+  <h4>Syntax:</h4><code>DISPLAY FORM <i>identifier</i><br>
+  <i>&nbsp;&nbsp;</i><u>[</u> ATTRIBUTE ( <i>display-attributes</i> ) <u>]</u></code>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>identifier</i> is the name of the form.</li>
+
+    <li><i>window-attributes</i> defines the display attributes of the form. See below for more details.</li>
+  </ol>
+
+  <h4>Usage:</h4>
+
+  <p>The following table shows the <i>display-attributes</i> supported by the <tt>DISPLAY FORM</tt> statement:</p>
+
+  <div align="center">
+    <center>
+      <table border="0" cellpadding="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="35%"><b>Attribute</b></td>
+
+          <td bgcolor="#C0C0C0"><b>Description</b></td>
+        </tr>
+
+        <tr>
+          <td width="35%"><tt>BLACK, BLUE, CYAN, GREEN, MAGENTA, RED, WHITE, YELLOW</tt> </td>
+
+          <td>Default TTY color of the data displayed in the form.</td>
+        </tr>
+
+        <tr>
+          <td width="35%"><tt>BOLD, DIM, INVISIBLE, NORMAL</tt> </td>
+
+          <td>Default TTY font attribute of the data displayed in the form.<br>
+          <b><font color="#FF0000">Warning:</font></b> The <tt>INVISIBLE</tt> attribute is ignored.</td>
+        </tr>
+
+        <tr>
+          <td width="35%"><tt>REVERSE, BLINK, UNDERLINE</tt> </td>
+
+          <td>Default TTY video attribute of the data displayed in the form.</td>
+        </tr>
+      </table>
+    </center>
+  </div>
+
+  <p>The runtime system applies any other display attributes that you specify in the <tt>ATTRIBUTE</tt> clause to any fields that
+  have not been assigned attributes by the <a href="FormSpecFiles.html#SECTION_ATTRIBUTES">ATTRIBUTES section</a> of the <a href=
+  "FormSpecFiles.html">Form Specification File</a>, or by the <a href="DatabaseSchema.html">database schema files</a>, or by the
+  <a href="Programs.html#PROGRAM_OPTIONS">OPTIONS</a> statement. If the form is displayed in a window, color attributes from the
+  <tt>DISPLAY FORM</tt> statement supersede any from the <a href="#OPEN_WINDOW">OPEN WINDOW</a> statement. If subsequent <a href=
+  "Construct.html">CONSTRUCT</a>, <a href="RecordDisplay.html">DISPLAY</a>, or <a href="DisplayArray.html">DISPLAY ARRAY</a>
+  statements that include an <tt>ATTRIBUTE</tt> clause reference the form, however, their attributes take precedence over those
+  specified in the <tt>DISPLAY FORM</tt> instruction.</p>
+  <hr>
+
+  <h3><a name="CLOSE_FORM" id="CLOSE_FORM">CLOSE FORM</a></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>Closes a form.</p>
+
+  <h4>Syntax:</h4><code>CLOSE FORM <i>identifier</i></code>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>identifier</i> is the name of the form.</li>
+
+    <li>Releases the memory allocated to the form.</li>
+  </ol>
+
+  <h4><font color="#008000">Tips:</font></h4>
+
+  <ol>
+    <li>A form associated with a window by the <tt>OPEN WINDOW WITH FORM</tt> instruction is automatically closed when the
+    program closes the window with a <a href="#CLOSE_WINDOW">CLOSE WINDOW</a> instruction.</li>
+  </ol>
+  <hr>
+
+  <h3><a name="CLEAR_SCREEN" id="CLEAR_SCREEN">CLEAR SCREEN</a> <font color="#FF0000">TUI Only!</font></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>Clears the complete application screen in character mode.</p>
+
+  <h4>Syntax:</h4><code>CLEAR SCREEN</code>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li>Clears the complete screen.</li>
+  </ol>
+
+  <h4><font color="#FF0000">Warnings:</font></h4>
+
+  <ol>
+    <li>The <tt>CLEAR SCREEN</tt> instruction is provided for backward compatibility when using the <a href=
+    "FglTerms.html#TEXT_USER_INTERFACE">TUI</a> mode.</li>
+  </ol>
+  <hr>
+
+  <h3><a name="DISPLAY_AT" id="DISPLAY_AT">DISPLAY AT</a> <font color="#FF0000">TUI Only!</font></h3>
+
+  <h4>Purpose:</h4>
+
+  <p>Displays text at a given position in character mode in the current window.</p>
+
+  <h4>Syntax:</h4><code>DISPLAY <i>text</i> AT <i>line</i>, <i>column</i> <u>[</u> ATTRIBUTE ( <i>display-attributes</i> )
+  <u>]</u></code>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>text</i> is any <a href="Expressions.html">expression</a> to be evaluated and displayed at the given position in the
+    current window.</li>
+
+    <li><i>line</i> is an integer <a href="Literals.html">literal</a> or <a href="Variables.html">variable</a> defining the line
+    position in the current window.</li>
+
+    <li><i>column</i> is an integer <a href="Literals.html">literal</a> or <a href="Variables.html">variable</a> defining the
+    column position on the screen.</li>
+
+    <li><i>display-attributes</i> defines the display attributes for the <i>text</i>. See below for more details.</li>
+  </ol>
+
+  <h4><font color="#FF0000">Warnings:</font></h4>
+
+  <ol>
+    <li>The <tt>DISPLAY AT</tt> instruction is provided for backward compatibility and should only be used in <a href=
+    "FglTerms.html#TEXT_USER_INTERFACE">TUI</a> mode. To display data at a given place in a graphical form, use <a href=
+    "FormSpecFiles.html">form fields</a> and the <a href="RecordDisplay.html#DISPLAY_TO">DISPLAY TO</a> instruction.</li>
+  </ol>
+
+  <h4>Usage:</h4>
+
+  <p>The following table shows the <i>display-attributes</i> supported by the <tt>DISPLAY AT</tt> statement:</p>
+
+  <div align="center">
+    <center>
+      <table border="0" cellpadding="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="30%"><b>Attribute</b></td>
+
+          <td bgcolor="#C0C0C0"><b>Description</b></td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>BLACK, BLUE, CYAN, GREEN, MAGENTA, RED, WHITE, YELLOW</tt> </td>
+
+          <td>The TTY color of the displayed text.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>BOLD, DIM, INVISIBLE, NORMAL</tt> </td>
+
+          <td>The TTY font attribute of the displayed text.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>REVERSE, BLINK, UNDERLINE</tt> </td>
+
+          <td>The TTY video attribute of the displayed text.</td>
+        </tr>
+      </table>
+    </center>
+  </div>
+</body>
+</html>

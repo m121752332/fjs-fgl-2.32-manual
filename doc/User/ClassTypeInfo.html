@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>base.TypeInfo</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The TypeInfo class</a> </H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#METHODS">Methods</a></li>
+  <li><a href="#USAGE">Usage</a>
+    <ul>
+      <li><a href="#create">Creating a TypeInfo object</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p>See also: <a href="BuiltInClasses.html">Built-in classes</a></p>
+
+<HR>
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+<p>The <b>TypeInfo</b> class is a <a href="BuiltInClasses.html">built-in
+class</a>  provided to serialize <a href="Variables.html">program variables</a>. </p>
+
+<h4>Syntax:</h4>
+<code>base.TypeInfo</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li>This class does not have to be instantiated.</li>
+</ol>
+
+<HR>
+
+<h3><a name="METHODS">Methods</a></h3>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#3399FF" colspan="2"><b>Class Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><b>Name</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#create">create</a>( <i>variable</i> )<br>
+&nbsp;&nbsp; </code><tt>RETURNING</tt>   <code>om.DomNode</code> </td>
+    <td valign="top">Creates a DOM node from a program variable</td>
+  </tr>
+</table>
+
+<HR>
+
+<h3><a name="USAGE">Usage</a></h3>
+Use the TypeInfo class to serialize program variables in an XML format. For example, you can fetch rows from a database table in an array, specify the 
+array as the input into the <code>base.TypeInfo.create()</code> method, write the 
+resulting <a href="ClassDomNode.html">DomNode</a>
+to 
+a file using the <code>node.writeXml()</code> method, and give the resulting file to any 
+application that is able to read XML for input.
+<h4><a name="create">Creating a TypeInfo object</a></h4>
+<p>The <code>create()</code> method of this class builds a <a href="ClassDomNode.html">DomNode</a>
+object from any kind of structured program variable, thus serializing the variable:</p>
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>n om.DomNode
+<CODE class=linenumber>03  </CODE> <tt>DEFINE </tt>r <tt>RECORD</tt>
+<CODE class=linenumber>04</CODE>       key <tt>INTEGER</tt>,
+<CODE class=linenumber>05</CODE>       lastname <tt>CHAR</tt>(20),
+<CODE class=linenumber>06</CODE>       birthdate <tt>DATE</tt>
+<CODE class=linenumber>07  </CODE> <tt>END RECORD</tt>
+<CODE class=linenumber>08  </CODE> <tt>LET </tt>r.key = 234
+<CODE class=linenumber>09  </CODE> <tt>LET </tt>r.lastname = &quot;Johnson&quot;
+<CODE class=linenumber>10  </CODE> <tt>LET </tt>r.birthdate = MDY(12,24,1962)
+<CODE class=linenumber>11  </CODE> <tt>LET </tt>n = base.TypeInfo.create( r )
+<CODE class=linenumber>12  </CODE> <tt>CALL </tt>n.writeXml( &quot;r.xml&quot; )
+<CODE class=linenumber>13</CODE> <tt>END MAIN</tt></pre>
+
+<p>The generated node contains variable values and data type information. The
+above example creates the following file:</p>
+<pre>&lt;?xml version=&quot;1.0&quot;? encoding=&quot;ISO-8859-1&quot;&gt;
+&lt;Record&gt;
+  &lt;Field type=&quot;INTEGER&quot; value=&quot;234&quot; name=&quot;key&quot;/&gt;
+  &lt;Field type=&quot;CHAR(20)&quot; value=&quot;Johnson&quot; name=&quot;lastname&quot;/&gt;
+  &lt;Field type=&quot;DATE&quot; value=&quot;12/24/1962&quot; name=&quot;birthdate&quot;/&gt;
+&lt;/Record&gt;</pre>
+<p>Note that data is formatted according to current environment settings (<a href="EnvironmentVariables.html#EV_DBDATE">DBDATE</a>,
+<a href="EnvironmentVariables.html#EV_DBFORMAT">DBFORMAT</a>, <a href="EnvironmentVariables.html#EV_DBMONEY">DBMONEY</a>).</p>
+
+
+</BODY>
+</HTML>

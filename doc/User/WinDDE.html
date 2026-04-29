@@ -1,0 +1,643 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Windows DDE Support</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Windows DDE Support</a></H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#DEFINITION">What is DDE?</a></li>
+  <li><a href="#USAGE">Using DDE API</a></li>
+  <li><a href="#DDEAPI">The DDE API</a></li>
+  <li><a href="#EXAMPLE">Example</a></li>
+  <li><a href="#BDLFUNCLIST">BDL Wrappers for DDE functions</a></li>
+</ul>
+
+<p><i>See also:</i>
+<a href="BuiltInFunctions.html">Built-in Functions</a>.</p>
+
+<HR>
+
+<h3><a name="DEFINITION">What is DDE?</a></h3>
+
+<p>DDE is a form of inter-process communication implemented by Microsoft
+for Windows platforms. DDE uses shared memory to exchange data between applications.
+Applications can use DDE for one-time data transfers, and for ongoing exchanges
+in applications that send updates to one another as new data becomes available.</p>
+
+<p>Please refer to your Microsoft documentation for DDE compatibility between
+existing versions. As an example, DDE commands were changed between Office 97
+and Office 98.</p>
+
+<HR>
+
+<h3><a name="USAGE">Using DDE API</a></h3>
+
+<p>With DDE Support, you can invoke a Windows application and send data to or receive
+data from it. To use this functionality, the program must use the Windows
+Front End.</p>
+
+<p>Before using the DDE functions, the TCP communication channel between the
+application and the front end must be established with a display
+(OPEN WINDOW, MENU, DISPLAY TO).</p>
+
+<p align="center"><img border="0" src="../Images/DDEFig01.png" width="504" height="288"></p>
+
+<p>The DDE API is used in a four-part procedure, as described in the following
+steps:</p>
+<ol>
+  <li>The application sends the Front End the DDE order using the TCP/IP
+    channel.</li>
+  <li>The Front End executes the DDE order and sends the data to the Windows
+    application through the DDE API.</li>
+  <li>The Windows application executes the command and sends the result, which
+    can be data or an error code, to the Front End.</li>
+  <li>The Windows Front End sends back the result to the application using
+    the TCP/IP channel.</li>
+</ol>
+
+<p>A DDE connection is uniquely identified by two values: The name of the DDE
+Application and the document. Most DDE functions require these two values to
+identify the DDE source or target.</p>
+
+<HR>
+
+<h3><a name="DDEAPI">The DDE API</a></h3>
+<p>The DDE API is based on the front call technique described in <a href="FrontEndFunctions.html">Front
+End Functions</a>. All DDE functions are grouped in the <b>WINDDE</b> front end
+function module.</p>
+<table border="0" width="90%">
+    <tr>
+      <td bgColor="#c0c0c0" width="25%"><b>Function name</b></td>
+      <td bgColor="#c0c0c0"><b>Description</b></td>
+    </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#WINDDE_DDECONNECT">DDEConnect</a></td>
+      <td vAlign="top">This function opens a DDE connection</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#WINDDE_DDEEXECUTE">DDEExecute</a></td>
+      <td vAlign="top">This function executes a command in the specified program</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#WINDDE_DDEFINISH">DDEFinish</a></td>
+      <td vAlign="top">This function closes a DDE connection</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#WINDDE_DDEFINISHALL">DDEFinishAll</a></td>
+      <td vAlign="top">This function closes all DDE connections, as well as the DDE server program</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#WINDDE_DDEERROR">DDEError</a></td>
+      <td vAlign="top">This function returns
+        DDE error information about the last DDE operation</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#WINDDE_DDEPEEK">DDEPeek</a></td>
+      <td vAlign="top">This function&nbsp;retrieves data from the specified
+        program and document using the DDE channel</td>
+  </tr>
+  <tr>
+    <td vAlign="top" width="25%"><a href="#WINDDE_DDEPOKE">DDEPoke</a></td>
+    <td vAlign="top">This function sends data to the specified program and document using the DDE channel</td>
+  </tr>
+</table>
+
+
+
+<HR>
+
+<h3><a name="WINDDE_DDECONNECT">DDEConnect</a></h3>
+
+<h4>Purpose:</h4>
+<p>This function opens a DDE connection. </p>
+
+<h4>Syntax:</h4>
+<code>CALL ui.Interface.frontCall(&quot;WINDDE&quot;,&quot;DDEConnect&quot;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <i>program, document, encoding</i> ], [<i>result</i>]
+)</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>program</i> is the name of the DDE application.&nbsp;</li>
+  <li><i>document</i> is the document that is to be opened.</li>
+  <li><i>encoding</i> is an <font color="#FF0000">optional</font> parameter. It allows to force the encoding to use between ASCII and wide char/unicode. When not specified, WinDDE will try to retrieve the correct encoding by itself. Possible values are: "UNICODE", "ASCII" </li>
+  <li><i>result</i> is an integer variable receiving the status.</li>
+  <li><i>result</i> is <a href="Programs.html#PC_TRUE">TRUE</a>
+    if the function succeeded, <a href="Programs.html#PC_FALSE">
+    FALSE</a> otherwise.</li>
+  <li>If the function failed, use <a href="#WINDDE_DDEERROR">DDEError</a> to get the
+    description of the error.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>If the function failed with &quot;DMLERR_NO_CONV_ESTABLISHED&quot;, then
+    the DDE application was probably not running; use <a href="FrontEndFunctions.html">execute</a>
+    or <a href="FrontEndFunctions.html">shellexec</a> front call to start the
+    DDE application.</li>
+  <li>In Microsoft Office 2010, the use of DDE is disabled by default. You need to uncheck "Ignore 
+    other applications that use Dynamic Data Exchange(DDE)" in advanced options, otherwise <a href="#WINDDE_DDECONNECT">DDEConnect</a> will fail.</li>
+</ol>
+
+<HR>
+
+<h3><a name="WINDDE_DDEEXECUTE">DDEExecute</a></h3>
+
+<h4>Purpose:</h4>
+<p>This function executes a DDE command. </p>
+
+
+<h4>Syntax:</h4>
+<code>CALL ui.Interface.frontCall(&quot;WINDDE&quot;,&quot;DDEExecute&quot;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <i>program, document, command, encoding</i>
+], [<i>result</i>] )</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>program</i> is the name of the DDE application.&nbsp;</li>
+  <li><i>document</i> is the document that is to be used.</li>
+  <li><i>command</i> is the command that needs to be executed.</li>
+  <li><i>encoding</i> is an <font color="#FF0000">optional</font> parameter. It allows to force the encoding to use between ASCII and wide char/unicode. When not specified, WinDDE will try to retrieve the correct encoding by itself. Possible values are: "UNICODE", "ASCII" </li>
+  <li>Refer to the <i>program</i>
+    documentation for the syntax of <i>command</i>.</li>
+  <li><i>result</i> is an integer variable receiving the status.</li>
+  <li><i>result</i> is <a href="Programs.html#PC_TRUE">TRUE</a>
+    if the function succeeded, <a href="Programs.html#PC_FALSE">
+    FALSE</a> otherwise.</li>
+  <li>If the function failed, use <a href="#WINDDE_DDEERROR">DDEError</a> to get the
+    description of the error.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The DDE connection must be opened; see <a href="#WINDDE_DDECONNECT">DDEConnect</a>.</li>
+</ol>
+
+<HR>
+
+<h3><a name="WINDDE_DDEFINISH">DDEFinish</a></h3>
+
+<h4>Purpose:</h4>
+<p>This function closes a DDE connection. </p>
+
+<h4>Syntax:</h4>
+<code>CALL ui.Interface.frontCall(&quot;WINDDE&quot;,&quot;DDEFinish&quot;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <i>program, document</i> ], [<i>result</i>] )</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>program</i> is the name of the DDE application.&nbsp;</li>
+  <li><i>document</i> is the document that is to be closed.</li>  
+  <li><i>result</i> is an integer variable receiving the status.</li>
+  <li><i>result</i> is <a href="Programs.html#PC_TRUE">TRUE</a>
+    if the function succeeded, <a href="Programs.html#PC_FALSE">
+    FALSE</a> otherwise.</li>
+  <li>If the function failed, use <a href="#WINDDE_DDEERROR">DDEError</a> to get the
+    description of the error.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The DDE connection must be opened,
+    see <a href="#WINDDE_DDECONNECT">DDEConnect</a>.</li>
+</ol>
+
+<HR>
+
+<h3><a name="WINDDE_DDEFINISHALL">DDEFinishAll</a></h3>
+
+<h4>Purpose:</h4>
+<p>This function closes all DDE connections as well as the DDE server program.</p>
+
+<h4>Syntax</h4>
+<code>CALL ui.Interface.frontCall(&quot;WINDDE&quot;,&quot;DDEFinishAll&quot;,
+[], [<i>result</i>] )</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li>Closes all DDE connections.</li>
+  <li><i>result</i> is an integer variable receiving the status.</li>
+  <li><i>result</i> is <a href="Programs.html#PC_TRUE">TRUE</a>
+    if the function succeeded, <a href="Programs.html#PC_FALSE">
+    FALSE</a> otherwise.</li>
+</ol>
+
+<HR>
+
+<h3><a name="WINDDE_DDEERROR">DDEError</a></h3>
+
+<h4>Purpose:</h4>
+<p>This function returns the error information about the last DDE operation.</p>
+
+<h4>Syntax:</h4>
+<code>CALL ui.Interface.frontCall(&quot;WINDDE&quot;,&quot;DDEError&quot;,
+[], [<i>errmsg</i>] )</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>errmsg</i> is the error message. It is set to <a href="Programs.html#PC_NULL"> NULL</a> if no error occurred.</li>
+</ol>
+
+<HR>
+
+<h3><a name="WINDDE_DDEPEEK">DDEPeek</a></h3>
+
+<h4>Purpose:</h4>
+<p>This function retrieves data from the specified program and document using the DDE channel.</p>
+
+<h4>Syntax:</h4>
+<p><code>CALL ui.Interface.frontCall(&quot;WINDDE&quot;,&quot;DDEPeek&quot;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <i>program, container, cells, encoding</i> ],
+[ <i>result, value </i>] )</code>
+
+</p>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>program</i> is the name of the DDE application.&nbsp;</li>
+  <li><i>container</i> is the document or sub-document that is to be used.<br>
+    A
+    sub-document can, for example, be a sheet in Microsoft Excel.</li>
+  <li><i>cells </i>represents the working items;
+    see the <i>program</i>
+    documentation for the format of <i>cells</i>.</li>
+  <li><i>encoding</i> is an <font color="#FF0000">optional</font> parameter. It allows to force the encoding to use between ASCII and wide char/unicode. When not specified, WinDDE will try to retrieve the correct encoding by itself. Possible values are: "UNICODE", "ASCII" </li>
+  <li><i>value</i> represents the data to be retrieved;
+    see the <i>program</i> documentation for the format of <i>values</i>.</li>
+  <li><i>result</i> is an integer variable receiving the status.</li>
+  <li><i>result</i> is <a href="Programs.html#PC_TRUE">TRUE</a>
+    if the function succeeded, <a href="Programs.html#PC_FALSE">
+    FALSE</a> otherwise.</li>
+  <li>If the function failed, use <a href="#WINDDE_DDEERROR">DDEError</a> to get the
+    description of the error.</li>
+  <li><i>value</i> is a variable receiving the cells values.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The DDE connection must be opened;
+    see <a href="#WINDDE_DDECONNECT">DDEConnect</a>.</li>
+  <li> <a href="#WINDDE_DDEERROR">DDEError</a> can only be called
+    once to check if an error occurred.</li>
+</ol>
+
+<HR>
+
+<h3><a name="WINDDE_DDEPOKE">DDEPoke</a></h3>
+
+<h4>Purpose:</h4>
+<p>This function sends data to the specified program and document using the DDE channel.</p>
+
+<h4>Syntax:</h4>
+<p><code>CALL ui.Interface.frontCall(&quot;WINDDE&quot;,&quot;DDEPoke&quot;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ <i>program, container, cells,
+values, encoding</i> ], [<i>result</i>] )</code>
+
+</p>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>program</i> is the name of the DDE application.&nbsp;</li>
+  <li><i>container</i> is the document or sub-document that is to be used.<br>
+    A
+    sub-document can, for example, be a sheet in Microsoft Excel.</li>
+  <li><i>cells </i>represents the working items;
+    see the <i>program</i>
+    documentation for the format of <i>cells</i>.</li>
+  <li><i>values</i> represents the data to be sent;
+    see the <i>program</i>
+    documentation for the format of <i>values</i>.</li>
+  <li><i>encoding</i> is an <font color="#FF0000">optional</font> parameter. It allows to force the encoding to use between ASCII and wide char/unicode. When not specified, WinDDE will try to retrieve the correct encoding by itself. Possible values are: "UNICODE", "ASCII" </li>
+  <li><i>result</i> is an integer variable receiving the status.</li>
+  <li><i>result</i> is <a href="Programs.html#PC_TRUE">TRUE</a>
+    if the function succeeded, <a href="Programs.html#PC_FALSE">
+    FALSE</a> otherwise.</li>
+  <li>If the function failed, use <a href="#WINDDE_DDEERROR">DDEError</a> to get the
+    description of the error.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The DDE connection must be opened;
+    see <a href="#WINDDE_DDECONNECT">DDEConnect</a>.</li>
+  <li>An error may occur if you try to set many (thousands of) cells in a
+    single operation.</li>
+</ol>
+
+<HR>
+
+<h3><a name="EXAMPLE">Example</a></h3>
+
+<h4>dde_example.per</h4>
+
+<pre>
+<code class="linenumber">01</code> <tt>DATABASE</tt> <tt>formonly</tt>
+<code class="linenumber">02</code> <tt>SCREEN</tt>
+<code class="linenumber">03</code> {
+<code class="linenumber">04</code> Value to be given to top-left corner :
+<code class="linenumber">05</code> [f00                                ]                                                                                                                                    
+<code class="linenumber">06</code> Value found on top-left corner :
+<code class="linenumber">07</code> [f01                                ]
+<code class="linenumber">08</code> }                                                                                                                                    
+<code class="linenumber">09</code> <tt>ATTRIBUTES</tt>
+<code class="linenumber">10</code>   f00 = formonly.val;
+<code class="linenumber">11</code>   f01 = formonly.rval, <tt>NOENTRY</tt>;</pre>
+    <h4>
+      dde_example.4gl</h4>
+    <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <code class="comment">-- Excel must be open beforehand</code>
+<code class="linenumber">03</code>   <tt>CONSTANT</tt> file = "Sheet1"
+<code class="linenumber">04</code>   <tt>CONSTANT</tt> prog = "EXCEL"
+<code class="linenumber">05</code>   <tt>DEFINE</tt> val, rval <tt>STRING</tt>
+<code class="linenumber">06</code>   <tt>DEFINE</tt> res <tt>INTEGER</tt>
+<code class="linenumber">07</code>   <tt>OPEN WINDOW</tt> w1 <tt>AT</tt> 1,1 <tt>WITH FORM</tt> "dde_example.per"
+<code class="linenumber">08</code>   <tt>INPUT BY NAME</tt> val
+<code class="linenumber">09</code>   <tt>CALL</tt> ui.Interface.frontCall("WINDDE","DDEConnect", [prog,file], [res] )
+<code class="linenumber">10</code>   <tt>CALL </tt>checkError(res)
+<code class="linenumber">11</code>   <tt>CALL</tt> ui.Interface.frontCall("WINDDE","DDEPoke", [prog,file,"R1C1",val], [res] );
+<code class="linenumber">12</code>   <tt>CALL </tt>checkError(res)
+<code class="linenumber">13</code>   <tt>CALL</tt> ui.Interface.frontCall("WINDDE","DDEPeek", [prog,file,"R1C1"], [res,rval] );
+<code class="linenumber">14</code>   <tt>CALL </tt>checkError(res)
+<code class="linenumber">15</code>   <tt>DISPLAY BY NAME</tt> rval
+<code class="linenumber">16</code>   <tt>INPUT BY NAME</tt> val <tt>WITHOUT DEFAULTS</tt>
+<code class="linenumber">17</code>   <tt>CALL</tt> ui.Interface.frontCall("WINDDE","DDEExecute", [prog,file,"[save]"], [res] );
+<code class="linenumber">18</code>   <tt>CALL </tt>checkError(res)
+<code class="linenumber">19</code>   <tt>CALL</tt> ui.Interface.frontCall("WINDDE","DDEFinish", [prog,file], [res] );
+<code class="linenumber">20</code>   <tt>CALL </tt>checkError(res)
+<code class="linenumber">21</code>   <tt>CALL</tt> ui.Interface.frontCall("WINDDE","DDEFinishAll", [], [res] );
+<code class="linenumber">22</code>   <tt>CALL </tt>checkError(res)
+<code class="linenumber">23</code>   <tt>CLOSE WINDOW</tt> w1
+<code class="linenumber">24</code> <tt>END MAIN</tt>
+<code class="linenumber">25</code>
+<code class="linenumber">26</code> <tt>FUNCTION</tt> checkError(res)
+<code class="linenumber">27</code>   <tt>DEFINE</tt> res <tt>INTEGER</tt>
+<code class="linenumber">28</code>   <tt>DEFINE</tt> mess STRING
+<code class="linenumber">29</code>   <tt>IF</tt> res <tt>THEN RETURN END IF</tt>
+<code class="linenumber">30</code>   <tt>DISPLAY</tt> "DDE Error:"
+<code class="linenumber">31</code>   <tt>CALL</tt> ui.Interface.frontCall("WINDDE","DDEError",[],[mess]);
+<code class="linenumber">32</code>   <tt>DISPLAY</tt> mess
+<code class="linenumber">33</code>   <tt>CALL</tt> ui.Interface.frontCall("WINDDE","DDEFinishAll", [], [res] );
+<code class="linenumber">34</code>   <tt>DISPLAY</tt> "Exit with DDE Error."
+<code class="linenumber">35</code>   <tt>EXIT PROGRAM</tt> (-1)
+<code class="linenumber">36</code> <tt>END FUNCTION</tt></pre>
+
+<HR>
+
+<h3><a name="BDLFUNCLIST">BDL Wrappers to DDE front end functions</a></h3>
+<p>The following functions are provided for backward compatibility. We recommend
+that you use the front call functions if you write new code.</p>
+
+<h4><font color="#FF0000">Warning:</font> These functions (especially DDEExecute
+and DDEPoke) expect escaped TAB, CR and LF characters in the strings passed as
+parameters. For example, a TAB character must be written as <code>&quot;\\t&quot;</code>
+in a BDL string constant passed as parameter to the DDEPoke function.&nbsp;</h4>
+
+<table border="0" width="90%">
+  <tbody>
+    <tr>
+      <td bgColor="#c0c0c0" width="25%"><b>Function</b></td>
+      <td bgColor="#c0c0c0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="25%"><a href="#DF_DDECONNECT">DDEConnect( )</a></td>
+      <td vAlign="top">This function opens a DDE connection</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="25%"><a href="#DF_DDEEXECUTE">DDEExecute( )</a></td>
+      <td vAlign="top">This function executes a command in the specified program</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="25%"><a href="#DF_DDEFINISH">DDEFinish( )</a></td>
+      <td vAlign="top">This function closes a DDE connection</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="25%"><a href="#DF_DDEFINISHALL">DDEFinishAll( )</a></td>
+      <td vAlign="top">This function closes all DDE connections as well as the DDE server program</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="25%"><a href="#DF_DDEGETERROR">DDEGetError( )</a></td>
+      <td vAlign="top">This function returns
+        DDE error information about the last DDE operation</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="25%"><a href="#DF_DDEPEEK">DDEPeek( )</a></td>
+      <td vAlign="top">This function&nbsp;retrieves data from the specified
+        program and document using the DDE channel</td>
+    </tr>
+  </tbody>
+  <tr>
+    <td vAlign="top" width="25%"><a href="#DF_DDEPOKE">DDEPoke( )</a></td>
+    <td vAlign="top">This function sends data to the specified program and document using the DDE channel</td>
+  </tr>
+</table>
+
+
+
+<HR>
+
+<h3><a name="DF_DDECONNECT">DDEConnect</a>()</h3>
+
+<h4>Purpose:</h4>
+<p>This function opens a DDE connection. </p>
+
+<h4>Syntax:</h4>
+<code>CALL DDEConnect ( <i>program </i>STRING<i>, document </i>STRING )
+RETURNING SMALLINT</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>program</i> is the name of the DDE application.&nbsp;</li>
+  <li><i>document</i> is the document that is to be opened.</li>
+  <li>The function returns <a href="Programs.html#PC_TRUE">TRUE</a>
+    if the connection succeeded, <a href="Programs.html#PC_FALSE">
+    FALSE</a> otherwise.</li>
+  <li>If the return value is <a href="Programs.html#PC_FALSE">
+    FALSE</a>, use <a href="#DF_DDEGETERROR">DDEGetError()</a> to get the
+    description of the error.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>If the function failed with &quot;DMLERR_NO_CONV_ESTABLISHED&quot;, then
+  the DDE application was probably not running; use <a href="UtilityFunctions.html#UF_WINEXEC">WinExec()</a>
+    or <a href="UtilityFunctions.html#UF_WINSHELLEXEC">WinShellExec()</a> front
+    call to start the DDE application.</li>
+</ol>
+
+<HR>
+
+<h3><a name="DF_DDEEXECUTE">DDEExecute</a>()</h3>
+
+<h4>Purpose:</h4>
+<p>This function executes a DDE command. </p>
+
+
+<h4>Syntax:</h4>
+<code>CALL DDEExecute ( <i>program </i>STRING<i>, document </i>STRING,
+<i>command </i>STRING ) RETURNING SMALLINT</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>program</i> is the name of the DDE application.&nbsp;</li>
+  <li><i>document</i> is the document that is to be used.</li>
+  <li><i>command</i> is the command that needs to be executed.</li>
+  <li>Refer to the <i>program</i>
+    documentation for the syntax of <i>command</i>.</li>
+  <li>The function returns <a href="Programs.html#PC_TRUE">TRUE</a>
+    if the command execution succeeded, <a href="Programs.html#PC_FALSE">
+    FALSE</a> otherwise.</li>
+  <li>If the return value is <a href="Programs.html#PC_FALSE">
+    FALSE</a>, use <a href="#DF_DDEGETERROR">DDEGetError()</a> to get the
+    description of the error.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The DDE connection must be opened see <a href="#DF_DDECONNECT">DDEConnect()</a>.</li>
+</ol>
+
+<HR>
+
+<h3><a name="DF_DDEFINISH">DDEFinish</a>()</h3>
+
+<h4>Purpose:</h4>
+<p>This function closes a DDE connection. </p>
+
+<h4>Syntax:</h4>
+<code>CALL DDEFinish ( <i>program </i>STRING<i>, document </i>STRING )
+RETURNING SMALLINT</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>program</i> is the name of the DDE application.&nbsp;</li>
+  <li><i>document</i> is the document that is to be closed.</li>
+  <li>The function returns <a href="Programs.html#PC_TRUE">TRUE</a>
+    if the function succeeded, <a href="Programs.html#PC_FALSE">
+    FALSE</a> otherwise.</li>
+  <li>If the return value is <a href="Programs.html#PC_FALSE">
+    FALSE</a>, use <a href="#DF_DDEGETERROR">DDEGetError()</a> to get the
+    description of the error.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The DDE connection must be opened,
+    see <a href="#DF_DDECONNECT">DDEConnect()</a>.</li>
+</ol>
+
+<HR>
+
+<h3><a name="DF_DDEFINISHALL">DDEFinishAll</a>()</h3>
+
+<h4>Purpose:</h4>
+<p>This function closes all DDE connections, as well as the DDE server program.</p>
+
+<h4>Syntax</h4>
+<code>CALL DDEFinishAll()</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li>Closes all DDE connections.</li>
+</ol>
+
+<HR>
+
+<h3><a name="DF_DDEGETERROR">DDEGetError</a>()</h3>
+
+<h4>Purpose:</h4>
+<p>This function returns the error information about the last DDE operation.</p>
+
+<h4>Syntax:</h4>
+<code>CALL DDEGetError() RETURNING STRING</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li>The function returns the error message or <a href="Programs.html#PC_NULL"> NULL</a> if no error occurred.</li>
+</ol>
+
+<HR>
+
+<h3><a name="DF_DDEPEEK">DDEPeek</a>()</h3>
+
+<h4>Purpose:</h4>
+<p>This function retrieves data from the specified program and document using the DDE channel.</p>
+
+<h4>Syntax:</h4>
+<code>CALL DDEPeek ( <i>program </i>STRING<i>, container </i>STRING,
+<i>cells </i>STRING ) RETURNING <i>value</i></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>program</i> is the name of the DDE application.&nbsp;</li>
+  <li><i>container</i> is the document or sub-document that is to be used. A
+    sub-document can, for example, be a sheet in Microsoft Excel.</li>
+  <li><i>cells </i>represents the working items;
+    see the <i>program</i>
+    documentation for the format of <i>cells</i>.</li>
+  <li><i>value</i> represents the data to be retrieved;
+    see the <i>program</i>
+    documentation for the format of <i>values</i>.</li>
+  <li>If the function succeeded, <a href="#DF_DDEGETERROR">DDEGetError()</a>
+    function returns <a href="Programs.html#PC_NULL">NULL</a>.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The DDE connection must be opened;
+    see <a href="#DF_DDECONNECT">DDEConnect()</a>.</li>
+  <li> <a href="#DF_DDEGETERROR">DDEGetError()</a> can only be called
+    once to check if an error occurred.</li>
+</ol>
+
+<HR>
+
+<h3><a name="DF_DDEPOKE">DDEPoke</a>()</h3>
+
+<h4>Purpose:</h4>
+<p>This function sends data to the specified program and document using the DDE channel.</p>
+
+<h4>Syntax:</h4>
+<code>CALL DDEPoke ( <i>program </i>STRING<i>, container </i>STRING,
+<i>cells </i>STRING, <i>values </i>STRING ) RETURNING SMALLINT</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>program</i> is the name of the DDE application.&nbsp;</li>
+  <li><i>container</i> is the document or sub-document that is to be used. A
+    sub-document can, for example, be a sheet in Microsoft Excel.</li>
+  <li><i>cells </i>represents the working items;
+    see the <i>program</i>
+    documentation for the format of <i>cells</i>.</li>
+  <li><i>values</i> represents the data to be sent;
+    see the <i>program</i>
+    documentation for the format of <i>values</i>.</li>
+  <li>The function returns <a href="Programs.html#PC_TRUE"> TRUE</a> if the
+    function succeeded, <a href="Programs.html#PC_FALSE">
+    FALSE</a> otherwise.</li>
+  <li>If the return value is <a href="Programs.html#PC_FALSE">
+    FALSE</a>, use <a href="#DF_DDEGETERROR">DDEGetError()</a> to get the
+    description of the error.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The DDE connection must be opened;
+    see <a href="#DF_DDECONNECT">DDEConnect()</a>.</li>
+  <li>An error may occur if you try to set many (thousands of) cells in a
+    single operation.</li>
+</ol>
+
+</BODY>
+</HTML>

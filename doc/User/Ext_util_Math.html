@@ -1,0 +1,276 @@
+<!DOCTYPE HTML PUBLIC "-/*W3C/*DTD HTML 4.0 Transitional/*EN">
+<HTML>
+<HEAD>
+<TITLE>Mathematical functions</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Mathematical functions Class</a></H1>
+<p> Summary: </p>
+
+<ul>
+    <li><a href="#BASICS">Basics</a></li>
+    <li><a href="#SYNTAX">Syntax</a></li>
+    <li><a href="#METHODS">Methods</a></li>
+</ul>
+
+<p><i>See also:</i>
+<a href="BuiltInFunctions.html">Built-in Functions</a> </p>
+
+<HR>
+
+<h3><a name="BASICS">Basics</a></h3>
+
+<p>The Math class provides mathematical functions.</p>
+
+<p>This API is provided as a <a href="CExtensions.html">Dynamic C Extension</a>
+library; it is part of the standard package.</p>
+
+<p>To use this extension, you must import the <b>util</b> package in your program: </p>
+<pre>IMPORT util</pre>
+
+<HR>
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+<p>The <b>Math</b> class is a provides an interface for mathematical functions.</p>
+
+
+<h4>Syntax:</h4><code>util.Math</code>
+<h4>Notes:</h4>
+<ol>
+  <li>This class does not have to be instantiated; it provides class methods for
+    the current program.</li>
+</ol>
+
+<HR>
+
+<h3><a name="METHODS">Methods:</a></h3>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#3399FF" colspan="2"><b>Class Methods</b></td>
+  </tr>
+  <tr>
+      <td bgColor="#c0c0c0" width="25%"><b>Name</b></td>
+      <td bgColor="#c0c0c0"><b>Description</b></td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#MATH_SQRT">sqrt</a></td>
+      <td vAlign="top">This function computes the square root of its argument.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#MATH_POW">pow</a></td>
+      <td vAlign="top">This function computes the value of x raised to the power y.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#MATH_EXP">exp</a></td>
+      <td vAlign="top">This function computes the base- e exponential of x.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#MATH_SRAND">srand</a></td>
+      <td vAlign="top">This function intializes the pseudo-random number generator.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#MATH_RAND">rand</a></td>
+      <td vAlign="top">This function returns a pseudo-random number.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#MATH_SIN">sin</a></td>
+      <td vAlign="top">This function computes the sine of their argument x, measured in radians.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#MATH_COS">cos</a></td>
+      <td vAlign="top">This function computes the cosine of their argument x, measured in radians.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#MATH_TAN">tan</a></td>
+      <td vAlign="top">This function computes the tangent of their argument x, measured in radians.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#MATH_ASIN">asin</a></td>
+      <td vAlign="top">This function computes the arc sine of their argument x, measured in radians.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#MATH_ACOS">acos</a></td>
+      <td vAlign="top">This function computes the arc cosine of their argument x, measured in radians.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#MATH_ATAN">atan</a></td>
+      <td vAlign="top">This function computes the arc tangent of their argument x, measured in radians.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#MATH_LOG">log</a></td>
+      <td vAlign="top">This function computes the natural logarithm of the argument x.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#MATH_TODEGREES">toDegrees</a></td>
+      <td vAlign="top">Converts an angle measured in radians to an equivalent angle measured in degrees.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#MATH_TORADIANS">toRadians</a></td>
+      <td vAlign="top">Converts an angle measured in degrees to an equivalent angle measured in radians.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#MATH_PI">pi</a></td>
+      <td vAlign="top">This function returns the FLOAT value of PI.</td>
+  </tr>
+</table>
+
+<HR>
+
+<h3><a name="MATH_SQRT">util.Math.sqrt</a></h3>
+<h4>Purpose:</h4>
+<p>Returns the square root of the argument provided.</p>
+<h4>Syntax:</h4>
+<code>CALL util.Math.sqrt(FLOAT f) RETURNING <i>rv</i> FLOAT</code>
+<h4>Notes:</h4>
+<ol>
+    <li>Returns NULL if the argument provided is invalid.</li>
+</ol>
+<HR>
+
+<h3><a name="MATH_POW">util.Math.pow</a></h3>
+<h4>Purpose:</h4>
+<p>This function computes the value of x raised to the power y.</p>
+<h4>Syntax:</h4>
+<code>CALL util.Math.pow(FLOAT x, FLOAT y) RETURNING <i>rv</i> FLOAT</code>
+<h4>Notes:</h4>
+<ol>
+    <li>Returns NULL if one of the argument provided is invalid.</li>
+    <li>If x is negative, the caller should ensure that y is an integer value.</li>
+</ol>
+<HR>
+
+<h3><a name="MATH_EXP">util.Math.exp</a></h3>
+<h4>Purpose:</h4>
+<p>This function computes the base- e exponential of x.</p>
+<h4>Syntax:</h4>
+<code>CALL util.Math.exp(FLOAT x) RETURNING <i>rv</i> FLOAT</code>
+<h4>Notes:</h4>
+<ol>
+    <li>Returns NULL if the argument provided on error.</li>
+</ol>
+<HR>
+
+<h3><a name="MATH_SRAND">util.Math.srand</a></h3>
+<h4>Purpose:</h4>
+<p>This function initializes the pseudo-random numbers generator.</p>
+<h4>Syntax:</h4>
+<code>CALL util.Math.srand()</code>
+<HR>
+
+<h3><a name="MATH_RAND">util.Math.rand</a></h3>
+<h4>Purpose:</h4>
+<p>This function returns a pseudo-random number between 0 and x</p>
+<h4>Syntax:</h4>
+<code>CALL util.Math.rand(x INTEGER) RETURNING <i>rv</i> INTEGER</code>
+<HR>
+
+<h3><a name="MATH_SIN">util.Math.sin</a></h3>
+<h4>Purpose:</h4>
+<p>This function computes the sine of the argument x, measured in radians.</p>
+<h4>Syntax:</h4>
+<code>CALL util.Math.sin(FLOAT f) RETURNING <i>rv</i> FLOAT</code>
+<h4>Notes:</h4>
+<ol>
+    <li>Returns NULL if the argument provided is invalid.</li>
+</ol>
+<HR>
+
+<h3><a name="MATH_COS">util.Math.cos</a></h3>
+<h4>Purpose:</h4>
+<p>This function computes the cosine of the argument x, measured in radians.</p>
+<h4>Syntax:</h4>
+<code>CALL util.Math.cos(FLOAT f) RETURNING <i>rv</i> FLOAT</code>
+<h4>Notes:</h4>
+<ol>
+    <li>Returns NULL if the argument provided is invalid.</li>
+</ol>
+<HR>
+
+<h3><a name="MATH_TAN">util.Math.tan</a></h3>
+<h4>Purpose:</h4>
+<p>This function computes the tangent of the argument x, measured in radians.</p>
+<h4>Syntax:</h4>
+<code>CALL util.Math.tan(FLOAT f) RETURNING <i>rv</i> FLOAT</code>
+<h4>Notes:</h4>
+<ol>
+    <li>Returns NULL if the argument provided is invalid.</li>
+</ol>
+<HR>
+
+<h3><a name="MATH_ASIN">util.Math.asin</a></h3>
+<h4>Purpose:</h4>
+<p>This function computes the arc sine of the argument x, measured in radians.</p>
+<h4>Syntax:</h4>
+<code>CALL util.Math.asin(FLOAT f) RETURNING <i>rv</i> FLOAT</code>
+<h4>Notes:</h4>
+<ol>
+    <li>Returns NULL if the argument provided is invalid.</li>
+</ol>
+<HR>
+
+<h3><a name="MATH_ACOS">util.Math.acos</a></h3>
+<h4>Purpose:</h4>
+<p>This function computes the arc cosine of the argument x, measured in radians.</p>
+<h4>Syntax:</h4>
+<code>CALL util.Math.acos(FLOAT f) RETURNING <i>rv</i> FLOAT</code>
+<h4>Notes:</h4>
+<ol>
+    <li>Returns NULL if the argument provided is invalid.</li>
+</ol>
+<HR>
+
+<h3><a name="MATH_ATAN">util.Math.atan</a></h3>
+<h4>Purpose:</h4>
+<p>This function computes the arc tangent of the argument x, measured in radians.</p>
+<h4>Syntax:</h4>
+<code>CALL util.Math.atan(FLOAT f) RETURNING <i>rv</i> FLOAT</code>
+<h4>Notes:</h4>
+<ol>
+    <li>Returns NULL if the argument provided is invalid.</li>
+</ol>
+<HR>
+
+<h3><a name="MATH_LOG">util.Math.log</a></h3>
+<h4>Purpose:</h4>
+<p>This function computes the natural logarithm of the argument x.</p>
+<h4>Syntax:</h4>
+<code>CALL util.Math.log(FLOAT f) RETURNING <i>rv</i> FLOAT</code>
+<h4>Notes:</h4>
+<ol>
+    <li>Returns NULL if the argument provided is invalid.</li>
+</ol>
+<HR>
+
+<h3><a name="MATH_TODEGREES">util.Math.toDegrees</a></h3>
+<h4>Purpose:</h4>
+<p>Converts an angle measured in radians to an approximately equivalent angle measured in degrees.</p>
+<h4>Syntax:</h4>
+<code>CALL util.Math.toDegrees(FLOAT f) RETURNING <i>rv</i> FLOAT</code>
+<HR>
+
+<h3><a name="MATH_TORADIANS">util.Math.toRadians</a></h3>
+<h4>Purpose:</h4>
+<p>Converts an angle measured in degrees to an approximately equivalent angle measured in radians.</p>
+<h4>Syntax:</h4>
+<code>CALL util.Math.toRadians(FLOAT f) RETURNING <i>rv</i> FLOAT</code>
+<HR>
+
+<h3><a name="MATH_PI">util.Math.pi</a></h3>
+<h4>Purpose:</h4>
+<p>This function returns the FLOAT value of PI.</p>
+<h4>Syntax:</h4>
+<code>CALL util.Math.pi() RETURNING <i>rv</i> FLOAT</code>
+<HR>
+
+
+
+</BODY>
+</HTML>

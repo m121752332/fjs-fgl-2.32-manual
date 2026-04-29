@@ -1,0 +1,2253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Connections</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Database Connections</a></H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#DBCONN">What is a database connection?</a></li>
+  <li><a href="#DBSPEC">Database Specification</a>
+  <ul>
+  <li><a href="#DBCGLOBPRM">Global Configuration Parameters</a>
+  <ul>
+    <li><a href="#DBCDEFDRV">Default Database Driver</a></li>
+    <li><a href="#DBCUSERAUTH">User authentication callback function</a></li>
+  </ul>
+  </li>
+      <li><a href="#DS_ODI_CONNPARAMS">Connection parameters</a>
+        <ul>
+          <li><a href="#DS_ODI_CP_SOURCE">Source</a></li>
+          <li><a href="#DS_ODI_CP_DRIVER">Driver</a></li>
+          <li><a href="#DS_ODI_CP_USERPSWD">Username/Password</a></li>
+        </ul>
+      </li>
+      <li><a href="#DS_ODI_CPCSTR">Connection parameters in the connection string</a></li>
+      <li><a href="#DS_ODI_PROGFLX">Keep the compiled programs configurable</a></li>
+      <li><a href="#DS_ODI_DIRECT">Direct database specification</a></li>
+      <li><a href="#DS_ODI_INDIRECT">Indirect database specification</a></li>
+      <li><a href="#DS_ODI_IFXEMUL">IBM Informix</a><a href="#DS_ODI_IFXEMUL"> emulations parameters</a></li>
+      <li><a href="#DS_ODI_DBVSPEC">Database vendor specific parameters</a></li>
+      <li><a href="#DS_ODI_IFXENVW">IBM Informix</a><a href="#DS_ODI_IFXENVW"> environment variables on Windows platforms</a></li>
+      <li><a href="#USER_AUTH">Database user authentication</a>
+        <ul>
+          <li><a href="#UA_CONNECT">Specifying user name and login with CONNECT</a></li>
+          <li><a href="#UA_DATABASE">Specifying user name and login with DATABASE</a></li>
+          <li><a href="#UA_PRECEDENCE">Order of precedence for database user specification</a></li>
+          <li><a href="#UA_ADS">Authenticating users with Genero db</a></li>
+          <li><a href="#UA_IFX">Authenticating users with IBM Informix</a></li>
+          <li><a href="#UA_ORA">Authenticating users with Oracle</a></li>
+          <li><a href="#UA_MSV">Authenticating user with SQL Server</a></li>
+        </ul>
+      </li>
+  </ul>
+  </li>
+  <li><a href="#DBCENV">Database Client Environments</a></li>
+  <li><a href="#FGLSQLDEBUG">The FGLSQLDEBUG environment variable</a></li>
+  <li><a href="#SQLCA_RECORD">The SQLCA record</a>
+  </li>
+  <li><a href="#ERRORINFO">STATUS, SQLCA.SQLCODE, SQLSTATE and SQLERRMESSAGE</a>
+  </li>
+  <li><a href="#SQLINTERRUPTION">Interrupting SQL Statements</a>
+  </li>
+  <li>Unique-session mode:
+  <ul>
+    <li><a href="#DC_DATABASE">Opening a connection</a> (<tt>DATABASE</tt>)</li>
+    <li><a href="#DC_CLOSE_DATABASE">Closing a connection</a> (<tt>CLOSE DATABASE</tt>)</li>
+  </ul>
+  </li>
+  <li>Multi-session mode:
+  <ul>
+    <li><a href="#DC_CONNECT_TO">Opening connections</a> (<tt>CONNECT TO</tt>)</li>
+    <li><a href="#DC_SET_CONNECTION">Selecting connections</a> (<tt>SET CONNECTION</tt>)</li>
+    <li><a href="#DC_DISCONNECT">Closing connections</a> (<tt>DISCONNECT</tt>)</li>
+  </ul>
+  </li>
+</ul>
+
+<p><i>See also:</i>  <a href="Transactions.html">Transactions</a>,
+<a href="StaticSql.html">Static SQL</a>, <a href="DynamicSql.html">Dynamic SQL</a>,
+<a href="ResultSets.html">Result Sets</a>, <a href="Exceptions.html#SQLERRORS">SQL Errors</a>,
+<a href="Exceptions.html#SQLWARNINGS">SQL Warnings</a>,
+<a href="Programs.html">Programs</a>.</p>
+
+
+<HR>
+
+<h3><a name="DBCONN">What is a database connection?</a></h3>
+
+<p>A Database Connection is a session of work, opened by the program to communicate
+with a specific database server, in order to execute SQL statements as a specific
+user. </p>
+
+
+<p><b><font color="#FF0000">Warning: </font>Before working with database connections, make sure you have properly 
+	installed and configured Genero BDL, using the correct database <a href="Installation.html#INST_SR_DBCLIENT"> client 
+	environment</a> and <a href="#DS_ODI_CP_DRIVER">driver</a>. It is very
+important to understand database client settings, regarding user authentication
+as well as <a href="Localization.html#DBCLIENT">database client character set
+configuration</a>.</b></p>
+
+
+<p>Schema example of BDL program using three database connections: </p>
+
+
+<p align="center"><img border="0" src="../Images/DBCFig01.png" width="504" height="288"> </p>
+
+
+<p>The database user can be
+identified explicitly for each connection. Usually, the user is identified by a login and
+a password, or
+by using the authentication mechanism of the operating system (or even from a tier security
+system). </p>
+
+
+<p>The database connection instructions <u>can not</u> be prepared as
+<a href="DynamicSql.html">Dynamic SQL</a>  statements; they must be static
+SQL statements.</p>
+
+<p>There are two kind of connection modes:&nbsp; <i>unique-session</i> and <i>multi-session</i>
+mode. When using the <tt>DATABASE</tt> and <tt>CLOSE DATABASE</tt> instructions, you are
+in <i>unique-session</i>  mode. When using the <tt>CONNECT TO</tt>, <tt>SET CONNECTION</tt>
+and <tt>DISCONNECT</tt> instructions you are in <i>multi-session</i>
+ mode. <u>The modes are not compatible</u>. It is strongly recommended that you
+choose the session mode and not mix both kinds of instructions. </p>
+
+
+<p>In <i>unique-session</i> mode, you simply connect with the <tt>DATABASE</tt>
+ instruction; that creates a current session. You disconnect from the current
+session with the <tt>CLOSE DATABASE</tt>  instruction, or when another <tt>DATABASE</tt>
+instruction is executed, or when the program ends.</p>
+<p>In <i>multi-session</i> mode, you open a session with the <tt>CONNECT TO</tt>
+ instruction; that creates a current session. You can open other connections with
+subsequent <tt>CONNECT TO</tt> instructions. To switch to a specific session, use
+the <tt>SET CONNECTION</tt>  instruction; this suspends other opened connections.
+Finally, you disconnect from the current, from a specific, or from all sessions with the <tt>DISCONNECT</tt> instruction. The end of the program disconnects
+all sessions automatically.</p>
+<p>Once connected to a database server, you have a current database session. Any
+subsequent SQL statement is executed in the context of the current database
+session. </p>
+
+
+<HR>
+
+<h3><a name="DBSPEC">Database Specification</a></h3>
+
+<p>The database specification identifies the SQL data server and the database
+entity the Genero BDL program must connect to in order to execute SQL statements
+to read from or modify the database tables.</p>
+
+<p>Depending on the
+database server type, there are different ways to specify the SQL data source. For example, when you connect to Oracle, you
+cannot specify the
+database server as you do with IBM Informix by using the '<tt>dbname@dbserver</tt>'
+notation. At some point you will have to specify the database driver to be
+loaded, the database server (INFORMIXSERVER, ORACLE_SID/TNSNAME, SQL Server
+instance), the name of the database (or database schema, if the server does not
+support the concept of individual database entities), and if user authentication
+is needed, the database user, with a login and password.</p>
+
+
+<p><b><font color="#FF0000">Warning: </font>There are different ways to give
+connection information and it is possible to mix the different methods to
+specify these parameters. However, if provided, the database user name and
+password have to be specified together with the same method.</b></p>
+
+
+<p>The database specification is provided in Genero BDL programs by the <tt>DATABASE</tt>
+ or <tt>CONNECT TO</tt> instruction. We recommend you to use the <tt>CONNECT TO</tt>
+instruction, as it allows to specify a user and password):</p>
+
+
+<p><code>CONNECT TO <i>dbspec</i> [USER <i>username</i> USING <i>password</i>]<br>
+</code>or<code><br>
+DATABASE <i>dbspec</i></code></p>
+
+
+<p>For portability reasons, it is not recommended that you use database vendor specific
+syntax (such as '<tt>dbname@dbserver</tt>') in the <tt>DATABASE</tt>
+ or <tt>CONNECT TO</tt> instructions. We
+recommend using a simple symbol instead, and configuring the
+connection parameters in external resource files. The <b>Open Database Interface</b>
+architecture allows this indirect database specification using entries from the
+<a href="FglProfile.html">FGLPROFILE</a> configuration file.</p>
+
+
+<p>When a <tt>DATABASE</tt>
+ or <tt>CONNECT TO</tt> instruction is executed with the parameter <i>dbspec</i>, the runtime system first looks
+into <a href="FglProfile.html">FGLPROFILE</a> for entries starting with <code>dbi.database.<i>dbspec</i></code>,
+and uses <a href="#DS_ODI_INDIRECT">indirect database specification</a> if such
+connection parameters are found. Otherwise, the runtime system will do <a href="#DS_ODI_DIRECT">direct
+database specification</a>, by using the <i>dbspec</i> database specification to
+connect to the server.</p>
+
+
+<p><b><font color="#FF0000">Warning: </font>When using FGLPROFILE entries for
+database specification, keep in mind that entries must be written in lowercase.
+See <a href="FglProfile.html">FGLPROFILE</a>  for more details.</b></p>
+
+
+<HR size="1">
+
+<h4><a name="DBCGLOBPRM">Global Configuration Parameters</a></h4>
+
+<h5><a name="DBCDEFDRV">Default Database Driver</a></h5>
+
+<p>The next <a href="FglProfile.html">FGLPROFILE</a>  entry defines a default
+database driver to be loaded, if the driver is not specified by the connection
+instruction:</p>
+
+<PRE>dbi.default.driver = &quot;<i>driver-name</i>&quot;</PRE>
+
+<p>Here driver-name must be a value database driver name, without the .so or
+.DLL extension. See <a href="#driver_names">database driver list</a> for
+possible values.</p>
+
+<p>If the above configuration entry is not defined, the driver name defaults to <b>dbmdefault</b>.</p>
+
+<h5><a name="DBCUSERAUTH">User authentication callback function</a></h5>
+
+<p>When using the <a href="#DC_DATABASE">DATABASE instruction</a>, you can
+define an <a href="FglProfile.html">FGLPROFILE</a> entry with the name of a
+function to be called when the <tt>DATABASE</tt> instruction is executed, in
+order to let you provide a user name and password for the database
+connection.</p>
+
+<PRE>dbi.default.userauth.callback = &quot;<u>[</u><i>module-name</i>.<u>]</u><i>function-name</i>&quot;</PRE>
+
+<p><b><font color="#FF0000">Warning:</font>  This callback method <u>is not a
+password encryption solution</u>, it is only provided as workaround to let you
+provide a user name and password for the database connection initiated by <tt>DATABASE</tt>
+instructions without modifying existing programs. You should use the <a href="#DC_CONNECT_TO">CONNECT
+TO instruction</a> with the&nbsp; <tt>USER</tt>/<tt>USING</tt>
+ clause instead. This feature is provided mainly for non-IBM Informix drivers, when
+a lot of legacy code is using the <tt>DATABASE</tt> instruction. When using the IBM Informix
+driver, the callback method is called, but the user name and password
+are ignored by the <tt>DATABASE</tt> instruction: Only <tt>CONNECT TO</tt> will
+take the login parameters into account for IBM Informix.</b></p>
+<p>The callback function must have the
+following signature:</p>
+<pre>CALL <i>function-name</i>(dbspec STRING)
+     RETURNING STRING (username), STRING (password)</pre>
+<p>If you do not specify the module name, the callback function must be linked to the 42r program.
+By using the &quot;<i>module-name.function-name</i>&quot; syntax in the
+FGLPROFILE entry, the runtime system will automatically load the module. In both
+cases, the module must be located in a directory where the runtime system can
+find it. See the <a href="EnvironmentVariables.html#EV_FGLLDPATH">FGLLDPATH</a>
+environment variable for more details.</p>
+<p>You typically use the value of <i>dbspec</i> to identify the database source, read username and encrypted password from <a href="FglProfile.html">FGLPROFILE</a>
+entries with the <a href="BuiltInFunctions.html#BF_FGL_GETRESOURCE">fgl_getResource()</a>
+function, then decrypt password with the algorithm of your choice and return
+username and decrypted password.</p>
+<p>Callback function example:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>FUNCTION </tt>getUserAuth(dbspec)<tt>
+</tt><CODE class=linenumber>02</CODE> <tt>   DEFINE </tt>dbspec <tt>STRING
+</tt><CODE class=linenumber>03</CODE> <tt>   DEFINE </tt>un, ep <tt>STRING
+</tt><CODE class=linenumber>04</CODE> <tt>   LET </tt>un = fgl_getResource(&quot;dbi.database.&quot;||dbspec||&quot;.username&quot;)  -- standard entry<tt>
+</tt><CODE class=linenumber>05</CODE> <tt>   LET </tt>ep = fgl_getResource(&quot;dbi.database.&quot;||dbspec||&quot;.password.encrypted&quot;)  -- custom entry<tt>
+</tt><CODE class=linenumber>06</CODE> <tt>   RETURN </tt>un, decrypt_user_password(dbspec, un, ep)<tt>
+</tt><CODE class=linenumber>07</CODE> <tt>END FUNCTION</tt></PRE>
+
+
+<HR size="1">
+
+
+<h4><u><a name="DS_ODI_CONNPARAMS">Connection parameters</a></u></h4>
+
+<p>This section describes the different parameters which need to be specified in
+order to connect to a database. The parameters can be provided with different
+methods (in the connection string or in FGLPROFILE settings). Some of these
+parameters are
+optional, for example if the database user is authenticated by the operating
+system, username/password parameters are not needed.</p>
+
+
+<HR size="1" color="#C0C0C0">
+
+<h5><a name="DS_ODI_CP_SOURCE">Source</a></h5>
+
+<p>The &quot;<b>source</b>&quot; parameter identifies the data source name.
+The following table describes the meaning of this parameter for the
+supported databases:</p>
+
+<div align="center">
+  <center>
+  <table width="90%" border="0">
+    <tbody>
+      <tr>
+        <td align="left" width="20%" bgColor="#c0c0c0"><b>Database Type</b></td>
+        <td align="left" width="30%" bgColor="#c0c0c0"><strong>Value of
+          &quot;source&quot; entry</strong></td>
+        <td align="left" bgColor="#c0c0c0"><strong>Description</strong></td>
+      </tr>
+      <tr>
+        <td align="left" width="20%"><b>Genero db</b></td>
+        <td align="left" width="30%"><tt>datasource</tt></td>
+        <td align="left">ODBC Data Source</td>
+      </tr>
+      <tr>
+        <td align="left" width="20%"><b>Generic ODBC</b></td>
+        <td align="left" width="30%"><tt>datasource</tt></td>
+        <td align="left">ODBC Data Source</td>
+      </tr>
+      <tr>
+        <td align="left" width="20%"><b>IBM Informix</b></td>
+        <td align="left" width="30%"><tt>dbname[@dbserver]</tt></td>
+        <td align="left">IBM Informix database specification</td>
+      </tr>
+      <tr>
+        <td align="left" width="20%"><b>IBM DB2</b></td>
+        <td align="left" width="30%"><tt>dsname</tt></td>
+        <td align="left">DB2 Catalogued Database</td>
+      </tr>
+      <tr>
+        <td align="left" width="20%"><b>MySQL</b></td>
+        <td align="left" width="30%"><tt>dbname[@host[:port]]<br>
+          </tt>or<tt><br>
+          dbname[@localhost~socket]</tt></td>
+        <td align="left">Database Name @ Host Name :
+          TCP Port<br>
+          or<br>
+          Database Name @ Local host ~ Unix socket file</td>
+      </tr>
+      <tr>
+        <td align="left" width="20%"><b>ORACLE</b></td>
+        <td align="left" width="30%"><tt>tnsname</tt></td>
+        <td align="left">Oracle TNS Service name</td>
+      </tr>
+      <tr>
+        <td align="left" width="20%"><b>PostgreSQL</b></td>
+        <td align="left" width="30%"><tt>dbname[@host[:port]]</tt></td>
+        <td align="left">Database Name @ Host Name :
+          TCP Port</td>
+      </tr>
+      <tr>
+        <td align="left" width="20%"><b>SQL Server</b></td>
+        <td align="left" width="30%"><tt>datasource</tt></td>
+        <td align="left">ODBC Data Source</td>
+      </tr>
+      <tr>
+        <td align="left" width="20%"><b>SQLite</b></td>
+        <td align="left" width="30%"><tt>filename</tt></td>
+        <td align="left">Database file path</td>
+      </tr>
+      <tr>
+        <td align="left" width="20%"><b>Sybase Adaptive Server Enterprise (ASE)</b></td>
+        <td align="left" width="30%"><tt>dbname[@engine]</tt></td>
+        <td align="left">Database Name @ Engine Name</td>
+      </tr>
+      <tr>
+        <td align="left" width="20%"><b>Sybase Adaptive Server Anywhere (ASA)</b></td>
+        <td align="left" width="30%"><tt>dbname[@engine]</tt></td>
+        <td align="left">Database Name @ Engine Name</td>
+      </tr>
+    </tbody>
+  </table>
+  </center>
+</div>
+
+<p>If the &quot;<b>source</b>&quot; parameter is defined with an empty value (&quot;&quot;),
+the database interface connects to the default database server, which is usually the
+local server.</p>
+
+<p>If the &quot;<b>source</b>&quot; entry is <u> not present</u> in
+<a href="FglProfile.html">FGLPROFILE</a>, the <a href="#DS_ODI_DIRECT">Direct
+Database Specification</a>
+method
+takes place.</p>
+
+
+<HR size="1" color="#C0C0C0">
+
+<h5><a name="DS_ODI_CP_DRIVER">Driver</a></h5>
+
+<p>The &quot;<strong>driver</strong>&quot; parameter identifies the type of
+database driver to be loaded. Here you specify the name of the shared library or DLL
+to be used, without the .so or .DLL exntesion.</p>
+
+<p><b><font color="#FF0000">Warning:</font> Driver file names do not have to be specified with a file extension.</b></p>
+
+<p>For example:</p>
+
+<PRE>dbi.database.<b>stores</b>.driver = &quot;dbmifx9x&quot;</PRE>
+
+<p>You can define a default driver with the <a href="#DBCDEFDRV">Default
+Database Driver</a>  FGLPROFILE entry. If this entry is not defined, and if no
+driver parameter is defined for the data source, the driver name defaults to <b>dbmdefault</b>.
+The default driver dbmdefault is a copy of a specific driver type that was chosen
+during Genero BDL installation.</p>
+
+<p>The shared libraries implementing Genero BDL database drivers are located in <b>FGLDIR/dbdrivers</b> on 
+both UNIX and Windows platforms. Some drivers may not be available on a
+specific platform (usually, because the target database client does not exist on
+that platform).
+See below for a
+complete list of available drivers. Contact your support if you do not find the driver you are looking for.</p>
+
+<p><b><font color="#FF0000">Warning:</font> The selected driver must correspond
+to the database client type and version. For example, you should not use a
+dbmads380 driver with Genero 3.81.</b></p>
+
+<p><a name="driver_names">The following table lists the database driver names to
+be used according to the
+database client type and version:</a></p>
+
+
+<table width="90%">
+  <tr>
+    <td class="xl25" style="height:13.5pt;mso-ignore:
+  colspan;width:282pt" bgcolor="#C0C0C0"><font color="#FFFFFF"><b>Driver names</b></font></td>
+    <td class="xl25" style="height:13.5pt;mso-ignore:
+  colspan;width:282pt" bgcolor="#C0C0C0" align="center"><font color="#FFFFFF"><b>Type</b></font></td>
+    <td class="xl25" style="height:13.5pt;mso-ignore:
+  colspan;width:282pt" bgcolor="#C0C0C0" width="35%"><font color="#FFFFFF"><b>Database
+      client software version</b></font></td>
+    <td class="xl26" width="20%" style="width:81pt" bgcolor="#C0C0C0"><font color="#FFFFFF"><b>Unix
+      shared&nbsp; libraries</b></font></td>
+    <td class="xl26" width="25%" style="width:81pt" bgcolor="#C0C0C0"><font color="#FFFFFF"><b>Microsoft
+      Windows DLLs</b></font></td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#CCFFFF">dbmads3x</td>
+    <td style="height:14.25pt" bgcolor="#CCFFFF" align="center">ads</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#CCFFFF">Genero db Client
+      3.x</td>
+    <td width="20%" bgcolor="#CCFFFF">libaodbc.so</td>
+    <td width="25%" bgcolor="#CCFFFF">aodbc.dll</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#CCFFFF">dbmads380</td>
+    <td style="height:14.25pt" bgcolor="#CCFFFF" align="center">ads</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#CCFFFF">Genero db Client
+      3.80 and higher</td>
+    <td width="20%" bgcolor="#CCFFFF">libaodbc.so</td>
+    <td width="25%" bgcolor="#CCFFFF">aodbc.dll</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#CCFFFF">dbmads381</td>
+    <td style="height:14.25pt" bgcolor="#CCFFFF" align="center">ads</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#CCFFFF">Genero db Client
+      3.81 and higher</td>
+    <td width="20%" bgcolor="#CCFFFF">libaodbc.so</td>
+    <td width="25%" bgcolor="#CCFFFF">aodbc.dll</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#FFFFCC">dbmasa8x</td>
+    <td style="height:14.25pt" bgcolor="#FFFFCC" align="center">asa</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#FFFFCC">Sybase ASA Client
+      8.x</td>
+    <td width="20%" bgcolor="#FFFFCC">libdblib8.so</td>
+    <td width="25%" bgcolor="#FFFFCC">dblibtm.dll</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#FFFFCC">dbmase0Fx</td>
+    <td style="height:14.25pt" bgcolor="#FFFFCC" align="center">ase</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#FFFFCC">Sybase ASE Open Client
+      Library 15.x</td>
+    <td width="20%" bgcolor="#FFFFCC">libsybct.so, libsybcs.so</td>
+    <td width="25%" bgcolor="#FFFFCC">libsybct.dll, libsybcs.dll</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#CCFFFF">dbmdb28x</td>
+    <td style="height:14.25pt" bgcolor="#CCFFFF" align="center">db2</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#CCFFFF">DB2 Client 8.x</td>
+    <td width="20%" bgcolor="#CCFFFF">libdb2.so</td>
+    <td width="25%" bgcolor="#CCFFFF">db2cli.dll</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#CCFFFF">dbmdb29x</td>
+    <td style="height:14.25pt" bgcolor="#CCFFFF" align="center">db2</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#CCFFFF">DB2 Client 9.x</td>
+    <td width="20%" bgcolor="#CCFFFF">libdb2.so</td>
+    <td width="25%" bgcolor="#CCFFFF">db2cli.dll</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#FFFFCC">dbmesm90</td>
+    <td style="height:14.25pt" bgcolor="#FFFFCC" align="center">esm</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#FFFFCC">EasySoft ODBC
+      client for
+      SQL Server 2005</td>
+    <td width="20%" bgcolor="#FFFFCC">libessqlsrv.so</td>
+    <td width="25%" bgcolor="#FFFFCC"><b>N/A</b></td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#FFFFCC">dbmesmA0</td>
+    <td style="height:14.25pt" bgcolor="#FFFFCC" align="center">esm</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#FFFFCC">EasySoft ODBC
+      client for
+      SQL Server 2008</td>
+    <td width="20%" bgcolor="#FFFFCC">libessqlsrv.so</td>
+    <td width="25%" bgcolor="#FFFFCC"><b>N/A</b></td>
+  </tr>
+  <tr>
+    <td style="height:13.5pt" bgcolor="#CCFFFF">dbmifx9x</td>
+    <td style="height:13.5pt" bgcolor="#CCFFFF" align="center">ifx</td>
+    <td style="height:13.5pt" width="35%" bgcolor="#CCFFFF">IBM Informix CSDK 2.80 and higher</td>
+    <td width="20%" bgcolor="#CCFFFF">libifsql.so, libifasf.so, libifgen.so, libifos.so,
+      libifgls.so, libifglx.so</td>
+    <td width="25%" bgcolor="#CCFFFF">isqlt09a.dll</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#FFFFCC">dbmmys50x</td>
+    <td style="height:14.25pt" bgcolor="#FFFFCC" align="center">mys</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#FFFFCC">MySQL Client 5.0.x</td>
+    <td width="20%" bgcolor="#FFFFCC">libmysqlclient.so</td>
+    <td width="25%" bgcolor="#FFFFCC">libmysql.dll</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#FFFFCC">dbmmys51x</td>
+    <td style="height:14.25pt" bgcolor="#FFFFCC" align="center">mys</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#FFFFCC">MySQL Client 5.1.x</td>
+    <td width="20%" bgcolor="#FFFFCC">libmysqlclient.so</td>
+    <td width="25%" bgcolor="#FFFFCC">libmysql.dll</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#FFFFCC">dbmmys54x</td>
+    <td style="height:14.25pt" bgcolor="#FFFFCC" align="center">mys</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#FFFFCC">MySQL Client 5.4.x</td>
+    <td width="20%" bgcolor="#FFFFCC">libmysqlclient.so</td>
+    <td width="25%" bgcolor="#FFFFCC">libmysql.dll</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#FFFFCC">dbmmys55x</td>
+    <td style="height:14.25pt" bgcolor="#FFFFCC" align="center">mys</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#FFFFCC">MySQL Client 5.5.x</td>
+    <td width="20%" bgcolor="#FFFFCC">libmysqlclient.so</td>
+    <td width="25%" bgcolor="#FFFFCC">libmysql.dll</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#FFFFCC">dbmmys60x</td>
+    <td style="height:14.25pt" bgcolor="#FFFFCC" align="center">mys</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#FFFFCC">MySQL Client 6.0.x</td>
+    <td width="20%" bgcolor="#FFFFCC">libmysqlclient.so</td>
+    <td width="25%" bgcolor="#FFFFCC">libmysql.dll</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#CCFFFF">dbmmsv80</td>
+    <td style="height:14.25pt" bgcolor="#CCFFFF" align="center">msv</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#CCFFFF">SQL Server Client
+      8.x (MDAC ODBC) (SQL Server 2000)</td>
+    <td width="20%" bgcolor="#CCFFFF"><b>N/A</b></td>
+    <td width="25%" bgcolor="#CCFFFF">odbc32.dll / SQLSRV32.DLL</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#CCFFFF">dbmmsv90</td>
+    <td style="height:14.25pt" bgcolor="#CCFFFF" align="center">msv</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#CCFFFF">SQL Server Client
+      9.x (MDAC ODBC) (SQL Server 2005)</td>
+    <td width="20%" bgcolor="#CCFFFF"><b>N/A</b></td>
+    <td width="25%" bgcolor="#CCFFFF">odbc32.dll / SQLSRV32.DLL</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#FFFFCC">dbmodc3x</td>
+    <td style="height:14.25pt" bgcolor="#FFFFCC" align="center">odc</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#FFFFCC">Generic ODBC Client
+      (ODBC 3.x)</td>
+    <td width="20%" bgcolor="#FFFFCC">libodbc.so</td>
+    <td width="25%" bgcolor="#FFFFCC">odbc32.dll</td>
+  </tr>
+  <tr>
+    <td style="height:13.5pt" bgcolor="#CCFFFF">dbmora81x</td>
+    <td style="height:13.5pt" bgcolor="#CCFFFF" align="center">ora</td>
+    <td style="height:13.5pt" width="35%" bgcolor="#CCFFFF">Oracle OCI Client
+      8.1.x&nbsp;</td>
+    <td width="20%" bgcolor="#CCFFFF">libclntsh.so</td>
+    <td width="25%" bgcolor="#CCFFFF">oci.dll</td>
+  </tr>
+  <tr>
+    <td style="height:13.5pt" bgcolor="#CCFFFF">dbmora82x</td>
+    <td style="height:13.5pt" bgcolor="#CCFFFF" align="center">ora</td>
+    <td style="height:13.5pt" width="35%" bgcolor="#CCFFFF">Oracle OCI Client
+      8.2.x&nbsp;</td>
+    <td width="20%" bgcolor="#CCFFFF">libclntsh.so</td>
+    <td width="25%" bgcolor="#CCFFFF">oci.dll</td>
+  </tr>
+  <tr>
+    <td style="height:13.5pt" bgcolor="#CCFFFF">dbmora92x</td>
+    <td style="height:13.5pt" bgcolor="#CCFFFF" align="center">ora</td>
+    <td style="height:13.5pt" width="35%" bgcolor="#CCFFFF">Oracle OCI Client
+      9.2.x&nbsp;</td>
+    <td width="20%" bgcolor="#CCFFFF">libclntsh.so</td>
+    <td width="25%" bgcolor="#CCFFFF">oci.dll</td>
+  </tr>
+  <tr>
+    <td style="height:13.5pt" bgcolor="#CCFFFF">dbmoraA1x</td>
+    <td style="height:13.5pt" bgcolor="#CCFFFF" align="center">ora</td>
+    <td style="height:13.5pt" width="35%" bgcolor="#CCFFFF">Oracle OCI Client
+      10.1.x&nbsp;</td>
+    <td width="20%" bgcolor="#CCFFFF">libclntsh.so</td>
+    <td width="25%" bgcolor="#CCFFFF">oci.dll</td>
+  </tr>
+  <tr>
+    <td style="height:13.5pt" bgcolor="#CCFFFF">dbmoraA2x</td>
+    <td style="height:13.5pt" bgcolor="#CCFFFF" align="center">ora</td>
+    <td style="height:13.5pt" width="35%" bgcolor="#CCFFFF">Oracle OCI Client 10.2.x</td>
+    <td width="20%" bgcolor="#CCFFFF">libclntsh.so</td>
+    <td width="25%" bgcolor="#CCFFFF">oci.dll</td>
+  </tr>
+  <tr>
+    <td style="height:13.5pt" bgcolor="#CCFFFF">dbmoraB1x</td>
+    <td style="height:13.5pt" bgcolor="#CCFFFF" align="center">ora</td>
+    <td style="height:13.5pt" width="35%" bgcolor="#CCFFFF">Oracle OCI Client 11.1.x</td>
+    <td width="20%" bgcolor="#CCFFFF">libclntsh.so</td>
+    <td width="25%" bgcolor="#CCFFFF">oci.dll</td>
+  </tr>
+  <tr height="18" style="height:13.5pt">
+    <td style="height:13.5pt" bgcolor="#CCFFFF">dbmoraB2x</td>
+    <td style="height:13.5pt" bgcolor="#CCFFFF" align="center">ora</td>
+    <td style="height:13.5pt" width="35%" bgcolor="#CCFFFF">Oracle OCI Client
+      11.2.x</td>
+    <td width="20%" bgcolor="#CCFFFF">libclntsh.so</td>
+    <td width="25%" bgcolor="#CCFFFF">oci.dll</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#FFFFCC">dbmpgs81x</td>
+    <td style="height:14.25pt" bgcolor="#FFFFCC" align="center">pgs</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#FFFFCC">PostgreSQL Client
+      8.1.x</td>
+    <td width="20%" bgcolor="#FFFFCC">libpq.so</td>
+    <td width="25%" bgcolor="#FFFFCC">libpq.dll</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#FFFFCC">dbmpgs82x</td>
+    <td style="height:14.25pt" bgcolor="#FFFFCC" align="center">pgs</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#FFFFCC">PostgreSQL Client
+      8.2.x</td>
+    <td width="20%" bgcolor="#FFFFCC">libpq.so</td>
+    <td width="25%" bgcolor="#FFFFCC">libpq.dll</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#FFFFCC">dbmpgs83x</td>
+    <td style="height:14.25pt" bgcolor="#FFFFCC" align="center">pgs</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#FFFFCC">PostgreSQL Client
+      8.3.x</td>
+    <td width="20%" bgcolor="#FFFFCC">libpq.so</td>
+    <td width="25%" bgcolor="#FFFFCC">libpq.dll</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#FFFFCC">dbmpgs84x</td>
+    <td style="height:14.25pt" bgcolor="#FFFFCC" align="center">pgs</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#FFFFCC">PostgreSQL Client
+      8.4.x</td>
+    <td width="20%" bgcolor="#FFFFCC">libpq.so</td>
+    <td width="25%" bgcolor="#FFFFCC">libpq.dll</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#CCFFFF">dbmsnc90</td>
+    <td style="height:14.25pt" bgcolor="#CCFFFF" align="center">snc</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#CCFFFF">SQL Server Client
+      9.x (SQL Native client) (SQL Server 2005)</td>
+    <td width="20%" bgcolor="#CCFFFF"><b>N/A</b></td>
+    <td width="25%" bgcolor="#CCFFFF">odbc32.dll / SQLNCLI.DLL</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#CCFFFF">dbmsncA0</td>
+    <td style="height:14.25pt" bgcolor="#CCFFFF" align="center">snc</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#CCFFFF">SQL Server Client
+      10.x (SQL Native client) (SQL Server 2008)</td>
+    <td width="20%" bgcolor="#CCFFFF"><b>N/A</b></td>
+    <td width="25%" bgcolor="#CCFFFF">odbc32.dll / SQLNCLI.DLL</td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#FFFFCC">dbmftm90</td>
+    <td style="height:14.25pt" bgcolor="#FFFFCC" align="center">ftm</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#FFFFCC"> FreeTDS ODBC client
+      for SQL Server 2005</td>
+    <td width="20%" bgcolor="#FFFFCC">libtdsodbc.so</td>
+    <td width="25%" bgcolor="#FFFFCC"><b>N/A</b></td>
+  </tr>
+  <tr>
+    <td style="height:14.25pt" bgcolor="#CCFFFF">dbmsqt3xx</td>
+    <td style="height:14.25pt" bgcolor="#CCFFFF" align="center">sqt</td>
+    <td style="height:14.25pt" width="35%" bgcolor="#CCFFFF">SQLite 3.x</td>
+    <td width="20%" bgcolor="#CCFFFF">libsqlite3.so</td>
+    <td width="25%" bgcolor="#CCFFFF">sqtlite3.dll</td>
+  </tr>
+</table>
+
+
+<HR size="1" color="#C0C0C0">
+
+
+<h5><a name="DS_ODI_CP_USERPSWD">Username / Password</a></h5>
+
+<p>The &quot;<strong>username</strong>&quot; and &quot;<strong>password</strong>&quot;
+parameters define the default database user, when the program uses the
+<a href="#DC_DATABASE"> DATABASE</a> instruction or the
+<a href="#DC_CONNECT_TO"> CONNECT TO</a> instruction without the <tt>USER</tt> clause.</p>
+
+<p><b><font color="#FF0000">Warning:</font> The &quot;username&quot; and &quot;password&quot;
+FGLPROFILE entries are <u> not encrypted</u>. These parameters are provided to simplify migration
+and should not be used in production. You better use CONNECT TO with a USER /
+USING clause to avoid any security hole, setup OS user authentication or use the
+connection callback method. Example of database servers supporting OS
+user authentication: IBM Informix, Oracle,
+SQL Server and Genero db.</b></p>
+
+<p><b><font color="#FF0000">Warning:</font>  For backward compatibility reasons,
+when using the IBM Informix driver, the username / password specification is ignored
+by the <tt>DATABASE</tt> instruction, only the <tt>CONNECT TO</tt> instruction
+takes external (or callback) login parameters into account.</b></p>
+
+<p>For more details about database login see <a href="#USER_AUTH">Database user authentication</a>.</p>
+
+
+<HR size="1">
+
+
+<h4><u><a name="DS_ODI_CPCSTR">Specifying connection parameters in the connection string</a></u></h4>
+
+<p>For development or testing purpose, you can specify connection parameters in the
+database specification string used by
+the <tt>DATABASE</tt> and <tt>CONNECT TO</tt> instructions. We do not recommend
+to hardcode connection string parameters for a program to be installed on a
+production site, you should use the <a href="#DS_ODI_INDIRECT">Indirect Database
+Specification</a> method instead, or build the connection string at runtime to
+keep the database connection flexible.</p>
+
+<p>Note that the connection string parameters <u>override</u> the <code>dbi.database</code>
+connection parameters defined in FGLPROFILE.</p>
+
+<p>A <b>plus sign</b> in the database specification starts the list of connection
+parameters. Each parameter is defined with a name followed by an equal sign an a
+value enclosed in single quotes. Connection string parameters must be separated
+by a comma:</p>
+
+<PRE><i>dbname</i>+<i>parameter</i>='<i>value</i>'[,...]</PRE>
+
+<p>In the above syntax, <i>parameter</i> can be one of the following:</p>
+
+<div align="center">
+  <center>
+  <table border="0" width="90%">
+    <tr>
+      <td width="30%" bgcolor="#C0C0C0"><b>Parameter</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="30%" valign="top"><tt>resource</tt></td>
+      <td valign="top">Specifies which '<tt>dbi.database</tt>'
+entries have to be read from the <a href="FglProfile.html">FGLPROFILE</a> configuration
+file.<br>
+        When this property is set, the database interface
+reads <tt>dbi.database.<i>name</i>.*</tt> entries, where <i>name</i> is the
+        value specified for the <i> resource</i> parameter.&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="30%" valign="top"><tt>driver</tt></td>
+      <td valign="top">Defines the database driver library to be loaded
+        (filename without extension).<br>
+        See <a href="#DS_ODI_CP_DRIVER">Driver</a> for more details.</td>
+    </tr>
+    <tr>
+      <td width="30%" valign="top"><tt>source</tt></td>
+      <td valign="top">Specifies the data source of the database (for example,
+        Oracle's TNS name).<br>
+        See <a href="#DS_ODI_CP_SOURCE">Source</a> for more details.</td>
+    </tr>
+    <tr>
+      <td width="30%" valign="top"><tt>username</tt></td>
+      <td valign="top">Defines the name of the database user.<br>
+        See <a href="#DS_ODI_CP_USERPSWD">Username/Password</a> for more
+        details.</td>
+    </tr>
+    <tr>
+      <td width="30%" valign="top"><tt>password</tt></td>
+      <td valign="top">Defines the password of the database user.<br>
+        See <a href="#DS_ODI_CP_USERPSWD">Username/Password</a> for more
+        details.<br>
+        <b><font color="#FF0000">Warning:</font>  You should not hardcode the
+        user passwords in your sources!</b></td>
+    </tr>
+  </table>
+
+
+  </center>
+</div>
+
+<p>In the following example, <b>driver</b>, <b> source</b> and <b> resource</b> are
+specified in the connection string:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN
+</tt><CODE class=linenumber>02</CODE> <tt>   DEFINE </tt>db <tt>CHAR</tt>(50)<tt>
+</tt><CODE class=linenumber>03</CODE> <tt>   LET </tt>db = &quot;stores+driver='dbmora',source='orcl',resource='ora'&quot;<tt>
+</tt><CODE class=linenumber>04</CODE> <tt>   DATABASE </tt>db<tt>
+</tt><CODE class=linenumber>05</CODE> <tt>   ...
+</tt><CODE class=linenumber>06</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR size="1">
+
+<h4><a name="DS_ODI_PROGFLX">Keep the compiled programs configurable</a></h4>
+
+<p>You can use a string variable with the <a href="#DC_DATABASE">DATABASE</a> or
+<a href="#DC_CONNECT_TO">CONNECT TO</a> statement, in order to specify the
+database source at runtime (to be loaded from your own configuration file or from
+an environment variable). This solution gives you the best flexibility.</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN
+</tt><CODE class=linenumber>02</CODE> <tt>   DEFINE </tt>db, us, pwd <tt>CHAR</tt>(50)<tt>
+</tt><CODE class=linenumber>03</CODE> <tt>   LET </tt>db = arg_val(1)<tt>
+</tt><CODE class=linenumber>03</CODE> <tt>   LET </tt>us = arg_val(2)<tt>
+</tt><CODE class=linenumber>03</CODE> <tt>   LET </tt>pwd = arg_val(3)<tt>
+</tt><CODE class=linenumber>04</CODE> <tt>   CONNECT TO </tt>db <tt>USER </tt>us <tt>USING </tt>pwd<tt>
+</tt><CODE class=linenumber>05</CODE> <tt>   ...
+</tt><CODE class=linenumber>06</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR size="1">
+
+<h4><u><a name="DS_ODI_DIRECT">Direct database specification method</a></u></h4>
+
+<p>The <b>Direct Database Specification</b> method takes place when the database name
+used in the program is not used in <a href="FglProfile.html">FGLPROFILE</a> to
+define the data source with a '<tt>dbi.database.dbname.source</tt>' entry.&nbsp;
+In this case, the database specification used in the connection instruction is
+used as the data source.</p>
+
+<p>This method is well known for standard IBM Informix drivers, where you
+directly specify the database name and, if needed, the IBM Informix server:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN
+</tt><CODE class=linenumber>02</CODE> <tt>   DATABASE </tt>stores@orion<tt>
+</tt><CODE class=linenumber>03</CODE> <tt>   ...
+</tt><CODE class=linenumber>04</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p>In the next example, the database server is PostgreSQL. The string used in
+the connection instruction defines the PostgreSQL database (stock), the host
+(localhost), and the TCP service (5432) the postmaster is listening to. As
+PostgreSQL syntax is not allowed in standard BDL, a CHAR variable must be used:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN
+</tt><CODE class=linenumber>02</CODE> <tt>   DEFINE </tt>db <tt>CHAR</tt>(50)<tt>
+</tt><CODE class=linenumber>03</CODE> <tt>   LET </tt>db = &quot;stock@localhost:5432&quot;<tt>
+</tt><CODE class=linenumber>04</CODE> <tt>   DATABASE </tt>db<tt>
+</tt><CODE class=linenumber>05</CODE> <tt>   ...
+</tt><CODE class=linenumber>06</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR size="1">
+
+<h4><u><a name="DS_ODI_INDIRECT">Indirect database specification method</a></u></h4>
+
+<p>Indirect Database Specification method takes place when the database name
+used in the connection instruction corresponds to a '<tt>dbi.database.dbname.source</tt>'
+entry defined in the <a href="FglProfile.html">FGLPROFILE</a> configuration file.
+In this case, the <i>dbname</i> database specification is used as a key to read the connection
+information from the configuration file.</p>
+
+<p>In <a href="FglProfile.html">FGLPROFILE</a>, the entries starting with
+'<tt>dbi.database</tt>' group information defining connection parameters for
+indirect database specification:</p>
+
+<PRE>dbi.database.<b><i>dbname</i></b>.source   = &quot;<i>value</i>&quot;
+dbi.database.<b><i>dbname</i></b>.driver   = &quot;<i>value</i>&quot;
+dbi.database.<b><i>dbname</i></b>.username = &quot;<i>value</i>&quot;
+dbi.database.<b><i>dbname</i></b>.password = &quot;<i>value</i>&quot;  -- Warning: not encrypted, do not use in production!</PRE>
+
+<b><font color="#FF0000">Warning:</font> FGLPROFILE entry names are converted to lower case when loaded by the runtime system.
+    In order to avoid any mistakes, it is recommended to write FGLPROFILE entry
+    names and program database names in lower case.</b><p>In the next example,
+the program specifies a data source with the name <b>stores</b>, and FGLPROFILE
+defines the <i>source</i> and <i>driver</i> parameters for the <b>stores</b>
+data source:</p>
+
+<p>Program:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN
+</tt><CODE class=linenumber>02</CODE> <tt>   DATABASE </tt><b>stores</b><tt>
+</tt><CODE class=linenumber>03</CODE> <tt>   ...
+</tt><CODE class=linenumber>04</CODE> <tt>END MAIN</tt></PRE>
+
+<p>FGLPROFILE:</p>
+
+<PRE>dbi.database.<b>stores</b>.source   = &quot;stock@localhost:5432&quot;
+dbi.database.<b>stores</b>.driver   = &quot;dbmpgs721&quot;</PRE>
+
+<p>The indirect database specification technique is flexible: The database name in programs is a kind of alias
+for the real database which is defined in an external FGLPROFILE resource file,
+where entries can be easily changed on production sites without needing program
+re-compilation. For example, with this method, your can develop your application
+with the database name &quot;stores&quot; and connect to a database
+&quot;stores1&quot; in a production environment.</p>
+
+<p>The <i>source</i>, <i>driver</i>, <i> username/password</i> entries are described in detail in <a href="#DS_ODI_CONNPARAMS">Connection
+parameters</a>.</p>
+
+
+<HR size="1">
+
+<h4><a name="DS_ODI_IFXEMUL"><u>IBM Informix</u></a><a name="DS_ODI_IFXEMUL"><u>
+emulation parameters in FGLPROFILE</u></a></h4>
+
+<p>To simplify the migration process to other databases, the database interface
+and drivers can emulate some IBM Informix-specific features like SERIAL columns and
+temporary tables; the drivers can also do some SQL syntax translation.</p>
+
+<b><font color="#FF0000">Warning:</font> Avoid using IBM Informix emulations;
+write portable SQL code instead as described in <a href="SqlProgramming.html">SQL
+Programming</a>. IBM Informix emulations are only provided to help you in the
+migration process. Disabling IBM Informix emulations improves performance, because
+SQL statements do not have to be parsed to search for IBM Informix-specific syntax.</b>
+
+<p>Emulations can be controlled with FGLPROFILE parameters. You can disable all possible
+switches step-by-step, in order to test your programs for SQL
+compatibility.</p>
+
+<p>Global switch to enable or disable IBM Informix emulations:</p>
+
+<PRE>dbi.database.<i>dbname</i>.ifxemul = <u>{</u> true <u>|</u> false <u>}</u></PRE>
+
+<p>Feature specific switches:</p>
+
+<p>The 'ifxemul.datatype' switches define whether the specified data type must be
+converted to a native type (for example, when creating a table):</p>
+
+<PRE>dbi.database.<i>dbname</i>.ifxemul.datatype.<i>type</i> = <u>{</u> true <u>|</u> false <u>}</u></PRE>
+
+<p>Here, <i>type</i> can be one of:</p>
+
+<ul>
+  <li>char</li>
+  <li>varchar</li>
+  <li>datetime</li>
+  <li>decimal</li>
+  <li>money</li>
+  <li>float</li>
+  <li>real</li>
+  <li>integer</li>
+  <li>smallint</li>
+  <li>serial</li>
+  <li>text</li>
+  <li>byte</li>
+  <li>bigint</li>
+  <li>bigserial</li>
+  <li>int8</li>
+  <li>serial8</li>
+  <li>boolean</li>
+</ul>
+
+<p>To control SERIAL generation type, you can use the following
+switch:</p>
+
+<PRE>dbi.database.<i>dbname</i>.ifxemul.datatype.serial.emulation = <u>{</u> &quot;native&quot; <u>|</u> &quot;regtable&quot; <u>|</u> &quot;trigseq&quot; <u>}</u></PRE>
+
+<p>When using &quot;native&quot;, the database driver creates a native sequence
+generator - it is fast, but not fully compatible to IBM Informix SERIAL. When using
+&quot;regtable&quot;, you must have the SERIALREG table created - it is slower
+than the &quot;native&quot; emulation, but compatible to IBM Informix SERIAL. The
+serial emulation &quot;trigseq&quot;, can be used by some database drivers, to
+use triggers with native sequence generators.</p>
+
+<p>The 'temptables' switch can be used to control temporary table emulation:</p>
+
+<PRE>dbi.database.<i>dbname</i>.ifxemul.temptables = <u>{</u> true <u>|</u> false <u>}</u></PRE>
+
+<p>The 'temptables.emulation' switch can be used to specify what type of tables
+must be used to emulate temporary tables:</p>
+
+<PRE>dbi.database.<i>dbname</i>.ifxemul.temptables.emulation = <u>{</u> &quot;default&quot; <u>|</u> &quot;global&quot; <u>}</u></PRE>
+
+<p>The 'dblquotes' switch can be used to define whether double quoted strings must be
+converted to single quoted strings:</p>
+
+<PRE>dbi.database.<i>dbname</i>.ifxemul.dblquotes = <u>{</u> true <u>|</u> false <u>}</u></PRE>
+
+<p>If this emulation is enabled, all double quoted strings are converted,
+including database object names.</p>
+
+<p>The 'outers' switch can be used to control IBM Informix OUTER specification:</p>
+
+<PRE>dbi.database.<i>dbname</i>.ifxemul.outers = <u>{</u> true <u>|</u> false <u>}</u></PRE>
+
+<p>It is better to use standard ISO outer joins in your SQL statements.</p>
+
+<p>The 'today' switch can be used to convert the TODAY keyword to a native
+expression returning the current date:</p>
+
+<PRE>dbi.database.<i>dbname</i>.ifxemul.today = <u>{</u> true <u>|</u> false <u>}</u></PRE>
+
+<p>The 'current' switch can be used to convert the CURRENT X TO Y expressions to
+a native expression returning the current time:</p>
+
+<PRE>dbi.database.<i>dbname</i>.ifxemul.current = <u>{</u> true <u>|</u> false <u>}</u></PRE>
+
+<p>The 'selectunique' switch can be used to convert the SELECT UNIQUE to SELECT
+DISTINCT:</p>
+
+<PRE>dbi.database.<i>dbname</i>.ifxemul.selectunique = <u>{</u> true <u>|</u> false <u>}</u></PRE>
+
+<p>It is better to replace all UNIQUE keywords by DISTINCT.</p>
+
+<p>The 'colsubs' switch can be used to control column sub-strings expressions (col[x,y])
+to native sub-string expressions:</p>
+
+<PRE>dbi.database.<i>dbname</i>.ifxemul.colsubs = <u>{</u> true <u>|</u> false <u>}</u></PRE>
+
+<p>The 'matches' switch can be used to define whether MATCHES expressions must be
+converted to LIKE expressions:</p>
+
+<PRE>dbi.database.<i>dbname</i>.ifxemul.matches = <u>{</u> true <u>|</u> false <u>}</u></PRE>
+
+<p>It is better to use the LIKE operator in your SQL statements.</p>
+
+<p>The 'length' switch can be used to define whether LENGTH function names have to be
+converted to the native equivalent:</p>
+
+<PRE>dbi.database.<i>dbname</i>.ifxemul.length = <u>{</u> true <u>|</u> false <u>}</u></PRE>
+
+<p>The 'rowid' switch can be used to define whether ROWID keywords have to be
+converted to native equivalent (for example, OID in PostgreSQL):</p>
+
+<PRE>dbi.database.<i>dbname</i>.ifxemul.rowid = <u>{</u> true <u>|</u> false <u>}</u></PRE>
+
+<p>It is better to use primary keys instead.</p>
+
+<p>The 'listupdate' switch can be used to convert the UPDATE statements using
+non-ANSI syntax:</p>
+
+<PRE>dbi.database.<i>dbname</i>.ifxemul.listupdate = <u>{</u> true <u>|</u> false <u>}</u></PRE>
+
+<p>The 'extend' switch can be used to convert simple EXTEND() expressions to
+native date/time expressions:</p>
+
+<PRE>dbi.database.<i>dbname</i>.ifxemul.extend = <u>{</u> true <u>|</u> false <u>}</u></PRE>
+
+
+<HR size="1">
+
+<h4><a name="DS_ODI_DBVSPEC"><u>Defining database vendor specific parameters in FGLPROFILE</u></a></h4>
+
+<p>Some database vendor specific connection parameters can be configured by
+using <a href="FglProfile.html">FGLPROFILE</a> entries with the following
+syntax:</p>
+
+<PRE>dbi.database.<b><i>dsname</i></b>.<i>dbtype</i>.<i>param</i>.<u>[</u>.<i>subparam</i><u>]</u> = &quot;<i>value</i>&quot;</PRE>
+
+<p>The table below describes all database vendor specific parameters supported:</p>
+<div align="center">
+  <center>
+  <table width="90%" border="0">
+    <tbody>
+      <tr>
+        <td align="left" width="20%" bgColor="#c0c0c0"><b>Database
+          Server</b></td>
+        <td align="left" bgColor="#c0c0c0"><b>Parameters</b></td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%" bgcolor="#F2F2F2"><b>Genero db</b></td>
+        <td vAlign="top" align="left" bgcolor="#F2F2F2">&nbsp;</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.ads.schema<br>
+          </b>Name of the database schema to be selected after connection is
+          established.<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.ads.schema = &quot;store2&quot;<br>
+          </tt>Usage:<br>
+          Set this parameter to a specific schema in order to share the same
+          table with all users.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.ads.compatibility.check<br>
+          </b>Defines the server compatibility checking at connection time.<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.ads.compatibility.check =
+          &quot;INFORMIX&quot;<br>
+          </tt>Usage:<br>
+          This entry can be used to bypass the COMPATIBILITY_MODE server
+          parameter checking when connecting to the database. By default
+          (starting with the 3.80 driver) COMPATIBILITY_MODE must be INFORMIX.
+          Using &quot;none&quot; will bypass the checking; Any other value will
+          force database compatibility mode checking. Default is
+          &quot;INFORMIX&quot;.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.ads.driver.mode<br>
+          </b>Defines the driver mode, to make the driver behave like an older
+          driver version.<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.ads.driver.mode = &quot;3.61&quot;<br>
+          </tt>Usage:<br>
+          This entry can be set to a specific Genero db version, to force the
+          driver to use the IBM Informix emulations of an older driver version. For
+          example, when using a driver for 3.80, the default mode is
+          &quot;3.80&quot; and the new native DATETIME and/or INTERVAL types are
+          used. If you want to use the old DATETIME / INTERVAL emulation, set
+          the above entry to &quot;3.61&quot;.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%" bgcolor="#F2F2F2"><b>IBM DB2</b></td>
+        <td vAlign="top" align="left" bgcolor="#F2F2F2">&nbsp;</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.db2.schema<br>
+          </b>Name of the database schema to be selected after connection is
+          established.<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.db2.schema = &quot;store2&quot;<br>
+          </tt>Usage:<br>
+          Set this parameter to a specific schema in order to share the same
+          table with all users.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.db2.prepare.deferred<br>
+          </b>True/False Boolean to enable/disable deferred prepare.<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.db2.prepare.deferred = true<br>
+          </tt>Usage:<br>
+          Set this parameter to true if you do not need to get SQL errors during
+          PREPARE statements: SQL statements will be sent to the server when
+          executing the statement (OPEN or EXECUTE). The default is false (SQL
+          statements are sent to the server when doing the PREPARE).</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%" bgcolor="#F2F2F2"><b>ORACLE</b></td>
+        <td vAlign="top" align="left" bgcolor="#F2F2F2">&nbsp;</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.ora.schema<br>
+          </b>Name of the database schema to be selected after connection is
+          established.<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.ora.schema = &quot;store2&quot;<br>
+          </tt>Usage:<br>
+          Set this parameter to a specific schema in order to share the same
+          table with all users.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.ora.prefetch.rows<br>
+          </b>Maximum number of rows to be pre-fetched.<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.ora.prefetch.rows = 50<br>
+          </tt>Usage:<br>
+          You can use this parameter to increase performance by defining the
+          maximum number of rows to be fetched automatically. However, the
+          bigger this parameter is, the more memory is used by each program.
+          This parameter applies to all cursors in the application.<br>
+          The
+          default is 10 rows.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.ora.prefetch.memory<br>
+          </b>Maximum buffer size for pre-fetching (in bytes).<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.ora.prefetch.memory = 4096<br>
+          </tt>Usage:<br>
+          This parameter is equivalent to prefetch.rows, but here you can specify the memory size
+          instead of the number of rows. As prefetch.rows, this parameter
+          applies to all cursors in the application.<br>
+          The default is 0, which means that memory size is not included in
+          computing the number of rows to pre-fetch.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.ora.sid.command<br>
+          </b>SQL command (SELECT) to generate a unique session id (used for temp table names).<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.ora.sid.command = "SELECT TO_CHAR(SID)||'_'||TO_CHAR(SERIAL#) FROM V$SESSION WHERE AUDSID=USERENV('SESSIONID')"<br>
+          </tt>Usage:<br>
+          By default the driver uses "SELECT USERENV('SESSIONID') FROM DUAL". This is the standard
+          session identifier in Oracle, but it can become a very large number and can't be reset.<br>
+          This parameter gives you the freedom to provide your own way to generate a session id.<br>
+          The SELECT statement must return a single row with one single column.<br>
+          Value can be an integer or an identifier.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.ora.cursor.scroll.emul<br>
+          </b>Switch to enable scrollable cursor emulation to workaround Oracle
+          bugs.<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.ora.cursor.scroll.emul = true<br>
+          </tt>Usage:<br>
+          A lot of customers have reported bugs with native Oracle scrollable
+          cursors. To workaround these bugs, you can set this entry and enable
+          client-side scrollable cursors emulation. You should however use
+          native scroll cursors if possible, these are more efficient as the
+          emulation. Temporary files will be created on the application server
+          if this option is true.&nbsp;<br>
+          Default is true for ODI drivers designed for Oracle versions &lt;=
+          9.0, false for more recent versions of Oracle.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%" bgcolor="#F2F2F2"><b>SQL Server
+          (MDAC)</b></td>
+        <td vAlign="top" align="left" bgcolor="#F2F2F2">&nbsp;</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.msv.logintime<br>
+          </b>Connection timeout (in seconds).<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.msv.logintime = 5<br>
+          </tt>Usage:<br>
+          Set this parameter to raise an SQL error if the connection can not be
+          established after the given number of seconds.<br>
+          The default is 5
+          seconds.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.msv.prefetch.rows<br>
+          </b>Maximum number of rows to be pre-fetched.<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.msv.prefetch.rows = 50<br>
+          </tt>Usage:<br>
+          You can use this parameter to increase performance. However, the
+          bigger this parameter is, the more memory is used by each program.<br>
+          The
+          default is 10 rows.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%" bgcolor="#F2F2F2"><b>SQL Server
+          (NCLI)</b></td>
+        <td vAlign="top" align="left" bgcolor="#F2F2F2">&nbsp;</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.snc.logintime<br>
+          </b>Connection timeout (in seconds).<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.snc.logintime = 5<br>
+          </tt>Usage:<br>
+          Set this parameter to raise an SQL error if the connection can not be
+          established after the given number of seconds.<br>
+          The default is 5
+          seconds.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.snc.prefetch.rows<br>
+          </b>Maximum number of rows to be pre-fetched.<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.snc.prefetch.rows = 50<br>
+          </tt>Usage:<br>
+          You can use this parameter to increase performance. However, the
+          bigger this parameter is, the more memory is used by each program.<br>
+          The
+          default is 10 rows.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.snc.widechar<br>
+          </b>True/False Boolean to control Wide Char usage for character string
+          data.<br>
+          You can set this parameter to false if you use char/varchar columns in
+          the SQL Server database.<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.snc.widechar = false<br>
+          </tt>Usage:<br>
+          By default the SNC driver uses Wide Char ODBC functions, by converting
+          the character data from the current locale to UCS/2, adding the N
+          prefix before string literals and binding SQL parameters with
+          SQL_C_WCHAR + SQL_WCHAR/SQL_WVARCHAR types.<br>
+          If you set this parameter to false, the driver will pass the character
+          strings as is without charset conversion, leave the string literals without N prefix and bind
+          character string parameters with SQL_C_CHAR + SQL_CHAR/SQL_VARCHAR.<br>
+          The
+          default is true (use wide chars).</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%" bgcolor="#F2F2F2"><b>SQL Server
+          (FreeTDS)</b></td>
+        <td vAlign="top" align="left" bgcolor="#F2F2F2">&nbsp;</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.ftm.logintime<br>
+          </b>Connection timeout (in seconds).<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.ftm.logintime = 5<br>
+          </tt>Usage:<br>
+          Set this parameter to raise an SQL error if the connection can not be
+          established after the given number of seconds.<br>
+          The default is 5
+          seconds.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.ftm.prefetch.rows<br>
+          </b>Maximum number of rows to be pre-fetched.<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.ftm.prefetch.rows = 50<br>
+          </tt>Usage:<br>
+          You can use this parameter to increase performance. However, the
+          bigger this parameter is, the more memory is used by each program.<br>
+          The
+          default is 10 rows.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%" bgcolor="#F2F2F2"><b>SQL Server
+          (EasySoft)</b></td>
+        <td vAlign="top" align="left" bgcolor="#F2F2F2">&nbsp;</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.esm.logintime<br>
+          </b>Connection timeout (in seconds).<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.esm.logintime = 5<br>
+          </tt>Usage:<br>
+          Set this parameter to raise an SQL error if the connection can not be
+          established after the given number of seconds.<br>
+          The default is 5
+          seconds.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.esm.prefetch.rows<br>
+          </b>Maximum number of rows to be pre-fetched.<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.esm.prefetch.rows = 50<br>
+          </tt>Usage:<br>
+          You can use this parameter to increase performance. However, the
+          bigger this parameter is, the more memory is used by each program.<br>
+          The
+          default is 10 rows.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%" bgcolor="#F2F2F2"><b>Sybase
+          Adaptive Server Enterprise (ASE)</b></td>
+        <td vAlign="top" align="left" bgcolor="#F2F2F2">&nbsp;</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.ase.logintime<br>
+          </b>Connection timeout (in seconds).<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.asa.logintime = 10<br>
+          </tt>Usage:<br>
+          Set this parameter to raise an SQL error if the connection can not be
+          established after the given number of seconds.<br>
+          The default is 5
+          seconds.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.ase.prefetch,rows<br>
+          </b>Maximum number of rows to be pre-fetched.<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.ase.prefetch.rows = 50<br>
+          </tt>Usage:<br>
+          You can use this parameter to increase performance. However, the
+          bigger this parameter is, the more memory is used by each program.<br>
+          The
+          default is 10 rows.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%" bgcolor="#F2F2F2"><b>Sybase
+          Adaptive Server Anywhere (ASA)</b></td>
+        <td vAlign="top" align="left" bgcolor="#F2F2F2">&nbsp;</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="20%"></td>
+        <td vAlign="top" align="left"><b>dbi.database.<i>dsname</i>.asa.logintime<br>
+          </b>Connection timeout (in seconds).<br>
+          Example:<br>
+          <tt>dbi.database.<b>stores</b>.asa.logintime = 10<br>
+          </tt>Usage:<br>
+          Set this parameter to raise an SQL error if the connection can not be
+          established after the given number of seconds.<br>
+          The default is 5
+          seconds.</td>
+      </tr>
+    </tbody>
+  </table>
+  </center>
+</div>
+
+
+<HR size="1">
+
+<h4><a name="DS_ODI_IFXENVW">IBM Informix</a><a name="DS_ODI_IFXENVW"> environment variables on Windows platforms</a></h4>
+<p>On Windows platforms, in a C console application, the IBM Informix environment
+variables must be set with a call to <b>ifx_putenv()</b>. See INFORMIX ESQL/C
+documentation for more details about environment settings.</p>
+<p>By default, the database driver automatically calls <b>ifx_putenv()</b> for
+all standard IBM Informix environment variables such as INFORMIXDIR with the current
+value set in the console environment. You can specify additional environment
+variables to be set with the following FGLPROFILE entries:</p>
+<p><b>dbi.stdifx.environment.count = <i>max<br>
+          </i>dbi.stdifx.environment.<i>index</i> = &quot;<i>variable</i>&quot;</b></p>
+
+
+<HR size="1">
+
+
+<h3><a name="USER_AUTH">Database user authentication</a></h3>
+
+<p>Connecting to a database server is not just specifying a database name. IBM Informix
+4gl programmers are used to write &quot;<tt>DATABASE dbname</tt>&quot;
+to get connected. But this is only possible when the database server is
+configured to trust Operating System users. Only a few database server support
+OS authentication. Database users are usually defined in the database server and
+must be explicitly identified by a user name and password. However, some
+database servers support external authentication methods, which can be used with
+Genero. See DB specific documentation for more details.</p>
+
+<h4><u><a name="UA_CONNECT">Specifying a user name and password with CONNECT</a></u></h4>
+
+<p>In order to specify a user name and password, you typically use the <a href="#DC_CONNECT_TO">CONNECT instruction</a>
+with the <tt>USER</tt>/<tt>USING</tt>
+clause:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN
+</tt><CODE class=linenumber>02</CODE> <tt>   DEFINE </tt>login_variable, pswd_variable <tt>STRING
+</tt><CODE class=linenumber>03</CODE> <tt>   </tt>-- get username and password from login dialog or custom configuration source<tt>
+</tt><CODE class=linenumber>04</CODE> <tt>   CONNECT TO </tt>&quot;orc1fox+driver='dbmoraA2x'&quot; <tt>USER </tt>login_variable <tt>USING </tt>pswd_variable<tt>
+</tt><CODE class=linenumber>05</CODE> <tt>   ...
+</tt><CODE class=linenumber>06</CODE> <tt>END MAIN</tt></PRE>
+
+<p>This is the recommended way to connect to a database server.</p>
+
+<h4><a name="UA_DATABASE">Specifying a user name and password with DATABASE</a></h4>
+
+<p>The <a href="#DC_DATABASE">DATABASE instruction</a> does not support the <tt>USER</tt>/<tt>USING</tt> clause as
+<tt>CONNECT</tt>. If you don't use Operating System authentication
+or any another (external) method that does not require a user authentication to
+connect to the database, you must provide a user name and password in some way.</p>
+
+<b><font color="#FF0000">Warning:</font>  For backward compatibility reasons,
+when using the IBM Informix driver, the username / password specification is ignored
+by the <tt>DATABASE</tt> instruction, only the <tt>CONNECT TO</tt> instruction
+takes external (or callback) login parameters into account.</b>
+
+<p>Default login and password could be specified with the <b>dbi.database.<i>dbname</i>.username</b>
+and <b>dbi.database.<i>dbname</i>.password</b> <a href="#DS_ODI_INDIRECT">FGLPROFILE
+entries</a>, but we strongly discourage you to do this for security reasons (the
+password is in clear).</p>
+
+<p>You can dynamically provide the username and password with the
+<a href="#DBCUSERAUTH">user authentication callback function</a> by defining a global FGLPROFILE entry.</p>
+
+<p>You can also specify the login parameters in the connection string used in the
+database name specification in <tt> DATABASE</tt> instruction.</p>
+
+<h4><a name="UA_PRECEDENCE">Order of precedence for database user specification</a></h4>
+
+<p>Database user login can be specified with different methods, as show in the following
+table. Precedence order if defined from top to bottom:</p>
+
+<div align="center">
+  <center>
+  <table height="140" width="95%" border="0">
+    <tbody>
+      <tr>
+        <td align="left" width="30%" bgColor="#c0c0c0" height="22"><b>
+          Connection Instruction</b></td>
+        <td align="left" width="30%" bgColor="#c0c0c0" height="22"><strong>FGLPROFILE</strong></td>
+        <td align="left" bgColor="#c0c0c0" height="22"><strong>Effect</strong></td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="30%" height="34"><tt>CONNECT
+          TO &quot;dbname&quot;&nbsp;USER &quot;<i>user</i>&quot;&nbsp;USING &quot;<i>pswd</i>&quot;<br>
+          </tt>
+          &nbsp;&nbsp; or<br>
+          <tt>DEFINE db
+          VARCHAR(200)<br>
+          LET db = &quot;dbname+username='<i>username</i>',password='<i>pswd</i>'&quot;<br>
+          DATABASE db</tt></td>
+        <td vAlign="top" align="left" width="30%" height="34">N/A (ignored)
+          <p>&nbsp;</p>
+        </td>
+        <td vAlign="top" align="left" height="34">The user
+          information in the <tt>USER</tt>/<tt>USING</tt> clause of the <tt> CONNECT TO</tt> instruction
+          or in the connection string of the <tt> DATABASE</tt> instruction are used to identify the actual
+          user. are used to identify the actual
+          user.<br>
+          Note that connection string can also be used with <tt>CONNECT TO</tt>.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="30%" height="34"><tt>DATABASE
+          dbname</tt><b><br>
+          </b>
+          &nbsp;&nbsp; or<br>
+          <tt>
+          CONNECT TO &quot;dbname&quot;</tt><b><br>
+          </b></td>
+        <td vAlign="top" align="left" width="30%" height="34">No specific <code>dbi.*</code>
+          entry
+        </td>
+        <td vAlign="top" align="left" height="34">No user login and password is provided to the database server. Usually, the
+          Operating System authentication takes place.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="30%" height="34"><tt>DATABASE
+          dbname</tt><b><br>
+          </b>
+          &nbsp;&nbsp; or<br>
+          <tt>
+          CONNECT TO &quot;dbname&quot;</tt><b><br>
+          </b></td>
+        <td vAlign="top" align="left" width="30%" height="34"><code>dbi.default.userauth.callback
+          = &quot;fx&quot;</code>
+          <p>&nbsp;</p>
+        </td>
+        <td vAlign="top" align="left" height="34">Callback function <code>fx</code>
+          is called to get user name and password when connection instruction is
+          executed.</td>
+      </tr>
+      <tr>
+        <td vAlign="top" align="left" width="30%" height="34"><tt>DATABASE
+          dbname</tt><b><br>
+          </b>
+          &nbsp;&nbsp; or<br>
+          <tt>
+          CONNECT TO &quot;dbname&quot;</tt><b><br>
+          </b></td>
+        <td vAlign="top" align="left" width="30%" height="34"><code>dbi.database.dbname.username
+          = ...<br>
+          dbi.database.dbname.password = ...</code>
+          <p>&nbsp;</p>
+        </td>
+        <td vAlign="top" align="left" height="34">The <a href="FglProfile.html">FGLPROFILE</a>
+          default user name and password are used to connect to the database
+          server.<br>
+          <b><font color="#FF0000">NOT RECOMMENDED IN PRODUCTION!</font></b></td>
+      </tr>
+    </tbody>
+  </table>
+  </center>
+</div>
+
+<h4><a name="UA_ADS"><u>Authenticating users with Genero db</u></a></h4>
+
+<p>When using Genero db, you must declare users in the database with
+the <tt>CREATE USER</tt> command. Users can be authenticated as database users
+or as operating system users. With database-only users, you need to give a login
+and password with the <tt>USER</tt>/<tt>USING</tt>
+ clause of the <a href="#DC_CONNECT_TO">CONNECT instruction</a>. With OS
+authenticated users, no <tt>USER</tt>/<tt>USING</tt>
+ clause is needed and the program can also use the <a href="#DC_DATABASE">DATABASE
+instruction</a>.</p>
+
+<p> In order to create a DB user authenticated by the Operating System, use the <tt> IDENTIFIED EXTERNALLY</tt> clause in
+the <tt>CREATE USER</tt> command:<br>
+      <br>
+      <font size="2" face="Courier New">&nbsp;&nbsp; mydb&gt; CREATE USER username IDENTIFIED EXTERNALLY;</font><font size="2"><br>
+      </font>
+      <br>
+      The OS users will be able to connect to the database if the $ANTSHOME/Server/ants.rhosts
+      file contains an entry to identify the OS user.<br>
+      <br>
+      <b><font color="#FF0000">Warning:</font></b> Pay attention to the user
+      name, which can be case-sensitive according to the database configuration
+settings. You can check
+      the name of the database users by querying the system tables (ANTS_ALL_USERS
+      in 3.80).<br>
+<br>
+ See the Genero db documentation for more details about OS users creation.</p>
+
+<h4><u><a name="UA_IFX">Authenticating users with IBM Informix</a></u></h4>
+
+<p>IBM Informix users are operating system users with database connection privileges,
+if the client program resides on the same machine as the database server, you
+typically use OS authentication and don't need to provide a user name and
+password. However, you need to specify a user name and password if you want to connect
+to a remove server that does not have trusted connection configured.</p>
+
+<h4><u><a name="UA_ORA">Authenticating users with Oracle</a></u></h4>
+
+<p>Oracle users can be authenticated in different manner: as DB users, as
+OS users or with another external authentication method like Kerberos.</p>
+
+
+<p>If you don't specify the <tt>USER</tt>/<tt>USING</tt>
+ clause, OS authentication takes place.</p>
+
+
+<p>An Oracle connection can also be established as SYSDBA or SYSOPER users. This
+is possible with Genero by specifying the following strings after the user name in the <tt>USER</tt>
+clause of the <a href="#DC_CONNECT_TO">CONNECT instruction</a>:</p>
+
+  <table width="90%" border="0">
+      <tr>
+        <td align="left" width="40%" bgColor="#c0c0c0"><b>String passed to USER
+          clause after user name</b></td>
+        <td align="left" bgColor="#c0c0c0"><b>Effect as Oracle connection</b></td>
+      </tr>
+    <tr>
+        <td vAlign="top" align="left" width="40%"><tt>/SYSDBA</tt></td>
+        <td vAlign="top" align="left">Connection will be established as SYSDBA
+          user.</td>
+    </tr>
+    <tr>
+        <td vAlign="top" align="left" width="40%"><tt>/SYSOPER</tt></td>
+        <td vAlign="top" align="left">Connection will be established as SYSOPER
+          user.</td>
+    </tr>
+  </table>
+<p>Note that you must specify the user login before the /SYSDBA or /SYSOPER strings:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>CONNECT TO </tt>&quot;orc1fox+driver='dbmoraA2x'&quot; <tt>USER </tt>&quot;orauser/SYSDBA&quot; <tt>USING </tt>&quot;fourjs&quot;</PRE>
+
+<h4><u><a name="UA_MSV">Authenticating users with SQL Server</a></u></h4>
+
+<p>SQL Server users can be authenticated as DB users or with the Windows users.</p>
+
+
+<p>If you don't specify the <tt>USER</tt>/<tt>USING</tt>
+ clause, OS authentication takes place.</p>
+
+
+<HR>
+
+<h2><a name="DBCENV">Database Client Environment</a></h2>
+
+<p>To connect to a database server, the BDL programs must be executed in the
+correct database client environment. The database client software is usually
+included in the database server software, so you do not need to install it when
+your programs are executed on the same machine as the database server. However,
+you may need to install the database client software in three-tier
+configurations, where applications and database servers run on different
+systems.</p>
+
+
+<p>This section describes basic configuration elements of the database client
+environment for some well-known database servers.</p>
+
+<h3>Genero db</h3>
+<ol>
+  <li>The <b>ANTSHOME</b> environment variable must define the Genero db software
+    installation path.</li>
+  <li>The <b>PATH</b> environment variable must define the access path to database
+    client programs.</li>
+  <li>On UNIX, <b>LD_LIBRARY_PATH</b> (or equivalent)
+    must hold the path to <b>$ANTSHOME/antsodbc</b> to find libaodbc.so.</li>
+  <li>On Windows, <b>PATH</b> 
+    must hold the path to <b>%ANTSHOME$\antsodbc</b> to find AODBC.DLL.</li>
+  <li>The ANTS ODBC client library '<b>libaodbc*</b>' must be available.</li>
+  <li>You can make a connection test with the ANTS <b>antscmd</b> tool.</li>
+</ol>
+
+<h3>IBM DB2 Universal Database</h3>
+<ol>
+  <li>The <b>DB2DIR</b> environment variable must define the DB2 software
+    installation path.</li>
+  <li>The <b>PATH</b> environment variable must define the access path to database
+    client programs.</li>
+  <li>On UNIX, <b>LD_LIBRARY_PATH</b> (or equivalent)
+    must hold the path to <b>$DB2DIR/lib</b>.</li>
+  <li>The DB2 client library '<b>DB2DIR/lib/libdb2*</b>' must be available.</li>
+  <li>The <b>remote server node</b> and the <b>remote database</b> must be
+    declared locally with the CATALOG db2 command.</li>
+  <li>You can make a connection test with the IBM <b>db2</b> tool.</li>
+</ol>
+
+<h3>IBM Informix Dynamic Server</h3>
+<ol>
+  <li>The <b> INFORMIXDIR</b> environment variable must define the IBM Informix software
+    installation path.</li>
+  <li>The <b>PATH</b> environment variable must define the access path to database
+    client programs.</li>
+  <li>On UNIX, <b>LD_LIBRARY_PATH</b> (or equivalent)
+    must hold the path to <b>$INFORMIXDIR/lib:$INFORMIXDIR/lib/esql</b>.</li>
+  <li>The IBM Informix client libraries '<b>INFORMIXDIR/lib/*</b>' must be
+    available.</li>
+  <li>The <b>INFORMIXSERVER</b> environment variable can be used to define the
+    name of the database server.</li>
+  <li>The <b>sqlhost</b> file must define the database server identified by
+    INFORMIXSERVER.</li>
+  <li>You can make a connection test with the IBM Informix <b>dbaccess</b> tool.</li>
+</ol>
+
+
+<h3>MySQL</h3>
+<ol>
+  <li>The <b>MYSQLDIR</b> environment variable must define the MySQL software
+    installation path.</li>
+  <li>The <b>PATH</b> environment variable must define the access path to database
+    client programs.</li>
+  <li>On UNIX, <b>LD_LIBRARY_PATH</b> (or equivalent)
+    must hold the path to <b>$MYSQLDIR/lib</b>.</li>
+  <li>You can make a connection test with the <b>mysql</b> tool.</li>
+</ol>
+
+
+<h3>Oracle</h3>
+<ol>
+  <li>The <b>ORACLE_HOME</b> environment variable must define the Oracle software
+    installation path.</li>
+  <li>The <b>ORACLE_SID</b> environment variable can be used to define the name
+    of the local database instance.</li>
+  <li>The <b>PATH</b> environment variable must define the access path to database
+    client programs.</li>
+  <li>On UNIX, <b>LD_LIBRARY_PATH</b> (or equivalent)
+    must hold the path to <b>$ORACLE_HOME/lib</b>.</li>
+  <li>The Oracle client library '<b>ORACLE_HOME/lib/libclntsh*</b>' must be
+    available.</li>
+  <li>The <b>TNSNAMES.ORA</b> file must define the database server identifiers
+    for remote connections (the <b>Oracle Listener</b> must be started on the
+    database server to allow remote connections).</li>
+  <li>The <b>SQLNET.ORA</b> file must define network settings for remote
+    connections.</li>
+  <li>You can make a connection test with the Oracle <b>sqlplus</b> tool.</li>
+</ol>
+
+<h3>PostgreSQL</h3>
+<ol>
+  <li>The <b>PGDIR</b> environment variable must define the PostgreSQL software
+    installation path.</li>
+  <li>The <b>PATH</b> environment variable must define the access path to database
+    client programs.</li>
+  <li>On UNIX, <b>LD_LIBRARY_PATH</b> (or equivalent)
+    must hold the path to <b>$PGDIR/lib</b>.</li>
+  <li>The PostgreSQL client library '<b>PGDIR/lib/libpq*</b>' must be available.</li>
+  <li>On the database server, the <b>pg_hba.conf</b> file must define security
+    policies.</li>
+  <li>You can make a connection test with the PostgreSQL <b>psql</b> tool.</li>
+</ol>
+
+<h3>SQL Server</h3>
+<ol>
+  <li>Make sure that <b>ODBC data source</b> is defined on database client and
+    database server systems, with the correct ODBC driver. Note that Genero FGL
+    provides different sort of SQL Server drivers:
+    <ul>
+      <li>The <b>MSV</b> driver is based on the Microsoft Data Access Components
+        (MDAC) ODBC driver (SQLSRV32.DLL). This driver is obsolete if you are
+        using SQL Server 2005.</li>
+      <li>The <b>SNC</b> driver&nbsp; is based on the <b>SQL Native Client</b>
+        ODBC driver (SQLNCLI.DLL). This is the new driver to be used with SQL
+        Server 2005.</li>
+      <li>The <b>FTM</b> driver&nbsp; is based on the <b>FreeTDS</b> ODBC driver
+        (libtdsodbc.so). This driver can be used if you want to connect to SQL
+        Server from a UNIX machine.</li>
+      <li>The <b>ESM</b> driver&nbsp; is based on the <b>EasySoft</b> ODBC driver
+        (libessqlsrv.so). This driver can be used if you want to connect to SQL
+        Server from a UNIX machine.</li>
+    </ul>
+  </li>
+  <li>On Windows platforms, the <b>PATH</b> environment variable must define the access path to database
+    client programs (<b>ODBC32.DLL</b>).<br>
+    On UNIX/Linux platforms, check database client software documentation for
+    environment settings (<b>LD_LIBRARY_PATH</b>, <b>ldconfig</b>).</li>
+  <li>On Windows, Check the SQL Server Client configuration with the <b>Client Network
+    Utility</b> tool: Verify that the ANSI to OEM conversion corresponds to the
+    execution of Genero BDL applications in a CONSOLE environment.<br>
+    On UNIX/Linux platforms, check that the client character set parameter of
+    the ODBC data source corresponds the the locale used by the application
+    (LANG/LC_ALL).</li>
+  <li>On Windows, you can make a connection test with the Microsoft <b>Query Analyzer</b>
+    tool.<br>
+    On UNIX/Linux, see client software documentation for available SQL command
+    tools (<b>isql</b> for example).</li>
+</ol>
+
+
+<h3>SQLite</h3>
+<ol>
+  <li>The <b>SQLite</b> library must be installed on the server.</li>
+  <li>The SQLite library uses <b>UTF-8</b>. If the current character set (LANG/LC_ALL)
+    is not UTF-8, like plain ASCII or UTF-8, the ODI driver will try to load the
+    <b>iconv DLL</b> to make conversions. If the iconv library is not found, the
+    driver cannot be used.</li>
+  <li>You can make a connection test with the <b>sqlite3*.bin</b> command line tool.</li>
+</ol>
+
+
+<h3>Sybase Adaptive Server Enterprise (ASE)</h3>
+<ol>
+  <li>The <b>SYBASE</b> environment variable must define the Sybase ASE software
+    installation path.</li>
+  <li>The <b>PATH</b> environment variable must define the access path to database
+    client programs.</li>
+  <li>On UNIX, <b>LD_LIBRARY_PATH</b> (or equivalent)
+    must hold the path to the client libraries <b>libsybct.so</b> and <b>libsybcs.so</b>.<br>
+    On Windows, the path to the DLLs must be defined in <b>PATH</b>.</li>
+  <li>Check the Sybase Client configuration, especially server name definition
+    in connection's directory source, see DSQUERY environment variable.</li>
+  <li>You can make a connection test with the Sybase <b>ISQL</b> tool.</li>
+</ol>
+
+
+<h3>Sybase Adaptive Server Anywhere (ASA)</h3>
+<ol>
+  <li>The <b>ASADIR</b> environment variable must define the Sybase ASA software
+    installation path.</li>
+  <li>The <b>PATH</b> environment variable must define the access path to database
+    client programs.</li>
+  <li>Check the Sybase Client configuration.</li>
+  <li>You can make a connection test with the Sybase <b>ISQL</b> tool.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="FGLSQLDEBUG">FGLSQLDEBUG</a></h3>
+  <p>You can set the <strong><a href="EnvironmentVariables.html#EV_FGLSQLDEBUG">FGLSQLDEBUG</a></strong> environment variable to
+  get debug information on SQL instructions. This variable can be set to an
+  integer value from 0 to 10,
+  according to the debugging details you want to see. The debug messages are sent to the
+  standard error stream. If needed, you can redirect the standard error output into a file.</p>
+  <p>Unix (shell) example:</p>
+      <p><code>FGLSQLDEBUG=3<br>
+      export FGLSQLDEBUG<br>
+      fglrun myprog 2&gt;sqldbg.txt</code></p>
+
+
+<p>An SQL debug header is printed <u>before</u>
+executing the underlying ODI driver code. If the driver code crashes or raises
+an assertion, you can easily find the last SQL instruction that was executed by
+the program, and report to you support center.</p>
+
+
+<HR>
+
+<h3><a name="SQLCA_RECORD">SQLCA</a></h3>
+<h4>Purpose:</h4>
+
+<p>The <tt> SQLCA</tt> variable is a predefined record containing information 
+about the execution of an SQL statement. </p>
+
+<h4>Syntax:</h4><code> SQLCA</code>
+
+<h4>Definition:</h4>
+<pre><tt>DEFINE</tt> SQLCA <tt>RECORD</tt>
+  SQLCODE <tt>INTEGER,</tt>
+  SQLERRM <tt>CHAR(71),</tt>
+  SQLERRP <tt>CHAR(8),</tt>
+  SQLERRD <tt>ARRAY[6] OF INTEGER,</tt>
+  SQLAWARN <tt>CHAR(7)</tt>
+<tt>END RECORD</tt></pre>
+
+<h4>Notes:</h4>
+<ol>
+  <li>The <tt> SQLCA</tt> record is filled after any SQL statement execution.</li>
+  <li>The &quot;SQLCA&quot; name stands for &quot;SQL Communication
+Area&quot;.</li>
+  <li><tt>SQLCODE</tt> contains the SQL execution code ( 0 = OK, 100 = not row
+    found, &lt;0 = error ).</li>
+  <li><tt>SQLERRM</tt>  contains the IBM Informix error message parameter.</li>
+  <li><tt>SQLERRP</tt> is not used at this time.</li>
+  <li><tt>SQLERRD[1]</tt> is not used at this time.</li>
+  <li><tt>SQLERRD[2]</tt> contains the last SERIAL or the native SQL error code.</li>
+  <li><tt>SQLERRD[3]</tt> contains the number of rows processed in the last
+    statement (server dependent).</li>
+  <li><tt>SQLERRD[4]</tt> contains the estimated CPU cost for the query (server
+    dependent).</li>
+  <li><tt>SQLERRD[5]</tt> contains the offset of the error in the SQL statement
+    text (server dependent).</li>
+  <li><tt>SQLERRD[6]</tt> contains the ROWID of the last row that was processed
+    (server dependent).</li>
+  <li><tt>SQLAWARN</tt> contains the ANSI warning represented by a W character at a
+    given position in the string.</li>
+  <li><tt>SQLAWARN[1]</tt> is set to W when any of the other warning characters
+    have been set to W.</li>
+  <li><tt>SQLAWARN[2-7]</tt>  have specific meanings, see database server
+    documentation for more details.
+  </li>
+</ol>
+
+
+<h4>Usage:</h4>
+The <tt>SQLCA</tt> pre-defined record is used to get an SQL execution
+diagnostic. Error and warning information can be found in this structure.
+<p><b><font color="#FF0000">Warning: </font><tt>SQLCA</tt>  is not designed to
+be modified by user code, it must be used as a read-only record.</b></p>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>02</CODE>   <tt>DATABASE </tt>stores
+<CODE class=linenumber>03</CODE>   <tt>SELECT</tt> COUNT(*) <tt>FROM</tt> foo   -- Table should not exist!
+<CODE class=linenumber>04</CODE>   <tt>DISPLAY</tt> SQLCA.SQLCODE, SQLCA.SQLERRD[2]
+<CODE class=linenumber>05</CODE> <TT>END MAIN</TT></PRE>
+
+
+<HR>
+
+<h3><a name="ERRORINFO">STATUS, SQLCA.SQLCODE, SQLSTATE and SQLERRMESSAGE</a></h3>
+
+<p>If an error occurs during an SQL statement execution, you can get the error
+description in the <tt>STATUS</tt>, <tt>SQLCA.SQLCODE</tt>, <tt>SQLSTATE</tt>
+and <tt>SQLERRMESSAGE</tt> built-in registers. </p>
+
+<p><b><font color="#FF0000">Warning: </font><tt>SQLSTATE</tt> is an ANSI standard specification, but not all database
+    servers support this register. For example, Oracle 8.x and 9.0 engines do
+    not support SQLSTATE.</b></p>
+
+<p><tt>STATUS</tt> is the global language error code register, set for any kind
+of error (even non-SQL). When an SQL error occurs, the IBM Informix SQL error code
+held by <tt>SQLCA.SQLCODE</tt> is copied into <tt>STATUS</tt>.
+The register <tt>SQLCA.SQLCODE</tt> returns the IBM Informix error code.
+<tt>SQLSTATE</tt> returns the standard ANSI error code and <tt>SQLERRMESSAGE</tt>
+returns the database specific error message.</p>
+
+<p>Use <tt>SQLCA.SQLCODE</tt> for SQL error management, and <tt>STATUS</tt> for 
+4gl errors.</p>
+
+<p>When connecting to a non-IBM Informix database, the database driver tries to
+convert the native SQL error to an IBM Informix error which will be copied into the <tt>SQLCA.SQLCODE</tt>
+and <tt>STATUS</tt> registers. If the native SQL error cannot be converted, <tt>SQLCA.SQLCODE</tt>
+and <tt>STATUS</tt> will be set to <b><a href="FglErrors.html#-6372">-6372</a></b> (General SQL Error), you can then
+check the native SQL error in <tt>SQLCA.SQLERRD[2]</tt>. Note that the native
+SQL error code is always available in <tt>SQLCA.SQLERRD[2]</tt>, even if it
+could not be converted to an IBM Informix error.</p>
+
+<p>Some SQL instructions can produce SQL Warnings which can be detected by using
+the <tt>SQLCA.SQLAWARN</tt> register. By default SQL Warnings do not stop the
+program execution. You can trap SQL Warnings with <tt>WHENEVER WARNING</tt>.</p>
+
+
+<p>If an unexpected problem happens within the database driver, the driver will return
+the error <b><a href="FglErrors.html#-6319">-6319</a></b> (Internal error in the database library).
+When this SQL error occurs, you should set the <a href="EnvironmentVariables.html#EV_FGLSQLDEBUG">FGLSQLDEBUG</a>
+environment variable to get more details about the internal error.</p>
+
+<p>See also: <a href="Programs.html#PV_STATUS">STATUS</a>, <a href="#SQLCA_RECORD">SQLCA</a>,
+<a href="Operators.html#OP_SQLSTATE">SQLSTATE</a>, <a href="Operators.html#OP_SQLERRMESSAGE">SQLERRMESSAGE</a>,
+<a href="Exceptions.html">Exceptions</a>.</p>
+
+
+<HR>
+
+<h3><a name="SQLINTERRUPT">Interrupting SQL </a><a name="SQLINTERRUPTION">Statements</a></h3>
+
+<h4>Syntax:</h4>
+
+<p><code>OPTIONS SQL INTERRUPT <u>{</u> ON <u>|</u> OFF <u>}</u></code></p>
+
+<h4>Notes:</h4>
+
+<ol>
+  <li>By default, SQL interruption is OFF.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+
+<ol>
+  <li>Not all database servers support SQL interruption.</li>
+  <li>You must set <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a> to FALSE
+    before executing the SQL statement.</li>
+</ol>
+<h4>Usage:</h4>
+
+<p> Typical Genero BDL programs control the interrupt signals, by using the following
+instructions:</p>
+
+<blockquote>
+  <p><a href="Programs.html">DEFER INTERRUPT</a><br>
+  <a href="Programs.html">DEFER QUIT</a></p>
+</blockquote>
+
+<p>If the database server supports SQL interruption, the runtime system can enable
+interruption of long SQL queries when you set the SQL INTERRUPT <a href="Programs.html#PROGRAM_OPTIONS">program option</a>.
+When the program gets an interrupt signal from the system, the running SQL
+statement is stopped and the <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a>
+global variable is set to <a href="Programs.html#PC_TRUE">TRUE</a>.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN
+</tt><CODE class=linenumber>02</CODE> <tt>   DEFER INTERRUPT
+</tt><CODE class=linenumber>03</CODE> <tt>   DEFER QUIT
+</tt><CODE class=linenumber>04</CODE> <tt>   DATABASE </tt>stock<tt>
+</tt><CODE class=linenumber>05</CODE> <tt>   OPTIONS SQL INTERRUPT ON
+</tt><CODE class=linenumber>06</CODE> <tt>   LET </tt>INT_FLAG = FALSE<tt>
+</tt><CODE class=linenumber>07</CODE> <tt>   SELECT</tt> COUNT(*) <tt>FROM</tt> items <tt>WHERE</tt> items_value &gt; 100<tt>
+</tt><CODE class=linenumber>08</CODE> <tt>   IF </tt>INT_FLAG <tt>THEN
+</tt><CODE class=linenumber>09   </CODE> <tt>   DISPLAY </tt>&quot;Query was interrupted by user&quot;<tt>
+</tt><CODE class=linenumber>10</CODE> <tt>   END IF
+</tt><CODE class=linenumber>11</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="DC_DATABASE">DATABASE</a></h3>
+
+<h4>Purpose:</h4><p>Opens a new database connection in <a href="#DBCONN">unique-session</a>
+mode. </p>
+
+
+<h4>Syntax:</h4>
+<code>DATABASE <u>{</u> <i>dbname</i><u>[</u>@<i>dbserver</i><u>]</u> <u>|</u> <i>variable</i>
+<u>|</u> <i>string</i> <u>}</u> <u>[</u>EXCLUSIVE<u>]</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>dbname</i> identifies the database name.</li>
+  <li> <i>dbserver</i>  identifies the IBM Informix database server (INFORMIXSERVER).
+    <b><font color="#FF0000">Informix only!</font></b></li>
+  <li> <i>variable</i> can be any character string defined <a href="Variables.html">variable</a>
+    containing the <a href="#DBSPEC"> database specification</a>.</li>
+  <li> <i> string</i> can be a <a href="Literals.html#LT_STRING">string literal</a>
+    containing the <a href="#DBSPEC"> database specification</a>.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+<p> <font color="#000000">The <tt>DATABASE</tt> instruction opens a connection
+to the database server, like </font> <a href="#DC_CONNECT_TO">CONNECT TO</a><font color="#000000">,
+but without user and password specification.&nbsp;</font></p>
+ By default the database user is identified by the current operating system
+    user, but it can be authenticated according to <a href="#DBSPEC"> database
+    specification</a> parameters.
+<p> <font color="#000000">The <tt>EXCLUSIVE</tt> keyword can be used to open an IBM Informix
+database in exclusive mode </font> to prevent access by anyone but
+    the current user. <b><font color="#FF0000">Informix only!</font></b></p>
+ If a current connection exists, it is automatically closed before connecting to the
+    new database.
+<p>The connection is closed with the <a href="#DC_CLOSE_DATABASE">CLOSE DATABASE</a>
+instruction, or when the program ends.</p>
+<p> If the connection could not be established, the instruction raises an <a href="Exceptions.html">exception</a>.&nbsp;
+    For example, <font COLOR="#000000"> if you specify a database that the runtime system cannot locate,
+    or cannot open, or for
+which the user of your program does not have access privileges, an exception is
+    raised.</font>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>When used in a program block, the <tt>DATABASE</tt> instruction has a
+    different meaning than when it is used outside a program block. See <a href="Programs.html#DB_SCHEMA">Database
+    Schema Specification</a> for more details.</li>
+  <li> <font color="#000000">The <tt>EXCLUSIVE</tt> keyword is specific to IBM Informix
+    databases; do not use this keyword when programming for non-IBM Informix databases.</font></li>
+</ol>
+
+<p><b><font color="#008000">Tips:</font></b></p>
+<ol>
+  <li>The <a href="#DC_CONNECT_TO">CONNECT TO</a>  instructions allow better control
+    over database connections; you should use these instructions instead of <tt>DATABASE</tt>
+    and <tt>CLOSE DATABASE</tt>.</li>
+</ol>
+
+<h4>Example 1: Using a static database name.</h4>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN
+</tt><CODE class=linenumber>02</CODE> <tt>   DATABASE </tt>stores<tt>
+</tt><CODE class=linenumber>03</CODE> <tt>   SELECT</tt> COUNT(*) <tt>FROM</tt> customer<tt>
+</tt><CODE class=linenumber>04</CODE> <tt>END MAIN</tt></PRE>
+
+<h4>Example 2: Using a variable.</h4>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN
+</tt><CODE class=linenumber>02</CODE> <tt>   DEFINE </tt>dbname <tt>VARCHAR</tt>(100)<tt>
+</tt><CODE class=linenumber>03</CODE> <tt>   LET </tt>dbname = arg_val(1)<tt>
+</tt><CODE class=linenumber>04</CODE> <tt>   DATABASE </tt>dbname<tt>
+</tt><CODE class=linenumber>05</CODE> <tt>   SELECT</tt> COUNT(*) <tt>FROM</tt> customer<tt>
+</tt><CODE class=linenumber>06</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="DC_CLOSE_DATABASE">CLOSE DATABASE</a></h3>
+
+<h4>Purpose:</h4>
+
+<p>Closes the current database connection when in <a href="#DBCONN">unique-session</a> mode. </p>
+
+<h4>Syntax:</h4>
+
+<code>CLOSE DATABASE</code>
+
+<h4>Usage:</h4>
+ The <tt>CLOSE DATABASE</tt> instruction closes the current database connect
+opened by the <a href="#DC_DATABASE">DATABASE</a> instruction.
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The current connection is automatically closed when the <a href="Programs.html">program</a>
+    ends.&nbsp;</li>
+</ol>
+
+<h4>Example:</h4>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN
+</tt><CODE class=linenumber>02</CODE> <tt>   DATABASE </tt>stores1<tt>
+</tt><CODE class=linenumber>03</CODE> <tt>   CLOSE DATABASE
+</tt><CODE class=linenumber>04</CODE> <tt>   DATABASE </tt>stores2<tt>
+</tt><CODE class=linenumber>05</CODE> <tt>   CLOSE DATABASE
+</tt><CODE class=linenumber>06</CODE> <tt>END MAIN</tt></PRE>
+
+<HR>
+
+<h3><a name="DC_CONNECT_TO">CONNECT TO</a></h3>
+
+<h4>Purpose:</h4>
+
+<p>Opens a new database session in <a href="#DBCONN">multi-session</a> mode. </p>
+
+<h4>Syntax:</h4>
+
+<code>CONNECT TO <u>{</u> <i>dbname</i> <u>|</u> DEFAULT <u>}</u> <u>[</u> AS <i>session</i> <u>]</u><br>
+&nbsp;&nbsp;&nbsp; <u>[</u> USER <i>username</i> USING <i>password</i> <u>]</u><br>
+&nbsp;&nbsp;&nbsp; <u>[</u> WITH CONCURRENT TRANSACTION <u>]</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>dbname</i> is a <a href="Expressions.html#EX_STRING">string expression</a>
+    identifying the <a href="#DBSPEC"> database specification</a>.</li>
+  <li> <i>session</i> is a <a href="Expressions.html#EX_STRING">string
+    expression</a> identifying the database session. <u> By default, it is <i>dbname</i></u>.</li>
+  <li> <i>username</i> is a <a href="Expressions.html#EX_STRING">string
+    expression</a> identifying the name of the database user.</li>
+  <li> <i>password</i> is a <a href="Expressions.html#EX_STRING">string
+    expression</a> identifying the password of the database user.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>The <tt>CONNECT TO</tt> instruction opens a database connection. If the instruction successfully connects to the database environment, the
+    connection becomes the <i>current database session</i> for the application.</p>
+<p> An application can connect to several database environments at the same
+    time, and it can establish multiple connections to the same database
+    environment, provided each connection has a unique connection name. If you 
+need only one connection to a database, you can use the <a href="#DC_DATABASE">DATABASE</a> 
+instruction.</p>
+<p>The connection is closed with the <a href="#DC_DISCONNECT">DISCONNECT</a>
+instruction, or when the program ends.</p>
+<p>With IBM Informix database servers, when using the <tt>DEFAULT </tt>keyword,
+    you connect to the default IBM Informix database server, identified by the
+    INFORMIXSERVER environment variable, without any database selection.</p>
+<p> By default the database user is identified by the current operating system
+    user, but it can be authenticated according to <a href="#DBSPEC"> database
+    specification</a> parameters.</p>
+ When the <tt>USER <i>username</i> USING <i>password</i></tt><i> </i>clause is
+    specified, the database user is identified by <i>username</i> and <i>password</i>,
+    ignoring all other settings defined by the <a href="#DBSPEC"> database specification</a>.
+See also <a href="#USER_AUTH">Database user authentication</a>.
+<p> The <tt>WITH CONCURRENT TRANSACTION</tt><i> </i>clause allows a program to open several transactions concurrently in different
+    database sessions.
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The session name is case-sensitive.</li>
+  <li>You cannot include a <tt>CONNECT TO</tt><i> </i>statement within a
+    <a href="DynamicSql.html">PREPARE</a> instruction.</li>
+  <li>When using IBM Informix databases on UNIX, the only restriction on
+    establishing multiple connections to the same database environment is that
+    an application can establish only one connection to each local server that
+    uses the shared-memory connection mechanism. To find out whether a local
+    server uses the shared-memory connection mechanism or the local-loopback
+    connection mechanism, examine the <b>$INFORMIXDIR/etc/sqlhosts </b>file.</li>
+</ol>
+
+<h4>Example:</h4>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN
+</tt><CODE class=linenumber>02</CODE> <tt>   CONNECT TO </tt>&quot;stores1&quot; -- Session name is &quot;stores1&quot;<tt>
+</tt><CODE class=linenumber>03</CODE> <tt>   CONNECT TO </tt>&quot;stores1&quot; <tt>AS </tt>&quot;SA&quot; -- Session name is &quot;SA&quot;<tt>
+</tt><CODE class=linenumber>04</CODE> <tt>   CONNECT TO </tt>&quot;stores2&quot; <tt>AS </tt>&quot;SB&quot; <tt>USER </tt>&quot;scott&quot; <tt>USING </tt>&quot;tiger&quot;<tt>
+</tt><CODE class=linenumber>05</CODE> <tt>END MAIN</tt></PRE>
+
+<HR>
+
+<h3><a name="DC_SET_CONNECTION">SET CONNECTION</a></h3>
+
+<h4>Purpose:</h4>
+
+<p>Selects the current session when in <a href="#DBCONN">multi-session</a> mode. </p>
+
+<h4>Syntax:</h4>
+
+<code>SET CONNECTION <u>{</u> <u>{</u> <i>session </i><u>|</u> DEFAULT <u>}</u> <u>[</u>DORMANT<u>]</u> <u>|</u> CURRENT DORMANT <u>}</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>session</i> is a <a href="Expressions.html#EX_STRING">string expression</a>
+    identifying the name of the database session to be set as current.</li>
+</ol>
+
+<h4>Usage:</h4>
+The <tt>SET CONNECTION</tt> instruction make a given connection current.
+<p>When using the <tt>DEFAULT </tt>keyword,
+    it identifies the&nbsp;default database server connection established with a
+    <tt>CONNECT TO DEFAULT</tt> or a <tt>DATABASE</tt> instruction. <b><font color="#FF0000">Informix only!</font></b>
+<p> To make the current connection dormant, use <tt>CURRENT DORMANT </tt>keyword.
+<b><font color="#FF0000">Informix only!</font></b>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The session name is case-sensitive.</li>
+  <li>You cannot include a <tt>SET CONNECTION</tt><i> </i>statement within a
+    <a href="DynamicSql.html">PREPARE</a> instruction.</li>
+  <li> The <tt>CURRENT DORMANT</tt> option is only supported for compatibility with
+    IBM Informix; there is no need to make a connection dormant in Genero BDL programs.</li>
+</ol>
+
+<h4>Example:</h4>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN
+</tt><CODE class=linenumber>02</CODE> <tt>   CONNECT TO </tt>&quot;stores1&quot;<tt>
+</tt><CODE class=linenumber>03</CODE> <tt>   CONNECT TO </tt>&quot;stores1&quot; <tt>AS </tt>&quot;SA&quot;<tt>
+</tt><CODE class=linenumber>04</CODE> <tt>   CONNECT TO </tt>&quot;stores2&quot; <tt>AS </tt>&quot;SB&quot;<tt>
+</tt><CODE class=linenumber>05</CODE> <tt>   SET CONNECTION </tt>&quot;stores1&quot;    -- Select first session<tt>
+</tt><CODE class=linenumber>06</CODE> <tt>   SET CONNECTION </tt>&quot;SA&quot;         -- Select second session<tt>
+</tt><CODE class=linenumber>07</CODE> <tt>   SET CONNECTION </tt>&quot;stores1&quot;    -- Select first session again<tt>
+</tt><CODE class=linenumber>08</CODE> <tt>END MAIN</tt></PRE>
+
+<HR>
+
+
+<h3><a name="DC_DISCONNECT">DISCONNECT</a></h3>
+
+<h4>Purpose:</h4>
+
+<p>Terminates database sessions when in <a href="#DBCONN">multi-session</a> mode. </p>
+
+<h4>Syntax:</h4>
+
+<code>DISCONNECT <u>{</u> ALL <u>|</u> CURRENT <u>|</u> <i>session</i> <u>}</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>session</i> is a <a href="Expressions.html#EX_STRING">string expression</a>
+    identifying the name of the database session to be terminated.</li>
+</ol>
+
+<h4>Usage:</h4>
+The <tt>DISCONNECT</tt> instruction closed a given database connection.
+<p>When using the <tt>DEFAULT </tt>keyword,
+    it identifies the&nbsp;default database server connection established with a
+    <tt>CONNECT TO DEFAULT</tt> or a <tt>DATABASE</tt> instruction. <b><font color="#FF0000">Informix only!</font></b></p>
+ Use the <tt>ALL</tt> keyword to terminate all opened connections. From
+    that point, you must <a href="#DC_CONNECT_TO">establish a new connection</a>
+    to execute SQL statements.
+<p> Use the <tt>CURRENT</tt> keyword to terminate the current connection
+    only. From that point, you must <a href="#DC_SET_CONNECTION">select another
+    connection</a> or <a href="#DC_CONNECT_TO">establish a new connection</a> to
+    execute SQL statements.
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The session name is case-sensitive.</li>
+  <li>You cannot include a <tt>DISCONNECT</tt><i> </i>statement within a
+    <a href="DynamicSql.html">PREPARE</a> instruction.</li>
+  <li>If a <tt>DISCONNECT</tt><i> </i>statement is used while a <a href="Transactions.html">transaction</a>
+    is active, it is automatically rolled back.</li>
+</ol>
+
+<h4>Example:</h4>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN
+</tt><CODE class=linenumber>02</CODE> <tt>   CONNECT TO </tt>&quot;stores1&quot;<tt>
+</tt><CODE class=linenumber>03</CODE> <tt>   CONNECT TO </tt>&quot;stores1&quot; <tt>AS </tt>&quot;SA&quot;<tt>
+</tt><CODE class=linenumber>04</CODE> <tt>   CONNECT TO </tt>&quot;stores2&quot; <tt>AS </tt>&quot;SB&quot; <tt>USER </tt>&quot;scott&quot; <tt>USING </tt>&quot;tiger&quot;<tt>
+</tt><CODE class=linenumber>05</CODE> <tt>   </tt>-- SB is the current database session<tt>
+</tt><CODE class=linenumber>06</CODE> <tt>   DISCONNECT </tt>&quot;stores1&quot; -- Continue with SB<tt>
+</tt><CODE class=linenumber>07</CODE> <tt>   DISCONNECT </tt>&quot;SB&quot; -- SB is no longer the current session<tt>
+</tt><CODE class=linenumber>08</CODE> <tt>   SET CONNECTION </tt>&quot;SA&quot; -- Select second session<tt>
+</tt><CODE class=linenumber>09</CODE> <tt>END MAIN</tt></PRE>
+
+
+</BODY>
+</HTML>

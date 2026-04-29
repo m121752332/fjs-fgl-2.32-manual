@@ -1,0 +1,469 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Compiling Programs</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Compiling Programs</a></H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#COMPSRC">Compiling Source Code</a></li>
+  <li><a href="#IMPORT">Importing modules</a></li>
+  <li><a href="#CREATELIBS">Creating Libraries</a></li>
+  <li><a href="#LINKPROGS">Linking Programs</a></li>
+  <li><a href="#MAKEFILES">Using Makefiles</a></li>
+  <li><a href="#BUILDINFO">Getting Build Information</a></li>
+</ul>
+
+
+<p><i>See also:</i>  <a href="Tools.html">Tools</a>, <a href="FormSpecFiles.html#COMPILING">Form
+Files</a>, <a href="MessageFiles.html#COMPILING">Message Files</a>, <a href="LocalizedStrings.html#COMPILING">Localized
+Strings</a>.</p>
+
+
+<HR>
+
+<h2><a name="COMPSRC">Compiling Source Code</a></h2>
+
+
+<p>Source code modules (<b>4gl</b>) must be compiled to p-code modules (<b>42m</b>) with the
+<a href="Tools.html#TL_FGLCOMP">fglcomp</a>  tool. Compiled p-code modules are
+portable; you can compile a module on a Windows
+platform and install it on a Unix production machine.</p>
+
+
+<p>The following lines show a compilation in a Unix shell session:</p>
+
+<p><code>$ cat xx.4gl<br>
+main<br>
+&nbsp; display &quot;hello&quot;<br>
+end main<br>
+<br>
+$ fglcomp xx.4gl<br>
+<br>
+$ ls -s xx.42m<br>
+&nbsp;&nbsp; 4 xx.42m</code></p>
+
+
+<p>If an error occurs, the compiler writes an error file with the <b>.err</b>
+extension.</p>
+<p><code>$ cat xx.4gl<br>
+main<br>
+&nbsp; let x = &quot;hello&quot;<br>
+end main<br>
+<br>
+$ fglcomp xx.4gl<br>
+Compilation was not successful.&nbsp; Errors found: 1.<br>
+&nbsp;The file xx.4gl has been written.<br>
+<br>
+$ cat xx.err<br>
+main<br>
+&nbsp; let x = &quot;hello&quot;<br>
+| The symbol 'x' does not represent a defined variable.<br>
+| See error number -4369.&nbsp;<br>
+end main</code></p>
+<p>With the <tt>-M </tt>option, you can force the compiler to display an error
+message instead of generating a <b>.err</b> error file:</p>
+<p><code>
+$ fglcomp xx.4gl<br>
+xx.4gl:2:8 error:(-4369) The symbol 'x' does not represent a defined variable.</code></p>
+<p>By default, the compiler does not raise any warnings. You can turn on warnings
+with the <tt>-W</tt> option:</p>
+<p><code>$ cat xx.4gl<br>
+main<br>
+&nbsp; database test1<br>
+&nbsp; select count(*) from x, outer(y) where x.k = y.k<br>
+end main<br>
+<br>
+$ fglcomp -W stdsql xx.4gl<br>
+xx.4gl:3: warning: SQL statement or language instruction with specific SQL
+syntax.</code></p>
+
+
+<p>When a warning is raised, you can use the <tt>-W error</tt> option to force the compiler to stop as if an error
+was found.</p>
+
+
+<p>For more details about warning options, see the <a href="Tools.html#FglCompWarningFlags">fglcomp
+tool</a>.</p>
+
+
+<HR>
+
+<h2><a name="IMPORT">Importing Modules</a></h2>
+<p>Starting with Genero BDL 2.21, it is possible to define module dependencies
+with the <tt>IMPORT FGL</tt> instruction. Imported module elements such as
+functions, variables, user types and constants can be shared and used in the
+current module. Module importation is a straightforward way to define module
+dependencies, allowing program compilation without a link phase.</p>
+<p>The next source example imports the <i>myutils</i> and <i>account</i>
+modules, and uses the <i>init()</i> and <i>set_account()</i> functions of the
+imported modules (note that the first function call is qualified with the module
+name - this is optional but required to resolve ambiguities when the same
+function name is used by different modules):</p>
+<pre><code class="linenumber">01</code> <tt>IMPORT FGL </tt>myutils
+<code class="linenumber">02</code> <tt>IMPORT FGL </tt>account
+<code class="linenumber">03</code> <tt>MAIN</tt>
+<code class="linenumber">04</code>   <tt>CALL </tt>myutils.init()
+<code class="linenumber">05</code>   <tt>CALL </tt>set_account(&quot;CFX4559&quot;)
+<code class="linenumber">06</code>   ...
+<code class="linenumber">07</code> <tt>END MAIN</tt></pre>
+
+<p>By declaring module dependencies with the <tt>IMPORT FGL</tt> instruction,
+you instruct the <a href="Tools.html#TL_FGLCOMP">fglcomp</a> compiler and <a href="Tools.html#TL_FGLRUN">fglrun</a>
+runtime system to load/check the specified modules, and there is no longer a need to
+<a href="#LINKPROGS">link</a> programs or use libraries.</p>
+
+<p><b><font color="#FF0000">Warning:</font> Imported modules must be compiled
+before compiling the importing module, and no circular references are
+allowed (module A importing module B, which imports module A).</b></p>
+
+  <p>Note that the <a href="EnvironmentVariables.html#EV_FGLLDPATH">FGLLDPATH</a> environment variable specifies the directories to search for the
+  Genero BDL modules used by <tt>IMPORT</tt>.</p>
+
+  <p>With the <tt>IMPORT FGL</tt> instruction, language elements such as module variables, user types and constants
+  can be shared between modules. The <tt>PRIVATE</tt> / <tt>PUBLIC</tt>
+  modifiers can be used to hide / publish elements to other modules. The next
+  example declares a module variable that can be used by other modules, and a
+  private function to be used only locally:</p>
+
+<pre><code class="linenumber">01</code> <tt>PUBLIC DEFINE </tt>custlist <tt>DYNAMIC ARRAY OF RECORD</tt>
+<code class="linenumber">02</code>   id <tt>INT</tt>,
+<code class="linenumber">03</code>   name <tt>VARCHAR</tt>(50),
+<code class="linenumber">04</code>   address <tt>VARCHAR</tt>(200)
+<code class="linenumber">05</code> <tt>END RECORD</tt>
+<code class="linenumber">06</code> ...
+<code class="linenumber">07</code> <tt>PRIVATE FUNCTION </tt>myfunction()
+<code class="linenumber">08</code> ...</pre>
+
+<p>For more details, see <a href="Programs.html#IMPORT">IMPORT</a>.</p>
+
+
+<HR>
+
+<h2><a name="CREATELIBS">Creating Libraries</a></h2>
+
+
+<p>Compiled <b>42m</b> modules can be grouped in a library file using the <b>42x</b>
+extension.</p>
+
+
+<p>Library linking is done with the <a href="Tools.html#TL_FGLRUN">fglrun</a>
+tool by using the<tt> -l </tt>option. You can also use the <a href="Tools.html#TL_FGLLINK">fgllink</a>
+tool.</p>
+
+
+<p>The following lines show a link procedure to create a library in a Unix shell session:</p>
+
+<p><code>
+$ fglcomp fileutils.4gl<br>
+$ fglcomp userutils.4gl<br>
+$ fgllink -o libutils.42x fileutils.42m userutils.42m</code></p>
+
+
+<p>When you create a library, all functions of the <b>42m</b> modules used in the
+link command are registered in the <b>42x</b> file.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> The 42x library file does not contain
+the 42m files. When deploying your application, you must provide all p-code
+modules as well as 42f, 42r and 42x files.</b></p>
+
+
+<p>The <b>42x</b> libraries are typically used to link the final <b>42r</b>
+programs:</p>
+
+
+<p><code>
+$ fglcomp mymain.4gl<br>
+$ fgllink -o myprog.42r mymain.42m libutils.42x</code></p>
+
+
+<p>Note that <b>42r</b> programs must be re-linked if the content of <b>42x</b>
+libraries have changed. In the above example, if a function of the <b>userutils.4gl</b>
+source file was removed, you must recompile <b>userutils.4gl</b>, re-link the <b>libutils42x</b>
+library and re-link the <b>myprog.42r</b> program.</p>
+
+
+<p>It is possible to create a library by referencing other <b>42x</b> library
+files in the link command, as long as modules can be found according to <a href="EnvironmentVariables.html#EV_FGLLDPATH">FGLLDPATH</a>:</p>
+
+
+<p><code>
+$ fglcomp module_1.4gl<br>
+$ fglcomp module_2.4gl<br>
+$ fgllink -o <b>lib_A.42x</b> module_1.42m<br>
+$ fgllink -o lib_B.42x module_2.42m <b>lib_A.42x<br>
+</b>
+$ fgllink -o myprog.42r lib_B.42x&nbsp; -- will hold functions of module_1 and
+module_2.</code></p>
+
+
+<p>If you are using C Extensions, you may need to use the <b>-e</b> option to
+specify the list of extension modules if the <a href="CExtensions.html">IMPORT</a>
+keyword is not used:</p>
+
+<p><code>
+$ fgllink -e extlib,extlib2,extlib3 -o libutils.42x fileutils.42m userutils.42m</code></p>
+
+
+<HR>
+
+<h2><a name="LINKPROGS">Linking Programs</a></h2>
+
+
+<p>Genero programs are created by linking several <b>42m</b> modules and/or <b>
+42x</b>
+libraries together, to produce a file with the <b>42r</b> extension. Note that
+the generated 42r program file does not contain
+the 42m files. When deploying your application, you must provide all p-code
+modules as well as 42f, 42r and 42x files.</p>
+
+
+<p>Program linking is done with the <a href="Tools.html#TL_FGLRUN">fglrun</a>
+tool by using the <tt>-l </tt>option. You can also use the <a href="Tools.html#TL_FGLLINK">fgllink</a>
+tool.</p>
+
+
+<p>The following lines show a link procedure to create a library in a Unix shell session:</p>
+
+<p><code>
+$ fglcomp main.4gl<br>
+$ fglcomp store.4gl<br>
+$ fgllink -o stores.42r main.42m store.42m</code></p>
+
+
+<p>By default, if you do not specify an absolute path for a file, the linker
+searches for <b>42m</b> modules and <b>42x</b> libraries in the current directory.</p>
+
+
+<p> Additionally, you can specify a
+search path with the <a href="EnvironmentVariables.html#EV_FGLLDPATH">FGLLDPATH</a>
+environment variable:</p>
+
+
+<p><code>
+$ FGLLDPATH=/usr/dev/lib/maths:/usr/dev/lib/utils<br>
+$ export FGLLDPATH<br>
+$ ls /usr/dev/lib/maths<br>
+mathlib1.42x<br>
+mathlib2.42x<br>
+mathmodule11.42m<br>
+mathmodule12.42m<br>
+mathmodule22.42m<br>
+$ ls /usr/dev/lib/utils<br>
+fileutils.42m<br>
+userutils.42m<br>
+dbutils.42m<br>
+$ fgllink -o myprog.42r mymodule.42m mathlib1.42x fileutils.42m</code></p>
+
+
+<p>In this example the linker will find the specified files in the <code>/usr/dev/lib/maths</code>
+and <code>/usr/dev/lib/utils</code> directories defined in <a href="EnvironmentVariables.html#EV_FGLLDPATH">FGLLDPATH</a>.</p>
+
+
+<p>When creating a .42r program by linking .42m modules with .42x libraries, if
+the same function is defined in a .42m and in a module of a 42x library, the
+function of the specified .42m module will be selected by the linker, and the
+function of the library will be ignored. However, the linker will raise error
+-6203 if two .42m modules specified in the link command define the same
+function.</p>
+
+
+<p>Note that if none of the
+functions of a module are used by a program, the complete module is excluded 
+when the program is linked. This may cause undefined function errors at runtime, such as when
+a function is only used in a dynamic call (an initialization function, for
+example.)&nbsp;</p>
+
+
+<p>If you are using C Extensions, you may need to use the -e option to specify
+the list of extension modules if the <a href="CExtensions.html">IMPORT</a>
+keyword is not used:</p>
+
+<p><code>
+$ fgllink -e extlib,extlib2,extlib3 -o stores.42r main.42m store.42m</code></p>
+
+
+<p>The following case illustrates this behavior:</p>
+<p><code>
+$ cat x1.4gl<br>
+function fx1A()<br>
+end function<br>
+function fx2A()<br>
+end function<br>
+<br>
+$ cat x2.4gl<br>
+function fx2A()<br>
+end function<br>
+function fx2B()<br>
+end function<br>
+<br>
+$ cat prog.4gl<br>
+main<br>
+&nbsp; call fx1A()<br>
+end main<br>
+<br>
+$ fglcomp x1.4gl<br>
+$ fglcomp x2.4gl<br>
+$ fglcomp prog.4gl<br>
+<br>
+$ fgllink -o lib.42x x1.42m x2.42m<br>
+<br>
+$ fgllink -o prog.42r prog.42m lib.42x</code></p>
+
+
+<p>Here, module <code>x1.42m</code> will be included in the program, but module <code>x2.42m</code>
+will not. At runtime, any dynamic call to <code>fx2A()</code>
+or <code>fx2B()</code> will fail.</p>
+<p>The link process searches <i>recursively</i> for the functions used by the
+program. For
+example, if the MAIN block calls function FA in module MA, and FA calls FB in
+module MB, all functions from module MA and MB will be included in the <b>42r</b>
+program definition.</p>
+
+
+<HR>
+
+<h2><a name="MAKEFILES">Using Makefiles</a></h2>
+<p>Most UNIX platforms provide the <b>make</b> utility program to compile
+projects. The <b>make</b> program is an interpreter of <i>Makefiles</i>. These
+files contain directives to compile and link programs and/or generate other kind
+of files.</p>
+
+
+<p>When developing on Microsoft Windows platforms, you may use the <b>NMAKE</b>
+utility provided with Visual C++, however this tool does not have the same 
+behavior as the Unix make program. To have a compatible make on Windows, you can 
+install a GNU make or third party Unix tools such as Cygwin.</p>
+
+
+<p>For more details about the <b>make</b> utility, see the platform-specific
+documentation.</p>
+
+
+<p>The follow example shows a typical <i>Makefile</i> for Genero applications:</p>
+
+
+<pre>#------------------------------------------------------
+# Generic makefile rules to be included in Makefiles
+
+.SUFFIXES: .42s .42f .42m .42r .str .per .4gl .msg .hlp
+
+FGLFORM=fglform -M
+FGLCOMP=fglcomp -M
+FGLLINK=fglrun -l
+FGLMKMSG=fglmkmsg
+FGLMKSTR=fglmkstr
+FGLLIB=$$FGLDIR/lib/libfgl4js.42x
+
+all::
+
+.msg.hlp:
+	$(FGLMKMSG) $*.msg $*.hlp
+
+.str.42s:
+	$(FGLMKSTR) $*.str $*.42s
+
+.per.42f:
+	$(FGLFORM) $*.per
+
+.4gl.42m:
+	$(FGLCOMP) $*.4gl
+
+clean::
+	rm -f *.hlp *.42? *.out
+
+
+#-----------------------------
+# Makefile example
+
+include Makeincl
+
+FORMS=\
+ customers.42f\
+ orderlist.42f\
+ itemlist.42f
+
+MODULES=\
+ customerInput.42m\
+ zoomOrders.42m\
+ zoomItems.42m
+
+customer.42x: $(MODULES)
+	$(FGLLINK) -o customer.42x $(MODULES)</pre>
+
+<pre>all:: customer.42x $(FORMS)</pre>
+
+
+<HR>
+
+<h2><a name="BUILDINFO">Getting Build Information</a></h2>
+
+<p>The compiler version used to build the <b>42m</b> modules must be
+compatible to the runtime system used to execute the programs. The <a href="Tools.html#TL_FGLCOMP">fglcomp</a> compiler writes version
+information in the generated <b>42m</b> files. This can be useful on site, if
+you need to check the version of the compiler that was used to build the <b>42m</b>
+nodules.</p>
+
+
+<p>To extract build information, run <a href="Tools.html#TL_FGLRUN">fglrun</a>
+with the <tt>-b </tt>option:</p>
+
+
+<p><code>$ fglrun -b mymodule.42m<br>
+2.11.01-1161.12 /home/devel/stores/mymodule.4gl 15</code></p>
+
+<p>The output shows the following fields:</p>
+
+
+<ol>
+  <li>The product version and build number (<code>2.11.01-1161.12</code>).</li>
+  <li>The full path of the source file (/home/devel/stores/mymodule.4gl).</li>
+  <li>The internal identifier of the pcode version.&nbsp;</li>
+</ol>
+<p><b><font color="#008000">Tip:</font> fglrun -b can read
+the header of pcode modules compiled with older versions of fglcomp and display
+version information for such old modules. If fglrun cannot recognize a pcode
+module, it returns with an execution status is different from zero.</b></p>
+<p>When reading build information of a 42x or 42r file, fglrun scans all modules
+used to build the library or program. You will see different versions in the
+first column if the modules where compiled with different versions of fglcomp.
+Note however that it's not recommended to end up with mixed versions on a
+production site:</p>
+
+
+<p><code>$ fglrun -b myprogram.42r<br>
+2.11.01-1161.12 /home/devel/stores/mymodule1.4gl 15<br>
+2.10.02-1148.36 /home/devel/stores/mymodule2.4gl 15<br>
+2.11.01-1161.12 /home/devel/stores/mymodule3.4gl 15</code></p>
+
+<p>If you need to write timestamp information in the pcode modules, you can use
+the --timestamp option of fglcomp:</p>
+
+
+<p><code>$ fglcomp --timestamp mymodule.4gl<br>
+$ fglrun -b mymodule.42m<br>
+2008-12-24 11:22:33 2.11.05-1169.84 /home/devel/stores/mymodule.4gl 15</code></p>
+
+
+<p>However, with timestamp information in pcode modules, you will not be able to
+easily compare 42m files (based on a checksum for example). Without the
+timestamp, fglcomp generates exactly the same pcode module if the source file
+was not modified.</p>
+
+
+<p>To check if the version of the runtime system corresponds to the pcode
+version, run <a href="Tools.html#TL_FGLRUN">fglrun</a>
+with the <tt>-V</tt> option.</p>
+
+
+</BODY>
+</HTML>

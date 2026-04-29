@@ -1,0 +1,442 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Expressions</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Expressions</a></H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#DEFINITION">Definition</a></li>
+  <li><a href="#EX_BOOLEAN">Boolean Expressions</a></li>
+  <li><a href="#EX_INTEGER">Integer Expressions</a></li>
+  <li><a href="#EX_NUMBER">Number Expressions</a></li>
+  <li><a href="#EX_STRING">String Expressions</a></li>
+  <li><a href="#EX_DATE">Date Expressions</a></li>
+  <li><a href="#EX_DATETIME">Datetime Expressions</a></li>
+  <li><a href="#EX_INTERVAL">Interval Expressions</a></li>
+</ul>
+
+
+<p><i>See also:</i> <a href="Variables.html">Variables</a>, <a href="DataTypes.html">Data
+Types</a>, <a href="Literals.html">Literals</a>, <a href="Constants.html">Constants</a>.</p>
+
+
+<HR>
+
+<h3><a name="DEFINITION">Definition</a></h3>
+<h4><font color="#000000">What is an Expression?</font></h4>
+<p>An Expression <i> </i>is a sequence of operands, operators, and
+parentheses that the runtime system can evaluate as a single value.</p>
+<p> Expressions can include the following components: </p>
+
+<ul>
+  <li>Operators, as described in the <a href="Operators.html">Operators section</a>.</li>
+  <li>Parentheses, to overwrite precedence of operators.</li>
+  <li>Operands, including the following:
+    <ul>
+      <li><a href="Variables.html">Variables</a></li>
+      <li><a href="Constants.html">Constants</a></li>
+      <li><a href="Functions.html">Functions</a> (returning a single value)</li>
+      <li><a href="Literals.html">Literal values</a></li>
+      <li>Other expressions</li>
+    </ul>
+  </li>
+</ul>
+
+
+<h4>Differences Between BDL and SQL Expressions</h4>
+<p>Expressions in SQL statements are evaluated by the database server, not by
+the runtime system. The set of operators that can appear in SQL expressions
+resembles the set of BDL operators, but they are not identical. A program can
+include SQL operators, but these are restricted to SQL statements. Similarly,
+most SQL operands are not valid in BDL expressions. The SQL identifiers of
+databases, tables, or columns can appear in a <tt>LIKE</tt> clause or field name in BDL
+statements, provided that these SQL identifiers comply with the naming rules of
+BDL. Here are some examples of SQL operands and operators that cannot appear in
+other BDL expressions:</p>
+<ul>
+  <li>SQL identifiers, such as column names</li>
+  <li>The SQL keywords <tt> USER</tt> and <tt> ROWID</tt></li>
+  <li>Built-in or aggregate SQL functions that are not part of BDL</li>
+  <li>The <tt> BETWEEN</tt> and <tt> IN</tt> operators</li>
+  <li>The <tt>EXISTS</tt>, <tt>ALL</tt>, <tt>ANY</tt>, or <tt> SOME</tt> keywords of SQL expressions</li>
+</ul>
+<p>Conversely, you <i>cannot </i>include BDL specific operators in SQL
+expressions, as for example:</p>
+<ul>
+  <li>Arithmetic operators for exponentiation (<tt>**</tt>) and modulus (<tt>MOD</tt>)</li>
+  <li>String operators <tt>ASCII</tt>, <tt>COLUMN</tt>, <tt>SPACE</tt>, <tt>SPACES</tt>, and
+    <tt> WORDWRAP</tt></li>
+  <li>Field operators <tt> FIELD_TOUCHED( )</tt>, <tt> GET_FLDBUF( )</tt>, and <tt>INFIELD( )</tt></li>
+  <li>The report operators <tt> LINENO</tt> and <tt> PAGENO</tt></li>
+</ul>
+<h4>Parentheses in BDL Expressions</h4>
+<p>You can use parentheses as you would in algebra to override the default order
+of precedence of operators. In mathematics, this use of parentheses represents
+the &quot;associative&quot; operator. It is, however, a convention in computer
+languages to regard this use of parentheses as delimiters rather than as
+operators. (Do not confuse this use of parentheses to specify <i>operator</i> <i>precedence
+</i>with the use of parentheses to enclose arguments in function calls or to
+delimit other lists.)</p>
+<p>In the following example, the variable <b>y </b>is assigned the value of 2:</p>
+<p><tt>&nbsp; LET y = 15 MOD 3 + 2</tt></p>
+<p>In the next example, however, <b>y </b>is assigned the value of 0 because the
+parentheses change the sequence of operations:</p>
+<p><tt>&nbsp; LET y = 15 MOD (3 + 2)</tt></p>
+
+
+<HR>
+
+<h3><a name="EX_BOOLEAN">Boolean Expressions</a></h3>
+
+<p> A&nbsp;<b>Boolean expression</b> is one that evaluates to an <a href="DataTypes.html#DT_INTEGER">INTEGER</a>
+ value that can be <a href="Programs.html#PC_TRUE">TRUE</a>, <a href="Programs.html#PC_FALSE"> FALSE</a> and in
+some cases, <a href="Programs.html#PC_NULL">NULL</a>. </p>
+
+
+<h4>Usage:</h4>
+Boolean expressions are a combination of&nbsp;<a href="Operators.html#LOGICAL_OPERATORS">Logical
+    Operators</a> and Boolean comparisons based on <a href="Operators.html#COMPARISON_OPERATORS">Comparison
+    Operators</a>. The result type of a Boolean expression is <a href="DataTypes.html#DT_INTEGER">INTEGER</a>.
+Any integer value different from zero is defined
+    as true, while zero is defined as false. You can use an <a href="DataTypes.html#DT_INTEGER">INTEGER</a>
+or a <a href="DataTypes.html#DT_BOOLEAN">BOOLEAN</a> variable to store the
+    result of a Boolean expression:<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> b <tt>BOOLEAN</tt>
+<code class="linenumber">03</code>   <tt>LET</tt> b = ( <tt>TRUE AND FALSE</tt> )
+<code class="linenumber">04</code>   <tt>IF</tt> b<tt> THEN</tt>
+<code class="linenumber">05</code>      <tt>DISPLAY</tt> &quot;TRUE&quot;
+<code class="linenumber">06</code>   <tt>END IF</tt>
+<code class="linenumber">07</code> <tt>END MAIN</tt></pre>
+
+
+If an expression that returns <tt> NULL</tt> is the operand of the <tt> IS NULL</tt> operator,
+    the value of the Boolean expression is <tt>TRUE</tt>:
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> r <tt>INTEGER</tt>
+<code class="linenumber">03</code>   <tt>LET</tt> r = <tt>NULL</tt>
+<code class="linenumber">04</code>   <tt>IF</tt> r <tt>IS NULL THEN</tt>
+<code class="linenumber">05</code>      <tt>DISPLAY</tt> &quot;TRUE&quot;
+<code class="linenumber">06</code>   <tt>END IF</tt>
+<code class="linenumber">07</code> <tt>END MAIN</tt></pre>
+
+
+If you include a Boolean expression in a context where the runtime system
+    expects a number, the expression is evaluated, and is then converted to an
+    integer by the rules: <tt> TRUE = 1</tt> and <tt> FALSE = 0</tt>:
+<p>The Boolean expression evaluates to <tt> TRUE</tt> if the value is a non-zero real
+    number <i>or </i>any of the following items:
+    <ul>
+      <li>Character string representing a non-zero number</li>
+      <li>Non-zero <tt> INTERVAL</tt></li>
+      <li>Any <tt> DATE</tt> or <tt> DATETIME</tt> value</li>
+      <li>A <tt> TRUE</tt> value returned by a Boolean function like <tt>INFIELD( )</tt></li>
+      <li>The built-in integer constant <tt> TRUE</tt></li>
+    </ul>
+If a Boolean expression includes an operand whose value is not an integer
+    data type, the runtime system attempts to convert the value to an integer
+    according to the <a href="DataConversions.html">data conversion rules</a>.
+
+
+<h4>Example:</h4>
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> r, c <tt>INTEGER</tt>
+<code class="linenumber">03</code>   <tt>LET</tt> c = 4
+<code class="linenumber">03</code>   <tt>LET</tt> r = ( <tt>FALSE</tt>!=<tt>FALSE</tt> )<tt> AND</tt> ( c=2 <tt>OR</tt> c=4 )
+<code class="linenumber">04</code>   <tt>IF</tt> ( r <tt>AND</tt> canReadFile(&quot;config.txt&quot;) ) <tt>THEN</tt>
+<code class="linenumber">05</code>      <tt>DISPLAY</tt> &quot;OK&quot;
+<code class="linenumber">06</code>   <tt>END IF</tt>
+<code class="linenumber">07</code> <tt>END MAIN</tt></pre>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>A Boolean expression evaluates to <a href="Programs.html#PC_NULL">NULL</a>
+    if the value is <tt> NULL</tt> <i>and </i>the expression does not appear in any of the
+    following contexts:
+    <ul>
+      <li>The <tt> IS [NOT] NULL</tt> test.</li>
+      <li>Boolean Comparisons.</li>
+      <li>Any conditional statement (<tt>IF</tt>, <tt>CASE</tt>, <tt>WHILE</tt>).</li>
+    </ul>
+  </li>
+  <li>The syntax of Boolean expressions in BDL is not the same as <i>Boolean
+    conditions</i> in SQL statements.</li>
+  <li>Boolean expressions in <tt>CASE</tt>, <tt>IF</tt>, or <tt> WHILE</tt> statements return
+    <tt> FALSE</tt> if any
+    element of the comparison is <tt>NULL</tt>, except for operands of the <tt> IS NULL</tt> and
+    the <tt> IS NOT NULL</tt> operator. See <a href="Operators.html">Boolean Operators</a> for more
+    information about individual Boolean operators and Boolean expressions.</li>
+</ol>
+
+
+<HR>
+
+<h3> <a name="EX_INTEGER">Integer Expressions</a> </h3>
+
+
+<p> An <b> Integer expression</b> is one that evaluates to a whole number. </p>
+
+
+<h4>Usage:</h4>
+The data type of the expression result can be <a href="DataTypes.html#DT_SMALLINT">SMALLINT</a>
+    or <a href="DataTypes.html#DT_INTEGER">INTEGER</a>.
+<p>The operands must be one of:
+      <ul>
+      <li>An <a href="Literals.html#LT_INTEGER">integer literal</a></li>
+      <li>A <a href="Variables.html">variable</a> or <a href="Constants.html">constant</a>
+        of type <a href="DataTypes.html#DT_SMALLINT">SMALLINT</a>
+        or <a href="DataTypes.html#DT_INTEGER">INTEGER</a></li>
+      <li>A <a href="Functions.html">function</a> returning a single integer value</li>
+      <li>A <a href="#EX_BOOLEAN">Boolean expression</a></li>
+      <li>The result of a <a href="DataTypes.html#DT_DATE">DATE</a> subtraction</li>
+      </ul>
+If an integer expression includes an operand whose value is not an integer
+    data type, the runtime system attempts to convert the value to an integer according to
+    the <a href="DataConversions.html">data conversion rules</a>.
+
+
+<h4>Example:</h4>
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> r, c <tt>INTEGER</tt>
+<code class="linenumber">03</code>   <tt>LET</tt> c = 4
+<code class="linenumber">04</code>   <tt>LET</tt> r = c * ( 2 + c MOD 4 ) / getRowCount(&quot;customers&quot;)
+<code class="linenumber">05</code> <tt>END MAIN</tt></pre>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>If an element of an integer expression is <a href="Programs.html#PC_NULL">NULL</a>,
+    the expression is evaluated to NULL.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="EX_NUMBER">Number Expressions</a></h3>
+
+<p> A&nbsp;<b>Number expression</b> is one that evaluates to a number data type. </p>
+
+
+<h4>Usage:</h4>
+The data type of the expression result can be <a href="DataTypes.html#DT_SMALLINT">SMALLINT</a>,
+    <a href="DataTypes.html#DT_INTEGER">INTEGER</a>, <a href="DataTypes.html#DT_DECIMAL">DECIMAL</a>,
+    <a href="DataTypes.html#DT_SMALLFLOAT">SMALLFLOAT</a> or <a href="DataTypes.html#DT_FLOAT">FLOAT</a>.
+<p>The operands must be one of:
+      <ul>
+      <li>An <a href="Literals.html#LT_INTEGER">integer literal</a></li>
+      <li>A <a href="Literals.html#LT_DECIMAL">decimal literal</a></li>
+      <li>A <a href="Variables.html">variable</a> or <a href="Constants.html">constant</a> of numeric data type</li>
+      <li>A <a href="Functions.html">function</a> returning a single numeric value</li>
+      <li>A <a href="#EX_BOOLEAN">Boolean expression</a></li>
+      <li>The result of a <a href="DataTypes.html#DT_DATE">DATE</a> subtraction</li>
+      </ul>
+If a number expression includes an operand whose value is not a numeric
+    data type, the runtime system attempts to convert the value to a number
+    according to the <a href="DataConversions.html">data conversion rules</a>.
+
+
+<h4>Example:</h4>
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> r, c <tt>DECIMAL</tt>(10,2)
+<code class="linenumber">03</code>   <tt>LET</tt> c = 456.22
+<code class="linenumber">04</code>   <tt>LET</tt> r = c * 2 + ( c / 4.55 )
+<code class="linenumber">05</code> <tt>END MAIN</tt></pre>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>If an element of a number expression is <a href="Programs.html#PC_NULL">NULL</a>,
+    the expression is evaluated to <tt>NULL</tt>.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="EX_STRING">String Expressions</a></h3>
+
+<p> A&nbsp;<b>String expression</b> is one that includes at least one character string
+value and that evaluates to the <a href="DataTypes.html#DT_STRING">STRING</a>
+data type. </p>
+
+
+<h4>Usage:</h4>
+The data type of the expression result is <a href="DataTypes.html#DT_STRING">STRING</a>.
+<p>At least one of the operands must be one of:
+      <ul>
+      <li>A <a href="Literals.html#LT_STRING">string literal</a>.</li>
+      <li>A <a href="Variables.html">variable</a> or <a href="Constants.html">constant</a>
+        of type <a href="DataTypes.html#DT_CHAR">CHAR</a>, <a href="DataTypes.html#DT_VARCHAR">VARCHAR</a>
+        or <a href="DataTypes.html#DT_STRING">STRING</a>.</li>
+      <li>A <a href="Functions.html">function</a> returning a single character value</li>
+      </ul>
+Other operands whose values are not
+    character string data types are converted to
+    strings according to the <a href="DataConversions.html">data conversion rules</a>.
+<h4>Example:</h4>
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE </tt>r, c<tt> VARCHAR(</tt>100<tt>)</tt><tt>
+</tt><code class="linenumber">03</code>   <tt>LET </tt>c<tt> = &quot;</tt>abcdef<tt>&quot; 
+</tt><code class="linenumber">04</code>   <tt>LET </tt>r<tt> = </tt>c<tt>[</tt>1<tt>,</tt>3<tt>] || &quot;: &quot; || TODAY USING &quot;</tt>YYYY-MM-DD<tt>&quot; || &quot; &quot; || length(</tt>c<tt>)
+</tt><code class="linenumber">05</code> <tt>END MAIN</tt></pre>
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>If an element of an integer expression is <a href="Programs.html#PC_NULL">NULL</a>,
+    the expression is evaluated to NULL.</li>
+  <li>An empty string (&quot;&quot;) is equivalent to <a href="Programs.html#PC_NULL">NULL</a>.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="EX_DATE">Date Expressions</a></h3>
+
+<p> A&nbsp;<b>Date expression</b> is one that evaluates to a <a href="DataTypes.html#DT_DATE">DATE</a>
+data type. </p>
+
+
+
+
+
+<h4>Usage:</h4>
+The data type of the expression result is a <a href="DataTypes.html#DT_DATE">DATE</a>
+    value.
+<p>The operands must be one of:
+      <ul>
+      <li>A <a href="Literals.html#LT_STRING">string literal</a> that can be
+        evaluated to a Date according to <a href="EnvironmentVariables.html#EV_DBDATE">DBDATE</a></li>
+      <li>A <a href="Variables.html">variable</a> or <a href="Constants.html">constant</a> of type <a href="DataTypes.html#DT_DATE">DATE</a>
+      </li>
+      <li>A <a href="Functions.html">function</a> returning a single Date value</li>
+      <li>A unary <tt>+</tt> or <tt>-</tt> associated to an <a href="#EX_INTEGER">Integer
+        expression</a> representing a number of days</li>
+      <li>The <tt> TODAY</tt> constant</li>
+      <li>A <tt> CURRENT</tt> expression with <tt> YEAR TO DAY</tt> qualifiers</li>
+      <li>An <tt> EXTEND</tt> expression with <tt> YEAR TO DAY</tt> qualifiers</li>
+      </ul>
+If a date expression includes an operand whose value is not a date data
+    type, the runtime system attempts to convert the value to a date value
+    according to the <a href="DataConversions.html">data conversion rules</a>.
+
+<h4>Example:</h4>
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> r, c <tt>DATE</tt>
+<code class="linenumber">03</code>   <tt>LET</tt> c = <tt>TODAY</tt> + 4
+<code class="linenumber">04</code>   <tt>LET</tt> r = ( c - 2 )
+<code class="linenumber">05</code> <tt>END MAIN</tt></pre>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>If an element of an integer expression is <a href="Programs.html#PC_NULL">NULL</a>,
+    the expression is evaluated to NULL.</li>
+</ol>
+
+
+<HR>
+
+<h3> <a name="EX_DATETIME">Datetime Expressions</a> </h3>
+
+
+
+
+
+<p> A&nbsp;<b>Datetime expression</b> is one that evaluates to a <a href="DataTypes.html#DT_DATETIME">DATETIME</a>
+data type. </p>
+
+
+
+
+
+<h4>Usage:</h4>
+The data type of the expression result is a <a href="DataTypes.html#DT_DATETIME">DATETIME</a>
+    value.
+<p>The operands must be one of:
+      <ul>
+      <li>A <a href="Literals.html#LT_DATETIME">datetime literal</a></li>
+      <li>A <a href="Literals.html#LT_STRING">string literal</a>  representing a
+        Datetime with the ISO format
+        <tt>YYYY-MM-DD hh:mm:ss.fffff</tt></li>
+      <li>A <a href="Variables.html">variable</a> or <a href="Constants.html">constant</a> of <a href="DataTypes.html#DT_DATETIME">DATETIME</a>
+        type</li>
+      <li>A <a href="Functions.html">function</a> returning a single Datetime value</li>
+      <li>A unary <tt>+</tt> or <tt>-</tt> associated to an <a href="#EX_INTERVAL">Interval
+        expression</a></li>
+      <li>A <tt>CURRENT</tt> expression</li>
+      <li>An <tt>EXTEND</tt> expression</li>
+      </ul>
+If a datetime expression includes an operand whose value is not a datetime
+    data type, the runtime system attempts to convert the value to a datetime
+    value according to the <a href="DataConversions.html">data conversion rules</a>.
+
+<h4>Example:</h4>
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> r, c <tt>DATETIME YEAR TO SECOND</tt>
+<code class="linenumber">03</code>   <tt>LET</tt> c = <tt>CURRENT YEAR TO SECOND</tt>
+<code class="linenumber">04</code>   <tt>LET</tt> r = c + <tt>INTERVAL</tt>( 234-02 ) <tt>YEAR TO MONTH</tt>
+<code class="linenumber">05</code> <tt>END MAIN</tt></pre>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>If an element of an integer expression is <a href="Programs.html#PC_NULL">NULL</a>,
+    the expression is evaluated to NULL.</li>
+</ol>
+
+
+<HR>
+
+<h3> <a name="EX_INTERVAL">Interval Expressions</a> </h3>
+
+
+
+
+
+<p> An&nbsp;<b>Interval expression</b> is one that evaluates to a <a href="DataTypes.html#DT_INTERVAL">INTERVAL</a>
+data type. </p>
+
+
+
+
+
+<h4>Usage:</h4>
+The data type of the expression result is a <a href="DataTypes.html#DT_INTERVAL">INTERVAL</a>
+    value.
+<p>The operands must be one of:
+      <ul>
+      <li>An <a href="Literals.html#LT_INTERVAL">interval literal</a></li>
+      <li>A <a href="Literals.html#LT_STRING">string literal</a>  representing an
+        Interval with the ISO format
+        <tt>YYYY-MM-DD hh:mm:ss.fffff</tt></li>
+      <li>An <a href="#EX_INTEGER">integer expression</a> using <a href="Operators.html#OP_UNITS">the
+        UNITS operator</a></li>
+      <li>A <a href="Variables.html">variable</a> or <a href="Constants.html">constant</a> of <a href="DataTypes.html#DT_INTERVAL">INTERVAL</a> type</li>
+      <li>A <a href="Functions.html">function</a> returning a single Interval value</li>
+      <li>The result of a <a href="DataTypes.html#DT_DATETIME">DATETIME</a> subtraction</li>
+      </ul>
+If an interval expression includes an operand whose value is not an interval
+    data type, the runtime system attempts to convert the value to an interval
+    value according to the <a href="DataConversions.html">data conversion rules</a>.
+
+<h4>Example:</h4>
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> r, c <tt>INTERVAL HOUR TO MINUTE</tt>
+<code class="linenumber">03</code>   <tt>LET</tt> c = &quot;12:45&quot;
+<code class="linenumber">04</code>   <tt>LET</tt> r = c + ( <tt>DATETIME</tt>( 14-02 ) <tt>HOUR TO MINUTE</tt> - <tt>DATETIME</tt>( 10-43 ) <tt>HOUR TO MINUTE</tt> )
+<code class="linenumber">05</code> <tt>END MAIN</tt></pre>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>If an element of an integer expression is <a href="Programs.html#PC_NULL">NULL</a>,
+    the expression is evaluated to NULL.</li>
+</ol>
+
+
+</BODY>
+</HTML>

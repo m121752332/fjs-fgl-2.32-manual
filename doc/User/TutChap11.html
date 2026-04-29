@@ -1,0 +1,1705 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Tutorial: Master/Detail</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+<p><a href="TutIndex.html">Back to Summary</a></p>
+<hr>
+<h1>Tutorial Chapter 11: Master/Detail</h1>
+<p>Summary:</p>
+<ul>
+  <li><a href="#MasterDetailSample">The Master-Detail sample</a></li>
+  <li><a href="#Makefile">The Makefile</a></li>
+  <li><a href="#CustListModule">The Customer List module</a></li>
+  <li><a href="#StockListModule">The Stock List module</a></li>
+  <li><a href="#FormSpec">The Master-Detail Form Specification File</a></li>
+  <li><a href="#OrdersProgram">The Orders Program</a>
+    <ul>
+      <li><a href="#MAIN">The MAIN program block</a></li>
+      <li><a href="#setup_actions">Function setup_actions</a></li>
+      <li><a href="#order_new">Function order_new</a></li>
+      <li><a href="#order_insert">Function order_insert</a></li>
+      <li><a href="#order_query">Function order_query</a></li>
+      <li><a href="#order_fetch">Function order_fetch</a></li>
+      <li><a href="#order_select">Function order_select</a></li>
+      <li><a href="#order_fetch_rel">Function order_fetch_rel</a></li>
+      <li><a href="#order_total">Function order_total</a></li>
+      <li><a href="#order_close">Function order_close</a></li>
+      <li><a href="#items_fetch">Function items_fetch</a></li>
+      <li><a href="#items_show">Function items_show</a></li>
+      <li><a href="#items_inpupd">Function items_inpupd</a></li>
+      <li><a href="#items_line_total">Function items_line_total</a></li>
+      <li><a href="#item_insert">Function item_insert</a></li>
+      <li><a href="#item_update">Function item_update</a></li>
+      <li><a href="#item_delete">Function item_delete</a></li>
+      <li><a href="#get_stock_info">Function get_stock_info</a></li>
+    </ul>
+  </li>
+</ul>
+<hr>
+<h2><a name="MasterDetailSample">The Master-Detail sample</a></h2>
+<p>The example discussed in this chapter is designed for the input of order
+information (headers and
+order lines), illustrating a typical master-detail relationship. The form used by the
+example contains fields from both the <b>
+orders</b> and <b> items</b> tables in the <b> custdemo </b> database.</p>
+
+<img border="0" src="../Images/TUT1001.png">
+<h4>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Display on Windows platforms</h4>
+<p> Since there are multiple items associated with a single
+order, the rows from the<b> items</b> table are stored in a program array and displayed
+in a table container on the form.&nbsp; Most of the functionality to query/add/update/delete has been
+covered in previous chapters; this chapter will focus on the master/detail form
+and the unique features of the corresponding program.</p>
+<p> <b>Note:</b> This type of relationship can also be handled with multiple
+dialogs, as shown in <a href="TutChap13.html">Chapter 13</a>.</p>
+<hr>
+<h2><a name="Makefile">The Makefile</a></h2>
+<p>The BDL modules and forms used by the application in this chapter are compiled/linked by using a <b>Makefile</b>.
+This file is interpreted by the '<b>make</b>' utility, which is a well-known
+tool to build large programs based on multiple sources and forms.</p>
+<p>The <b>make</b> utility reads the <u>dependency rules</u> defined
+in the <b>Makefile</b> for each program component, and executes the commands
+associated with the rules.</p>
+<p>This section only describes the <b>Makefile</b> used in this example. For
+more details about Makefiles, see the <b>make</b> utility documentation.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Makefile</b></td>
+    </tr>
+    <tr>
+      <td width="387" valign="top"><pre><CODE class=linenumber>01</CODE>  all:: orders
+<CODE class=linenumber>02</CODE>
+<CODE class=linenumber>03</CODE>  orders.42m: orders.4gl
+<CODE class=linenumber>04</CODE>          fglcomp -M orders.4gl
+<CODE class=linenumber>05</CODE>  
+<CODE class=linenumber>06</CODE>  orderform.42f: orderform.per
+<CODE class=linenumber>07</CODE>          fglform -M orderform.per
+<CODE class=linenumber>08</CODE>  
+<CODE class=linenumber>09</CODE>  custlist.42m: custlist.4gl
+<CODE class=linenumber>10</CODE>          fglcomp -M custlist.4gl
+<CODE class=linenumber>11</CODE>  
+<CODE class=linenumber>12</CODE>  custlist.42f: custlist.per
+<CODE class=linenumber>13</CODE>          fglform -M custlist.per
+<CODE class=linenumber>14</CODE>  
+<CODE class=linenumber>15</CODE>  stocklist.42m: stocklist.4gl
+<CODE class=linenumber>16</CODE>          fglcomp -M stocklist.4gl
+<CODE class=linenumber>17</CODE>  
+<CODE class=linenumber>18</CODE>  stocklist.42f: stocklist.per
+<CODE class=linenumber>19</CODE>          fglform -M stocklist.per
+<CODE class=linenumber>20</CODE>  
+<CODE class=linenumber>21</CODE>  MODULES=\
+<CODE class=linenumber>22</CODE>   orders.42m\
+<CODE class=linenumber>23</CODE>   custlist.42m\
+<CODE class=linenumber>24</CODE>   stocklist.42m
+<CODE class=linenumber>25</CODE>  
+<CODE class=linenumber>26</CODE>  FORMS=\
+<CODE class=linenumber>27</CODE>   orderform.42f\
+<CODE class=linenumber>28</CODE>   custlist.42f\
+<CODE class=linenumber>29</CODE>   stocklist.42f
+<CODE class=linenumber>30</CODE>  
+<CODE class=linenumber>31</CODE>  orders:: $(MODULES) $(FORMS)
+<CODE class=linenumber>32</CODE>        fgllink -o orders.42r $(MODULES)
+<CODE class=linenumber>33</CODE>  
+<CODE class=linenumber>34</CODE>  run::
+<CODE class=linenumber>35</CODE>        fglrun orders
+<CODE class=linenumber>36</CODE>  
+<CODE class=linenumber>37</CODE>  clean::
+<CODE class=linenumber>38</CODE>          rm -f *.42?</pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line
+<CODE class=linenumber>01</CODE> defines the '<b>all</b>' dependency rule that
+            will be executed by default, and depends from the rule '<b>orders</b>'
+            described on line
+<CODE class=linenumber> 31</CODE>. You execute this rule with '<b>make all</b>', or '<b>make</b>'
+            since this is the first rule in the Makefile.</li>
+          <li>Lines
+<CODE class=linenumber>03</CODE> and <CODE class=linenumber>04</CODE> define a
+            dependency to compile the <b>orders.4gl</b> module into <b>orders.42m</b>.
+            The file on the left (<b>orders.42m</b>) depends from the file on
+            the right (<b>orders.4gl</b>), and the command to be executed is <b>fglcomp
+            -M orders.4gl</b>.</li>
+          <li>Lines
+<CODE class=linenumber>06</CODE> and <CODE class=linenumber>07</CODE> define a
+            dependency to compile the <b>orderform.per</b> form.</li>
+          <li>Lines
+<CODE class=linenumber>09</CODE> and <CODE class=linenumber>10</CODE> define a
+            dependency to compile the <b>custlist.4gl</b> module.</li>
+          <li>Lines
+<CODE class=linenumber>12</CODE> and <CODE class=linenumber>13</CODE> define a
+            dependency to compile the <b>custlist.per</b> form.</li>
+          <li>Lines
+<CODE class=linenumber>15</CODE> and <CODE class=linenumber>16</CODE> define a
+            dependency to compile the <b>stocklist.4gl</b> module.</li>
+          <li>Lines
+<CODE class=linenumber>18</CODE> and <CODE class=linenumber>19</CODE> define a
+            dependency to compile the <b>stocklist.per</b> form.</li>
+          <li>Lines
+<CODE class=linenumber>21</CODE> thru <CODE class=linenumber>24</CODE> define the list of compiled modules, used in the global '<b>orders</b>'
+            dependency rule.</li>
+          <li>Lines
+<CODE class=linenumber>26</CODE> thru <CODE class=linenumber>29</CODE> define the list of compiled form files, used in the global '<b>orders</b>'
+            dependency rule.</li>
+          <li>Lines
+<CODE class=linenumber>31</CODE> and <CODE class=linenumber>32</CODE> is the
+            global 'orders' dependency rule, defining modules or form files to
+            be created.</li>
+          <li>Lines
+<CODE class=linenumber>34</CODE> and <CODE class=linenumber>35</CODE> define a
+            rule and command to execute the program. You execute this rule with
+            '<b>make run</b>'.</li>
+          <li>Lines
+<CODE class=linenumber>37</CODE> and <CODE class=linenumber>38</CODE> define a
+            rule and command to clean the directory. You execute this rule with
+            '<b>make clean</b>'.</li>
+        </ul>
+<hr>
+<h2><a name="CustListModule">The Customer List Module</a></h2>
+<p>The <b>custlist.4gl</b> module defines a 'zoom' module, to let the
+user select a customer from a list. The module could be re-used for any
+application that requires the user to select a customer from a list.&nbsp;
+</p>
+
+<p> This module uses the <b>custlist.per</b>
+form and is typical list handling using the <a href="DisplayArray.html">DISPLAY
+ARRAY</a> statement, as discussed in <a href="TutChap07.html">Chapter 07</a>.
+The <b>display_custlist()</b> function in this module returns the customer id
+and the name. See the <b>custlist.4gl</b>  source module for more details.&nbsp;
+</p>
+
+<p>In the application illustrated in this chapter, the main module <b>orders.4gl
+</b>will call the <b>display_custlist()</b> function to retrieve a
+customer selected by the user.
+</p>
+
+<pre><CODE class=linenumber>01</CODE>   <tt>ON ACTION</tt> zoom1
+<CODE class=linenumber>02</CODE>   <tt>   CALL </tt>display_custlist() <tt>RETURNING</tt> id, name
+<CODE class=linenumber>03</CODE>   <tt>   IF </tt>(id &gt; 0) <tt>THEN</tt>
+<CODE class=linenumber>04</CODE>         ...</pre>
+
+<hr>
+<h2><a name="StockListModule">The Stock List Module</a></h2>
+<p>The <b>stocklist.4gl</b> module defines a 'zoom' module, to let the
+user select a stock item from a list. This module uses the <b>stocklist.per</b>
+form and is typical list handling using the <a href="DisplayArray.html">DISPLAY
+ARRAY</a> statement, as discussed in <a href="TutChap07.html">Chapter 07</a>. See the <b>stocklist.4gl</b>  source module for more details.
+</p>
+
+<p>The main module <b>orders.4gl</b> will call the <b>display_stocklist()</b> function
+of the <b>stocklist.4gl </b>module to retrieve
+a
+stock item selected by the user.
+</p>
+
+<p>The function returns the stock item id only:
+</p>
+
+<pre><CODE class=linenumber>01</CODE>   <tt>ON ACTION</tt> zoom2
+<CODE class=linenumber>02</CODE>   <tt>   LET </tt>id = display_stocklist()
+<CODE class=linenumber>03</CODE>   <tt>   IF </tt>(id &gt; 0) <tt>THEN</tt>
+<CODE class=linenumber>04</CODE>         ...</pre>
+
+<hr>
+<h2>
+<a name="FormSpec">The Master-Detail Form Specification File</a></h2>
+<p>The <a href="FormSpecFiles.html">form specification file</a> <b>orderform.per</b>
+defines a form for the orders program, and displays fields containing the values
+of a single order from the <b>orders</b> table.&nbsp; The name of the store is
+retrieved from the <b>customer</b> table, using the column <b>store_num, </b>and displayed.
+</p>
+
+<p>A <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>
+displays the associated rows from the <b>items</b> table.&nbsp; Although <b>order_num</b>
+is also one of the fields in the <b>items</b> table, it does not have to be
+included in the screen array
+or in the <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS"> screen record</a>,
+since the order number will be the same for all the items displayed for a given
+order.&nbsp; For each item displayed in the screen array,&nbsp;
+the values in the <b>description </b> and <b> unit </b>columns from the <b>stock</b>
+table are also displayed.
+</p>
+
+<p>The values in <a href="FormSpecFiles.html#FF_FORMONLY_FIELD">FORMONLY</a>
+fields are not retrieved from a database; they are calculated by the BDL program
+based on the entries in other fields.&nbsp; In this form FORMONLY
+fields are used to display the calculations made by the BDL program for item
+line totals and the order total.
+</p>
+
+<p>This form uses some of the attributes that can be assigned to fields in a
+form.&nbsp; See <a href="FSFAttributes.html">Form
+Specification Files Attributes</a> for a complete list of the available attributes.
+</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Form orderform.per</b></td>
+    </tr>
+    <tr>
+      <td width="387" valign="top"><pre><CODE class=linenumber>01</CODE> <tt>SCHEMA</tt> custdemo
+<CODE class=linenumber>02</CODE> 
+<CODE class=linenumber>03</CODE> <tt>TOOLBAR</tt>
+<CODE class=linenumber>04</CODE>  <tt>ITEM</tt> new (<tt>TEXT</tt>=&quot;Order&quot;, <tt>IMAGE</tt>=&quot;new&quot;, <tt>COMMENT</tt>=&quot;New order&quot;)
+<CODE class=linenumber>05</CODE>  <tt>ITEM</tt> find (<tt>TEXT</tt>=&quot;Find&quot;, <tt>IMAGE</tt>=&quot;find&quot;)
+<CODE class=linenumber>06</CODE>  <tt>SEPARATOR</tt>
+<CODE class=linenumber>07</CODE>  <tt>ITEM</tt> append (<tt>TEXT</tt>=&quot;Line&quot;, <tt>IMAGE</tt>=&quot;new&quot;, <tt>COMMENT</tt>=&quot;New order line&quot;)
+<CODE class=linenumber>08</CODE>  <tt>ITEM</tt> delete (<tt>TEXT</tt>=&quot;Del&quot;, <tt>IMAGE</tt>=&quot;eraser&quot;)
+<CODE class=linenumber>09</CODE>  <tt>SEPARATOR</tt>
+<CODE class=linenumber>10</CODE>  <tt>ITEM</tt> previous (<tt>TEXT</tt>=&quot;Prev&quot;)
+<CODE class=linenumber>11</CODE>  <tt>ITEM</tt> next (<tt>TEXT</tt>=&quot;Next&quot;)
+<CODE class=linenumber>12</CODE>  <tt>SEPARATOR</tt>
+<CODE class=linenumber>13</CODE>  <tt>ITEM</tt> getitems (<tt>TEXT</tt>=&quot;Items&quot;, <tt>IMAGE</tt>=&quot;prop&quot;)
+<CODE class=linenumber>14</CODE>  <tt>SEPARATOR</tt>
+<CODE class=linenumber>15</CODE>  <tt>ITEM</tt> quit (<tt>TEXT</tt>=&quot;Quit&quot;, <tt>COMMENT</tt>=&quot;Exit the program&quot;, <tt>IMAGE</tt>=&quot;quit&quot;)
+<CODE class=linenumber>16</CODE> <tt>END</tt>
+<CODE class=linenumber>17</CODE> 
+<CODE class=linenumber>18</CODE> <tt>LAYOUT </tt>
+<CODE class=linenumber>19</CODE> <tt>VBOX</tt>
+<CODE class=linenumber>20</CODE> <tt>GROUP</tt>
+<CODE class=linenumber>21</CODE> <tt>GRID</tt>
+<CODE class=linenumber>22</CODE> {
+<CODE class=linenumber>23</CODE>   Store #:[f01  ] [f02                                          ]
+<CODE class=linenumber>24</CODE>   Order #:[f03  ]  Order Date:[f04         ] Ship By:[f06       ]
+<CODE class=linenumber>25</CODE>   Factory:[f05  ]             [f07                              ]
+<CODE class=linenumber>26</CODE>                                      Order Total:[f14           ]
+<CODE class=linenumber>27</CODE> }
+<CODE class=linenumber>28</CODE> <tt>END</tt>
+<CODE class=linenumber>29</CODE> <tt>END</tt> -- GROUP
+<CODE class=linenumber>30</CODE> <tt>TABLE</tt>
+<CODE class=linenumber>31</CODE> {
+<CODE class=linenumber>32</CODE>  Stock#  Description       Qty     Unit    Price       Total
+<CODE class=linenumber>33</CODE> [f08    |f09              |f10    |f11    |f12        |f13      ]
+<CODE class=linenumber>34</CODE> [f08    |f09              |f10    |f11    |f12        |f13      ]
+<CODE class=linenumber>35</CODE> [f08    |f09              |f10    |f11    |f12        |f13      ]
+<CODE class=linenumber>36</CODE> [f08    |f09              |f10    |f11    |f12        |f13      ]
+<CODE class=linenumber>37</CODE> }
+<CODE class=linenumber>38</CODE> <tt>END</tt>
+<CODE class=linenumber>39</CODE> <tt>END</tt>
+<CODE class=linenumber>40</CODE> <tt>END</tt>
+<CODE class=linenumber>41</CODE> 
+<CODE class=linenumber>42</CODE> <tt>TABLES</tt>
+<CODE class=linenumber>43</CODE>   customer, orders, items, stock
+<CODE class=linenumber>44</CODE> <tt>END</tt>
+<CODE class=linenumber>45</CODE> 
+<CODE class=linenumber>46</CODE> <tt>ATTRIBUTES</tt>
+<CODE class=linenumber>47</CODE>  <tt>BUTTONEDIT </tt>f01 = orders.store_num, <tt>REQUIRED</tt>, <tt>ACTION</tt>=zoom1;
+<CODE class=linenumber>48</CODE>  <tt>EDIT       </tt>f02 = customer.store_name, <tt>NOENTRY</tt>;
+<CODE class=linenumber>49</CODE>  <tt>EDIT       </tt>f03 = orders.order_num, <tt>NOENTRY</tt>;
+<CODE class=linenumber>50</CODE>  <tt>DATEEDIT   </tt>f04 = orders.order_date;
+<CODE class=linenumber>51</CODE>  <tt>EDIT       </tt>f05 = orders.fac_code, <tt>UPSHIFT</tt>;
+<CODE class=linenumber>52</CODE>  <tt>EDIT       </tt>f06 = orders.ship_instr;
+<CODE class=linenumber>53</CODE>  <tt>CHECKBOX   </tt>f07 = orders.promo, <tt>TEXT</tt>=&quot;Promotional&quot;,
+<CODE class=linenumber>54</CODE>                  <tt>VALUEUNCHECKED</tt>=&quot;N&quot;, <tt>VALUECHECKED</tt>=&quot;Y&quot;;
+<CODE class=linenumber>55</CODE>  <tt>BUTTONEDIT </tt>f08 = items.stock_num, <tt>REQUIRED</tt>, <tt>ACTION</tt>=zoom2;
+<CODE class=linenumber>56</CODE>  <tt>LABEL      </tt>f09 = stock.description;
+<CODE class=linenumber>57</CODE>  <tt>EDIT       </tt>f10 = items.quantity, <tt>REQUIRED</tt>;
+<CODE class=linenumber>58</CODE>  <tt>LABEL      </tt>f11 = stock.unit;
+<CODE class=linenumber>59</CODE>  <tt>LABEL      </tt>f12 = items.price;
+<CODE class=linenumber>60</CODE>  <tt>LABEL      </tt>f13 = formonly.line_total <tt>TYPE DECIMAL</tt>(9,2);
+<CODE class=linenumber>61</CODE>  <tt>EDIT       </tt>f14 = formonly.order_total <tt>TYPE DECIMAL</tt>(9,2), <tt>NOENTRY</tt>;
+<CODE class=linenumber>62</CODE> <tt>END</tt>
+<CODE class=linenumber>63</CODE> 
+<CODE class=linenumber>64</CODE> <tt>INSTRUCTIONS</tt>
+<CODE class=linenumber>65</CODE> <tt>SCREEN RECORD</tt> sa_items(
+<CODE class=linenumber>66</CODE>   items.stock_num,
+<CODE class=linenumber>67</CODE>   stock.description,
+<CODE class=linenumber>68</CODE>   items.quantity,
+<CODE class=linenumber>69</CODE>   stock.unit,
+<CODE class=linenumber>70</CODE>   items.price,
+<CODE class=linenumber>71</CODE>   line_total
+<CODE class=linenumber>72</CODE> )
+<CODE class=linenumber>73</CODE> <tt>END</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+<h4>Notes:</h4>
+        <ul>
+          <li>Lines <CODE class=linenumber>03</CODE> thru <CODE class=linenumber>16</CODE>&nbsp;define
+            a <a href="FormSpecFiles.html#SECTION_TOOLBAR">TOOLBAR</a> section
+            with typical actions.</li>
+          <li>Lines <CODE class=linenumber>23</CODE>  and <CODE class=linenumber>48</CODE>&nbsp;
+            The field <b>f02</b> is a <a href="FormSpecFiles.html#FF_ITEMTYPE_LABEL">LABEL</a>,
+            allowing no editing. It displays the customer name associated
+            with the <b>orders</b> store number</li>
+          <li>Lines <CODE class=linenumber>19</CODE> and <CODE class=linenumber>49</CODE>
+            Field <b>f03 </b>is the order number from the <b>orders</b>
+            table.</li>
+          <li>Lines
+<CODE class=linenumber>25</CODE>   and
+<CODE class=linenumber>53</CODE>    The field <b>f07 </b>is a <a href="FormSpecFiles.html#FF_ITEMTYPE_CHECKBOX">CHECKBOX</a>
+            displaying the values of the column <b>promo</b> in the <b>orders</b>
+            table.&nbsp; The box will appear checked if the value in the column
+            is &quot;Y&quot;, and unchecked if the value is &quot;N&quot;.</li>
+          <li>Lines
+<CODE class=linenumber>26</CODE>  and
+<CODE class=linenumber>61</CODE>&nbsp; The field <b>f14</b> is a <a href="FormSpecFiles.html#FF_FORMONLY_FIELD">FORMONLY</a>
+            field This field displays the order total calculated by the BDL program
+            logic.</li>
+          <li>Lines
+<CODE class=linenumber>30</CODE>   thru
+<CODE class=linenumber>38</CODE>  describe the <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE</a>
+            container for the <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>.</li>
+          <li>Lines <CODE class=linenumber>33</CODE>, <CODE class=linenumber>56</CODE>
+            and <CODE class=linenumber>58 </CODE>The fields<b> f09 </b>and <b>f11</b>
+            are <a href="FormSpecFiles.html#FF_ITEMTYPE_LABEL">LABELS</a>,
+            and display the description and unit of measure for the<b> items</b>
+            stock number.&nbsp;</li>
+          <li>Lines
+<CODE class=linenumber>33</CODE>  and
+<CODE class=linenumber> 60</CODE>  the field <b>f13 </b>is a <a href="FormSpecFiles.html#FF_ITEMTYPE_LABEL">LABEL</a>
+            and <a href="FormSpecFiles.html#FF_FORMONLY_FIELD">FORMONLY</a>.
+            This field displays the line total calculated for each line in the
+            screen array.</li>
+          <li>Lines
+<CODE class=linenumber>42</CODE> thru <CODE class=linenumber>44</CODE>  The <a href="FormSpecFiles.html#SECTION_TABLES">TABLES</a>
+            statement includes all the database tables that are listed for
+            fields in the Attributes section of the form.</li>
+          <li>Line
+<CODE class=linenumber>47</CODE>   The attribute <a href="FSFAttributes.html#FA_REQUIRED">REQUIRED</a>
+            forces the user to enter data in the field during an INPUT
+            statement.&nbsp;</li>
+          <li>Line
+<CODE class=linenumber>51</CODE> The attribute <a href="FSFAttributes.html#FA_UPSHIFT">UPSHIFT</a>
+            makes the runtime system convert lowercase letters to uppercase
+            letters, both on the screen display and in the program variable that
+            stores the contents of this field.</li>
+          <li>Line
+<CODE class=linenumber>65</CODE> The <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS"> screen record</a>
+            includes the names of all the fields shown in the <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>. </li>
+        </ul>
+
+
+<hr>
+
+
+<h2><a name="OrdersProgram">The Orders Program orders.4gl</a></h2>
+
+<p>Much of the functionality is identical to that in earlier programs.&nbsp; The
+query/add/delete/update of the orders table would be the same as the
+examples in <a href="TutChap04.html">Chapter 4 </a>and <a href="TutChap06.html">Chapter
+6 </a>. Only append and query are included in this program, for simplicity.&nbsp; The add/delete/update of the <b>items</b> table
+is similar to that
+in <a href="TutChap08.html">Chapter 8</a>.&nbsp; The complete orders program is
+outlined below, with examples of any new functionality.</p>
+
+
+<hr>
+
+
+<h3><a name="MAIN">The MAIN program block</a>&nbsp;</h3>
+
+<p>This program block contains the menu for the Orders program.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>MAIN program block
+        (orders.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>SCHEMA</tt> custdemo
+<CODE class=linenumber>02</CODE> 
+<CODE class=linenumber>03</CODE> <tt>DEFINE</tt>  order_rec <tt>RECORD</tt>
+<CODE class=linenumber>04</CODE>            store_num    <tt>LIKE</tt> orders.store_num,
+<CODE class=linenumber>05</CODE>            store_name   <tt>LIKE</tt> customer.store_name,
+<CODE class=linenumber>06</CODE>            order_num    <tt>LIKE</tt> orders.order_num,
+<CODE class=linenumber>07</CODE>            order_date   <tt>LIKE</tt> orders.order_date,
+<CODE class=linenumber>08</CODE>            fac_code     <tt>LIKE</tt> orders.fac_code,
+<CODE class=linenumber>09</CODE>            ship_instr   <tt>LIKE</tt> orders.ship_instr,
+<CODE class=linenumber>10</CODE>            promo        <tt>LIKE</tt> orders.promo
+<CODE class=linenumber>11</CODE>         <tt>END RECORD</tt>,
+<CODE class=linenumber>12</CODE>         arr_items DYNAMIC <tt>ARRAY OF RECORD</tt>
+<CODE class=linenumber>13</CODE>            stock_num    <tt>LIKE</tt> items.stock_num,
+<CODE class=linenumber>14</CODE>            description  <tt>LIKE</tt> stock.description,
+<CODE class=linenumber>15</CODE>            quantity     <tt>LIKE</tt> items.quantity,
+<CODE class=linenumber>16</CODE>            unit         <tt>LIKE</tt> stock.unit,
+<CODE class=linenumber>17</CODE>            price        <tt>LIKE</tt> items.price,
+<CODE class=linenumber>18</CODE>            line_total   <tt>DECIMAL</tt>(9,2)
+<CODE class=linenumber>19</CODE>         <tt>END RECORD</tt>
+<CODE class=linenumber>20</CODE> 
+<CODE class=linenumber>21</CODE> <tt>CONSTANT</tt> msg01 = &quot;You must query first&quot;
+<CODE class=linenumber>22</CODE> <tt>CONSTANT</tt> msg02 = &quot;Enter search criteria&quot;
+<CODE class=linenumber>23</CODE> <tt>CONSTANT</tt> msg03 = &quot;Canceled by user&quot;
+<CODE class=linenumber>24</CODE> <tt>CONSTANT</tt> msg04 = &quot;No rows in table&quot;
+<CODE class=linenumber>25</CODE> <tt>CONSTANT</tt> msg05 = &quot;End of list&quot;
+<CODE class=linenumber>26</CODE> <tt>CONSTANT</tt> msg06 = &quot;Beginning of list&quot;
+<CODE class=linenumber>27</CODE> <tt>CONSTANT</tt> msg07 = &quot;Invalid stock number&quot;
+<CODE class=linenumber>28</CODE> <tt>CONSTANT</tt> msg08 = &quot;Row added&quot;
+<CODE class=linenumber>29</CODE> <tt>CONSTANT</tt> msg09 = &quot;Row updated&quot;
+<CODE class=linenumber>30</CODE> <tt>CONSTANT</tt> msg10 = &quot;Row deleted&quot;
+<CODE class=linenumber>31</CODE> <tt>CONSTANT</tt> msg11 = &quot;Enter order&quot;
+<CODE class=linenumber>32</CODE> <tt>CONSTANT</tt> msg12 = &quot;This customer does not exist&quot;
+<CODE class=linenumber>33</CODE> <tt>CONSTANT</tt> msg13 = &quot;Quantity must be greater than zero&quot;
+<CODE class=linenumber>34</CODE>  
+<CODE class=linenumber>35</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>36</CODE>   <tt>DEFINE</tt> has_order, query_ok <tt>SMALLINT</tt>
+<CODE class=linenumber>37</CODE>   <tt>DEFER INTERRUPT</tt>
+<CODE class=linenumber>38</CODE> 
+<CODE class=linenumber>39</CODE>   <tt>CONNECT TO</tt> &quot;custdemo&quot;
+<CODE class=linenumber>40</CODE>   <tt>CLOSE WINDOW SCREEN</tt>
+<CODE class=linenumber>41</CODE>   
+<CODE class=linenumber>42</CODE>   <tt>OPEN WINDOW</tt> w1 <tt>WITH FORM</tt> &quot;orderform&quot;
+<CODE class=linenumber>43</CODE> 
+<CODE class=linenumber>44</CODE>   <tt>MENU</tt>
+<CODE class=linenumber>45</CODE>     <tt>BEFORE MENU</tt>
+<CODE class=linenumber>46</CODE>        <tt>CALL</tt> setup_actions(DIALOG,<tt>FALSE</tt>,<tt>FALSE</tt>)
+<CODE class=linenumber>47</CODE>     <tt>ON ACTION</tt> new
+<CODE class=linenumber>48</CODE>	  <tt>CLEAR FORM</tt>
+<CODE class=linenumber>49</CODE>        <tt>LET</tt> query_ok = <tt>FALSE</tt>
+<CODE class=linenumber>50</CODE>        <tt>CALL</tt> close_order()
+<CODE class=linenumber>51</CODE>        <tt>LET</tt> has_order = order_new()
+<CODE class=linenumber>52</CODE>        <tt>IF</tt> has_order <tt>THEN</tt>
+<CODE class=linenumber>53</CODE>           <tt>CALL</tt> arr_items.clear()
+<CODE class=linenumber>54</CODE>           <tt>CALL</tt> items_inpupd()
+<CODE class=linenumber>55</CODE>        <tt>END IF</tt>
+<CODE class=linenumber>56</CODE>        <tt>CALL</tt> setup_actions(DIALOG,has_order,query_ok)
+<CODE class=linenumber>57</CODE>     <tt>ON ACTION</tt> find
+<CODE class=linenumber>58</CODE>        <tt>CLEAR FORM</tt>
+<CODE class=linenumber>59</CODE>        <tt>LET</tt> query_ok = order_query()
+<CODE class=linenumber>60</CODE>        <tt>LET</tt> has_order = query_ok
+<CODE class=linenumber>61</CODE>        <tt>CALL</tt> setup_actions(DIALOG,has_order,query_ok)
+<CODE class=linenumber>62</CODE>     <tt>ON ACTION</tt> next
+<CODE class=linenumber>63</CODE>        <tt>CALL</tt> order_fetch_rel(1)
+<CODE class=linenumber>64</CODE>     <tt>ON ACTION</tt> previous
+<CODE class=linenumber>65</CODE>        <tt>CALL</tt> order_fetch_rel(-1)
+<CODE class=linenumber>66</CODE>     <tt>ON ACTION</tt> getitems
+<CODE class=linenumber>67</CODE>        <tt>CALL</tt> items_inpupd()
+<CODE class=linenumber>68</CODE>     <tt>ON ACTION</tt> quit
+<CODE class=linenumber>69</CODE>        <tt>EXIT MENU</tt>
+<CODE class=linenumber>70</CODE>   <tt>END MENU</tt>
+<CODE class=linenumber>71</CODE> 
+<CODE class=linenumber>72</CODE>   <tt>CLOSE WINDOW</tt> w1
+<CODE class=linenumber>73</CODE> 
+<CODE class=linenumber>74</CODE> <tt>END MAIN</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Lines
+<CODE class=linenumber>03</CODE>
+            thru
+<CODE class=linenumber>11</CODE>
+            define a <a href="TutChap03.html#definerecord">record</a> with fields
+            for all the columns in the <b>orders</b> table, as well as <b>store_name</b>
+            from the <b>customer</b> table.</li>
+          <li>Lines
+<CODE class=linenumber>12</CODE>
+            through
+<CODE class=linenumber>19</CODE>
+            define a <a href="Arrays.html">dynamic array</a>
+            with fields for all the columns in the<b> items</b> table, as well
+            as <b>quantity</b> and <b>unit</b> from the <b>stock</b> table, and
+            a calculated field <b>line_total</b>.</li>
+          <li>Lines
+<CODE class=linenumber>21</CODE>  thru
+<CODE class=linenumber> 33</CODE> define constants to hold the
+            program messages. This centralizes the definition of the messages,
+            which can be used in any function in the module.</li>
+          <li>Lines
+<CODE class=linenumber>44</CODE>  thru
+<CODE class=linenumber> 65</CODE> define the main menu of the application.</li>
+          <li>Line
+<CODE class=linenumber>46</CODE> is executed before the menu is displayed; it
+            calls the <b>setup_actions</b> function to disable navigation and
+            item management actions by default. The DIALOG predefined object is
+            passed as the first parameter to the function.</li>
+          <li>Lines
+<CODE class=linenumber> 47</CODE>  thru <CODE class=linenumber>56</CODE>
+            perform the 'add' action to create a new order. The <b>order_new</b>
+            function is called, and if it returns TRUE, the <b>items_inpupd </b>function
+            is called to allow the user to enter items for the new order. Menu actions are enabled/disabled depending
+            on the result of the operation, using the <b>setup_actions</b>
+            function..</li>
+          <li>Lines
+<CODE class=linenumber> 57</CODE>  thru <CODE class=linenumber>61</CODE>
+            perform the 'find' action to search for orders in the database. The <b>order_query</b>
+            function is called and menu actions are enabled/disabled depending
+            on the result of the operation, using the <b>setup_actions</b>
+            function..</li>
+          <li>Lines
+<CODE class=linenumber> 62</CODE>   thru <CODE class=linenumber>65</CODE> handle
+            navigation in the order list after a search. Function <b>order_fetch_rel</b>
+            is used to fetch the previous or next record.</li>
+          <li>Line
+<CODE class=linenumber>67</CODE>  calls the function<b> items_inpupd</b> to allow
+            the user to edit the <b>items</b> associated with the displayed <b>order</b>.</li>
+          <li>Line
+<CODE class=linenumber>72</CODE>    closes the window before leaving the program.
+            &nbsp;</li>
+        </ul>
+
+
+<hr>
+
+
+<h3><a name="setup_actions">Function setup_actions</a></h3>
+
+
+<p>This function is used by the main menu to enable or disable actions&nbsp;
+based on the context.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function setup_actions
+        (orders.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> setup_actions(d, has_order, query_ok)
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> d ui.Dialog,
+<CODE class=linenumber>03</CODE>          has_order, query_ok <tt>SMALLINT</tt>
+<CODE class=linenumber>04</CODE>   <tt>CALL</tt> d.setActionActive(&quot;next&quot;,query_ok)
+<CODE class=linenumber>05</CODE>   <tt>CALL</tt> d.setActionActive(&quot;previous&quot;,query_ok)
+<CODE class=linenumber>06</CODE>   <tt>CALL</tt> d.setActionActive(&quot;getitems&quot;,has_order)
+<CODE class=linenumber>07</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+<ul>
+  <li>Line
+<CODE class=linenumber>01 </CODE> Three parameters are passed to the function:</li>
+</ul>
+<blockquote>
+  <ul type="circle">
+    <li><b>d </b>- the predefined Dialog object</li>
+    <li><b>has_order</b> - if the value is TRUE, indicates that there is a new
+      or existing order selected.</li>
+    <li><b>query_ok</b> - if the value is TRUE, indicates that the search for
+      orders was successful.</li>
+  </ul>
+</blockquote>
+<ul>
+  <li>Lines
+<CODE class=linenumber>04</CODE> and
+<CODE class=linenumber>05</CODE>  use the <a href="ClassDialog.html">ui.Dialog.setActionActive</a>
+            method to enable or disable '<b>next</b>' and '<b>previous</b>'
+            actions based on the value of <b>query_ok,</b> which indicates
+            whether the search for orders was
+            successful.</li>
+  <li>Line
+<CODE class=linenumber>06</CODE>  uses the same method to enable the '<b>getitems</b>' action
+    based on the value of <b>has_order</b>, which indicates whether there is an order
+    currently selected.&nbsp;</li>
+</ul>
+
+
+<hr>
+
+
+<h3><a name="order_new">Function order_new</a></h3>
+<p>This function handles the input of an order record.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function order_new
+        (orders.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> order_new()
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> id <tt>INTEGER</tt>, name <tt>STRING</tt>
+<CODE class=linenumber>03</CODE> 
+<CODE class=linenumber>04</CODE>   <tt>MESSAGE</tt> msg11
+<CODE class=linenumber>05</CODE>   <tt>INITIALIZE</tt> order_rec.* <tt>TO NULL</tt>
+<CODE class=linenumber>06</CODE>   <tt>SELECT MAX</tt>(order_num)+1 <tt>INTO</tt> order_rec.order_num
+<CODE class=linenumber>07</CODE>     <tt>FROM</tt> orders
+<CODE class=linenumber>08</CODE>   <tt>IF</tt> order_rec.order_num <tt>IS NULL</tt>
+<CODE class=linenumber>09</CODE>    <tt>OR</tt> order_rec.order_num == 0 <tt>THEN</tt>
+<CODE class=linenumber>10</CODE>      <tt>LET</tt> order_rec.order_num = 1
+<CODE class=linenumber>11</CODE>   <tt>END IF</tt> 
+<CODE class=linenumber>12</CODE>
+<CODE class=linenumber>13</CODE>   <tt>LET</tt> int_flag = <tt>FALSE</tt>
+<CODE class=linenumber>14</CODE>   <tt>INPUT BY NAME</tt>
+<CODE class=linenumber>15</CODE>       order_rec.store_num, 
+<CODE class=linenumber>16</CODE>       order_rec.store_name, 
+<CODE class=linenumber>17</CODE>       order_rec.order_num, 
+<CODE class=linenumber>18</CODE>       order_rec.order_date, 
+<CODE class=linenumber>19</CODE>       order_rec.fac_code,
+<CODE class=linenumber>20</CODE>       order_rec.ship_instr,
+<CODE class=linenumber>21</CODE>       order_rec.promo
+<CODE class=linenumber>22</CODE>     <tt>WITHOUT DEFAULTS</tt>
+<CODE class=linenumber>23</CODE>     <tt>ATTRIBUTES</tt>(<tt>UNBUFFERED</tt>)
+<CODE class=linenumber>24</CODE> 
+<CODE class=linenumber>25</CODE>     <tt>BEFORE INPUT</tt>
+<CODE class=linenumber>26</CODE>        <tt>LET</tt> order_rec.order_date = <tt>TODAY</tt>
+<CODE class=linenumber>27</CODE>        <tt>LET</tt> order_rec.fac_code = &quot;ASC&quot;
+<CODE class=linenumber>28</CODE>        <tt>LET</tt> order_rec.ship_instr = &quot;FEDEX&quot;
+<CODE class=linenumber>29       </CODE> <tt>LET</tt> order_rec.promo = &quot;N&quot;<CODE class=linenumber>
+30</CODE> 
+<CODE class=linenumber>31</CODE>     <tt>ON CHANGE</tt> store_num
+<CODE class=linenumber>32</CODE>        <tt>SELECT</tt> store_name <tt>INTO</tt> order_rec.store_name
+<CODE class=linenumber>33</CODE>          <tt>FROM</tt> customer
+<CODE class=linenumber>34</CODE>         <tt>WHERE</tt> store_num = order_rec.store_num
+<CODE class=linenumber>35</CODE>        <tt>IF</tt> (SQLCA.SQLCODE == <tt>NOTFOUND</tt>) <tt>THEN</tt>
+<CODE class=linenumber>36</CODE>           <tt>ERROR</tt> msg12
+<CODE class=linenumber>37</CODE>           <tt>NEXT FIELD</tt> store_num
+<CODE class=linenumber>38</CODE>        <tt>END IF</tt>
+<CODE class=linenumber>39</CODE> 
+<CODE class=linenumber>40</CODE>     <tt>ON ACTION</tt> zoom1
+<CODE class=linenumber>41</CODE>        <tt>CALL</tt> display_custlist() <tt>RETURNING</tt> id, name
+<CODE class=linenumber>42</CODE>        <tt>IF</tt> (id &gt; 0) <tt>THEN</tt>
+<CODE class=linenumber>43</CODE>           <tt>LET</tt> order_rec.store_num = id
+<CODE class=linenumber>44</CODE>           <tt>LET</tt> order_rec.store_name = name
+<CODE class=linenumber>45</CODE>        <tt>END IF</tt>
+<CODE class=linenumber>46</CODE> 
+<CODE class=linenumber>47</CODE>   <tt>END INPUT</tt>
+<CODE class=linenumber>48</CODE> 
+<CODE class=linenumber>49</CODE>   <tt>IF</tt> (int_flag) <tt>THEN</tt>
+<CODE class=linenumber>50</CODE>      <tt>LET</tt> int_flag=<tt>FALSE</tt>
+<CODE class=linenumber>51</CODE>      <tt>CLEAR FORM</tt>
+<CODE class=linenumber>52</CODE>      <tt>MESSAGE</tt> msg03
+<CODE class=linenumber>53</CODE>      <tt>RETURN FALSE</tt>
+<CODE class=linenumber>54</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>55</CODE> 
+<CODE class=linenumber>56</CODE>   <tt>RETURN</tt> order_insert()
+<CODE class=linenumber>57</CODE>  
+<CODE class=linenumber>58</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Lines <CODE class=linenumber>06</CODE> and
+<CODE class=linenumber>11</CODE>  execute a SELECT to get a new order number
+            from the database; if no rows are found, the order number is
+            initialized to 1.</li>
+          <li>Lines <CODE class=linenumber>14</CODE> thru
+<CODE class=linenumber>47</CODE>  use the <a href="RecordInput.html">INPUT</a> interactive dialog statement to
+            let the user input the order data.</li>
+          <li>Lines <CODE class=linenumber>25</CODE> thru <CODE class=linenumber>29</CODE> 
+            the BEFORE INPUT block initializes some members of the <b>order_rec</b>
+            record, as default values for input.</li>
+          <li>Lines <CODE class=linenumber>31</CODE> thru <CODE class=linenumber>38</CODE> 
+            the ON CHANGE block on the <b>store_num</b> field retrieves the
+            customer name for the changed store_num from the customer table, and
+            stores it in the <b>store_name </b>field.&nbsp; If the customer
+            doesn't exist in the customer table, an error message displays.</li>
+          <li>Lines <CODE class=linenumber>40</CODE> thru <CODE class=linenumber>45</CODE> 
+            implement the code to open the zoom window of the <b>store_num</b>
+            BUTTONEDIT field, when the action <b>zoom1</b> is triggered. The
+            function <b>display_custlist</b>&nbsp; in the <a href="#CustListModule">custlist.4gl
+            module</a> allows the user to select a customer from a list.&nbsp;
+            The action <b>zoom1</b> is enabled during the INPUT statement only.</li>
+          <li>Line <CODE class=linenumber>56</CODE> calls the <b>order_insert</b>
+            function to perform the INSERT SQL statement.</li>
+        </ul>
+
+
+<hr>
+
+
+<h3><a name="order_insert">Function order_insert</a></h3>
+<p>This function inserts a new record in the orders database table.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function order_insert
+        (orders.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> order_insert()
+<CODE class=linenumber>02</CODE> 
+<CODE class=linenumber>03</CODE>   <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>04</CODE>   <tt>INSERT INTO</tt> orders (
+<CODE class=linenumber>05</CODE>      store_num,
+<CODE class=linenumber>06</CODE>      order_num,
+<CODE class=linenumber>07</CODE>      order_date,
+<CODE class=linenumber>08</CODE>      fac_code,
+<CODE class=linenumber>09</CODE>      ship_instr,
+<CODE class=linenumber>10</CODE>      promo
+<CODE class=linenumber>11</CODE>    ) <tt>VALUES</tt> (
+<CODE class=linenumber>12</CODE>      order_rec.store_num,
+<CODE class=linenumber>13</CODE>      order_rec.order_num,
+<CODE class=linenumber>14</CODE>      order_rec.order_date,
+<CODE class=linenumber>15</CODE>      order_rec.fac_code,
+<CODE class=linenumber>16</CODE>      order_rec.ship_instr,
+<CODE class=linenumber>17</CODE>      order_rec.promo
+<CODE class=linenumber>18</CODE>    )
+<CODE class=linenumber>19</CODE>    <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>20</CODE>   
+<CODE class=linenumber>21</CODE>    <tt>IF</tt> (SQLCA.SQLCODE &lt;&gt; 0) <tt>THEN</tt>
+<CODE class=linenumber>22</CODE>      <tt>CLEAR FORM</tt>
+<CODE class=linenumber>23</CODE>      <tt>ERROR</tt> SQLERRMESSAGE
+<CODE class=linenumber>24</CODE>      <tt>RETURN FALSE</tt>
+<CODE class=linenumber>25</CODE>    <tt>END IF</tt>
+<CODE class=linenumber>27</CODE> 
+<CODE class=linenumber>28</CODE>    <tt>MESSAGE</tt> &quot;Order added&quot;
+<CODE class=linenumber>29</CODE>    <tt>RETURN TRUE</tt>
+<CODE class=linenumber>30</CODE> 
+<CODE class=linenumber>31</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Lines
+<CODE class=linenumber>03</CODE>  thru
+<CODE class=linenumber>19</CODE>&nbsp;implement the INSERT SQL statement to
+            create a new row in the <b>orders</b> table.</li>
+          <li>Lines
+<CODE class=linenumber>21</CODE>  thru
+<CODE class=linenumber>25</CODE>&nbsp;handle potential SQL errors, and display a
+            message and return FALSE if the insert was not successful..</li>
+          <li>Lines
+<CODE class=linenumber>28</CODE> and
+<CODE class=linenumber>29</CODE> display a message and return TRUE in case of
+            success.</li>
+        </ul>
+
+
+<hr>
+
+
+<h3><a name="order_query">Function order_query</a>
+          
+</h3>
+<p>This function allows the user to enter query criteria for the <b>orders</b>
+table.&nbsp; It calls the function <b>order_select</b> to retrieve the rows from
+the database table.
+          
+</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function order_query
+        (orders.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> order_query()
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> where_clause <tt>STRING</tt>,
+<CODE class=linenumber>03</CODE>         id <tt>INTEGER</tt>, name <tt>STRING</tt>
+<CODE class=linenumber>04</CODE> 
+<CODE class=linenumber>05</CODE>   <tt>MESSAGE</tt> msg02
+<CODE class=linenumber>06</CODE> 
+<CODE class=linenumber>07</CODE>   <tt>LET</tt> int_flag = <tt>FALSE</tt>
+<CODE class=linenumber>08</CODE>   <tt>CONSTRUCT BY NAME</tt> where_clause <tt>ON</tt>
+<CODE class=linenumber>09</CODE>       orders.store_num, 
+<CODE class=linenumber>10</CODE>       customer.store_name, 
+<CODE class=linenumber>11</CODE>       orders.order_num, 
+<CODE class=linenumber>12</CODE>       orders.order_date, 
+<CODE class=linenumber>13</CODE>       orders.fac_code
+<CODE class=linenumber>14</CODE> 
+<CODE class=linenumber>15</CODE>     <tt>ON ACTION</tt> zoom1
+<CODE class=linenumber>16</CODE>        <tt>CALL</tt> display_custlist() <tt>RETURNING</tt> id, name
+<CODE class=linenumber>17</CODE>        <tt>IF</tt> id &gt; 0 <tt>THEN</tt>
+<CODE class=linenumber>18</CODE>           <tt>DISPLAY</tt> id <tt>TO</tt> orders.store_num
+<CODE class=linenumber>19</CODE>           <tt>DISPLAY</tt> name <tt>TO</tt> customer.store_name
+<CODE class=linenumber>20</CODE>        <tt>END IF</tt>
+<CODE class=linenumber>21</CODE> 
+<CODE class=linenumber>22</CODE>   <tt>END CONSTRUCT</tt>
+<CODE class=linenumber>23</CODE> 
+<CODE class=linenumber>24</CODE>   <tt>IF</tt> (int_flag) <tt>THEN</tt>
+<CODE class=linenumber>25</CODE>      <tt>LET</tt> int_flag=<tt>FALSE</tt>
+<CODE class=linenumber>26</CODE>      <tt>CLEAR FORM</tt>
+<CODE class=linenumber>27</CODE>      <tt>MESSAGE</tt> msg03
+<CODE class=linenumber>28</CODE>      <tt>RETURN FALSE</tt>
+<CODE class=linenumber>29</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>30</CODE>   
+<CODE class=linenumber>31</CODE>   <tt>RETURN</tt> order_select(where_clause)
+<CODE class=linenumber>32</CODE> 
+<CODE class=linenumber>33</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Lines
+<CODE class=linenumber>08</CODE>  thru
+<CODE class=linenumber>22</CODE>&nbsp; The <a href="TutChap04.html#CONSTRUCT">CONSTRUCT
+            </a>statement allows the user to query on specific fields,
+            restricting the columns in the <b>orders </b>table that can be used
+            for query criteria.</li>
+          <li>Lines
+<CODE class=linenumber>15</CODE>  thru
+<CODE class=linenumber>20</CODE>&nbsp;handle the '<b>zoom1</b>' action to let
+            the user pick a customer from a list. The function <b>display_custlist</b>
+            is called, it returns the customer number and name.</li>
+          <li>Lines 24 through 29 check the value of the interrupt flag, and
+            return FALSE if the user has interrupted the query.&nbsp;</li>
+          <li>Line
+<CODE class=linenumber>31</CODE>  the query criteria stored in the <a href="Variables.html">variable</a>
+            <b>where_clause</b> is passed to the function <b>order_select</b>. TRUE or FALSE is returned from
+            the <b>order_select </b>function.&nbsp;&nbsp;&nbsp;</li>
+        </ul>
+
+
+<hr>
+
+
+<h3><a name="order_fetch">Function order_fetch</a>
+          
+</h3>
+<p>This function retrieves the row from the <b>orders</b> table, and is designed to
+be re-used each time a row is needed.&nbsp; If the retrieval of the row from the
+<b>orders</b> table is successful, the function <b>items_fetch </b>is called to
+retrieve the corresponding rows from the <b>items</b> table.
+          
+</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function fetch_order
+        (orders.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> order_fetch(p_fetch_flag)
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> p_fetch_flag <tt>SMALLINT</tt>
+<CODE class=linenumber>03</CODE>  
+<CODE class=linenumber>04</CODE>   <tt>IF</tt> p_fetch_flag = 1 <tt>THEN</tt>
+<CODE class=linenumber>05</CODE>      <tt>FETCH NEXT</tt> order_curs <tt>INTO</tt> order_rec.*
+<CODE class=linenumber>06</CODE>   <tt>ELSE</tt>
+<CODE class=linenumber>07</CODE>      <tt>FETCH PREVIOUS</tt> order_curs <tt>INTO</tt> order_rec.*
+<CODE class=linenumber>08</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>09</CODE>  
+<CODE class=linenumber>10</CODE>   <tt>IF</tt> (SQLCA.SQLCODE == <tt>NOTFOUND</tt>) <tt>THEN</tt>
+<CODE class=linenumber>11</CODE>      <tt>RETURN FALSE</tt>
+<CODE class=linenumber>12</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>13</CODE>  
+<CODE class=linenumber>14</CODE>   <tt>DISPLAY BY NAME</tt> order_rec.*
+<CODE class=linenumber>15</CODE>   <tt>CALL</tt> items_fetch()
+<CODE class=linenumber>16</CODE>   <tt>RETURN TRUE</tt>     
+<CODE class=linenumber>17</CODE>  
+<CODE class=linenumber>18</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line
+<CODE class=linenumber>05</CODE> When the parameter passed to this function and
+            stored in the <a href="Variables.html">variable</a><b>
+            p_fetch_flag</b>  is 1, the <a href="TutChap04.html#Cursors"> FETCH</a>
+            statement retrieves the next row from the <b>orders</b>  table.</li>
+          <li>Line
+<CODE class=linenumber>07</CODE>  When the parameter passed to this function and
+            stored in <b>p_fetch_flag</b>  is not 1, the <a href="TutChap04.html#Cursors"> FETCH</a>
+            statement retrieves the previous row from the <b>orders</b>  table.</li>
+          <li>Lines
+<CODE class=linenumber>10</CODE> thru <CODE class=linenumber>12</CODE> return
+            FALSE if no row was found..</li>
+          <li>Line
+<CODE class=linenumber>14</CODE>  uses <a href="TutChap03.html#displaybyname">DISPLAY
+            BY NAME</a>  to display the record <b>order_rec</b>.</li>
+          <li>Line
+<CODE class=linenumber>15</CODE> calls the function <b>items_fetch</b>, to fetch
+            all order lines.&nbsp;</li>
+          <li>Line
+<CODE class=linenumber>16</CODE> returns TRUE indicating the fetch of the order
+            was successful.</li>
+        </ul>
+
+
+<hr>
+
+
+<h3><a name="order_select">Function order_select</a>
+          
+</h3>
+
+
+<p>This function creates the <a href="DynamicSql.html">SQL
+statement</a> for the query and the corresponding <a href="ResultSets.html#RESULTSET"> cursor</a>
+to retrieve the rows from the <b>orders</b> table.&nbsp; It calls the function <b>fetch_order</b>.
+          
+</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function order_select
+        (orders.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> order_select(where_clause) 
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> where_clause <tt>STRING</tt>,   
+<CODE class=linenumber>03</CODE>          sql_text <tt>STRING</tt>   
+<CODE class=linenumber>04</CODE>        
+<CODE class=linenumber>05</CODE>   <tt>LET</tt> sql_text = &quot;SELECT &quot;
+<CODE class=linenumber>05</CODE>       || &quot;orders.store_num, &quot;
+<CODE class=linenumber>06</CODE>       || &quot;customer.store_name, &quot;
+<CODE class=linenumber>07</CODE>       || &quot;orders.order_num, &quot;
+<CODE class=linenumber>08</CODE>       || &quot;orders.order_date, &quot;
+<CODE class=linenumber>09</CODE>       || &quot;orders.fac_code, &quot;
+<CODE class=linenumber>10</CODE>       || &quot;orders.ship_instr, &quot;
+<CODE class=linenumber>11</CODE>       || &quot;orders.promo &quot;
+<CODE class=linenumber>12</CODE>       || &quot;FROM orders, customer &quot;
+<CODE class=linenumber>13</CODE>       || &quot;WHERE orders.store_num = customer.store_num &quot;
+<CODE class=linenumber>14</CODE>       || &quot;AND &quot; || where_clause
+<CODE class=linenumber>15</CODE>  
+<CODE class=linenumber>16</CODE>   <tt>DECLARE</tt> order_curs <tt>SCROLL CURSOR FROM</tt> sql_text  
+<CODE class=linenumber>17</CODE>   <tt>OPEN</tt> order_curs
+<CODE class=linenumber>18</CODE>   <tt>IF</tt> (<tt>NOT</tt> order_fetch(1)) <tt>THEN</tt>
+<CODE class=linenumber>19</CODE>      <tt>CLEAR FORM</tt>
+<CODE class=linenumber>20</CODE>      <tt>MESSAGE</tt> msg04
+<CODE class=linenumber>21</CODE>      <tt>RETURN FALSE</tt>
+<CODE class=linenumber>22</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>23</CODE>  
+<CODE class=linenumber>24</CODE>   <tt>RETURN TRUE</tt>
+<CODE class=linenumber>25</CODE>  
+<CODE class=linenumber>26</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Lines
+<CODE class=linenumber>05</CODE>  thru
+<CODE class=linenumber>14</CODE> contain the text of the <a href="TutChap04.html#QBE">SELECT</a>
+            statement with the query criteria contained in the variable <b>where_clause</b>.</li>
+          <li>Line
+<CODE class=linenumber>16</CODE>  declares a <a href="TutChap04.html#Cursors">SCROLL CURSOR</a>
+            for the SELECT statement stored in
+            the variable <b>sql_text</b>.</li>
+          <li>Line
+<CODE class=linenumber>17</CODE>  opens the SCROLL CURSOR.</li>
+          <li>Line
+<CODE class=linenumber>18 </CODE>thru
+<CODE class=linenumber> 22</CODE> call the function <b>order_fetch</b>, passing
+            a parameter of 1 to fetch the next row, which in this case will be
+            the first one. If the fetch is not successful, FALSE is returned.</li>
+          <li>Line
+<CODE class=linenumber>24</CODE> returns TRUE, indicating the fetch was
+            successful.</li>
+        </ul>
+
+
+<hr>
+
+
+<h3><a name="order_fetch_rel">Function order_fetch_rel</a>
+          
+</h3>
+<p>This function calls the function <b>order_fetch </b>to retrieve the rows in
+the database; the parameter p_fetch_flag indicates the direction for the cursor movement.&nbsp; If there
+are no more records to be retrieved, a message is displayed to the user.
+          
+</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function order_fetch_rel</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+<pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> order_fetch_rel(p_fetch_flag)
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> p_fetch_flag <tt>SMALLINT</tt>
+<CODE class=linenumber>03</CODE> 
+<CODE class=linenumber>04</CODE>   <tt>MESSAGE</tt> &quot; &quot;
+<CODE class=linenumber>05</CODE>   <tt>IF</tt> (<tt>NOT</tt> order_fetch(p_fetch_flag)) <tt>THEN</tt>
+<CODE class=linenumber>06</CODE>     <tt>IF</tt> (p_fetch_flag = 1) <tt>THEN</tt>
+<CODE class=linenumber>07</CODE>       <tt>MESSAGE</tt> msg05
+<CODE class=linenumber>08</CODE>     <tt>ELSE</tt>
+<CODE class=linenumber>09</CODE>       <tt>MESSAGE</tt> msg06
+<CODE class=linenumber>10</CODE>     <tt>END IF</tt>
+<CODE class=linenumber>11</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>12</CODE> 
+<CODE class=linenumber>13</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line <CODE class=linenumber>05</CODE> calls the function <b>order_fetch</b>,
+            passing the variable <b>p_fletch_flag </b>to indicate the direction
+            of the cursor.</li>
+          <li>Line <CODE class=linenumber>07</CODE>  displays a message to
+            indicate that the cursor is at the bottom of the result set.</li>
+          <li>Line <CODE class=linenumber>09</CODE> displays a message to
+            indicate that the cursor is at the top of the result set.</li>
+        </ul>
+
+
+<hr>
+
+
+<h3><a name="order_total">Function order_total</a>
+          
+</h3>
+
+
+<p>This function calculates the total price for all of the items contained on a
+single order.
+          
+</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function order_total
+        (orders.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> order_total(arr_length)
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> order_total <tt>DECIMAL</tt>(9,2),
+<CODE class=linenumber>03</CODE>          i, arr_length <tt>SMALLINT</tt>
+<CODE class=linenumber>04</CODE> 
+<CODE class=linenumber>05</CODE>   <tt>LET</tt> order_total = 0  
+<CODE class=linenumber>06</CODE>   <tt>IF</tt> arr_length &gt; 0 <tt>THEN</tt>
+<CODE class=linenumber>07</CODE>      <tt>FOR</tt> i = 1 <tt>TO</tt> arr_length
+<CODE class=linenumber>08</CODE>         <tt>IF</tt> arr_items[i].line_total <tt>IS NOT NULL THEN</tt>    
+<CODE class=linenumber>09</CODE>           <tt>LET</tt> order_total = order_total + arr_items[i].line_total
+<CODE class=linenumber>10</CODE>         <tt>END IF</tt>
+<CODE class=linenumber>11</CODE>      <tt>END FOR</tt>
+<CODE class=linenumber>12</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>13</CODE> 
+<CODE class=linenumber>14</CODE>   <tt>DISPLAY BY NAME</tt> order_total
+<CODE class=linenumber>15</CODE> 
+<CODE class=linenumber>16</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line
+<CODE class=linenumber>07</CODE>  thru
+<CODE class=linenumber>11</CODE>  contain a <a href="FlowControl.html#FC_FOR"> FOR</a>
+            loop adding the values of <b>line_total</b> from each item in the
+            program array <b>arr_items</b>, to calculate the total price of the
+            order and store it in the variable <b>order_total.</b></li>
+          <li>Line
+<CODE class=linenumber> 14</CODE> displays the value of <b>order_total</b> on the form.</li>
+        </ul>
+
+
+<hr>
+
+
+<h3><a name="order_close">Function order_close</a>
+          
+</h3>
+<p>This function closes the cursor used to select orders from the database.
+          
+</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function order_close (orders.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+<pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> close_order()
+<CODE class=linenumber>02</CODE>   <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>03</CODE>   <tt>CLOSE</tt> order_curs
+<CODE class=linenumber>04</CODE>   <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>05</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line
+<CODE class=linenumber>03</CODE>  closes the <b>order_curs</b> cursor. The
+            statement is surrounded by WHENEVER ERROR, to trap errors if the
+            cursor is not open.</li>
+        </ul>
+
+
+<hr>
+
+
+<h3><a name="items_fetch">Function items_fetch</a>
+          
+</h3>
+<p>This function retrieves the rows from the <b> items</b> table that match the value of
+<b>order_num</b> in the order currently displayed on the form.
+            The <b>description</b> and <b>unit</b> values are retrieved from the
+            <b>stock</b> table, using the column <b>stock_num.</b>&nbsp; The value for<b> line_total</b> is calculated and retrieved.&nbsp; After
+displaying the items on the form,&nbsp; the function <b>order_total</b> is
+called to calculate the total price of all the items for the current
+order.
+          
+</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function items_fetch
+        (orders.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+<pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> items_fetch()
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> item_cnt <tt>INTEGER</tt>,
+<CODE class=linenumber>03</CODE>         item_rec <tt>RECORD</tt>
+<CODE class=linenumber>04</CODE>            stock_num    <tt>LIKE</tt> items.stock_num,
+<CODE class=linenumber>05</CODE>            description  <tt>LIKE</tt> stock.description,
+<CODE class=linenumber>06</CODE>            quantity     <tt>LIKE</tt> items.quantity,
+<CODE class=linenumber>07</CODE>            unit         <tt>LIKE</tt> stock.unit,
+<CODE class=linenumber>08</CODE>            price        <tt>LIKE</tt> items.price,
+<CODE class=linenumber>09</CODE>            line_total   <tt>DECIMAL</tt>(9,2)
+<CODE class=linenumber>10</CODE>         <tt>END RECORD</tt>
+<CODE class=linenumber>11</CODE> 
+<CODE class=linenumber>12</CODE>   <tt>IF</tt> order_rec.order_num <tt>IS NULL THEN</tt>
+<CODE class=linenumber>13</CODE>      <tt>RETURN</tt>
+<CODE class=linenumber>14</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>15</CODE> 
+<CODE class=linenumber>16</CODE>   <tt>DECLARE</tt> items_curs <tt>CURSOR FOR</tt>
+<CODE class=linenumber>17</CODE>      <tt>SELECT</tt> items.stock_num, 
+<CODE class=linenumber>18</CODE>             stock.description, 
+<CODE class=linenumber>19</CODE>             items.quantity, 
+<CODE class=linenumber>20</CODE>             stock.unit, 
+<CODE class=linenumber>21</CODE>             items.price,
+<CODE class=linenumber>22</CODE>             items.price * items.quantity line_total
+<CODE class=linenumber>23</CODE>         <tt>FROM</tt> items, stock
+<CODE class=linenumber>24</CODE>        <tt>WHERE</tt> items.order_num = order_rec.order_num
+<CODE class=linenumber>25</CODE>          <tt>AND</tt> items.stock_num = stock.stock_num
+<CODE class=linenumber>26</CODE> 
+<CODE class=linenumber>27</CODE>   <tt>LET</tt> item_cnt = 0
+<CODE class=linenumber>28</CODE>   <tt>CALL</tt> arr_items.clear()
+<CODE class=linenumber>29</CODE>   <tt>FOREACH</tt> items_curs <tt>INTO</tt> item_rec.*
+<CODE class=linenumber>30</CODE>       <tt>LET</tt> item_cnt = item_cnt + 1
+<CODE class=linenumber>31</CODE>       <tt>LET</tt> arr_items[item_cnt].* = item_rec.*
+<CODE class=linenumber>32</CODE>   <tt>END FOREACH</tt>
+<CODE class=linenumber>33</CODE>   <tt>FREE</tt> items_curs
+<CODE class=linenumber>34</CODE> 
+<CODE class=linenumber>35</CODE>   <tt>CALL</tt> items_show()
+<CODE class=linenumber>36</CODE>   <tt>CALL</tt> order_total(item_cnt)
+<CODE class=linenumber>37</CODE> 
+<CODE class=linenumber>38</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line
+<CODE class=linenumber>02</CODE>  defines a variable <b>item_cnt</b> to hold the
+            array count.</li>
+          <li>Line 12 returns from the function if the order number in the
+            program record order_rec is null.</li>
+          <li>Lines
+<CODE class=linenumber>16</CODE> thru
+<CODE class=linenumber>25</CODE>  declare a <a href="ResultSets.html#RESULTSET"> cursor</a>
+            for the <a href="StaticSql.html#SS_SELECT"> SELECT</a> 
+            statement to retrieve the rows from the <b>items</b> table that have
+            the same order number as the value in the <b>order_num</b> field of
+            the program <a href="TutChap03.html#definerecord">record</a>  <b>order_rec</b>.&nbsp;
+            The <b>description</b> and <b>unit</b> values are retrieved from the
+            <b>stock</b> table, using the column <b>stock_num.</b>&nbsp;
+            The value for <b>line_total</b> is calculated.</li>
+          <li>Lines
+<CODE class=linenumber>29 </CODE>thru<CODE class=linenumber> 32</CODE> the <a href="TutChap07.html#FOREACH">FOREACH</a>
+            statement loads the <a href="Arrays.html">dynamic array</a>
+            <b>arr_items</b>.</li>
+          <li>Line <CODE class=linenumber>33 </CODE>releases the memory associated with the
+            cursor <b>items_curs</b>, which is no longer needed.</li>
+          <li>Lines
+<CODE class=linenumber>35</CODE> calls the <b>items_show</b> function to display
+            the order lines to the form.</li>
+          <li>Line
+<CODE class=linenumber>36</CODE>  calls the function <b>order_total </b>to
+            calculate the total price of the items on the order.</li>
+        </ul>
+
+
+<hr>
+
+
+<h3><a name="items_show">Function items_show</a>
+          
+</h3>
+
+
+<p>This function displays the line items for the order in the screen array and returns
+immediately.
+          
+</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function items_show (orders.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> items_show()
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY ARRAY</tt> arr_items <tt>TO</tt> sa_items.*
+<CODE class=linenumber>03</CODE>       <tt>BEFORE DISPLAY</tt>
+<CODE class=linenumber>04</CODE>         <tt>EXIT DISPLAY</tt>
+<CODE class=linenumber>05</CODE>   <tt>END DISPLAY</tt>
+<CODE class=linenumber>06</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line
+<CODE class=linenumber>02</CODE> executes a <a href="DisplayArray.html">DISPLAY
+            ARRAY</a>  statement with the program array containing the line
+            items.</li>
+          <li>Line <CODE class=linenumber>03</CODE> and <CODE class=linenumber>04</CODE>
+            exit the instruction before control is turned over to the user.</li>
+        </ul>
+
+
+<hr>
+
+
+<h3><a name="items_inpupd">Function items_inpupd</a></h3>
+
+
+<p>This function contains the program logic to allow the user to input a new row
+in the <b>arr_items </b>array, or to change or delete an existing row.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function items_inpupd</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> items_inpupd()
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> opflag <tt>CHAR</tt>(1),
+<CODE class=linenumber>03</CODE>          item_cnt, curr_pa <tt>SMALLINT</tt>,
+<CODE class=linenumber>04</CODE>          id <tt>INTEGER</tt>
+<CODE class=linenumber>05</CODE> 
+<CODE class=linenumber>06</CODE>   <tt>LET</tt> opflag = &quot;U&quot;
+<CODE class=linenumber>07</CODE>  
+<CODE class=linenumber>08</CODE>   <tt>LET</tt> item_cnt = arr_items.getLength()
+<CODE class=linenumber>09</CODE>   <tt>INPUT ARRAY</tt> arr_items <tt>WITHOUT DEFAULTS FROM</tt> sa_items.*
+<CODE class=linenumber>10</CODE>     <tt>ATTRIBUTES</tt> (<tt>UNBUFFERED</tt>, <tt>INSERT ROW</tt> = <tt>FALSE</tt>)
+<CODE class=linenumber>11</CODE> 
+<CODE class=linenumber>12</CODE>     <tt>BEFORE ROW</tt>
+<CODE class=linenumber>13</CODE>       <tt>LET</tt> curr_pa = <tt>ARR_CURR</tt>() 
+<CODE class=linenumber>14</CODE>       <tt>LET</tt> opflag = &quot;U&quot;
+<CODE class=linenumber>15</CODE> 
+<CODE class=linenumber>16</CODE>     <tt>BEFORE INSERT</tt>
+<CODE class=linenumber>17</CODE>       <tt>LET</tt> opflag = &quot;I&quot;
+<CODE class=linenumber>18</CODE>       <tt>LET</tt> arr_items[curr_pa].quantity = 1
+<CODE class=linenumber>19</CODE> 
+<CODE class=linenumber>20</CODE>     <tt>AFTER INSERT</tt>
+<CODE class=linenumber>21</CODE>       <tt>CALL</tt> item_insert(curr_pa)
+<CODE class=linenumber>22</CODE>       <tt>CALL</tt> items_line_total(curr_pa)
+<CODE class=linenumber>23</CODE> 
+<CODE class=linenumber>24</CODE>     <tt>BEFORE DELETE</tt>
+<CODE class=linenumber>25</CODE>       <tt>CALL</tt> item_delete(curr_pa)
+<CODE class=linenumber>26</CODE> 
+<CODE class=linenumber>27</CODE>     <tt>ON ROW CHANGE</tt>
+<CODE class=linenumber>28</CODE>       <tt>CALL</tt> item_update(curr_pa)
+<CODE class=linenumber>29</CODE>       <tt>CALL</tt> items_line_total(curr_pa)
+<CODE class=linenumber>30</CODE> 
+<CODE class=linenumber>31</CODE>     <tt>BEFORE FIELD</tt> stock_num
+<CODE class=linenumber>32</CODE>       <tt>IF</tt> opflag = &quot;U&quot; <tt>THEN</tt>
+<CODE class=linenumber>33</CODE>          <tt>NEXT FIELD</tt> quantity 
+<CODE class=linenumber>34</CODE>       <tt>END IF</tt>
+<CODE class=linenumber>35</CODE> 
+<CODE class=linenumber>36</CODE>     <tt>ON ACTION</tt> zoom2
+<CODE class=linenumber>37</CODE>        <tt>LET</tt> id = display_stocklist()
+<CODE class=linenumber>38</CODE>        <tt>IF</tt> id &gt; 0 <tt>THEN</tt>
+<CODE class=linenumber>39</CODE>           <tt>IF</tt> (NOT get_stock_info(curr_pa,id) ) <tt>THEN</tt>
+<CODE class=linenumber>40</CODE>              <tt>LET</tt> arr_items[curr_pa].stock_num = <tt>NULL</tt>
+<CODE class=linenumber>41</CODE>           <tt>ELSE</tt>
+<CODE class=linenumber>42</CODE>              <tt>LET</tt> arr_items[curr_pa].stock_num = id
+<CODE class=linenumber>43</CODE>           <tt>END IF</tt>
+<CODE class=linenumber>44</CODE>        <tt>END IF</tt>
+<CODE class=linenumber>45</CODE> 
+<CODE class=linenumber>46</CODE>     <tt>ON CHANGE</tt> stock_num
+<CODE class=linenumber>47</CODE>        <tt>IF</tt> (<tt>NOT</tt> get_stock_info(curr_pa,
+<CODE class=linenumber>48</CODE>                       arr_items[curr_pa].stock_num) ) <tt>THEN</tt>
+<CODE class=linenumber>49</CODE>           <tt>LET</tt> arr_items[curr_pa].stock_num = <tt>NULL</tt>
+<CODE class=linenumber>50</CODE>           <tt>ERROR</tt> msg07
+<CODE class=linenumber>51</CODE>           <tt>NEXT FIELD</tt> stock_num
+<CODE class=linenumber>52</CODE>        <tt>END IF</tt>
+<CODE class=linenumber>53</CODE> 
+<CODE class=linenumber>54</CODE>     <tt>ON CHANGE</tt> quantity
+<CODE class=linenumber>55</CODE>        <tt>IF</tt> (arr_items[curr_pa].quantity &lt;= 0) <tt>THEN</tt>
+<CODE class=linenumber>56</CODE>           <tt>ERROR</tt> msg13
+<CODE class=linenumber>57</CODE>           <tt>NEXT FIELD</tt> quantity
+<CODE class=linenumber>58</CODE>        <tt>END IF</tt>
+<CODE class=linenumber>59</CODE> 
+<CODE class=linenumber>60</CODE>   <tt>END INPUT</tt>
+<CODE class=linenumber>61</CODE> 
+<CODE class=linenumber>62</CODE>   <tt>LET</tt> item_cnt = arr_items.getLength()
+<CODE class=linenumber>63</CODE>   <tt>CALL</tt> ord_total(item_cnt)
+<CODE class=linenumber>64</CODE> 
+<CODE class=linenumber>65</CODE>   <tt>IF</tt> (int_flag) <tt>THEN</tt>
+<CODE class=linenumber>66</CODE>      <tt>LET</tt> int_flag = <tt>FALSE</tt>
+<CODE class=linenumber>67</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>68</CODE> 
+<CODE class=linenumber>69</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line
+<CODE class=linenumber>08</CODE>  uses the <b>getLength</b> <a href="BuiltInFunctions.html"> built-in
+            function</a>  to determine the number of rows in the array <b>arr_items</b>.</li>
+          <li>Lines <CODE class=linenumber>9</CODE> thru
+<CODE class=linenumber>60</CODE>  contain the I<a href="TutChap08.html#ControlBlocks">NPUT
+            ARRAY</a> statement.</li>
+          <li>Lines
+<CODE class=linenumber> 12</CODE>  and <CODE class=linenumber>14</CODE>&nbsp; use a <a href="TutChap08.html#ControlBlocks">BEFORE
+            ROW</a> clause to store the index of the current row of the array in
+            the variable <b>curr_pa</b>. We also set the <b>opflag</b> flag to
+            &quot;U&quot;, in order to indicate we are in update mode.</li>
+          <li>Lines
+<CODE class=linenumber>16</CODE> thru
+<CODE class=linenumber>18</CODE>  use a <a href="TutChap08.html#ControlBlocks">BEFORE
+            INSERT</a> clause to set the value of <b>opflag</b> to
+            &quot;I&quot; if the current operation is an Insert of a new row in
+            the array. Line
+<CODE class=linenumber>18</CODE>   sets a default value for the quantity.</li>
+          <li> Lines
+<CODE class=linenumber>20</CODE> thru
+<CODE class=linenumber>22</CODE>  An <a href="TutChap08.html#ControlBlocks">AFTER INSERT</a>
+            clause calls the <b>item_insert</b> function to add
+            the row to the database table, passing the index of the current row
+            and calls the <b>items_line_total</b> function, passing
+            the index of the current row.</li>
+          <li>Lines
+<CODE class=linenumber>24</CODE> thru
+<CODE class=linenumber>25</CODE> use a <a href="TutChap08.html#ControlBlocks">BEFORE
+            DELETE </a>clause, to call the function <b>item_delete</b>, passing
+            the index of the current row.</li>
+          <li>Lines
+<CODE class=linenumber>27</CODE> thru
+<CODE class=linenumber>29</CODE> contain an <a href="TutChap08.html#ControlBlocks">ON
+            ROW CHANGE</a>  clause to detect row modification. The <b>item_update</b>
+            function and the <b>items_line_total</b> function are called, passing the
+            index of the current row.</li>
+          <li>Lines
+<CODE class=linenumber>31</CODE>  thru <CODE class=linenumber>34</CODE> use a <a href="TutChap08.html#ControlBlocks">BEFORE
+            FIELD</a> clause to prevent entry in the <b> stock_num</b> field if the
+            current operation is an Update of an existing row.</li>
+          <li>Lines
+<CODE class=linenumber>36</CODE> thru <CODE class=linenumber>44</CODE> implement
+            the code for the '<b>zoom2</b>' action, opening a list from the <b>stock</b>
+            table for
+            selection.</li>
+          <li>Lines
+<CODE class=linenumber> 46</CODE>  thru
+<CODE class=linenumber>52</CODE>  use an <a href="TutChap08.html#ControlBlocks">ON
+            CHANGE</a> clause to check whether the stock number for a new record
+            that was entered in the field <b>stock_num</b> exists in the <b>stock
+            </b>table.</li>
+          <li>Line
+<CODE class=linenumber>62</CODE>  uses the <b>getLength</b> <a href="BuiltInFunctions.html"> built-in
+            function</a> to determine the number of rows in the array after the <a href="TutChap08.html#ControlBlocks">INPUT ARRAY</a> statement has
+            terminated.</li>
+          <li>Line
+<CODE class=linenumber>63</CODE> calls the function <b>order_total</b>, passing
+            the number of rows in the array.</li>
+          <li>Lines
+<CODE class=linenumber>65</CODE>  thru
+<CODE class=linenumber>67</CODE>  re-set the <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a> 
+            to TRUE if the user has interrupted the INPUT statement.</li>
+        </ul>
+
+
+<hr>
+
+
+<h3><a name="items_line_total">Function items_line_total</a></h3>
+<p>This function calculates the value of <b>line_total</b> for any new rows that
+are inserted into the <b>arr_items </b>array.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function items_line_total</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+<pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> items_line_total(curr_pa)
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> curr_pa <tt>SMALLINT</tt>
+<CODE class=linenumber>03</CODE>   <tt>LET</tt> arr_items[curr_pa].line_total = 
+<CODE class=linenumber>04</CODE>       arr_items[curr_pa].quantity * arr_items[curr_pa].price
+<CODE class=linenumber>05</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+<p><b>Notes:</b></p>
+        <ul>
+          <li>Line
+<CODE class=linenumber>02</CODE>  The index of the current row in the array is
+            passed to this function and stored in the variable <b>curr_pa</b>.</li>
+          <li>Lines
+<CODE class=linenumber>03</CODE> and <CODE class=linenumber>04</CODE>  calculate the line total for the current row
+        in the array.</li>
+        </ul>
+
+
+<hr>
+
+
+<h3><a name="item_insert">Function item_insert</a>
+            </h3>
+<p>This function inserts a new row into the <b> items</b> database table using
+the values input in the current array record on the form.
+            </p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function item_insert</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> item_insert(curr_pa) 
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> curr_pa <tt>SMALLINT</tt>
+<CODE class=linenumber>03</CODE> 
+<CODE class=linenumber>04</CODE>   <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>05</CODE>   <tt>INSERT INTO</tt> items (
+<CODE class=linenumber>06</CODE>      order_num,
+<CODE class=linenumber>07</CODE>      stock_num, 
+<CODE class=linenumber>08</CODE>      quantity, 
+<CODE class=linenumber>09</CODE>      price
+<CODE class=linenumber>10</CODE>   ) <tt>VALUES</tt> ( 
+<CODE class=linenumber>11</CODE>      order_rec.order_num, 
+<CODE class=linenumber>12</CODE>      arr_items[curr_pa].stock_num,
+<CODE class=linenumber>13</CODE>      arr_items[curr_pa].quantity,
+<CODE class=linenumber>14</CODE>      arr_items[curr_pa].price
+<CODE class=linenumber>15</CODE>   )
+<CODE class=linenumber>16</CODE>   <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>17</CODE> 
+<CODE class=linenumber>18</CODE>   <tt>IF</tt> (SQLCA.SQLCODE == 0) <tt>THEN</tt>
+<CODE class=linenumber>19</CODE>      <tt>MESSAGE</tt> msg08
+<CODE class=linenumber>20</CODE>   <tt>ELSE</tt>
+<CODE class=linenumber>21</CODE>      <tt>ERROR</tt> SQLERRMESSAGE
+<CODE class=linenumber>22</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>23</CODE> 
+<CODE class=linenumber>24</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b> </p>
+        <ul>
+          <li>Line
+<CODE class=linenumber>02</CODE>      the index of the current row in the array is passed to
+            this function and stored in the variable <b>curr_pa.</b></li>
+          <li>Lines
+<CODE class=linenumber>05</CODE>      thru
+<CODE class=linenumber>15</CODE>       The
+            embedded SQL <a href="StaticSql.html#SS_INSERT"> INSERT</a> statement uses the value of <b>order_num</b>
+            from the current order record displayed on the form, together with
+            the values from the current row of&nbsp; the <b>arr_items</b> array, to insert
+            a new row in the <b>items</b> table.</li>
+        </ul>
+
+
+<hr>
+
+
+<h3><a name="item_update">Function item_update</a>
+            </h3>
+
+
+<p>This function updates a row in the <b> items</b> database table using the changes
+made to the current array record in the form.
+            </p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function item_update</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> item_update(curr_pa)
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> curr_pa <tt>SMALLINT</tt>
+<CODE class=linenumber>03</CODE> 
+<CODE class=linenumber>04</CODE>   <tt>WHENEVER ERROR CONTINUE</tt> 
+<CODE class=linenumber>05</CODE>   <tt>UPDATE</tt> items <tt>SET</tt>
+<CODE class=linenumber>06</CODE>     items.stock_num = arr_items[curr_pa].stock_num,
+<CODE class=linenumber>07</CODE>     items.quantity  = arr_items[curr_pa].quantity
+<CODE class=linenumber>08</CODE>      <tt>WHERE</tt> items.stock_num = arr_items[curr_pa].stock_num
+<CODE class=linenumber>09</CODE>        <tt>AND</tt> items.order_num = order_rec.order_num
+<CODE class=linenumber>10</CODE>   <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>11</CODE> 
+<CODE class=linenumber>12</CODE>   <tt>IF</tt> (SQLCA.SQLCODE == 0) <tt>THEN</tt>
+<CODE class=linenumber>13</CODE>      <tt>MESSAGE</tt> msg09
+<CODE class=linenumber>14</CODE>   <tt>ELSE</tt>
+<CODE class=linenumber>15</CODE>      <tt>ERROR</tt> SQLERRMESSAGE
+<CODE class=linenumber>16</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>17</CODE> 
+<CODE class=linenumber>18</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b>
+</p>
+        <ul>
+          <li>Line
+<CODE class=linenumber>02</CODE>  the index of the current row in the array is passed to
+            this function and stored in the variable <b>curr_pa.</b></li>
+          <li>Lines
+<CODE class=linenumber>05</CODE>  thru
+<CODE class=linenumber>09</CODE>  The embedded
+            SQL <a href="StaticSql.html#SS_UPDATE"> UPDATE</a> statement
+            uses the value of <b> order_num</b> in the current <b>
+            order_rec</b> record, and the value of <b> stock_num</b> in the current row in the
+            a<b>rr_items</b> array, to locate the row in the<b> items</b> database table to be
+            updated.</li>
+        </ul>
+
+
+<hr>
+
+
+<h3><a name="item_delete">Function item_delete</a>
+            </h3>
+<p>This function deletes a row from the <b>items</b> database table, based on
+the values in the current record of the items array.
+            </p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function item_delete</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+      <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> item_delete(curr_pa)
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> curr_pa <tt>SMALLINT</tt>
+<CODE class=linenumber>03</CODE>    
+<CODE class=linenumber>04</CODE>   <tt>WHENEVER ERROR CONTINUE</tt> 
+<CODE class=linenumber>05</CODE>   <tt>DELETE FROM</tt> items 
+<CODE class=linenumber>06</CODE>      <tt>WHERE</tt> items.stock_num = arr_items[curr_pa].stock_num
+<CODE class=linenumber>07</CODE>      <tt>AND</tt> items.order_num = order_rec.order_num
+<CODE class=linenumber>08</CODE>   <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>09</CODE> 
+<CODE class=linenumber>10</CODE>   <tt>IF</tt> (SQLCA.SQLCODE == 0) <tt>THEN</tt>
+<CODE class=linenumber>11</CODE>      <tt>MESSAGE</tt> msg10
+<CODE class=linenumber>12</CODE>   <tt>ELSE</tt>
+<CODE class=linenumber>13</CODE>      <tt>ERROR</tt> SQLERRMESSAGE
+<CODE class=linenumber>14</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>15</CODE> 
+<CODE class=linenumber>16</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line
+<CODE class=linenumber>02</CODE>  the index of the current row in the array is passed to
+            this function and stored in the variable <b>curr_pa.</b></li>
+          <li>Lines
+<CODE class=linenumber>05</CODE>  thru
+<CODE class=linenumber>07</CODE> The embedded
+            SQL <a href="StaticSql.html#SS_DELETE"> DELETE</a> statement uses the value
+            of <b> order_num</b> in the current <b>
+            order_rec</b> record, and the value of <b> stock_num</b> in the current row in the
+            <b>arr_items </b> array, to locate the row in the <b> items</b> database table to be
+            deleted.&nbsp;&nbsp;</li>
+        </ul>
+
+
+<hr>
+
+
+<h3><a name="get_stock_info">Function get_stock_info</a></h3>
+
+
+<p>This function verifies that the stock number entered for a new row in the <b>arr_items</b>
+array exists in the <b>stock</b> table.&nbsp; It retrieves the description, unit
+of measure, and the correct price based on whether promotional pricing is in
+effect for the order.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function get_stock_info</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+      <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> get_stock_info(curr_pa, id)
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> curr_pa <tt>SMALLINT</tt>,
+<CODE class=linenumber>03</CODE>          id <tt>INTEGER</tt>,
+<CODE class=linenumber>04</CODE>          sqltext <tt>STRING</tt>
+<CODE class=linenumber>05</CODE> 
+<CODE class=linenumber>06</CODE>   <tt>IF</tt> id <tt>IS NULL THEN</tt>    
+<CODE class=linenumber>07</CODE>      <tt>RETURN FALSE</tt>
+<CODE class=linenumber>08</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>09</CODE> 
+<CODE class=linenumber>10</CODE>   <tt>LET</tt> sqltext=&quot;SELECT description, unit,&quot;
+<CODE class=linenumber>11</CODE>   <tt>IF</tt> order_rec.promo = &quot;N&quot; <tt>THEN</tt> 
+<CODE class=linenumber>12</CODE>      <tt>LET</tt> sqltext=sqltext || &quot;reg_price&quot;
+<CODE class=linenumber>13</CODE>   <tt>ELSE</tt>
+<CODE class=linenumber>14</CODE>      <tt>LET</tt> sqltext=sqltext || &quot;promo_price&quot;
+<CODE class=linenumber>15</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>16</CODE>   <tt>LET</tt> sqltext=sqltext ||
+<CODE class=linenumber>17</CODE>       &quot; FROM stock WHERE stock_num = ? AND fac_code = ?&quot;
+<CODE class=linenumber>18</CODE> 
+<CODE class=linenumber>19</CODE>   <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>20</CODE>   <tt>PREPARE</tt> get_stock_cursor <tt>FROM</tt> sqltext
+<CODE class=linenumber>21</CODE>   <tt>EXECUTE</tt> get_stock_cursor
+<CODE class=linenumber>22</CODE>         <tt>INTO</tt> arr_items[curr_pa].description,
+<CODE class=linenumber>23</CODE>              arr_items[curr_pa].unit, 
+<CODE class=linenumber>24</CODE>              arr_items[curr_pa].price
+<CODE class=linenumber>25</CODE>         <tt>USING</tt> id, order_rec.fac_code
+<CODE class=linenumber>26</CODE>   <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>27</CODE> 
+<CODE class=linenumber>28</CODE>   <tt>RETURN</tt> (SQLCA.SQLCODE == 0)
+<CODE class=linenumber>29</CODE> 
+<CODE class=linenumber>30</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line
+<CODE class=linenumber>02</CODE>  the index of the current row in the array is
+            passed to this function and stored in the variable <b>curr_pa</b>.</li>
+          <li>Lines
+<CODE class=linenumber>10</CODE>  thru
+<CODE class=linenumber>17</CODE>  check whether the promotional pricing is in
+            effect for the current order, and&nbsp;build a SELECT statement to retrieve the description,
+            unit, and regular or promotional price from the <b>stock</b> table
+            for a new item that is being added to the <b>items</b> table.</li>
+          <li>Lines
+<CODE class=linenumber>20</CODE> thru <CODE class=linenumber>25</CODE>  prepare
+            and execute the SQL statement created before.</li>
+          <li>Line
+<CODE class=linenumber>28</CODE> checks <a href="TutChap04.html#SQLCA.SQLCODE">SQLCA.SQLCODE</a>
+            and returns TRUE if the database could be updated without error.</li>
+        </ul>
+
+
+</body>
+</html>

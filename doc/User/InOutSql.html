@@ -1,0 +1,495 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>I/O SQL Instructions</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">I/O SQL Instructions</a></H1>
+<p> Summary:</p>
+
+<ul>
+  <li><a href="#IO_LOAD">Loading data from files</a> (<tt>LOAD</tt>)
+    <ul>
+      <li><a href="#LOAD_SYNTAX">Syntax</a></li>
+      <li><a href="#LOAD_USAGE">Usage</a>
+        <ul>
+          <li><a href="#LOAD_STANDARD">Standard Genero BDL format with LOAD</a></li>
+          <li><a href="#LOAD_CSV">Comma Separated Value format with LOAD</a></li>
+        </ul>
+      </li>
+      <li><a href="#LOAD_EXAMPLE_1">Example</a></li>
+    </ul>
+  </li>
+  <li>
+    <p align="left"><a href="#IO_UNLOAD">Writing data to files</a> (<tt>UNLOAD</tt>)
+    <ul>
+      <li><a href="#UNLOAD_SYNTAX">Syntax</a></li>
+      <li><a href="#UNLOAD_USAGE">Usage</a>
+        <ul>
+          <li><a href="#UNLOAD_STANDARD">Standard Genero BDL format with UNLOAD</a></li>
+          <li><a href="#UNLOAD_CSV">Comma Separated Value format with UNLOAD</a></li>
+        </ul>
+      </li>
+      <li><a href="#UNLOAD_EXAMPLE_1">Example</a></li>
+    </ul>
+  </li>
+</ul>
+
+
+<p align="left"><i>See also:</i> <a href="Connections.html">Connections</a>.</p>
+
+
+<HR>
+
+<h3><a name="IO_LOAD">LOAD</a></h3>
+
+<h4>Purpose:</h4><p>The <tt>LOAD</tt> instruction  inserts
+ data from a file into
+an existing table in the <a href="Connections.html">current database connection</a>. </p>
+
+
+<h4><a name="LOAD_SYNTAX">Syntax:</a></h4><code>LOAD FROM <i>filename</i> <u>[</u> DELIMITER <i>delimiter</i>
+<u>]</u><br>
+<u>{</u><br>
+&nbsp; INSERT INTO <i>table-specification</i> <u>[</u> ( <i>column</i> <u>[,...]</u>
+) <u>]</u><br>
+<u>|</u><br>
+&nbsp; <i>insert-string</i><br>
+<u>}</u></code>
+
+
+<p>where <i>table-specification</i> is:</p>
+
+
+<p><code>[<i>dbname</i>[@<i>dbserver</i>]:][<i>owner</i>.]<i>table</i></code></p>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>filename</i> is the name of the file the data is read from.</li>
+  <li> <i>delimiter</i> is the character used as the
+    value delimiter (see <a href="#LOAD_USAGE">Usage</a> for more details).</li>
+  <li> The <tt>INSERT</tt> clause is a pseudo <a href="StaticSql.html#SS_INSERT">INSERT</a>
+    statement (without the <tt>VALUES</tt> clause), where you can specify the
+    list of columns in braces.</li>
+  <li> <i>dbname</i>  identifies the database name. <b><font color="#FF0000">Informix
+    only!</font></b></li>
+  <li> <i>dbserver</i>  identifies the Informix database server
+    (INFORMIXSERVER). <b><font color="#FF0000">Informix only!</font></b></li>
+  <li> <i>owner</i> identifies the owner of the table, with optional double
+    quotes. <b><font color="#FF0000">Informix only!</font></b></li>
+  <li> <i>table</i> is the name of the database table.</li>
+  <li> <i>column</i> is a name of a table column.</li>
+  <li> <i>insert-string</i> is a program <a href="Variables.html">variable</a>
+    or a <a href="Literals.html#LT_STRING">string literal</a> containing the
+    pseudo-INSERT statement. This allows you
+    to create the pseudo-INSERT statement
+    at runtime.&nbsp;</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The number and the order of columns in the INSERT statement must match in
+    the input file.</li>
+  <li>You cannot use the <a href="DynamicSql.html#DS_PREPARE">PREPARE</a>
+    statement to preprocess a <tt>LOAD</tt> statement.</li>
+  <li>At this time, data type description of the input file fields is
+    implicit; in
+    order to create the SQL parameter buffers to hold the field values for
+    inserts, the <tt>LOAD</tt> instruction uses the current database connection
+    to get the column data types of the target table. Those data types depend on
+    the type  of
+    database server. For example, IBM Informix DATE columns
+    do not store the same data as the Oracle DATE data type. Therefore, be
+    careful when using this instruction;
+    if  your application connects
+    to different kinds  of database servers, you may get data conversion errors.</li>
+</ol>
+
+
+<h4>Tips:</h4>
+<ol>
+  <li> <tt>LOAD</tt>  provides better performance when the <i>table </i>that the
+    <tt>INSERT INTO</tt> clause references has no index, no constraint, and no trigger.
+    If one or more triggers, constraints, or indexes
+    exist  on the table, however,
+    it is recommended that you disable these objects if the database server
+    allows such SQL operations. For example, with IBM Informix, you can issue
+    one of the following SQL statements:
+    <ul>
+      <li><tt>SET INDEX ... DISABLED</tt></li>
+      <li><tt>SET CONSTRAINT ... DISABLED</tt></li>
+      <li><tt>SET TRIGGER ... DISABLED</tt></li>
+    </ul>
+  </li>
+</ol>
+
+
+<h4><a name="LOAD_USAGE">Usage:</a></h4>
+
+<p>The <tt>LOAD</tt> instruction reads serialized data from an input file and
+inserts new rows in a database table specified in the <tt>INSERT</tt> clause. A file created by the <a href="#IO_UNLOAD"> UNLOAD</a> statement can be used as input for the <tt>LOAD</tt>
+ statement if its values are compatible with the schema of <i>tabl</i>e.</p>
+
+<p>The <tt>LOAD</tt> statement must include a pseudo-INSERT statement (either
+directly or as text in a variable) to specify where to store the data. <tt>LOAD</tt>
+appends the new rows to the specified table, synonym, or view, but does not
+overwrite existing data. It cannot add a row that has the same key as an
+existing row.</p>
+<p>The variable or string following the <tt>LOAD FROM</tt> keywords must specify
+the name of a file of ASCII characters (or characters that are valid for the <a href="Localization.html">current
+code-set</a>) that holds the data values that are to be inserted.</p>
+
+
+<p>Each set of data values in <i>filename </i>that represents a new row is
+called an input record. Each input record must contain the same number of
+delimited data values. If the <tt>INSERT</tt>  clause has no list of columns,
+the sequence of values in each input record must match the columns of <i>table </i>in
+number and order. Each value must have the literal format of the column data
+type, or of a
+<a href="DataConversions.html"> compatible data type</a>.</p>
+
+<p>If <tt>LOAD</tt> is executed within a <a href="Transactions.html">transaction</a>,
+the inserted rows are locked, and they remain locked until the <tt> COMMIT WORK</tt> or
+<tt> ROLLBACK WORK</tt>
+statement terminates the transaction. If no other user is accessing the table,
+you can avoid locking limits and reduce locking overhead by locking the table
+with the <tt> LOCK TABLE</tt> statement after the transaction begins. This exclusive table
+lock is released when the transaction terminates. Consult the documentation for
+your database server about the limit on the number of locks available during a
+single transaction.</p>
+<p>If the current database has no transaction log, a failing <tt>LOAD</tt>
+ statement cannot remove any rows that were loaded before the failure occurred.
+You must manually remove the already loaded records from either the load file or
+from the receiving table, repair the erroneous records, and rerun <tt>LOAD</tt>.</p>
+<p>Regarding <a href="Transactions.html">transaction</a>, you can take one of
+the following actions when the database has a transaction log:</p>
+<ul>
+  <li>Run <tt>LOAD</tt>
+    as a singleton transaction, so that any error causes the entire <tt>LOAD</tt>
+    statement to be automatically rolled back.</li>
+  <li>Run <tt>LOAD</tt>
+    within an explicit transaction with <tt> BEGIN WORK</tt> / <tt> COMMIT WORK</tt>, so that a data
+    error merely stops the <tt>LOAD</tt>
+    statement in place with the transaction still open.</li>
+</ul>
+
+
+<p>A single character delimiter instructs <tt>LOAD</tt> to read data in the <a href="#LOAD_STANDARD">Standard
+BDL format</a>. When using &quot;CSV&quot; as delimiter specification, the <tt>LOAD</tt>
+instruction will read the data in <a href="#LOAD_CSV">Comma Separate Value
+format</a>. If the <tt>DELIMITER</tt> clause
+    is not specified, the delimiter is defined by the
+    <a href="EnvironmentVariables.html#EV_DBDELIMITER">DBDELIMITER</a>
+    environment variable. If the DBDELIMITER environment variable is not set, the default is a
+| pipe.&nbsp;</p>
+<h4><font color="#FF0000">Warning:</font><font color="#000000"> The DELIMITER
+cannot be </font>backslash or any hexadecimal digit (0-9, A-F, a-f).</h4>
+<h5><a name="LOAD_STANDARD">Standard Genero BDL format with LOAD</a></h5>
+<p>The next table describes how data
+values should be represented in the input file. Values must be serialized with a
+character string following the SQL data type of the receiving column in <i>table.</i></p>
+<table border="0" width="90%">
+  <tr>
+    <td width="20%" bgcolor="#C0C0C0"><b>Data Type</b></td>
+    <td bgcolor="#C0C0C0"><b>Input Format</b></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>CHAR, VARCHAR, TEXT</tt></td>
+    <td valign="top">Values can have more characters than the declared maximum
+      length of the column, but any extra characters are ignored. A backslash (
+      \ ) is required before any literal backslash or any literal delimiter
+      character, and before any NEWLINE character anywhere in character value. Blank values can be represented
+      as one or more blank characters between delimiters, but leading blanks
+      must not precede other CHAR, VARCHAR, or TEXT values.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>DATE</tt></td>
+    <td valign="top">In the default locale, values must be in <i>month/day/year </i>format
+      unless another format is specified by <a href="EnvironmentVariables.html#EV_DBDATE">DBDATE</a><b>
+      </b>environment variable. You must represent the month as a 2-digit
+      number. You can use a 2-digit number for the year if you are satisfied
+      with the <a href="EnvironmentVariables.html#EV_DBCENTURY">DBCENTURY</a><b>
+      </b>setting. Values must be actual dates; for example, February 30 is
+      invalid.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>DATETIME</tt></td>
+    <td valign="top">DATETIME values must be in the format:<br>
+      &nbsp;&nbsp; <i>year-month-day hour:minute:second.fraction<br>
+      </i>or a contiguous subset, without the DATETIME keyword or qualifiers.
+      Time units outside the declared column precision can be omitted. The <i>year
+      </i>must be a four-digit number; all other time units (except <i>fractio</i>n)
+      require two digits.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>INTERVAL</tt></td>
+    <td valign="top">INTERVAL values must be formatted:<br>
+      &nbsp;&nbsp; <i>yea</i>r-<i>month<br>
+      </i>or else<br>
+      &nbsp;&nbsp; <i>day hou</i>r:<i>minut</i>e:<i>secon</i>d.<i>fractio</i>n<br>
+      or a contiguous subset thereof, without the INTERVAL keyword or
+      qualifiers. Time units outside the declared column precision can be
+      omitted. All time units (except <i>year</i> and <i>fractio</i>n) require
+      two digits.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>MONEY</tt></td>
+    <td valign="top">Values can include currency symbols, but these are not
+      required.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>BYTE</tt></td>
+    <td valign="top">Values must be ASCII-hexadecimals; no leading or trailing
+      blanks.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>SERIAL, BIGSERIAL, SERIAL8</tt></td>
+    <td valign="top">Values can be represented as 0 to tell the database server
+      to supply a new serial value. You can specify a literal integer greater
+      than zero, but if the column has a unique index, an error results if this
+      number duplicates an existing value.</td>
+  </tr>
+</table>
+
+
+<p>The NEWLINE character must terminate each input record
+in <i>filenam</i>e. Specify only values that the language can convert to the
+data type of the database column. For database columns of character data types,
+inserted values are truncated from the right if they exceed the declared length
+of the column.</p>
+
+<p>NULL values of any data type must be represented by consecutive delimiters in
+the input file; you cannot include anything between the delimiter symbols.</p>
+
+<p>The <tt>LOAD</tt> statement expects incoming data in the format specified by environment
+variables like DBFORMAT, DBMONEY, DBDATE, GL_DATE,
+and GL_DATETIME. The precedence of these format specifications is consistent with forms and reports. If there is an inconsistency, an error is reported
+and the LOAD is cancelled.</p>
+
+<p>The backslash symbol (<tt>\</tt>) serves as an escape character in the input file to indicate that the next character in a data value is a literal. The
+<tt>LOAD</tt>
+statement scans for backslash escaped elements to read special characters in the
+following contexts:</p>
+<ul>
+  <li>The backslash character appears anywhere in the value.</li>
+  <li>The delimiter character appears anywhere in the value.</li>
+  <li>The NEWLINE character appears anywhere in a value.</li>
+</ul>
+
+
+<h5><a name="LOAD_CSV">Comma Separate Value format with LOAD</a></h5>
+
+
+<p>The CSV format is similar to the standard format when using a simple comma
+delimiter, with the following differences:</p>
+<ul>
+  <li>Input values might be surrounded with &quot; double quotes.</li>
+  <li>If an input value contains a comma or a NEWLINE, it is not escaped be the
+    value must be quoted in the file.</li>
+  <li>Double-quote characters in input values are doubled and will be converted
+    to a unique &quot; character; the value must be quoted.</li>
+  <li>Backslash characters are not escaped in the input file and are read as;
+    the value must be quoted.</li>
+  <li>Leading and trailing blanks are kept (no truncation).</li>
+  <li>No ending delimiter is expected at the end of the input record.</li>
+</ul>
+
+
+<h4><a name="LOAD_EXAMPLE_1">Example:</a></h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DATABASE </tt>stores
+<CODE class=linenumber>03</CODE>    <tt>BEGIN WORK</tt>
+<CODE class=linenumber>04</CODE>    <tt>DELETE FROM</tt> items
+<CODE class=linenumber>05</CODE>    <tt>LOAD FROM</tt> &quot;items01.unl&quot; <tt>INSERT INTO</tt> items
+<CODE class=linenumber>06</CODE>    <tt>LOAD FROM</tt> &quot;items02.unl&quot; <tt>INSERT INTO</tt> items
+<CODE class=linenumber>07</CODE>    <tt>COMMIT WORK</tt>
+<CODE class=linenumber>08</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="IO_UNLOAD">UNLOAD</a></h3>
+
+<h4>Purpose:</h4><p>The <tt>UNLOAD</tt> instruction copies data from a <a href="Connections.html">current
+database</a> to a file. </p>
+
+
+<h4><a name="UNLOAD_SYNTAX">Syntax:</a></h4><code>UNLOAD TO <i>filename</i> <u>[</u> DELIMITER <i>delimiter</i>
+<u>]</u><br>
+<u>{</u><br>
+&nbsp; <i>select-statement</i><br>
+<u>|</u><br>
+&nbsp; <i>select-string</i><br>
+<u>}</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>filename</i> is the name of the file the data is written to.</li>
+  <li> <i>delimiter</i> is the character used as the value delimiter (see <a href="#UNLOAD_USAGE">Usage</a>
+    for more details).</li>
+  <li> <i>select-statement</i> is any kind of <a href="StaticSql.html#SS_SELECT">Static
+    SELECT statement</a> supported by the language.</li>
+  <li> <i>select-string</i> is a program <a href="Variables.html">variable</a>
+    or a <a href="Literals.html#LT_STRING">string literal</a> containing the
+    <tt>SELECT</tt> statement to produce the rows. This allows you
+    to create the
+    <tt>SELECT</tt> statement at runtime.&nbsp;</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>You cannot use the <a href="DynamicSql.html#DS_PREPARE">PREPARE</a>
+    statement to preprocess an <tt>UNLOAD</tt> statement.</li>
+  <li>When using a <i>select-string</i>, do not attempt to substitute question
+    marks (<tt>?</tt>) in place of host variables to make the <tt>SELECT</tt> 
+    statement dynamic, because this usage has binding problems.</li>
+  <li>At this time, data type description of the output file fields is
+    implicit; in 
+    order to create the fetch buffers to hold the column values, the <tt>UNLOAD</tt> instruction uses the current database connection
+    to get the column data types of the
+    generated <a href="ResultSets.html">result
+    set</a>. Those data types depend on
+    the type  of database server. For example, IBM Informix INTEGER columns
+    are 4-bytes integer values, while Oracle INTEGER data type is actually a
+    NUMBER value. Therefore, you
+    should take care when using this instruction;
+    if  your application connects
+    to different  kinds  of database servers, you may get data conversion errors.</li>
+</ol>
+
+
+<h4><a name="UNLOAD_USAGE">Usage:</a></h4>
+
+<p>The <tt>UNLOAD</tt> instruction serializes into a file the SQL data produced
+from an SELECT statement.</p>
+
+<p>The <i>filename</i> after the <tt>TO</tt> keyword identifies an output file in which to store the rows
+retrieved from the database by the <tt>SELECT</tt>  statement. In the default
+(U.S. English) locale, this file contains only ASCII characters. (In other
+locales, output from <tt>UNLOAD</tt> can contain characters from the code-set of
+the locale.)</p>
+<p>The <tt>UNLOAD</tt> statement must include a <tt>SELECT</tt>  statement
+(directly, or in a variable) to specify what rows to copy into <i>filenam</i>e. <tt>UNLOAD</tt>
+does not delete the copied data.</p>
+<p>A single character delimiter instruct <tt>UNLOAD</tt> to write data in the <a href="#LOAD_STANDARD">Standard
+BDL format</a>. When using &quot;CSV&quot; as delimiter specification, the <tt>UNLOAD</tt>
+instruction will write the data in <a href="#UNLOAD_CSV">Comma Separate Value
+format</a>. If the <tt>DELIMITER</tt> clause
+    is not specified, the delimiter is defined by the
+    <a href="EnvironmentVariables.html#EV_DBDELIMITER">DBDELIMITER</a>
+    environment variable. If the DBDELIMITER environment variable is not set, the default is a
+| pipe.</p>
+<h4><font color="#FF0000">Warning:</font><font color="#000000"> The DELIMITER
+cannot be </font>backslash or any hexadecimal digit (0-9, A-F, a-f).</h4>
+<h5><a name="UNLOAD_STANDARD">Standard Genero BDL format with UNLOAD</a></h5>
+<p>A set of values in output representing a row from the database is called an <i>output
+recor</i>d. A NEWLINE character (ASCII 10) terminates each output record.</p>
+<p>The <tt>UNLOAD</tt> statement represents each value in the output file as a
+character string by using the <a href="Localization.html">current code-set</a>, according to the declared data type of the database
+column:</p>
+<table border="0" width="90%">
+  <tr>
+    <td width="20%" bgcolor="#C0C0C0"><b>Data Type</b></td>
+    <td bgcolor="#C0C0C0"><b>Output Format</b></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>CHAR, VARCHAR, TEXT</tt></td>
+    <td valign="top">Trailing blanks are dropped from CHAR and TEXT (but not
+      from VARCHAR) values. A backslash ( \ ) is inserted before any literal
+      backslash or delimiter character and before a NEWLINE character in a
+      character value.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>DECIMAL, FLOAT, INTEGER, MONEY, SMALLFLOAT,
+      SMALLINT</tt></td>
+    <td valign="top">Values are written as literals with no leading blanks.
+      MONEY values are represented with no leading currency symbol. Zero values
+      are represented as 0 for INTEGER or SMALLINT columns, and as 0.00 for
+      FLOAT, SMALLFLOAT, DECIMAL, and MONEY columns.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>DATE</tt></td>
+    <td valign="top">Values are written in the format <i>month/day/year </i>unless
+      some other format is specified by the <a href="EnvironmentVariables.html#EV_DBDATE">DBDATE</a>
+      environment variable.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>DATETIME</tt></td>
+    <td valign="top">DATETIME values are formatted<br>
+      &nbsp;&nbsp; <i>year-month-day hour:minute:second.fraction<br>
+      </i>or a contiguous subset, without DATETIME keyword or qualifiers. Time
+      units outside the declared precision of the database column are omitted.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>INTERVAL</tt></td>
+    <td valign="top">INTERVAL values are formatted<br>
+      &nbsp;&nbsp; <i>yea</i>r-<i>month<br>
+      </i>or else as<br>
+      &nbsp;&nbsp; <i>day hou</i>r:<i>minut</i>e:<i>secon</i>d.<i>fractio</i>n<br>
+      or a contiguous subset, without INTERVAL keyword or qualifiers. Time
+      units outside the declared precision of the database column are omitted.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>BYTE</tt></td>
+    <td valign="top">BYTE Values are written in ASCII hexadecimal form, without
+      any added blank or NEWLINE characters. The logical record length of an
+      output file that contains BYTE values can be very long, and thus might be
+      very difficult to print or to edit.</td>
+  </tr>
+</table>
+
+
+<p>NULL values of any data type are represented by consecutive delimiters in the
+output file, without any characters between the delimiter symbols.</p>
+<p>The backslash symbol (<tt>\</tt>) serves as an escape character in the output
+file to indicate that the next character in a data value is a literal. The <tt>UNLOAD</tt>
+statement automatically inserts a preceding backslash to prevent literal
+characters from being interpreted as special characters in the following
+contexts:</p>
+<ul>
+  <li>The backslash character appears anywhere in the value.</li>
+  <li>The delimiter character appears anywhere in the value.</li>
+  <li>The NEWLINE character appears anywhere in a value.</li>
+</ul>
+
+
+<h5><a name="UNLOAD_CSV">Comma Separate Value format with UNLOAD</a></h5>
+
+
+<p>The CSV format is similar to the standard format when using a simple comma
+delimiter, with the following differences:</p>
+<ul>
+  <li>A comma character generates a quoted output value, and the comma is
+    written as is (not escaped).</li>
+  <li>A &quot; double-quote character generate quoted output value and the quote
+    in the value is doubled.</li>
+  <li>NEWLINE characters generate a quoted output value, and the NEWLINE is
+    written as is (not escaped).</li>
+  <li>Backslash characters are written as is in the output value (i.e. not
+    escaped).</li>
+  <li>Leading and trailing blanks are not truncated in the output value.</li>
+  <li>No ending delimiter is written at the end of the output record.</li>
+</ul>
+
+
+<h4><a name="UNLOAD_EXAMPLE_1">Example:</a></h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE </tt>var <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>DATABASE </tt>stores
+<CODE class=linenumber>04</CODE>    <tt>LET</tt> var = 123
+<CODE class=linenumber>05</CODE>    <tt>UNLOAD TO</tt> &quot;items.unl&quot; <tt>SELECT</tt> * <tt>FROM</tt> items <tt>WHERE</tt> item_num &gt; var
+<CODE class=linenumber>06</CODE> <tt>END MAIN</tt></PRE>
+
+
+</BODY>
+</HTML>

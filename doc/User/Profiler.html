@@ -1,0 +1,286 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>The Profiler</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The Profiler</a> </H1>
+
+<p>Summary:</p>
+
+<ul>
+  <li><a href="#BASICS">Basics</a></li>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#USAGE">Usage</a>
+    <ul>
+      <li><a href="#PF_FLAT">Profiler output: Flat profile</a></li>
+      <li><a href="#PF_GRAPH">Profiler output: Call graph</a></li>
+    </ul>
+  </li>
+  <li><a href="#EXAMPLE">Example</a></li>
+    </ul>
+
+<p><i>See also:</i> <a href="Programs.html">Programs</a>, <a href="Tools.html">Tools</a></p>
+
+<HR>
+
+<h3><a name="BASICS">Basics</a></h3>
+
+<p>The profiler is a tool built in the runtime system that allows you to know
+where your program spends time, and which function calls which function. </p>
+
+<p>The profiler can help to identify pieces of your program that are slower than expected.&nbsp; </p>
+
+<HR>
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+<code>fglrun -p <i>program</i><u>[</u>.42r<u>]</u> <u>[</u><i>argument </i><u>[</u>...<u>]]</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>program</i> is the name of the BDL program.</li>
+  <li><i>argument</i> is a command line argument passed to the program.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="USAGE">Usage</a></h3>
+
+
+<p>In order to use the profiler, you must start the virtual machine with the <b>-p</b>
+option:</p>
+
+<code>fglrun -p myprog</code>
+
+<p>When the program ends, the profiler dumps profiling information to standard
+error.</p>
+
+<p><b><font color="#FF0000">Warnings:</font></b></p>
+
+<ol>
+  <li>Times reported by the profiler can change from one execution to the other,
+    depending on the available system resources. You better execute the
+    program several times to get an average time.</li>
+  <li>The profiler does not support parent/child recursive calls, when a child function calls its parent
+    function (i.e. Function P calls C which
+    calls P again). In this case the output will show negative values, because
+    the time spend in the parent function is subtracted from the time spend in
+    the child function.</li>
+</ol>
+
+<h4><a name="PF_FLAT">Profiler output: Flat profile</a></h4>
+
+<p>The section &quot;flat profile&quot; contains the list of the functions
+called while the programs was running. It is presented as a five-column table.</p>
+
+<table border="0" cellpadding="0" width="95%">
+  <tr>
+    <td bgcolor="#3399FF" colspan="2"><b>Flat profile</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" ><b>Column</b></td>
+    <td bgcolor="#C0C0C0" ><b>Description</b></td>
+  </tr>
+  <tr>
+    <td >
+      <code>count</code>
+    </td>
+    <td >number of calls for this function</td>
+  </tr>
+  <tr>
+    <td >
+      <code>%total</code>
+    </td>
+    <td >Percentage of time spent in this function. Includes time
+      spent in subroutines called from this function.</td>
+  </tr>
+  <tr>
+    <td >
+      <code>%child</code>
+    </td>
+    <td >Percentage of time spent in the functions called from this
+      function.</td>
+  </tr>
+  <tr>
+    <td >
+      <code>%self</code>
+    </td>
+    <td >Percentage of time spent in this function excluding the time
+      spent in subroutines called from this function.</td>
+  </tr>
+  <tr>
+    <td >
+      <code>name</code>
+    </td>
+    <td >Function name</td>
+  </tr>
+</table>
+
+
+<p>Note : 100% represents the program execution time.</p>
+
+<h4><a name="PF_GRAPH">Profiler output: Call graph</a></h4>
+
+<p>The section &quot;Call graph&quot; provides for each function:&nbsp;</p>
+<ol>
+  <li>The functions that called it, the number of calls, and an estimation of
+    the percentage of time spent in these functions.</li>
+  <li>The functions called, the number of calls, and an estimation of the time
+    that was spent in the subroutines called from this function.</li>
+</ol>
+<table border="0" cellpadding="0" width="95%">
+  <tr>
+    <td bgcolor="#3399FF" colspan="2"><b>Call graph</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" ><b>Name</b></td>
+    <td bgcolor="#C0C0C0" ><b>Description</b></td>
+  </tr>
+  <tr>
+    <td >
+      <code>index</code>
+    </td>
+    <td >Each function has an index which appears at the beginning of
+      its primary line.</td>
+  </tr>
+  <tr>
+    <td >
+      <code>%total</code>
+    </td>
+    <td >Percentage of time spent in this function. Includes time
+      spent in subroutines called from this function.</td>
+  </tr>
+  <tr>
+    <td >
+      <code>%self</code>
+    </td>
+    <td >Percentage of time spent in this function excluding the time
+      spent in subroutines called from this function.</td>
+  </tr>
+  <tr>
+    <td >
+      <code>%child</code>
+    </td>
+    <td >Percentage of time spent in the functions called from this
+      function.</td>
+  </tr>
+  <tr>
+    <td >
+      <code>calls/of</code>
+    </td>
+    <td >Number of calls / Total number of calls</td>
+  </tr>
+  <tr>
+    <td >
+      <code>name</code>
+    </td>
+    <td >Function name</td>
+  </tr>
+</table>
+
+
+<p>Output example:</p>
+<pre>index	  %total  %self  %child  calls/of	 name</pre>
+<pre>...
+	    1.29    0.10    1.18      1/2        &lt;-- main
+	   24.51    1.18   23.33      1/2        &lt;-- fb
+[4]	   25.80    1.29   24.51        2        *** fc
+	   24.51    1.43   23.08      7/8        --&gt; fa</pre>
+<p>Description:</p>
+<ul>
+  <li>The function <b> fc</b> has been called two times (by <b>main</b> and <b> fb</b>) and
+    has called the function <b>
+fa</b> 7 times.</li>
+  <li>The function <b>fa</b> has been called 8 times in the program.</li>
+</ul>
+
+<HR>
+
+<h3><a name="EXAMPLE">Example</a></h3>
+<h4>Sample program</h4>
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DISPLAY </tt>&quot;Profiler sample&quot;
+<code class="linenumber">03</code>   <tt>CALL </tt>fB()
+<code class="linenumber">04</code>   <tt>CALL </tt>fC(2)
+<code class="linenumber">05</code> <tt>END MAIN</tt>
+<code class="linenumber">06</code> 
+<code class="linenumber">07</code> <tt>FUNCTION </tt>fA(from,n_a)
+<code class="linenumber">08</code>   <tt>DEFINE </tt>n_a,i <tt>INTEGER</tt>
+<code class="linenumber">09</code>   <tt>DEFINE </tt>from <tt>STRING</tt>
+<code class="linenumber">10</code>   <tt>FOR </tt>i=1<tt> TO </tt>n_a
+<code class="linenumber">11</code>     <tt>DISPLAY </tt>&quot;fA &quot;||from||&quot; n:&quot;||i
+<code class="linenumber">12</code>   <tt>END FOR</tt>
+<code class="linenumber">13</code> <tt>END FUNCTION</tt>
+<code class="linenumber">14</code>
+<code class="linenumber">15</code> <tt>FUNCTION </tt>fB()
+<code class="linenumber">16</code>   <tt>CALL </tt>fA(&quot;fB&quot;,10)
+<code class="linenumber">17</code>   <tt>CALL </tt>fC(5)
+<code class="linenumber">18</code> <tt>END FUNCTION</tt>
+<code class="linenumber">19</code>
+<code class="linenumber">20</code> <tt>FUNCTION </tt>fC(n_c)
+<code class="linenumber">21</code>   <tt>DEFINE </tt>n_c<tt> INTEGER</tt>
+<code class="linenumber">22</code>   <tt>WHILE </tt>n_c &gt; 0
+<code class="linenumber">23</code>     <tt>CALL </tt>fA(&quot;fC&quot;,2)
+<code class="linenumber">24</code>     <tt>LET </tt>n_c=n_c-1
+<code class="linenumber">25</code>   <tt>END WHILE</tt>
+<code class="linenumber">26</code> <tt>END FUNCTION</tt>
+</pre>
+<h4>Running the profiler</h4>
+<pre>Flat profile (order by self) 
+   count  %total  %child   %self name
+      25    88.0     0.0    88.0  rts_display
+      72     6.3     0.0     6.3  rts_Concat
+       8    85.4    82.0     3.4  fa
+       2    25.8    24.5     1.3  fc
+       8     0.3     0.0     0.3  rts_forInit
+       1    85.6    85.4     0.2  fb
+       1    99.9    99.6     0.3  main
+</pre>
+<pre>Call graph</pre>
+<pre>index	  %total  %self  %child  calls/of	 name
+	   12.69   12.69    0.00      1/25       &lt;-- main
+	   75.29   75.29    0.00     24/25       &lt;-- fa
+[1]	   87.98   87.98    0.00        25       *** rts_display
+-------------------
+	    6.35    6.35    0.00     72/72       &lt;-- fa
+[2]	    6.35    6.35    0.00        72       *** rts_Concat
+-------------------
+	   60.90    2.02   58.88      1/8        &lt;-- fb
+	   24.51    1.43   23.08      7/8        &lt;-- fc
+[3]	   85.41    3.45   81.96        8        *** fa
+	   75.29   75.29    0.00     24/25       --&gt; rts_display
+	    6.35    6.35    0.00     72/72       --&gt; rts_Concat
+	    0.33    0.33    0.00      8/8        --&gt; rts_forInit
+-------------------
+	    1.29    0.10    1.18      1/2        &lt;-- main
+	   24.51    1.18   23.33      1/2        &lt;-- fb
+[4]	   25.80    1.29   24.51        2        *** fc
+	   24.51    1.43   23.08      7/8        --&gt; fa
+-------------------
+	    0.33    0.33    0.00      8/8        &lt;-- fa
+[5]	    0.33    0.33    0.00        8        *** rts_forInit
+-------------------
+	   85.61    0.20   85.41      1/1        &lt;-- main
+[6]	   85.61    0.20   85.41        1        *** fb
+	   24.51    1.18   23.33      1/2        --&gt; fc
+	   60.90    2.02   58.88      1/8        --&gt; fa
+-------------------
+	   99.94    0.35   99.59      1/1        &lt;-- &lt;top&gt;
+[7]	   99.94    0.35   99.59        1        *** main
+	    1.29    0.10    1.18      1/2        --&gt; fc
+	   85.61    0.20   85.41      1/1        --&gt; fb
+	   12.69   12.69    0.00      1/25       --&gt; rts_display
+-------------------</pre>
+
+<hr>
+
+
+</BODY>
+</HTML>

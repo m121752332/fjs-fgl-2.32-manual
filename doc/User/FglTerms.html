@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>BDL Terms</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK rel="stylesheet" type="text/css" href="../FglTechRef.css">
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">General Terms used in this documentation</a></H1>
+
+<p>This documentation uses several terms that must be clarified for a good
+understanding. Here is a short description for all these terms:</p>
+<DL>
+  <DT><b><a name="PRODUCT">Product</a></b></DT>
+  <DD>The <i>Product</i> defines all software components that compose the
+    information system managing a given domain. Usually, the domains covered by
+    programs written in BDL are business oriented.</DD>
+  <dt><b><a name="END_USER">End User</a></b></dt>
+  <DD>The <i>End User</i> is the person that uses the Product; that
+    person works on hardware called the <a href="#WORKSTATION">Workstation</a>.</DD>
+  <dt><b><a name="PROGRAM">Programs</a></b></DT>
+  <DD>The <i>Programs</i> are the software components that are developed and
+    distributed by the supplier of the <a href="#PRODUCT">Product</a>. <i>Programs</i>
+    typically implement business rules and processing, usually called Business
+    Logic. <i>Programs</i> are executed by the <a href="#RUNTIME_SYSTEM">Runtime System</a> on the
+    Application Server machine. These components are typically p-code modules, forms
+    and additional files.</DD>
+  <dt><b><a name="DEVELOPER">Developer</a></b></dt>
+  <DD>The <i>Developer</i> is the person in charge of the conception and
+    implementation of the <a href="#PRODUCT">Product</a>  components.</DD>
+  <DT><b><a name="APPLICATION_DATA">Application Data</a></b></DT>
+  <DD> <i>Application Data</i> defines the data manipulated by the <a href="#PRODUCT">Product</a>.
+    It is typically managed by  one  or more <a href="#DATABASE_SYSTEM">Database Systems</a>. The <i>Application
+    Data</i> has a volatile state when loaded in the <a href="#RUNTIME_SYSTEM">Runtime System</a>,
+    and
+    it has a static state when stored in the Database System.</DD>
+  <DT><b><a name="DATABASE">Database</a></b></DT>
+  <DD>The <i>Database</i> is a logical entity regrouping the <a href="#APPLICATION_DATA">Application Data</a>.
+    It is managed by the <a href="#DATABASE_SYSTEM">Database System</a>.</DD>
+  <DT><b><a name="DATABASE_SYSTEM">Database System</a></b></DT>
+  <DD>The <i>Database System</i> is the software that manages data storage
+    and searching; it is usually installed on the Database Server
+    machine and is supported by a tier software vendor. It is the
+    software managing the Data in the Three-Tier C/S model.</DD>
+  <DT><b><a name="DEVELOPMENT_DATABASE">Development Database</a></b></DT>
+  <DD>The <i>Development Database</i> is the <a href="#DATABASE">Database</a>
+    used in the application development environment.</DD>
+<DL>
+  <DT><b><a name="PRODUCTION_DATABASE">Production Database</a></b></DT>
+  <DD>The <i>Production Database</i> is the <a href="#DATABASE">Database</a>
+    used on production sites.</DD>
+</DL>
+
+  <DT><b><a name="FRONT_END">Front End</a></b> 
+  <DD>The <i>Front End</i> is the software that manages the display of the <a href="#USER_INTERFACE">User
+    Interface</a> on the <a href="#WORKSTATION">Workstation</a> machine. This component is
+    historically called &quot;The Client&quot;, in a thin Client/Server context. It
+     is the  software managing the Presentation in the
+    Three-Tier C/S model.</DD>
+  <DT><b><a name="RUNTIME_SYSTEM">Runtime System</a></b></DT> 
+  <DD>The <i>Runtime System</i> is the software that manages the execution
+    of the <a href="#PROGRAM">Programs</a>, where the Business Logic is processed. It is
+    typically implemented by the <i>Dynamic Virtual Machine</i>  (DVM) and historically
+    called &quot;The Runner&quot;. It  is the software managing the
+    Processing in the Three-Tier C/S model.</DD>
+  <DT><b><a name="USER_INTERFACE">User Interface</a></b></DT>
+  <DD>The <i>User Interface</i> defines the parts of the Programs that interact
+    with the end user, including interactive elements like windows, screens,
+    input fields, buttons and menus. It is displayed on the <a href="#WORKSTATION">Workstation</a>.
+    This can typically be implemented by different kinds of <a href="#FRONT_END">Front Ends</a>, based
+    on ASCII terminals, graphical platforms (MS Windows, X11) or
+    even through web protocols like HTML over HTTP.</DD>
+  <DT><b><a name="GRAPHICAL_USER_INTERFACE">Graphical User Interface</a></b></DT>
+  <DD>The <i>Graphical User Interface</i>  (GUI) mode identifies the user interface
+    displayed on a remote machine via a <a href="#FRONT_END">Front End</a>.
+    Genero GUI mode is active when the <a href="EnvironmentVariables.html#EV_FGLGUI">FGLGUI</a>
+    environment variable is set to 1 (or when not set, GUI is the the
+    default).&nbsp;</DD>
+  <DT><b><a name="TEXT_USER_INTERFACE">Text User Interface</a></b></DT>
+  <DD>The <i>Text User Interface</i>  (TUI) mode identifies the user interface displayed on ASCII
+    terminals (TTY on UNIX or Console Window on MS Windows). Genero TUI mode is
+    active when the <a href="EnvironmentVariables.html#EV_FGLGUI">FGLGUI</a>
+    environment variable is set to 0.</DD>
+  <dt><b><a name="WORKSTATION">Workstation</a></b></dt>
+  <DD> The <i>Workstation</i>
+    identifies the hardware used by the <a href="#END_USER">End User</a> to interact with the
+    <a href="#PRODUCT">Product</a>.
+    It can be an ASCII Terminal, a
+    PC, a diskless station or even a cellular phone, as long as a <a href="#FRONT_END">Front End</a>
+    is available on that hardware.</DD>
+</DL>
+
+</BODY>
+</HTML>

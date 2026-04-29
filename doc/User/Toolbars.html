@@ -1,0 +1,479 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+  <title>Toolbars</title>
+  <meta http-equiv="Content-Type" content="text/html">
+  <link href="../FglTechRef.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+  <p><a href="../index.html">Back to Contents</a></p>
+  <hr>
+
+  <h1><a name="PAGE_HEADER" id="PAGE_HEADER">Toolbars</a></h1>
+
+  <p>Summary:</p>
+
+  <ul>
+    <li><a href="#BASICS">Basics</a></li>
+
+    <li><a href="#SYNTAX">Syntax</a></li>
+
+    <li>
+      <a href="#USAGE">Usage</a>
+
+      <ul>
+        <li><a href="#DEFINING">Defining ToolBars</a></li>
+
+        <li><a href="#STRUCT">Toolbar structure</a></li>
+
+        <li><a href="#FORMSECTION">Defining a Toolbar in form file</a></li>
+
+        <li><a href="#LOADFORM">Loading a Toolbar from a file</a></li>
+
+        <li><a href="#LOADDEFAULT">Loading the default Toolbar from a file</a></li>
+
+        <li><a href="#DYNAMIC">Creating a Toolbar dynamically</a></li>
+      </ul>
+    </li>
+
+    <li>
+      <a href="#EXAMPLES">Examples</a>
+
+      <ul>
+        <li><a href="#EXAMPLE_1">Simple Toolbar in XML format</a></li>
+
+        <li><a href="#EXAMPLE_2">Program creating a Toolbar dynamically</a></li>
+
+        <li><a href="#EXAMPLE_3">Toolbar definition in a PER file</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <p><i>See also:</i> <a href="ActionDefaults.html">Action Defaults</a>, <a href="Topmenus.html">Topmenus</a>, <a href=
+  "FormSpecFiles.html">Form Specification Files</a></p>
+  <hr>
+
+  <h3><a name="BASICS" id="BASICS">Basics</a></h3>
+
+  <p>A <a name="ToolBar" id="ToolBar">Toolbar</a> is a <a href="InteractionModel.html">view for actions</a> presented as a set of
+  buttons that can trigger events in an interactive instruction. This page describes how to use toolbars in programs; it is also
+  possible to define toolbars in forms with the <a href="FormSpecFiles.html#SECTION_TOOLBAR">TOOLBAR section</a>.</p>
+  <hr>
+
+  <h3><a name="SYNTAX" id="SYNTAX">Syntax</a></h3><code>&lt;ToolBar <u>[</u> <i>toolbar-attribute</i>="<i>value"</i> <u>[...]</u>
+  <u>]</u> &gt;<br>
+  &nbsp; <u>{</u> &lt;ToolBarSeparator <i>separator-attribute</i>="<i>value"</i> <u>[...]</u> /&gt;<br>
+  &nbsp; <u>|</u> &lt;ToolBarItem <i>item-attribute</i>="<i>value"</i> <u>[...]</u> /&gt;<br>
+  &nbsp; <u>}</u>&nbsp;<u>[...]</u><br>
+  &lt;/ToolBar&gt;</code>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>toolbar-attribute</i> defines a property of the toolbar.</li>
+
+    <li><i>item-attribute</i> defines a property of the toolbar item.</li>
+  </ol>
+
+  <h4><font color="#FF0000">Warnings:</font></h4>
+
+  <ol>
+    <li>The DOM tag names are case sensitive; <code>Toolbar</code> is different from <code>ToolBar</code>.</li>
+
+    <li>When binding to an action, make sure that you are using the right value in the <code>name</code> attribute. As <tt>ON
+    ACTION</tt> and <tt>COMMAND</tt> generate lowercase identifiers, it is recommended to use <b>lowercase</b>
+    <code>names</code>.</li>
+
+    <li>When binding to a key, make sure the <code>name</code> attribute value is in lowercase letters ("<code>f5</code>").</li>
+
+    <li>Make sure that the image file is available to the Front End.</li>
+  </ol>
+
+  <h4><font color="#008000">Tips:</font></h4>
+
+  <ol>
+    <li>It is recommended that you define the decoration of a Toolbar item for common actions with <a href=
+    "ActionDefaults.html">Action Defaults</a>.</li>
+  </ol>
+  <hr>
+
+  <h3><b><a name="USAGE" id="USAGE">Usage</a></b></h3>
+
+  <h4><b><a name="DEFINING" id="DEFINING">Defining Toolbars</a></b></h4>
+
+  <p>You can define a global/default toolbar at the program level, or you can define form-specific toolbars. The global toolbar
+  is displayed by default in all windows, or in the global window container when using <a href="MDIWindows.html">MDI</a>. The
+  form-specific toolbar is displayed in the form where it is defined. You can control the position and visibility of toolbars
+  with a <a href="WindowsAndForms.html#WINDOW_STYLES">window style attribute</a>. Typical "modal windows" do not display
+  toolbars.</p>
+
+  <p>The Toolbar items (or buttons) are enabled according to the <a href="InteractionModel.html">actions</a> defined by the
+  current interactive instruction, which can be <a href="Menus.html">MENU</a>, <a href="RecordInput.html">INPUT</a>, <a href=
+  "InputArray.html">INPUT ARRAY</a>, <a href="DisplayArray.html">DISPLAY ARRAY</a>, or <a href=
+  "Construct.html">CONSTRUCT</a>.&nbsp;The action trigger bound to a Toolbar button is executed when the button is clicked.</p>
+
+  <p>A Toolbar item is bound to an <i>action node</i> of the current interactive instruction if its <code>name</code> attribute
+  corresponds to an <i>action node</i> name (typically, the name of a ring menu option). A click on the Toolbar button has the
+  same effect as raising the action. For example, if the current interactive instruction is a ring menu, this would have the same
+  effect as selecting the ring menu option.</p>
+
+  <p>A Toolbar item is bound to a key trigger if the <code>name</code> attribute of the item corresponds to a valid hot key,
+  <u>in lowercase letters</u>. In this case, a click on the Toolbar button has the same effect as pressing the hot key.</p>
+
+  <p>A Toolbar button is automatically disabled if the corresponding action is not available (for example, when a ring menu
+  option is hidden).</p>
+
+  <p>Toolbar elements can get a <code>style</code> attribute in order to use a
+  specific rendering/decoration following <a href="PresentationStyles.html">Presentation
+  Style</a> definitions.</p>
+  <hr>
+
+  <p><b><a name="STRUCT" id="STRUCT">Toolbar Structure</a></b></p>
+
+  <p>The following table shows the list of <i>toolbar-attributes</i> supported for the <code>ToolBar</code> node:</p>
+
+  <div align="center">
+    <center>
+      <table border="0" cellpadding="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="15%"><b>Attribute</b></td>
+
+          <td bgcolor="#C0C0C0" width="15%"><b>Type</b></td>
+
+          <td bgcolor="#C0C0C0"><b>Description</b></td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>style</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>Can be used to decorate the element with a <a href="PresentationStyles.html">Presentation
+            Style</a></td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>tag</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>User-defined attribute to identify the node.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>name</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>Identifies the Toolbar.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>buttonTextHidden</tt></td>
+
+          <td width="15%"><tt>INTEGER</tt></td>
+
+          <td>Defines if the text of toolbar buttons must appear by default.</td>
+        </tr>
+      </table>
+    </center>
+  </div>
+
+  <p>The following table shows the list of <i>item-attributes</i> supported for the <code>ToolBarItem</code> node:</p>
+
+  <div align="center">
+    <center>
+      <table border="0" cellpadding="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="15%"><b>Attribute</b></td>
+
+          <td bgcolor="#C0C0C0" width="15%"><b>Type</b></td>
+
+          <td bgcolor="#C0C0C0"><b>Description</b></td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>name</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>Identifies the <a href="InteractionModel.html">action</a> corresponding to the toolbar button.<br>
+          Can be prefixed with the <a href="MultipleDialogs.html#binding-actions">sub-dialog identifier</a>.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>style</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>Can be used to decorate the element with a <a href="PresentationStyles.html">Presentation
+            Style</a></td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>tag</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>User-defined attribute to identify the node.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>text</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>The text to be displayed in the toolbar button.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>comment</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>The message to be shown as tooltip when the user selects a toolbar button.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>hidden</tt></td>
+
+          <td width="15%"><tt>INTEGER</tt></td>
+
+          <td>Indicates if the item is hidden.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>image</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>The icon to be used in the toolbar button.</td>
+        </tr>
+      </table>
+    </center>
+  </div>
+
+  <p>The following table shows the list of <i>separator-attributes</i> supported for the <code>ToolBarSeparator</code> node:</p>
+
+  <div align="center">
+    <center>
+      <table border="0" cellpadding="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="15%"><b>Attribute</b></td>
+
+          <td bgcolor="#C0C0C0" width="15%"><b>Type</b></td>
+
+          <td bgcolor="#C0C0C0"><b>Description</b></td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>name</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>Identifies the Toolbar separator.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>style</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>Can be used to decorate the element with a <a href="PresentationStyles.html">Presentation
+            Style</a></td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>tag</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>User-defined attribute to identify the node.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>hidden</tt></td>
+
+          <td width="15%"><tt>INTEGER</tt></td>
+
+          <td>Indicates if the separator is hidden.</td>
+        </tr>
+      </table>
+    </center>
+  </div>
+  <hr>
+
+  <h4><a name="FORMSECTION" id="FORMSECTION">Defining toolbars in the form file</a></h4>
+
+  <p>You can define a toolbar in the form specification file with the <a href="FormSpecFiles.html#SECTION_TOOLBAR">TOOLBAR
+  section</a>; see the <a href="#EXAMPLES">example</a> below.</p>
+  <hr>
+
+  <h4><a name="LOADFORM" id="LOADFORM">Loading a Toolbar from an XML file</a></h4>
+
+  <p>To load a Toolbar definition file, use the utility method provided by the <a href="ClassForm.html">Form built-in
+  class</a>:</p>
+  <pre>
+<code class="linenumber">01</code> <tt>CALL</tt> myform.loadToolbar(&quot;standard&quot;)
+</pre>
+
+  <p>This method accepts a filename <u>with</u> or <u>without</u> the "<code>4tb</code>" extension. If you omit the file
+  extension (recommended), the runtime system adds the extension automatically. If the file does not exist in the current
+  directory, it is searched in the directories defined in the <a href="EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href=
+  "EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a> environment variable.</p>
+
+  <p>If a form contains a specific toolbar loaded by the <a href="ClassForm.html">ui.Form.loadToolbar()</a> method or defined in
+  the <a href="FormSpecFiles.html#SECTION_TOOLBAR">Form Specification File</a>, it will be replaced by the new toolbar loaded
+  from this function.</p>
+  <hr>
+
+  <h4><a name="LOADDEFAULT" id="LOADDEFAULT">Loading a default toolbar from an XML file</a></h4>
+
+  <p>To load a default toolbar from an XML definition file, use the utility method provided by the <a href=
+  "ClassInterface.html">Interface built-in class</a>:</p>
+  <pre>
+<code class="linenumber">01</code> <tt>CALL</tt> ui.Interface.loadToolbar(&quot;standard&quot;)
+</pre>
+
+  <p>This method accepts a filename <u>with</u> or <u>without</u> the "<code>4tb</code>" extension. If you omit the file
+  extension (recommended), the runtime system adds the extension automatically. If the file does not exist in the current
+  directory, it is searched in the directories defined in the <a href="EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href=
+  "EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a> environment variable.</p>
+
+  <p>The default toolbar loaded by this method is also used for the MDI container.</p>
+  <hr>
+
+  <h4><a name="DYNAMIC" id="DYNAMIC">Creating the toolbar manually with DOM</a></h4>
+
+  <p>This example shows how to create a Toolbar in all forms by using the default initialization function and the <a href=
+  "ClassDomNode.html">DomNode class</a>:</p>
+  <pre>
+<code class="linenumber">01</code> <tt>CALL</tt> ui.Form.setDefaultInitializer(&quot;myinit&quot;)
+<code class="linenumber">02</code> <tt>OPEN FORM </tt>f1 <tt>FROM </tt>&quot;form1&quot;
+<code class="linenumber">03</code> <tt>DISPLAY FORM </tt>f1
+<code class="linenumber">04</code> ...
+<code class="linenumber">05</code> <tt>FUNCTION</tt> myinit(form)
+<code class="linenumber">06</code>   <tt>DEFINE</tt> form ui.Form
+<code class="linenumber">06</code>   <tt>DEFINE</tt> f om.DomNode
+<code class="linenumber">08</code>   <tt>LET</tt> f = form.getNode()
+<code class="linenumber">09</code>   ...
+<code class="linenumber">10</code> <tt>END FUNCTION</tt>
+</pre>
+
+  <p>After getting the DOM node of the form, create a node with the "<code>ToolBar</code>" tag name:</p>
+  <pre>
+<code class="linenumber">01</code> <tt>DEFINE</tt> tb om.DomNode
+<code class="linenumber">02</code> <tt>LET</tt> tb = f.createChild(&quot;ToolBar&quot;)
+</pre>
+
+  <p>For each toolbar button, create a sub-node with the "<code>ToolBarItem</code>" tag name and set the attributes to define the
+  button:</p>
+  <pre>
+<code class="linenumber">01</code> <tt>DEFINE</tt> tbi om.DomNode
+<code class="linenumber">02</code> <tt>LET</tt> tbi = tb.createChild(&quot;ToolBarItem&quot;)
+<code class="linenumber">03</code> <tt>CALL</tt> tbi.setAttribute(&quot;name&quot;,&quot;update&quot;)
+<code class="linenumber">04</code> <tt>CALL</tt> tbi.setAttribute(&quot;text&quot;,&quot;Modify&quot;)
+<code class="linenumber">05</code> <tt>CALL</tt> tbi.setAttribute(&quot;comment&quot;,&quot;Modify the current record&quot;)
+<code class="linenumber">06</code> <tt>CALL</tt> tbi.setAttribute(&quot;image&quot;,&quot;change&quot;)
+</pre>
+
+  <p>If needed, you can create a "<code>ToolBarSeparator</code>" node to separate Toolbar buttons:</p>
+  <pre>
+<code class="linenumber">01</code> <tt>DEFINE</tt> tbs om.DomNode
+<code class="linenumber">02</code> <tt>LET</tt> tbs = tb.createChild(&quot;ToolBarSeparator&quot;)
+</pre>
+  <hr>
+
+  <h3><a name="EXAMPLES" id="EXAMPLES">Examples</a></h3>
+
+  <h4><a name="EXAMPLE_1" id="EXAMPLE_1">Example 1: Simple Toolbar in XML format</a></h4>
+  <pre>
+<code class="linenumber">01</code> &lt;ToolBar style=&quot;mystyle&quot;&gt;
+<code class="linenumber">02</code>    &lt;ToolBarItem name=&quot;f5&quot; text=&quot;List&quot; image=&quot;list&quot; /&gt;
+<code class="linenumber">03</code>    &lt;ToolBarSeparator/&gt;
+<code class="linenumber">04</code>    &lt;ToolBarItem name=&quot;query&quot; text=&quot;Query&quot; image=&quot;search&quot; /&gt;
+<code class="linenumber">05</code>    &lt;ToolBarItem name=&quot;add&quot; text=&quot;Append&quot; image=&quot;add&quot; /&gt;
+<code class="linenumber">06</code>    &lt;ToolBarItem name=&quot;delete&quot; text=&quot;Delete&quot; image=&quot;delete&quot; /&gt;
+<code class="linenumber">07</code>    &lt;ToolBarItem name=&quot;modify&quot; text=&quot;Modify&quot; image=&quot;change&quot; /&gt;
+<code class="linenumber">08</code>    &lt;ToolBarSeparator/&gt;
+<code class="linenumber">09</code>    &lt;ToolBarItem name=&quot;f1&quot; text=&quot;Help&quot; image=&quot;list&quot; /&gt;
+<code class="linenumber">10</code>    &lt;ToolBarSeparator/&gt;
+<code class="linenumber">11</code>    &lt;ToolBarItem name=&quot;quit&quot; text=&quot;Quit&quot; image=&quot;quit&quot; /&gt;
+<code class="linenumber">12</code> &lt;/ToolBar&gt;
+</pre>
+
+  <h4><a name="EXAMPLE_2" id="EXAMPLE_2">Example 2: Program creating the Toolbar dynamically</a></h4>
+  <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> aui om.DomNode
+<code class="linenumber">03</code>   <tt>DEFINE</tt> tb  om.DomNode
+<code class="linenumber">04</code>   <tt>DEFINE</tt> tbi om.DomNode
+<code class="linenumber">05</code>   <tt>DEFINE</tt> tbs om.DomNode
+<code class="linenumber">06</code> 
+<code class="linenumber">07</code>   <tt>LET</tt> aui = ui.Interface.getRootNode()
+<code class="linenumber">08</code> 
+<code class="linenumber">09</code>   <tt>LET</tt> tb = aui.createChild(&quot;ToolBar&quot;)
+<code class="linenumber">10</code> 
+<code class="linenumber">11</code>   <tt>LET</tt> tbi = createToolBarItem(tb,&quot;f1&quot;,&quot;Help&quot;,&quot;Show help&quot;,&quot;help&quot;)
+<code class="linenumber">12</code>   <tt>LET</tt> tbs = createToolBarSeparator(tb)
+<code class="linenumber">13</code>   <tt>LET</tt> tbi = createToolBarItem(tb,&quot;upd&quot;,&quot;Modify&quot;,&quot;Modify current record&quot;,&quot;change&quot;)
+<code class="linenumber">14</code>   <tt>LET</tt> tbi = createToolBarItem(tb,&quot;del&quot;,&quot;Remove&quot;,&quot;Remove current record&quot;,&quot;delete&quot;)
+<code class="linenumber">15</code>   <tt>LET</tt> tbi = createToolBarItem(tb,&quot;add&quot;,&quot;Append&quot;,&quot;Add a new record&quot;,&quot;add&quot;)
+<code class="linenumber">16</code>   <tt>LET</tt> tbs = createToolBarSeparator(tb)
+<code class="linenumber">17</code>   <tt>LET</tt> tbi = createToolBarItem(tb,&quot;xxx&quot;,&quot;Exit&quot;,&quot;Quit application&quot;,&quot;quit&quot;)
+<code class="linenumber">18</code> 
+<code class="linenumber">19</code>   <tt>MENU</tt> &quot;Example&quot;
+<code class="linenumber">20</code>     <tt>COMMAND KEY</tt>(F1)
+<code class="linenumber">21</code>       <tt>DISPLAY</tt> &quot;F1 action received&quot;
+<code class="linenumber">22</code>     <tt>COMMAND</tt> &quot;upd&quot;
+<code class="linenumber">23</code>       <tt>DISPLAY</tt> &quot;Update action received&quot;
+<code class="linenumber">24</code>     <tt>COMMAND</tt> &quot;Del&quot;
+<code class="linenumber">25</code>       <tt>DISPLAY</tt> &quot;Delete action received&quot;
+<code class="linenumber">26</code>     <tt>COMMAND</tt> &quot;Add&quot;
+<code class="linenumber">27</code>       <tt>DISPLAY</tt> &quot;Append action received&quot;
+<code class="linenumber">28</code>     <tt>COMMAND</tt> &quot;xxx&quot;
+<code class="linenumber">29</code>       <tt>EXIT PROGRAM</tt>
+<code class="linenumber">30</code>   <tt>END MENU</tt>
+<code class="linenumber">31</code> 
+<code class="linenumber">32</code> <tt>END MAIN</tt>
+<code class="linenumber">33</code> 
+<code class="linenumber">34</code> <tt>FUNCTION</tt> createToolBarSeparator(tb)
+<code class="linenumber">35</code>   <tt>DEFINE</tt> tb om.DomNode
+<code class="linenumber">36</code>   <tt>DEFINE</tt> tbs om.DomNode
+<code class="linenumber">37</code>   <tt>LET</tt> tbs = tb.createChild(&quot;ToolBarSeparator&quot;)
+<code class="linenumber">38</code>   <tt>RETURN</tt> tbs
+<code class="linenumber">39</code> <tt>END FUNCTION</tt>
+<code class="linenumber">40</code> 
+<code class="linenumber">41</code> <tt>FUNCTION</tt> createToolBarItem(tb,n,t,c,i)
+<code class="linenumber">42</code>   <tt>DEFINE</tt> tb om.DomNode
+<code class="linenumber">43</code>   <tt>DEFINE</tt> n,t,c,i <tt>VARCHAR</tt>(100)
+<code class="linenumber">44</code>   <tt>DEFINE</tt> tbi om.DomNode
+<code class="linenumber">45</code>   <tt>LET</tt> tbi = tb.createChild(&quot;ToolBarItem&quot;)
+<code class="linenumber">46</code>   <tt>CALL</tt> tbi.setAttribute(&quot;name&quot;,n)
+<code class="linenumber">47</code>   <tt>CALL</tt> tbi.setAttribute(&quot;text&quot;,t)
+<code class="linenumber">48</code>   <tt>CALL</tt> tbi.setAttribute(&quot;comment&quot;,c)
+<code class="linenumber">49</code>   <tt>CALL</tt> tbi.setAttribute(&quot;image&quot;,i)
+<code class="linenumber">50</code>   <tt>RETURN</tt> tbi
+<code class="linenumber">51</code> <tt>END FUNCTION</tt>
+</pre>
+
+  <h4><a name="EXAMPLE_3" id="EXAMPLE_3">Example 3: Toolbar definition in a PER file</a></h4>
+  <pre>
+<code class="linenumber">01</code> <tt>TOOLBAR </tt>( <tt>STYLE</tt>=&quot;mystyle&quot; )
+<code class="linenumber">02</code>   <tt>ITEM</tt> accept ( <tt>TEXT</tt>=&quot;Ok&quot;, <tt>IMAGE</tt>=&quot;ok&quot; )
+<code class="linenumber">03</code>   <tt>ITEM</tt> cancel ( <tt>TEXT</tt>=&quot;cancel&quot;, <tt>IMAGE</tt>=&quot;cancel&quot; )
+<code class="linenumber">04</code>   <tt>SEPARATOR</tt>
+<code class="linenumber">05</code>   <tt>ITEM</tt> editcut   -- Gets decoration from action defaults
+<code class="linenumber">06</code>   <tt>ITEM</tt> editcopy  -- Gets decoration from action defaults
+<code class="linenumber">07</code>   <tt>ITEM</tt> editpaste -- Gets decoration from action defaults
+<code class="linenumber">08</code>   <tt>SEPARATOR</tt>
+<code class="linenumber">09</code>   <tt>ITEM</tt> append ( <tt>TEXT</tt>=&quot;Append&quot;, <tt>IMAGE</tt>=&quot;add&quot; )
+<code class="linenumber">10</code>   <tt>ITEM</tt> update ( <tt>TEXT</tt>=&quot;Update&quot;, <tt>IMAGE</tt>=&quot;modify&quot; )
+<code class="linenumber">11</code>   <tt>ITEM</tt> delete ( <tt>TEXT</tt>=&quot;Delete&quot;, <tt>IMAGE</tt>=&quot;del&quot; )
+<code class="linenumber">12</code>   <tt>ITEM</tt> search ( <tt>TEXT</tt>=&quot;Search&quot;, <tt>IMAGE</tt>=&quot;find&quot; )
+<code class="linenumber">13</code> <tt>END</tt>
+</pre>
+</body>
+</html>

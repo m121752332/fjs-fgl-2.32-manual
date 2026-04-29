@@ -1,0 +1,228 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>om.XmlWriter</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The XmlWriter class</a> </H1>
+
+<p>Summary:</p>
+
+<ul>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#METHODS">Methods</a></li>
+  <li><a href="#USAGE">Usage</a><ul>
+  <li><a href="#createFileWriter">Create a SaxDocumentHandler object writing to a file</a></li>
+	<li><a href="#createPipeWriter">Create a SaxDocumentHandler object writing to a pipe</a></li>
+	<li><a href="#createSocketWriter">Create a SaxDocumentHandler object writing to a socket</a></li>
+</ul>
+	</li>
+  <li><a href="#EXAMPLES">Examples</a></li>
+</ul>
+<p><i>See also:</i>
+<a href="BuiltInClasses.html">Built-in Classes</a>, <a href="XmlUtils.html">XML
+Utilities</a>, <a href="ClassSaxDocumentHandler.html">SaxDocumentHandler</a></p>
+
+<HR>
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+<p>The <b>XmlWriter</b> class allows you to write <a href="XmlUtils.html">XML</a>
+documents to different types of output, following the <a href="XmlUtils.html">SAX</a>
+standards. </p>
+
+<h4>Syntax:</h4>
+
+<p><code>om.XmlWriter</code></p>
+
+
+<HR>
+
+
+<h3><a name="METHODS">Methods:</a></h3>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#3399FF" colspan="2"><b>Class Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><b>Name</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#createFileWriter">createFileWriter(</a> file </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>     om.SaxDocumentHandler</code></td>
+    <td valign="top">Creates a SaxDocumentHandler object writing to a file.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#createPipeWriter">createPipeWriter</a>( exec </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>     om.SaxDocumentHandler</code></td>
+    <td valign="top">Creates a SaxDocumentHandler object writing to a pipe created for a process.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#createSocketWriter">createSocketWriter</a>( host </code><tt>STRING</tt><code>,
+      port </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>     om.SaxDocumentHandler</code></td>
+    <td valign="top">Creates a SaxDocumentHandler object writing to a socket.</td>
+  </tr>
+</table>
+
+
+<HR>
+
+
+<h3><a name="USAGE">Usage:</a></h3>
+
+<p>This class is only used to create a SaxDocumentHandler object, by using one
+of the class methods described in the above table.</p>
+
+<p>First, define a <a href="Variables.html"> variable</a> of type
+<i>om.SaxDocumentHander</i> and create the object with one of the
+&quot;create&quot; methods, according to the output destination:</p>
+
+<ul>
+  <li>The method <code><a name="createFileWriter">om.XmlWriter.createFileWriter(<i>filename</i>)</a></code>
+    creates an object writing to the file identified by
+    <i>filename</i>.</li>
+  <li>The method <code><a name="createPipeWriter">om.XmlWriter.createPipeWriter(<i>progname</i>)</a></code>
+    creates an object writing to a pipe opened by a
+    sub-process identified by <i>progname</i>.</li>
+  <li>The method <a name="createSocketWriter"><code>om.XmlWriter.createSocketWriter(<i>hostname</i>,<i>portnum</i>)</code></a>
+    creates an object writing to the TCP socket identified by
+    the host <i>hostname</i> and the TCP port <i>portnum</i>.</li>
+</ul>
+
+<p>To handle element attributes, define a <a href="Variables.html"> variable</a>
+of type <a href="ClassSaxAttributes.html">om.SaxAttributes</a>.</p>
+
+<p>Create the SaxAttributes object with <code>om.SaxAttributes.create()</code>
+class method. See the <a href="ClassSaxAttributes.html"> class definition</a> for more details about attributes definition.</p>
+<h4>Use SaxDocumentHandler methods</h4>
+<p>Use the method <code>startDocument()</code> to start writing to the output. From
+this point, the order of method calls defines the structure of
+the XML document.</p>
+
+<p>To write an element, fill the <a href="ClassSaxAttributes.html">SaxAttributes</a>
+object with attributes. Then, initiate the element output with the method <code>startElement(name,attset)</code>, where <i>name</i> is the tag
+name of the element and <i>attset</i> is the <a href="ClassSaxAttributes.html">SaxAttributes</a>
+object defining element attributes. After this call, you can write text nodes
+with the <code>characters()</code> method. You can write an entity node with the
+<code>entity()</code> method.
+Finish element output with a call to the <code>endElement()</code> method. Repeat these steps as many times as you have
+elements to write.</p>
+
+<p>Instead of using the <code>startElement()</code> method, you can generate
+processing instruction elements with <code>processingInstruction(name,attset)</code>,
+where name is the <i>name</i> of the application.
+The resulting XML output is in the form:
+<code>&lt;?name attribute=&quot;value1&quot; ... ?&gt;</code></p>
+
+<p>Finally, you must finish the document output with a <code>endDocument()</code>
+call.</p>
+
+<HR>
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+<h4>Example 1:</h4>
+
+<p>The following code writes an HTML page to a file using the XmlWriter
+class:</p>
+
+<PRE><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> w om.SaxDocumentHandler
+<code class="linenumber">03</code>   <tt>DEFINE</tt> a,n om.SaxAttributes
+<code class="linenumber">04</code> 
+<code class="linenumber">05</code>   <tt>LET</tt> w = om.XmlWriter.createFileWriter(&quot;sample.html&quot;)
+<code class="linenumber">06</code>   <tt>LET</tt> a = om.SaxAttributes.create()
+<code class="linenumber">07</code>   <tt>LET</tt> n = om.SaxAttributes.create()
+<code class="linenumber">08</code> 
+<code class="linenumber">09</code>   <tt>CALL</tt> n.clear()
+<code class="linenumber">10</code> 
+<code class="linenumber">11</code>   <tt>CALL</tt> w.startDocument()
+<code class="linenumber">12</code> 
+<code class="linenumber">13</code>     <tt>CALL</tt> w.startElement(&quot;HTML&quot;,n)
+<code class="linenumber">14</code> 
+<code class="linenumber">15</code>       <tt>CALL</tt> w.startElement(&quot;HEAD&quot;,n)
+<code class="linenumber">16</code> 
+<code class="linenumber">17</code>         <tt>CALL</tt> w.startElement(&quot;TITLE&quot;,n)
+<code class="linenumber">18</code>         <tt>CALL</tt> w.characters(&quot;HTML page generated with XmlWriter&quot;)
+<code class="linenumber">19</code>         <tt>CALL</tt> w.endElement(&quot;TITLE&quot;)
+<code class="linenumber">20</code> 
+<code class="linenumber">21</code>         <tt>CALL</tt> a.clear()
+<code class="linenumber">22</code>         <tt>CALL</tt> a.addAttribute(&quot;type&quot;,&quot;text/css&quot;)
+<code class="linenumber">23</code>         <tt>CALL</tt> w.startElement(&quot;STYLE&quot;,a)
+<code class="linenumber">24</code>         <tt>CALL</tt> w.characters(&quot;\nBODY { background-color:#c0c0c0; }\n&quot;)  
+<code class="linenumber">25</code>         <tt>CALL</tt> w.endElement(&quot;STYLE&quot;)
+<code class="linenumber">26</code> 
+<code class="linenumber">27</code>       <tt>CALL</tt> w.endElement(&quot;HEAD&quot;)
+<code class="linenumber">28</code> 
+<code class="linenumber">29</code>       <tt>CALL</tt> w.startElement(&quot;BODY&quot;,n)
+<code class="linenumber">30</code> 
+<code class="linenumber">31</code>         <tt>CALL</tt> addHLine(w)
+<code class="linenumber">32</code>         <tt>CALL</tt> addTitle(w,&quot;What is XML?&quot;,1,&quot;55ff55&quot;)
+<code class="linenumber">33</code>         <tt>CALL</tt> addParagraph(w,&quot;XML = eXtensible Markup Language ...&quot;)
+<code class="linenumber">34</code> 
+<code class="linenumber">35</code>         <tt>CALL</tt> addHLine(w)
+<code class="linenumber">36</code>         <tt>CALL</tt> addTitle(w,&quot;What is SAX?&quot;,1,&quot;55ff55&quot;)
+<code class="linenumber">37</code>         <tt>CALL</tt> addParagraph(w,&quot;SAX = Simple Api for XML ...&quot;)
+<code class="linenumber">38</code> 
+<code class="linenumber">39</code>       <tt>CALL</tt> w.endElement(&quot;BODY&quot;)
+<code class="linenumber">40</code> 
+<code class="linenumber">41</code>     <tt>CALL</tt> w.endElement(&quot;HTML&quot;)
+<code class="linenumber">42</code> 
+<code class="linenumber">43</code>   <tt>CALL</tt> w.endDocument()
+<code class="linenumber">44</code> 
+<code class="linenumber">45</code> <tt>END MAIN</tt>
+<code class="linenumber">46</code> 
+<code class="linenumber">47</code> <tt>FUNCTION</tt> addHLine(w)
+<code class="linenumber">48</code>   <tt>DEFINE</tt> w om.SaxDocumentHandler
+<code class="linenumber">49</code>   <tt>DEFINE</tt> a om.SaxAttributes
+<code class="linenumber">50</code>   <tt>LET</tt> a = om.SaxAttributes.create()
+<code class="linenumber">51</code>   <tt>CALL</tt> a.clear()
+<code class="linenumber">52</code>   <tt>CALL</tt> a.addAttribute(&quot;width&quot;,&quot;100%&quot;)
+<code class="linenumber">53</code>   <tt>CALL</tt> w.startElement(&quot;HR&quot;,a)
+<code class="linenumber">54</code>   <tt>CALL</tt> w.endElement(&quot;HR&quot;)
+<code class="linenumber">55</code> <tt>END FUNCTION</tt>
+<code class="linenumber">56</code> 
+<code class="linenumber">57</code> <tt>FUNCTION</tt> addTitle(w,t,x,c)
+<code class="linenumber">58</code>   <tt>DEFINE</tt> w om.SaxDocumentHandler
+<code class="linenumber">59</code>   <tt>DEFINE</tt> t <tt>VARCHAR</tt>(100)
+<code class="linenumber">60</code>   <tt>DEFINE</tt> x <tt>INTEGER</tt>
+<code class="linenumber">61</code>   <tt>DEFINE</tt> c <tt>VARCHAR</tt>(20)
+<code class="linenumber">62</code>   <tt>DEFINE</tt> a om.SaxAttributes
+<code class="linenumber">63</code>   <tt>DEFINE</tt> n varchar(10)
+<code class="linenumber">64</code>   <tt>LET</tt> a = om.SaxAttributes.create()
+<code class="linenumber">65</code>   <tt>LET</tt> n = &quot;h&quot; || x
+<code class="linenumber">66</code>   <tt>CALL</tt> a.clear()
+<code class="linenumber">67</code>   <tt>CALL</tt> w.startElement(n,a)
+<code class="linenumber">68</code>   <tt>IF</tt> c <tt>IS NOT NULL THEN</tt>
+<code class="linenumber">69</code>     <tt>CALL</tt> a.addAttribute(&quot;color&quot;,c)
+<code class="linenumber">70</code>   <tt>END IF</tt>
+<code class="linenumber">71</code>   <tt>CALL</tt> w.startElement(&quot;FONT&quot;,a)
+<code class="linenumber">72</code>   <tt>CALL</tt> w.characters(t)
+<code class="linenumber">73</code>   <tt>CALL</tt> w.endElement(&quot;FONT&quot;)
+<code class="linenumber">74</code>   <tt>CALL</tt> w.endElement(n)
+<code class="linenumber">75</code> <tt>END FUNCTION</tt>
+<code class="linenumber">76</code> 
+<code class="linenumber">77</code> <tt>FUNCTION</tt> addParagraph(w,t)
+<code class="linenumber">78</code>   <tt>DEFINE</tt> w om.SaxDocumentHandler
+<code class="linenumber">79</code>   <tt>DEFINE</tt> t <tt>VARCHAR</tt>(2000)
+<code class="linenumber">80</code>   <tt>DEFINE</tt> a om.SaxAttributes
+<code class="linenumber">81</code>   <tt>LET</tt> a = om.SaxAttributes.create()
+<code class="linenumber">82</code>   <tt>CALL</tt> a.clear()
+<code class="linenumber">83</code>   <tt>CALL</tt> w.startElement(&quot;P&quot;,a)
+<code class="linenumber">84</code>   <tt>CALL</tt> w.characters(&quot;Text is:&quot;)
+<code class="linenumber">84</code>   <tt>CALL</tt> w.skippedEntity(&quot;nbsp&quot;)         # Add a non breaking space : &amp;nbsp;
+<code class="linenumber">84</code>   <tt>CALL</tt> w.characters(&quot;is&quot;)
+<code class="linenumber">84</code>   <tt>CALL</tt> w.characters(t)
+<code class="linenumber">85</code>   <tt>CALL</tt> w.endElement(&quot;P&quot;)
+<code class="linenumber">86</code> <tt>END FUNCTION</tt></PRE>
+
+</BODY>
+</HTML>

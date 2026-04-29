@@ -1,0 +1,1000 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Tutorial: Add/Update/Delete</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+<p><a href="TutIndex.html">Back to Summary</a></p>
+<hr>
+<h1>Tutorial Chapter 6: Add/Update/Delete</h1>
+<p>Summary:</p>
+<ul>
+  <li><a href="#INPUT">Entering data on a form (INPUT statement)</a>
+    <ul>
+      <li><a href="#UNBUFFERED">INPUT attribute (UNBUFFERED)</a></li>
+      <li><a href="#WITHOUTDEFAULTS">INPUT attribute (WITHOUT DEFAULTS)</a></li>
+    </ul>
+  </li>
+  <li><a href="#SQL">Updating database tables</a>
+    <ul>
+      <li><a href="#SQL">SQL transactions</a></li>
+      <li><a href="#CONCURRENCY">Concurrency and Consistency</a></li>
+    </ul>
+  </li>
+  <li><a href="#Addrow">Adding a new row</a>
+    <ul>
+      <li><a href="#AFTERFIELD">INPUT statement control blocks</a></li>
+      <li><a href="#ADDEXAMP">Example: Add a row to the customer table</a></li>
+    </ul>
+  </li>
+  <li><a href="#UpdatingdbRow">Updating an existing&nbsp;row</a>
+    <ul>
+      <li><a href="#workrecord">Using a work record</a></li>
+      <li><a href="#SELUPDATE">SELECT ... FOR UPDATE</a></li>
+      <li><a href="#HOLDCURSOR">CURSOR WITH HOLD</a></li>
+      <li><a href="#UPDEXAMP">Example: Update a row in the customer table</a></li>
+    </ul>
+  </li>
+  <li><a href="#DeletingRow">Deleting a row</a>
+    <ul>
+      <li><a href="#dialogMENU">Using a modal Menu to prompt for validation</a></li>
+      <li><a href="#DELEXAMP">Example: Deleting a row in the customer table</a></li>
+    </ul>
+  </li>
+</ul>
+<hr>
+<p>This program allows the user to insert/update/delete rows in the customer
+table.&nbsp;<a href="StaticSql.html">Embedded SQL statements</a> (UPDATE/INSERT/DELETE) are used to update
+the table, based on the values stored in the program record.&nbsp; SQL <a href="Transactions.html">
+transactions</a>, and <a href="Transactions.html#DBTRANS"> concurrency and consistency</a> issues are discussed.&nbsp; Prior to deleting a row, a
+<a href="#dialogMENU">
+dialog window</a>
+is displayed to prompt the user to verify the deletion.</p>
+<h2><img border="0" src="../Images/TUT501.png" width="432" height="288"></h2>
+<hr>
+<h2><a name="INPUT">Entering data on a form: INPUT statement</a></h2>
+<p>The <a href="RecordInput.html"> INPUT</a> statement allows the user to
+enter or change the values in a <a href="TutChap03.html#definerecord"> program
+record</a>, which can then be used as the data for new rows in a database table,
+or to update existing rows.&nbsp; In the <a href="RecordInput.html"> INPUT</a>
+statement you list:</p>
+<ul>
+  <li>The program <a href="Variables.html">variables</a> that are to receive data from the form</li>
+  <li>The corresponding <a href="FormSpecFiles.html#FF_FORM_FIELD"> form fields</a>
+    that the user will use to supply the data</li>
+</ul>
+<pre>      <tt>INPUT</tt> &lt;<i>program-variables&gt;</i> <tt>FROM</tt> &lt;<i>form-fields</i>&gt;</pre>
+<p>The FROM clause explicitly binds the fields in the screen record to the
+program <a href="Variables.html">variables</a>, so the <a href="RecordInput.html"> INPUT</a>
+instruction can manipulate values that the user
+enters in the <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen record</a>.
+The number of record members must equal
+the number of <a href="FormSpecFiles.html#FF_FORM_FIELD"> fields</a> 
+listed in the FROM clause. Each variable
+must be of the
+same (or a compatible) data type as the corresponding screen field. When the
+user enters data, the runtime system checks the entered value against the data
+type of the variable, not the data type of the screen field.</p>
+<p>When invoked, the INPUT statement enables the specified fields  of the form in
+the current BDL window, and waits for the user to supply data
+for the fields. The user
+moves the cursor from field to field and types new values.&nbsp; Each time the cursor
+leaves a field, the value typed into that field is deposited into the
+corresponding program variable.&nbsp; You can write blocks of code as <a href="RecordInput.html">clauses
+in the INPUT statement</a> that will be called automatically during input, so that you can monitor and control the actions of your user
+within this statement.</p>
+<p>The INPUT statement ends when the user selects the <b>
+accept</b> or <b> cancel</b>
+<a href="InteractionModel.html#CTRLGACTIONS">actions</a>.</p>
+<p> INPUT supports the same shortcuts for naming records as the
+<a href="RecordDisplay.html#DISPLAY_BY_NAME"> DISPLAY</a>
+statement. You can
+ask for input to all members of a <a href="TutChap03.html#definerecord">record</a>, from all fields of a
+<a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen record</a>, and
+you can ask for input BY NAME from fields 
+that have the same names as the
+program variables.</p>
+<pre>     <tt>INPUT BY NAME</tt> &lt;<i>programrecord</i>&gt;.*</pre>
+<h3><a name="UNBUFFERED">UNBUFFERED attribute</a></h3>
+<p>By default, field values are
+buffered.&nbsp; The UNBUFFERED attribute makes the INPUT dialog
+&quot;sensitive&quot;, allowing you to easily change some <a href="FormSpecFiles.html#FF_FORM_FIELD"> form field</a> values
+programmatically during <a href="RecordInput.html"> INPUT</a>
+execution.&nbsp; When you assign a value to a
+program <a href="Variables.html">variable</a>, the runtime system will automatically display that value in the
+form; when you input values in a form field, the runtime system will
+automatically store that value in the corresponding program variable.&nbsp;
+Using the UNBUFFERED attribute is <b>strongly</b> recommended.</p>
+<h3><a name="WITHOUTDEFAULTS">WITHOUT DEFAULTS attribute</a></h3>
+<p>The same <a href="RecordInput.html"> INPUT</a> statement can be used, with the WITHOUT DEFAULTS attribute, to
+allow the user to make changes to an existing <a href="TutChap03.html#definerecord"> program
+record</a> representing a row
+in the database.&nbsp;This attribute
+prevents BDL from automatically displaying any default values that have been
+defined for the <a href="FormSpecFiles.html#FF_FORM_FIELD"> form fields</a> when INPUT is invoked, allowing you to display the
+  existing database values on the screen before the user begins editing the
+  data.&nbsp; In this case, when the INPUT statement is used to allow the user
+to add a new row, any existing values in the program
+record must first be
+nulled out.</p>
+<hr>
+  <h2><a name="SQL">Updating Database Tables</a></h2>
+  <p>The values of the program <a href="Variables.html">variables</a> that have been input through the
+  <a href="TutChap03.html#FormSpec"> form</a>
+  can be used in <a href="StaticSql.html"> SQL statements</a> that update tables in a database.&nbsp;&nbsp;</p>
+  <h3><a name="SQL">SQL transactions</a></h3>
+  <p>The embedded <a href="StaticSql.html"> SQL statements</a> INSERT, UPDATE, and DELETE can be used to make
+  changes to the contents of a database table. If your database has transaction
+  logging, you can use the <a href="Transactions.html#TI_BEGIN_WORK"> BEGIN WORK</a> and
+  <a href="Transactions.html#TI_COMMIT_WORK"> COMMIT WORK</a> commands to delimit a&nbsp;
+  <a href="Transactions.html#DBTRANS">transaction</a> block, usually consisting of multiple
+  <a href="StaticSql.html"> SQL statements</a>.&nbsp;If you do not issue a BEGIN WORK
+  statement to start a transaction, each
+  statement executes within its own transaction. These single-statement
+  transactions do not require either a BEGIN WORK
+  statement or a COMMIT WORK
+  statement. At
+  runtime, the Genero database driver generates the appropriate SQL commands to
+  be used with the target database server. </p>
+<p>To
+  eliminate concurrency problems, keep transactions
+  as short as
+  possible.&nbsp; </p>
+<h3>&nbsp;<a name="CONCURRENCY">Concurrency and Consistency</a> </h3>
+  <p>While your program is modifying data, another program may also be reading
+  or modifying the same data. To prevent errors, database servers use a system
+  of <a href="Transactions.html#TI_SET_LOCK_MODE">locks.</a>&nbsp; When another program requests the data, the database server
+  either makes the program wait or turns it back with an error. BDL
+  provides a combination of statements to control the effect that locks have on
+  your data access: </p>
+<ul>
+  <li>
+  <pre>SET LOCK MODE TO {WAIT [n]| NOT WAIT }</pre>
+  </li>
+</ul>
+<blockquote>
+  <p>This defines the timeout for lock acquisition for the current
+  connection.&nbsp; The timeout period can be specified in seconds (<b>n</b>).&nbsp;
+  If no period is specified, the timeout is infinite.&nbsp; If the <a href="Transactions.html#TI_SET_LOCK_MODE"> LOCK MODE</a> is
+  set to NOT WAIT, an exception is returned immediately if a lock cannot be
+  acquired. </p>
+  <p><b><font color="#FF0000">Warning:</font>&nbsp; This feature is not supported by all databases.&nbsp; When possible, the database driver sets the corresponding connection
+  parameter to define the timeout.&nbsp; If the database server does not
+  support setting the lock timeout parameter, the runtime system generates an
+  exception.</b> </p>
+</blockquote>
+<ul>
+  <li>
+  <pre>SET ISOLATION LEVEL TO { DIRTY READ
+                       | COMMITTED READ
+                       | CURSOR STABILITY
+                       | REPEATABLE READ }</pre>
+  </li>
+</ul>
+<blockquote>
+  <p>This defines the <a href="Transactions.html#TI_SET_ISOLATION"> ISOLATION LEVEL</a> for the current connection.&nbsp; When
+  possible, the database driver executes the native <a href="StaticSql.html"> SQL
+  statement</a> that corresponds to
+  the specified isolation level. </p>
+</blockquote>
+<p>&nbsp; For portable database programming, the following is recommended: </p>
+<ul>
+  <li><a href="Transactions.html">Transactions</a> must be enabled
+    in your database.</li>
+  <li>The <a href="Transactions.html#TI_SET_ISOLATION">ISOLATION LEVEL</a>
+    must be at least COMMITTED READ.&nbsp; On most
+    database servers, this is usually the default isolation level and need not
+    be changed.</li>
+  <li>The <a href="Transactions.html#TI_SET_LOCK_MODE"> LOCK MODE</a>
+    must be set to WAIT or WAIT &lt;<i>timeperiod</i>&gt;<b>,&nbsp;</b> if this is
+    supported by your database server.</li>
+</ul>
+<p>See <a href="Transactions.html">Transactions</a> in the BDL Reference Manual for a more complete
+discussion.&nbsp; The ODI Adaptation Guides provide detailed information about
+the behavior of specific database servers. </p>
+<hr>
+<h2><a name="Addrow">Adding a new row</a></h2>
+<h3><a name="AFTERFIELD">INPUT Statement Control blocks</a></h3>
+<p>Genero BDL provides some optional control blocks for the <a href="RecordInput.html">INPUT</a> 
+statement that are called
+automatically as the user moves the cursor through the <a href="FormSpecFiles.html#FF_FORM_FIELD">fields</a>
+of a form.&nbsp; This allows your program to initialize field
+contents when adding a new row, for example, or to validate the user's input.</p>
+<p>For
+example:</p>
+<ul>
+  <li><a href="RecordInput.html">BEFORE FIELD</a> control blocks
+are executed immediately prior to the focus moving to
+the specified field.
+The example program uses this control block to prevent the user from changing
+the store number during an Update, by immediately moving the focus to the store
+name field (the <a href="RecordInput.html">NEXT FIELD</a>
+instruction ).</li>
+  <li>An <a href="RecordInput.html">ON CHANGE </a>is used to verify the uniqueness of the store number that was entered, and to
+make sure that the store name is not left blank.&nbsp;The user receives notification of a problem with the value of a
+    field as soon as the field is exited. Validating these values as they are completed is less disruptive than notifying the user of several problems
+after the entire record has been entered.</li>
+</ul>
+<p>See the <a href="RecordInput.html">INPUT</a> statement for
+a complete list of control blocks.</p>
+<hr>
+
+
+<h2><a name="ADDEXAMP">Example: add a new row to the customer table</a>&nbsp;</h2>
+<h3>Module custmain.4gl</h3>
+
+<p>The <a href="Menus.html#SYNTAX"> MENU</a>  statement&nbsp; in the module <b>custmain.4gl</b> is modified to
+call functions for adding, updating, and deleting the rows in the customer
+table.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="358" bgcolor="#C0C0C0" valign="top"><b>The MAIN block (custmain.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> -- custmain.4gl
+<CODE class=linenumber>02</CODE> <CODE class=linenumber>
+03</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>04</CODE>   <tt>DEFINE</tt> query_ok <tt>INTEGER</tt>
+<CODE class=linenumber>05</CODE>  
+<CODE class=linenumber>06</CODE>   <tt>DEFER</tt> <tt>INTERRUPT</tt>
+<CODE class=linenumber>07</CODE>   <tt>CONNECT TO</tt> &quot;custdemo&quot;
+<CODE class=linenumber>08</CODE>   <tt>SET LOCK MODE TO WAIT </tt>6
+<CODE class=linenumber>09</CODE>   <tt>CLOSE WINDOW SCREEN</tt>
+<CODE class=linenumber>10</CODE>   <tt>OPEN WINDOW </tt>w1 <tt>WITH FORM</tt> &quot;custform&quot;
+<CODE class=linenumber>11</CODE><tt>
+</tt><CODE class=linenumber>12</CODE><tt>   MENU</tt>
+<CODE class=linenumber>13</CODE>    <tt>ON ACTION</tt> find 
+<CODE class=linenumber>14</CODE>     <tt> LET</tt><CODE class=linenumber> </CODE>query_ok = query_cust()<CODE class=linenumber>
+15</CODE>    <tt>ON ACTI</tt><tt>ON</tt><CODE class=linenumber> </CODE>next <CODE class=linenumber>          
+16      </CODE><tt>IF </tt>(query_ok)<CODE class=linenumber> </CODE><tt>THEN</tt><CODE class=linenumber>
+17       </CODE> <tt>CALL</tt> fetch_rel_cust(1)<CODE class=linenumber>
+18      </CODE><tt>ELSE</tt><CODE class=linenumber>
+19      </CODE><tt>  MESSAGE</tt><CODE class=linenumber> </CODE>&quot;You must query first.&quot;<CODE class=linenumber>
+20     </CODE><tt> END IF</tt><CODE class=linenumber>
+21</CODE>    <tt>ON ACTION </tt>previous<CODE class=linenumber>
+22     </CODE><tt> IF </tt>(query_ok)<CODE class=linenumber> </CODE><tt>THEN</tt><CODE class=linenumber>
+23        </CODE><tt>CALL</tt> fetch_rel_cust(-1)<CODE class=linenumber>
+24      </CODE><tt>ELSE</tt><CODE class=linenumber>
+25       </CODE><tt> MESSAGE </tt>&quot;You must query first.&quot;<CODE class=linenumber>
+26     </CODE><tt> END IF</tt><CODE class=linenumber>
+27</CODE>    <tt>COMMAND</tt><CODE class=linenumber> &quot;</CODE>Add&quot; <CODE class=linenumber>
+28    </CODE><tt>  IF</tt><CODE class=linenumber> </CODE>(inpupd_cust(&quot;A&quot;))<CODE class=linenumber> </CODE><tt>THEN</tt><CODE class=linenumber>
+29        </CODE><tt>CALL </tt>insert_cust()<CODE class=linenumber>
+30      </CODE><tt>END IF</tt><CODE class=linenumber>
+31</CODE>    <tt>COMMAND</tt><CODE class=linenumber> </CODE>&quot;Delete&quot;<CODE class=linenumber> 
+32    </CODE><tt>  IF</tt><CODE class=linenumber> </CODE>(delete_check())<CODE class=linenumber> </CODE><tt>THEN</tt><CODE class=linenumber>
+33        </CODE><tt>CALL</tt> delete_cust()
+<CODE class=linenumber>34</CODE>     <tt>END IF</tt>
+<CODE class=linenumber>35</CODE>    <tt>COMMAND</tt> &quot;Modify&quot;  
+<CODE class=linenumber>36    </CODE><tt>  IF</tt> inpupd_cust(&quot;U&quot;) <tt>THEN</tt>
+<CODE class=linenumber>37        </CODE><tt>CALL</tt> update_cust()
+<CODE class=linenumber>38</CODE>     <tt>END IF</tt>
+<CODE class=linenumber>39</CODE>    <tt>ON ACTION</tt> quit 
+<CODE class=linenumber>40</CODE>      <tt>EXIT</tt> <tt>MENU</tt>
+<CODE class=linenumber>41</CODE><tt>  END MENU
+</tt><CODE class=linenumber>42</CODE> 
+<CODE class=linenumber>43</CODE>  <tt>CLOSE WINDOW </tt>w1
+<CODE class=linenumber>44</CODE> 
+<CODE class=linenumber>45</CODE>  <tt>DISCONNECT CURRENT</tt>
+<CODE class=linenumber>46</CODE>
+<CODE class=linenumber>47</CODE> <tt>END MAIN</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+<ul>
+  <li>Line <CODE class=linenumber>08 </CODE>sets the <a href="Transactions.html#TI_SET_LOCK_MODE">lock
+    timeout period</a> to
+6 seconds.</li>
+  <li>Lines <CODE class=linenumber>12</CODE>  thru <CODE class=linenumber>41</CODE>
+    define the main menu of the program.</li>
+  <li>Lines <CODE class=linenumber>27</CODE>  thru <CODE class=linenumber>30</CODE>
+    The <a href="Menus.html#SYNTAX"> MENU</a>   option &quot;Add&quot;&nbsp; now calls an <b> inpupd_cust </b>function.&nbsp;
+    Since this same function will also be used for updates, the value &quot;A&quot;,
+    indicating an Add of a new row, is passed.&nbsp; If <b>inpupd_cust</b> returns
+    <font FACE="Courier"><a href="Programs.html#PC_TRUE">TRUE</a></font>, the<b> insert_cust</b> function is
+  called.</li>
+  <li>Lines <CODE class=linenumber>31</CODE>   thru <CODE class=linenumber>34</CODE>
+    The <a href="Menus.html#SYNTAX"> MENU</a>  option &quot;Delete&quot; now calls a <b>delete_check </b>function.&nbsp;
+    If <b>delete_check</b> returns <font FACE="Courier"><a href="Programs.html#PC_TRUE">TRUE</a></font>, the <b>delete_cust</b> function is
+    called.</li>
+  <li>Lines <CODE class=linenumber>35 </CODE>thru
+<CODE class=linenumber> 38</CODE>   are added to the <a href="Menus.html#SYNTAX"> MENU</a> 
+    statement for the
+    &quot;Modify&quot;
+option, calling the <b> inpud_cust</b> function.&nbsp; The value &quot;U&quot;, for an Update of a new row, is passed as a
+parameter.&nbsp; If <b>inpupd_cust</b> returns <font FACE="Courier"><a href="Programs.html#PC_TRUE">TRUE</a></font>, the<b>  update_cust</b> function is
+  called.</li>
+</ul>
+
+
+<h3>Module custquery.4gl (function inpupd_cust)&nbsp;</h3>
+<p>A new function, <b>inpupd_cust, </b>is added to the <b> custquery.4gl</b>
+module, allowing the user to insert values for a new customer row into the form.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top">
+        <b>Function inpupd_cust (custquery.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> inpupd_cust(au_flag)  
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> au_flag <tt>CHAR</tt>(1),
+<CODE class=linenumber>03</CODE>          cont_ok <tt>SMALLINT</tt>
+<CODE class=linenumber>04</CODE>
+<CODE class=linenumber>05</CODE>   <tt>LET</tt> cont_ok = TRUE 
+<CODE class=linenumber>07</CODE>
+<CODE class=linenumber>08</CODE>   <tt>IF</tt> (au_flag = &quot;A&quot;) <tt>THEN</tt>
+<CODE class=linenumber>09</CODE>     <tt>MESSAGE</tt> &quot;Add a new customer&quot;
+<CODE class=linenumber>10</CODE>     <tt>INITIALIZE</tt> mr_custrec.* <tt>TO NULL</tt>
+<CODE class=linenumber>12</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>13</CODE>
+<CODE class=linenumber>14</CODE>   <tt>LET</tt> INT_FLAG = FALSE
+<CODE class=linenumber>15</CODE>
+<CODE class=linenumber>16</CODE>   <tt>INPUT</tt> <tt>BY NAME</tt> mr_custrec.*
+<CODE class=linenumber>17</CODE>         <tt>WITHOUT DEFAULTS ATTRIBUTES(UNBUFFERED)</tt> 
+<CODE class=linenumber>18</CODE>
+<CODE class=linenumber>19</CODE>   <tt> ON CHANGE</tt> store_num
+<CODE class=linenumber>20</CODE>    <tt> IF</tt> (au_flag = &quot;A&quot;) <tt>THEN</tt>
+<CODE class=linenumber>21</CODE>      <tt>SELECT</tt> store_name, 
+<CODE class=linenumber>22</CODE>            addr,
+<CODE class=linenumber>23</CODE>            addr2, 
+<CODE class=linenumber>24</CODE>            city, 
+<CODE class=linenumber>25</CODE>            state, 
+<CODE class=linenumber>26</CODE>            zipcode,
+<CODE class=linenumber>27</CODE>            contact_name, 
+<CODE class=linenumber>28</CODE>            phone 
+<CODE class=linenumber>29</CODE>        <tt>INTO</tt> mr_custrec.*
+<CODE class=linenumber>30</CODE>       <tt>FROM</tt> customer 
+<CODE class=linenumber>31</CODE>       <tt>WHERE </tt>store_num = mr_custrec.store_num
+<CODE class=linenumber>32</CODE>      <tt>IF</tt> (SQLCA.SQLCODE = 0)<tt>THEN</tt>
+<CODE class=linenumber>33</CODE>       <tt>ERROR</tt> &quot;Store number already exists.&quot;
+<CODE class=linenumber>34</CODE>         <tt>LET</tt> cont_ok = FALSE
+<CODE class=linenumber>35</CODE>         <tt>CALL</tt> display_cust()
+<CODE class=linenumber>36</CODE>        <tt>EXIT INPUT</tt>
+<CODE class=linenumber>37</CODE>      <tt>END IF</tt>
+<CODE class=linenumber>38</CODE>     <tt>END IF</tt>
+<CODE class=linenumber>39</CODE>
+<CODE class=linenumber>40</CODE>   <tt>AFTER FIELD</tt> store_name
+<CODE class=linenumber>41</CODE>     <tt>IF</tt> (mr_custrec.store_name <tt>IS NULL</tt>) <tt>THEN</tt>
+<CODE class=linenumber>42</CODE>       <tt>ERROR</tt> &quot;You must enter a company name.&quot;
+<CODE class=linenumber>43</CODE>       <tt>NEXT FIELD</tt> store_name
+<CODE class=linenumber>44</CODE>     <tt>END IF</tt>
+<CODE class=linenumber>45</CODE>
+<CODE class=linenumber>46</CODE>  <tt>END INPUT</tt>
+<CODE class=linenumber>47</CODE>
+<CODE class=linenumber>48</CODE>  <tt>IF</tt> (INT_FLAG) <tt>THEN</tt>
+<CODE class=linenumber>49</CODE>    <tt>LET</tt> INT_FLAG = <tt>FALSE</tt>
+<CODE class=linenumber>50</CODE>    <tt>LET </tt>cont_ok = <tt>FALSE</tt>
+<CODE class=linenumber>51</CODE>    <tt>MESSAGE</tt> &quot;Operation cancelled by user&quot;
+<CODE class=linenumber>52</CODE>    <tt>INITIALIZE</tt> mr_custrec.* <tt>TO NULL</tt>
+<CODE class=linenumber>53</CODE>  <tt>END IF</tt>
+<CODE class=linenumber>54</CODE>  
+<CODE class=linenumber>55</CODE>  <tt>RETURN </tt>cont_ok
+<CODE class=linenumber>56</CODE>
+<CODE class=linenumber>57</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <h4>Notes:</h4>
+        <ul>
+          <li>Line
+<CODE class=linenumber>01</CODE>  The function accepts a parameter defined
+as CHAR(1).&nbsp; In order to use the same function for both the input of a new record and the
+update of an existing one, the CALL to this function in the <a href="Menus.html#SYNTAX"> MENU</a>
+            statement in <b>main.4gl</b>
+will pass a value &quot;<b>A</b>&quot; for add, and &quot;<b>U</b>&quot; for update.</li>
+          <li>Line
+<CODE class=linenumber> 06</CODE> The <a href="Variables.html">variable</a>
+            <b>cont_ok</b> is a flag to indicate whether the
+update operation should continue; set initially to <font FACE="Courier"><a href="Programs.html#PC_TRUE">TRUE</a></font>.</li>
+          <li>Lines <CODE class=linenumber>08</CODE>  thru
+<CODE class=linenumber> 12</CODE>   test the value of the parameter <b>au_flag</b>.&nbsp;
+            If&nbsp; the value of <b> au_flag</b> is &quot;<b>A</b>&quot; the operation is an Add of a new record, and a
+            <a href="MessageDisplay.html#MESSAGE"> MESSAGE</a> is displayed.&nbsp; Since this is an Add, the modular program record values are initialized to NULL
+prior to calling the <a href="RecordInput.html"> INPUT</a> statement, so the user will have empty
+            <a href="FormSpecFiles.html#FF_FORM_FIELD"> form fields</a> in which to enter data.</li>
+          <li>Line<b> </b> <CODE class=linenumber>14</CODE> sets the <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a>
+            global variable to <font FACE="Courier"><a href="Programs.html#PC_FALSE">FALSE</a></font>
+            prior to the <a href="RecordInput.html"> INPUT</a> statement, so the program can determine if the user cancels
+the dialog.</li>
+          <li>Line <CODE class=linenumber>17</CODE> The UNBUFFERED and WITHOUT DEFAULTS clauses of
+the <a href="RecordInput.html"> INPUT</a> statement are used. The WITHOUT DEFAULTS clause is required since this statement will also be
+  used for Updates, to prevent the existing values displayed on the form from being erased or replaced with default values.</li>
+          <li>Lines <CODE class=linenumber>19</CODE>    thru <CODE class=linenumber>38 </CODE>Each time the value in <b>store_num</b>
+            changes,&nbsp; the <b>customer</b> table is searched to see if that <b>store_num</b> already exists.&nbsp; If so, the values in the <b>mr_custrec</b> record are
+  displayed in the form, the <a href="Variables.html">variable</a> <b>cont_ok</b> is set
+            to FALSE, and the
+            <a href="RecordInput.html"> INPUT</a> statement is immediately terminated.</li>
+          <li>Lines <CODE class=linenumber> 40</CODE>   thru <CODE class=linenumber> 44</CODE> 
+            The <a href="RecordInput.html">AFTER FIELD</a> control block verifies that <b>store_name</b> was not left blank. If so, the <a href="RecordInput.html"> NEXT FIELD</a> statement returns the focus to the <b>store_name</b>
+  field so the user may enter a value.</li>
+          <li>Line
+<CODE class=linenumber>46</CODE>     END INPUT is required when any of the
+optional control blocks of the <a href="RecordInput.html"> INPUT</a> statement are used.</li>
+          <li>Lines
+<CODE class=linenumber>48</CODE>    thru
+<CODE class=linenumber>53</CODE>  The <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a>
+            is checked to see if the
+user has cancelled the input.&nbsp;If so, the <a href="Variables.html">variable</a>
+            <b>cont_ok</b> is set to <font FACE="Courier"><a href="Programs.html#PC_FALSE">FALSE</a></font>, and the
+            <a href="TutChap03.html#definerecord"> program record</a> <b>mr_custrec</b>
+is NULLED out.&nbsp; The <a href="#UNBUFFERED"> UNBUFFERED</a> attribute of the
+            INPUT statement assures that the NULL values in
+the program record are automatically displayed on the form.</li>
+          <li>Line
+<CODE class=linenumber>55</CODE>    returns the value of <b>cont_ok</b>, indicating
+whether the input was successful.&nbsp;&nbsp;</li>
+        </ul>
+
+
+<h3>Module custquery.4gl (function insert_cust)
+</h3>
+
+
+<p>A new function, <b>insert_cust</b>,&nbsp; in the <b>custquery.4gl </b>module,
+contains the logic to add the new row to the customer table.
+</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function insert_cust</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> insert_cust()
+<CODE class=linenumber>02</CODE>
+<CODE class=linenumber>03</CODE>&nbsp;&nbsp;<tt>WHENEVER ERROR CONTINUE </tt>&nbsp;&nbsp;
+<CODE class=linenumber>04&nbsp;</CODE> <tt>INSERT INTO</tt> customer (
+<CODE class=linenumber>05</CODE>     store_num,&nbsp;
+<CODE class=linenumber>06&nbsp;</CODE>&nbsp;&nbsp;&nbsp;&nbsp;store_name,&nbsp;
+<CODE class=linenumber>07&nbsp;</CODE>&nbsp;&nbsp;&nbsp;&nbsp;addr,&nbsp;
+<CODE class=linenumber>08&nbsp;</CODE>&nbsp;&nbsp;&nbsp;&nbsp;addr2,&nbsp;
+<CODE class=linenumber>09</CODE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;city,&nbsp;
+<CODE class=linenumber>10</CODE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;state,&nbsp;
+<CODE class=linenumber>11</CODE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;zipcode,&nbsp;
+<CODE class=linenumber>12</CODE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;contact_name,&nbsp;
+<CODE class=linenumber>13</CODE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;phone
+<CODE class=linenumber>14</CODE>&nbsp;&nbsp;&nbsp;<tt> </tt> )<tt> VALUES</tt> (mr_custrec.*)
+<CODE class=linenumber>15</CODE>&nbsp; <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>16</CODE>
+<CODE class=linenumber>17</CODE>&nbsp;&nbsp;<tt>IF</tt> (SQLCA.SQLCODE = 0) <tt>THEN</tt>
+<CODE class=linenumber>18</CODE>&nbsp;&nbsp;&nbsp;<tt>  MESSAGE</tt> &quot;Row added&quot;
+<CODE class=linenumber>19</CODE>&nbsp;&nbsp;<tt>ELSE</tt>
+<CODE class=linenumber>20</CODE>&nbsp;&nbsp;&nbsp;<tt>  ERROR </tt>SQLERRMESSAGE
+<CODE class=linenumber>21&nbsp;</CODE><tt> END IF</tt>
+<CODE class=linenumber>22</CODE>
+<CODE class=linenumber>23</CODE><tt> END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Lines <CODE class=linenumber>04</CODE> thru <CODE class=linenumber>14</CODE> contain an embedded <a href="StaticSql.html"> SQL statement
+            </a> to insert
+the values in the <a href="TutChap03.html#definerecord"> program record</a> <b>mr_custrec</b> into the <b> customer</b> table.&nbsp;
+            This syntax can be used when the order in which the members of the <a href="TutChap03.html#definerecord"> program
+            record</a> were defined matches the order of the columns listed in the SELECT
+  statement.&nbsp; Otherwise, the individual members of the <a href="TutChap03.html#definerecord"> program
+            record</a> must
+  be listed separately.&nbsp;Since there is no <a href="Transactions.html#TI_BEGIN_WORK"> BEGIN WORK</a>/<a href="Transactions.html#TI_COMMIT_WORK">COMMIT WORK</a> syntax used here, this statement will be
+  treated as a singleton <a href="Transactions.html#DBTRANS">transaction</a>
+          and the database driver will automatically
+  send the appropriate COMMIT statement.&nbsp; The INSERT statement
+  is surrounded by <a href="Exceptions.html#DEFINITION">WHENEVER ERROR</a> 
+          statements.</li>
+          <li>Lines
+<CODE class=linenumber>17</CODE>  thru
+<CODE class=linenumber>21</CODE> test the <a href="TutChap04.html#SQLCA.SQLCODE"> SQLCA.SQLCODE</a> that was returned from
+the INSERT statement.&nbsp; If the INSERT was not successful, the corresponding <a href="MessageDisplay.html#ERROR"> error message</a>
+            is
+  displayed to the user.</li>
+        </ul>
+
+
+<hr>
+<h2><a name="UpdatingdbRow">Updating an existing Row</a></h2>
+<p>Updating an existing row in a database table provides more opportunity for <a href="Transactions.html">
+concurrency and consistency</a> errors that inserting a new row.&nbsp;Using the
+following techniques can help to minimize these errors.</p>
+<h3><a name="workrecord">Using a work record</a> </h3>
+<p>A work
+record and a local record, both identical to the program record, are defined to
+allow the program to compare the values. </p>
+<ol>
+  <li>A <a href="TutChap04.html#Cursors"> SCROLL CURSOR</a> is used to allow the user to scroll through a result set
+    generated by a query.&nbsp; The scroll cursor is declared <a href="Transactions.html#DBTRANS"> WITH HOLD</a> so it will not be closed when a <a href="Transactions.html#TI_COMMIT_WORK"> COMMIT WORK</a>
+    or <a href="Transactions.html#TI_ROLLBACK_WORK"> ROLLBACK WORK</a> is executed.</li>
+  <li>When the user chooses Update, the values in the current program record are
+    copied to the work record.</li>
+  <li>The <a href="RecordInput.html"> INPUT</a> statement accepts the user's input and stores it in the program
+    record.&nbsp; The WITHOUT DEFAULTS keywords are used to insure that the original values
+    retrieved from the database were not replaced with default
+    values. </li>
+  <li>If the user accepts the input, a <a href="Transactions.html#DBTRANS">transaction</a>
+    is started with <a href="Transactions.html#TI_BEGIN_WORK"> BEGIN WORK</a>.</li>
+  <li>The primary key stored in the program record is used to SELECT the same
+    row into the local record.&nbsp; FOR UPDATE locks the row.</li>
+  <li>The <a href="TutChap04.html#SQLCA.SQLCODE"> SQLCA.SQLCODE</a> is checked, in case the database row was deleted after
+    the initial query. </li>
+  <li>The work record and the local record are compared, in case the database
+    row was changed after the initial query.</li>
+  <li>If the work and local records are identical,&nbsp; the database row is
+    updated using the new program record values input by the user.</li>
+  <li>If the UPDATE is successful, a COMMIT WORK
+    is issued.&nbsp; Otherwise, a ROLLBACK WORK
+    is issued.</li>
+  <li>The SCROLL CURSOR has remained open, allowing the user to continue to
+    scroll through the query result set.</li>
+</ol>
+<h3>S<a name="SELUPDATE">ELECT ... FOR UPDATE</a> </h3>
+<p>To explicitly lock a database row prior to updating, a SELECT ... FOR
+UPDATE statement may be used to instruct the database server to lock the row
+that was selected.&nbsp; SELECT ... FOR UPDATE cannot be used outside of an explicit
+<a href="Transactions.html#DBTRANS">transaction</a>.&nbsp; The locks are held until the end of the
+transaction. </p>
+<h3><a name="HOLDCURSOR">SCROLL CURSOR WITH HOLD</a></h3>
+<p>Like many programs that perform database maintenance, the Query program uses a
+<a href="TutChap04.html#Cursors"> SCROLL CURSOR</a> to
+move through an SQL <a href="ResultSets.html"> result set</a>, updating or deleting the rows as needed.&nbsp; BDL cursors are automatically closed by the database interface when a
+<a href="Transactions.html#TI_COMMIT_WORK"> COMMIT WORK</a> or <a href="Transactions.html#TI_ROLLBACK_WORK"> ROLLBACK WORK</a>
+statement is performed. To allow the user to
+continue to scroll through the result set, the&nbsp; SCROLL CURSOR
+can be <a href="ResultSets.html#RS_DECLARE"> declared
+WITH HOLD</a>, keeping it open across multiple transactions. </p>
+<hr>
+<h2><a name="UPDEXAMP">Example: Updating a Row</a> in the customer table</h2>
+<h3>Module custquery.4gl</h3>
+<p>The module has been modified to       define a <b>work_custrec</b> record
+that can be used as working storage when a row is being updated.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="100%" bgcolor="#C0C0C0" valign="top">
+        <b>Module custquery.4gl&nbsp;&nbsp;&nbsp;</b>&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE>
+<CODE class=linenumber>02</CODE> <tt>SCHEMA</tt> custdemo
+<CODE class=linenumber>03</CODE>
+<CODE class=linenumber>04</CODE> <tt>DEFINE</tt>  mr_custrec, work_custrec <tt>RECORD</tt>
+<CODE class=linenumber>05</CODE>     store_num    <tt>LIKE</tt> customer.store_num,
+<CODE class=linenumber>06</CODE>     store_name   <tt>LIKE</tt> customer.store_name,
+<CODE class=linenumber>07</CODE>     addr         <tt>LIKE</tt> customer.addr,
+<CODE class=linenumber>08</CODE>     addr2        <tt>LIKE</tt> customer.addr2,
+<CODE class=linenumber>09</CODE>     city         <tt>LIKE</tt> customer.city,
+<CODE class=linenumber>10</CODE>     state        <tt>LIKE</tt> customer.state,
+<CODE class=linenumber>11</CODE>     zipcode      <tt>LIKE</tt> customer.zipcode,
+<CODE class=linenumber>12</CODE>     contact_name <tt>LIKE</tt> customer.contact_name,
+<CODE class=linenumber>13     </CODE>phone<CODE class=linenumber>        </CODE><tt>LIKE</tt><CODE class=linenumber> </CODE>customer.phone<CODE class=linenumber>
+14</CODE>    <tt>END RECORD
+</tt><CODE class=linenumber>...</CODE></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+<ul>
+  <li>Lines <CODE class=linenumber>
+04</CODE>       thru <CODE class=linenumber>
+15</CODE>  <a href="Variables.html#DEFINITION"> define</a> a <b>work_custrec</b> record that is modular in scope and
+contains the identical structure as the <b>mr_custrec</b>  <a href="TutChap03.html#definerecord"> program
+record</a>.</li>
+</ul>
+
+
+<hr>
+
+
+<p>The function <b>inpupd_cust</b> in the <b>custquery.4gl</b> module has been
+modified so it can also be used to obtain values for the Update of existing rows
+in the <b>customer</b> table.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top">
+        <b>Function inpupd_cust (custquery.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> inpupd_cust(au_flag)  
+<CODE class=linenumber>02   </CODE><tt>DEFINE</tt><CODE class=linenumber> </CODE>au_flag <CODE class=linenumber> </CODE><tt>CHAR</tt>(1)<tt>,</tt><CODE class=linenumber>
+03</CODE>          cont_ok <CODE class=linenumber> </CODE><tt>SMALLINT</tt>
+<CODE class=linenumber>04</CODE>
+<CODE class=linenumber>05   </CODE><tt>INITIALIZE</tt> work_custrec.* <tt>TO NULL</tt> 
+<CODE class=linenumber>06   </CODE><tt>LET</tt> cont_ok = TRUE
+<CODE class=linenumber>07 </CODE>       
+<CODE class=linenumber>08   </CODE><tt>IF</tt> (au_flag = &quot;A&quot;) <tt>THEN</tt>  
+<CODE class=linenumber>09</CODE>     <tt>MESSAGE</tt> &quot;Add a new customer&quot;
+<CODE class=linenumber>10</CODE>     <tt>LET</tt> mr_custrec.* = work_custrec.*  
+<CODE class=linenumber>11   </CODE><tt>ELSE</tt>
+<CODE class=linenumber>12</CODE>     <tt>MESSAGE</tt> &quot;Update customer&quot;
+<CODE class=linenumber>13 </CODE>    <tt>LET</tt> work_custrec.* = mr_custrec.*    
+<CODE class=linenumber>14   </CODE><tt>END IF
+</tt><CODE class=linenumber>15
+16   </CODE><tt>LET</tt> INT_FLAG = FALSE
+<CODE class=linenumber>17
+18   </CODE><tt>INPUT</tt> <tt>BY NAME</tt> mr_custrec.*<tt>
+</tt><CODE class=linenumber>19</CODE><tt>     </tt> <tt>WITHOUT DEFAULTS ATTRIBUTES(UNBUFFERED)
+</tt><CODE class=linenumber>20</CODE> 
+<CODE class=linenumber>21     </CODE><tt>BEFORE FIELD</tt> store_num
+<CODE class=linenumber>22</CODE>      <tt>IF</tt> (au_flag = &quot;U&quot;) <tt>THEN</tt>
+<CODE class=linenumber>23</CODE>        <tt>NEXT FIELD</tt> store_name
+<CODE class=linenumber>24</CODE>      <tt>END IF</tt>
+<CODE class=linenumber>25</CODE>
+<CODE class=linenumber>26     </CODE><tt>ON CHANGE</tt> store_num
+<CODE class=linenumber>27</CODE>      <tt>IF</tt> (au_flag = &quot;A&quot;) <tt>THEN
+</tt><CODE class=linenumber>...</CODE>
+<CODE class=linenumber>28     </CODE><tt>AFTER FIELD</tt> store_name
+<CODE class=linenumber>29</CODE>      <tt>IF</tt> (mr_custrec.store_name <tt>IS NULL</tt>) <tt>THEN</tt>
+<CODE class=linenumber>...</CODE><tt>
+</tt><CODE class=linenumber>30</CODE>
+<CODE class=linenumber>31   </CODE><tt>END</tt> <tt>INPUT</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+<ul>
+  <li>Line <CODE class=linenumber>05</CODE>
+    sets the <b>work_custrec</b> <a href="TutChap03.html#definerecord"> program
+record</a> to <a href="Programs.html#PC_NULL">NULL</a>.</li>
+  <li>Line <CODE class=linenumber>10</CODE>  For an Add, the <b>mr_custrec</b>
+        <a href="TutChap03.html#definerecord"> program
+record</a> is set equal to the <b>work_custrec </b>record, in effect setting <b>mr_custrec</b>
+        to <a href="Programs.html#PC_NULL">NULL</a>.&nbsp; The <a href="Variables.html#VA_LET"> LET</a> statement uses less resources than
+        <a href="Variables.html#VA_INITIALIZE">INITIALIZE</a>.&nbsp;&nbsp;</li>
+  <li>Line<b> </b><CODE class=linenumber>
+13 </CODE>For an Update, the values in the <b>mr_custrec</b> <a href="TutChap03.html#definerecord"> program
+record</a> are copied into <b>work_custrec</b>, saving them for comparison later.</li>
+  <li>Lines <CODE class=linenumber>
+21</CODE>  thru <CODE class=linenumber>
+24</CODE>  A <a href="#AFTERFIELD"> BEFORE FIELD</a> <b>store_num</b>  clause has been added to the <a href="RecordInput.html"> INPUT</a>
+        statement.&nbsp; If this is an Update, the user should not be allowed to
+        change <b>store_num</b>,<b> </b>and the <a href="#AFTERFIELD">NEXT FIELD</a>
+        instruction moves the
+        focus to the <b> store_name</b> field.</li>
+  <li>Line <CODE class=linenumber> 26</CODE>  The <a href="#AFTERFIELD">ON CHANGE</a> <b>
+        store_num</b> control block, which will only
+        execute if the au_flag is set to &quot;A&quot; (the operation is an Add)
+        remains the same.</li>
+  <li>Line <CODE class=linenumber> 28</CODE>  The <a href="#AFTERFIELD">AFTER
+    FIELD</a> <b>store_name</b> control block remains the same, and
+        will execute if the operation is an Add or an Update.</li>
+</ul>
+
+
+<hr>
+
+
+<p>A new function <b>update_cust</b> in the <b>custquery.4gl</b> module updates
+the row in the customer table.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="402" bgcolor="#C0C0C0" valign="top">
+        <b>Function update_cust (custquery.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01 </CODE><tt>FUNCTION</tt> update_cust()
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> l_custrec <tt>RECORD</tt>
+<CODE class=linenumber>03</CODE>     store_num    <tt>LIKE</tt> customer.store_num,
+<CODE class=linenumber>04</CODE>     store_name   <tt>LIKE</tt> customer.store_name,
+<CODE class=linenumber>05</CODE>     addr         <tt>LIKE</tt> customer.addr,
+<CODE class=linenumber>06</CODE>     addr2        <tt>LIKE</tt> customer.addr2,
+<CODE class=linenumber>07</CODE>     city         <tt>LIKE </tt>customer.city,
+<CODE class=linenumber>08</CODE>     state        <tt>LIKE</tt> customer.state,
+<CODE class=linenumber>09</CODE>     zipcode      <tt>LIKE</tt> customer.zipcode,
+<CODE class=linenumber>10 </CODE>    contact_name <tt>LIKE</tt> customer.contact_name,
+<CODE class=linenumber>11</CODE>     phone        <tt>LIKE</tt> customer.phone
+<CODE class=linenumber>12</CODE> <tt>   END RECORD</tt>,<tt>
+</tt><CODE class=linenumber>13</CODE>    cont_ok <tt>INTEGER</tt>
+<CODE class=linenumber>14</CODE>
+<CODE class=linenumber>15</CODE>   <tt>LET</tt> cont_ok = FALSE
+<CODE class=linenumber>16</CODE>
+<CODE class=linenumber>17</CODE>   <tt>BEGIN WORK</tt>
+<CODE class=linenumber>18</CODE>
+<CODE class=linenumber>19</CODE>   <tt>SELECT</tt> store_num,     
+<CODE class=linenumber>20</CODE>       store_name, 
+<CODE class=linenumber>21</CODE>       addr, 
+<CODE class=linenumber>22</CODE>       addr2, 
+<CODE class=linenumber>23 </CODE>      city, 
+<CODE class=linenumber>24</CODE>       state, 
+<CODE class=linenumber>25</CODE>       zipcode, 
+<CODE class=linenumber>26</CODE>       contact_name, 
+<CODE class=linenumber>27</CODE>       phone
+<CODE class=linenumber>28</CODE>     <tt>INTO</tt> l_custrec.* <tt>FROM</tt> customer 
+<CODE class=linenumber>29</CODE>     <tt>WHERE </tt>store_num = mr_custrec.store_num
+<CODE class=linenumber>30</CODE>     <tt>FOR UPDATE</tt>
+<CODE class=linenumber>31</CODE>
+<CODE class=linenumber>32</CODE>   <tt>IF</tt> (SQLCA.SQLCODE = NOTFOUND)<tt> THEN </tt>      
+<CODE class=linenumber>33</CODE>     <tt>ERROR </tt>&quot;Store has been deleted&quot;
+<CODE class=linenumber>34</CODE>    <tt> LET</tt> cont_ok = FALSE
+<CODE class=linenumber>35</CODE>   <tt>ELSE</tt>                   <tt>
+</tt><CODE class=linenumber>36</CODE>    <tt> IF </tt>(l_custrec.* = work_custrec.*)<tt> THEN</tt>
+<CODE class=linenumber>37  </CODE>    <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>38  </CODE>    <tt>UPDATE</tt> customer <tt>SET
+</tt><CODE class=linenumber>39</CODE><tt>       </tt>  store_name = mr_custrec.store_name,
+<CODE class=linenumber>40</CODE>        addr = mr_custrec.addr,
+<CODE class=linenumber>41</CODE>        addr2 = mr_custrec.addr2,
+<CODE class=linenumber>42</CODE>        city = mr_custrec.city,
+<CODE class=linenumber>43</CODE>        state = mr_custrec.state,
+<CODE class=linenumber>44</CODE>        zipcode = mr_custrec.zipcode,
+<CODE class=linenumber>45</CODE>        contact_name = mr_custrec.contact_name,
+<CODE class=linenumber>46</CODE>        phone = mr_custrec.phone
+<CODE class=linenumber>47</CODE>       <tt>WHERE</tt> store_num = mr_custrec.store_num
+<CODE class=linenumber>48  </CODE>    <tt>WHENEVER ERROR STOP</tt>  
+<CODE class=linenumber>49  </CODE>    <tt>IF</tt> (SQLCA.SQLCODE = 0) <tt>THEN</tt>
+<CODE class=linenumber>50</CODE>        <tt>LET</tt> cont_ok = TRUE
+<CODE class=linenumber>51</CODE>        <tt>MESSAGE</tt> &quot;Row updated&quot;
+<CODE class=linenumber>52   </CODE>   <tt>ELSE</tt>
+<CODE class=linenumber>53</CODE>        <tt>LET</tt> cont_ok = FALSE
+<CODE class=linenumber>54</CODE>      <tt>  ERROR</tt> SQLERRMESSAGE
+<CODE class=linenumber>55  </CODE>    <tt>END IF </tt>
+<CODE class=linenumber>56</CODE>   <tt> ELSE</tt>
+<CODE class=linenumber>57  </CODE>    <tt>LET </tt>cont_ok = FALSE
+<CODE class=linenumber>58  </CODE>    <tt>LET</tt> mr_custrec.* = l_custrec.*      
+<CODE class=linenumber>59  </CODE>    <tt>MESSAGE</tt> &quot;Row updated by another user.&quot;
+<CODE class=linenumber>60</CODE>   <tt> END IF</tt>
+<CODE class=linenumber>61</CODE>  <tt>END IF</tt>
+<CODE class=linenumber>62</CODE>
+<CODE class=linenumber>63</CODE>  <tt>IF</tt> (cont_ok = TRUE) <tt>THEN</tt>
+<CODE class=linenumber>64 </CODE> <tt>  COMMIT WORK</tt>
+<CODE class=linenumber>65</CODE>  <tt>ELSE</tt>
+<CODE class=linenumber>66 </CODE> <tt>  ROLLBACK WORK</tt>
+<CODE class=linenumber>67</CODE>  <tt>END IF</tt>
+<CODE class=linenumber>68</CODE>
+<CODE class=linenumber>69</CODE><tt> END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Lines
+<CODE class=linenumber>02</CODE>  thru
+<CODE class=linenumber>12</CODE>  define a local record, <b>l_custrec</b> with
+the same structure as the modular <a href="TutChap03.html#definerecord"> program
+            records</a> <b>mr_custrec </b> and<b> work_custrec</b>.</li>
+          <li>Line
+<CODE class=linenumber>15</CODE> The <b>cont_ok</b>  <a href="Variables.html">variable</a>
+            will be used as a
+flag to determine whether the Update should be committed or rolled back.</li>
+          <li>Line
+<CODE class=linenumber>17</CODE>  Since this will be a multiple-statement <a href="Transactions.html#DBTRANS">transaction</a>, the
+            <a href="Transactions.html#TI_BEGIN_WORK"> BEGIN WORK</a>
+            statement is used to start the transaction.</li>
+          <li>Lines
+<CODE class=linenumber>19</CODE>  thru
+<CODE class=linenumber>30</CODE>  use the <b>store_num</b> value in the <a href="TutChap03.html#definerecord"> program
+            record</a> to re-select the row.&nbsp;<a href="#SELUPDATE">FOR UPDATE</a> locks the database row until the <a href="Transactions.html#DBTRANS">transaction</a>
+            ends.</li>
+          <li>Lines
+<CODE class=linenumber>32</CODE>  thru
+<CODE class=linenumber>34</CODE> check <a href="TutChap04.html#SQLCA.SQLCODE"> SQLCA.SQLCODE</a>
+            to make sure the record
+has not been deleted by another user. If so, an <a href="MessageDisplay.html#ERROR"> error message</a>
+            is displayed, and the
+            <a href="Variables.html">variable</a> <b>cont_ok</b> is set
+  to <font FACE="Courier"><a href="Programs.html#PC_FALSE">FALSE</a></font>.</li>
+          <li>Lines
+<CODE class=linenumber>36</CODE> thru
+<CODE class=linenumber>60</CODE> are to be executed if the
+database row was found.</li>
+          <li>Line
+<CODE class=linenumber>36</CODE>  compares the values in
+  the<b> l_custrec</b> local <a href="TutChap03.html#definerecord">record</a> with the <b>work_custrec</b> record that
+  contains the original values of the database row.&nbsp; All the values must
+            match for the condition to be <font FACE="Courier"><a href="Programs.html#PC_TRUE">TRUE</a></font>.</li>
+          <li>Lines
+<CODE class=linenumber>37</CODE>   thru
+<CODE class=linenumber>55</CODE>   are executed if the values matched.&nbsp; An embedded
+            <a href="StaticSql.html"> SQL statement</a>
+  is used to UPDATE the row in the customer table using the values which the
+  user has previously entered in the <b>mr_custrec</b>  <a href="TutChap03.html#definerecord"> program
+            record</a>. The SQL
+  UPDATE statement is surrounded by <a href="Exceptions.html#DEFINITION">WHENEVER ERROR</a> 
+            statements.&nbsp; The <a href="TutChap04.html#SQLCA.SQLCODE"> SQLCA.SQLCODE</a>
+            is checked after the UPDATE, and if it indicates the
+  update was not successful the <a href="Variables.html">variable</a>
+            <b>cont_ok</b> is set to <font FACE="Courier"><a href="Programs.html#PC_FALSE">FALSE</a>
+            </font>and an <a href="MessageDisplay.html#ERROR"> error message</a>
+            is displayed.</li>
+          <li>Lines
+<CODE class=linenumber>57</CODE>  through
+<CODE class=linenumber>59</CODE> are executed if the values in <b>l_custrec </b>and <b>work_custrec</b> 
+            did not match.&nbsp; The <a href="Variables.html">variable</a>
+            <b>cont_ok</b> is set to <font FACE="Courier"><a href="Programs.html#PC_FALSE">FALSE</a></font>.&nbsp; The values in the <b>mr_custrec</b>
+            <a href="TutChap03.html#definerecord"> program record</a> are set to the values in the <b>l_custrec</b> record (the current
+  values in the database row, retrieved by the SELECT .. FOR UPDATE
+  statement.)&nbsp;&nbsp; The UNBUFFERED attribute of the <a href="RecordInput.html"> INPUT</a> statement
+  assures that the values will be automatically displayed in the form.&nbsp; A <a href="MessageDisplay.html#MESSAGE">message</a>
+            is displayed indicating the row had been changed by another user.</li>
+          <li>Lines
+<CODE class=linenumber>63</CODE>  thru
+<CODE class=linenumber>67</CODE>&nbsp; If the <a href="Variables.html">variable</a>
+            <b>cont_ok</b> is <font FACE="Courier"><a href="Programs.html#PC_TRUE">TRUE</a></font>
+            (the
+update was successful) the program issues a <a href="Transactions.html#TI_COMMIT_WORK"> COMMIT WORK</a>
+            to end the <a href="Transactions.html#DBTRANS">transaction</a>
+            begun on Line
+<CODE class=linenumber>278</CODE>.&nbsp; If not, a <a href="Transactions.html#TI_ROLLBACK_WORK"> ROLLBACK WORK</a>
+            is issued.&nbsp; All locks placed on the database
+  row are automatically released.</li>
+        </ul>
+
+
+<hr>
+<h2><a name="DeletingRow">Deleting a Row</a></h2>
+<p>The SQL DELETE statement can be used to delete rows from the database
+table. The primary key of the row to be deleted can be obtained from the
+values in the program record.</p>
+<h3><a name="dialogMENU">Using a dialog Menu to prompt for validation</a></h3>
+<p>The 
+<a href="Menus.html">MENU</a> statement has an optional STYLE attribute that can be set to
+'dialog', automatically opening a temporary modal window.&nbsp;You can also define a
+message and icon with the COMMENT and IMAGE attributes. This provides a simple way to prompt the user to confirm some action or
+operation that has been selected.</p>
+<p>The menu options
+appear as buttons at the bottom of the window.&nbsp;Unlike standard menus, the 
+dialog menu is automatically exited after any action clause such as ON ACTION, 
+COMMAND or ON IDLE. You do not need an EXIT MENU statement.</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img border="0" src="../Images/TUT502.png" width="206" height="112"></p>
+<hr>
+<h2><a name="DELEXAMP">Example: Deleting a Row</a></h2>
+<p>Function <b>delete_check</b> is added to the <b>custquery.4gl</b>
+module&nbsp; to check whether a store has any orders in the database before
+allowing the user to delete the store from the customer table. If there are no
+existing orders, a dialog <a href="Menus.html#SYNTAX"> MENU</a> is used to prompt the user for confirmation.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="364" bgcolor="#C0C0C0" valign="top">
+        <b>Function delete_check (custquery.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION </tt>delete_check()
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> del_ok <tt>SMALLINT</tt>,
+<CODE class=linenumber>03</CODE>          ord_count <tt>SMALLINT</tt>
+<CODE class=linenumber>04</CODE>
+<CODE class=linenumber>05</CODE>   <tt>LET</tt> del_ok = <tt>FALSE</tt>
+<CODE class=linenumber>06</CODE>
+<CODE class=linenumber>07</CODE>   <tt>SELECT</tt> <tt>COUNT</tt>(*)<tt> INTO</tt> ord_count
+<CODE class=linenumber>08</CODE>  <tt>   FROM </tt>orders
+<CODE class=linenumber>09</CODE>  <tt>   WHERE</tt> orders.store_num = 
+<CODE class=linenumber>10 </CODE>       mr_custrec.store_num
+<CODE class=linenumber>11</CODE>
+<CODE class=linenumber>12</CODE>   <tt>IF</tt> ord_count &gt; 0 <tt>THEN</tt>
+<CODE class=linenumber>13</CODE>    <tt>MESSAGE</tt> &quot;Store has existing orders&quot;
+<CODE class=linenumber>14</CODE>   <tt>ELSE</tt>
+<CODE class=linenumber>15</CODE>    <tt>MENU</tt> &quot;Delete&quot; <tt>ATTRIBUTES</tt> (<tt>STYLE</tt>=&quot;dialog&quot;,<tt> 
+</tt><CODE class=linenumber>16</CODE><tt>   </tt>   <tt>COMMENT</tt>=&quot;Delete the row?&quot;)
+<CODE class=linenumber>17</CODE>    <tt>COMMAND</tt> &quot;Yes&quot;
+<CODE class=linenumber>18</CODE>     <tt> LET</tt> del_ok = <tt>TRUE</tt>
+<CODE class=linenumber>19</CODE>    <tt>COMMAND</tt> &quot;No&quot;
+<CODE class=linenumber>20</CODE>     <tt> MESSAGE</tt> &quot;Delete canceled&quot;
+<CODE class=linenumber>21</CODE><tt>    END MENU</tt>
+<CODE class=linenumber>22</CODE>  <tt>END IF</tt>
+<CODE class=linenumber>23</CODE>
+<CODE class=linenumber>24</CODE>  <tt>RETURN</tt> del_ok
+<CODE class=linenumber>25</CODE>
+<CODE class=linenumber>26 </CODE><tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+<ul>
+  <li>Line
+<CODE class=linenumber>02 </CODE>    defines a <a href="Variables.html">variable</a>
+<b>del_ok</b> to be
+used as a flag to determine if the Delete should continue.</li>
+	<li>Line
+<CODE class=linenumber>05</CODE>    sets <b>del_ok</b> to FALSE.</li>
+  <li>Lines
+<CODE class=linenumber>07</CODE> thru <CODE class=linenumber>10</CODE> use the <b>store_num</b> value in the <b>mr_custrec</b>
+<a href="TutChap03.html#definerecord"> program
+            record</a>&nbsp; in an 
+	<a href="StaticSql.html">SQL statement</a>
+to determine whether there are orders in the database for that <b> store_num.</b> The 
+	<a href="Variables.html">variable</a>
+ <b>ord_count</b> is used to store the value returned by the
+  SELECT statement.</li>
+  <li>Lines<b> </b>
+<CODE class=linenumber>12 </CODE>    thru <CODE class=linenumber>13 </CODE>If the count is greater than zero, there are
+existing rows in the <b> orders</b> table for the <b>store_num</b>.&nbsp; A 
+	<a href="MessageDisplay.html#MESSAGE">message</a>
+is displayed to the user. del_ok remains set to FALSE.</li>
+  <li>Lines <CODE class=linenumber>15 </CODE>thru
+<CODE class=linenumber>21</CODE>&nbsp; If the count is zero, the Delete can
+continue.&nbsp; A 
+	<a href="Menus.html#SYNTAX"> MENU</a> statement is used to prompt the user to confirm the
+Delete action. The STYLE attribute is set to &quot;dialog&quot; to automatically display
+  the 
+	<a href="Menus.html#SYNTAX"> MENU</a> in a modal dialog window.&nbsp; If the user selects &quot;Yes&quot;, the
+<a href="Variables.html">variable</a> <b>del_ok</b> is set to 
+	<a href="Programs.html#PC_TRUE">TRUE</a>.&nbsp; Otherwise a
+<a href="MessageDisplay.html#MESSAGE">message</a> is displayed to the user indicating the
+Delete
+  will be canceled.</li>
+  <li>Line <CODE class=linenumber>24 </CODE>    returns the value of <b>del_ok</b> to the <b>delete_cust</b>
+function.</li>
+</ul>
+
+
+<hr>
+
+
+<p>The function <b>delete_cust</b> is added to the <b>custquery.4gl</b> module
+to delete the row from the customer table.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>
+        Function delete_cust (custquery.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01 </CODE><tt>FUNCTION</tt> delete_cust()
+<CODE class=linenumber>02</CODE>
+<CODE class=linenumber>03</CODE>   <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>04</CODE>   <tt>DELETE FROM</tt> customer <tt>
+</tt><CODE class=linenumber>05</CODE><tt>      WHERE</tt> store_num = mr_custrec.store_num
+<CODE class=linenumber>06</CODE>   <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>07</CODE>  <tt> IF </tt>SQLCA.SQLCODE = 0 <tt>THEN</tt>
+<CODE class=linenumber>08</CODE>      <tt>MESSAGE</tt> &quot;Row deleted&quot;
+<CODE class=linenumber>09</CODE>      <tt>INITIALIZE</tt> mr_custrec.* <tt>TO NULL</tt>
+<CODE class=linenumber>10</CODE>   <tt>ELSE</tt>
+<CODE class=linenumber>11</CODE>      <tt>ERROR</tt> SQLERRMESSAGE 
+<CODE class=linenumber>12</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>13</CODE>
+<CODE class=linenumber>14</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Lines
+<CODE class=linenumber>04 </CODE>and
+<CODE class=linenumber> 05</CODE>  contains an <a href="StaticSql.html"> embedded SQL DELETE statement</a> that
+uses the <b>store_num</b> value in the <a href="TutChap03.html#definerecord"> program
+            record</a>&nbsp; <b>mr_custrec</b> to delete the
+database row.&nbsp;The SQL statement is surrounded by <a href="Exceptions.html#DEFINITION">WHENEVER ERROR</a> 
+            statements.&nbsp; This is
+  a singleton <a href="Transactions.html#DBTRANS">transaction</a> that will be automatically
+            <a href="#CONCURRENCY"> committed</a> if it is
+  successful.</li>
+          <li>Lines
+<CODE class=linenumber>07</CODE>  thru
+<CODE class=linenumber>12</CODE>  check the <a href="TutChap04.html#SQLCA.SQLCODE"> SQLCA.SQLCODE</a>
+            returned for the SQL
+DELETE statement.&nbsp;If the DELETE was successful, a message is displayed and the
+            <b>mr_custrec</b> <a href="TutChap03.html#definerecord">program
+            record</a> values are set to <a href="Programs.html#PC_NULL">NULL</a>
+            and automatically displayed on the form.
+  Otherwise, an <a href="MessageDisplay.html#ERROR"> error message</a> is displayed.</li>
+        </ul>
+
+
+</body>
+</html>

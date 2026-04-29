@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>2.1x Upgrade Guide</TITLE>
+<META http-equiv="Content-Type" content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+
+<HR>
+
+<H1>2.1x Upgrade Guide</H1>
+
+<p>This page describes product changes you must be aware of when upgrading from version <b>2.0x</b>
+to version <b>2.1x</b> of Genero BDL.</p>
+
+<p><b><font color="#FF0000">Warning:</font> This is an incremental upgrade guide
+that covers only topics related to a specific version of Genero. Also check
+previous upgrade guides if you migrate from an earlier version.</b></p>
+
+<p>Summary:</p>
+<ol>
+  <li><a href="#DesupportedPlatforms">De-supported platforms</a></li>
+  <li><a href="#FrontEndCompatibility">Front-end compatibility</a></li>
+  <li><a href="#pcode-compat">P-Code compatibility</a></li>
+  <li><a href="#FirstRowLastRow">New firstrow/lastrow implicit actions</a></li>
+  <li><a href="#XMLDeclaration">XML Declaration added automatically</a></li>
+  <li><a href="#pcode-timestamp">Writing timestamp information in pcode modules</a></li>
+</ol>
+
+<HR>
+
+<h2><a name="DesupportedPlatforms">1. De-supported platforms</a></h2>
+<p>The following platforms are no longer supported by Genero BDL <b>2.1x</b>:</p>
+
+<ul>
+  <li>AIX 32 bit (all versions)</li>
+  <li>HP/UX 32 bit (all versions)</li>
+  <li>SCO Open Server lower than 5.0.7.</li>
+  <li>Microsoft Windows Visual C++ 6 (de-supported by Microsoft since September 2005).</li>
+</ul>
+<p>For information about supported platforms, please refer to the <a href="Installation.html#INST_SUPPOS">Installation
+and Setup</a> section of this manual.</p>
+
+<HR>
+
+<h2><a name="FrontEndCompatibility">2. Front-end compatibility</a></h2>
+<p>Some <b>2.1x</b> bug fixes needed modifications inside the runtime system (fglrun)
+and front-ends (gdc, gwc). Therefore, if you upgrade the runtime system to the
+latest <b>2.1x</b> version, we strongly recommend upgrading your workstations
+with the latest front-end version <b>2.1x</b> as well.</p>
+
+<hr>
+<h2><a name="pcode-compat">3. P-Code Compatibility</a></h2>
+<p>As a general rule, when upgrading to a major or minor version like 2.00 to
+2.10 or 2.10 to 2.11, you must recompile all your <b>.4gl</b> modules and <b>.per</b>
+form files. Re-compilation is not required when upgrading to a new maintenance
+release like 2.10.01 to 2.10.02.</p>
+<p>See also <a href="Installation.html#INST_UPGRADING">Installation and Setup</a>.</p>
+
+<HR>
+
+<h2><a name="FirstRowLastRow">4. New firstrow/lastrow implicit actions</a></h2>
+
+<p><b><font color="#FF0000">Warning:</font> This migration issue is obsolete if
+you migrate to 2.2x.</b></p>
+<p>In prior versions, <b>firstrow</b> and <b>lastrow</b> actions were handled by
+the front-ends as <a href="InteractionModel.html#PREDEFACTIONS">local actions</a>.
+The firstrow and lastrow actions had the Home / End accelerators defined in the default.4ad file. But these
+accelerators conflict with the Home/End field editor accelerators if
+the controller is an <a href="InputArray.html">INPUT ARRAY</a>. The conflict was 
+handled by the front-ends. If the current dialog was a <tt>DISPLAY ARRAY</tt>,
+the front-end used Home/End as navigation accelerators to move to the first
+or last row; when the current dialog was an <tt>INPUT ARRAY</tt>, the front-end
+used Home/End as local text editor shortcuts to move to the beginning or to the
+end of the text in the current field.</p>
+<p>Version 2.10 now defines the firstrow and lastrow actions as
+server-side <a href="InteractionModel.html#PREDEFACTIONS">predefined actions</a>
+when using <a href="DisplayArray.html">DISPLAY ARRAY</a> or <a href="InputArray.html">INPUT
+ARRAY</a>. The default accelerators in the FGLDIR/lib/defaults.4ad <a href="ActionDefaults.html">Action
+Defaults</a> file are now Control-Home + Home for firstrow and Control-End + End
+for lastrow. If the current widget is a text editor, the editor or navigation
+accelerators (like Home and End) take precedence over the action accelerators.
+This way, during an INPUT ARRAY, Home and End will be used as editor 
+accelerators.&nbsp;</p>
+<p>If you have defined your own default.4ad file, you have probably kept the
+original defaults for firstrow and lastrow actions as the accelerators Home
+and End. In this case, only Home and End accelerators are defined for firstrow 
+and lastrow actions.&nbsp; As a result, the user
+cannot move to the first row or last row with Control-Home or Control-End during
+<tt>INPUT ARRAY</tt>. To solve this problem, define the same accelerators for firstrow and lastrow
+actions as in FGLDIR/lib/default.4ad.</p>
+<p>You can use the Style "<a href="PresentationStyles.html#localAccelerators">localAccelerators</a>&quot; 
+to define how the field editor must behave. Set to &quot;yes&quot; (by default), the local 
+accelerators will be used (for instance, the Home
+key will move the cursor to the beginning of the field). Set to "no", the action
+accelerators will have higher priority (The Home key will change the current row to
+the first row).</p>
+
+<HR>
+
+<h2><a name="XMLDocTypeDecl">5. XML Declaration </a><a name="XMLDeclaration">added
+automatically</a></h2>
+<p><i>(This topic is related to bug <b>#7707</b>)</i></p>
+<p>Normally, an XML file should start with a &quot;Prolog&quot; or &quot;XML
+Declaration&quot; defining the XML version and character set used by the file:</p>
+
+<pre><b>&lt;?xml version='1.0' encoding='ISO-8859-1' ?&gt;</b>
+&lt;root ...&gt;
+...
+&lt;/root&gt;</pre>
+
+<p>Starting with Genero version <b>2.10.05</b>, the XML Declaration is now added
+automatically when writing XML files. Before 2.10.05, you could workaround this
+by writing this header yourself as a processing instruction, but this solution
+was subject to mistakes: The non-ASCII characters written to the XML file must
+match the encoding specification in the XML Declaration.</p>
+
+<p>To avoid invalid character set definitions, the Genero BDL built-in classes now add
+the XML Declaration with the <i>encoding</i> attribute defined according to the <a href="Localization.html">current
+locale</a> used by the runtime system. The value written in the <i>encoding</i>
+attribute is defined by the <a href="Localization.html#TRB_CHARMAP_ALIAS">charmap.alias</a>
+file.</p>
+
+<HR>
+
+<h2><a name="pcode-timestamp">6. Writing timestamp information in pcode modules</a></h2>
+<p> Before release 2.10, the 42m p-code
+files were also stamped with a compilation timestamp. Since <b>2.10</b>, this timestamp information
+is no longer written to p-code files by default, allowing 42m file comparison, checksum
+creation, or storage of 42m file in versioning tools; The same p-code data is
+now generated after successive compilations. However, since version <b>2.11.05</b>, if
+you need timestamp information in 42m files, you can use the --timestamp option
+of fglcomp:</p>
+
+
+<p><code>$ fglcomp --timestamp mymodule.4gl<br>
+$ fglrun -b mymodule.42m<br>
+2008-12-24 11:22:33 2.11.05-1169.84 /home/devel/stores/mymodule.4gl 15</code></p>
+
+
+</BODY>
+
+</HTML>

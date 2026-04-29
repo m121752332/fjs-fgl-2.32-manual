@@ -1,0 +1,572 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+  <meta name="generator" content="Microsoft FrontPage 4.0">
+
+  <title>Topmenus</title>
+  <meta http-equiv="Content-Type" content="text/html">
+  <link href="../FglTechRef.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+  <p><a href="../index.html">Back to Contents</a></p>
+  <hr>
+
+  <h1><a name="PAGE_HEADER" id="PAGE_HEADER">Topmenus</a></h1>
+
+  <p>Summary:</p>
+
+  <ul>
+    <li><a href="#BASICS">Basics</a></li>
+
+    <li><a href="#SYNTAX">Syntax</a></li>
+
+    <li>
+      <a href="#USAGE">Usage</a>
+
+      <ul>
+        <li><a href="#DEFINING">Defining TopMenus</a></li>
+
+        <li><a href="#STRUCT">TopMenu Structure</a></li>
+
+        <li><a href="#FORMSECTION">Defining a TopMenu in form file</a></li>
+
+        <li><a href="#LOADFORM">Loading a TopMenu from a file</a></li>
+
+        <li><a href="#LOADDEFAULT">Loading a default TopMenu from a file</a></li>
+
+        <li><a href="#DYNAMIC">Creating a TopMenu dynamically</a></li>
+      </ul>
+    </li>
+
+    <li>
+      <a href="#EXAMPLES">Examples</a>
+
+      <ul>
+        <li><a href="#EXAMPLE_1">Simple Topmenu in XML format</a></li>
+
+        <li><a href="#EXAMPLE_2">Topmenu definition in a PER file</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <p><i>See also:</i> <a href="ActionDefaults.html">Action Defaults</a>, <a href="Toolbars.html">Toolbars</a>, <a href=
+  "FormSpecFiles.html">Form Specification Files</a></p>
+  <hr>
+
+  <h3><a name="BASICS" id="BASICS">Basics</a></h3>
+
+  <p>A <a name="TopMenu" id="TopMenu">Topmenu</a> is a <a href="InteractionModel.html">view for actions</a> presented as a
+  typical pull-down menu, having options that can trigger events in an interactive instruction. This page describes how to use
+  Topmenus in programs; it is also possible to define Topmenus in forms with the <a href=
+  "FormSpecFiles.html#SECTION_TOPMENU">TOPMENU section</a>.</p>
+  <hr>
+
+  <h3><a name="SYNTAX" id="SYNTAX">Syntax</a></h3>
+
+  <p><code>&lt;TopMenu <u>[</u> <i>topmenu</i><i>-attribute</i>="<i>value"</i> <u>[...]</u> <u>]</u> &gt;<br>
+  &nbsp; <i>group</i><br>
+  &nbsp; <u>[...]</u><br>
+  &lt;/TopMenu&gt;</code></p>
+
+  <p>where <i>group</i> is:</p>
+
+  <p><code>&lt;TopMenuGroup <i>group-attribute</i>="<i>value"</i> <u>[...]</u>&gt;<br>
+  &nbsp; <u>{</u> &lt;TopMenuSeparator <i>separator-attribute</i>="<i>value"</i> <u>[...]</u> /&gt;<br>
+  &nbsp; <u>|</u> &lt;TopMenuCommand <i>command-attribute</i>="<i>value"</i> <u>[...]</u> /&gt;<br>
+  &nbsp; <u>|</u> <i>group</i><br>
+  &nbsp; <u>}</u>&nbsp;<u>[...]</u><br>
+  &lt;/TopMenuGroup&gt;</code></p>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li>The <code>TopMenu</code> node can only contain a list of <code>TopMenu</code><code>Group</code> items.</li>
+
+    <li><i>topmenu</i><i>-attribute</i> defines a property of the <code>TopMenu</code>.</li>
+
+    <li>A <code>TopMenu</code><code>Group</code> node can hold <code>TopMenu</code><code>Separator</code>,
+    <code>TopMenu</code><code>Group</code> or <code>TopMenu</code><code>Command</code> children.</li>
+
+    <li><i>group-attribute</i> defines a property of a <code>TopMenuGroup</code>.</li>
+
+    <li>A <code>TopMenu</code><code>Command</code> node defines a leaf of the TopMenu tree and can be selected to execute an
+    action.</li>
+
+    <li><i>command-attribute</i> defines a property of a <code>TopMenuCommand</code>.</li>
+
+    <li>A <code>TopMenuSeparator</code> node defines an horizontal line in a TopMenu group.</li>
+
+    <li><i>separator-attribute</i> defines a property of a <code>TopMenuSeparator</code>.</li>
+  </ol>
+
+  <h4><font color="#FF0000">Warnings:</font></h4>
+
+  <ol>
+    <li>The DOM tag names are case sensitive; <code>Topmenu</code> is different from <code>TopMenu</code>.</li>
+
+    <li>When binding to an action, make sure that you are using the right value in the <code>name</code> attribute. As <tt>ON
+    ACTION</tt> and <tt>COMMAND</tt> generate lowercase identifiers, it is recommended to use <b>lowercase</b>
+    <code>names</code>.</li>
+
+    <li>When binding to a key, make sure the <code>name</code> attribute value is in lowercase letters ("<code>f5</code>").</li>
+
+    <li>Make sure that the image file is available to the Front End.</li>
+  </ol>
+
+  <h4><font color="#008000">Tips:</font></h4>
+
+  <ol>
+    <li>For common actions, it is recommended that you define the decoration of a Topmenu command with <a href=
+    "ActionDefaults.html">Action Defaults</a>.</li>
+  </ol>
+  <hr>
+
+  <h3><b><a name="USAGE" id="USAGE">Usage</a></b></h3>
+
+  <h4><a name="DEFINING" id="DEFINING">Defining TopMenus</a></h4>
+
+  <p>A Topmenu defines a graphical pull-down menu that holds views for actions controlled in BDL programs with <code>ON
+  ACTION</code> clauses. See <a href="InteractionModel.html">Interaction Model</a> for more details about action management.</p>
+
+  <p>You can define a Topmenu in form files with the <a href="FormSpecFiles.html#SECTION_TOPMENU">TOPMENU section</a>, or you can
+  load a Topmenu at runtime into the current form by using the following methods: <a href=
+  "ClassForm.html">ui.Form.loadTopMenu()</a></p>
+
+  <p>The Topmenu commands (pull-down menu options) are enabled according to the <a href="InteractionModel.html">actions</a>
+  defined by the current interactive instruction, which can be <a href="Menus.html">MENU</a>, <a href=
+  "RecordInput.html">INPUT</a>, <a href="InputArray.html">INPUT ARRAY</a>, <a href="DisplayArray.html">DISPLAY ARRAY</a> or
+  <a href="Construct.html">CONSTRUCT</a>. When a Topmenu option is selected, the program executes the action trigger the Topmenu
+  command is bound to.</p>
+
+  <p>A Topmenu command is bound to an <i>action node</i> of the current interactive instruction if its <code>name</code>
+  attribute corresponds to an <i>action node</i> name (typically, the name of a ring menu option). In this case, a Topmenu
+  command selection has the same effect as raising the action. For example, if the current interactive instruction is a ring
+  menu, this would have the same effect as selecting the ring menu option.</p>
+
+  <p>A Topmenu command is bound to a key trigger if the <code>name</code> attribute of the command corresponds to a valid
+  hot-key, <u>in lowercase letters</u>. In this case, selecting a Topmenu command has the same effect as pressing the
+  hot-key.</p>
+
+  <p>A Topmenu command is automatically disabled if the corresponding action is not available (for example, when a ring menu
+  option is hidden).</p>
+
+  <p>Topmenu elements can get a <code>style</code> attribute in order to use a
+  specific rendering/decoration following <a href="PresentationStyles.html">Presentation
+  Style</a> definitions.</p>
+  <hr>
+
+  <h4><a name="STRUCT" id="STRUCT">TopMenu structure</a></h4>
+
+  <p>A Topmenu is part of a form definition; the <code>TopMenu</code> node must be created under the <code>Form</code> node.</p>
+
+  <p>The following table shows the list of <i>topmenu-attributes</i> supported for the <code>TopMenu</code> node:</p>
+
+  <div align="center">
+    <center>
+      <table border="0" cellpadding="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="15%"><b>Attribute</b></td>
+
+          <td bgcolor="#C0C0C0" width="15%"><b>Type</b></td>
+
+          <td bgcolor="#C0C0C0"><b>Description</b></td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>name</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>Identifies the TopMenu.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>style</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>Can be used to decorate the element with a <a href="PresentationStyles.html">Presentation
+            Style</a></td>
+        </tr>
+        <tr>
+          <td width="15%"><tt>tag</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>User-defined attribute to identify the node.</td>
+        </tr>
+      </table>
+    </center>
+  </div>
+
+  <p>The following table shows the list of <i>command-attributes</i> supported for the <code>TopMenuCommand</code> node:</p>
+
+  <div align="center">
+    <center>
+      <table border="0" cellpadding="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="15%"><b>Attribute</b></td>
+
+          <td bgcolor="#C0C0C0" width="15%"><b>Type</b></td>
+
+          <td bgcolor="#C0C0C0"><b>Description</b></td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>name</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>Identifies the <a href="InteractionModel.html">action</a> corresponding to the Topmenu command.<br>
+          Can be prefixed with the <a href="MultipleDialogs.html#binding-actions">sub-dialog identifier</a>.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>style</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>Can be used to decorate the element with a <a href="PresentationStyles.html">Presentation
+            Style</a></td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>tag</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>User-defined attribute to identify the node.&nbsp;</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>text</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>The text to be displayed in the pull-down menu option.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>comment</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>The message to be shown for this element.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>hidden</tt></td>
+
+          <td width="15%"><tt>INTEGER</tt></td>
+
+          <td>Indicates if the command is hidden.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>image</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>The icon to be used in the pull-down menu option.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>acceleratorName</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>Defines the accelerator name to be display on the left of the menu option text.<br>
+          Note this attribute is only used for decoration (you must also define an <a href="ActionDefaults.html">action default
+          accelerator</a>).</td>
+        </tr>
+      </table>
+    </center>
+  </div>
+
+  <p>In order to define the tree structure of the pull-down menu, the <code>TopMenuGroup</code> node is provided to hold Topmenu
+  commands and Topmenu groups:</p>
+  <pre>
+TopMenu
+  +- TopMenuGroup
+     +- TopMenuCommand
+     +- TopMenuCommand
+     +- TopMenuCommand
+  +- TopMenuGroup
+     +- TopMenuGroup
+        +- TopMenuCommand
+        +- TopMenuCommand
+     +- TopMenuGroup
+        +- TopMenuCommand
+        +- TopMenuCommand
+        +- TopMenuCommand
+</pre>
+
+  <p>The following table shows the list of <i>group-attributes</i> supported for the <code>TopMenuGroup</code> node:</p>
+
+  <div align="center">
+    <center>
+      <table border="0" cellpadding="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="15%"><b>Attribute</b></td>
+
+          <td bgcolor="#C0C0C0" width="15%"><b>Type</b></td>
+
+          <td bgcolor="#C0C0C0"><b>Description</b></td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>name</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>Identifies the TopMenu group.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>style</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>Can be used to decorate the element with a <a href="PresentationStyles.html">Presentation
+            Style</a></td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>tag</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>User-defined attribute to identify the node.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>text</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>The text to be displayed in the pull-down menu group.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>comment</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>The message to be shown for this element.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>hidden</tt></td>
+
+          <td width="15%"><tt>INTEGER</tt></td>
+
+          <td>Indicates if the group is hidden.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>image</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>The icon to be used in the pull-down menu group.<br>
+          <b><font color="#FF0000">Warning:</font> Images cannot be displayed for the first level of TopMenuGroup
+          elements.&nbsp;</b></td>
+        </tr>
+      </table>
+    </center>
+  </div>
+
+  <p>The following table shows the list of <i>separator-attributes</i> supported for the <code>TopMenuSeparator</code> node:</p>
+
+  <div align="center">
+    <center>
+      <table border="0" cellpadding="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="15%"><b>Attribute</b></td>
+
+          <td bgcolor="#C0C0C0" width="15%"><b>Type</b></td>
+
+          <td bgcolor="#C0C0C0"><b>Description</b></td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>name</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>Identifies the TopMenu separator.</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>style</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>Can be used to decorate the element with a <a href="PresentationStyles.html">Presentation
+            Style</a></td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>tag</tt></td>
+
+          <td width="15%"><tt>STRING</tt></td>
+
+          <td>User-defined attribute to identify the node&nbsp;</td>
+        </tr>
+
+        <tr>
+          <td width="15%"><tt>hidden</tt></td>
+
+          <td width="15%"><tt>INTEGER</tt></td>
+
+          <td>Indicates if the separator is hidden.</td>
+        </tr>
+      </table>
+    </center>
+  </div>
+  <hr>
+
+  <h4><a name="FORMSECTION" id="FORMSECTION">Defining the Topmenu in a form file</a></h4>
+
+  <p>You typically define a Topmenu in the form specification file, with the <a href="FormSpecFiles.html#SECTION_TOPMENU">TOPMENU
+  section</a>; see below for an <a href="#EXAMPLES">example</a>.</p>
+  <hr>
+
+  <h4><a name="LOADFORM" id="LOADFORM">Loading a Topmenu from an XML file</a></h4>
+
+  <p>To load a Topmenu definition file, use the utility method provided by the <a href="ClassForm.html">Form built-in
+  class</a>:</p>
+  <pre>
+<code class="linenumber">01</code> <tt>CALL</tt> myform.loadTopMenu(&quot;standard&quot;)
+</pre>
+
+  <p>This method accepts a filename <u>with</u> or <u>without</u> the "<code>4tm</code>" extension. If you omit the file
+  extension (recommended), the runtime system adds the extension automatically. If the file does not exist in the current
+  directory, it is searched in the directories defined in the <a href="EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href=
+  "EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a> environment variable.</p>
+
+  <p>If a form contains a specific topmenu loaded by the <a href="ClassForm.html">ui.Form.loadTopmenu()</a> method or defined in
+  the <a href="FormSpecFiles.html#SECTION_TOOLBAR">Form Specification File</a>, it will be replaced by the new topmenu loaded
+  from this function.</p>
+  <hr>
+
+  <h4><a name="LOADDEFAULT" id="LOADDEFAULT">Loading a default topmenu from an XML file</a></h4>
+
+  <p>To load a default topmenu from an XML definition file, use the utility method provided by the <a href=
+  "ClassInterface.html">Interface built-in class</a>:</p>
+  <pre>
+<code class="linenumber">01</code> <tt>CALL</tt> ui.Interface.loadTopMenu(&quot;standard&quot;)
+</pre>
+
+  <p>This method accepts a filename <u>with</u> or <u>without</u> the "<code>4tm</code>" extension. If you omit the file
+  extension (recommended), the runtime system adds the extension automatically. If the file does not exist in the current
+  directory, it is searched in the directories defined in the <a href="EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href=
+  "EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a> environment variable.</p>
+
+  <p>The default topmenu loaded by this method is also used for the MDI container.</p>
+  <hr>
+
+  <h4><a name="DYNAMIC" id="DYNAMIC">Creating the Topmenu dynamically</a></h4>
+
+  <p>This example shows how to create a Topmenu in all forms by using the default initialization function and the <a href=
+  "ClassDomNode.html">DomNode class</a>:</p>
+  <pre>
+<code class="linenumber">01</code> <tt>CALL</tt> ui.Form.setDefaultInitializer(&quot;myinit&quot;)
+<code class="linenumber">02</code> <tt>OPEN FORM </tt>f1 <tt>FROM </tt>&quot;form1&quot;
+<code class="linenumber">03</code> <tt>DISPLAY FORM </tt>f1
+<code class="linenumber">04</code> ...
+<code class="linenumber">05</code> <tt>FUNCTION</tt> myinit(form)
+<code class="linenumber">06</code>   <tt>DEFINE</tt> form ui.Form
+<code class="linenumber">06</code>   <tt>DEFINE</tt> f om.DomNode
+<code class="linenumber">08</code>   <tt>LET</tt> f = form.getNode()
+<code class="linenumber">09</code>   ...
+<code class="linenumber">10</code> <tt>END FUNCTION</tt>
+</pre>
+
+  <p>After getting the DOM node of the form, create a node with the "<code>TopMenu</code>" tag name:</p>
+  <pre>
+<code class="linenumber">01</code> <tt>DEFINE</tt> tm om.DomNode
+<code class="linenumber">02</code> <tt>LET</tt> tm = f.createChild(&quot;TopMenu&quot;)
+</pre>
+
+  <p>For each Topmenu group, create a sub-node with the "<code>TopMenuGroup</code>" tag name and set the attributes to define the
+  group:</p>
+  <pre>
+<code class="linenumber">01</code> <tt>DEFINE</tt> tmg om.DomNode
+<code class="linenumber">02</code> <tt>LET</tt> tmg = tm.createChild(&quot;TopMenuGroup&quot;)
+<code class="linenumber">03</code> <tt>CALL</tt> tmg.setAttribute(&quot;text&quot;,&quot;Reports&quot;)
+</pre>
+
+  <p>For each Topmenu option, create a sub-node in a group node with the "<code>TopMenuCommand</code>" tag name and set the
+  attributes to define the option:</p>
+  <pre>
+<code class="linenumber">01</code> <tt>DEFINE</tt> tmi om.DomNode
+<code class="linenumber">02</code> <tt>LET</tt> tmi = tmg.createChild(&quot;TopMenuCommand&quot;)
+<code class="linenumber">03</code> <tt>CALL</tt> tmi.setAttribute(&quot;name&quot;,&quot;report&quot;)
+<code class="linenumber">04</code> <tt>CALL</tt> tmi.setAttribute(&quot;text&quot;,&quot;Order report&quot;)
+<code class="linenumber">05</code> <tt>CALL</tt> tmi.setAttribute(&quot;comment&quot;,&quot;Orders entered today&quot;)
+<code class="linenumber">06</code> <tt>CALL</tt> tmi.setAttribute(&quot;image&quot;,&quot;smiley&quot;)
+</pre>
+
+  <p>If needed, you can create a "<code>TopMenuSeparator</code>" node inside a group, to separate menu options:</p>
+  <pre>
+<code class="linenumber">01</code> <tt>DEFINE</tt> tms om.DomNode
+<code class="linenumber">02</code> <tt>LET</tt> tms = tmg.createChild(&quot;TopMenuSeparator&quot;)
+</pre>
+  <hr>
+
+  <h3><a name="EXAMPLES" id="EXAMPLES">Examples</a></h3>
+
+  <h4><a name="EXAMPLE_1" id="EXAMPLE_1">Example 1: Simple Topmenu in XML format</a></h4>
+  <pre>
+<code class="linenumber">01</code> &lt;TopMenu&gt;
+<code class="linenumber">02</code>    &lt;TopMenuGroup text=&quot;Form&quot; style=&quot;mystyle&quot;&gt;
+<code class="linenumber">03</code>       &lt;TopMenuCommand name=&quot;help&quot; text=&quot;Help&quot; image=&quot;quest&quot; /&gt;
+<code class="linenumber">04</code>       &lt;TopMenuCommand name=&quot;quit&quot; text=&quot;Quit&quot; acceleratorName=&quot;alt-F4&quot;/&gt;
+<code class="linenumber">05</code>    &lt;/TopMenuGroup&gt;
+<code class="linenumber">06</code>    &lt;TopMenuGroup text=&quot;Edit&quot; &gt;
+<code class="linenumber">07</code>       &lt;TopMenuCommand name=&quot;accept&quot; text=&quot;Validate&quot; image=&quot;ok&quot; /&gt;
+<code class="linenumber">08</code>       &lt;TopMenuCommand name=&quot;cancel&quot; text=&quot;Cancel&quot; image=&quot;cancel&quot; /&gt;
+<code class="linenumber">09</code>       &lt;TopMenuSeparator/&gt;
+<code class="linenumber">10</code>       &lt;TopMenuCommand name=&quot;editcut&quot; text=&quot;Cut&quot; /&gt;
+<code class="linenumber">11</code>       &lt;TopMenuCommand name=&quot;editcopy&quot; text=&quot;Copy&quot; /&gt;
+<code class="linenumber">12</code>       &lt;TopMenuCommand name=&quot;editpaste&quot; text=&quot;Paste&quot; /&gt;
+<code class="linenumber">13</code>    &lt;/TopMenuGroup&gt;
+<code class="linenumber">14</code>    &lt;TopMenuGroup text=&quot;Records&quot; &gt;
+<code class="linenumber">15</code>       &lt;TopMenuCommand name=&quot;append&quot; text=&quot;Add&quot; image=&quot;add&quot; /&gt;
+<code class="linenumber">16</code>       &lt;TopMenuCommand name=&quot;delete&quot; text=&quot;Remove&quot; image=&quot;delete&quot; /&gt;
+<code class="linenumber">17</code>       &lt;TopMenuCommand name=&quot;update&quot; text=&quot;Modify&quot; image=&quot;change&quot; /&gt;
+<code class="linenumber">18</code>       &lt;TopMenuSeparator/&gt;
+<code class="linenumber">19</code>       &lt;TopMenuCommand name=&quot;search&quot; text=&quot;Query&quot; image=&quot;find&quot; /&gt;
+<code class="linenumber">20</code>    &lt;/TopMenuGroup&gt;
+<code class="linenumber">21</code> &lt;/TopMenu&gt;
+</pre>
+
+  <h4><a name="EXAMPLE_2" id="EXAMPLE_2">Example 2: Topmenu definition in a PER file</a></h4>
+  <pre>
+<code class="linenumber">01</code> <tt>TOPMENU</tt>
+<code class="linenumber">02</code>   <tt>GROUP</tt> form (<tt>TEXT</tt>=&quot;Form&quot;, <tt>STYLE</tt>=&quot;mystyle&quot; )
+<code class="linenumber">03</code>      <tt>COMMAND</tt> help (<tt>TEXT</tt>=&quot;Help&quot;, <tt>IMAGE</tt>=&quot;quest&quot;)
+<code class="linenumber">04</code>      <tt>COMMAND</tt> quit (<tt>TEXT</tt>=&quot;Quit&quot;, <tt>ACCELERATOR</tt>=ALT-F4)
+<code class="linenumber">05</code>   <tt>END</tt>
+<code class="linenumber">06</code>   <tt>GROUP</tt> edit (<tt>TEXT</tt>=&quot;Edit&quot;)
+<code class="linenumber">07</code>      <tt>COMMAND</tt> accept (<tt>TEXT</tt>=&quot;Validate&quot;, <tt>IMAGE</tt>=&quot;ok&quot;)
+<code class="linenumber">08</code>      <tt>COMMAND</tt> cancel (<tt>TEXT</tt>=&quot;Cancel&quot;,<tt> IMAGE</tt>=&quot;cancel&quot;)
+<code class="linenumber">09</code>      <tt>SEPARATOR</tt>
+<code class="linenumber">10</code>      <tt>COMMAND</tt> editcut   -- Gets decoration from action defaults
+<code class="linenumber">11</code>      <tt>COMMAND</tt> editcopy  -- Gets decoration from action defaults
+<code class="linenumber">12</code>      <tt>COMMAND</tt> editpaste -- Gets decoration from action defaults
+<code class="linenumber">13</code>   <tt>END</tt>
+<code class="linenumber">14</code>   <tt>GROUP</tt> records (<tt>TEXT</tt>=&quot;Records&quot;)
+<code class="linenumber">15</code>      <tt>COMMAND</tt> append (<tt>TEXT</tt>=&quot;Add&quot;, <tt>IMAGE</tt>=&quot;add&quot;)
+<code class="linenumber">16</code>      <tt>COMMAND</tt> delete (<tt>TEXT</tt>=&quot;Remove&quot;, <tt>IMAGE</tt>=&quot;del&quot;)
+<code class="linenumber">17</code>      <tt>COMMAND</tt> update (<tt>TEXT</tt>=&quot;Modify&quot;, <tt>IMAGE</tt>=&quot;change&quot;)
+<code class="linenumber">18</code>      <tt>SEPARATOR</tt>
+<code class="linenumber">19</code>      <tt>COMMAND</tt> search (<tt>TEXT</tt>=&quot;Search&quot;, <tt>IMAGE</tt>=&quot;find&quot;)
+<code class="linenumber">20</code>   <tt>END</tt>
+<code class="linenumber">21</code> <tt>END</tt>
+</pre>
+</body>
+</html>

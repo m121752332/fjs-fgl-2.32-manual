@@ -1,0 +1,920 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+  <title>Tutorial: Changing the User Interface Dynamically</title>
+  <meta http-equiv="Content-Type" content="text/html">
+  <link href="../FglTechRef.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+  <p><a href="TutIndex.html">Back to Summary</a></p>
+  <hr>
+
+  <h1>Tutorial Chapter 12: Changing the User Interface Dynamically</h1>
+
+  <p>Summary:</p>
+
+  <ul>
+    <li><a href="#Built-in_Classes">Built-in Classes</a></li>
+
+    <li>
+      <a href="#uiWindow">Using the Classes (Window Class example)</a>
+
+      <ul>
+        <li><a href="#getwinreference">Getting a reference to the object</a></li>
+
+        <li><a href="#callmethod">Calling a method</a></li>
+      </ul>
+    </li>
+
+    <li>
+      <a href="#uiForm">Working with Forms</a>
+
+      <ul>
+        <li><a href="#getformreference">Getting a reference to the object</a></li>
+
+        <li><a href="#elementname">Specifying the name of a form item</a></li>
+      </ul>
+    </li>
+
+    <li><a href="#elementappearance">Changing the text, image, or style of a form item</a></li>
+
+    <li><a href="#elementhide">Hiding form items</a></li>
+
+    <li><a href="#tb-tm-ad">Adding Toolbars, Topmenus, and Action Defaults</a></li>
+
+    <li><a href="#forminit">Specifying a function to initialize all forms</a></li>
+
+    <li><a href="#loadcb">Loading a ComboBox list</a></li>
+
+    <li>
+      <a href="#uiDialog">Using the Dialog Class in an Interactive Statement</a>
+
+      <ul>
+        <li><a href="#hideaction">Hiding Form Items</a></li>
+
+        <li><a href="#disablefield">Enabling and Disabling Fields</a></li>
+      </ul>
+    </li>
+
+    <li>
+      <a href="#uiInterface">Using the Interface Class</a>
+
+      <ul>
+        <li><a href="#uirefresh">Refresh the Interface</a></li>
+
+        <li><a href="#uiloadfiles">Load custom XML files</a></li>
+
+        <li><a href="#uiclient">Identify the Genero Client</a></li>
+      </ul>
+    </li>
+  </ul>
+  <hr>
+
+  <h2><a name="Built-in_Classes" id="Built-in_Classes">Built-in Classes</a></h2>
+
+  <p>Included in the predefined functions that are built into Genero are special groups (classes) of functions (methods) that act
+  upon the objects that are created when your program is running. Each class of methods interacts with a specific program object,
+  allowing you to change the appearance or behavior of the objects. Because these methods act upon program objects, the syntax is
+  somewhat different from that of functions.</p>
+
+  <p>The classes are gathered together into packages:</p>
+
+  <ul>
+    <li><b>ui</b> - classes related to the objects in the graphical user interface (GUI)</li>
+
+    <li><b>base</b> - classes related to non-GUI program objects&nbsp;</li>
+
+    <li><b>om</b> - classes that provide DOM and SAX document handling utilities</li>
+  </ul>
+
+  <p>This tutorial focuses on using the classes and methods in the <b>ui</b> package to modify the user interface at runtime.</p>
+
+  <p><span style="background-color: #FFFFFF"><b>Note:</b> Variable names, class identifiers, and method names are not
+  case-sensitive; the capitalization used in the examples is for ease in reading.</span></p>
+  <hr>
+
+  <h2><a name="uiWindow" id="uiWindow">Using the Classes</a></h2>
+
+  <p>This example for the Window Class also presents the general process that you should use.</p>
+
+  <p>The methods in the <a href="ClassWindow.html">Window Class</a> interact with the Window objects in your program.</p>
+
+  <h3><a name="getwinreference" id="getwinreference">Getting a reference to the object</a></h3>
+
+  <p>Before you can call any of the methods associated with Window objects, you must identify the specific Window object that you
+  wish to affect, and obtain a reference to it:</p>
+
+  <ul>
+    <li>Define a variable to hold the reference to the Window object. The data type of the variable is the class identifier
+    (ui.Window):</li>
+  </ul>
+
+  <blockquote>
+    <pre>
+DEFINE mywin ui.Window   
+</pre>
+  </blockquote>
+
+  <ul>
+    <li>Open a window in your program using the OPEN WINDOW&nbsp; or OPEN WINDOW ... WITH FORM ... instruction:</li>
+  </ul>
+
+  <blockquote>
+    <pre>
+OPEN WINDOW w1 WITH FORM "testform"
+</pre>
+  </blockquote>
+
+  <ul>
+    <li>Get a reference to the specific Window object by using one of two "class methods" provided by the Window Class. Class
+    methods are called using the class identifier (ui.Window). You can specify the Window object by name from among the open
+    windows in your program, or choose the current window.</li>
+  </ul>
+
+  <blockquote>
+    <pre>
+LET mywin = ui.Window.getCurrent() -- returns a reference to 
+                                      the current window object
+        
+LET mywin = ui.Window.forName("w1")-- returns a reference to 
+                                      the open window named "w1"
+</pre>
+  </blockquote>
+
+  <h3><a name="callmethod" id="callmethod">Calling a method</a></h3>
+
+  <p>Now that you have a reference to the object, you can use that reference to call any of the methods listed as "object
+  methods" in the Window Class documentation. For example, to change the window title for the window referenced by mywin:</p>
+
+  <blockquote>
+    <pre>
+CALL mywin.setText("test")
+</pre>
+  </blockquote>
+
+  <p>See <a href="ClassWindow.html">Window Class</a> for a complete list of the methods in this class.</p>
+
+  <h4>Example 1:</h4>
+  <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code> <tt> DEFINE</tt> mywin ui.Window
+<code class="linenumber">03</code>              
+<code class="linenumber">04</code> <tt> OPEN WINDOW</tt> w1 <tt>WITH FORM</tt> "testform"
+<code class="linenumber">05</code> <tt> LET</tt> mywin = ui.Window.getCurrent()
+<code class="linenumber">06</code> <tt> CALL</tt> mywin.setText("test")
+<code class="linenumber">07</code> <tt> MENU</tt>
+<code class="linenumber">08</code> <tt>  ON ACTION</tt> quit
+<code class="linenumber">09</code>    <tt> EXIT MENU</tt>
+<code class="linenumber">10</code> <tt> END MENU</tt>
+<code class="linenumber">11</code>
+<code class="linenumber">12</code> <tt>END MAIN</tt>
+</pre>
+
+  <p>Display on Windows platforms:</p>
+
+  <p>&nbsp;&nbsp;&nbsp;&nbsp; <img border="0" src="../Images/TUT1201.png" width="234" height="163"></p>
+  <hr>
+
+  <h2><a name="uiForm" id="uiForm">Working with Forms</a></h2>
+
+  <p>The <a href="ClassForm.html">Form Class</a> provides some methods that allow you to change the appearance or behavior of
+  items on a form.</p>
+
+  <h3><a name="getformreference" id="getformreference">Getting a reference to the Form object</a></h3>
+
+  <p>In order to use the methods, you must get a reference to the form object.&nbsp;The Window Class has a method to get the
+  reference to its associated form:</p>
+
+  <ul>
+    <li>Define variables for the references to the window object and to its form object.&nbsp;The data type for the variables is
+    the class identifier (ui.Window, ui.Form):
+      <pre>
+DEFINE f1 ui.Form, mywin ui.Window
+</pre>
+    </li>
+
+    <li>Open a form in your program using the OPEN WINDOW ... WITH FORM ... instruction:</li>
+  </ul>
+
+  <blockquote>
+    <pre>
+OPEN WINDOW w1 WITH FORM ("testform")
+</pre>
+  </blockquote>
+
+  <ul>
+    <li>Next, get a reference to the window object.&nbsp; Then, use the <b>getForm()</b> class method of the <a href=
+    "ClassWindow.html">Window Class</a> to get a reference to the form object opened in that window:</li>
+  </ul>
+
+  <blockquote>
+    <pre>
+LET mywin = ui.Window.getCurrent()
+LET f1 = mywin.getForm() -- returns reference to form
+</pre>
+  </blockquote>
+
+  <p>Once you have the reference to the form object, you can call any of the object methods for the Form class:&nbsp;</p>
+  <pre>
+     LET mywin = ui.Window.getCurrent()
+     LET f1 = mywin.getForm() -- get reference to form 
+     -- call a Form Class method   
+     CALL f1.loadActionDefaults("mydefaults")
+</pre>
+
+  <p>See the <a href="ClassForm.html">Form Class</a> documentation for a complete list of methods.</p>
+
+  <h3><a name="elementname" id="elementname">Specifying the name</a> of a form item</h3>
+
+  <p>Some of the methods in the <a href="ClassForm.html">Form Class</a> require you to provide the name of the form
+  item.&nbsp;The name of the form item in the <a href="FormSpecFiles.html#SECTION_ATTRIBUTES">Attributes</a> section of the form
+  specification file corresponds to the <b>name</b> attribute of an element in the runtime form file.&nbsp;For example:</p>
+
+  <ul>
+    <li>In the Attributes section of the .per file</li>
+  </ul>
+
+  <blockquote>
+    <pre>
+LABEL a1 :<b> lb1</b>, TEXT = "State";
+EDIT a2 = <b>state.state_name</b>;
+BUTTON a3 :<b> quit</b>, TEXT = "exit";
+EDIT a4 = <b>FORMONLY.pflag</b> TYPE CHAR; 
+</pre>
+  </blockquote>
+
+  <ul>
+    <li>In the runtime .42f file</li>
+  </ul>
+
+  <blockquote>
+    <pre>
+&lt;Label name="<b>lb1</b>" width="9" text="State" posY="0" posX="6" gridWidth="9"/&gt;
+&lt;FormField name="<b>state.state_name</b>" colName="state_name" sqlType="CHAR(15)" 
+    fieldId="0" sqlTabName="state" tabIndex="1"&gt;
+&lt;Button name="<b>quit</b>" width="5" text="exit" posY="4" posX="6" gridWidth="5"/&gt;
+&lt;FormField name="<b>formonly.pflag</b>" colName="pflag" sqlType="CHAR" fieldId="1" 
+    sqlTabName="formonly" tabIndex="2"&gt;
+</pre>
+
+    <p><b>Note:</b> Formfield names specified as FORMONLY (FORMONLY.pflag)&nbsp; are converted to lowercase (formonly.pflag).</p>
+  </blockquote>
+
+  <p>Although Genero BDL is not case-sensitive, XML is. When Genero creates the runtime XML file, the form item types and
+  attribute names are converted using the CamelCase convention:</p>
+
+  <ul>
+    <li>Form item type -&nbsp; the first letter is always capitalized, with subsequent letters in lower-case, unless the type
+    consists of multiple words joined together. In that case, the first letter of every subsequent word is capitalized also
+    (Label, FormField, Button).</li>
+
+    <li>Attribute name - the first letter is always lower-case, with subsequent letters in lower-case, unless the name consists
+    of multiple words joined together. In that case, the first letter of every subsequent word is capitalized also (text,
+    gridWidth, colName).</li>
+  </ul>
+
+  <p>If you use classes or methods in your code that require the form item type or attribute name, respect the naming
+  conventions.</p>
+  <hr>
+
+  <h2><a name="elementappearance" id="elementappearance">Changing the text, image, and style properties of a form item</a></h2>
+
+  <p>Some methods of the Form Class allow you to change the value of specific properties of form items.</p>
+
+  <p>Call the methods using the reference to the form object. Provide the <a href="#elementname">name</a> of the form item and
+  the value for the property:</p>
+
+  <ul>
+    <li><b>Text</b> property - the value can be any text string.&nbsp; To set the text of the label named "lb1":</li>
+  </ul>
+
+  <blockquote>
+    <pre>
+CALL f1.setElementText("lb1", "Newtext")
+</pre>
+  </blockquote>
+
+  <ul>
+    <li><b>Image</b> property - the value can be a simple file name, a complete or relative path, or an URL ( Uniform Resource
+    Locator) path to an image server. To set the image for the button named "quit":</li>
+  </ul>
+
+  <blockquote>
+    <pre>
+CALL f1.setElementImage("quit", "exit.png")
+</pre>
+  </blockquote>
+
+  <ul>
+    <li><b>Style</b> property - the value can be a <a href="PresentationStyles.html">presentation style</a> defined in the active
+    Presentation Styles file (.4st file). To set the style for the label named "lb1":</li>
+  </ul>
+
+  <blockquote>
+    <pre>
+CALL f1.setElementStyle("lb1", "mystyle")
+</pre>
+
+    <p>The style "mystyle" is an example of a specific style that was defined in a custom Presentation Styles XML file,
+    <b>customstyles.4st</b>. This style changes the text color to blue:</p>
+    <pre>
+&lt;Style name=".mystyle" &gt;
+   &lt;StyleAttribute name="textColor" value="blue" /&gt;
+&lt;/Style&gt;
+</pre>
+
+    <p>By default, the runtime system searches for the <b>default.4st</b> Presentation Style file.&nbsp; Use the following method
+    to load a different Presentation Style file:</p>
+    <pre>
+CALL ui.interface.loadStyles("customstyles")
+</pre>
+
+    <p>&nbsp;The <a href="#uiloadfiles">Load custom XML files</a> section has more information about the Interface class. See
+    <a href="PresentationStyles.html">Presentation Style</a>s&nbsp; for additional information about styles and the format of a
+    Presentation Styles file.</p>
+  </blockquote>
+
+  <h4>&nbsp;Example 2:</h4>
+  <pre>
+<code class="linenumber">01 </code><tt>MAIN</tt>
+<code class="linenumber">02</code> <tt>  DEFINE</tt> mywin ui.Window,
+<code class="linenumber">03</code>          f1    ui.Form 
+<code class="linenumber">04</code>   <tt>CALL</tt> ui.interface.loadStyles("customstyles")
+<code class="linenumber">05</code> <tt>  OPEN WINDOW</tt> w1 <tt>WITH FORM</tt> "testform"
+<code class="linenumber">06</code> <tt>  LET</tt> mywin = ui.Window.getCurrent()
+<code class="linenumber">07</code><tt>     CALL </tt>mywin.setText("test")
+<code class="linenumber">08</code> <tt>    LET</tt> f1 = mywin.getForm()
+<code class="linenumber">09</code> <tt>  MENU</tt>
+<code class="linenumber">10</code>   <tt>  ON ACTION</tt> changes
+<code class="linenumber">11</code>     <tt>  CALL</tt> f1.setElementText("lb1", "goodbye")
+<code class="linenumber">12</code>     <tt>  CALL</tt> f1.setElementText("quit", "leave")
+<code class="linenumber">13 </code>    <tt>  CALL</tt> f1.setElementImage("quit", "exit.png")
+<code class="linenumber">14</code>     <tt>  CALL</tt> f1.setElementStyle("lb1", "mystyle")
+<code class="linenumber">15</code>   <tt>  ON ACTION</tt> quit
+<code class="linenumber">16</code>     <tt>  EXIT MENU</tt>
+<code class="linenumber">17</code> <tt>  END MENU</tt>
+<code class="linenumber">18 </code><tt>END MAIN</tt>
+</pre>
+
+  <p>Display on Windows platform after the changes button has been clicked:</p>
+
+  <p>&nbsp;&nbsp;&nbsp;&nbsp; <img border="0" src="../Images/TUT1202.png" width="241" height="164"></p>
+  <hr>
+
+  <h2><a name="elementhide" id="elementhide">Hiding Form Items</a></h2>
+
+  <p>You can use Form Class methods to change the value of the <b>hidden</b> property of form items, hiding parts of the form
+  from the user.&nbsp; Interactive instructions such as INPUT or CONSTRUCT will automatically ignore a <a href=
+  "FormSpecFiles.html#FF_FORM_FIELD">formfield</a> that is hidden.&nbsp; The value can be:</p>
+
+  <ul>
+    <li><b>0</b> - the form item is not hidden; it is visible</li>
+
+    <li><b>1</b> - the form item is hidden and cannot be made visible by the user</li>
+
+    <li><b>2</b> - the form item is hidden, but the user can make it visible, using the context menu for a table, for
+    example</li>
+  </ul>
+
+  <p>By default, all form items are visible.</p>
+
+  <p>Call the methods using the reference to the form object.&nbsp; Provide the name of the form item to the method and set the
+  value for hidden.</p>
+
+  <ul>
+    <li>&nbsp;<b>setFieldHidden()</b>&nbsp; - this method can be used to hide formfields only. The prefix in the name of the
+    formfield (<i>tablename.</i> or <i>formonly.</i>) is optional:</li>
+  </ul>
+
+  <blockquote>
+    <pre>
+CALL f1.setFieldHidden("state_name",1)
+</pre>
+  </blockquote>
+
+  <ul>
+    <li><b>setElementHidden()</b> &nbsp;- this method hides any form item, including formfields.&nbsp; If the item is a
+    formfield, the name must include the prefix:</li>
+  </ul>
+  <pre>
+     CALL f1.setElementHidden("lb1", 1)
+</pre>
+  <pre>
+     CALL f1.setElementHidden("state.state_name",1)
+</pre>
+  <pre>
+     CALL f1.setElementHidden("formonly.pflag",1)
+</pre>
+
+  <p>&nbsp; Genero adjusts the display of the form to eliminate blank spaces caused by hiding items, where possible.</p>
+
+  <h4>Example 3:</h4>
+  <pre>
+<code class="linenumber">01</code> <tt>SCHEMA</tt> custdemo
+<code class="linenumber">02</code> <tt>MAIN</tt>
+<code class="linenumber">03</code>  <tt>DEFINE</tt> win ui.Window,
+<code class="linenumber">04</code>         fm ui.Form,
+<code class="linenumber">05</code>         mycust record like customer.*
+<code class="linenumber">06</code>  <tt>CONNECT TO</tt> "custdemo"
+<code class="linenumber">07</code>  <tt>OPEN WINDOW</tt> w1 <tt>WITH FORM</tt> "hidecust"
+<code class="linenumber">08</code>  <tt>SELECT</tt> * <tt>INTO</tt> mycust.* <tt>FROM</tt> customer 
+<code class="linenumber">09</code>      <tt>WHERE</tt> store_num = 101
+<code class="linenumber">10</code>  <tt>DISPLAY BY NAME</tt> mycust.*
+<code class="linenumber">11</code>  <tt>LET</tt> win = ui.Window.getCurrent()
+<code class="linenumber">12</code> <tt> LET</tt> fm = win.getForm()
+<code class="linenumber">13</code>  <tt>MENU</tt>
+<code class="linenumber">14</code>   <tt>ON ACTION</tt> hide
+<code class="linenumber">15</code>     <tt>CALL </tt>fm.setFieldHidden("contact_name",1)
+<code class="linenumber">16  </code>   <tt>CALL</tt> fm.setFieldHidden("addr2", 1)
+<code class="linenumber">17  </code>   -- hide the label for contact name 
+<code class="linenumber">18</code>     <tt>CALL</tt> fm.setElementHidden("lbl", 1)
+<code class="linenumber">19</code>   <tt>ON ACTION</tt> quit
+<code class="linenumber">20 </code>    <tt>EXIT MENU</tt>
+<code class="linenumber">21</code>  <tt>END MENU</tt>
+<code class="linenumber">22</code> <tt>END MAIN</tt>
+</pre>
+
+  <p>Display on Windows platforms (before hiding):</p>
+
+  <p>&nbsp;<img border="0" src="../Images/TUT1204A.png" width="321" height="205">&nbsp;&nbsp;&nbsp;<br>
+  &nbsp;After hiding:</p>
+
+  <p>&nbsp;&nbsp;<img border="0" src="../Images/TUT1204B.png" width="322" height="202">&nbsp;&nbsp;</p>
+  <hr>
+
+  <h2><a name="tb-tm-ad" id="tb-tm-ad">Adding toolbars, topmenus, and action default</a>s</h2>
+
+  <p>The Form Class provides methods that apply topmenus, toolbars, and action defaults to a form, to assist you in standardizing
+  forms.&nbsp; The topmenus, toolbars, or action defaults are defined in external XML files having the following extensions:</p>
+
+  <ul>
+    <li>Action Defaults - <b>.4ad</b></li>
+
+    <li>Toolbar - <b>.4tb</b></li>
+
+    <li>Topmenu - <b>.4tm</b></li>
+  </ul>
+
+  <p>&nbsp;Call the methods using the reference to the form object and give the filename.&nbsp;Do not specify a path or file
+  extension in the file name.&nbsp; If the file is not in the current directory and the path is not specified, Genero will search
+  the directories indicated by the <a href="EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href=
+  "EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a> environment variable.&nbsp;</p>
+
+  <ul>
+    <li>Action defaults file - default attributes for form items associated with actions; these action defaults are local to the
+    form. See <a href="ActionDefaults.html">Action Defaults</a> for information about the format and contents of the file.</li>
+  </ul>
+
+  <blockquote>
+    <pre>
+CALL f1.loadActionDefaults("mydefaults")
+</pre>
+  </blockquote>
+
+  <ul>
+    <li>Toolbar file - contains a toolbar definition to be used with the referenced form object. See <a href=
+    "Toolbars.html">Toolbars</a> for information about the format and contents of the file.</li>
+  </ul>
+
+  <blockquote>
+    <pre>
+CALL f1.loadToolBar("mytoolbar")
+</pre>
+  </blockquote>
+
+  <ul>
+    <li>Topmenu file - contains a topmenu definition to be used with the referenced form object.&nbsp; See <a href=
+    "Topmenus.html">Topmenus</a> for information about the format and contents of the file.</li>
+  </ul>
+
+  <blockquote>
+    <pre>
+CALL f1.loadTopMenu("mytopmenu")
+</pre>
+  </blockquote>
+
+  <h4>Example 4:</h4>
+  <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code> <tt> DEFINE</tt> mywin ui.Window,
+<code class="linenumber">03</code>         f1    ui.Form 
+<code class="linenumber">04</code> <tt> OPEN WINDOW</tt> w1 <tt>WITH FORM</tt> "testform"
+<code class="linenumber">05 </code><tt> LET</tt> mywin = ui.Window.forName("w1")
+<code class="linenumber">06 </code><tt> CALL </tt>mywin.setText("test")
+<code class="linenumber">07</code>  <tt>LET</tt> f1 = mywin.getForm()
+<code class="linenumber">08</code>  <tt>CALL</tt> f1.loadTopMenu("mytopmenu")
+<code class="linenumber">09</code> <tt> MENU</tt>   
+<code class="linenumber">10</code>  <tt>  ON ACTION</tt> quit
+<code class="linenumber">11</code>    <tt>  EXIT MENU</tt>
+<code class="linenumber">12</code> <tt> END MENU</tt>
+<code class="linenumber">13</code> 
+<code class="linenumber">14</code> <tt>END MAIN</tt>
+</pre>
+
+  <p>Display on Windows platforms:</p>
+
+  <p>&nbsp;&nbsp;&nbsp;&nbsp; <img border="0" src="../Images/TUT1203.png" width="240" height="186"></p>
+  <hr>
+
+  <h2><a name="forminit" id="forminit">Specifying a Function to Initialize all Forms</a></h2>
+
+  <p>To assist in standardizing forms, you can create an <a href="ClassForm.html#EXAMPLES">initializer</a> function in your
+  program that will be called automatically whenever any form is opened. A reference to the form object is passed by the runtime
+  system to the function.&nbsp;</p>
+
+  <p>Example initializer function:</p>
+  <pre>
+<code class="linenumber">01</code> <tt>FUNCTION</tt> myforminit(f1)
+<code class="linenumber">02</code> <tt>  DEFINE</tt> f1 ui.Form
+<code class="linenumber">03</code>
+<code class="linenumber">04</code> <tt>  CALL</tt> f1.loadTopMenu("mytopmenu")
+<code class="linenumber">05</code>   ...
+<code class="linenumber">06</code>
+<code class="linenumber">07</code> <tt>END FUNCTION</tt>
+</pre>
+
+  <p>The setDefaultInitializer method applies to all forms, rather than to a specific form object.&nbsp; It is a class method,
+  and you call it using the class name as a prefix.&nbsp;Specify the name of the initializer function in lower-case letters:</p>
+  <pre>
+CALL ui.Form.setDefaultInitializer("myforminit")  
+</pre>
+
+  <p>You can call the <b>myforminit</b> function in your program as part of a setup routine. The <b>myforminit</b> function can
+  be in any module in the program.</p>
+
+  <h4>Example 5:</h4>
+  <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>  <tt>CALL</tt> ui.Form.setDefaultInitializer("myforminit")
+<code class="linenumber">03</code>  <tt>OPEN WINDOW</tt> w1 <tt>WITH FORM</tt> "testform"
+<code class="linenumber">04</code>  <tt>MENU</tt>
+<code class="linenumber">05</code>   <tt>ON ACTION</tt> quit
+<code class="linenumber">06</code>    <tt>EXIT MENU</tt>
+<code class="linenumber">07</code>  <tt>END MENU</tt>
+<code class="linenumber">08</code>  <tt>OPEN WINDOW</tt> w2 <tt>WITH FORM</tt> "testform2"
+<code class="linenumber">09</code>  <tt>MENU</tt>
+<code class="linenumber">10</code>   <tt>ON ACTION</tt> quit
+<code class="linenumber">11</code>    <tt>EXIT MENU</tt>
+<code class="linenumber">12</code>  <tt>END MENU</tt>
+<code class="linenumber">13</code> <tt>END MAIN</tt>
+</pre>
+
+  <p>Display on Windows platforms:</p>
+
+  <p>&nbsp;&nbsp;&nbsp;<img border="0" src="../Images/TUT1205B.png" width="194" height="155">&nbsp;</p>
+
+  <p>&nbsp;&nbsp; <img border="0" src="../Images/TUT1205A.png" width="202" height="154"></p>
+
+  <p>&nbsp;&nbsp;</p>
+  <hr>
+
+  <h2><a name="loadcb" id="loadcb">Loading a ComboBox List</a></h2>
+
+  <p>A ComboBox presents a list of values in a dropdown box on a form. The values are for the underlying <a href=
+  "FormSpecFiles.html#FF_FORM_FIELD">formfield</a>.&nbsp; For example, the following form specification file contains a ComboBox
+  that represents the formfield <b>customer.state</b>:</p>
+  <pre>
+<code class="linenumber">01</code> <tt>SCHEMA</tt> custdemo
+<code class="linenumber">02</code> <tt>LAYOUT</tt>
+<code class="linenumber">03</code> <tt> GRID</tt> 
+<code class="linenumber">04</code>  {
+<code class="linenumber">05 </code>  Store #:[a0  ]
+<code class="linenumber">06 </code>     Name:[a1                 ]
+<code class="linenumber">07</code>     State:[a5      ]
+<code class="linenumber">08</code>  }
+<code class="linenumber">09</code>  <tt>END</tt> -- GRID
+<code class="linenumber">10</code> <tt>END</tt>
+<code class="linenumber">11</code> <tt>TABLES</tt> customer
+<code class="linenumber">12</code> <tt>ATTRIBUTES</tt>
+<code class="linenumber">13</code>  <tt> EDIT</tt> a0=customer.store_num; 
+<code class="linenumber">14</code>   <tt>EDIT</tt> a1=customer.store_name;
+<code class="linenumber">15</code>  <tt>COMBOBOX</tt><b> a5=customer.state;</b>
+<code class="linenumber">16</code> <tt>END</tt>
+</pre>
+
+  <p>During an INPUT, INPUT ARRAY or CONSTRUCT statement the ComboBox is active, and the user can select a value from the
+  dropdown list.&nbsp; The value selected will be stored in the formfield named <b>customer.state</b>.</p>
+
+  <h3><a name="getcbreference" id="getcbreference">Getting a reference to the objec</a>t</h3>
+
+  <p>The <a href="ClassComboBox.html">ComboBox Class</a> contains methods that manage the values for a ComboBox.&nbsp;In order to
+  use these methods you must first obtain a reference to the ComboBox object:</p>
+
+  <ul>
+    <li>Define a variable for the reference to the ComboBox object.&nbsp;The data type for the variables is the class identifier
+    (ui.ComboBox):
+      <pre>
+DEFINE cb ui.ComboBox
+</pre>
+    </li>
+
+    <li>Open a form that contains a ComboBox using OPEN WINDOW ... WITH FORM ... :</li>
+  </ul>
+
+  <blockquote>
+    <pre>
+OPEN WINDOW w1 WITH FORM ("testcb")
+</pre>
+  </blockquote>
+
+  <ul>
+    <li>Next, get a reference to the ComboBox object using the method provided.&nbsp; As a "class method", this method is called
+    using the class identifier. Provide the <a href="#elementname">name</a> of the formfield to the method:</li>
+  </ul>
+
+  <blockquote>
+    <pre>
+LET cb = ui.ComboBox.forName("customer.state")
+</pre>
+  </blockquote>
+
+  <p>&nbsp;Once you have a reference to the ComboBox object, you can call any of the methods defined in the class as "object
+  methods":</p>
+
+  <ul>
+    <li>To add an item to a ComboBox list</li>
+  </ul>
+
+  <blockquote>
+    <p>You can instruct the ComboBox to store a code (the "name") in the formfield that the ComboBox represents, but to display
+    the description (the "text")&nbsp; in the list to help the user make his selection. For example, to store the value "IL"
+    (<i>name</i>) in the formfield, but to display "Illinois" (<i>text</i>) to the user:</p>
+    <pre>
+CALL cb.additem("IL", "Illinois")
+</pre>
+
+    <p>If&nbsp; <i>text</i> is NULL, <i>name</i> will be displayed.</p>
+  </blockquote>
+
+  <ul>
+    <li>To clear the list of all values</li>
+  </ul>
+
+  <blockquote>
+    <pre>
+CALL cb.clear()
+</pre>
+  </blockquote>
+
+  <ul>
+    <li>To remove an item from the list; provide the <i>name</i></li>
+  </ul>
+
+  <blockquote>
+    <pre>
+CALL cb.removeitem("IL")
+</pre>
+  </blockquote>
+
+  <p>See the <a href="ClassComboBox.html">ComboBox Class</a> documentation for a complete list of the methods.</p>
+
+  <h3><a name="addcbitem" id="addcbitem">Adding values to the ComboBox from a Database Table</a></h3>
+
+  <p>An example in&nbsp; <a href="TutChap05.html#combobox">Tutorial Chapter 5 GUI Options</a> loads a ComboBox with static
+  values. The following example retrieves the valid list of values from a database table (state) instead:</p>
+
+  <h4>Example 6:</h4>
+  <pre>
+<code class="linenumber">01</code> <tt>SCHEMA</tt> custdemo
+<code class="linenumber">02</code> <tt>MAIN</tt>
+<code class="linenumber">03</code>  <tt>DEFINE</tt> cb ui.ComboBox
+<code class="linenumber">04</code>  <tt>CONNECT</tt> TO "custdemo"
+<code class="linenumber">05</code>  <tt>OPEN WINDOW</tt> w1 <tt>WITH FORM</tt> "testcb"
+<code class="linenumber">06</code>  <tt>LET</tt> cb = ui.ComboBox.forName("customer.state")
+<code class="linenumber">07</code>  <tt>IF</tt> cb IS NOT NULL <tt>THEN</tt>
+<code class="linenumber">08</code>   <tt>CALL</tt> loadcb(cb)
+<code class="linenumber">09</code>  <tt>END IF</tt>
+<code class="linenumber">10</code> ...
+<code class="linenumber">11 </code><tt>END MAIN</tt>
+<code class="linenumber">12</code>
+<code class="linenumber">13</code> <tt>FUNCTION</tt> loadcb(cb)
+<code class="linenumber">12</code>  <tt>DEFINE</tt> cb ui.ComboBox,
+<code class="linenumber">13</code>         l_state_code <tt>LIKE</tt> state.state_code,
+<code class="linenumber">14</code>         l_state_name <tt>LIKE</tt> state.state_name
+<code class="linenumber">15</code>
+<code class="linenumber">18</code>  <tt>DECLARE</tt> mycurs <tt>CURSOR FOR
+19    SELECT</tt> state_code, state_name <tt>FROM </tt>state
+<code class="linenumber">20</code>  <tt>CALL</tt> cb.clear()
+<code class="linenumber">21</code>  <tt>FOREACH</tt> mycurs <tt>INTO</tt> l_state_code, l_state_name
+<code class="linenumber">22</code>  -- provide <i>name</i> and <i>text</i> for the ComboBox item
+<code class="linenumber">23</code> <tt>   CALL</tt> cb.addItem(l_state_code,l_state_name)
+<code class="linenumber">24</code>  <tt>END FOREACH</tt>
+<code class="linenumber">26</code> <tt>END FUNCTION</tt>
+</pre>
+
+  <p>Display on Windows platforms</p>
+
+  <p><img border="0" src="../Images/TUT1206.png" width="299" height="180"></p>
+
+  <p>As an alternative to calling the <b>loadcb</b> function in your BDL program, this function can be specified as the <a href=
+  "ClassComboBox.html#EXAMPLES">initializer</a> function for the ComboBox in the form specification file.&nbsp; When the form is
+  opened, The initializer function is called automatically and a reference to the ComboBox object is passed to it. Provide the
+  name of the initializer function in lowercase:</p>
+
+  <blockquote>
+    <pre>
+ATTRIBUTES
+COMBOBOX a5=customer.state, <b>INITIALIZER = loadcb;</b>
+</pre>
+  </blockquote>
+  <hr>
+
+  <h2><a name="uiDialog" id="uiDialog">Using the Dialog Class in Interactive Statements</a></h2>
+
+  <p>The <a href="ClassDialog.html">Dialog Class</a> provides methods that can only be called from within an interactive
+  instruction (dialog) such as MENU, INPUT, INPUT ARRAY, DISPLAY ARRAY and CONSTRUCT.&nbsp;The methods are called through the
+  predefined variable DIALOG, which automatically provides a reference to the Dialog object.</p>
+
+  <p><a href="TutChap05.html#DisEnabActions">Tutorial Chapter 5 Enhancing the Form</a> illustrates the use of Dialog Class
+  methods to disable/enable actions during a MENU interactive statement.</p>
+
+  <h3><a name="hideaction" id="hideaction">Hiding Default Action View</a>s</h3>
+
+  <p>To hide default action views (the buttons that appear on the form when there is no specific action view for an action), use
+  the following Dialog Class method. Values for the hidden state of the action view can be:</p>
+
+  <ul>
+    <li>0 - FALSE, the action is visible</li>
+
+    <li>1 - TRUE, the action is hidden</li>
+  </ul>
+  <pre>
+    MENU
+      BEFORE MENU
+   <tt>    </tt>CALL DIALOG.setActionHidden("next",1)
+      ...
+    END MENU
+</pre>
+
+  <p>This example hides the action that has the name <b>next</b>. The reference to the DIALOG object was provided by the runtime
+  system.</p>
+
+  <h3><a name="disablefield" id="disablefield">Enabling and Disabling Fields</a></h3>
+
+  <p>This method in the Dialog Class allows you to disable fields on a form during the interactive statement; the field is still
+  visible, but the user cannot edit the value. Values for the active state of the field can be:</p>
+
+  <ul>
+    <li>0 - FALSE, the field is disabled</li>
+
+    <li>1 - TRUE, the field is enabled</li>
+  </ul>
+
+  <p>The reference to the DIALOG object is provided by the runtime system. Provide the <a href="#elementname">name</a> of the
+  field and its state to the method.</p>
+
+  <p>The following example disables the <b>store_name</b> field during an INPUT statement:</p>
+  <pre>
+   INPUT BY NAME customer.*
+    BEFORE INPUT
+      CALL DIALOG.setFieldActive("customer.store_name",0)
+    ...
+   END INPUT
+</pre>
+
+  <p>See the <a href="ClassDialog.html">Dialog Class</a> documentation for a complete list of its methods.</p>
+  <hr>
+
+  <h2><a name="uiInterface" id="uiInterface">Using the Interface Class</a></h2>
+
+  <p>Methods in the Interface Class allow you interact with the user interface, as shown in the examples below.</p>
+
+  <p>You do not need to get an object reference to the Interface; call the methods in the Interface Class using the class
+  identifier, <a href="ClassInterface.html">ui.Interface</a>.</p>
+
+  <h3><a name="uirefresh" id="uirefresh">Refresh the interface</a></h3>
+
+  <p>The User Interface on the Client is synchronized with the DOM tree of the runtime system when an interactive statement is
+  active. If you want to show something on the screen while the program is running in a batch procedure, you must force
+  synchronization with the front end.&nbsp;</p>
+
+  <p>As shown in the Tutorial Chapter 9 <a href="TutChap09.html#Refresh">Reports,</a> the changes made in the program to the
+  value of the progress bar are not displayed on the user's window, since the report is a batch process and no user interaction
+  is required.&nbsp; To force the changes in the progress bar to be reflected on the screen, the following method from the
+  Interface Class is used:</p>
+  <pre>
+     CALL ui.Interface.refresh()
+</pre>
+
+  <h3><a name="uiloadfiles" id="uiloadfiles">Load custom XML files</a></h3>
+
+  <ul>
+    <li>Start Menus, Toolbar icons, and Topmenus can each be defined in a unique XML file.</li>
+  </ul>
+
+  <blockquote>
+    <p>Use the appropriate extension:</p>
+
+    <ul>
+      <li>Start Menu - .4sm</li>
+
+      <li>Toolbar - .4tb</li>
+
+      <li>Topmenu - .4tm</li>
+    </ul>
+
+    <p>Use the corresponding method to load the file:</p>
+
+    <blockquote>
+      <pre>
+CALL ui.Interface.loadStartMenu("mystartmenu")
+</pre>
+      <pre>
+CALL ui.Interface.loadTopMenu("tmstandard")
+</pre>
+      <pre>
+CALL ui.Interface.loadToolbar("tbstandard")
+</pre>
+    </blockquote>
+
+    <p>Do not specify a path or file extension in the file name. The runtime system automatically searches for a file with the
+    correct extension in the current directory and in the path list defined in the <a href=
+    "EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href="EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a>
+    environment variable.</p>
+
+    <p>See the <a href="StartMenus.html">Start Menu</a>, <a href="Topmenus.html">Topmenu</a>, or <a href=
+    "Toolbars.html">Toolbar</a> documentation for details on the format and contents of the files.</p>
+  </blockquote>
+
+  <ul>
+    <li>
+      <p align="left">Custom Presentation Styles and global Action Defaults must each be defined in a unique file.</p>
+    </li>
+  </ul>
+
+  <blockquote>
+    <p align="left">Use the appropriate extension:</p>
+
+    <ul>
+      <li>
+        <p align="left">Presentation Styles - .4st</p>
+      </li>
+
+      <li>
+        <p align="left">Action Defaults - .4ad</p>
+      </li>
+    </ul>
+
+    <p align="left">&nbsp;Use the corresponding method to load the file:</p>
+  </blockquote>
+
+  <div align="left">
+    <blockquote>
+      <blockquote>
+        <pre>
+CALL ui.Interface.loadStyles("mystyles")
+</pre>
+        <pre>
+CALL ui.Interface.loadActionDefaults("mydefaults")
+</pre>
+      </blockquote>
+    </blockquote>
+  </div>
+
+  <blockquote>
+    <p align="left">You can provide an absolute path with the corresponding extension, or a simple file name without the
+    extension. If you give the simple file name, the runtime system searches for the file in the current directory. If the file
+    does not exist, it searches in the directories defined in the <a href=
+    "EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href="EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a>
+    environment variable.</p>
+
+    <p align="left">The action defaults are applied only once, to newly created elements. For example, if you first load a
+    toolbar, then you load a global Action defaults file, the attribute of the toolbar items will not be updated with the last
+    loaded Action defaults.</p>
+
+    <p>See <a href="PresentationStyles.html">Presentation Styles</a> and <a href="ActionDefaults.html">Action Defaults</a> for
+    details on the format and contents of the file.</p>
+  </blockquote>
+
+  <h3><a name="uiclient" id="uiclient">Identify the Genero client</a></h3>
+
+  <p>You can use methods in the Interface Class to identify the type and version of the Genero client currently being used by the
+  program:&nbsp;</p>
+
+  <blockquote>
+    <pre>
+CALL ui.Interface.getFrontEndName() RETURNING typestring 
+</pre>
+    <pre>
+CALL ui.Interface.getFrontEndVersion() RETURNING versionstring
+</pre>
+  </blockquote>
+
+  <p>Each method returns a string.&nbsp; The type will be "Gdc" or "Console".</p>
+
+  <p>Some of the other methods in the ui.Interface class allow you to:</p>
+
+  <ul>
+    <li>Set and retrieve program names and titles</li>
+
+    <li>call Front End functions that reside on the Genero client</li>
+
+    <li>work with MDI windows</li>
+  </ul>
+
+  <p>See the <a href="ClassInterface.html">Interface Class</a> documentation for a complete list of the methods.</p>
+  <hr>
+</body>
+</html>

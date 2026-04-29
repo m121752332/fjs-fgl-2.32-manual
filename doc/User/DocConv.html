@@ -1,0 +1,276 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Documentation Conventions</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK rel="stylesheet" type="text/css" href="../FglTechRef.css">
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Documentation Conventions</a></H1>
+
+<p>Summary:</p>
+
+<ul>
+  <li><a href="#DC_CONSOLE">TUI Only Features</a></li>
+  <li><a href="#DC_DESFEAT">De-supported Features</a></li>
+  <li><a href="#DC_IFXSPEC">Informix Specific Features</a></li>
+  <li><a href="#DC_SYNTAXES">Syntaxes</a></li>
+  <li><a href="#DC_NOTES">Notes</a></li>
+  <li><a href="#DC_WARNINGS">Warnings</a></li>
+  <li><a href="#DC_TIPS">Tips</a></li>
+  <li><a href="#DC_EXAMPLES">Code Examples</a></li>
+  <li><a href="#ENH_REF">Enhancement reference</a></li>
+</ul>
+
+<HR>
+
+<h2><a name="DC_CONSOLE">TUI Only Features</a></h2>
+
+<p><a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a> only features are marked with the red warning:
+<b><font color="#FF0000">TUI Only!</font></b></p>
+
+<div align="center">
+  <center>
+  <table border="0" width="90%" cellpadding="0" cellspacing="0" bgcolor="#F0F0FF">
+    <tr>
+      <td width="100%">
+      <h4><br>
+      OPTIONS MENU LINE 3 <b><font color="#FF0000">TUI Only!<br>
+      </font></b></h4>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<p>Elements marked with this flag must only be used in programs designed for
+text-based terminals.&nbsp;</p>
+
+<HR>
+
+<h2><a name="DC_DESFEAT">De-supported Features</a></h2>
+
+<p>Product features that are no longer supported are marked with the red warning: <b><font color="#FF0000">De-supported!</font></b></p>
+
+<div align="center">
+  <center>
+  <table border="0" width="90%" cellpadding="0" cellspacing="0" bgcolor="#F0F0FF">
+    <tr>
+      <td width="100%">
+      <h4><br>
+      The WIDGET=&quot;BMP&quot; attribute <b><font color="#FF0000">De-supported!<br>
+      </font></b></h4>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<p>Elements marked with this flag are no longer supported in the product.</p>
+
+<HR>
+
+<h2><a name="DC_IFXSPEC">Informix Specific Features</a></h2>
+
+<p>Features that are specific to Informix database servers are marked with the red warning:
+<b><font color="#FF0000">Informix only!</font></b></p>
+
+<div align="center">
+  <center>
+  <table border="0" width="90%" cellpadding="0" cellspacing="0" bgcolor="#F0F0FF">
+    <tr>
+      <td width="100%">
+      <h4><br>
+      DATABASE dbname@dbserver <b><font color="#FF0000">Informix only!<br>
+      </font></b></h4>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<p>Elements marked with this flag work only with Informix database servers, and 
+are not recommended for multi-database programming.</p>
+
+<HR>
+
+<h2><a name="DC_SYNTAXES">Syntaxes</a></h2>
+
+<p>The term of '<i>syntax</i>' is global and indicates the way to use a product
+function. For example, it can be used to describe a language instruction or a system command:</p>
+
+<div align="center">
+  <center>
+  <table border="0" width="90%" cellpadding="0" cellspacing="0" bgcolor="#F0F0FF">
+    <tr>
+      <td width="100%">
+      <h4>Syntax:</h4>
+      <code>CALL <i>function</i> ( <u>[</u> <i>parameter</i> <u>[,...]</u> <u>]</u>
+      ) [ RETURNING <i>variable</i> <u>[,...]</u> <u>]</u></code>
+      <p></p>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<p>Wildcard characters in syntax definitions are marked with an underscore:</p>
+<div align="center">
+  <center>
+  <table border="0" width="90%">
+    <tr>
+      <td width="12%" bgcolor="#C0C0C0">
+		<p align="center"><b>Wildcards</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top" align="center"><tt><u>[</u>&nbsp;&nbsp; <u>]</u></tt></td>
+      <td valign="top">Square braces indicate an optional element in the syntax.</td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top" align="center"><tt><u>{</u> <u>|</u> <u>}</u></tt></td>
+      <td valign="top">Curly braces indicate a list of possible elements
+        separated by a pipe.</td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top" align="center"><tt><u>[...]</u></tt></td>
+      <td valign="top">Indicates that the previous element can appear more than
+        once.</td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top" align="center"><tt><u>[,...]</u></tt></td>
+      <td valign="top">Previous element can appear more than once separated by a
+        comma.</td>
+    </tr>
+  </table>
+
+
+  </center>
+</div>
+
+<HR>
+
+<h2><a name="DC_NOTES">Notes</a></h2>
+
+<p>Notes hold a list of technical remarks about the product function:</p>
+
+<div align="center">
+  <center>
+  <table border="0" width="90%" cellpadding="0" cellspacing="0" bgcolor="#F0F0FF">
+    <tr>
+      <td width="100%">
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>identifier</i> is the name of the variable to be defined.</li>
+  <li><i>datatype</i> can be any data type
+    except complex types like TEXT or BYTE.</li>
+  <li>...</li>
+</ol>
+
+
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<HR>
+
+<h2><a name="DC_WARNINGS">Warnings</a></h2>
+
+<p>Warnings are important technical remarks, describing special behavior of the
+product function: </p>
+
+<div align="center">
+  <center>
+  <table border="0" width="90%" cellpadding="0" cellspacing="0" bgcolor="#F0F0FF">
+    <tr>
+      <td width="100%">
+<p><b><font color="#FF0000">Warning: </font>When a DATE, DATETIME or INTERVAL constant cannot be
+    initialized correctly, it is set to NULL.</b></p>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<HR>
+
+<h2><a name="DC_TIPS">Tips</a></h2>
+
+<p>Tips are hints to use the product function more efficiently: </p>
+
+<div align="center">
+  <center>
+  <table border="0" width="90%" cellpadding="0" cellspacing="0" bgcolor="#F0F0FF">
+    <tr>
+      <td width="100%">
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li>Do not include a NULL value in a Boolean expression.</li>
+  <li>...</li>
+</ol>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<HR>
+
+<h2><a name="DC_EXAMPLES">Code Examples</a></h2>
+
+<p>Code examples are written with line numbers and language syntax highlighting
+as follows: </p>
+
+<div align="center">
+  <center>
+  <table border="0" width="90%" cellpadding="0" cellspacing="0" bgcolor="#F0F0FF">
+    <tr>
+      <td width="100%">
+<h4>Example 1:</h4>
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> a1 <tt>ARRAY</tt>[100]<tt> OF INTEGER</tt>,
+<code class="linenumber">03</code>         a2 <tt>ARRAY</tt>[10,20] <tt>OF RECORD</tt>
+<code class="linenumber">04</code>              id <tt>INTEGER</tt>,
+<code class="linenumber">05</code>   ...
+</pre>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+
+
+
+<HR>
+
+<h2><a name="ENH_REF">Enhancement references</a> </h2>
+
+<p>In some parts of the documentation you can find enhancement reference notes
+with a number identifying the request in our internal database: </p>
+
+<div align="center">
+  <center>
+  <table border="0" width="90%" cellpadding="0" cellspacing="0" bgcolor="#F0F0FF">
+    <tr>
+      <td width="100%">
+<p><i>Enhancement reference: BZ#1827</i></p>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+
+
+
+</BODY>
+</HTML>

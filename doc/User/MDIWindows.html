@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>MDI Windows</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">MDI Windows</a></H1>
+
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#PURPOSE">Purpose</a></li>
+  <li><a href="#USAGE">Usage</a>
+    <ul>
+      <li><a href="#parent-container">Configuring the parent container</a></li>
+      <li><a href="#child-programs">Configuring child programs</a></li>
+      <li><a href="#tabbedMDI">Tabbed MDI</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p>See also <a href="ClassInterface.html">Interface built-in class</a>.</p>
+
+<HR>
+
+<h3><a name="PURPOSE">Purpose</a></h3>
+
+<p>By default, BDL program windows are displayed independently in separate windows
+on the front-end window manager. This mode is well known as SDI, Single Document
+Interface. The user interface can be configured
+to group program windows in a parent container (also known as MDI, Multiple
+Document Interface).&nbsp;</p>
+
+<p> In BDL, Multiple Document Interface is called&nbsp; <b>WCI</b>: <i> Window
+Container Interface</i>.</p>
+
+<p>The Window Container Interface (WCI) can be used to group several programs
+together in a parent window. The parent program is the container for the other
+programs, defined as children of the container. The container program can have
+its own windows, but this makes sense only for temporary modal windows (with
+style=&quot;dialog&quot;).</p>
+
+<HR>
+
+<h3><a name="USAGE">Usage</a></h3>
+
+<p>WCI configuration is done dynamically at the beginning of programs, by using the
+<a href="ClassInterface.html">ui.Interface</a> built-in class.</p>
+
+<h4><a name="parent-container">Configuring the parent container</a></h4>
+
+<p>The WCI container program is a separate BDL program of a special type,
+dedicated to contain other program windows. On the front-end, container programs
+automatically display a parent window that will hold all child program windows
+that will attach to the container.</p>
+
+<p>The WCI container program must indicate that its type is special (<a href="ClassInterface.html#setType">setType()</a> method),
+and must identify itself (<a href="ClassInterface.html#setName">setName()</a> method):<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>CALL</tt> ui.Interface.setName(&quot;parent1&quot;)
+<CODE class=linenumber>03</CODE>   <tt>CALL</tt> ui.Interface.setType(&quot;container&quot;)
+<CODE class=linenumber>04</CODE>   <tt>CALL</tt> ui.Interface.setText(&quot;SoftStore Manager&quot;)
+<CODE class=linenumber>05</CODE>   <tt>CALL</tt> ui.Interface.setSize(&quot;600px&quot;,&quot;1000px&quot;)
+<CODE class=linenumber>06</CODE>   <tt>CALL</tt> ui.Interface.loadStartMenu(&quot;mystartmenu&quot;)
+<CODE class=linenumber>07</CODE>   <tt>MENU</tt> &quot;Main&quot;
+<CODE class=linenumber>08</CODE>     <tt>COMMAND</tt> &quot;Help&quot; <tt>CALL</tt> help()
+<CODE class=linenumber>09</CODE>     <tt>COMMAND</tt> &quot;About&quot; <tt>CALL</tt> aboutbox()
+<CODE class=linenumber>10</CODE>     <tt>COMMAND </tt>&quot;Exit&quot; <tt>EXIT MENU</tt>
+<CODE class=linenumber>11</CODE>   <tt>END MENU</tt>
+<CODE class=linenumber>12</CODE> <tt>END MAIN</tt></pre>
+
+<p>You can define the initial size of the
+parent container window with the <a href="ClassInterface.html#setSize">setSize(height,width)</a>
+method.</p>
+
+<h4><a name="child-programs">Configuring child programs</a></h4>
+
+<p>WCI children programs must attach to a parent container by giving the name
+of the container program:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>  <tt>CALL</tt> ui.Interface.setName(&quot;custapp&quot;)
+<CODE class=linenumber>03</CODE>  <tt>CALL</tt> ui.Interface.setType(&quot;child&quot;)
+<CODE class=linenumber>04</CODE>  <tt>CALL</tt> ui.Interface.setText(&quot;Customers&quot;)
+<CODE class=linenumber>05</CODE>  <tt>CALL</tt> ui.Interface.setContainer(&quot;parent1&quot;)
+<CODE class=linenumber>06</CODE>     ...
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt></pre>
+
+<p>Multiple container programs can be used to group
+programs by application modules.</p>
+
+<p> When the program is identified as a container (<code>type=&quot;container&quot;</code>),
+a global window is automatically displayed as an container window. The default <a href="Toolbars.html">Toolbar</a>
+and the default <a href="Topmenus.html">Topmenu</a> are displayed and a <a href="StartMenus.html">Startmenu</a> can be used. Other windows created by this
+kind of program can be displayed, inside the container
+(<code>windowType=&quot;normal&quot;</code>) or as dialog windows
+(<code>windowType=&quot;modal&quot;</code>).
+<a href="WindowsAndForms.html#WINDOW_STYLES">Window styles</a> can be applied to the
+parent window by using the default style specification
+(<code>name=&quot;Window.main&quot;</code>).</p>
+
+<p>The client shows a system error and the programs stops when:</p>
+<ul>
+	<li>A child program is started, but the parent container is not</li>
+	<li>A container program is started twice</li>
+</ul>
+
+<p>When the parent container program is stopped, other applications are
+automatically stopped by the front-end. This will result in a runtime error <b><a href="FglErrors.html#-6313">-6313</a></b>
+on the application server side. To avoid this, you should control that there are
+no more running child programs before terminating the parent container program.
+The WCI container program can query for the existence of children with the <a href="ClassInterface.html#getChildCount">getChildCount()</a>
+and <a href="ClassInterface.html#getChildInstances">getChildInstances()</a> methods:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>CALL</tt> ui.Interface.setName(&quot;parent1&quot;)
+<CODE class=linenumber>03</CODE>   <tt>CALL</tt> ui.Interface.setType(&quot;container&quot;)
+<CODE class=linenumber>04</CODE>   <tt>CALL</tt> ui.Interface.setText(&quot;SoftStore Manager&quot;)
+<CODE class=linenumber>05</CODE>   <tt>CALL</tt> ui.Interface.setSize(&quot;600px&quot;,&quot;1000px&quot;)
+<CODE class=linenumber>06</CODE>   <tt>CALL</tt> ui.Interface.loadStartMenu(&quot;mystartmenu&quot;)
+<CODE class=linenumber>07</CODE>   <tt>MENU</tt> &quot;Main&quot;
+<CODE class=linenumber>08</CODE>     <tt>COMMAND</tt> &quot;Help&quot; <tt>CALL</tt> help()
+<CODE class=linenumber>09</CODE>     <tt>COMMAND</tt> &quot;About&quot; <tt>CALL</tt> aboutbox()
+<CODE class=linenumber>10</CODE>     <tt>COMMAND </tt>&quot;Exit&quot;
+<CODE class=linenumber>11</CODE>       <tt>IF </tt>ui.Interface.getChildCount()&gt;0 <tt>THEN</tt>
+<CODE class=linenumber>12</CODE>          <tt>ERROR </tt>&quot;You must first exit the child programs.&quot;
+<CODE class=linenumber>13</CODE>       <tt>ELSE</tt>
+<CODE class=linenumber>14</CODE>          <tt>EXIT MENU</tt>
+<CODE class=linenumber>15</CODE>       <tt>END IF</tt>
+<CODE class=linenumber>16</CODE>   <tt>END MENU</tt>
+<CODE class=linenumber>17</CODE> <tt>END MAIN</tt></pre>
+
+<br/>
+<h4><a name="tabbedMDI">Tabbed MDI</a></h4>
+
+MDI container can also be displayed as "Tabbed MDI" when the style attribute &quot;<a href="PresentationStyles.html#STYATT_WINDOW">tabbedContainer</a>&quot; is set to <code>yes</code>.
+<br/> In Tabbed MDI, the style attribute &quot;<a href="PresentationStyles.html#STYATT_WINDOW">tabbedContainerCloseMethod</a>&quot; defines how to close the current
+        page.
+<p>Values can be:</p>
+      <ul>
+        <li>
+          <tt>"container"</tt> (default), the container has a close button on
+          the top right corner, which closes the current tab.
+        </li>
+        <li>
+          <tt>"page"</tt>, each page has its own close button.
+        </li>
+        <li>
+          <tt>"both"</tt>, each page and the container have a close button.
+        </li>
+        <li>
+          <tt>"none"</tt>, no close button is shown.
+        </li>
+      </ul>
+      The close button is enabled depending on the window style attribute.
+
+
+</BODY>
+</HTML>

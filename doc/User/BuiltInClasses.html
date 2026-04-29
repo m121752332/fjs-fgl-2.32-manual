@@ -1,0 +1,341 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Built-in Classes</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+
+<HR>
+
+<H1><a name="PAGE_HEADER">Built-in Classes</a></H1>
+<p> Summary:</p>
+
+<ul>
+  <li><a href="#PURPOSE">Purpose</a></li>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#USAGE">Usage</a><ul>
+  <li><a href="#base">base Package classes</a></li>
+	<li><a href="#ui">ui Package classes</a></li>
+	<li><a href="#om">om Package classes</a></li>
+	<li><a href="#util">utils Package classes</a></li>
+	<li><a href="#os">os Package classes</a></li>
+	<li><a href="#Methods">Class and Object Methods</a></li>
+	<li><a href="#Objects">Working with Objects</a></li>
+</ul>
+
+
+	</li>
+</ul>
+
+
+<p><i>See also:</i> <a href="Variables.html">Variables</a>, <a href="Functions.html">Functions</a>.</p>
+
+
+<HR>
+
+<h3><a name="PURPOSE">Purpose</a></h3>
+
+<p>Built-in classes, grouped into packages, are&nbsp;predefined object templates that 
+are
+provided by the 
+<a href="FglTerms.html#RUNTIME_SYSTEM">runtime system</a>.&nbsp; Each class contains methods that interact with a specific program object, 
+allowing you to change the appearance or behavior of the object. The classes 
+provide the benefits of OOP programming in 4GL.&nbsp; </p>
+
+
+<HR>
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+<h4>Syntax 1: Defining an object </h4>
+<p><code>DEFINE <i>obj</i> <i>package.classname</i> </code></p>
+<h4>Syntax 2: Using a class method</h4>
+<p><code>CALL <i>package.classname.method</i>( <i>parameter</i> <u>[,...]</u> ) <u>[</u>RETURNING
+...<u>]</u></code></p>
+<p><code>LET <i>variable</i> = <i>package.classname.method</i>( <i>parameter</i>
+<u>[,...]</u> )</code></p>
+<h4>Syntax 3: Using an object method</h4>
+<p><code>CALL <i>obj.method</i>( <i>parameter</i> <u>[,...]</u> ) <u>[</u>RETURNING
+...<u>]</u></code></p>
+<p><code>LET <i>variable</i> = <i>obj.method</i>( <i>parameter</i> <u>[,...]</u>
+)</code></p>
+<h4>Notes:</h4>
+<ol>
+  <li><i>obj </i>is the name of the variable holding a reference to the object.</li>
+	<li><i>package</i> is the name of the package the class comes from.</li>
+  <li><i>classname</i> is the name of the built-in class.</li>
+	<li><i>method</i> is the name of the method.</li>
+	<li><i>parameter</i> is a parameter for the method.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="USAGE">Usage</a></h3>
+<h4><a name="base">Package: base</a></h4>
+<table border="0" cellpadding="0" width="60%" id="table5">
+  <tr>
+    <td bgcolor="#C0C0C0" valign="top" width="24%"><b>Classes</b></td>
+    <td bgcolor="#C0C0C0" valign="top" width="64%"><b>Purpose</b></td>
+  </tr>
+  <tr>
+    <td valign="top" width="24%">
+	<a href="ClassApplication.html">Application</a></td>
+    <td valign="top" width="64%">
+	Provides an interface to the application internals</td>
+  </tr>
+  <tr>
+    <td valign="top" width="24%">
+	<a href="ClassChannel.html">Channel</a></td>
+    <td valign="top" width="64%">
+	Provides basic read/write functionality (files/communication)</td>
+  </tr>
+  <tr>
+    <td valign="top" width="24%" height="18">
+	<a href="ClassStringBuffer.html">StringBuffer</a></td>
+    <td valign="top" width="64%" height="18">
+	Allows manipulation of character strings </td>
+  </tr>
+  <tr>
+    <td valign="top" width="24%">
+	<a href="ClassStringTokenizer.html">StringTokenizer</a></td>
+    <td valign="top" width="64%">
+	Allows parsing of strings to extract tokens</td>
+  </tr>
+  <tr>
+    <td valign="top" width="24%">
+	<a href="ClassTypeInfo.html">TypeInfo</a></td>
+    <td valign="top" width="64%">
+	Provides serialization of program variables</td>
+  </tr>
+</table>
+
+
+<h4><a name="ui">Package: ui</a></h4>
+<table border="0" cellpadding="0" width="60%" id="table6">
+  <tr>
+    <td bgcolor="#C0C0C0" valign="top" width="24%"><b>Classes</b></td>
+    <td bgcolor="#C0C0C0" valign="top" width="64%"><b>Purpose</b></td>
+  </tr>
+  <tr>
+    <td valign="top" width="24%">
+	<a href="ClassInterface.html">Interface</a></td>
+    <td valign="top" width="64%">
+	Provided to manipulate the user interface</td>
+  </tr>
+  <tr>
+    <td valign="top" width="24%">
+	<a href="ClassWindow.html">Window</a></td>
+    <td valign="top" width="64%">
+	Provides an interface to the Window objects</td>
+  </tr>
+  <tr>
+    <td valign="top" width="24%">
+	<a href="ClassForm.html">Form</a></td>
+    <td valign="top" width="64%">
+	Provides an interface to the forms used by the program</td>
+  </tr>
+  <tr>
+    <td valign="top" width="24%">
+	<a href="ClassDialog.html">Dialog</a></td>
+    <td valign="top" width="64%">
+	Provides an interface to the interactive instructions</td>
+  </tr>
+  <tr>
+    <td valign="top" width="24%">
+	<a href="ClassComboBox.html">ComboBox</a></td>
+    <td valign="top" width="64%">
+	Provides an interface to the ComboBox formfield view</td>
+  </tr>
+</table>
+
+
+<h4><a name="om">Package: om</a></h4>
+<table border="0" cellpadding="0" width="60%" id="table7">
+  <tr>
+    <td bgcolor="#C0C0C0" valign="top" width="24%"><b>Classes</b></td>
+    <td bgcolor="#C0C0C0" valign="top" width="64%"><b>Purpose</b></td>
+  </tr>
+  <tr>
+    <td valign="top" width="24%">
+	<a href="ClassDomDocument.html">DomDocument</a></td>
+    <td valign="top" width="64%">
+	Provides methods to manipulate a DOM data tree</td>
+  </tr>
+  <tr>
+    <td valign="top" width="24%">
+	<a href="ClassDomNode.html">DomNode</a></td>
+    <td valign="top" width="64%">
+	Provides methods to manipulate a node of a DOM data tree</td>
+  </tr>
+  <tr>
+    <td valign="top" width="24%">
+	<a href="ClassNodeList.html">NodeList</a></td>
+    <td valign="top" width="64%">
+	Holds a list of selected DomNode objects </td>
+  </tr>
+  <tr>
+    <td valign="top" width="24%">
+	<a href="ClassSaxAttributes.html">SaxAttributes</a></td>
+    <td valign="top" width="64%">
+	Provides methods to manipulate XML element attributes</td>
+  </tr>
+  <tr>
+    <td valign="top" width="24%">
+	<a href="ClassSaxDocumentHandler.html">SaxDocumentHandler</a></td>
+    <td valign="top" width="64%">
+	Provides methods to write an XML filter</td>
+  </tr>
+  <tr>
+    <td valign="top" width="24%">
+	<a href="ClassXmlReader.html">XmlReader</a></td>
+    <td valign="top" width="64%">
+	Provides methods to read and process a file written in XML&nbsp; format</td>
+  </tr>
+  <tr>
+    <td valign="top" width="24%">
+	<a href="ClassXmlWriter.html">XmlWriter</a></td>
+    <td valign="top" width="64%">
+	Provides methods to write XML documents to different types of output</td>
+  </tr>
+</table>
+
+
+<h4><a name="util">Package: util</a></h4>
+<table border="0" cellpadding="0" width="60%" id="table8">
+  <tr>
+    <td bgcolor="#C0C0C0" valign="top" width="24%"><b>Classes</b></td>
+    <td bgcolor="#C0C0C0" valign="top" width="64%"><b>Purpose</b></td>
+  </tr>
+  <tr>
+    <td valign="top" width="24%">
+	<a href="Ext_util_Math.html">Math</a></td>
+    <td valign="top" width="64%">
+	Provides an interface for mathematical functions</td>
+  </tr>
+</table>
+<p>The <i>util</i> package is a Dynamic C Extension library; part of the standard package. 
+To use the Math class, you must 
+<a href="Ext_util_Math.html#BASICS">import the&nbsp;library</a> in your 
+program: </p>
+<h4><a name="os">Package: os</a></h4>
+<table border="0" cellpadding="0" width="60%" id="table9">
+  <tr>
+    <td bgcolor="#C0C0C0" valign="top" width="24%"><b>Classes</b></td>
+    <td bgcolor="#C0C0C0" valign="top" width="64%"><b>Purpose</b></td>
+  </tr>
+  <tr>
+    <td valign="top" width="24%">
+	<a href="Ext_os_Path.html">Path</a></td>
+    <td valign="top" width="64%">Provides functions to manipulate files and 
+	directories on the machine where the BDL program executes</td>
+  </tr>
+</table>
+
+<p>The <i>os</i> package is a Dynamic C Extension library; part of the standard package. 
+To use the Path class, you must 
+<a href="Ext_os_Path.html#BASICS">import the&nbsp;library</a> in your 
+program: </p>
+
+<h3><a name="Methods">Methods</a></h3>
+<p>There are two types of methods: <i>
+Class Methods</i> and <i>Object Methods</i>. Methods can be invoked like global 
+<a href="Functions.html">functions</a>, 
+by passing parameters and/or returning values. </p>
+<p><b><i>Class Methods</i>&nbsp; </b>- you call these methods using the <i><b>class 
+identifier</b> </i>(package name + class name) as the prefix, with a period as the 
+separator.</p>
+<PRE>
+<CODE class=linenumber>01</CODE> <tt>CALL </tt>ui.Interface.refresh()</PRE>
+<p>
+The method <code>refresh()</code> is a Class Method of the <b>Interface </b>class, which is 
+part of the <b>ui </b>package.</p>
+
+<p><b><i>Object Methods</i></b> - To use these methods, the object must exist. After an object has been created, you can call&nbsp;the Object Methods in the class by using the
+<b>object variable</b> as a prefix, with a period as the separator:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>LET</tt> b = n.getDocumentElement()</PRE>
+<p>The method <code>getDocumentElement()</code> is an Object Method of the class to which the
+<i>n</i> object belongs.&nbsp; </p>
+
+
+<h3><a name="Objects">Working with Objects</a></h3>
+<p>To handle an object in your program, you </p>
+<ul>
+	<li>define an object
+	<a href="Variables.html">variable</a>
+    using the class identifier<i>.</i> </li>
+	<li>instantiate the object (create it) before using it. You usually
+instantiate objects with a Class Method<i>.</i></li>
+	<li>once the object exists, you can call the Object methods of the class.&nbsp;&nbsp; 
+	</li>
+</ul>
+
+<PRE>
+<CODE class=linenumber>O1</CODE> <tt>DEFINE </tt>n om.DomDocument, b DomNode
+<CODE class=linenumber>02</CODE> <tt>LET </tt>n = om.DomDocument.create(&quot;Stock&quot;)
+<CODE class=linenumber>03</CODE> <tt>LET</tt> b = n.getDocumentElement()</PRE>
+
+<p>The object <i>n</i> is instantiated using the <code>create()</code> Class Method of the 
+DomDocument class.&nbsp;The object <i>b </i>is instantiated&nbsp;using&nbsp; the 
+<code>getDocumentElement()</code> Object method of the DomDocument class. This 
+method returns the DomNode object that is the root node of the DomDocument 
+object <i>n</i>.</p>
+<p>The object variable only contains the reference to the object. For example,
+when passed to a function, only the reference to the object is copied onto the
+stack.</p>
+
+<p>You do not have to destroy objects. This is done automatically by the runtime
+system for you, based on a reference counter.</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt><CODE class=linenumber>
+02   </CODE> <tt>DEFINE </tt>d om.DomDocument<CODE class=linenumber>
+03   </CODE> <tt>LET</tt> d = om.DomDocument.create(&quot;Stock&quot;)  -- Reference counter = 1<CODE class=linenumber>
+05</CODE> <tt>END MAIN</tt>  -- d is removed, reference counter = 0 =&gt; object is destroyed.</PRE>
+
+
+<p>You can pass object variables to functions or return them from functions.
+Objects are passed <b><i>by reference </i></b>to functions. In the following example, 
+the function creates the object and returns its reference on the stack:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>FUNCTION </tt>createStockDomDocument( )<CODE class=linenumber>
+02   </CODE> <tt>DEFINE </tt>d om.DomDocument<CODE class=linenumber>
+03   </CODE> <tt>LET</tt> d = om.DomDocument.create(&quot;Stock&quot;)  -- Reference counter = 1<CODE class=linenumber>
+04   </CODE> <tt>RETURN </tt>d<CODE class=linenumber>
+05</CODE> <tt>END FUNCTION</tt>  -- Reference counter is still 1 because d is on the stack</PRE>
+
+
+<p>Another part of the program can get the result of that function and pass it 
+as a parameter to another function.</p>
+<h4>Example:</h4>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt><CODE class=linenumber>
+02   </CODE> <tt>DEFINE </tt>x om.DomDocument<CODE class=linenumber>
+03   </CODE> <tt>LET</tt> x = createStockDomDocument( )<CODE class=linenumber>
+04   </CODE> <tt>CALL </tt>writeStockDomDocument( x )<CODE class=linenumber>
+05</CODE> <tt>END MAIN</tt><CODE class=linenumber>
+06
+07</CODE> <tt>FUNCTION </tt>createStockDomDocument( )<CODE class=linenumber>
+08   </CODE> <tt>DEFINE </tt>d om.DomDocument<CODE class=linenumber>
+09   </CODE> <tt>LET</tt> d = om.DomDocument.create(&quot;Stock&quot;)  <CODE class=linenumber>
+10   </CODE> <tt>RETURN </tt>d<CODE class=linenumber>
+11</CODE> <tt>END FUNCTION
+</tt><CODE class=linenumber>12
+13</CODE> <tt>FUNCTION </tt>writeStockDomDocument( d )<CODE class=linenumber>
+14   </CODE> <tt>DEFINE </tt>d om.DomDocument<CODE class=linenumber>
+15   </CODE> <tt>DEFINE </tt>r om.DomNode<CODE class=linenumber>
+16   </CODE> <tt>LET</tt> r = d.getDocumentElement()<CODE class=linenumber>
+17   </CODE> <tt>CALL</tt> r.writeXml(&quot;Stock.xml&quot;)<CODE class=linenumber>
+18</CODE> <tt>END FUNCTION</tt></PRE>
+<PRE>&nbsp;</PRE>
+
+
+</BODY>
+</HTML>

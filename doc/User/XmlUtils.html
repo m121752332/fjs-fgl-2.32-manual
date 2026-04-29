@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>XML Utilities</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">XML Utilities</a></H1>
+
+<p>This pages introduces DOM and SAX standards and describes the XML utility API provided by
+Genero BDL.</p>
+
+<p>Summary:</p>
+<ul>
+  <li><a href="#DOM_SAX">The DOM and SAX standards</a></li>
+  <li><a href="#XML_CLASSES">List of built-in XML classes</a></li>
+  <li><a href="#USING_CLASSES">Using DOM and SAX classes</a></li>
+  <li><a href="#LIMITATIONS">Limitations of XML classes</a></li>
+  <li><a href="#EXCEPTIONS">Exception handling with XML classes</a></li>
+  <li><a href="#USER_INTERFACE">Controlling the user interface with XML classes</a></li>
+</ul>
+<p><i>See also:</i>
+<a href="BuiltInClasses.html">Built-in Classes</a>.</p>
+<HR>
+
+<h2><a name="DOM_SAX">DOM and SAX standards</a></h2>
+
+<p>The <a href="http://www.w3.org/DOM/">DOM</a> (<b>D</b>ocument <b>O</b>bject
+<b>M</b>odel) is a programming interface specification being developed by the
+World Wide Web Consortium (<a class="inline" href="http://www.w3.org">W3C</a>),
+that lets a programmer create and modify <a class="inline" href="http://www.w3.org/MarkUp/">HTML</a>
+pages and <a href="http://www.w3.org/XML/">XML</a> documents as full-fledged
+program objects. DOM is a full-fledged
+object-oriented, complex but complete
+API, providing methods to manipulate the full XML document as a whole.
+DOM is designed for small XML trees manipulation.</p>
+
+<p>The <a href="http://sax.sourceforge.net/">SAX</a> (<b>S</b>imple <b>A</b>PI
+for <b>X</b>ML) is a programming interface for XML, simpler as DOM. SAX
+is event-driven, streamed-data based, and designed for large trees.&nbsp; </p>
+
+<HR>
+
+<h2><a name="XML_CLASSES">List of built-in XML classes</a></h2>
+
+<p>Genero BDL implements a set of built-in classes to do basic XML manipulation.
+Here is an overview of the supported XML classes:</p>
+
+<ul>
+  <li>
+<a href="ClassDomDocument.html">DomDocument class</a>, to handle XML document
+    objects,</li>
+  <li><a href="ClassDomNode.html">DomNode class</a>, to handle XML nodes and
+    node attributes,</li>
+  <li><a href="ClassNodeList.html">NodeList class</a>, to handle the result of
+    an XML search,</li>
+  <li><a href="ClassSaxAttributes.html">SaxAttributes class</a>, to handle SAX
+    attributes,</li>
+  <li><a href="ClassXmlReader.html">XmlReader class</a>, to process an XML
+    stream with a SAX driver,</li>
+  <li><a href="ClassXmlWriter.html">XmlWriter class</a>, to write to an XML
+    stream with a SAX driver,</li>
+  <li><a href="ClassSaxDocumentHandler.html">SaxDocumentHandler
+class</a>, to implement a SAX driver with a 4gl module.</li>
+</ul>
+<HR>
+
+<h2><a name="USING_CLASSES">Using&nbsp; the DOM and SAX classes</a></h2>
+
+<p>Genero BDL distinguishes DOM APIs and SAX APIs as follows: </p>
+
+<p>The DOM API is composed of:</p>
+<ul>
+  <li>The <a href="ClassDomDocument.html">DomDocument</a> class, that defines the
+    interface to a DOM document. Instances of this class can be used to
+    identify and manipulate an XML tree. <i>DomNode</i> object manipulation
+    methods are provided by this class.</li>
+  <li>The <a href="ClassDomNode.html">DomNode</a> class, that defines the interface
+    to an DOM node. Instances of this class can be used to identify and
+    manipulate a branch of an XML tree. Child nodes and node attributes
+    management methods are provided by this class.</li>
+</ul>
+
+<p>The SAX API is composed of:</p>
+<ul>
+  <li>The <a href="ClassSaxAttributes.html">SaxAttributes</a> class represents a
+    set of element attributes.
+    It is used with an <a href="ClassXmlReader.html">XmlReader</a> or an
+    <a href="ClassXmlWriter.html">XmlWriter</a> object.</li>
+  <li>The <a href="ClassXmlReader.html">XmlReader</a> class, that is defined to
+    read XML. The XML document processing is based on SAX events.</li>
+  <li>The <a href="ClassXmlWriter.html">XmlWriter</a> class, that is defined to
+    write XML. The XML document processing is based on SAX events.</li>
+  <li>The <a href="ClassSaxDocumentHandler.html">SaxDocumentHandler</a> class,
+    which provides an interface to implement a SAX driver using <a href="Functions.html">functions</a>
+    defined in a 4gl module loaded dynamically.</li>
+</ul>
+
+<HR>
+
+<h2><a name="LIMITATIONS">Limitations of XML classes</a> </h2>
+
+<p>The built-in XML classes are provided for convenience, to help you manipulate
+XML content easily without loading a complete external XML library such as Java
+XML classes or a C-based XML libraries. The features of these built-in classes
+are limited to basic XML usage. For example, there is not DTD / XML Schema
+validation done. In other words, you can create the same attribute twice or set
+an invalid attribute value. Therefore, you must pay attention to follow properly
+the definition of the XML document when using these classes. </p>
+
+<HR>
+
+<h2><a name="EXCEPTIONS">Exception handling with XML classes</a> </h2>
+
+<p>Errors can occur while using XML classes. For example, calling methods of a <a href="ClassSaxDocumentHandler.html">SAX
+handler</a> in an invalid order raises the runtime error -8004. By default the
+program stops. XML errors can be trapped with the <tt>WHENEVER ERROR</tt> or <tt>TRY/CATCH</tt>
+<a href="Exceptions.html">exception handlers</a> of Genero, as shown in the
+example below. If an error occurs during a method call of an XML class, the
+runtime system sets the <a href="Programs.html#PV_STATUS">STATUS variable</a>. </p>
+
+<p>Trapping XML classes errors: </p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE</tt> w om.SaxDocumentHandler
+<CODE class=linenumber>03</CODE>    <tt>LET</tt> w = om.SaxDocumentHandler.createFileWriter(&quot;sample.xml&quot;)
+<CODE class=linenumber>04</CODE>    <tt>TRY</tt>
+<CODE class=linenumber>05</CODE>       <tt>CALL</tt> w.endDocument()
+<CODE class=linenumber>06</CODE>    <tt>CATCH</tt>
+<CODE class=linenumber>07</CODE>       <tt>DISPLAY</tt> &quot;ERROR: &quot;, <tt>STATUS</tt>
+<CODE class=linenumber>08</CODE>    <tt>END TRY</tt>
+<CODE class=linenumber>09</CODE> <tt>END</tt></pre>
+
+<p>Example of runtime errors that can be raised by XML classes: <a href="FglErrors.html#-8001">-8001</a>,
+<a href="FglErrors.html#-8002">-8002</a>, <a href="FglErrors.html#-8003">-8003</a>,
+<a href="FglErrors.html#-8004">-8004</a>... </p>
+
+<HR>
+
+<h2><a name="USER_INTERFACE">Controlling the user interface with XML classes</a> </h2>
+
+<p>The runtime system represents the user interface of a program with
+a DOM tree. User interface elements can be manipulated with the built-in
+classes described in this section. However, you must pay attention when
+modifying directly the AUI tree: Invalid nodes or attributes creation can lead
+to unpredictable results.</p>
+
+<p>For more details about the user interface manipulation, see the
+<a href="DynamicUI.html">Dynamic User Interface</a>. </p>
+
+</BODY>
+</HTML>

@@ -1,0 +1,893 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Utility Functions</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Utility Functions</a></H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#DEFINITION">What is a utility function?</a></li>
+  <li><a href="#FUNCLIST">List of utility functions</a></li>
+  <li><a href="#DESUPLIST">List of de-supported utility functions</a></li>
+</ul>
+
+
+<p><i>See also:</i> <a href="BuiltInFunctions.html">Built-in Functions</a>.</p>
+
+
+<HR>
+
+<h3><a name="DEFINITION">What is a utility function?</a></h3>
+
+<p>A utility function is a <a href="Functions.html">function</a> provided in a
+separate 4GL library; it is not built in the runtime system. You
+<u>must</u> link with the utility library to use one of the utility functions. </p>
+
+
+<p>The library of utility function is named <b>libfgl4js</b>. The 42x file,&nbsp;
+42m modules and 42f forms are provided in $FGLDIR/lib. The sources of the
+utility functions and form files are provided in the FGLDIR/src directory. </p>
+
+
+<HR>
+
+<h3><a name="FUNCLIST">List of utility functions</a></h3>
+
+  <table border="0" width="95%">
+    <tr>
+      <td width="40%" bgcolor="#C0C0C0" valign="top"><b>Function</b></td>
+      <td bgcolor="#C0C0C0" valign="top"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="40%" bgcolor="#C0C0C0" valign="top" colspan="2"><b>Common
+        dialog functions</b></td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><a href="#UF_FGL_WINBUTTON">FGL_WINBUTTON()</a>
+      </td>
+      <td valign="top">In a separate window, displays an interactive message box with multiple choices&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><a href="#UF_FGL_WINMESSAGE">FGL_WINMESSAGE()</a>
+      </td>
+      <td valign="top">In a separate window, Displays an interactive message box with some text</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><a href="#UF_FGL_WINPROMPT">FGL_WINPROMPT()</a>
+      </td>
+      <td valign="top">Displays a dialog box with a field that accepts a value</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><a href="#UF_FGL_WINQUESTION">FGL_WINQUESTION()</a>
+      </td>
+      <td valign="top">In a separate window, displays an interactive message box with Yes, No, Cancel buttons</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><a href="#UF_FGL_WINWAIT">FGL_WINWAIT()</a>
+      </td>
+      <td valign="top">Displays a dialog box and waits for the user to press a 
+		key</td>
+    </tr>
+    <tr>
+      <td width="40%" bgcolor="#C0C0C0" valign="top" colspan="2"><b>Database
+        utility functions</b></td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><a href="#UF_DB_GET_DATABASE_TYPE">DB_GET_DATABASE_TYPE()</a></td>
+      <td valign="top">Returns the type of the current database</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><a href="#UF_DB_GET_SEQUENCE">DB_GET_SEQUENCE()</a></td>
+      <td valign="top">Returns a new serial value from a predefined table (SERIALREG)</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><a href="#UF_DB_START_TRANSACTION">DB_START_TRANSACTION()</a></td>
+      <td valign="top">Starts a new transaction if none is started (for nested 
+		transaction handling)</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><a href="#UF_DB_FINISH_TRANSACTION">DB_FINISH_TRANSACTION()</a></td>
+      <td valign="top">Ends a nested transaction</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><a href="#UF_DB_IS_TRANSACTION_STARTED">DB_IS_TRANSACTION_STARTED()</a></td>
+      <td valign="top">Returns TRUE if a nested transaction is started</td>
+    </tr>
+    <tr>
+      <td width="40%" bgcolor="#C0C0C0" valign="top" colspan="2"><b>Front End
+        Functions (Use ui.Interface.frontCall() instead)</b></td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><a href="#UF_WINOPENDIR">WINOPENDIR()</a></td>
+      <td valign="top">Shows a dialog window to select a directory in the front 
+		end workstation file system;<br>
+        use <a href="FrontEndFunctions.html">ui.Interface.frontCall(&quot;standard&quot;,&quot;opendir&quot;,...)</a>
+        instead.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><a href="#UF_WINOPENFILE">WINOPENFILE()</a></td>
+      <td valign="top">Shows a dialog window to select a file in the front end 
+		workstation file system;<br>
+        use <a href="FrontEndFunctions.html">ui.Interface.frontCall(&quot;standard&quot;,&quot;openfile&quot;,...)</a>
+        instead.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><a href="#UF_WINSAVEFILE">WINSAVEFILE()</a></td>
+      <td valign="top">Shows a dialog window to save a file in the front end 
+		workstation file system;<br>
+        use <a href="FrontEndFunctions.html">ui.Interface.frontCall(&quot;standard&quot;,&quot;savefile&quot;,...)</a>
+        instead.</td>
+    </tr>
+    <tr>
+      <td width="40%" bgcolor="#C0C0C0" valign="top" colspan="2"><b>Microsoft
+        Windows Client Specific Functions (Use ui.Interface.frontCall() instead)</b></td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><a href="#UF_WINEXEC">WINEXEC()</a></td>
+      <td valign="top">Starts a program on a Microsoft Windows front end without 
+		waiting;<br>
+        use <a href="FrontEndFunctions.html">ui.Interface.frontCall(&quot;standard&quot;,&quot;execute&quot;,...)</a>
+        instead.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><a href="#UF_WINEXECWAIT">WINEXECWAIT()</a></td>
+      <td valign="top">Starts a program on a Microsoft Windows front end and 
+		waits;<br>
+        use <a href="FrontEndFunctions.html">ui.Interface.frontCall(&quot;standard&quot;,&quot;execute&quot;,...)</a>
+        instead.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><a href="#UF_WINSHELLEXEC">WINSHELLEXEC()</a></td>
+      <td valign="top">Opens a document on a Microsoft Windows front end with 
+		the corresponding program;<br>
+        use <a href="FrontEndFunctions.html">ui.Interface.frontCall(&quot;standard&quot;,&quot;shellexec&quot;,...)</a>
+        instead.</td>
+    </tr>
+  </table>
+
+
+<HR>
+
+<h3><a name="DESUPLIST">List of de-supported utility functions:</a></h3>
+
+  <table border="0" width="95%">
+    <tr>
+      <td width="40%" bgcolor="#C0C0C0"><b>Function</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><font color="#FF0000"><i>DATE1()</i></font> </td>
+      <td valign="top">Converts a DATETIME to a DATE.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><font color="#FF0000"><i>TIME1( )</i></font> </td>
+      <td valign="top">Extracts the time part (hour, minute, second)
+        from DATETIME.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><i><font color="#FF0000">FGL_FGLGUI()</font></i></td>
+      <td valign="top">Returns TRUE if the application runs in <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a>
+        mode.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><font color="#FF0000"><i>FGL_GETUITYPE()</i></font></td>
+      <td valign="top">Returns the type of the front end.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top" height="21"><font color="#FF0000"><i>FGL_MSG_NONL()</i></font></td>
+      <td valign="top" height="21">Returns an error message without trailing
+        blanks.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top" height="21"><font color="#FF0000"><i>FGL_INIT4JS( )</i></font></td>
+      <td valign="top" height="21">Initializes the built-in function library.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><font color="#FF0000"><i>FGL_MSG_NONL( )</i></font></td>
+      <td valign="top">Returns an error message without the CR at the end.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><font color="#FF0000"><i>FGL_WTKCLIENT( )</i></font></td>
+      <td valign="top">Returns TRUE if the current front end is the WTK.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><font color="#FF0000"><i>FGL_RESOURCE( )</i></font></td>
+      <td valign="top">Selects a specific FGLPROFILE file.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><font color="#FF0000"><i>FGL_UIRETRIEVE( )</i></font></td>
+      <td valign="top">Returns the value of a variable from the WTK front end.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><font color="#FF0000"><i>FGL_UISENDCOMMAND( )</i></font></td>
+      <td valign="top">Sends a TCL command to the WTK front end.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><font color="#FF0000"><i>FGL_WTKCLIENT( )</i></font></td>
+      <td valign="top">Returns TRUE if the current front end is the WTK.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><font color="#FF0000"><i>FGL_CHARBOOL_TO_INTBOOL()</i></font></td>
+      <td valign="top">Converts a character representation of a Boolean value to
+        an INTEGER.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><font color="#FF0000"><i>FGL_INTBOOL_TO_CHARBOOL( )</i></font></td>
+      <td valign="top">Converts an INTEGER to a character representation of the
+        Boolean value.</td>
+    </tr>
+  </table>
+
+
+
+<HR>
+
+<h3><a name="UF_DB_GET_DATABASE_TYPE">DB_GET_DATABASE_TYPE( )</a> </h3>
+
+<h4>Purpose:</h4><p>This function returns the database type for the current
+connection. </p>
+
+<h4>Syntax:</h4><code>CALL DB_GET_DATABASE_TYPE()<br>
+&nbsp;RETURNING <i>result</i> STRING</code>
+
+<h4>Usage:</h4>
+
+
+
+<p>After connecting to the database, you can get the type of the database server
+with this function.</p>
+
+
+
+<p>The following table shows the codes returned by this function, for the supported
+database types:</p>
+
+
+
+  <table border="0" width="95%">
+    <tr>
+      <td bgcolor="#C0C0C0"><b>Code</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td>ADS</td>
+      <td>ANTs / Genero DB</td>
+    </tr>
+    <tr>
+      <td>ASA</td>
+      <td>Sybase ASA</td>
+    </tr>
+    <tr>
+      <td>DB2</td>
+      <td>IBM DB2</td>
+    </tr>
+    <tr>
+      <td>IFX</td>
+      <td>Informix</td>
+    </tr>
+    <tr>
+      <td>MYS</td>
+      <td>MySQL</td>
+    </tr>
+    <tr>
+      <td>MSV</td>
+      <td>Microsoft SQL Server</td>
+    </tr>
+    <tr>
+      <td>ORA</td>
+      <td>Oracle</td>
+    </tr>
+    <tr>
+      <td>PGS</td>
+      <td>PostgreSQL</td>
+    </tr>
+  </table>
+
+
+
+<HR>
+
+<h3><a name="UF_DB_GET_SEQUENCE">DB_GET_SEQUENCE( )</a> </h3>
+
+<h4>Purpose:</h4><p>This function generates a new sequence for a given
+identifier. </p>
+
+<h4>Syntax:</h4><code>CALL DB_GET_SEQUENCE( <i>id</i> STRING )<br>
+&nbsp;RETURNING <i>
+result</i> INTEGER</code>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>This function needs a database table called SERIALREG.</li>
+  <li>This function must be used <b>inside</b> a transaction block.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+
+
+<p>This function generates a new sequence from a register table created in the
+current database.</p>
+
+
+
+<p>The table must be created as follows:</p>
+
+
+
+<p>CREATE TABLE SERIALREG<br>
+&nbsp; ( TABLE_NAME VARCHAR(50) NOT NULL PRIMARY KEY,<br>
+&nbsp;&nbsp;&nbsp; LAST_SERIAL INTEGER NOT NULL )</p>
+
+
+
+<p>Each time you call this function, the sequence is incremented in the database
+table and returned by the function.</p>
+
+
+
+<p>It is mandatory to use this function inside a transaction block, in order to
+generate unique sequences.</p>
+
+
+
+<h4>Example:</h4>
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> ns, s <tt>INTEGER</tt>
+<code class="linenumber">03</code>   <tt>DATABASE</tt> mydb
+<code class="linenumber">04</code>   <tt>LET </tt>s = DB_START_TRANSACTION()
+<code class="linenumber">05</code>   <tt>LET </tt>ns = DB_GET_SEQUENCE(&quot;mytable&quot;)
+<code class="linenumber">06</code>   <tt>INSERT INTO </tt>mytable <tt>VALUES</tt> ( ns, 'a new sequence' )
+<code class="linenumber">07</code>   <tt>LET </tt>s = DB_FINISH_TRANSACTION(TRUE)
+<code class="linenumber">08</code> <tt>END MAIN</tt></pre>
+
+
+
+<HR>
+
+<h3><a name="UF_DB_START_TRANSACTION">DB_START_TRANSACTION( )</a> </h3>
+
+<h4>Purpose:</h4><p>This function encapsulates the 
+<a href="Transactions.html#TI_BEGIN_WORK">BEGIN
+WORK</a> instruction to start a transaction. </p>
+
+<h4>Syntax:</h4><code>CALL DB_START_TRANSACTION()<br>
+&nbsp;RETURNING <i>result</i> 
+INTEGER</code>
+
+<h4>Usage:</h4>
+
+
+
+<p>You can use the transaction management functions to handle nested
+transactions.</p>
+
+
+
+<p>On most database engines, you can only have a unique transaction, that you
+start with <a href="Transactions.html#TI_BEGIN_WORK">BEGIN
+WORK</a> and you end
+with <a href="Transactions.html#TI_COMMIT_WORK">COMMIT WORK</a> or 
+<a href="Transactions.html#TI_ROLLBACK_WORK">ROLLBACK
+WORK</a>. But in a complex program, you may have nested function calls doing
+several SQL transactions.</p>
+
+
+
+<p>The transaction management functions execute a real transaction
+instruction only if the number of subsequent start/end calls of these functions
+matches.</p>
+
+
+
+<h4>Example:</h4>
+<pre><code class="linenumber">01</code> <tt>DEFINE</tt> s <tt>INTEGER</tt>
+<code class="linenumber">02</code>
+<code class="linenumber">03</code> <tt>MAIN</tt>
+<code class="linenumber">04</code>   <tt>DATABASE</tt> mydb
+<code class="linenumber">05</code>   <tt>LET </tt>s = DB_START_TRANSACTION() -- real BEGIN WORK
+<code class="linenumber">06</code>   <tt>CALL </tt>do_update()
+<code class="linenumber">07</code>   <tt>LET </tt>s = DB_FINISH_TRANSACTION(TRUE) -- real COMMIT WORK
+<code class="linenumber">08</code> <tt>END MAIN</tt>
+<code class="linenumber">09</code>
+<code class="linenumber">10</code> <tt>FUNCTION </tt>do_update()
+<code class="linenumber">11</code>   <tt>LET </tt>s = DB_START_TRANSACTION()
+<code class="linenumber">12</code>   <tt>UPDATE </tt>customer <tt>SET</tt> cust_status = 'X'
+<code class="linenumber">13</code>   <tt>LET </tt>s = DB_FINISH_TRANSACTION(TRUE)
+<code class="linenumber">14</code> <tt>END FUNCTION</tt></pre>
+
+
+
+<HR>
+
+<h3><a name="UF_DB_FINISH_TRANSACTION">DB_FINISH_TRANSACTION( )</a> </h3>
+
+<h4>Purpose:</h4><p>This function encapsulates the 
+<a href="Transactions.html#TI_COMMIT_WORK">COMMIT
+WORK</a> or <a href="Transactions.html#TI_ROLLBACK_WORK">ROLLBACK WORK</a> instructions to
+end a transaction. </p>
+
+<h4>Syntax:</h4><code>CALL DB_FINISH_TRANSACTION( <i>commit</i> INTEGER )<br>
+&nbsp;RETURNING <i>result</i> INTEGER</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>commit</i> indicates whether the transaction must be committed.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+
+
+<p>When the number of calls to DB_START_TRANSACTION() matches, this function
+executes a <a href="Transactions.html#TI_COMMIT_WORK">COMMIT
+WORK</a> if the passed parameter is TRUE; if the passed parameter is not TRUE, it executes a 
+<a href="Transactions.html#TI_ROLLBACK_WORK">ROLLBACK
+WORK</a>.</p>
+
+
+
+<p>If the number of calls does not match, the function does nothing.</p>
+
+
+
+<p><i>See also:</i> <a href="#UF_DB_START_TRANSACTION">DB_START_TRANSACTION()</a>.</p>
+
+
+
+<HR>
+
+<h3><a name="UF_DB_IS_TRANSACTION_STARTED">DB_IS_TRANSACTION_STARTED( )</a> </h3>
+
+<h4>Purpose:</h4><p>This function indicates whether a transaction is started with the
+transaction management functions. </p>
+
+<h4>Syntax:</h4><code>CALL DB_IS_TRANSACTION_STARTED()<br>
+&nbsp;RETURNING <i>result</i> 
+INTEGER</code>
+
+<h4>Usage:</h4>
+
+
+
+<p>The function returns <a href="Programs.html#PC_TRUE">TRUE</a> if a
+transaction was started with <a href="#UF_DB_START_TRANSACTION">DB_START_TRANSACTION()</a>.</p>
+
+
+
+<HR>
+
+
+<h3><a name="UF_FGL_WINBUTTON">FGL_WINBUTTON( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function displays an interactive message box containing multiple choices, 
+in a separate window. </p>
+
+
+<h4>Syntax:</h4><code>CALL FGL_WINBUTTON(<br>
+&nbsp; <i>title</i> STRING, <i>text</i> STRING, <i>default</i> STRING,<br>
+&nbsp; <i>buttons</i> STRING, <i>icon</i> STRING, <i>danger</i> SMALLINT )<br>
+&nbsp;RETURNING <i>result</i> STRING</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>title</i> defines the title of the message window.</li>
+  <li><i>text </i>specifies the string displayed in message window.</li>
+  <li>Use <i>&nbsp;</i> '\n' in <i>text </i> to separate lines (this does not work
+    on ASCII client).</li>
+  <li><i>default</i> indicates the default button to be pre-selected.</li>
+  <li><i>buttons</i>  defines a set of button labels separated by &quot;|&quot;.</li>
+  <li>You can define up to 7 buttons that each have 10 characters.</li>
+  <li><i>icon</i> is the name of the icon to be displayed.</li>
+  <li>Supported icon names are: &quot;<tt>information</tt>&quot;, &quot;<tt>exclamation</tt>&quot;,
+    &quot;<tt>question</tt>&quot;, &quot;<tt>stop</tt>&quot;.</li>
+  <li><i>danger</i>  (for X11 only), number of the warnings item. Otherwise, this
+    parameter is ignored.</li>
+  <li>The function returns the label of the button which has been selected by the user.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>You can also use a <a href="FormSpecFiles.html">form</a>
+    or a <a href="Menus.html">menu with &quot;popup&quot; style</a> instead.</li>
+  <li>If two buttons start with the same letter, the user will not be able to
+    select one of them on the ASCII client.</li>
+  <li>The &quot;&amp;&quot; before a letter for a button is either displayed
+    (ASCII client), or it underlines the letter.</li>
+</ol>
+
+
+<h4>Example:</h4>
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> answer <tt>STRING</tt>
+<code class="linenumber">03</code>   <tt>LET</tt> answer = FGL_WINBUTTON( &quot;Media selection&quot;, &quot;What is your favorite media?&quot;,
+<code class="linenumber">04</code>       &quot;Lynx&quot;, &quot;Floppy Disk|CD-ROM|DVD-ROM|Other&quot;, &quot;question&quot;, 0)
+<code class="linenumber">05</code>   <tt>DISPLAY</tt> &quot;Selected media is: &quot; || answer
+<code class="linenumber">06</code> <tt>END MAIN</tt></pre>
+
+
+<HR>
+
+
+<h3><a name="UF_FGL_WINMESSAGE">FGL_WINMESSAGE( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function displays an interactive message box containing text, 
+in a separate window. </p>
+
+
+<h4>Syntax:</h4><code>CALL FGL_WINMESSAGE( <i>title</i> STRING, <i>text</i>
+STRING, <i>icon</i>  STRING )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>title</i> defines message box title.</li>
+  <li><i>text </i>is the text displayed in the message box. Use '\n' to separate lines.</li>
+  <li><i>icon</i> is the name of the icon to be displayed.</li>
+  <li>Supported icon names are: &quot;<tt>information</tt>&quot;, &quot;<tt>exclamation</tt>&quot;,
+    &quot;<tt>question</tt>&quot;, &quot;<tt>stop</tt>&quot;.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>You can also use a <a href="FormSpecFiles.html">form</a>
+    or a <a href="Menus.html">menu with &quot;popup&quot; style</a> instead.</li>
+  <li><i>icon</i> is ignored by the ASCII client.</li>
+</ol>
+
+
+<h4>Example:</h4>
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>CALL</tt> FGL_WINMESSAGE( &quot;Title&quot;, &quot;This is a critical message.&quot;, &quot;stop&quot;)
+<code class="linenumber">03</code> <tt>END MAIN</tt></pre>
+
+
+<HR>
+
+
+<h3><a name="UF_FGL_WINPROMPT">FGL_WINPROMPT( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function displays a dialog box containing a field that accepts a value. </p>
+
+
+<h4>Syntax:</h4><code>CALL FGL_WINPROMPT (<br>
+&nbsp; <i>x</i> INTEGER, <i> y</i> INTEGER, <i> text</i>
+STRING,<br>
+&nbsp; <i>default</i> STRING, <i> length</i> INTEGER, <i> type</i> INTEGER )<br>
+&nbsp;RETURNING <i>value</i> STRING</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>x</i> is the column position in characters.</li>
+  <li><i>y</i> is the line position in characters.</li>
+  <li><i>text</i> is the message shown in the box.</li>
+  <li><i>default</i> is the default value.</li>
+  <li><i>length </i>is the maximum length of the input value.</li>
+  <li><i>type </i>is the datatype of the return value : 0=CHAR, 1=SMALLINT,&nbsp;
+    2=INTEGER, 7=DATE, 255=invisible</li>
+  <li><i>value</i> is the value entered by the user.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>You can also use your own <a href="FormSpecFiles.html">form</a> instead.</li>
+  <li>
+    <p align="left">Avoid passing NULL values.</li>
+</ol>
+
+
+<h4>Example:</h4>
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> answer <tt>DATE</tt>
+<code class="linenumber">04</code>   <tt>LET</tt> answer = FGL_WINPROMPT( 10, 10, &quot;Today&quot;, DATE, 10, 7 )
+<code class="linenumber">05</code>   <tt>DISPLAY</tt> &quot;Today is &quot; || answer
+<code class="linenumber">06</code> <tt>END MAIN</tt></pre>
+
+
+<HR>
+
+
+<h3><a name="UF_FGL_WINQUESTION">FGL_WINQUESTION( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function&nbsp;displays an interactive message box 
+containing Yes, No, and Cancel buttons, in a separate window </p>
+
+
+<h4>Syntax:</h4>
+<p><code>CALL FGL_WINQUESTION(<br>
+&nbsp;&nbsp;<i>title</i> STRING, <i>text</i>
+STRING, <i>default</i> STRING,<br>
+&nbsp; <i>buttons</i> STRING, <i>icon</i> STRING, <i> danger</i>
+SMALLINT )<br>
+&nbsp;RETURNING <i>value</i> STRING</code></p>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>title</i> is the message box title.</li>
+  <li><i>text </i>is the message displayed in the message box. Use '\n' to separate lines (does 
+	not work
+    on ASCII client).</li>
+  <li><i>default</i> defines the default button that is pre-selected.</li>
+  <li><i>buttons</i> defines the buttons: Either &quot;yes|no&quot; or &quot;yes|no|cancel&quot;,
+    not case-sensitive.</li>
+  <li><i>icon</i> is the name of the icon to be displayed.</li>
+  <li>Supported icon names are: &quot;<tt>information</tt>&quot;, &quot;<tt>exclamation</tt>&quot;,
+    &quot;<tt>question</tt>&quot;, &quot;<tt>stop</tt>&quot;.</li>
+  <li><i>danger</i> is for X11, it defines the code of the warning item. Otherwise, this
+    parameter is ignored.</li>
+  <li>The function returns the label of the button which has been selected by the user.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>You can also use a <a href="FormSpecFiles.html">form</a>
+    or a <a href="Menus.html">menu with &quot;popup&quot;
+    style</a>
+    instead.</li>
+  <li>Setting <i>buttons</i> to another value may result in unpredictable
+    behavior at runtime.</li>
+  <li>Avoid passing NULL values</li>
+</ol>
+
+
+<h4>Example:</h4>
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> answer <tt>STRING</tt>
+<code class="linenumber">04</code>   <tt>LET</tt> answer = &quot;yes&quot;
+<code class="linenumber">05</code>   <tt>WHILE</tt> answer = &quot;yes&quot;
+<code class="linenumber">06</code>     <tt>LET</tt> answer = FGL_WINQUESTION(
+<code class="linenumber">07</code>         &quot;Procedure&quot;, &quot;Would you like to continue ? &quot;,
+<code class="linenumber">08</code>         &quot;cancel&quot;, &quot;yes|no|cancel&quot;, &quot;question&quot;, 0)
+<code class="linenumber">09</code>   <tt>END WHILE</tt>
+<code class="linenumber">10</code>   <tt>IF</tt> answer = &quot;cancel&quot; <tt>THEN</tt>
+<code class="linenumber">11</code>      <tt>DISPLAY</tt> &quot;Canceled.&quot;
+<code class="linenumber">12</code>   <tt>END IF</tt>
+<code class="linenumber">13</code> <tt>END MAIN</tt></pre>
+
+
+<HR>
+
+
+<h3><a name="UF_FGL_WINWAIT">FGL_WINWAIT( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function&nbsp;displays an interactive message box and
+waits for the user to press a key </p>
+
+
+<h4>Syntax:</h4>
+<p><code>CALL FGL_WINWAIT(<i> text</i>
+ STRING )&nbsp;</code></p>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>text </i>is the message displayed in the message box. Use '\n' to separate lines (not working
+    on ASCII client).</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>You can also use a <a href="FormSpecFiles.html">form</a>
+    or a <a href="Menus.html">menu with &quot;popup&quot;
+    style</a>
+    instead.</li>
+</ol>
+
+
+<HR>
+
+
+<h3><a name="UF_WINEXEC">WINEXEC( )</a>  <font color="#FF0000">MS Windows FE
+Only!</font> </h3>
+
+
+<h4>Purpose:</h4><p>This function executes a program on the machine where the
+Windows Front End runs and returns immediately. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program, but only after the first instruction has displayed something on the front end.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL WINEXEC( <i>command</i> STRING )<br>
+&nbsp;RETURNING <i>result</i> 
+INTEGER</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>command</i> is the command to be executed on the front end.</li>
+  <li>The function executes the program without waiting.</li>
+  <li>The function returns <a href="Programs.html#PC_FALSE">FALSE</a>
+    if a problem has occurred.</li>
+</ol>
+
+
+<p><i>See also:</i>
+<a href="#UF_WINEXECWAIT">WINEXECWAIT()</a>,
+<a href="WinDDE.html">DDE Support</a>.</p>
+
+
+<HR>
+
+
+<h3><a name="UF_WINEXECWAIT">WINEXECWAIT( )</a>  <font color="#FF0000">MS
+Windows FE Only!</font> </h3>
+
+<h4>Purpose:</h4>
+<p>This function executes a program on the machine where the
+Windows Front End runs and waits for termination. </p>
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program, but only after the first instruction has displayed something on the front end.</li>
+</ol>
+
+<h4>Syntax:</h4>
+<code>CALL WINEXECWAIT( <i>command</i> STRING )<br>
+&nbsp;RETURNING <i>result</i> INTEGER</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>command</i> is the command to be executed on the front end.</li>
+  <li>The function executes the program and waits for its termination.</li>
+  <li>The function returns <a href="Programs.html#PC_FALSE">FALSE</a>
+    if a problem has occurred.</li>
+</ol>
+
+
+<p><i>See also:</i>
+<a href="#UF_WINEXEC">WINEXEC()</a>,
+<a href="WinDDE.html">DDE Support</a>.</p>
+
+<HR>
+
+<h3><a name="UF_WINSHELLEXEC">WINSHELLEXEC( )</a>  <font color="#FF0000">MS
+Windows FE Only!</font> </h3>
+
+<h4>Purpose:</h4><p>This function opens a document with the corresponding
+program, based on the file extension. </p>
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program, but only after the first instruction has 
+	displayed something on the front end</li>
+</ol>
+
+<h4>Syntax:</h4>
+<code>CALL WINSHELLEXEC( <i>filename</i> STRING )<br>
+&nbsp;RETURNING <i>result</i> 
+INTEGER</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>filename</i> is the file to be opened on the front end.</li>
+  <li>The function executes the program and returns immediately.</li>
+  <li>The function returns <a href="Programs.html#PC_FALSE">FALSE</a>
+    if a problem has occurred.</li>
+</ol>
+
+<p><i>See also:</i>
+<a href="#UF_WINEXEC">WINEXEC()</a>,
+<a href="WinDDE.html">DDE Support</a>.</p>
+
+<HR>
+
+<h3><a name="UF_WINOPENDIR">WINOPENDIR( )</a> </h3>
+
+<h4>Purpose:</h4>
+<p>This function shows a dialog window to let the user select a directory
+path on the front end workstation file system.</p>
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program, but only after the first instruction has 
+	displayed something on the front end</li>
+</ol>
+
+<h4>Syntax:</h4>
+
+<code>CALL WINOPENDIR( <i>dirname</i> STRING, <i>caption</i> STRING )<br>
+&nbsp;RETURNING
+<i>result</i> STRING</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>dirname</i> is the default path to be displayed in the dialog window.</li>
+  <li><i>caption</i> is the label to be displayed.</li>
+  <li>The function returns the directory path on success.</li>
+  <li>The function returns <a href="Programs.html#PC_NULL">NULL</a>
+    if a problem has occurred or if the the user canceled the dialog.</li>
+</ol>
+
+<HR>
+
+<h3><a name="UF_WINOPENFILE">WINOPENFILE( )</a> </h3>
+
+<h4>Purpose:</h4>
+<p>This function shows a dialog window to let the user select a file path on the 
+front end workstation file system, for displaying.</p>
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program, but only after the first instruction has displayed something on the front end.</li>
+</ol>
+
+<h4>Syntax:</h4>
+
+<code>CALL WINOPENFILE( <i>dirname</i> STRING, <i>typename</i> STRING,<br>
+&nbsp;&nbsp; <i>extlist</i> STRING, <i>caption</i> STRING )<br>
+&nbsp;RETURNING <i>result</i> 
+STRING</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>dirname</i> is the default path to be displayed in the dialog window.</li>
+  <li><i>typename</i> is the name of the file type to be displayed.</li>
+  <li><i>extlist</i> is a blank-separated list of file extensions defining the
+    file type.</li>
+  <li><i>caption</i> is the label to be displayed.</li>
+  <li>The function returns the file path on success.</li>
+  <li>The function returns <a href="Programs.html#PC_NULL">NULL</a>
+    if a problem has occurred or if the the user canceled the dialog.</li>
+</ol>
+
+<HR>
+
+<h3><a name="UF_WINSAVEFILE">WINSAVEFILE( )</a> </h3>
+
+<h4>Purpose:</h4>
+<p>This function shows a dialog window to let the user select a file path on the 
+front end workstation file system, for saving.</p>
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program, but only after the first instruction has 
+	displayed something on the front end</li>
+</ol>
+
+<h4>Syntax:</h4>
+
+<code>CALL WINSAVEFILE( <i>dirname</i> STRING, <i>typename</i> STRING,<br>
+&nbsp;&nbsp; <i>extlist</i> STRING, <i>caption</i> STRING )<br>
+&nbsp;RETURNING <i>result</i> 
+STRING</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>dirname</i> is the default path to be displayed in the dialog window.</li>
+  <li><i>typename</i> is the name of the file type to be saved.</li>
+  <li><i>extlist</i> is a blank separated list of file extensions defining the
+    file type.</li>
+  <li><i>caption</i> is the label to be saved.</li>
+  <li>The function returns the file path on success.</li>
+  <li>The function returns <a href="Programs.html#PC_NULL">NULL</a>
+    if a problem has occurred or if the the user canceled the dialog.</li>
+</ol>
+
+
+</BODY>
+</HTML>

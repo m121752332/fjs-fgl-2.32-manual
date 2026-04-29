@@ -1,0 +1,917 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>BDS Migration</TITLE>
+<META http-equiv="Content-Type" content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+
+<HR>
+
+<H1>Migrating from Four Js BDS to Genero</H1>
+
+<p>This page describes product changes you must be aware of when migrating from Four
+Js BDS 3.xx to the
+most recent Genero BDL version.</p>
+
+<p>Summary:</p>
+<ol>
+  <li><a href="#install_setup">Installation and Setup topics</a>
+    <ul>
+      <li><a href="#license-controller">License Controller</a></li>
+      <li><a href="#dynamic_fglrun">Runner linking is no longer needed</a></li>
+    </ul>
+    <ul>
+      <li><a href="#localization_support">Localization support in Genero</a>
+      </li>
+      <li><a href="#fglschema-fgldbsch">Database schema extractor</a>
+      </li>
+    </ul>
+    <ul>
+      <li><a href="#c-code_compilation">C-Code compilation is de-supported</a>
+      </li>
+      <li><a href="#env-vars">De-supported environment variables</a>
+      </li>
+      <li><a href="#FGLPROFILE_diffs">De-supported FGLPROFILE entries</a>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#ui_issues">User Interface topics</a>
+    <ul>
+      <li><a href="#easy_ui_migration">Easy user interface migration with traditional mode</a>
+      </li>
+      <li><a href="#FrontEndCompatibility">Front-end compatibility</a></li>
+  <li><a href="#FGLGUI_default">FGLGUI is 1 by default</a></li>
+      <li><a href="#profdiffs_gui">FGLPROFILE: GUI configuration</a></li>
+      <li><a href="#key_labels_vs_action_defaults">Key labels versus Action Defaults</a>
+      </li>
+    </ul>
+    <ul>
+      <li><a href="#ff_widgets">Migrating form field widgets</a>
+      </li>
+    </ul>
+    <ul>
+      <li><a href="#SCREEN_vs_LAYOUT">SCREEN versus LAYOUT</a>
+      </li>
+    </ul>
+    <ul>
+      <li><a href="#arrays_to_tables">Migrating screen arrays to tables</a>
+      </li>
+    </ul>
+    <ul>
+      <li><a href="#review_tui_specifics">Review TUI specifics</a>
+      </li>
+    </ul>
+    <ul>
+      <li><a href="#SCREEN_window">The default SCREEN window</a>
+      </li>
+    </ul>
+    <ul>
+      <li><a href="#window_pos_size">Specifying WINDOW position and size</a>
+      </li>
+      <li><a href="#configuration-manager">Front-end configuration tools</a></li>
+      <li><a href="#function-key-mapping">Function key mapping</a></li>
+    </ul>
+  </li>
+  <li><a href="#4gl_issues">4GL Programming topics</a>
+    <ul>
+      <li><a href="#profdiffs_fglrun">FGLPROFILE: VM configuration</a>
+      </li>
+      <li><a href="#fgl_init4js">Calling fgl_init4gl() initialization function</a>
+      </li>
+      <li><a href="#static_vs_dynamic_arrays">Static versus Dynamic Arrays</a>
+      </li>
+    </ul>
+    <ul>
+      <li><a href="#debugger_syntax">Debugger syntax change</a>
+      </li>
+  <li><a href="#FGL_SYSTEM">FGL_SYSTEM function</a></li>
+      <li><a href="#Channel::">The Channel:: methods</a></li>
+      <li><a href="#SQL-Blocks">SQL Blocks are de-supported</a></li>
+      <li><a href="#STRING_vs_CHAR_VARCHAR">STRING versus CHAR/VARCHAR</a></li>
+      <li><a href="#user_cext_routines">Review user-made C routines</a></li>
+      <li><a href="#strict_sql_params">Strict variable identification in SQL statements</a></li>
+      <li><a href="#WHENEVER_ANY_ERROR">Default action of WHENEVER ANY ERROR</a></li>
+    </ul>
+  </li>
+</ol>
+
+<HR>
+
+<h2><a name="install_setup">1. Installation and Setup topics</a></h2>
+
+<h3><a name="license-controller">1.1. License Controller</a></h3>
+
+<p>With Four Js BDS, you must license the product with the <b>licencef4gl</b>
+command line tool. Starting with Genero, the command line tool to license the product is <b>fglWrt</b>.
+Run fglWrt with the -h option for the possible options.</p>
+
+<h3><a name="dynamic_fglrun">1.2. Runner linking is no longer needed</a></h3>
+<p>With Four Js BDS, you need to create the fglrun binary with the fglmkrun
+tool, by specifying the type of the database driver and C Extensions libraries
+to be linked with the runtime system. Since Genero 2.00, fglrun dynamically
+loads both database drivers and C extension libraries at runtime.</p>
+<p>When migrating to Genero BDL, you must review your C Extensions to provide them
+as shared libraries. To easy migration, Genero searches automatically the <b>userextension</b>
+share library (or DLL). See <a href="CExtensions.html">C Extensions</a>  for more
+details.</p>
+<p>The database drivers are provided as shared libraries ready to use; you just
+need to specify the driver to be loaded. See <a href="Connections.html">Connections</a>
+for more details.</p>
+
+<h3><a name="localization_support">1.3. Localization support in Genero</a></h3>
+<p>To support language-specific and country-specific locales as well as multi-byte
+character sets like BIG5, Informix 4GL and Four Js use the Informix GLS
+library. That solution was straightforward in the context of an Informix database
+platform. But if you want to connect with BDS to an Oracle server, using a BIG5
+locale for the BDS application, you need to install the Oracle DB client to
+connect to the database, and Informix DB client to get the GLS library.</p>
+<p>Like BDS, Genero supports the Open Database Interface to access other
+database servers as Informix. But concerning locale support, Genero does not use
+the Informix GLS library any longer, to be independent from Informix. Genero uses
+the standard C library locale functions, based on the POSIX setlocale()
+implementation provided by the operating system.</p>
+<p>While I4GL/BDS need the CLIENT_LOCALE environment variable to define the
+locale for the application, you must now use the LANG/LC_ALL environment
+variables to specify the locale of the Genero application. Note, however, that
+CLIENT_LOCALE is still needed when connecting to an Informix database.</p>
+<p>In Four Js BDS, you could select the locale library with the fglmode tool,
+to select either GLS or ASCII mode. This tool is no longer needed in Genero.</p>
+<p>For more details about locale support, see <a href="Localization.html">Localization</a>.</p>
+
+<h3><a name="fglschema-fgldbsch">1.4. Database schema extractor</a></h3>
+
+<p>Before compiling .4gl or .per files with Four Js BDS, you need to extract
+the database schema with the <b>fglschema</b> tool. This will produce .sch, and
+optionally, .val and .att files.</p>
+
+<p>Genero also needs the database schema files to compile programs and
+forms, but the tool name is now <b>fgldbsch</b>. The fglschema tool could only
+extract schemas from Informix databases. The new tool can extract database
+schemas from Informix, and from other databases like Oracle, SQL Server, DB2,
+PostgreSQL, MySQL and Genero db. The fglschema tool is still supported in Genero
+for backward compatibility, but fglschema actually calls fgldbsch. You should
+use fgldbsch now, with the new command line options.</p>
+
+<p>Note that Genero allows you to centralize new widget types and attributes in the
+.val file.</p>
+
+<p>For more details about fgldbsch, see the <a href="DatabaseSchema.html">Database
+Schema</a> page.</p>
+
+<h3><a name="c-code_compilation">1.5. C-Code compilation is de-supported</a></h3>
+
+<p>Four Js BDS fglcomp could compile to p-code or c-code. For now Genero does
+not support C-Code generation (the P-Code interpreter is fast).</p>
+
+<p>If you experience performance problems when comparing Genero to Four Js BDS, 
+please contact your local support center.</p>
+
+<h3><a name="env-vars">1.6. De-supported environment variables</a></h3>
+
+<p>The table below lists the Four Js BDS environment variables which are no
+longer supported or replaced by others in Genero:</p>
+
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="20%" valign="top"><b>Entry</b></td>
+    <td bgcolor="#C0C0C0" width="35%"><b>Description of the BDS environment
+      variable</b></td>
+    <td bgcolor="#C0C0C0" width="35%"><b>Genero equivalent</b></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>FGLDBS</tt></td>
+    <td valign="top" width="35%">FGLDBS defines the type and version of the
+      database driver, used when linking fglrun with fglmkrun.</td>
+    <td valign="top" width="35%">
+      This is not needed any longer in Genero:<br>
+      Database drivers are loaded dynamically by fglrun.&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>FGLCC</tt></td>
+    <td valign="top" width="35%">FGLCC defines the name of the C compiler.</td>
+    <td valign="top" width="35%" rowspan="3">
+      This is not needed any longer in Genero:<br>
+      The fglrun tool does not need to be created, it's fully dynamic.&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>FGLLIBSQL</tt></td>
+    <td valign="top" width="35%">FGLLIBSQL defines the list of database client
+      software libraries to be used to link fglrun with fglmkrun.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>FGLLIBSYS</tt></td>
+    <td valign="top" width="35%">FGLLIBSYS defines the list of system libraries
+      to be used to link fglrun with fglmkrun.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>FGLSHELL</tt></td>
+    <td valign="top" width="35%">FGLSHELL defined the name of the fglrun
+      program, for example when using tools like fglschema.</td>
+    <td valign="top" width="35%">
+      This is not needed any longer in Genero:<br>
+      The runtime system tool is fglrun and does not need to be changed.&nbsp;</td>
+  </tr>
+</table>
+
+<h3><a name="FGLPROFILE_diffs">1.7. De-supported FGLPROFILE entries</a></h3>
+
+<p>Genero comes with redesigned software components and features, especially
+regarding GUI. Thus, some BDS/WTK specific <a href="FglProfile.html">FGLPROFILE</a>
+entries have been de-supported. This section describes what configurations
+settings are no longer supported, and point to Genero equivalent features if they
+exist.</p>
+
+<p>For more details, see:</p>
+
+<ul>
+  <li><a href="#profdiffs_fglrun">FGLPROFILE: VM configuration</a></li>
+  <li><a href="#profdiffs_gui">FGLPROFILE: GUI configuration</a></li>
+</ul>
+
+<HR>
+
+<h2><a name="ui_issues">2. User Interface topics</a></h2>
+
+<h3><a name="easy_ui_migration">2.1. Easy user interface migration with
+traditional mode</a></h3>
+<p>This topic also concerns Informix 4gl migration, see the <a href="MigI4GL.html#easy_ui_migration">I4GL
+Migration</a> page for mode details.</p>
+
+<h3><a name="FrontEndCompatibility">2.2. Front-end compatibility</a></h3>
+<p>When migrating to Genero BDL, you must use one of the Genero Front Ends; the <b>
+WTK</b>, <b>WebFE</b> and <b>JavaFE</b> front-ends are not compatible with the Genero fglrun runtime system. Note also
+that the UNIX version of Genero does not include the <b>fglX11d</b> front-end
+any longer. You must use the GDC front-end on Unix.</p>
+
+<h3><a name="FGLGUI_default">2.3. FGLGUI is 1 by default</a></h3>
+<p>In Four Js BDS, when the <a href="EnvironmentVariables.html#EV_FGLGUI">FGLGUI</a>
+environment variable is not set, the application starts in <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a>
+mode (FGLGUI=0). With Genero, the default is <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a>
+mode (FGLGUI=1). Therefore, when migrating from Informix 4gl, you should set
+FGLGUI=0 to run the application in text mode as a first step.</p>
+
+<h3><a name="profdiffs_gui">2.4. FGLPROFILE: GUI configuration</a></h3>
+<p>The next table shows BDS/WTK FGLPROFILE entries related to GUI configuration
+which are de-supported in Genero. See <a href="FglProfile.html#ENTRYLIST">FGLPROFILE</a>
+description page for supported entries:</p>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="20%" valign="top"><b>Entry</b></td>
+    <td bgcolor="#C0C0C0" width="35%"><b>Description of the BDS feature</b></td>
+    <td bgcolor="#C0C0C0" width="35%"><b>Genero equivalent</b></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>fglrun.interface<br>
+      fglrun.scriptName<br>
+      </tt></td>
+    <td valign="top" width="35%">These entries defined the TCL configuration and
+      script to be send to the WTK front-end.</td>
+    <td valign="top" width="35%">
+      <i>There is no equivalent in Genero.</i></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>fglrun.guiProtocol.*</tt></td>
+    <td valign="top" width="35%">These entries could be used to configure the
+      communication protocol with WTK front-end.</td>
+    <td valign="top" width="35%">In Genero you can control this with <a href="FEProtocol.html">gui.protocol
+      entries</a>.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>fglrun.error.line.number</tt></td>
+    <td valign="top" width="35%">This entry was used to define the number of
+      lines to be displayed in the error message line.</td>
+    <td valign="top" width="35%">You can control the aspect of the error line
+      with the <a href="PresentationStyles.html#STYATT_WINDOW">Window style</a>
+      attribute called <b>statusBarType</b>.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.useOOB.interrupt<br>
+      fglrun.signalOOB</tt></td>
+    <td valign="top" width="35%">These entries could be used to configure or
+      disable Out Of Band signal on the GUI protocol socket to avoid problems on
+      platforms not supporting that feature.<br>
+      OOB signal was used to send interruption events the program executed is
+      processing.</td>
+    <td valign="top" rowspan="3" width="35%">Genero supports interruption event
+      handling with a predefined action name called <b>interrupt</b>. You can
+      bind any sort of action view (button in form, toolbar or topmenu item)
+      with this name.<br>
+      Interrupt events are sent asynchronously with the new Genero GUI protocol
+      and don't use OOB signals any longer.<br>
+      See <a href="InteractionModel.html#INTERRUPTION">Interaction Model</a> for
+      more details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>Sleep.minTime</tt></td>
+    <td valign="top" width="35%">This entry was used to define the number of
+      seconds before the interrupt key button appeared on the screen window when
+      the program is processing.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.watch.delay</tt></td>
+    <td valign="top" width="35%">This entry was used to define the number of
+      seconds before the mouse cursor displays as a wait cursor, when the program is
+      processing.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.bubbleHelp.*
+      </tt></td>
+    <td valign="top" width="35%">These entries could be used to enable and
+      configure tooltips displaying field COMMENT text.&nbsp;</td>
+    <td valign="top" width="35%">Genero front-ends display bubble-help with
+      field COMMENT text by default.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.controlFrame.scroll.*
+      </tt></td>
+    <td valign="top" width="35%">These entries could be used to show and
+      configure a scrollbar in the control frame displaying ON KEY or COMMAND
+      buttons.</td>
+    <td valign="top" width="35%">Genero front-ends display control frame
+      scrolling buttons by default when needed.<br>
+      See also <a href="PresentationStyles.html#STYATT_WINDOW">Window style</a>
+      attributes like <b>ringMenuScroll</b>.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>screen.scroll
+      </tt></td>
+    <td valign="top" width="35%">This entry could be used to get scrollbars in
+      the main window when the form was too big for the screen resolution of the
+      workstation.</td>
+    <td valign="top" width="35%">With Genero, by default, each program window is rendered as a
+      distinct GUI window by the front-end. Window aspect can be controlled with
+      style attributes. See <a href="PresentationStyles.html#STYATT_WINDOW">Window style</a>
+      attributes for more details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.screen.size.x<br>
+      gui.screen.size.y<br>
+      gui.screen.x<br>
+      gui.screen.y<br>
+      gui.screen.incrx<br>
+      gui.screen.incry<br>
+      </tt></td>
+    <td valign="top" width="35%">These entries could be used to configure the
+      size and position of the main screen window with the WTK front-end.</td>
+    <td valign="top" width="35%">In Genero, each program window is rendered as a
+      distinct GUI window by the front-end. There is no equivalent for these
+      options. However, you can use the <a href="DynamicUI.html#TRADITIONAL_MODE">traditional
+      mode</a> to render program windows in a single parent screen window and
+      with BDS/WTK.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.screen.withvm<br>
+      </tt></td>
+    <td valign="top" width="35%">This entry could be used to integrate with the
+      X11 window manager (allowing move and resize actions).</td>
+    <td valign="top" width="35%">
+      <i>There is no equivalent in Genero.</i></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.preventClose.message</tt></td>
+    <td valign="top" width="35%">This entry could be used to display an error
+      message to the user attempting to close the main GUI window with CTRL-F4
+      or the cross-button on the right of the GUI window title bar.&nbsp;</td>
+    <td valign="top" width="35%">In Genero, each program window is rendered as a
+      distinct GUI window by the front-end. You can use the <b>close</b> action
+      to control window close events.<br>
+      See <a href="InteractionModel.html#XCROSS_CLOSE">Interaction Model</a>
+      for more details.<br>
+      See also <a href="Programs.html#options-on-close-application">ON CLOSE
+      APPLICATION</a> program option.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.key.doubleClick.left</tt></td>
+    <td valign="top" width="35%">This entry could be used to define the key to be
+      returned to the program when the user double-clicks on the left button of
+      the mouse.</td>
+    <td valign="top" width="35%">You can use the <a href="FSFAttributes.html#FA_DOUBLECLICK">DOUBLECLICK</a>
+      attribute to define the action to be fired when the user double-clicks on
+      a Table container.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.key.click.right</tt></td>
+    <td valign="top" width="35%">This entry could be used to define the key to be
+      returned to the program when the user clicks on the right button of the
+      mouse.</td>
+    <td valign="top" width="35%">You can
+      configure contextual menus with the <b> contextMenu</b> attribute in <a href="ActionDefaults.html">Action
+      Defaults</a>.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.key.add_function</tt></td>
+    <td valign="top" width="35%">Could be used to define the offset to identify
+      SHIFT+Fx keys.&nbsp;</td>
+    <td valign="top" width="35%">
+      <i>There is no equivalent in Genero.</i></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.key.<i>x</i>.translate</tt></td>
+    <td valign="top" width="35%">These entries could be used to map keys. For
+      example, when the user pressed Control-U, it could be mapped to F5 for the
+      program.</td>
+    <td valign="top" width="35%">
+      <i>There is no equivalent in Genero.</i></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.key.radiocheck.invokeexit</tt></td>
+    <td valign="top" width="35%">Could be used to define the key to select the
+      RADIO or CHECK field and move to the next field.</td>
+    <td valign="top" width="35%">
+      <i>There is no equivalent in Genero.</i></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.mswindow.button</tt></td>
+    <td valign="top" width="35%">This entry defined the aspect of buttons on
+      Windows platforms.</td>
+    <td valign="top" width="35%">
+      <i>There is no equivalent in Genero: Front-ends will use the current
+      platform theme when possible.</i></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.mswindow.scrollbar</tt></td>
+    <td valign="top" width="35%">Could be used to get MS Windows scrollbar
+      style.</td>
+    <td valign="top" width="35%">
+      <i>There is no equivalent in Genero: Front-ends will use the current
+      platform theme when possible.</i></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.scrollbar.expandwindow</tt></td>
+    <td valign="top" width="35%">When set to true, the WTK front-end expanded
+      the window automatically if scrollbars are needed in a screen array.</td>
+    <td valign="top" width="35%">
+      <i>There is no equivalent in Genero.</i></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.fieldButton.style</tt></td>
+    <td valign="top" width="35%">Could be used to define the style of BMP field buttons.</td>
+    <td valign="top" width="35%">
+      <i>There is no equivalent in Genero.</i></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.BMPbutton.style</tt></td>
+    <td valign="top" width="35%">Could be used to define the style of FIELD_BMP
+      field
+      buttons.</td>
+    <td valign="top" width="35%">
+      <i>There is no equivalent in Genero.</i></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.entry.style</tt></td>
+    <td valign="top" width="35%">This entry defines the underlying widgets to be
+      used to manage form fields.</td>
+    <td valign="top" width="35%">
+      <i>There is no equivalent in Genero.</i></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.user.font.choice</tt></td>
+    <td valign="top" width="35%">This entry could be set to true to let the end
+      user change the font of the application screen window.</td>
+    <td valign="top" width="35%">
+      Genero front-ends allow the user to change the font.<br>
+      See front-end specific documentation for option configuration.&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.interaction.<br>
+      &nbsp; inputarray.usehighlightcolor</tt></td>
+    <td valign="top" width="35%">This entry could be used to highlight the
+      current row during an <a href="InputArray.html">INPUT ARRAY</a>.</td>
+    <td valign="top" width="35%">
+      Current row highlighting can be controlled in Genero with the <a href="PresentationStyles.html#STYATT_TABLE">Table
+      style</a> attribute <b>highlightCurrentRow</b>.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.form.foldertab.multiline<br>
+      gui.folderTab.input.sendNextField<br>
+      gui.folderTab.<i>x</i>.selection</tt></td>
+    <td valign="top" width="35%">These entries could be used to configure folder
+      tabs and define the keys to be sent when a page is selected by the user.</td>
+    <td valign="top" width="35%">Genero supports folder tabs with the <a href="FormSpecFiles.html#FF_CONTAINER_FOLDER">FOLDER</a>
+      container in LAYOUT. An action can be defined for each folder <a href="FormSpecFiles.html#FF_CONTAINER_PAGE">PAGE</a>.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.keyButton.position<br>
+      gui.keyButton.style<br>
+      gui.button.width</tt></td>
+    <td valign="top" width="35%">These entries could be used to define the
+      aspect of control frame buttons associated to ON KEY actions in dialogs
+      like <a href="RecordInput.html">INPUT</a>.</td>
+    <td valign="top" width="35%">Default action views aspect and position can be controlled
+      with <a href="ActionDefaults.html">Action Defaults</a>  attributes and
+      with <a href="PresentationStyles.html#STYATT_WINDOW">Window style</a>
+      attributes.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>Menu.style<br>
+      gui.menu.timer<br>
+      gui.menu.horizontal.*<br>
+      gui.menu.showPagerArrows<br>
+      gui.menuButton.position<br>
+      gui.menuButton.style</tt></td>
+    <td valign="top" width="35%">These entries could be used to define the
+      aspect of control frame buttons associated to COMMAND [KEY] actions in <a href="Menus.html">MENU</a>.</td>
+    <td valign="top" width="35%">Default action views aspect and position can be controlled
+      with <a href="ActionDefaults.html">Action Defaults</a>  attributes and
+      with <a href="PresentationStyles.html#STYATT_WINDOW">Window style</a>
+      attributes.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.empty.button.visible</tt></td>
+    <td valign="top" width="35%">This entry could be used to hide control frame buttons
+      without text. By default, the empty buttons are visible but disabled.</td>
+    <td valign="top" width="35%">Default action views aspect can be controlled
+      with <a href="ActionDefaults.html">Action Defaults</a> attributes. Use for
+      example the <b>defaultView</b> attribute to display a default button for
+      an action.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.containerType<br>
+      gui.containerName<br>
+      gui.mdi.*</tt></td>
+    <td valign="top" width="35%">These entries could be used to configure MDI
+      Windows in BDS.</td>
+    <td valign="top" width="35%">To define MDI containers and children in Genero,
+      use the ui.Interface methods.<br>
+      See <a href="MDIWindows.html">MDI Windows</a> for more details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.toolBar.*</tt></td>
+    <td valign="top" width="35%">These entries define the toolbar aspect in BDS.</td>
+    <td valign="top" width="35%">
+      Toolbar definition has been extended in Genero.<br>
+      See <a href="Toolbars.html">ToolBars</a> for more details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.statusBar.*</tt></td>
+    <td valign="top" width="35%">These entries define the status aspect in BDS.</td>
+    <td valign="top" width="35%">
+      The StatusBars are defined with Window presentation style attributes.<br>
+      See <a href="PresentationStyles.html#STYATT_WINDOW">Presentation Styles</a>
+      for more details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.directory.images</tt></td>
+    <td valign="top" width="35%">This entry defines the path to the directories
+      where images (toolbar icons) are located, on the front-end workstation.</td>
+    <td valign="top" width="35%">
+      See front-end documentation for image files located on the workstation.
+      With Genero, image files can be located on the application server and
+      automatically transmitted to the front-end according to the <a href="EnvironmentVariables.html#EV_FGLIMAGEPATH">FGLIMAGEPATH</a>
+      environment variable.&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.display.&lt;<i>source</i>&gt;</tt></td>
+    <td valign="top" width="35%">These entries could be used to redirect the
+      ERROR / MESSAGE / COMMENT text to a specific place on the GUI
+      screen.&nbsp;</td>
+    <td valign="top" width="35%">
+      The rendering of ERROR, MESSAGE or COMMENT can be configured with Window
+      style attributes in Genero. However, it is not possible to customize
+      keyboard NumLock / CapsLock status in Genero.<br>
+      See <a href="PresentationStyles.html#STYATT_WINDOW">Presentation Styles</a>
+      for more details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.local.edit<br>
+      gui.local.edit.error<br>
+      gui.key.cut<br>
+      gui.key.copy<br>
+      gui.key.paste</tt></td>
+    <td valign="top" width="35%">These entry could be used to enable and
+      configure cut/copy/paste local keys in WTK.</td>
+    <td valign="top" width="35%">
+      Cut/Copy/Paste are defined as front-end local actions in Genero. You can
+      bind action views with <b>editcut</b>, <b>editcopy</b>, <b>editpaste</b>
+      predefined action names.<br>
+      See <a href="InteractionModel.html#PREDEFACTIONS">Interaction Model</a>
+      for more details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.key.*</tt></td>
+    <td valign="top" width="35%">These entries were used to map physical key to
+      a a virtual key used in programs.<br>
+      For example:<tt><br>
+      gui.key.interrupt = &quot;control-c&quot;</tt><br>
+    </td>
+    <td valign="top" width="35%">
+      Cut/Copy/Paste are defined as front-end local actions in Genero. You can
+      bind action views with editcut, editcopy, editpaste predefined action
+      names.<br>
+      See <a href="InteractionModel.html#PREDEFACTIONS">Interaction Model</a>
+      for more details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.workSpaceFrame.nolist</tt></td>
+    <td valign="top" width="35%">This entry could be used to define the aspect of fixed size screen arrays
+      in forms, to render each array cell as an individual edit field.</td>
+    <td valign="top" width="35%">
+      <i>There is no equivalent in Genero.</i></td>
+  </tr>
+</table>
+
+<h3><a name="key_labels_vs_action_defaults">2.5. Key labels versus Action Defaults</a></h3>
+<p>In Four Js BDS, you could define a text for a specific key like <b>accept</b>,
+<b>F10</b> or <b>Control-Z</b>. With this feature, it was possible to easily
+decorate <a href="RecordInput.html#ON_KEY_block">ON KEY</a> or <a href="Menus.html#CMDKEYS">COMMAND
+KEY</a> blocks with a button in the control frame.</p>
+<p>With Genero, you can now define dialog actions with the <a href="InteractionModel.html#CTRLGACTIONS">ON
+ACTION blocks</a>. These action handlers are more abstract than <tt>ON KEY</tt>:
+You identify an action by a name, while decoration is defined in form files (<a href="FormSpecFiles.html#SECTION_ACTDEFS">ACTION
+DEFAULTS section</a>) or in global configuration files (<a href="ActionDefaults.html">.4ad
+file</a>).</p>
+<p>When adapting your code for Genero, you are free to use the traditional <tt>ON
+KEY</tt> blocks or the new <tt>ON ACTION</tt> blocks. Genero still supports the <a href="DynamicUI.html#SETTING_KEY_LABELS">key
+label settings as in Four Js BDS</a>. Note however that key label settings will
+overwrite action defaults settings.</p>
+<p>See also <a href="InteractionModel.html">Interaction Model</a> for more
+details about action handlers and action views.</p>
+
+<h3><a name="ff_widgets">2.6. Migrating form field widgets</a></h3>
+<p>To get combo-boxes or check-boxes in Four Js BDS, <b>.per</b> forms could
+define fields with the <a href="FSFAttributes.html#FA_WIDGET">WIDGET attribute</a>.
+To ease migration, the <tt>WIDGET</tt> attribute and the corresponding form
+field widgets are still supported in Genero, but these are now deprecated: You
+should use new Genero form item types instead.</p>
+<p>Screenshot of Four Js BDS-specific widgets:</p>
+<p align="center"><img border="0" src="../Images/OldWidgets.png" width="454" height="346"></p>
+
+<p>The following table shows new Genero form item types corresponding to old BDS
+WIDGET fields:</p>
+  <table border="0" width="90%">
+    <tr>
+      <td width="12%" bgcolor="#C0C0C0"><b>WIDGET=&nbsp;</b></td>
+      <td width="30%" bgcolor="#C0C0C0"><b>Description</b></td>
+      <td bgcolor="#C0C0C0"><b>Genero equivalent</b></td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top"><tt>WIDGET=&quot;Canvas&quot;</tt></td>
+      <td width="30%" valign="top">Drawing area for fgldraw functions
+      </td>
+      <td valign="top"><a href="FormSpecFiles.html#FF_ITEMTYPE_CANVAS">CANVAS
+        item type</a></td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top"><tt>WIDGET=&quot;BUTTON&quot;</tt></td>
+      <td width="30%" valign="top">Text push button firing key event</td>
+      <td valign="top"><a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTON">BUTTON
+        item type</a></td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top"><tt>WIDGET=&quot;BMP&quot;</tt></td>
+      <td width="30%" valign="top">Image push button firing key event</td>
+      <td valign="top"><a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTON">BUTTON
+        item type</a></td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top"><tt>WIDGET=&quot;CHECK&quot;</tt></td>
+      <td width="30%" valign="top">Checkbox field</td>
+      <td valign="top"><a href="FormSpecFiles.html#FF_ITEMTYPE_CHECKBOX">CHECKBOX
+        item type</a></td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top"><tt>WIDGET=&quot;CHECK&quot;<br>
+        + CLASS=&quot;KEY&quot;</tt></td>
+      <td width="30%" valign="top">Checkbox field firing key event</td>
+      <td valign="top"><a href="FormSpecFiles.html#FF_ITEMTYPE_CHECKBOX">CHECKBOX
+        item type</a> + <a href="RecordInput.html#ON_CHANGE_block">ON CHANGE
+        trigger in program</a></td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top"><tt>WIDGET=&quot;COMBO&quot;</tt></td>
+      <td width="30%" valign="top">Combobox field</td>
+      <td valign="top"><a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">COMBOBOX
+        item type</a>
+      </td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top"><tt>WIDGET=&quot;FIELD_BMP&quot;</tt></td>
+      <td width="30%" valign="top">Edit field with push button</td>
+      <td valign="top"><a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTONEDIT">BUTTONEDIT
+        item type</a></td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top"><tt>WIDGET=&quot;LABEL&quot;</tt></td>
+      <td width="30%" valign="top">Label field (no input)</td>
+      <td valign="top"><a href="FormSpecFiles.html#FF_ITEMTYPE_LABEL">LABEL item
+        type</a></td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top"><tt>WIDGET=&quot;RADIO&quot;</tt></td>
+      <td width="30%" valign="top">Radio group field</td>
+      <td valign="top"><a href="FormSpecFiles.html#FF_ITEMTYPE_RADIOGROUP">RADIOGROUP
+        item type</a></td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top"><tt>WIDGET=&quot;RADIO&quot;<br>
+        + CLASS=&quot;KEY&quot;</tt></td>
+      <td width="30%" valign="top">Radio group field firing key event</td>
+      <td valign="top"><a href="FormSpecFiles.html#FF_ITEMTYPE_RADIOGROUP">RADIOGROUP
+        item type</a> + <a href="RecordInput.html#ON_CHANGE_block">ON CHANGE
+        trigger in program</a></td>
+    </tr>
+  </table>
+<p>Genero introduced more form item types like <a href="FormSpecFiles.html#FF_ITEMTYPE_DATEEDIT">DATEEDIT</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_PROGRESSBAR">PROGRESSBAR</a>:</p>
+
+<p align="center"><img border="0" src="../Images/FglWidgets.png" width="387" height="412"></p>
+
+<p>For more
+details, see <a href="FormSpecFiles.html#SECTION_ATTRIBUTES">form item types</a>.</p>
+
+<h3><a name="SCREEN_vs_LAYOUT">2.7. SCREEN versus LAYOUT</a></h3>
+<p>This topic also concerns Informix 4gl migration, see the <a href="MigI4GL.html#SCREEN_vs_LAYOUT">I4GL
+Migration</a> page for mode details.</p>
+
+<h3><a name="arrays_to_tables">2.8. Migrating screen arrays to tables</a></h3>
+<p>This topic also concerns Informix 4gl migration, see the <a href="MigI4GL.html#arrays_to_tables">I4GL
+Migration</a> page for mode details.</p>
+
+<h3><a name="review_tui_specifics">2.9. Review TUI specifics</a></h3>
+<p>This topic also concerns Informix 4gl migration, see the <a href="MigI4GL.html#review_tui_specifics">I4GL
+Migration</a> page for mode details.</p>
+
+<h3><a name="SCREEN_window">2.10. The default SCREEN window</a></h3>
+<p>This topic also oncerns Informix 4gl migration, see the <a href="MigI4GL.html#SCREEN_window">I4GL
+Migration</a> page for mode details.</p>
+
+<h3><a name="window_pos_size">2.11. Specifying WINDOW position and size</a></h3>
+<p>This topic also concerns Informix 4gl migration, see the <a href="MigI4GL.html#window_pos_size">I4GL
+Migration</a> page for mode details.</p>
+
+<h3><a name="configuration-manager">2.12. Front-end configuration tools</a></h3>
+<p>Four Js BDS provided WTK front-end and X11 front-end specific configuration
+tools called &quot;Configuration Manager&quot; / confdesi. These tools could be
+used to define widget aspect (color, borders, fonts).&nbsp;</p>
+<p>In Genero, the form items can be decorated with <a href="PresentationStyles.html">Presentation
+Styles</a> for all sorts of front-ends.&nbsp;</p>
+
+<h3><a name="function-key-mapping">2.13. Function key mapping</a></h3>
+<p>With Four Js BDS, when the user pressed a key modifier plus a function key
+(like Shift-F4 or Control-F6), the key combination was mapped to a regular
+function key F(n+offset), because <i>Shift</i> and <i>Control</i> key modifiers
+are not handled in the 4GL language. The number of function keys of the keyboard
+was defined by the gui.key.add_function <a href="FglProfile.html">FGLPROFILE</a>
+entry. For example, when this entry is set to 12 (the default), a Shift-F4 was
+received as F16 (4 + 12) in the program.</p>
+<p>This feature and FGLPROFILE entry is still supported by Genero when using the
+<a href="DynamicUI.html#TRADITIONAL_MODE">traditional mode</a>.</p>
+
+<HR>
+
+<h2><a name="4gl_issues">3. 4GL Programming topics</a></h2>
+
+<h3><a name="profdiffs_fglrun">3.1. FGLPROFILE: VM configuration</a></h3>
+
+<p>Genero comes with redesigned software components and features. Some BDS/WTK specific <a href="FglProfile.html">FGLPROFILE</a>
+entries have been de-supported. This section describes what configurations
+settings are no longer supported, and point to Genero equivalent features if they
+exist.</p>
+
+<p>The following table shows BDS FGLPROFILE entries related to runtime system configuration
+which are de-supported in Genero. See the <a href="FglProfile.html#ENTRYLIST">FGLPROFILE</a>
+description page for supported entries:</p>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="20%" valign="top"><b>Entry</b></td>
+    <td bgcolor="#C0C0C0" width="35%"><b>Description of the BDS feature</b></td>
+    <td bgcolor="#C0C0C0" width="35%"><b>Genero equivalent</b></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>fglrun.checkDecimalPrecision
+      </tt></td>
+    <td valign="top" width="35%">Controls decimal variable assignment when
+      overflow occurs. For example, a value of 1000.0 does not fit in a
+      DECIMAL(2,0).<br>
+      Is false by default = no overflow error, value assigned.</td>
+    <td valign="top" width="35%">
+      <i>There is no equivalent in Genero.<br>
+      By default Genero assigns NULL to a decimal when overflow occurs. Can be
+      trapped by WHENEVER ANY ERROR.</i></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>fglrun.ix6
+      </tt></td>
+    <td valign="top" width="35%">Controls Informix version 6.x compatibility.<br>
+      By default BDS is compatible with I4GL 4.x</td>
+    <td valign="top" width="35%">
+      <i>There is no equivalent in Genero.<br>
+      By default Genero is compatible to Informix 4gl 7.32.</i></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>fglrun.cmd.winnt<br>
+      fglrun.cmd.win95
+      </tt></td>
+    <td valign="top" width="35%">Defines the command line to be executed for a
+      RUN WITHOUT WAITING on Windows platforms.</td>
+    <td valign="top" width="35%">
+      With Genero the command program can be defined with the <a href="Programs.html#RUN">COMSPEC</a>
+      environment variable.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>fglrun.database.listvar<br>
+      fglrun.remote.envvar</tt></td>
+    <td valign="top" width="35%">Was used by Informix driver to set environment
+      variables with the ifx_putenv() function on Windows platforms.</td>
+    <td valign="top" width="35%">
+      <i>There is no equivalent in Genero.</i></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>fglrun.setenv.*<br>
+      fglrun.defaultenv.*</tt></td>
+    <td valign="top" width="35%">These entries could be used to define
+      environment variables for all programs.</td>
+    <td valign="top" width="35%">
+      <i>There is no equivalent in Genero.</i></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>fgllic.*</tt></td>
+    <td valign="top" width="35%">License controller related entries</td>
+    <td valign="top" width="35%">
+      With Genero you configure license settings with the <tt>flm.*</tt>
+      entries.<br>
+      See license manager documentation for more details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>fglrun.server.*</tt></td>
+    <td valign="top" width="35%">These entries could be used to define X11
+      front-end automatic startup.</td>
+    <td valign="top" width="35%">
+      In Genero this can be configured with <tt>gui.server.autostart.*</tt>
+      entries.<br>
+      See <a href="DynamicUI.html#AUTOSTART">automatic front-end startup</a> for
+      more details.&nbsp;</td>
+  </tr>
+</table>
+
+<h3><a name="fgl_init4js">3.2. Calling fgl_init4gl() initialization function</a></h3>
+
+<p>Four Js BDS provided a few utility functions in the libfgl4js.42x
+library. This library had to be initialized with a call to fgl_init4js():</p>
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02    </CODE>...
+<CODE class=linenumber>03</CODE>   <tt>CALL</tt> fgl_init4js()
+<CODE class=linenumber>04    </CODE>...
+<CODE class=linenumber>05</CODE> <tt>END MAIN</tt></pre>
+
+<p>Genero still supports the fgl_init4js() function, but only for backward
+compatibility. Calling this function has no effect in Genero.</p>
+
+<h3><a name="static_vs_dynamic_arrays">3.3. Static versus Dynamic Arrays</a></h3>
+<p>This topic also concerns Informix 4gl migration, see the 
+<a href="MigI4GL.html#dynamic_arrays">I4GL
+Migration</a> page for more details.</p>
+
+<h3><a name="debugger_syntax">3.4. Debugger syntax changed</a></h3>
+<p>This topic also concerns Informix 4gl migration, see the <a href="MigI4GL.html#debugger_syntax">I4GL
+Migration</a> page for more details.</p>
+
+<h3><a name="FGL_SYSTEM">3.5. FGL_SYSTEM function</a></h3>
+<p>The <a href="BuiltInFunctions.html#BF_FGL_SYSTEM">FGL_SYSTEM()</a> function
+is still supported, but it does not raise a terminal window on the front-end
+as with BDS/WTK. However, some front-ends implement a workaround for this
+feature, based on the detection of special strings displayed to stdout by
+fglrun. See front-end documentation for more details.</p>
+
+<h3><a name="Channel::">3.6. The Channel:: methods</a></h3>
+<p>Genero provides file, socket and process I/O with the <a href="ClassChannel.html">Channel
+built-in class</a>, while Four Js BDS has the <tt>Channel::</tt> functions. You
+must review your code and replace <tt>Channel::</tt> calls with the new API.</p>
+
+<h3><a name="SQL-Blocks">3.7. SQL-Blocks are de-supported</a></h3>
+<p>This topic also concerns Informix 4gl migration, see the <a href="MigI4GL.html#SQL-Blocks">I4GL
+Migration</a> page for mode details.</p>
+
+<h3><a name="STRING_vs_CHAR_VARCHAR">3.8. STRING versus CHAR/VARCHAR</a></h3>
+
+<p>This topic also concerns Informix 4gl migration, see the <a href="MigI4GL.html#STRING_vs_CHAR_VARCHAR">I4GL
+Migration</a> page for mode details.</p>
+
+<h3><a name="user_cext_routines">3.9. Review user-made C routines</a></h3>
+<p>This topic also concerns Informix 4gl migration, see the <a href="MigI4GL.html#SQL-Blocks">I4GL
+Migration</a> page for mode details.</p>
+
+<h3><a name="strict_sql_params">3.10 Strict variable identification in SQL
+statements</a></h3>
+
+<p>This topic applies also to older Genero versions, see the <a href="Mig0004.html#strict_sql_params">Genero
+2.20 Migration</a> page for more details.</p>
+
+<h3><a name="WHENEVER_ANY_ERROR">3.11 Default action of WHENEVER ANY ERROR</a></h3>
+<p>With older Four Js BDS versions like 2.10, expression evaluation errors such
+as a division by zero stop the program with an error message. Genero behaves
+like Informix 4gl and recent Four Js BDS versions like 3.55: By default, the
+WHENEVER ANY ERROR action is to CONTINUE the program flow. You can change this
+behavior by setting the next FGLPROFILE entry to true:</p>
+<p><tt>fglrun.mapAnyErrorToError = true</tt></p>
+<p>See <a href="Exceptions.html">Exceptions</a> for more details.</p>
+
+</BODY>
+
+</HTML>
+

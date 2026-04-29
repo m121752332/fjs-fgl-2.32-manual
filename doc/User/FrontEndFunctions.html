@@ -1,0 +1,410 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Front End Functions</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Front End Functions</a> </H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#DEFINITION">Basics</a></li>
+  <li><a href="#FRONTCALL">The frontCall method</a></li>
+  <li><a href="#STANDARD">Standard built-in front end functions</a></li>
+</ul>
+
+<p>See also: <a href="ClassInterface.html">Interface built-in class</a></p>
+
+<HR>
+
+<h3><a name="DEFINITION">Basics</a></h3>
+
+<p>The BDL language provides a <a href="#FRONTCALL">specific method</a> to call functions defined in the front
+end that will be executed locally on the workstation where the front end
+resides. When you call a user function from BDL, you specify a module name and a
+function name. Input and output parameters can be passed/returned in order to transmit/receive values
+to/from the front end. A typical example is&nbsp;an &quot;open file&quot; dialog
+window that allows you to select a file from the front end workstation file system. </p>
+
+<p>A set of <a href="#STANDARD"> standard front end functions</a> is built-in by
+default in the front end. It is possible to write your own functions in
+order to extend&nbsp;the front end possibilities. For example, you can write a
+set of functions to wrap an existing API, such as Window DDE or OLE. A set of
+user functions is defined in a module, implemented as a Windows DLL or UNIX shared library.
+These modules are loaded automatically according to the module name. See the front end documentation for more details
+about creating user function modules in the front end. </p>
+
+<p><font color="#008000">Tip:</font> Regarding DDE/OLE APIs to manipulate
+Microsoft Office documents, note that there are freeware alternatives such as
+the Apache POI Java library which can be used with the Java Interface. See for
+example <a href="JavaBridge.html#EXAMPLE_2">Java Interface: Example 2</a>. </p>
+
+<HR>
+
+<h3><a name="FRONTCALL">The&nbsp;frontCall method</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <a href="ClassInterface.html">Interface built-in class</a> provides a
+special method to perform front end calls.</p>
+
+<h4>Syntax:</h4>
+<code>ui.Interface.frontCall( <i>module</i>, <i>function</i>, <i>parameter-list</i>,
+<i>returning-list</i> )</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>module</i> defines the shared library where the function is defined.&nbsp;</li>
+  <li><i>function</i> defines the name of the function to be
+    called.</li>
+  <li><i>parameter-list</i> is a list of input parameters.</li>
+  <li><i>returning-list</i> is a list of output parameters.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>The <code>ui.Interface.frontCall()</code> class method can be used to&nbsp;execute
+a procedure on the front-end workstation through the front-end software
+component. You can for example launch a front-end specific application like a
+browser or a text editor, or manage the clipboard content.&nbsp;</p>
+
+<p>The method takes four parameters:</p>
+
+<ol>
+  <li>The module name, identifying the shared library (.so or .DLL) to be used.</li>
+  <li>The function of the module the be executed.</li>
+  <li>The list of input parameters, using the square brace notation.</li>
+  <li>The list of output parameters, using the square brace notation.</li>
+</ol>
+
+<p><b><font color="#FF0000">Warning:</font>  The error -6334 can be raised in
+case of input or output parameter mismatch. The control of the number of input
+and output parameters is in the hands of the front-end. Most of the standard
+front-end calls described in this page have optional returning parameters and
+will not raise error -6334 if the output parameter list is left empty . However,
+front-end specific extensions or user-defined front-end functions may return an
+invalid execution status in case of input or output parameter mismatch, raising
+error -6334. Note that if the front-end sends an call execution status of zero
+(OK), and the number of returned values does not match the number of program
+variables, the runtime system will set unmatched program variables to NULL. As a
+general rule, the program should provide the expected input and output
+parameters as specified in the documentation.</b></p>
+
+<p>When you specify &quot;<i>standard</i>&quot; as module name, it references
+built-in functions implemented by default by the front end component. Other
+module names identify .so or .DLL libraries which must be installed in the
+front-end installation directory (see front-end documentation for more details).
+If needed, you can customize front-end calls by writing your own modules.</p>
+
+<p><b><font color="#FF0000">Warning:</font> Module and function names are case-sensitive.</b></p>
+
+<p>Input and output parameters are provided as a variable list of parameters, by
+using the square braces notation (<code>[param1,param2,...]</code>). Input
+parameters can be an <a href="Expressions.html">expression</a> supported by the
+language, while all output
+parameters must be variables only, to receive the returning values. An empty list
+is specified with <code>[]</code>. Output parameters are optional: If the
+front-end call returns values, they will be ignored by the runtime system.</p>
+
+<p><b><font color="#FF0000">Warning:</font> Some front calls like <i>shellexec</i>
+need a file path as parameter. File paths must follow the syntax of the
+front-end workstation file system. You may need to escape backslash characters
+in such parameters. The next example shows how to pass a file path with a space
+in a directory name to a front-end running on a Microsoft Windows workstation:</b></p>
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>path <tt>STRING</tt>, res <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <tt>LET </tt>path = <font SIZE="2">&quot;\&quot;c:\\work dir\\my report.doc\&quot;&quot;</font>
+<CODE class=linenumber>04</CODE>   -- This is: <font SIZE="2">&quot;c:\work dir\my report.doc&quot;</font>
+<CODE class=linenumber>05</CODE>   <tt>CALL </tt>ui.Interface.frontCall( &quot;standard&quot;, &quot;shellexec&quot;, [path], [res] )
+<CODE class=linenumber>06</CODE> <tt>END MAIN</tt></pre>
+
+<h4>Errors:</h4>
+<p>If the function could not be executed properly, one of the following <a href="Exceptions.html">exceptions</a>
+might occur:</p>
+
+<table border="0" width="95%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="15%"><b>Error number</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="15%"><b>-6331</b></td>
+    <td>The module specified could not be found.</td>
+  </tr>
+  <tr>
+    <td width="15%"><b>-6332</b></td>
+    <td>The function specified could not be found.</td>
+  </tr>
+  <tr>
+    <td width="15%"><b>-6333</b></td>
+    <td>The function call failed (fatal error in function).</td>
+  </tr>
+  <tr>
+    <td width="15%"><b>-6334</b></td>
+    <td>A function call stack problem occurred (usually, wrong number of
+      parameters provided).</td>
+  </tr>
+</table>
+
+<h4>Example:</h4>
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>data <tt>STRING</tt>
+<CODE class=linenumber>03</CODE>   <tt>CALL </tt>ui.Interface.frontCall( &quot;mymodule&quot;, &quot;connect&quot;, [&quot;client1&quot;,128], [] )
+<CODE class=linenumber>04</CODE>   <tt>LET </tt>data = &quot;Hello!&quot;
+<CODE class=linenumber>05</CODE>   <tt>CALL </tt>ui.Interface.frontCall( &quot;mymodule&quot;, &quot;send&quot;, [data, data.getLength()], [] )
+<CODE class=linenumber>06</CODE>   <tt>CALL </tt>ui.Interface.frontCall( &quot;mymodule&quot;, &quot;receive&quot;, [], [data] )
+<CODE class=linenumber>07</CODE>   <tt>DISPLAY </tt>data
+<CODE class=linenumber>08</CODE>   <tt>CALL </tt>ui.Interface.frontCall( &quot;mymodule&quot;, &quot;disconnect&quot;, [&quot;client1&quot;], [] )
+<CODE class=linenumber>09</CODE> <tt>END MAIN</tt></pre>
+
+<HR>
+
+<h3><a name="STANDARD">Standard built-in front end functions</a></h3>
+
+<p>The following table shows the built-in functions implemented by the front
+ends in the &quot;standard&quot; module. </p>
+
+<p><b><font color="#FF0000">Warning:</font> Additional modules and functions are
+available for front-ends, but are specific to the front-end type. Please refer
+to the front-end documentation for more details.</b> </p>
+
+<table border="0" width="95%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="10%"><b>Function Name</b></td>
+    <td bgcolor="#C0C0C0" width="10%"><b>Front-ends</b></td>
+    <td bgcolor="#C0C0C0" width="40%"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="10%" valign="top"><a name="standard.execute">execute</a></td>
+    <td width="10%" valign="top">GDC</td>
+    <td width="40%">Executes a command on the workstation with or without
+      waiting.<br>Parameters:<br>- The command to be executed.<br>- The wait option (1=wait, 0=do not wait).<br>Returns:<br>- The execution result (TRUE=success, FALSE=error).</td>
+  </tr>
+  <tr bgcolor="#FFFFCC">
+    <td width="10%" valign="top"><a name="standard.feinfo">feinfo</a></td>
+    <td width="10%" valign="top">GDC, GWC</td>
+    <td width="40%">Returns front end properties like the front end type, the
+      workstation operating system type.<br>
+      Parameters:<br>
+      - The name of the property.<br>
+      Returns:<br>
+      - The value of the property.
+      <table border="0" cellpadding="0" cellspacing="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0"><b>Property name</b></td>
+          <td bgcolor="#C0C0C0"><b>&nbsp;Description</b></td>
+        </tr>
+        <tr>
+          <td>fename</td>
+          <td>The name of the front end.</td>
+        </tr>
+        <tr>
+          <td>fepath</td>
+          <td>The installation directory of the front-end executable.</td>
+        </tr>
+        <tr>
+          <td>ostype</td>
+          <td>The operating system type (WINDOWS, OSX, HPUX, AIX, SOLARIS,
+            LINUX).</td>
+        </tr>
+        <tr>
+          <td>osversion</td>
+          <td>The version of the operating system.</td>
+        </tr>
+        <tr>
+          <td>numscreens</td>
+          <td>Number of screens available.</td>
+        </tr>
+        <tr>
+          <td>screenresolution</td>
+          <td>Returns the screen resolution (with optional screen number parameter).</td>
+        </tr>
+        <tr>
+          <td valign="top">outputmap</td>
+          <td>
+            Returns the GWC application OutputMap of the current application.<br/>
+            <b><font color="#FF0000">Warning!: </font>GWC Only, use GAS Version >= 2.22.00</b>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td width="10%" valign="top"><a name="standard.shellexec">shellexec</a></td>
+    <td width="10%" valign="top">GDC</td>
+    <td width="40%">Opens a file on the workstation with the program associated
+      to the file extension.<br>
+      Parameters:<br>
+      - The document file to be opened.<br>
+    Windows Only!: - the action to perform, related to the way the file type is
+    registered in Windows Registry (Optionnal).<br>
+      Returns:<br>
+      - The execution result (TRUE=success, FALSE=error)<br>
+      <b><font color="#FF0000">Warning: </font>Under X11 Systems, this uses xdg-open, which needs to be installed and configured on your system. Kfmclient will be used as a workaround when xdg-open is not available.<font color="#FF0000"><br>
+      </font><font color="#008000">Tip:</font><font color="#FF0000"> </font>In
+      order to view a document (like a PDF for example), if that document can be
+      displayed by web browsers, we recommend you to use the <i>lauchurl</i>
+      function instead. Especially if you want to use the both GDC and the GWC
+      front-ends.</b></td>
+  </tr>
+  <tr bgcolor="#FFFFCC">
+    <td width="10%" valign="top"><a name="standard.launchurl">launchurl</a></td>
+    <td width="10%" valign="top">GDC, GWC</td>
+    <td width="40%">Opens an url with the default url handler - typically your default browser (http urls), or your default mailer (mailto urls).<br>
+      Parameters:<br>
+      - The url to be opened.<br>
+      Supported schemes depend on your system configuration.<br>
+    </td>
+  </tr>
+  <tr>
+    <td width="10%" valign="top"><a name="standard.getenv">getenv</a></td>
+    <td width="10%" valign="top">GDC</td>
+    <td width="40%">Returns an environment variable set in the user session on
+      the front end workstation.<br>
+      Parameters:<br>
+      - The name of the environment variable.<br>
+      Returns:<br>
+      - The value of the environment variable.</td>
+  </tr>
+  <tr bgcolor="#FFFFCC">
+    <td width="10%" valign="top"><a name="standard.getwindowid">getwindowid</a></td>
+    <td width="10%" valign="top">GDC</td>
+    <td width="40%">Returns the local window manager identifier of the window
+      corresponding to the AUI window id passed as parameter.<br>
+      Parameters:<br>
+      - The id of the Window node in the AUI tree.<br>
+      Returns:<br>
+      - The local system window manage id of the window.<br>
+      The node must be a WINDOW node, otherwise "0" is returned ; in traditional 
+      mode, WINDOWs widgets are simple frames ; the top level widget is the 
+      USERINTERFACE widget. In this case, use "0" as parameter to get the top 
+      level window id.
+      </td>
+  </tr>
+  <tr>
+    <td width="10%" valign="top"><a name="standard.opendir">opendir</a></td>
+    <td width="10%" valign="top">GDC</td>
+    <td width="40%">Displays a file dialog window to get a directory path on the
+      local file system.<br>
+      Parameters:<br>
+      - The default path.<br>
+      - The caption to be displayed.<br>
+      Returns:<br>
+      - The name of the selected directory (or NULL if canceled).</td>
+  </tr>
+  <tr bgcolor="#FFFFCC">
+    <td width="10%" valign="top"><a name="standard.openfile">openfile</a></td>
+    <td width="10%" valign="top">GDC</td>
+    <td width="40%">Displays a file dialog window to get a path to open a file
+      on the local file system.<br>
+      Parameters:<br>
+      - The default path.<br>
+      - The name to be displayed for the file type.<br>
+      - The file types (as a blank separated list of extensions).<br>
+      - The caption to be displayed.<br>
+      Returns:<br>
+      - The name of the selected file (or NULL if canceled).</td>
+  </tr>
+  <tr>
+    <td width="10%" valign="top"><a name="standard.savefile">savefile</a></td>
+    <td width="10%" valign="top">GDC</td>
+    <td width="40%">Displays a file dialog window to get a path to save a file
+      on the local file system.<br>
+      Parameters:<br>
+      - The default path.<br>
+      - The name to be displayed for the file type.<br>
+      - The file types (as a blank separated list of extensions).<br>
+      - The caption to be displayed.<br>
+      Returns:<br>
+      - The name of the selected file (or NULL if canceled).</td>
+  </tr>
+  <tr bgcolor="#FFFFCC">
+    <td width="10%" valign="top"><a name="standard.cbclear">cbclear</a></td>
+    <td width="10%" valign="top">GDC</td>
+    <td width="40%">Clears the content of the clipboard.<br>
+      Parameters: none.<br>
+      Returns:<br>
+      - The execution result (TRUE=success, FALSE=error).</td>
+  </tr>
+  <tr>
+    <td width="10%" valign="top"><a name="standard.cbset">cbset</a></td>
+    <td width="10%" valign="top">GDC</td>
+    <td width="40%">Set the content of the clipboard.<br>
+      Parameters:<br>
+      - The text to be set.<br>
+      Returns:<br>
+      - The execution result (TRUE=success, FALSE=error).</td>
+  </tr>
+  <tr bgcolor="#FFFFCC">
+    <td width="10%" valign="top"><a name="standard.cbget">cbget</a></td>
+    <td width="10%" valign="top">GDC</td>
+    <td width="40%">Gets the content of the clipboard.<br>
+      Parameters: none.<br>
+      Returns:<br>
+      - The text in the clipboard.</td>
+  </tr>
+  <tr>
+    <td width="10%" valign="top"><a name="standard.cbadd">cbadd</a></td>
+    <td width="10%" valign="top">GDC</td>
+    <td width="40%">Adds to the content of the clipboard.<br>
+      Parameters:<br>
+      - The text to be added.<br>
+      Returns:<br>
+      - The execution result (TRUE=success, FALSE=error).</td>
+  </tr>
+  <tr bgcolor="#FFFFCC">
+    <td width="10%" valign="top"><a name="standard.cbpaste">cbpaste</a></td>
+    <td width="10%" valign="top">GDC</td>
+    <td width="40%">Pastes the content of the clipboard to the current field.<br>
+      Parameters: none.<br>
+      Returns:<br>
+      - The execution result (TRUE=success, FALSE=error).</td>
+  </tr>
+  <tr>
+    <td width="10%" valign="top"><a name="standard.mdclose">mdclose</a></td>
+    <td width="10%" valign="top">GDC</td>
+    <td width="40%">Unloads a DLL or shared library module.<br>
+      Parameters:<br>
+      - The name of the module.<br>
+      Returns:<br>
+      - 0 = success, -1 = module not found, -2 = cannot unload (busy).</td>
+  </tr>
+  <tr>
+    <td width="10%" valign="top" bgcolor="#FFFFCC"><a name="standard.setreportfont">setreportfont</a></td>
+    <td width="10%" valign="top" bgcolor="#FFFFCC">GDC</td>
+    <td width="40%" bgcolor="#FFFFCC">Override the font used for report generation for the current application. You can simply copy/paste the font string from the "Report To Printer" font panel from GDC Monitor. An empty or null string reset to the default behavior.<br>
+      Parameter:<br>
+      - A string that describe the font to use for report generation. for exemple: "Helvetica, Bold, Italic, 13". Alternatively you can specify <code>"&lt;ASK_ONCE&gt;"</code>, <code>"&lt;ASK_ALWAYS&gt;"</code>, <code>"&lt;USER_DEFINED&gt;"</code> or <code>"&lt;USE_DEFAULT&gt;"</code>" which will perform the corresponding actions.<br>
+      Returns:<br>
+      - The execution result (TRUE=success, FALSE=error).</td>
+  </tr>
+  <tr>
+    <td width="10%" valign="top"><a name="standard.setreportprinter">setreportprinter</a></td>
+    <td width="10%" valign="top">GDC</td>
+    <td width="40%">Override the printer configuration used for report generation for the current application. You can simply copy/paste the printer string from the "Report To Printer" printer panel from GDC Monitor. An empty or null string reset to the default behavior.<br>
+      Parameter:<br>
+      - A string that describe the printer to use for report generation. for exemple: "moliere, Portrait, A4, 96 dpi, 1 copy, Ascendent, Color, Auto. Alternatively you can specify <code>"&lt;ASK_ONCE&gt;"</code>, <code>"&lt;ASK_ALWAYS&gt;"</code>, <code>"&lt;USER_DEFINED&gt;"</code> or <code>"&lt;USE_DEFAULT&gt;"</code>" which will perform the corresponding actions.<br>
+      Returns:<br>
+      - The execution result (TRUE=success, FALSE=error).</td>
+  </tr>
+  <tr>
+    <td width="10%" valign="top" bgcolor="#FFFFCC"><a name="standard.setwebcomponentpath">setwebcomponentpath</a></td>
+    <td width="10%" valign="top" bgcolor="#FFFFCC">GDC</td>
+    <td width="40%" bgcolor="#FFFFCC">Defines the base path where <a href="WebComponent.html">Web Components</a> are located, when GDC is directly connected to the runtime system. This is ignored when GDC is connected to the GAS.
+    <br>
+      Parameter:<br>
+      - The base url (e.g. <tt>"http://myserver/components"</tt> or <tt>"file:///c:/components"</tt>)<br>
+      Returns:<br>
+      - The execution result (TRUE=success, FALSE=error).</td>
+  </</td>
+  </tr>
+</table>
+
+
+</BODY>
+</HTML>

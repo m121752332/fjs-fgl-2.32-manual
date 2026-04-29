@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Source Code Editing</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Source Code Editing</a></H1>
+
+<p> Summary:</p>
+
+<ul>
+  <li><a href="#INTRO">Introduction</a></li>
+  <li><a href="#LOCALE">Choosing the correct locale</a></li>
+  <li><a href="#NOTABS">Avoiding TABs in screen layouts</a></li>
+  <li><a href="#VIM_AC">Automatic Code Completion and Syntax Highlighting with VIM</a></li>
+</ul>
+
+<HR>
+
+<h3><a name="INTRO">Introduction</a></h3>
+
+<p>This page discusses topics concerning Genero BDL source code editing. You are
+free to use your preferred source code editor to write your programs.</p>
+
+<HR>
+
+<h3><a name="NOTABS">Avoid TABs in screen layouts</a></h3>
+<p>When editing <b>.per</b> form files, pay attention to the 
+<a href="FormSpecFiles.html#SECTION_LAYOUT">LAYOUT</a>/<a href="FormSpecFiles.html#SECTION_SCREEN">SCREEN</a>
+section, and try to avoid TAB characters in the curly-brace delimited grid 
+areas. Different kinds of text or source code editors can expand TABs 
+differently,
+according to the configuration settings (like 4 or 8 blanks). As a result, if two
+programmers are using different TAB expansion settings, the form layout will
+display in different ways.</p>
+<p>If used in a grid area, a TAB character will be interpreted as 8 blanks by <a href="Tools.html#TL_FGLFORM">fglform</a>.
+It is legal to use TABs in the rest of the .per file or .4gl sources (for
+example, to indent the code).&nbsp;</p>
+
+<HR>
+
+<h3><a name="LOCALE">Choosing the correct locale</a></h3>
+
+<p>Before starting to edit source files, you must identify and set the locale
+(character set) you want to use in your sources.</p>
+
+<p>Genero BDL supports single-byte and multi-byte character sets. When developing
+multi-lingual applications, we recommend that you write <b>.per</b> and <b>.4gl</b>
+source files in ASCII, and externalize language-dependent messages in string
+resource files.</p>
+
+<p>For more details, see <a href="Localization.html">Localization</a>.</p>
+
+<HR>
+
+<h3><a name="VIM_AC">Automatic Code Completion and Syntax Highlighting with VIM</a></h3>
+
+<p>If you are using the <b>vim</b> editor, Genero BDL provides automatic code completion
+and syntax highlighting with <a href="Tools.html#TL_FGLCOMP">fglcomp</a> and <a href="Tools.html#TL_FGLFORM">fglform</a>
+compilers.</p>
+
+<p><b><font color="#FF0000">Warning:</font> In order to use Genero BDL auto
+completion with vim, you need at least vim version 7 with the <u>Omni Completion</u>
+feature.</b></p>
+
+<p>To get the benefit of this feature with the <b>vim</b> editor, do the
+following:</p>
+
+<ol>
+  <li>Copy <b>$FGLDIR/lib/fglcomplete.vim</b> into the&nbsp; <b>~/.vim/autoload</b>
+    directory.<br>
+  </li>
+  <li>Copy <b>$FGLDIR/lib/fgl.vim</b> into the&nbsp; <b>~/.vim/syntax</b>
+    directory.<br>
+  </li>
+  <li>Copy <b>$FGLDIR/lib/per.vim</b> into the&nbsp; <b>~/.vim/syntax</b>
+    directory.<br>
+  </li>
+  <li>According to the version and the default settings of vim, you might need
+    to add the following lines to your <b>~/.vimrc</b> file:<br>
+    <br>
+    <code>&nbsp;autocmd Filetype fgl setlocal omnifunc=fglcomplete#Complete<br>
+    &nbsp;autocmd Filetype per setlocal omnifunc=fglcomplete#Complete<br>
+    &nbsp;syntax on<br>
+    &nbsp;au BufNewFile,BufRead *.per setlocal filetype=per</code></li>
+</ol>
+<p>Once these steps are done (make sure that you have set a Genero BDL
+environment), you can use automatic code completion; open a <b>.4gl</b> or <b>.per</b> file, start to edit
+the file, and when you are in <i>vim insert mode</i>, press <b> Control-X</b> followed
+by <b>Control-O</b> to get a list of language elements to complete the BDL instruction syntax or
+expression.</p>
+
+<p>For more details about vim, see <a href="http://www.vim.org">http://www.vim.org</a>.</p>
+
+</BODY>
+</HTML>

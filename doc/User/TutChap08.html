@@ -1,0 +1,933 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Tutorial: Array Input</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+<p><a href="TutIndex.html">Back to Summary</a></p>
+<hr>
+<h1>Tutorial Chapter 8: Array Input</h1>
+<p>Summary:</p>
+<ul>
+  <li><a href="#INPUTARRAY">INPUT ARRAY statement</a></li>
+  <li><a href="#WITHOUT_DEFAULTS">WITHOUT DEFAULTS clause</a></li>
+  <li><a href="#UNBUFFERED">The UNBUFFERED attribute</a></li>
+  <li><a href="#COUNT">COUNT and MAXCOUNT attributes</a></li>
+  <li><a href="#ControlBlocks">Control Blocks</a></li>
+  <li><a href="#ARR_CURR">Built-in Functions&nbsp; - ARR_CURR()</a></li>
+  <li><a href="#PredefinedActions">Predefined Actions - insert and delete</a></li>
+  <li><a href="#Example">Example: Using a Screen Array to Modify Data</a>
+     <ul>
+        <li><a href="#FormFile">Form Specification File</a></li>
+        <li><a href="#MainBlock">The Main Block</a></li>
+        <li><a href="#Function_load_custall">Function load_custall</a></li>
+        <li><a href="#Function_inparr_custall">Function inparr_custall</a></li>
+        <li><a href="#Function_store_num_ok">Function store_num_ok</a></li>
+        <li><a href="#Function_insert_cust">Function insert_cust</a></li>
+        <li><a href="#Function_update_cust">Function update_cust</a></li>
+        <li><a href="#Function_delete_cust">Function delete_cust</a></li>
+     </ul>
+  </li>
+</ul>
+<hr>
+<p>This program uses a form and a screen array to allow the user to view and
+change multiple records of a program array at once.&nbsp; The <a href="InputArray.html"> INPUT ARRAY</a>
+statement and its control blocks are used by the program to control and monitor the
+changes made by the user to the records. As each record in the program
+array is Added, Updated, or Deleted,&nbsp; the program logic makes corresponding
+changes in the rows of the <b> customer</b> database table.</p>
+
+<p>The example window shown below has been re-sized to fit on this page.</p>
+
+<p><img border="0" src="../Images/TUT701.png" width="581" height="305"></p>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Display on Windows platform</p>
+
+<hr>
+<h2><a name="INPUTARRAY">The INPUT ARRAY statement</a></h2>
+
+<p>The <a href="InputArray.html"> INPUT ARRAY</a>
+statement supports data entry by users into a <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>,
+and stores the entered data in a <a href="Arrays.html">program
+array</a>  of records. During the INPUT ARRAY
+execution, the user can edit or delete existing records, insert new
+records, and move inside the list of <a href="TutChap03.html#definerecord">records</a>.&nbsp; The program can then use the
+<a href="StaticSql.html#SS_INSERT">INSERT</a>, <a href="StaticSql.html#SS_DELETE"> DELETE</a> or
+<a href="StaticSql.html#SS_UPDATE"> UPDATE</a> SQL statements to modify the appropriate database
+tables. The INPUT ARRAY statement does not terminate until the user
+validates or cancels the dialog.</p>
+
+<pre>   <tt>INPUT ARRAY</tt> cust_arr <tt>WITHOUT DEFAULTS FROM</tt> sa_cust.* 
+        <tt>ATTRIBUTES </tt>(<tt>UNBUFFERED</tt>)</pre>
+<p>The example INPUT ARRAY
+statement binds the screen array
+fields in <b>sa_cust&nbsp;</b>to the member records of the program
+array  <b>cust_arr</b>. The number of <a href="Variables.html"> variables</a> 
+in each record of the program
+array  must be the same as the number of <a href="FormSpecFiles.html#FF_FORM_FIELD">fields</a> in each
+<a href="FormSpecFiles.html#SECTION_INSTRUCTIONS"> screen record</a>
+(that is, in a single row of the screen array).
+Each mapped variable must have the same <a href="DataTypes.html"> data
+type</a> or a compatible data type as
+the corresponding field.</p>
+
+<h2><a name="WITHOUT_DEFAULTS">WITHOUT DEFAULTS clause</a></h2>
+
+<p>The <a href="TutChap06.html#WITHOUTDEFAULTS">WITHOUT DEFAULTS</a> clause
+prevents BDL from displaying any default values that have been defined for form
+fields. You must use this clause if you want to see the values of the program
+array.</p>
+
+<h2><a name="UNBUFFERED">The UNBUFFERED attribute</a></h2>
+
+<p>As in the <a href="RecordInput.html#SYNTAX"> INPUT</a> 
+statement, when the <a href="InputArray.html">UNBUFFERED</a>
+attribute is used, the <a href="InputArray.html"> INPUT ARRAY</a>
+statement is
+sensitive to program variable changes. If you need to display new data during the
+execution, use the UNBUFFERED attribute and assign the values to the <a href="Arrays.html">program
+array</a>  row;
+the runtime system will automatically display the values to the screen.&nbsp;
+This sensitivity applies to <a href="InputArray.html">ON
+ACTION</a> control blocks, as well.</p>
+
+<h2><a name="COUNT">COUNT and MAXCOUNT attribute</a>s</h2>
+
+<p>Some other attributes that can be used with an <a href="InputArray.html"> INPUT ARRAY</a>  statement are:</p>
+
+<ul>
+  <li>The <a href="InputArray.html">COUNT</a> attribute of INPUT ARRAY defines the number of valid rows in the
+<a href="Arrays.html">program
+array</a>  to be&nbsp; displayed as default rows. 
+
+<ul>
+  <li>When using a static array, if you
+do not use the COUNT attribute, the runtime system cannot determine how
+much data to display, so the <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>
+remains empty. </li>
+	<li>When using a <a href="Arrays.html">dynamic array</a>, the COUNT
+attribute is ignored: The number of elements in the dynamic array is used.</li>
+</ul>
+
+	</li>
+  <li>The <a href="InputArray.html">MAXCOUNT</a> attribute
+defines the maximum number of data rows that can be entered in the program
+array. In a <a href="Arrays.html">dynamic array</a>,
+the user can enter an infinite number of rows if the MAXCOUNT attribute is not set.</li>
+</ul>
+
+<h2><a name="ControlBlocks">Control Blocks</a></h2>
+
+<p>Your program can control and monitor the changes made by the user by using
+control blocks with the <a href="InputArray.html"> INPUT ARRAY</a>
+statement. The control blocks that are used in the example program are:</p>
+
+<ul>
+  <li>The <a href="InputArray.html">BEFORE INPUT</a>
+    block - executed one time, before the runtime
+system gives control to the user. You can implement initialization in this
+block.</li>
+  <li>The <a href="InputArray.html"> BEFORE ROW</a> block&nbsp; - executed each time the user moves to another
+row, after the destination row is made the current one.</li>
+  <li>The <a href="InputArray.html"> ON ROW CHANGE</a> block&nbsp; - executed when the user moves to another row
+after modifications have been made to the current row.</li>
+  <li>The <a href="InputArray.html"> ON CHANGE</a> &lt;fieldname&gt; block&nbsp; - executed when the <a href="ResultSets.html#RESULTSET"> cursor</a>
+    leaves
+    a specified <a href="FormSpecFiles.html#FF_FORM_FIELD">field</a>
+    and the value was changed by the user after the field
+    got the
+focus.</li>
+  <li>The <a href="InputArray.html"> BEFORE INSERT</a> block -&nbsp; executed each time the user inserts a new
+    row in the array, before the new row is created and made the current one.</li>
+  <li>The <a href="InputArray.html"> AFTER INSERT</a> block - executed each time the user inserts a new
+    row in the array, after the new row is created. You can cancel the insert operation with
+the <a href="InputArray.html"> CANCEL INSERT</a>
+    keywords.</li>
+  <li>The <a href="InputArray.html"> BEFORE DELETE</a> block - executed each time the user deletes a
+    row from the array, before the row is removed from the list. You can cancel the
+    delete operation with
+the <a href="InputArray.html"> CANCEL DELETE</a>
+    keywords.</li>
+	<li>The <a href="InputArray.html#after-row-block">AFTER ROW</a> block - 
+	executed each time the user moves to another row,&nbsp; before the current 
+	row is left. This trigger can also be executed in other situations, such as 
+	when you delete a row, or when the user inserts a new row. </li>
+</ul>
+<p>For a more detailed explanation of the priority of control blocks see
+<a href="InputArray.html#CTRLBLOCK_EXECUTION">Input Array</a>.&nbsp; </p>
+<h2><a name="ARR_CURR">Built-in Functions -&nbsp;ARR_CURR</a></h2>
+
+<p>The language provides several <a href="BuiltInFunctions.html">built-in functions</a>
+ to use in an <a href="InputArray.html"> INPUT ARRAY</a>
+statement. The example program uses the <a href="BuiltInFunctions.html#BF_ARR_CURR">ARR_CURR</a>
+function to tell which array
+element is being changed.&nbsp; This function returns the row number within the <a href="Arrays.html">program
+array</a>  that is displayed in the current line of a <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>.</p>
+
+<h2><a name="PredefinedActions">Predefined actions</a> </h2>
+
+<p>There are some <a href="TutChap04.html#PredefinedActions"> pre-defined actions</a>
+that are specific to the <a href="InputArray.html"> INPUT ARRAY</a>
+statement, to handle the insertion and deletion of rows in the <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>
+automatically:</p>
+
+<ul>
+  <li>The<b> insert</b>  action inserts a new row before current row. When the user has filled this record, BDL inserts the data
+    into the <a href="Arrays.html">program
+array</a>.</li>
+  <li>The<b> delete</b> action deletes the current <a href="TutChap03.html#definerecord">record</a>
+    from the display of the screen array
+    and from the program
+array, and redraws the screen array
+    so
+    that the deleted record is no longer shown.</li>
+  <li>The <b>append</b> action adds a new row at the end of the list. When the user has filled this record, BDL inserts the data
+    into the <a href="Arrays.html">program
+array</a>.</li>
+</ul>
+<p>As with the <a href="TutChap04.html#PredefinedActions"> pre-defined actions</a>
+<b>accept</b> and <b> cancel</b> actions discussed in <a href="TutChap04.html">Chapter
+4</a>, if
+your <a href="FormSpecFiles.html"> form specification</a> does not contain
+<a href="InteractionModel.html#CTRLGACTIONS">action
+views</a> for these actions, default action
+views (<a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTON">buttons</a> on the form) are automatically created.
+Control attributes of the <a href="InputArray.html"> INPUT ARRAY</a> statement allow you to prevent the
+creation of these actions and their accompanying buttons.&nbsp;</p>
+
+<hr>
+<h2><a name="Example">Example: Using a Screen Array to modify Data</a></h2>
+<h3><a name="FormFile">The Form Specification File</a></h3>
+<p>The <b>custallform.per</b> form specification file displays multiple records
+at once, and is similar to the form used in <a href="TutChap07.html"> chapter 7</a>.&nbsp; The item type of
+field<b> f6</b>, containing the <b>state</b> values, has been changed to <a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">COMBOBOX</a>
+to provide the user with a dropdown list when data is being entered.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Form file (custallform.per)</b></td>
+    </tr>
+    <tr>
+      <td width="387" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>SCHEMA</tt> custdemo
+<CODE class=linenumber>02</CODE>
+<CODE class=linenumber>03</CODE> <tt>LAYOUT</tt>
+<CODE class=linenumber>04</CODE>  <tt>TABLE</tt>
+<CODE class=linenumber>05</CODE>  {
+<CODE class=linenumber>06</CODE>   Id   Name         ..  Zipcode   Contact          Phone
+<CODE class=linenumber>07</CODE>  [f01][f02         ]   [f07     ][f08            ][f09         ]
+<CODE class=linenumber>08</CODE>  [f01][f02         ]   [f07     ][f08            ][f09         ]
+<CODE class=linenumber>09</CODE>  [f01][f02         ]   [f07     ][f08            ][f09         ]
+<CODE class=linenumber>10</CODE>  [f01][f02         ]   [f07     ][f08            ][f09         ]
+<CODE class=linenumber>11</CODE>  [f01][f02         ]   [f07     ][f08            ][f09         ]
+<CODE class=linenumber>12</CODE>  [f01][f02         ]   [f07     ][f08            ][f09         ]
+<CODE class=linenumber>13</CODE>  }
+<CODE class=linenumber>14</CODE> <tt> END</tt>
+<CODE class=linenumber>15</CODE> <tt>END</tt>
+<CODE class=linenumber>16</CODE>
+<CODE class=linenumber>17 </CODE><tt>TABLES</tt>
+<CODE class=linenumber>18 </CODE> customer
+<CODE class=linenumber>19</CODE> <tt>END</tt>
+<CODE class=linenumber>20</CODE>
+<CODE class=linenumber>21</CODE> <tt>ATTRIBUTES</tt>
+<CODE class=linenumber>22</CODE> <tt>EDIT     </tt>f01 = customer.store_num, <tt>REQUIRED</tt>;
+<CODE class=linenumber>23</CODE> <tt>EDIT     </tt>f02 = customer.store_name, <tt>REQUIRED</tt>; 
+<CODE class=linenumber>24</CODE> <tt>EDIT     </tt>f03 = customer.addr;
+<CODE class=linenumber>25</CODE> <tt>EDIT     </tt>f04 = customer.addr2;
+<CODE class=linenumber>26</CODE> <tt>EDIT     </tt>f05 = customer.city;
+<CODE class=linenumber>27</CODE> <tt>COMBOBOX </tt>f6  = customer.state, <tt>ITEMS</tt> = (&quot;IA&quot;, &quot;IL&quot;, &quot;WI&quot;);
+<CODE class=linenumber>28 </CODE><tt>EDIT     </tt>f07 = customer.zipcode;<CODE class=linenumber>
+29</CODE> <tt>EDIT     </tt>f08 = customer.contact_name;
+<CODE class=linenumber>30</CODE> <tt>EDIT     </tt>f09 = customer.phone;
+<CODE class=linenumber>31</CODE> <tt>END</tt>
+<CODE class=linenumber>32</CODE>
+<CODE class=linenumber>33</CODE> <tt>INSTRUCTIONS</tt>
+<CODE class=linenumber>34</CODE> <tt>SCREEN RECORD</tt> sa_cust (customer.*);
+<CODE class=linenumber>35</CODE> <tt>END</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+<hr>
+
+
+<h3><a name="MainBlock">The Main block</a></h3>
+
+<p>The single module program <b>custall.4gl</b> allows the user to update the <b>customer</b>
+table using a form that displays multiple records at once.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Main block&nbsp;
+        (custall.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>SCHEMA</tt> custdemo
+<CODE class=linenumber>02</CODE>
+<CODE class=linenumber>03</CODE> <tt>DEFINE</tt> cust_arr <tt>DYNAMIC ARRAY OF RECORD</tt>
+<CODE class=linenumber>04</CODE>         store_num    <tt>LIKE</tt> customer.store_num,
+<CODE class=linenumber>05</CODE>         store_name   <tt>LIKE</tt> customer.store_name,
+<CODE class=linenumber>06</CODE>         addr         <tt>LIKE </tt>customer.addr,<tt>
+</tt><CODE class=linenumber>07</CODE>         addr2 <tt>       LIKE</tt> customer.addr2,
+<CODE class=linenumber>08</CODE>         city         <tt>LIKE</tt> customer.city,
+<CODE class=linenumber>09</CODE>         state <CODE class=linenumber>       </CODE><tt>LIKE</tt><CODE class=linenumber> </CODE>customer.state,<CODE class=linenumber>
+10</CODE>         zipcode      <tt>LIKE</tt> customer.zipcode,
+<CODE class=linenumber>11</CODE>         contact_name <tt>LIKE</tt> customer.contact_name,
+<CODE class=linenumber>12</CODE>         phone        <tt>LIKE</tt> customer.phone
+<CODE class=linenumber>13        </CODE><tt>END RECORD</tt><CODE class=linenumber>
+14</CODE> 
+<CODE class=linenumber>15</CODE>
+<CODE class=linenumber>16</CODE><tt> MAIN</tt>
+<CODE class=linenumber>17</CODE>   <tt>DEFINE</tt> idx <tt>SMALLINT</tt>
+<CODE class=linenumber>18</CODE>
+<CODE class=linenumber>19</CODE>   <tt>DEFER INTERRUPT</tt>
+<CODE class=linenumber>20</CODE>   <tt>CONNECT TO </tt>&quot;custdemo&quot;<tt>
+</tt><CODE class=linenumber>21</CODE>   <tt>CLOSE WINDOW SCREEN</tt>
+<CODE class=linenumber>22</CODE>   <tt>OPEN WINDOW</tt> w3 <tt>WITH FORM</tt> &quot;custallform&quot;
+<CODE class=linenumber>23</CODE>
+<CODE class=linenumber>24</CODE>  <tt> CALL</tt> load_custall() <tt>RETURNING </tt>idx
+<CODE class=linenumber>25</CODE>  <tt> IF</tt> idx &gt; 0 <tt>THEN</tt>
+<CODE class=linenumber>26</CODE>     <tt> CALL</tt> inparr_custall()
+<CODE class=linenumber>27</CODE>  <tt> END IF</tt>
+<CODE class=linenumber>28</CODE>
+<CODE class=linenumber>29</CODE>   <tt>CLOSE WINDOW</tt> w3
+<CODE class=linenumber>30</CODE>   <tt>DISCONNECT CURRENT</tt>
+<CODE class=linenumber>31</CODE>
+<CODE class=linenumber>32</CODE> <tt>END MAIN</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Lines
+<CODE class=linenumber>03</CODE>  thru
+<CODE class=linenumber>13</CODE> define a&nbsp; <a href="Arrays.html">dynamic array</a>
+            <b>cust_arr</b>
+having the same structure as the <b> customer</b> table.&nbsp; The <a href="Arrays.html">array</a> is modular is scope.</li>
+          <li>Line
+<CODE class=linenumber>17</CODE>   defines a local <a href="Variables.html">variable</a> 
+            <b>idx</b>, to hold the returned value from the <b>load_custall</b>
+            function.</li>
+          <li>Line
+<CODE class=linenumber>20</CODE>   connects to the <b>custdemo </b>database.</li>
+          <li>Line
+<CODE class=linenumber>22</CODE>  opens a <a href="WindowsAndForms.html#OPEN_WINDOW"> window</a> with the form
+            <b>manycust.</b>&nbsp; This form contains a <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>
+            <b>sa_cust</b> which is referenced in the
+  program.</li>
+          <li>Line <CODE class=linenumber>24</CODE>  thru <CODE class=linenumber>27
+            </CODE>call the function l<b>oad_custall</b> to
+load the <a href="Arrays.html">array</a>, which returns the index of the array.&nbsp;
+            If the load was successful (the returned index is greater than 0) the
+function <b>inparr_custall</b> is called. This
+function contains the logic for the Input/Update/Delete of rows.</li>
+          <li>Line
+<CODE class=linenumber>29 </CODE>  closes the <a href="WindowsAndForms.html#OPEN_WINDOW"> window</a>.</li>
+          <li>Line
+<CODE class=linenumber>30</CODE>   disconnects from the database.</li>
+        </ul>
+
+
+<hr>
+<h3><a name="Function_load_custall">Function load_custall</a></h3>
+<p>This function loads the <a href="Arrays.html">program
+array</a> with rows from the <b> customer</b>
+database table. The logic to load the rows is identical to that in <a href="TutChap07.html">Chapter
+7</a>.
+Although this program loads all the rows from the <b> customer</b> table, the program
+could be written to allow the user to query first, for a subset of the
+rows.&nbsp; A <a href="TutChap04.html#QBE">query-by-example</a>, as illustrated in
+<a href="TutChap04.html"> chapter 4</a>, can also be
+implemented using a form containing a <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a> such as <b>manycust</b>.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function load_custall
+        (custall.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> load_custall()
+<CODE class=linenumber>02</CODE>  <tt> DEFINE</tt> cust_rec <tt>RECORD LIKE</tt> customer.*
+<CODE class=linenumber>03</CODE> 
+<CODE class=linenumber>04</CODE>
+<CODE class=linenumber>05</CODE>   <tt>DECLARE</tt> custlist_curs <tt>CURSOR FOR
+</tt><CODE class=linenumber>06</CODE>      <tt>SELECT</tt> store_num, 
+<CODE class=linenumber>07</CODE>          store_name, 
+<CODE class=linenumber>08</CODE>          addr,
+<CODE class=linenumber>09</CODE>          addr2,
+<CODE class=linenumber>10</CODE>          city, 
+<CODE class=linenumber>11</CODE>          state, 
+<CODE class=linenumber>12</CODE>          zipcode, 
+<CODE class=linenumber>13</CODE>          contact_name, 
+<CODE class=linenumber>14 </CODE>         phone
+<CODE class=linenumber>15</CODE>        <tt>FROM</tt> customer
+<CODE class=linenumber>16</CODE>        <tt>ORDER</tt> BY store_num
+<CODE class=linenumber>17</CODE>
+<CODE class=linenumber>18</CODE>  
+<CODE class=linenumber>19</CODE>   <tt>CALL</tt> cust_arr.clear()
+<CODE class=linenumber>20 </CODE>  <tt>FOREACH</tt> custlist_curs <tt>INTO</tt> cust_rec.*
+<CODE class=linenumber>21</CODE>      <tt>CALL</tt> cust_arr.appendElement()
+<CODE class=linenumber>22</CODE>      <tt>LET</tt> cust_arr[cust_arr.getLength()].* = cust_rec.*
+<CODE class=linenumber>23</CODE>  <tt> END FOREACH</tt>
+<CODE class=linenumber>24</CODE>    
+<CODE class=linenumber>25</CODE>   <tt>IF</tt> (cust_arr.getLength() == 0) <tt>THEN </tt>
+<CODE class=linenumber>26</CODE>      <tt>DISPLAY</tt> &quot;No rows loaded.&quot; 
+<CODE class=linenumber>27</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>28</CODE>
+<CODE class=linenumber>29</CODE>   <tt>RETURN </tt>cust_arr.getLength()
+<CODE class=linenumber>30</CODE>
+<CODE class=linenumber>31</CODE><tt> END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line
+<CODE class=linenumber>02</CODE> defines a local <a href="Variables.html">record
+            variable</a>,<b>
+            cust_rec</b>, to hold the rows fetched in <a href="ResultSets.html#RS_FOREACH">FOREACH</a>.</li>
+          <li>Lines
+<CODE class=linenumber>05</CODE>    thru
+<CODE class=linenumber>16</CODE>    declare the <a href="ResultSets.html#RESULTSET"> cursor</a>
+            <b> custlist_curs</b> to retrieve
+the rows from the <b> customer</b> table.</li>
+          <li>Lines
+<CODE class=linenumber>20</CODE>     thru
+<CODE class=linenumber>23</CODE>    retrieve the rows from the <a href="ResultSets.html"> result set</a> into the
+            <a href="Arrays.html">program
+array</a>.</li>
+          <li>Lines
+<CODE class=linenumber>25</CODE>     thru
+<CODE class=linenumber>27</CODE>&nbsp; If the array is empty, we display a
+            warning message.&nbsp;</li>
+          <li>Line <CODE class=linenumber>29</CODE>  returns the number of rows to the
+            <a href="Programs.html#MAIN_BLOCK"> MAIN</a>  function.</li>
+        </ul>
+
+
+<hr>
+<h3><a name="Function_inparr_custall">Function inparr_custall</a></h3>
+<p>This is the primary function of the program, driving the logic for inserting,
+deleting, and changing rows in the <b> customer</b> database table.&nbsp; Each time a
+row in the array on the form is added, deleted, or changed, the values from the 
+corresponding row in the <a href="InputArray.html#array">program array</a>  are used to update the <b> customer</b> 
+database table. The variable <b>opflag</b> is used by the program to indicate 
+the status of the current operation:</p>
+<ul>
+	<li>N - no action; set in the <a href="InputArray.html#before-row-block">
+	BEFORE ROW</a> control block; this will subsequently be changed if an insert 
+	or update of a row in the array is performed.</li>
+	<li>T - temporary; set in the <a href="InputArray.html#before-insert-block">
+	BEFORE INSERT</a> control block; indicates that an insert of a new row has 
+	been started.</li>
+	<li>I -&nbsp; insert; set in the
+	<a href="InputArray.html#after-insert-block">AFTER INSERT</a> control block; 
+	indicates that the insert of the new row was completed.</li>
+	<li>U - update; set in the <a href="InputArray.html#on-change-block">ON ROW 
+	CHANGE</a> control block; indicates that a change has been made to an 
+	existing row.</li>
+</ul>
+<p>The value of <b>opflag</b> is tested in an
+<a href="InputArray.html#after-row-block">AFTER ROW</a> control block to 
+determine whether an SQL INSERT or SQL UPDATE of the database table is 
+performed.</p>
+<p>Since multiple control blocks are triggered by an operation, the
+<a href="InputArray.html#CTRLBLOCK_EXECUTION">order of execution</a> of the 
+blocks is important. This is discussed in detail in the
+<a href="InputArray.html">INPUT ARRAY</a> page of this manual.&nbsp; The example 
+below illustrates how the order of execution of the control blocks is used by the 
+program to set the <b>opflag</b> variable appropriately:</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="423" bgcolor="#C0C0C0" valign="top"><b>Function inparr_custall
+        (custall.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION </tt>inparr_custall(idx)
+<CODE class=linenumber>02</CODE>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> curr_pa <tt>SMALLINT</tt>,
+<CODE class=linenumber>04</CODE>          opflag  <tt>CHAR</tt>(1)
+<CODE class=linenumber>05</CODE>
+<CODE class=linenumber>06</CODE>  <tt>INPUT ARRAY </tt>cust_arr <tt>WITHOUT DEFAULTS</tt>
+<CODE class=linenumber>07</CODE>  <tt>    FROM</tt> sa_cust.* 
+<CODE class=linenumber>08      </CODE><tt>ATTRIBUTES</tt> (<tt>UNBUFFERED</tt>)<CODE class=linenumber>
+09
+10</CODE>   <tt>BEFORE INPUT</tt>
+<CODE class=linenumber>11</CODE>   <tt> MESSAGE</tt> &quot;OK exits/&quot; ||
+<CODE class=linenumber>12</CODE>    &quot;Cancel exits &amp; cancels current operation&quot;
+<CODE class=linenumber>13</CODE>
+<CODE class=linenumber>14</CODE>  <tt> BEFORE ROW
+</tt><CODE class=linenumber>15     </CODE><tt>LET </tt>curr_pa = ARR_CURR()<CODE class=linenumber>
+16     </CODE><tt>LET</tt><CODE class=linenumber> </CODE>opflag = &quot;N&quot;<CODE class=linenumber>
+17</CODE>
+<CODE class=linenumber>18</CODE>   <tt>BEFORE INSERT</tt>
+<CODE class=linenumber>19</CODE>     <tt>LET</tt> opflag = &quot;T&quot;
+<CODE class=linenumber>20</CODE> 
+<CODE class=linenumber>21</CODE>   <tt>AFTER INSERT</tt>
+<CODE class=linenumber>22</CODE>     <tt>LET</tt> opflag = &quot;I&quot;
+<CODE class=linenumber>23</CODE>
+<CODE class=linenumber>24 </CODE>  <tt>BEFORE DELETE</tt>
+<CODE class=linenumber>25</CODE>     <tt>IF NOT</tt> (delete_cust(curr_pa)) <tt>THEN</tt>
+<CODE class=linenumber>26</CODE>         <tt>CANCEL DELETE</tt>
+<CODE class=linenumber>27</CODE>       <tt>END IF</tt>
+<CODE class=linenumber>28</CODE>    
+<CODE class=linenumber>29</CODE>   <tt> ON ROW CHANGE</tt>
+<CODE class=linenumber>30</CODE>      <tt>IF</tt> (opflag &lt;&gt; &quot;I&quot;) <tt>THEN</tt>
+<CODE class=linenumber>31</CODE>        <tt>LET</tt> opflag = &quot;U&quot;
+<CODE class=linenumber>32</CODE>      <tt> END IF</tt>
+<CODE class=linenumber>33</CODE>
+<CODE class=linenumber>34 </CODE> <tt> BEFORE FIELD </tt>store_num
+<CODE class=linenumber>35</CODE>   <tt> IF</tt> (opflag &lt;&gt; &quot;T&quot;) <tt>THEN</tt>
+<CODE class=linenumber>36</CODE>     <tt> NEXT FIELD</tt> store_name
+<CODE class=linenumber>37</CODE>  <tt>  END IF</tt>
+<CODE class=linenumber>38
+39 </CODE> <tt> ON CHANGE </tt>store_num
+<CODE class=linenumber>40 </CODE>  <tt> IF</tt> (opflag = &quot;T&quot;) <tt>THEN </tt> 
+<CODE class=linenumber>41       </CODE><tt>IF NOT</tt><CODE class=linenumber> </CODE>store_num_ok(curr_pa)<CODE class=linenumber> </CODE><tt>THEN</tt><CODE class=linenumber>
+42 </CODE>       <tt>MESSAGE</tt> &quot;Store already exists&quot;
+<CODE class=linenumber>43</CODE>       <tt> LET</tt> cust_arr[curr_pa].store_num = NULL
+<CODE class=linenumber>44 </CODE>      <tt> NEXT FIELD </tt>store_num
+<CODE class=linenumber>45</CODE>      <tt>END IF 
+</tt><CODE class=linenumber>46</CODE><tt>   </tt> <tt>END IF
+</tt><CODE class=linenumber>47</CODE><tt>
+</tt><CODE class=linenumber>48</CODE>    <tt>AFTER ROW</tt>
+<CODE class=linenumber>49 </CODE>     <tt>IF (</tt>INT_FLAG) <tt>THEN EXIT INPUT END IF</tt>
+<CODE class=linenumber>50 </CODE>    <tt> CASE</tt>
+<CODE class=linenumber>51 </CODE>    <tt> WHEN</tt> opflag = &quot;I&quot;
+<CODE class=linenumber>52</CODE>     <tt>     CALL</tt> insert_cust(curr_pa)
+<CODE class=linenumber>53</CODE>       <tt> WHEN</tt> opflag = &quot;U&quot;
+<CODE class=linenumber>54 </CODE>         <tt>CALL</tt> update_cust(curr_pa)
+<CODE class=linenumber>55</CODE>      <tt>END CASE</tt>
+<CODE class=linenumber>56</CODE>
+<CODE class=linenumber>57 </CODE> <tt>END INPUT</tt>
+<CODE class=linenumber>58</CODE>
+<CODE class=linenumber>59</CODE>  <tt>IF</tt> (INT_FLAG) <tt>THEN</tt>
+<CODE class=linenumber>60</CODE>  <tt>  LET</tt> INT_FLAG = FALSE
+<CODE class=linenumber>61</CODE>  <tt>END</tt> <tt>IF
+</tt><CODE class=linenumber>62</CODE>
+<CODE class=linenumber>63</CODE> <tt>END FUNCTION </tt>-- inparr_custall</pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line <CODE class=linenumber>03</CODE>  defines the <a href="Variables.html">variable</a> 
+            <b>curr_pa</b>, to hold the index number of the current <a href="TutChap03.html#definerecord">record</a> in the
+            <a href="Arrays.html">program
+array</a>.</li>
+          <li>Line <CODE class=linenumber>04</CODE>  defines the <a href="Variables.html">variable</a> 
+            <b>opflag</b>, to indicate whether the operation being
+performed on a <a href="TutChap03.html#definerecord">record</a> is an Insert
+            (&quot;I&quot;) or an Update (&quot;U&quot;).</li>
+          <li>Lines <CODE class=linenumber>06</CODE>  thru
+			<CODE class=linenumber>57</CODE>   contain the <a href="InputArray.html"> INPUT ARRAY</a> statement,
+associating the <a href="Arrays.html">program
+array</a>  <b>cust_arr</b> with the <b>sa_cust</b> <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a> on the form.
+            The attribute <a href="#COUNT"> WITHOUT DEFAULTS</a> is used so the same statement can handle both
+            Updates and Inserts of new <a href="TutChap03.html#definerecord">records</a>. The
+            <a href="#UNBUFFERED"> UNBUFFERED</a> attribute insures that
+values entered into the program
+array are automatically displayed in the screen array on the form.</li>
+          <li>Lines <CODE class=linenumber>10</CODE>  thru <CODE class=linenumber>12</CODE>&nbsp;
+            <a href="#ControlBlocks"> BEFORE INPUT</a> control block: before the
+            <a href="InputArray.html"> INPUT ARRAY</a> statement is executed a
+            <a href="MessageDisplay.html#MESSAGE"> MESSAGE</a>  is displayed to the user.</li>
+          <li>Lines
+<CODE class=linenumber> 14</CODE>   thru <CODE class=linenumber>16 </CODE><a href="#ControlBlocks">BEFORE ROW</a> control block:
+            when called in this
+block, the <a href="BuiltInFunctions.html#BF_ARR_CURR">ARR_CURR</a>  function returns
+the index of the <a href="TutChap03.html#definerecord">record</a> that the user is moving into (which will become the
+current record).&nbsp; This is stored in a variable <b>curr_pa</b>, so the index
+can be passed to other control blocks.
+            We also initialize the <b>opflag</b> to &quot;N&quot;:&nbsp; This will be 
+			its value unless an update or insert is performed.&nbsp; </li>
+          <li>Lines
+<CODE class=linenumber> 18</CODE>   and
+<CODE class=linenumber> 19</CODE>    <a href="#ControlBlocks">BEFORE INSERT</a> control block:
+            just before the user is allowed to enter the values for a new <a href="TutChap03.html#definerecord">record</a>, the
+variable <b>opflag</b> is set to &quot;<b>T</b>&quot;, indicating an Insert operation 
+			is in progress.</li>
+          <li>Lines
+<CODE class=linenumber> 21</CODE>   and
+<CODE class=linenumber> 22</CODE>   <a href="#ControlBlocks">AFTER INSERT</a> 
+			control block sets the <b>opflag</b> to &quot;<b>I</b>&quot; after the insert 
+			operation has been completed.</li>
+          <li>Lines
+<CODE class=linenumber> 24</CODE>   thru <CODE class=linenumber>27</CODE> <a href="#ControlBlocks">BEFORE DELETE</a> 
+			control block: Before the <a href="TutChap03.html#definerecord">record</a> 
+			is removed from the program array, the function <b>delete_cust</b> 
+			is called, which verifies that the user wants to delete the current 
+			record. In this function, when the user verifies the delete, the 
+			index of the record is used to remove the corresponding row 
+from the database. Unless the <b>delete_cust</b> function returns
+			<a href="Programs.html#PC_TRUE">TRUE</a>, the
+			<a href="TutChap03.html#definerecord">record</a> is not removed from the <a href="Arrays.html">program
+array</a>.&nbsp; </li>
+          <li>Lines
+<CODE class=linenumber> 29</CODE>    thru
+			<CODE class=linenumber>32</CODE>   <a href="#ControlBlocks">ON ROW CHANGE</a> control block:&nbsp;After
+            row modification,&nbsp; the program checks whether the modification 
+			was an insert of a new row. If not, the <b>opflag</b> is set to &quot;<b>U</b>&quot; 
+			indicating an update of an existing row. </li>
+          <li>Lines <CODE class=linenumber>34 </CODE>thru
+<CODE class=linenumber> 37</CODE>    <a href="#ControlBlocks">BEFORE FIELD</a> <b> store_num</b> control block:&nbsp;the <b>store_num</b> <a href="FormSpecFiles.html#FF_FORM_FIELD">field</a> should not be 
+			entered by the user unless the
+operation is an Insert of a new row, indicated by the &quot;<b>T</b>&quot; value of <b>opflag</b>.&nbsp;The <b> store_num</b> column in the <b> customer</b> database table is a primary key and cannot
+be updated.&nbsp;If&nbsp;the operation is not an insert, the NEXT FIELD statement is
+used to move the cursor to the next field in the
+            <a href="Arrays.html">program
+array</a>, <b>store_name, </b>allowing
+the user to change all the fields in the
+            <a href="TutChap03.html#definerecord">record</a> of the program
+array except <b>store_num</b>.</li>
+          <li>Lines
+<CODE class=linenumber> 39</CODE>    thru
+<CODE class=linenumber> 46</CODE>   <a href="#ControlBlocks">ON CHANGE</a> <b>store_num
+            </b> control block: if the operation is an Insert, the <b>store_num_ok</b> function is called to
+verify that the value that the user has just entered into the <a href="FormSpecFiles.html#FF_FORM_FIELD">field</a>
+            <b>store_num</b>
+of the current <a href="Arrays.html">program
+array</a> does not already exist in the<b> customer</b> database
+table.&nbsp;If the store number does exist, the value entered by the user is nulled out, and
+the cursor is returned to the <b>store_num</b>   field.</li>
+			<li>Lines
+<CODE class=linenumber> 48</CODE> thru
+<CODE class=linenumber> 55</CODE> <a href="#ControlBlocks">AFTER ROW</a> control 
+			block: First, the program checks <a href="Programs.html#PV_INT_FLAG">
+			INT_FLAG</a>
+            to see whether the user wants to interrupt the INPUT operation. If 
+			not, the <b>opflag</b> is checked in a 
+			CASE statement, and the <b>insert_cust</b> or <b>update_cust </b>
+			function is called based on the <b>opflag</b> value. The index of the&nbsp;current <a href="TutChap03.html#definerecord">record</a> is passed 
+			to the function so the database table can be modified.</li>
+			<li>Line
+<CODE class=linenumber> 57</CODE> indicates the end of the INPUT statement.</li>
+          <li>Lines
+<CODE class=linenumber> 59</CODE><code> </code>thru
+<CODE class=linenumber> 61</CODE> check the value of the interrupt flag <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a>
+            and re-set it to <a href="Programs.html#PC_FALSE">FALSE</a> if necessary.</li>
+        </ul>
+
+
+<hr>
+<h3><a name="Function_store_num_ok">Function store_num_ok</a> </h3>
+<p>When a new <a href="TutChap03.html#definerecord">record</a> is being inserted into the
+<a href="Arrays.html">program
+array</a>, this function
+verifies that the store number does not already exist in the<b> customer</b>
+database table. The logic in this function is virtually identical to that used
+in <a href="TutChap05.html">Chapter 5</a>. </p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function store_num_ok
+        (custall.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> store_num_ok(idx)
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> idx <tt>SMALLINT</tt>,
+<CODE class=linenumber>03</CODE>         checknum <tt>LIKE</tt> customer.store_num,
+<CODE class=linenumber>04</CODE>         cont_ok <tt>SMALLINT</tt>
+<CODE class=linenumber>05
+06</CODE><tt>   LET </tt>cont_ok<tt> = </tt>FALSE<CODE class=linenumber>
+07</CODE>   <tt>WHENEVER ERROR CONTINUE </tt>
+<CODE class=linenumber>08</CODE>   <tt>SELECT</tt> store_num <tt>INTO </tt>checknum
+<CODE class=linenumber>09 </CODE>   <tt> FROM</tt> customer 
+<CODE class=linenumber>10 </CODE>    <tt>WHERE</tt> store_num = 
+<CODE class=linenumber>11</CODE>          cust_arr[idx].store_num
+<CODE class=linenumber>12 </CODE>  <tt>WHENEVER ERROR STOP </tt>    
+<CODE class=linenumber>13</CODE>  <tt> IF</tt> (SQLCA.SQLCODE = NOTFOUND) <tt>THEN</tt>
+<CODE class=linenumber>14</CODE>    <tt> LET</tt> cont_ok = TRUE 
+<CODE class=linenumber>15  </CODE><tt> ELSE</tt><CODE class=linenumber>
+16</CODE>     <tt>LET</tt> cont_ok = FALSE
+<CODE class=linenumber>17</CODE>    <tt> IF</tt> (SQLCA.SQLCODE = 0) <tt>THEN</tt> 
+<CODE class=linenumber>18</CODE>      <tt> MESSAGE</tt> &quot;Store Number already exists.&quot;
+<CODE class=linenumber>19</CODE>     <tt>ELSE</tt>
+<CODE class=linenumber>20</CODE>       <tt>ERROR </tt>SQLERRMESSAGE
+<CODE class=linenumber>21</CODE>     <tt>END IF</tt>
+<CODE class=linenumber>22</CODE>  <tt> END IF</tt>
+<CODE class=linenumber>23</CODE> 
+<CODE class=linenumber>24</CODE>   <tt>RETURN</tt> cont_ok
+<CODE class=linenumber>25</CODE>
+<CODE class=linenumber>26</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line
+<CODE class=linenumber>02</CODE>  The index of the current <a href="TutChap03.html#definerecord">record</a> in the
+            <a href="Arrays.html">program
+array</a> is stored in the <a href="Variables.html">variable</a>   <b>idx,
+            </b>passed to this function from the <a href="InputArray.html"> INPUT ARRAY</a> control block
+            <a href="#ControlBlocks"> ON
+  CHANGE</a> <b>store_num</b>.</li>
+          <li>Line <CODE class=linenumber>03 </CODE>The <a href="Variables.html">variable</a> 
+            <b> 
+            checknum</b> is defined to hold the <b>store_num</b> returned by the <a href="StaticSql.html#SS_SELECT"> SELECT</a> 
+            statement.</li>
+          <li>Line
+<CODE class=linenumber>06</CODE>  sets the <a href="Variables.html">variable</a> 
+            <b>cont_ok</b> to an initial
+value of <a href="Programs.html#PC_FALSE">FALSE</a>. This variable is used to indicate whether the store number is
+unique.</li>
+          <li>Lines
+<CODE class=linenumber>07</CODE>  thru
+<CODE class=linenumber>12 </CODE>use an embedded SQL <a href="StaticSql.html#SS_SELECT"> SELECT</a> statement to check
+whether the s<b>tore_num</b> already exists in the customer table. The index
+            passed to this function is used to obtain the
+  value that was entered into the store_num <a href="FormSpecFiles.html#FF_FORM_FIELD">field</a> on the form.&nbsp;
+            The entire database row is not retrieved by the SELECT statement since the
+  only information required by this program is whether the store number already
+  exists in the table. The&nbsp; SELECT 
+            is surrounded by <a href="Exceptions.html">WHENEVER ERROR</a> 
+            statements.</li>
+          <li>Lines
+<CODE class=linenumber>13</CODE>  thru
+<CODE class=linenumber>22</CODE>  test <a href="TutChap04.html#SQLCA.SQLCODE">SQLCA.SQLCODE</a> 
+            to determine the success of
+the <a href="StaticSql.html#SS_SELECT"> SELECT</a> statement. The <a href="Variables.html">variable</a> 
+            <b>cont_ok</b> is set to indicate whether the store number
+  entered by the user is unique.</li>
+          <li>Line
+<CODE class=linenumber>24</CODE>  returns the value of <b>cont_ok</b> to the
+calling function.</li>
+        </ul>
+
+
+<hr>
+<h3><a name="Function_insert_cust">Function insert_cust</a></h3>
+<p>This function inserts a new row into the <b>customer</b> database table.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function insert_cust
+        (custall.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> insert_cust(idx)
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> idx SMALLINT
+<CODE class=linenumber>03</CODE>
+<CODE class=linenumber>04</CODE>   <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>05</CODE>  <tt> INSERT INTO </tt>customer 
+<CODE class=linenumber>06</CODE>       (store_num, 
+<CODE class=linenumber>07</CODE>        store_name, 
+<CODE class=linenumber>08</CODE>        addr, 
+<CODE class=linenumber>09</CODE>        addr2, 
+<CODE class=linenumber>10</CODE>        city, 
+<CODE class=linenumber>11</CODE>        state, 
+<CODE class=linenumber>12</CODE>        zipcode, 
+<CODE class=linenumber>13</CODE>        contact_name, 
+<CODE class=linenumber>14</CODE>        phone)
+<CODE class=linenumber>15 </CODE>    <tt>VALUES</tt> (cust_arr[idx].* )
+<CODE class=linenumber>16</CODE>   <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>17</CODE>
+<CODE class=linenumber>18</CODE>  <tt> IF </tt>(SQLCA.SQLCODE = 0) <tt>THEN</tt>
+<CODE class=linenumber>19</CODE>     <tt>MESSAGE</tt> &quot;Store added&quot;
+<CODE class=linenumber>20</CODE>  <tt> ELSE</tt>
+<CODE class=linenumber>21</CODE>    <tt> ERROR</tt> SQLERRMESSAGE
+<CODE class=linenumber>22 </CODE>  <tt>END IF</tt>
+<CODE class=linenumber>23</CODE>
+<CODE class=linenumber>24</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line
+<CODE class=linenumber>02</CODE>    This function is called from the <a href="#ControlBlocks"> AFTER INSERT</a>
+control block of the <a href="InputArray.html"> INPUT ARRAY</a> statement.&nbsp;
+            The index of the <a href="TutChap03.html#definerecord">record</a> that was inserted into the <b>cust_arr</b>
+            <a href="Arrays.html">program
+array</a> is passed to the function and stored in the <a href="Variables.html">variable</a> 
+            <b>idx</b>.</li>
+          <li>Lines
+<CODE class=linenumber>04</CODE>   thru
+<CODE class=linenumber>16</CODE>   uses an embedded SQL <a href="StaticSql.html#SS_INSERT">INSERT</a> statement to
+insert a row into the <b> customer</b> database table. The values to be inserted into the <b>customer</b> table are obtained from
+  the <a href="TutChap03.html#definerecord">record</a> just inserted into the <a href="Arrays.html">program
+array</a>. The <a href="StaticSql.html#SS_INSERT">INSERT</a>&nbsp;
+            is surrounded by <a href="Exceptions.html">WHENEVER ERROR</a> 
+            statements.</li>
+          <li>Lines
+<CODE class=linenumber>18</CODE>  thru
+<CODE class=linenumber>22</CODE>  test the <a href="TutChap04.html#SQLCA.SQLCODE">SQLCA.SQLCODE</a> 
+            to see if the insert into the database was successful, and return an
+            appropriate message to the user.</li>
+        </ul>
+
+
+<hr>
+<h3><a name="Function_update_cust">Function update_cust</a> </h3>
+<p>This function updates a&nbsp; row in the <b>customer </b>database
+table.&nbsp; The functionality is very simple for illustration purposes, but it
+could be enhanced with additional error checking routines similar to the
+example in <a href="TutChap06.html"> chapter 6</a>. </p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function update_cust
+        (custall.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> update_cust(idx)
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> idx <tt>SMALLINT</tt>
+<CODE class=linenumber>03</CODE>  <tt> </tt>
+<CODE class=linenumber>04 </CODE>  <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>05</CODE>   <tt>UPDATE</tt> customer 
+<CODE class=linenumber>06</CODE>   <tt> SET</tt> 
+<CODE class=linenumber>07</CODE>     store_name   = cust_arr[idx].store_name,
+<CODE class=linenumber>08</CODE>     addr         = cust_arr[idx].addr,
+<CODE class=linenumber>09 </CODE>    addr2        = cust_arr[idx].addr2, 
+<CODE class=linenumber>10</CODE>     city         = cust_arr[idx].city, 
+<CODE class=linenumber>11 </CODE>    state        = cust_arr[idx].state, 
+<CODE class=linenumber>12</CODE>     zipcode      = cust_arr[idx].zipcode, 
+<CODE class=linenumber>13</CODE>     contact_name = cust_arr[idx].contact_name,
+<CODE class=linenumber>14</CODE>     phone        = cust_arr[idx].phone 
+<CODE class=linenumber>15</CODE>    <tt>WHERE</tt> store_num = cust_arr[idx].store_num
+<CODE class=linenumber>16  </CODE> <tt>WHENEVER ERROR STOP
+</tt><CODE class=linenumber>17
+18</CODE>  <tt> IF </tt>(SQLCA.SQLCODE = 0) <tt>THEN</tt>
+<CODE class=linenumber>19</CODE>      <tt>MESSAGE</tt> &quot;Dealer updated.&quot;
+<CODE class=linenumber>20</CODE>  <tt> ELSE</tt>
+<CODE class=linenumber>21</CODE>     <tt> ERROR</tt> SQLERRMESSAGE
+<CODE class=linenumber>22</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>23</CODE>
+<CODE class=linenumber>24</CODE><tt> END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line
+<CODE class=linenumber>02</CODE>&nbsp; The index of the current <a href="TutChap03.html#definerecord">record</a> in the
+cust_arr <a href="Arrays.html">program
+array</a> is passed as <b>idx </b>from the <a href="#ControlBlocks"> ON ROW CHANGE</a>&nbsp; control block.</li>
+          <li>Lines
+<CODE class=linenumber>04</CODE>  thru
+<CODE class=linenumber>16</CODE>  use an embedded SQL <a href="StaticSql.html#SS_UPDATE"> UPDATE</a> statement to update
+a row in the <b> customer </b> database table. The index of the current <a href="TutChap03.html#definerecord">record</a> in the
+            <a href="Arrays.html">program
+array</a> is used to obtain the
+value of <b>store_num</b> that is to be matched in the <b> customer</b> table.&nbsp; The
+            <b>
+customer</b> row is updated with the values stored in the current record of the program
+array.&nbsp; The <a href="StaticSql.html#SS_UPDATE">UPDATE</a>
+            is surrounded by <a href="Exceptions.html">WHENEVER ERROR</a> 
+            statements.</li>
+          <li>Lines
+<CODE class=linenumber>18</CODE> thru
+<CODE class=linenumber>22</CODE> test the <a href="TutChap04.html#SQLCA.SQLCODE">SQLCA.SQLCODE</a> 
+            to see if the update of the row in the database was successful, and
+            return an appropriate message to the user.</li>
+        </ul>
+
+
+<hr>
+<h3><a name="Function_delete_cust">Function delete_cust</a></h3>
+<p>This function deletes a row from the <b> customer</b> database table.&nbsp; A
+<a href="TutChap06.html#dialogMENU"> modal Menu</a> similar to that illustrated in
+<a href="TutChap06.html">Chapter 6</a> is used to verify that the user
+wants to delete the row.</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Function delete_cust
+        (custall.4gl)</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01 </CODE><tt>FUNCTION</tt> delete_cust(idx)
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> idx     <tt>SMALLINT</tt>,
+<CODE class=linenumber>03</CODE>         del_ok      <tt>SMALLINT</tt>
+<CODE class=linenumber>04</CODE>
+<CODE class=linenumber>05</CODE>   <tt>LET</tt> del_ok = FALSE
+<CODE class=linenumber>06</CODE><tt>
+</tt><CODE class=linenumber>07</CODE><tt>   MENU</tt> &quot;Delete&quot; <tt>ATTRIBUTES </tt>(<tt>STYLE</tt>=&quot;dialog&quot;, 
+<CODE class=linenumber>08</CODE>               <tt>COMMENT</tt>=&quot;Delete this row?&quot;)
+<CODE class=linenumber>09</CODE>    <tt>COMMAND</tt> &quot;OK&quot;
+<CODE class=linenumber>10 </CODE>     <tt>LET</tt> del_ok = TRUE
+<CODE class=linenumber>11</CODE>      <tt>EXIT MENU</tt>
+<CODE class=linenumber>12</CODE>    <tt>COMMAND</tt> &quot;Cancel&quot;
+<CODE class=linenumber>13</CODE>    <tt>  LET</tt> del_ok = FALSE 
+<CODE class=linenumber>14</CODE>    <tt>  EXIT MENU</tt>
+<CODE class=linenumber>15 </CODE> <tt> END MENU</tt>
+<CODE class=linenumber>16</CODE>
+<CODE class=linenumber>17</CODE>  <tt> IF</tt> del_ok = TRUE <tt>THEN</tt> 
+<CODE class=linenumber>18</CODE>     <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>20 </CODE>    <tt>DELETE FROM </tt>customer <tt>
+</tt><CODE class=linenumber>21</CODE><tt>        WHERE</tt> store_num = cust_arr[idx].store_num
+<CODE class=linenumber>22</CODE>     <tt>WHENEVER ERROR STOP
+</tt><CODE class=linenumber>23</CODE>
+<CODE class=linenumber>24</CODE>     <tt>IF </tt>(SQLCA.SQLCODE = 0)<CODE class=linenumber> </CODE><tt>THEN</tt><CODE class=linenumber>
+25</CODE>      <tt> LET </tt>del_ok = <tt>TRUE</tt>
+<CODE class=linenumber>26</CODE>      <tt> MESSAGE</tt> &quot;Dealer deleted.&quot;
+<CODE class=linenumber>27</CODE>     <tt>ELSE</tt>
+<CODE class=linenumber>28</CODE>      <tt> LET</tt> del_ok = FALSE
+<CODE class=linenumber>29</CODE>      <tt> ERROR SQLERRMESSAGE</tt>
+<CODE class=linenumber>30     </CODE><tt>END IF</tt><CODE class=linenumber>
+31</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>32</CODE>
+<CODE class=linenumber>33</CODE>   <tt>RETURN</tt> del_ok
+<CODE class=linenumber>34</CODE>
+<CODE class=linenumber>35</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>
+            Line <CODE class=linenumber>02</CODE>  The index of the current <a href="TutChap03.html#definerecord">record</a> in the <b>cust_arr
+        </b><a href="Arrays.html">program array</a> is passed from the <a href="#ControlBlocks"> BEFORE DELETE</a> control block of
+        <a href="InputArray.html"> INPUT ARRAY</a>, and stored in the variable <b>idx</b>.&nbsp; The BEFORE DELETE&nbsp;
+        control block is executed immediately before the record is deleted from the program array, allowing the logic in this function to be 
+        executed before the record is removed from the program array.</li>
+          <li>Line <CODE class=linenumber>05</CODE>   sets the initial value of <b>del_ok</b> to <a href="Programs.html#PC_FALSE">FALSE</a>.
+          </li>
+          <li>Lines <CODE class=linenumber>07 </CODE>thru <CODE class=linenumber>15
+            </CODE>display the <a href="TutChap06.html#dialogMENU"> modal
+Menu</a> to the user for confirmation of the Delete.</li>
+          <li>Lines <CODE class=linenumber>18</CODE>   thru <CODE class=linenumber>22
+            </CODE>use an embedded SQL <a href="StaticSql.html#SS_DELETE"> DELETE</a> statement to
+delete the row from the <b> customer</b> database table.&nbsp; The variable <b>idx</b>&nbsp;
+        is used to determine the value of <b>store_num</b> in the <a href="Arrays.html">program array</a> record that is to be used as criteria in the DELETE
+statement.&nbsp; This <a href="TutChap03.html#definerecord">record</a> in the program array has not yet been removed, since this <b>delete_cust</b> function was
+        called in a <a href="#ControlBlocks"> BEFORE DELETE</a> control block.&nbsp;The DELETE is surrounded by <a href="Exceptions.html#DEFINITION">WHENEVER ERROR</a> 
+        statements.</li>
+          <li>Lines <CODE class=linenumber>24</CODE>  thru <CODE class=linenumber>30</CODE> 
+            test the <a href="TutChap04.html#SQLCA.SQLCODE">SQLCA.SQLCODE</a> 
+        to see if the update of the row in the database was successful, and return an appropriate message to the user.&nbsp;
+        The value <b>del_ok</b> is set based on the success of the SQL <a href="StaticSql.html#SS_DELETE"> DELETE</a>
+            statement.</li> 
+         <li>Line <CODE class=linenumber>33 </CODE>returns the variable <b>del_ok</b> to the <a href="#ControlBlocks"> BEFORE DELETE</a>
+control block, indicating whether the Delete of the <b> customer</b> row was successful.</li>
+        </ul>
+
+
+</body>
+</html>

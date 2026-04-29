@@ -1,0 +1,320 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>FGLPROFILE</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The FGLPROFILE configuration file</a></H1>
+<p> Summary:</p>
+
+<ul>
+  <li><a href="#BASICS">Basics</a></li>
+  <li><a href="#ENTRYSYNTAX">FGLPROFILE Entry Syntax</a></li>
+  <li><a href="#ENTRYLIST">Supported Entries</a></li>
+</ul>
+
+<p><i>See also:</i>  <a href="Programs.html">Programs</a></p>
+
+<HR>
+
+<h3><a name="BASICS">Basics</a></h3>
+
+<p> The runtime system uses one or more configuration files in which you can
+define <a href="#ENTRYSYNTAX">entries</a> to change the behavior of the programs.</p>
+
+<p>There is no specific naming convention for the configuration files, however,
+we recommend to use an extension such as <b>prf</b>.</p>
+
+<p>There are three different levels to specify a configuration file, and these
+files are loaded in the following order:</p>
+
+<ol>
+  <li>First, the runtime system reads the configuration file provided in <a href="EnvironmentVariables.html#EV_FGLDIR">FGLDIR</a>/etc/fglprofile.
+This file contains all supported entries, identifies the possible values for an 
+	entry, and documents default values. You should not modify this default
+    configuration file, see warning below.</li>
+  <li>Then, if the <a href="EnvironmentVariables.html#EV_FGLPROFILE">FGLPROFILE</a>
+environment variable is set, the runtime system reads entries from the files specified by
+    this environment variable. A list of files can be provided with FGLPROFILE.
+    Files must be separated by the operating system specific path separator.</li>
+  <li>After loading and merging the two previous levels, the runtime system
+    checks if the <b>fglrun.defaults</b> entry is set. This entry defines  the <i> program-specific profile directory</i>.
+    If this directory contains a file
+with the same name as the current program (without .42x extension), the runtime system reads the entries from
+that file.</li>
+</ol>
+
+<p><b><font color="#FF0000">Warning:</font> It is not recommended to change the
+default configuration file in FGLDIR/etc/fglprofile. This file will be
+overwritten by a new installation and your changes will be lost. You better make
+a copy and define your private configuration file with the <a href="EnvironmentVariables.html#EV_FGLPROFILE">FGLPROFILE</a>
+environment variable.</b></p>
+
+<p>The runtime system merges the different configuration files found at the
+three levels. If the same entry is defined in
+several files, the last loaded entry wins. This means that the order of
+precedence is:</p>
+<ol>
+  <li>Program specific configuration file (if <b>fglrun.defaults</b> is defined
+    in one of the other levels).</li>
+  <li>Configuration files defined by the FGLPROFILE environment variable.</li>
+  <li>The default configuration file FGLDIR/etc/fglprofile.</li>
+</ol>
+
+<HR>
+
+<h3><a name="ENTRYSYNTAX">FGLPROFILE Entry Syntax</a></h3>
+
+<h4>Purpose:</h4>
+
+<p>An FGLPROFILE entry is a line in the configuration file associating a parameter name to a value
+that can be specified as a numeric, string or boolean.</p>
+
+<h4>Syntax:</h4>
+
+<code><i>entry</i> = <i>value</i></code>
+
+<p>where <i>entry</i> is:</p>
+
+<p><code><i>ident</i> <u>[</u>.<i>ident</i> <u>[</u>.<i>ident</i><u>]</u> <u>[...]</u>
+<u>]</u> <u>]</u></code></p>
+
+<p>and <i>value</i> is:</p>
+
+<p><code>&nbsp;&nbsp;<u>[</u>-<u>]{</u> <i>digit</i> <u>[...]</u> <u>}[</u> . <i></u>digit</i> <u>[...]</u> <u>]<br>
+|</u>&nbsp;&quot; <i>alphanum</i> <u>[...]</u> &quot;<br>
+<u>|</u>&nbsp;<u>{</u>true<u>|</u>false<u>}</u></code></p>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>entry</i> identifies the name of the entry. This can be a dot-separated
+    list of identifiers.</li>
+  <li><i>value</i> is the value of the entry; it might be a numeric value, a
+    string literal, or a Boolean value (true/false).</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>The entries are defined by a name composed of a list of identifiers separated
+ by a dot character.
+Entry names are converted to lower case when loaded by the runtime system.
+In order to avoid any confusion, it is recommended to write FGLPROFILE entry
+names in lower case.
+If an entry is defined several times in the same file, the last entry found in
+the file is used. No error is raised.
+</p>
+
+<p>The value can be a numeric literal, a string literal, or a Boolean (true/false).</p>
+
+<p>Numeric values are composed by an optional sign, followed by digits, followed by an 
+optional decimal point and digits:</p>
+
+<p><code>my.numeric.entry = -1566.57</code></p>
+
+<p>String values must be delimited by single or double quotes.
+<u>The escape character is backslash</u>, \t \n \r \f are interpreted as TAB, NL, CR, FF.</p>
+
+<p><code>my.string.entry = &quot;C:\\data\\test1.dbf&quot;</code></p>
+
+<p>Boolean values must be either the <i>true</i> or <i>false</i> keyword:</p>
+
+<p><code>my.boolean.entry = true</code></p>
+
+<p>For the complete list of supported entries, see <a href="#ENTRYLIST">Supported Entries</a>.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> report.aggregatezero = true
+<CODE class=linenumber>02</CODE> gui.connection.timeout = 100
+<CODE class=linenumber>03</CODE> dbi.database.stores.source = &quot;C:\\data\\test1.dbf&quot;
+<CODE class=linenumber>04</CODE> dbi.database.stores.prefetch.rows = 200</PRE>
+
+<HR>
+
+<h3><a name="ENTRYLIST">Supported Entries</a></h3>
+<p>The following table shows the a partial list of supported FGLPROFILE entries. You can find 
+the
+complete usage for an entry in the corresponding documentation section referenced in the
+description of the entry.</p>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="20%" valign="top"><b>Entry</b></td>
+    <td bgcolor="#C0C0C0" width="10%" valign="top"><b>Values</b></td>
+    <td bgcolor="#C0C0C0" width="10%" valign="top"><b>Default</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>dbi.*</tt></td>
+    <td width="10%" valign="top">N/A</td>
+    <td width="10%" valign="top">N/A</td>
+    <td>Database interface configuration.<br>
+      See <a href="Connections.html">Connections</a> for more details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.connection.timeout</tt></td>
+    <td width="10%" valign="top">integer</td>
+    <td width="10%" valign="top">30</td>
+    <td>Defines the timeout delay (in seconds) the runtime system waits when it
+      establishes a connection to the front-end. After this delay the program stops with an
+      error.<br>
+      See <a href="DynamicUI.html#FECONN_TIMEOUT">Dynamic User Interface</a> for more
+      details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.key.add_function</tt></td>
+    <td width="10%" valign="top">integer</td>
+    <td width="10%" valign="top">none</td>
+    <td>If set, this entry defines the offset for function key mapping when
+      using Shift-Fx and Control-Fx key modifiers.<br>
+      See <a href="DynamicUI.html#TRADITIONAL_MODE">Dynamic User Interface</a> for more
+      details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.protocol.pingTimeout</tt></td>
+    <td width="10%" valign="top">integer</td>
+    <td width="10%" valign="top">600</td>
+    <td>Defines the timeout delay (in seconds) the runtime system waits for a front-end ping
+      when there is no user activity. After this delay the program stops with an
+      error.<br>
+      See <a href="DynamicUI.html#FECONN_LOST">Dynamic User Interface</a> for more
+      details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.protocol.format</tt></td>
+    <td width="10%" valign="top">string</td>
+    <td width="10%" valign="top">default</td>
+    <td>Controls Front-End protocol format.<br>
+      Possible values are: &quot;block&quot;,
+      &quot;zlib&quot;.<br>
+      Default is &quot;block&quot; (encapsulation only).<br>
+      See <a href="FEProtocol.html#COMPRESSION">Front-End Protocol</a> for more
+      details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.server.autostart.*</tt></td>
+    <td width="10%" valign="top">N/A</td>
+    <td width="10%" valign="top">N/A</td>
+    <td>Defines automatic front-end startup parameters.<br>
+      See <a href="DynamicUI.html#AUTOSTART">Dynamic User Interface</a> for
+      more details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>gui.uiMode</tt></td>
+    <td width="10%" valign="top">string</td>
+    <td width="10%" valign="top">NULL</td>
+    <td>Defines the user interface mode, to render windows in traditional 4GL
+      mode.<br>
+      Possible values are: &quot;default&quot; or &quot;traditional&quot;. Default
+      is the new Genero GUI mode with real resizable windows.<br>
+      See <a href="DynamicUI.html#TRADITIONAL_MODE">Dynamic User Interface</a> for more
+      details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>fglrun.arrayIgnoreRangeError</tt></td>
+    <td width="10%" valign="top">boolean</td>
+    <td width="10%" valign="top">false</td>
+    <td>Controls runtime behavior when array index is out of bounds.<br>
+      See <a href="Arrays.html#arrayIgnoreRangeError">Arrays</a> for more details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>fglrun.mapAnyErrorToError</tt></td>
+    <td width="10%" valign="top">boolean</td>
+    <td width="10%" valign="top">false</td>
+    <td>Controls default action of WHENEVER ANY ERROR.<br>
+      See <a href="Exceptions.html#mapAnyErrorToError">Exceptions</a> for more details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>fglrun.default</tt></td>
+    <td width="10%" valign="top">string</td>
+    <td width="10%" valign="top">NULL</td>
+    <td>Defines the directory where program specific configuration files are
+      located.<br>
+      See <a href="#BASICS">Basics</a> for more details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>fglrun.ignoreLogoffEvent</tt></td>
+    <td width="10%" valign="top">boolean</td>
+    <td width="10%" valign="top">false</td>
+    <td>Defines whether the DVM ignores a CTRL_LOGOFF_EVENT on Windows
+      platforms.<br>
+      See <a href="Programs.html#CTRL_LOGOFF_EVENT">Programs</a> for more
+      details.</td>
+  </tr>
+	<tr>
+    <td width="20%" valign="top"><tt>fglrun.ignoreDebuggerEvent</tt></td>
+    <td width="10%" valign="top">boolean</td>
+    <td width="10%" valign="top">false</td>
+    <td>Defines whether the DVM ignores a SIGTRAP (Unix) or CTRL-Break (Windows)
+      to switch into debug mode.<br>
+      See <a href="Debugger.html#SIGTRAP">Debugger</a> for more
+      details.</td>
+  </tr>
+	<tr>
+    <td width="20%" valign="top"><tt>fglrun.localization.*</tt></td>
+    <td width="10%" valign="top">N/A</td>
+    <td width="10%" valign="top">N/A</td>
+    <td>Defines load parameters for localized string resource files.<br>
+      See <a href="LocalizedStrings.html#RUNTIME">Localized Strings</a> for more
+      details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>fglrun.mmapDisable</tt></td>
+    <td width="10%" valign="top">boolean</td>
+    <td width="10%" valign="top">false</td>
+    <td>Memory mapping control. When set to true, memory mapping is disabled
+        and standard memory allocation method takes place. For more details
+        about memory mapping, run "man mmap" on UNIX.<br>
+      See <a href="#BASICS">Basics</a> for more details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>flm.*</tt></td>
+    <td width="10%" valign="top">N/A</td>
+    <td width="10%" valign="top">N/A</td>
+    <td>License management related entries.
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>Dialog.currentRowVisibleAfterSort</tt></td>
+    <td width="10%" valign="top">boolean</td>
+    <td width="10%" valign="top">false</td>
+    <td>Forces current row to be shown after a sort in a table.<br>
+      See <a href="Programs.html#RUNTIMECONFIG">Runtime Configuration</a> for
+      more details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>Dialog.fieldOrder</tt></td>
+    <td width="10%" valign="top">boolean</td>
+    <td width="10%" valign="top">false</td>
+    <td>Defines if the intermediate field triggers must be executed when a new
+      field gets the focus with a mouse click.<br>
+      See <a href="Programs.html#RUNTIMECONFIG">Runtime Configuration</a> for
+      more details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>key.<i>key-name</i>.text</tt></td>
+    <td width="10%" valign="top">string</td>
+    <td width="10%" valign="top">N/A</td>
+    <td>Defines a label for an action defined with an ON KEY clause.<br>
+      <i><font color="#FF0000">Provided for V3 compatibility only.</font></i><br>
+      See <a href="DynamicUI.html#SETTING_KEY_LABELS">Settings Key
+      labels</a> for more details.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>Report.aggregateZero</tt></td>
+    <td width="10%" valign="top">boolean</td>
+    <td width="10%" valign="top">false</td>
+    <td>Defines if the report aggregate functions must return zero or NULL when
+      all values are NULL.<br>
+      <i><font color="#FF0000">Provided for V3 compatibility only.</font></i><br>
+      See <a href="Reports.html#RPT_CONFIG">Report Configuration</a> for more
+      details.</td>
+  </tr>
+</table>
+
+</BODY>
+</HTML>

@@ -1,0 +1,645 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Tutorial: Enhancing the Form</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+<p><a href="TutIndex.html">Back to Summary</a></p>
+<hr>
+<h1>Tutorial Chapter 5: Enhancing the Form</h1>
+<p>Summary:</p>
+<ul>
+  <li><a href="#Toolbar">Adding a Toolbar</a> 
+  </li>
+  <li><a href="#TopMenu">Adding a Topmenu</a>
+  </li>
+  <li><a href="#combobox">Adding a ComboBox form item</a>
+  </li>
+  <li><a href="#ChangeWindow">Changing the Window Appearance</a></li>
+  <li><a href="#Exampetitleicon">Examples</a></li>
+  <li><a href="#ManageActions">Managing actions</a>
+    <ul>
+      <li><a href="#DisEnabActions">Disable/enable actions</a></li>
+      <li><a href="#CloseAction">The close action</a></li>
+    </ul>
+  </li>
+  <li><a href="#Exampcustmain">Example: custmain.4gl</a></li>
+  <li><a href="#ActionDefaults">Action Defaults</a>
+  </li>
+  <li><a href="#MENUActionDefaults">MENU/Action Defaults Interaction</a></li>
+</ul>
+<hr>
+<p>You can change the way that program options are displayed in a form in a
+variety of ways. This example program illustrates some of the simple changes
+that can be made:</p>
+<ul>
+  <li>By changing the form specification file, you can provide the user with a valid list of
+    abbreviations for the state field and add
+a <a href="FormSpecFiles.html">Toolbar</a> or pulldown menu (<a href="FormSpecFiles.html">Topmenu</a>).
+    The program business logic in the BDL program need not change.&nbsp; Once you recompile the form file, it can be used by the
+program with no additional changes required.</li>
+  <li>You can change the appearance of the application window, adding a custom
+    title and icon.</li>
+  <li>You can disable and
+enable actions dynamically to control the options available to the user.</li>
+</ul>
+<p> The
+program also illustrates some of the Genero BDL <a href="ActionDefaults.html">action defaults</a>
+that standardize the presentation of common
+actions.</p>
+<hr>
+<h2><a name="Toolbar">Adding a Toolbar</a> </h2>
+<p><img border="0" src="../Images/TUT4C02.png" width="432" height="200"> </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Display on Windows platforms </p>
+<p>The<a href="FormSpecFiles.html#SECTION_TOOLBAR"> TOOLBAR</a> section
+of a <a href="FormSpecFiles.html"> form specification file</a> defines a
+Toolbar with buttons that are bound to <a href="InteractionModel.html#BINDING_ACTIONS">actions</a>. A
+Toolbar definition can contain the following elements:</p>
+
+<ul>
+  <li>an ITEM - specifies the action that is bound to the Toolbar button</li>
+  <li>a SEPARATOR&nbsp; - a vertical line</li>
+</ul>
+<p>Values can be assigned to <a href="FSFAttributes.html#FA_TEXT">TEXT,</a>
+<a href="FSFAttributes.html#FA_COMMENT">COMMENT</a>, and <a href="FSFAttributes.html#FA_IMAGE">IMAGE
+</a>attributes for each item in the Toolbar.</p>
+<p>The <a href="FormSpecFiles.html#SECTION_TOOLBAR"> TOOLBAR</a> 
+commands are enabled by <a href="InteractionModel.html">actions</a>defined by the
+current interactive BDL instruction, which in our example is the <a href="Menus.html">MENU</a>
+statement in the <b> custquery.4gl</b> module. When a Toolbar button is selected by the
+user, the program triggers the <a href="InteractionModel.html#BINDING_ACTIONS">action</a>to which the Toolbar button is
+bound.</p>
+<h3><a name="Exampletb">Example: (in custform.per)</a></h3>
+<p>
+This <a href="FormSpecFiles.html#SECTION_TOOLBAR"> TOOLBAR</a>  will display&nbsp; buttons for
+<b>find</b>, <b> next,</b> <b>previous</b>, and <b> quit</b>
+actions.</p>
+<table border="0" width="100%">
+    <tr>
+      <td bgcolor="#c0c0c0" valign="top" width="355"><b>Form (custform.per)</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="100%">
+      <pre><CODE class=linenumber>01</CODE> <tt>SCHEMA</tt> custdemo
+<CODE class=linenumber>02</CODE>
+<CODE class=linenumber>03</CODE> <tt>TOOLBAR</tt>
+<CODE class=linenumber>04</CODE>   <tt>ITEM</tt> find  
+<CODE class=linenumber>05</CODE>   <tt>ITEM</tt> previous
+<CODE class=linenumber>06</CODE>   <tt>ITEM </tt>next
+<CODE class=linenumber>07</CODE>   <tt>SEPARATOR</tt>
+<CODE class=linenumber>08</CODE>   <tt>ITEM</tt> quit (<tt>TEXT</tt>=&quot;Quit&quot;, <tt>COMMENT</tt>=&quot;Exit the program&quot;, <tt>IMAGE</tt>=&quot;exit&quot;)
+<CODE class=linenumber>09</CODE> <tt>END</tt>
+<CODE class=linenumber>10</CODE>
+<tt>...</tt></pre>
+      </td>
+    </tr>
+</table>
+
+<h4>Notes: </h4>
+<ul>
+  <li>Line
+<CODE class=linenumber> 04</CODE> The ITEM command-identifier <b>find</b> will be bound to the <a href="Menus.html">MENU</a>
+ statement <a href="InteractionModel.html">action</a> <b>find</b> on line
+<CODE class=linenumber>14</CODE> in the <b>custmain.4gl</b> file
+shown below. The word <b>find</b> must be identical in both the TOOLBAR
+ITEM and the MENU
+ statement action, and must always be in lower-case. The other command-identifiers are
+similarly bound.</li>
+  <li>Line
+<CODE class=linenumber> 08</CODE> 
+Although attributes such as TEXT or COMMENT are defined for the ITEM <b>quit</b>,
+the ITEMS&nbsp; <b>find</b>, <b>previous</b>, and <b>next</b> do not have any
+attributes defined in the <a href="FormSpecFiles.html">form specification file</a>.&nbsp; These actions are common actions that have
+default attributes defined in the <a href="#ActionDefaults">action defaults file</a>.</li>
+</ul>
+<hr>
+<h2><a name="TopMenu">Adding a Topmenu</a></h2>
+
+<p>The same options that were displayed to the user as a <a href="FormSpecFiles.html#SECTION_TOOLBAR">TOOLBAR</a> 
+can also be defined as buttons on a pull-down menu ( a <a href="FormSpecFiles.html#SECTION_TOPMENU">TOPMENU</a>).&nbsp;
+To change the presentation of the menu options to the user, simply modify and
+recompile the <a href="FormSpecFiles.html"> form specification file</a>.</p>
+
+<p><img border="0" src="../Images/TUT4C04.png" width="432" height="186"></p>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Display on Windows platforms </p>
+
+<p>The <a href="FormSpecFiles.html#SECTION_TOPMENU">TOPMENU</a> section of&nbsp;
+the <a href="FormSpecFiles.html"> form specification</a> allows you to design
+the pull-down menu. The TOPMENU section must appear after <a href="FormSpecFiles.html#SECTION_SCHEMA">SCHEMA</a>,
+and must contain a tree of GROUP elements that define the pull-down menu.&nbsp; The
+GROUP <a href="FSFAttributes.html#FA_TEXT">TEXT</a> value is the title for the pull-down menu group. </p>
+
+<p> A GROUP can contain the following elements: </p>
+
+<ul>
+  <li>a COMMAND - specifies the action the menu option must be bound to</li>
+  <li>a SEPARATOR&nbsp; - a horizontal line</li>
+  <li>GROUP children - a subgroup within a group. </li>
+</ul>
+<p>Values can be assigned to attributes such as <a href="FSFAttributes.html#FA_TEXT">TEXT,</a>
+<a href="FSFAttributes.html#FA_COMMENT">COMMENT</a>, and <a href="FSFAttributes.html#FA_IMAGE">IMAGE.</a>
+for each item in the <a href="FormSpecFiles.html#SECTION_TOPMENU">TOPMENU</a>. </p>
+
+<p>As in a Toolbar, the <a href="FormSpecFiles.html#SECTION_TOPMENU">TOPMENU</a>  commands are enabled by
+<a href="InteractionModel.html">actions</a> defined by the current interactive
+BDL instruction (dialog), which in our example is the <a href="Menus.html"> MENU</a> statement in the <b>custquery.4gl</b>
+ module.&nbsp; When a TOPMENU option is selected by the user, the program triggers the
+<a href="InteractionModel.html">action</a> to which the TOPMENU 
+command is bound. </p>
+
+<h3><a name="Exampletm">Example ( in custform.per)</a>:</h3>
+
+<table border="0" width="100%">
+    <tr>
+      <td bgcolor="#c0c0c0" valign="top" width="355"><b>Form custform.per</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="100%">
+
+<pre><CODE class=linenumber>01</CODE> <tt>SCHEMA</tt> custdemo
+<CODE class=linenumber>02</CODE>
+<CODE class=linenumber>03</CODE> <tt>TOPMENU</tt>
+<CODE class=linenumber>04</CODE>   <tt>GROUP</tt> form (TEXT=&quot;Form&quot;)
+<CODE class=linenumber>05</CODE>     <tt>COMMAND</tt> quit (TEXT=&quot;Quit&quot;, COMMENT=&quot;Exit the program&quot;, IMAGE=&quot;exit&quot;)
+<CODE class=linenumber>06</CODE>   <tt>END
+</tt><CODE class=linenumber>07</CODE> <CODE class=linenumber>  </CODE><tt>GROUP</tt> stores (TEXT=&quot;Stores&quot;)
+<CODE class=linenumber>08</CODE>     <tt>COMMAND</tt> find
+<CODE class=linenumber>09</CODE>     <tt>SEPARATOR</tt>
+<CODE class=linenumber>13</CODE>     <tt>COMMAND</tt> next     
+<CODE class=linenumber>14</CODE>     <tt>COMMAND</tt> previous 
+<CODE class=linenumber>15</CODE>  <tt>END</tt>
+<CODE class=linenumber>16</CODE><tt> END</tt>
+<CODE class=linenumber>17</CODE>
+<tt>...</tt></pre>
+
+      </td>
+    </tr>
+</table>
+
+<h4>Notes: </h4>
+<ul>
+  <li>Lines<b> </b><CODE class=linenumber> 04</CODE> and <CODE class=linenumber>07</CODE>
+    This example <a href="FormSpecFiles.html#SECTION_TOPMENU">TOPMENU</a> 
+will consist of two groups on the menu bar of the form.&nbsp; The <a href="FSFAttributes.html#FA_TEXT">TEXT</a>
+displayed on the menu bar for the first group will be <b>Form</b>, and the second group will be
+<b>Stores</b>.</li>
+  <li>Line <CODE class=linenumber>08</CODE> to <CODE class=linenumber>14</CODE>:
+    Under the menu bar item <b>Stores</b>, the command-identifier <b>find </b>on<b> </b>line<b> </b><CODE class=linenumber> 05</CODE> will be bound to the
+<a href="Menus.html"> MENU</a>
+statement action <b>find</b> on line <CODE class=linenumber> 14</CODE> in the <b> custmain.4gl</b> file shown below.&nbsp; The word
+<b>find</b> must be
+identical (including case) in both the <a href="FormSpecFiles.html#SECTION_TOPMENU">TOPMENU</a> 
+command and the MENU
+ statement
+action.&nbsp; The other command-identifiers are similarly
+bound.</li>
+</ul>
+<p>The revised <a href="FormSpecFiles.html"> form specification file</a> must be re-compiled before it can be used
+in the program. </p>
+<hr>
+<h2><a name="combobox">Adding a COMBOBOX form item</a> </h2>
+<p>In this example application the only valid values for the <b>state</b> column
+of the database table <b>customer</b> are IL, IA, and WI.&nbsp; The form item 
+used to display the <b>state</b> field can be changed to a 
+<a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">COMBOBOX</a>
+ displaying a dropdown list of valid state values. The COMBOBOX is active during 
+an INPUT, INPUT ARRAY, or CONSTRUCT statement, allowing the user to select a 
+value for the state field.&nbsp; </p>
+<p><img border="0" src="../Images/TUT4C05.png" width="432" height="186">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Display on Windows platforms&nbsp; </p>
+<p> The values of the list are defined by the
+ITEMS attribute: </p>
+<pre>    <tt> COMBOBOX</tt> f6=customer.state, <tt>ITEMS</tt> = (&quot;IL&quot;, &quot;IA&quot;, &quot;WI&quot;);</pre>
+<p> In this example, the value displayed on the form and the real value (the value 
+to be stored in the program variable corresponding to the form field) are 
+the same.&nbsp; You can choose to define different display and real values;&nbsp; 
+in the following example, the values Paris, Madrid, and London 
+would be displayed to the user, but the value stored in the corresponding 
+program variable would be 1, 2, or 3:</p>
+<blockquote>
+	<pre><tt>COMBOBOX</tt> f9 = formonly.cities, <tt>ITEMS</tt> =  ((1,&quot;Paris&quot;),(2,&quot;Madrid&quot;),(3,&quot;London&quot;));  </pre>
+</blockquote>
+<p>Although the list of values for the <a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">COMBOBOX</a>
+is contained in the form specification file in this example program, you could
+also set the <a href="FSFAttributes.html#FA_INITIALIZER">INITIALIZER</a>
+attribute to define a function that will provide the values. The initialization function
+would be invoked at runtime when the
+form is loaded, to fill the COMBOBOX item list dynamically with database records, for
+example. </p>
+<p>See
+<a href="FSFAttributes.html">form file
+item-types </a>for a complete list of the item types that can be used on a form. </p>
+<hr>
+<h2><a name="ChangeWindow">Changing the Window Appearance</a> </h2>
+<p>Genero provides <a href="FSFAttributes.html">attributes</a> that can be used
+to customize the appearance of windows, forms, and form objects in your
+application.&nbsp; In addition, you can create <a href="PresentationStyles.html">Presentation
+Styles</a> to standardize the appearance of window and form objects across
+applications. </p>
+<p>Some of the simple changes that you can make are: </p>
+<ul>
+  <li>
+<h3>Title </h3>
+  </li>
+</ul>
+<blockquote>
+<p>The default title for a window is the name of the object in the <a href="WindowsAndForms.html#OPEN_WINDOW"> OPEN WINDOW</a>
+statement. For example, in the programs we've seen so far, the title of the
+window is w1: </p>
+</blockquote>
+<pre><tt>          OPEN WINDOW</tt> w1 <tt>WITH FORM</tt> &quot;custform&quot;</pre>
+<blockquote>
+  <p>In the form specification file, the attribute <a href="FSFAttributes.html#FA_TEXT">TEXT</a>
+  of the <a href="FormSpecFiles.html#SECTION_LAYOUT"> LAYOUT</a> section can
+be used to change the title of the parent window:</p>
+</blockquote>
+<pre>          <tt>LAYOUT</tt> (<tt>TEXT</tt>=&quot;Customer&quot;) </pre>
+<ul>
+  <li>
+<h3>     Icon </h3>
+  </li>
+</ul>
+<blockquote>
+<p>     The Genero runtime system provides <a href="BuiltInClasses.html">built-in
+classes</a>, or object templates, which contain methods, or functions, that you
+can call from your programs. The classes are grouped together into packages. One
+package, <b>ui</b>, contains the &quot;<a href="ClassInterface.html">Interface</a>&quot;
+class, allowing you to manipulate the user interface. For example, the <b>setImage</b>
+method can be used to set the default icon for the windows of your program. You
+may simply call the method, prefixing it with the package name and class name;
+you do not need to create an Interface object. </p>
+</blockquote>
+<pre>          <tt>CALL</tt> ui.Interface.setImage(&quot;<i>imagename</i>&quot;)</pre>
+<ul>
+  <li>
+    <h3>Window Style</h3>
+  </li>
+</ul>
+<blockquote>
+<p>By default windows are displayed as normal application windows, but you can choose a specific style using the <a href="FSFAttributes.html#FA_WINDOWSTYLE">WINDOWSTYLE</a>
+attribute of the <a href="FormSpecFiles.html#SECTION_LAYOUT">LAYOUT</a>
+section of the form file. The default <a href="WindowsAndForms.html#WINDOW_STYLES">window
+styles</a> are defined as a set of attributes in an external file (<b>default.4st)</b>. </p>
+</blockquote>
+<div align="left">
+<pre align="left">          <tt>LAYOUT</tt> (<tt>WINDOWSTYLE</tt>=&quot;dialog&quot;)&nbsp;</pre>
+</div>
+<hr>
+<h3><a name="Exampetitleicon">Example: (in custform.per)</a> </h3>
+<table border="0" width="100%">
+    <tr>
+      <td bgcolor="#c0c0c0" valign="top" width="355"><b>Form custform.per</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="100%">
+      <pre><CODE class=linenumber>...
+18</CODE> <tt>LAYOUT </tt>(<tt>TEXT</tt>=&quot;Customer&quot;)
+<CODE class=linenumber>19</CODE>  <tt>GRID</tt>
+<CODE class=linenumber>20</CODE>  {
+<CODE class=linenumber>21</CODE>   Store #:[f01  ]       Name:[f02                 ]
+<CODE class=linenumber>22</CODE>   Address:[f03                 ]
+<CODE class=linenumber>23</CODE>           [f04                 ]
+<CODE class=linenumber>24</CODE>      City:[f05             ]State:[f6  ]Zip:[f07   ] 
+<CODE class=linenumber>25</CODE>   Contact:[f08                           ]
+<CODE class=linenumber>26</CODE>     Phone:[f09                ]       
+<CODE class=linenumber>27</CODE>  }   
+<CODE class=linenumber>28</CODE>  <tt>END </tt>
+<CODE class=linenumber>29</CODE> <tt>END</tt>
+<CODE class=linenumber>30</CODE> <tt>TABLES</tt>   
+<CODE class=linenumber>31</CODE>   customer
+<CODE class=linenumber>32</CODE> <tt>END</tt>
+<CODE class=linenumber>33</CODE> <tt>ATTRIBUTES</tt>
+<CODE class=linenumber>34</CODE> <tt>EDIT</tt> f01=customer.store_num,
+<CODE class=linenumber>35</CODE>   <tt>REQUIRED</tt>, <tt>COMMENT</tt>=&quot;This is the co-op store number&quot;;
+<CODE class=linenumber>36</CODE> <tt>EDIT</tt> f02=customer.store_name;
+<CODE class=linenumber>37</CODE> <tt>EDIT</tt> f03=customer.addr;
+<CODE class=linenumber>38</CODE> <tt>EDIT</tt> f04=customer.addr2;
+<CODE class=linenumber>39</CODE> <tt>EDIT</tt> f05=customer.city;
+<CODE class=linenumber>40</CODE> <tt>COMBOBOX</tt> f6=customer.state,
+<CODE class=linenumber>41</CODE>   <tt>REQUIRED</tt>, <tt>ITEMS</tt> = (&quot;IL&quot;, &quot;IA&quot;, &quot;WI&quot;);
+<CODE class=linenumber>41</CODE> <tt>EDIT</tt> f07=customer.zipcode;
+<CODE class=linenumber>42</CODE> <tt>EDIT</tt> f08=customer.contact_name;
+<CODE class=linenumber>43</CODE> <tt>EDIT </tt>f09=customer.phone;
+<CODE class=linenumber>43</CODE> <tt>END</tt></pre>
+      </td>
+    </tr>
+</table>
+<h4>Notes: </h4>
+<ul>
+  <li>Line
+<CODE class=linenumber>18</CODE>, the title of the window is set to <b>Customer</b>.&nbsp;
+Since this is a normal application window, the default window style is
+used.</li>
+  <li>Line
+<CODE class=linenumber>40</CODE>, a <a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">COMBOBOX</a>
+ is substituted for a simple Edit form field.</li>
+  <li>Line
+<CODE class=linenumber>35</CODE> and
+<CODE class=linenumber>41 </CODE> The <a href="FSFAttributes.html#FA_REQUIRED">REQUIRED</a>
+attribute forces the user to enter or select a value for this field
+when a new record is being added.&nbsp; See the <a href="FSFAttributes.html">attributes
+list</a> for a complete list of the attributes that can be defined for a form
+field.</li>
+</ul>
+<h3>Example: (in custmain.4gl) </h3>
+<p>Changing the icon for the application windows: </p>
+<table border="0" width="100%">
+    <tr>
+      <td bgcolor="#c0c0c0" valign="top" width="355"><b>Module custmain.4gl</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="100%">
+      <pre><CODE class=linenumber>...</CODE>
+<CODE class=linenumber>04</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>05</CODE>   <tt>DEFINE</tt> query_ok <tt>SMALLINT</tt>
+<CODE class=linenumber>06</CODE>
+<CODE class=linenumber>07 </CODE> <tt> DEFER INTERRUPT</tt>
+<CODE class=linenumber>08</CODE>
+<CODE class=linenumber>09</CODE>  <tt> CONNECT TO </tt>&quot;custdemo&quot;
+<CODE class=linenumber>10</CODE>  <tt> CLOSE WINDOW SCREEN</tt>
+<CODE class=linenumber>11</CODE>   <tt>CALL </tt>ui.Interface.setImage(&quot;smiley&quot;)
+<CODE class=linenumber>12</CODE>   <tt>OPEN WINDOW</tt> w1 <tt>WITH FORM</tt> &quot;custform&quot;
+<CODE class=linenumber>13</CODE> 
+<CODE class=linenumber>...</CODE></pre>
+      </td>
+    </tr>
+</table>
+<h4>Notes:</h4>
+<ul>
+  <li>Line
+<CODE class=linenumber>11</CODE>&nbsp; For convenience, the image used is the
+    <b>smiley</b> image
+from the <b>pics</b> directory, which is the default image directory of the Genero Desktop Client.</li>
+</ul>
+<hr>
+<h2><a name="ManageActions">Managing Actions</a></h2>
+<h3><a name="DisEnabActions">Disable/Enable Actions</a></h3>
+<p>In the example in the previous lesson, if the user clicks the Next or
+Previous buttons on the application form without first querying successfully, a
+message displays and no action is taken. You can disable and enable the actions
+instead, providing visual cues to the user when the actions are not available.
+The <a href="ClassDialog.html">ui.Dialog</a> built-in class provides an
+interface to the BDL interactive dialog statements, such as CONSTRUCT and
+MENU.&nbsp; The method <b>setActionActive</b> enables and disables actions. To
+call a method of this class, use the pre-defined <b>DIALOG</b> object within the
+interactive instruction block.</p>
+<p>For example:</p>
+<pre><tt>     MENU
+        BEFORE MENU</tt>
+         <tt>CALL</tt> DIALOG.setActionActive(&quot;<i>actionname</i>&quot; , <i>state</i>)
+       <tt>...
+     END MENU</tt></pre>
+<p>where <i>actionname</i> is the name of the action, <i>state</i> is an integer, <b>0</b> (disable) or <b>1</b> (enable).</p>
+<p>You must be within an interactive instruction in order to use the DIALOG
+object in your program, but you can pass the object to a function. Using
+this technique, you could create a function that enables/disables an action, and
+call the function from the MENU statement, for example. See <a href="ClassDialog.html">ui.Dialog</a>
+for further information.</p>
+<h3><a name="CloseAction">The Close Action</a></h3>
+<p>In Genero applications, when the user clicks the X button in the upper-right
+corner of the application window, a predefined <b>close</b> action is sent to
+the program. What happens next depends on the interactive dialog statement:</p>
+<ul>
+  <li>When the program is in a <a href="Menus.html"> MENU</a> dialog statement, the <b>close</b> action is
+    converted to an INTERRUPT key press. If there is a COMMAND KEY (INTERRUPT)
+    block in the MENU statement, the statements in that control block are
+    executed.&nbsp; Otherwise, no action is taken.</li>
+  <li>When the program is in an <a href="RecordInput.html">INPUT</a>, <a href="InputArray.html"> INPUT
+    ARRAY</a>, <a href="Construct.html"> CONSTRUCT</a> or <a href="DisplayArray.html"> DISPLAY ARRAY</a>
+    statement,&nbsp; the <b>close</b> action cancels the dialog, and the <b>int_flag</b>
+    is set to TRUE. Your program can check the value of <b>int_flag</b> and take
+    appropriate action.</li>
+</ul>
+<p>You can change this default behavior by overwriting the <b>close</b> action
+within the interactive statement.&nbsp; For example, to exit the MENU statement
+when the user clicks this button:</p>
+<pre>    <tt>MENU</tt>
+      ...
+      <tt>ON ACTION</tt> close
+         <tt>EXIT MENU</tt>
+    <tt>END MENU</tt></pre>
+<p>By default the action view for the <b>close</b> action is hidden and does not
+display on the form.</p>
+<hr>
+<h3><a name="Exampcustmain">Example: (custmain.4gl)</a></h3>
+
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="40%" bgcolor="#C0C0C0" valign="top"><b>Module custmain.4gl</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE>
+<CODE class=linenumber>02</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>03</CODE> <tt>DEFINE</tt> query_ok <tt>SMALLINT</tt>
+<CODE class=linenumber>04</CODE>
+<CODE class=linenumber>05</CODE> <tt>DEFER INTERRUPT</tt>
+<CODE class=linenumber>06</CODE> <tt>CONNECT TO</tt> &quot;custdemo&quot;
+<CODE class=linenumber>07</CODE> <tt>CLOSE WINDOW SCREEN</tt>
+<CODE class=linenumber>08</CODE> <tt>CALL</tt> ui.Interface.setImage(&quot;smiley&quot;)
+<CODE class=linenumber>09</CODE> <tt>OPEN WINDOW</tt> w1 <tt>WITH FORM </tt>&quot;custform&quot;
+<CODE class=linenumber>10</CODE>
+<CODE class=linenumber>11</CODE> <tt>LET</tt> query_ok = FALSE
+<CODE class=linenumber>12</CODE>
+<CODE class=linenumber>13</CODE> <tt>MENU</tt> 
+<CODE class=linenumber>14</CODE>   <tt>BEFORE MENU</tt>
+<CODE class=linenumber>15 </CODE>    <tt>CALL</tt> DIALOG.setActionActive(&quot;next&quot;,0)
+<CODE class=linenumber>16</CODE>     <tt>CALL</tt> DIALOG.setActionActive(&quot;previous&quot;,0)
+<CODE class=linenumber>17</CODE><tt>   ON</tt><tt> ACTION </tt>find<tt>
+</tt><CODE class=linenumber>18</CODE>     <tt>CALL</tt> DIALOG.setActionActive(&quot;next&quot;,0)
+<CODE class=linenumber>19</CODE>     <tt>CALL</tt> DIALOG.setActionActive(&quot;previous&quot;,0)
+<CODE class=linenumber>20</CODE>     <tt>CALL</tt> query_cust() <tt>RETURNING</tt> query_ok
+<CODE class=linenumber>21</CODE>     <tt>IF</tt> (query_ok) <tt>THEN </tt>
+<CODE class=linenumber>22</CODE>       <tt>CALL</tt> DIALOG.setActionActive(&quot;next&quot;,1)
+<CODE class=linenumber>23</CODE>       <tt>CALL</tt> DIALOG.setActionActive(&quot;previous&quot;,1)
+<CODE class=linenumber>24</CODE>     <tt>END IF</tt>
+<CODE class=linenumber>25</CODE>   <tt>ON ACTION</tt> next 
+<CODE class=linenumber>26</CODE><tt>      CALL</tt> fetch_rel_cust(1)
+<CODE class=linenumber>27</CODE>   <tt>ON ACTION </tt>previous
+<CODE class=linenumber>28</CODE>     <tt>CALL</tt> fetch_rel_cust(-1)
+<CODE class=linenumber>29</CODE>   <tt>ON ACTION</tt> quit
+<CODE class=linenumber>30</CODE>     <tt>EXIT MENU</tt>
+<CODE class=linenumber>31</CODE>   <tt>ON ACTION</tt> close
+<CODE class=linenumber>32</CODE>     <tt>EXIT ME</tt><tt>NU</tt>
+<CODE class=linenumber>33</CODE> <tt>END MENU</tt>
+<CODE class=linenumber>34</CODE> 
+<CODE class=linenumber>35</CODE> <tt>CLOSE WINDOW</tt> w1
+<CODE class=linenumber>36 
+37</CODE> <tt>DISCONNECT CURRENT</tt>
+<CODE class=linenumber>38</CODE> 
+<CODE class=linenumber>39 </CODE><tt>END MAIN</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+
+
+<ul>
+  <li>Line <CODE class=linenumber>08</CODE>&nbsp; The icon for the application
+    windows is set to the &quot;exit&quot; image.</li>
+  <li>Lines <CODE class=linenumber>15</CODE>, <CODE class=linenumber>16</CODE>&nbsp;
+    Before the menu is first displayed, the <b>next </b>and <b>previous</b>
+    actions are disabled.</li>
+  <li>Lines <CODE class=linenumber>18</CODE>, <CODE class=linenumber>19</CODE>
+    Before the <b> query_cust</b> function is executed the <b>next</b> and <b>previous</b>
+    actions are disabled</li>
+  <li>Lines <CODE class=linenumber>21</CODE> thru <CODE class=linenumber>24 </CODE>If the query was successful
+    the <b>next</b> and <b>previous</b> actions are enabled.</li>
+  <li>Line <CODE class=linenumber>31</CODE> The <b> close</b> action is included in the
+    menu, although an action view won't display on the form.&nbsp; If the user
+    clicks the X button in the top right of the window, the action on line <CODE class=linenumber>32</CODE>, EXIT MENU, will be taken.</li>
+</ul>
+
+
+<hr>
+<h2><a name="ActionDefaults">Action Defaults</a></h2>
+<p>The Genero BDL runtime system includes an XML file, <b>default.4ad,&nbsp;</b>
+in the <b>lib</b> subdirectory of the installation directory <a href="EnvironmentVariables.html#EV_FGLDIR">FGLDIR</a>,
+that defines presentation attributes for some commonly used 
+<a href="InteractionModel.html#DEFAULT_ACTION_VIEWS">actions</a>. If you match the action names used in this file exactly when you
+define your <a href="InteractionModel.html#CTRLGACTIONS">action
+views</a> (<a href="FormSpecFiles.html#SECTION_TOOLBAR">TOOLBAR</a> or
+<a href="FormSpecFiles.html#SECTION_TOPMENU">TOPMENU</a>  items, buttons, etc.)&nbsp; in the <a href="FormSpecFiles.html">
+form specification file</a>, the presentation attributes defined for this action
+will be used.&nbsp; All action
+names must be in lower-case.</p>
+<p>For example, the following line in the <b>default.4ad</b>
+file:</p>
+<pre>&lt;ActionDefault name=&quot;find&quot; text=&quot;Find&quot;
+               image=&quot;find&quot; comment=&quot;Search&quot; /&gt;</pre>
+<p>defines presentation attributes for a <b>find</b> <a href="InteractionModel.html">action</a>- the text to 
+be displayed on the action view <b>find </b> defined in the form, the image
+file to be used as the icon for the action view, and the comment to be associated with the action
+view. The attribute values are case-sensitive,so the action name in the form
+specification file must be &quot;find&quot;, not &quot;Find&quot;.</p>
+<p>The following line in the <b>default.4ad</b> file defines presentation
+attributes for the <a href="TutChap04.html#PredefinedActions"> pre-defined action</a> 
+<b>cancel</b>.&nbsp;An <a href="InteractionModel.html#ACCELNAMES"> accelerator key</a> is assigned 
+as an alternate means of invoking the action:</p>
+<pre>&lt;ActionDefault name=&quot;cancel&quot; text=&quot;Cancel&quot;
+               acceleratorName=&quot;Escape&quot; /&gt;</pre>
+<p>You can override a default presentation attribute in your program. For
+example, by specifying a&nbsp; <a href="FSFAttributes.html#FA_TEXT">TEXT</a>
+ attribute for the action <b>find</b> in the form specification file, the default TEXT value of &quot;Find &quot; will be
+replaced with the value &quot;Looking&quot;.</p>
+<pre><CODE class=linenumber>03</CODE> <tt>TOPMENU</tt>
+<CODE class=linenumber>04</CODE>
+<CODE class=linenumber>...   
+07</CODE>   <tt>GROUP</tt> stores (<tt>TEXT</tt>=&quot;Stores&quot;)
+<CODE class=linenumber>08</CODE>    <tt> COMMAND</tt> find (<tt>TEXT</tt>=&quot;Looking&quot;)</pre>
+<p>You can create your own<b> .4ad</b> file to standardize the
+presentation attributes for all the common <a href="InteractionModel.html">actions</a> used by your
+application.&nbsp; See <a href="ActionDefaults.html">Action
+Defaults</a> for additional details.</p>
+<hr>
+<h2><a name="MENUActionDefaults">MENU/Action Defaults Interaction</a></h2>
+<p>The attributes of the <a href="InteractionModel.html#CTRLGACTIONS">action
+views</a> for the <a href="Menus.html"> MENU</a>   actions in the <b>custmain.4gl
+</b>example will be determined as shown in the table below.&nbsp; Attributes
+defined in the <a href="FormSpecFiles.html"> form specification file</a> override attributes defined in the
+<b> .4ad</b>
+ file.
+</p>
+
+  <table border="0" width="95%">
+    <tr>
+      <td width="83" bgcolor="#C0C0C0">
+        <b>Action</b></td>
+      <td bgcolor="#C0C0C0" width="259"><b>From the form&nbsp;<br>
+        specification file</b></td>
+      <td bgcolor="#C0C0C0" width="201"><b>
+        From the default.4ad file</b></td>
+      <td bgcolor="#C0C0C0" width="338"><b>From the MENU statement&nbsp;<br>
+        in the .4gl file</b></td>
+    </tr>
+    <tr>
+    <td width="83" align="center" height="38"><b>find</b></td>
+    <td width="259" height="38">No attributes
+      listed&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td width="201" height="38">TEXT=&quot;Find&quot;<br>
+      IMAGE=&quot;find&quot;<br>
+      COMMENT=&quot;Search&quot;</td>
+    <td width="338" height="38">Over-ridden by default.4ad</td>
+    </tr>
+    <tr>
+    <td width="83" align="center" height="19"><b>next</b></td>
+    <td width="259" height="19">No attributes
+      listed&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td width="201" height="19">TEXT=&quot;Next&quot;&nbsp;<br>
+      IMAGE=&quot;goforw&quot;<br>
+      COMMENT=&quot;Next record&quot;</td>
+    <td width="338" height="19">Over-ridden by default.4ad</td>
+    </tr>
+    <tr>
+    <td width="83" align="center" height="18"><b>previous</b></td>
+    <td width="259" height="18">No attributes
+      listed&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td width="201" height="18">TEXT=&quot;Previous&quot;<br>
+      IMAGE=&quot;gorev&quot;<br>
+      COMMENT=&quot;Previous record"</td>
+    <td width="338" height="18">Over-ridden by default.4ad</td>
+    </tr>
+    <tr>
+    <td width="83" align="center" height="18"><b>close</b></td>
+    <td width="259" height="18">Not listed in the form file</td>
+    <td width="201" height="18">attributes are listed in default.4ad but the action
+      view is not displayed on form by default</td>
+    <td width="338" height="18">Over-ridden by default.4ad (<a href="TutChap04.html#PredefinedActions">pre-defined
+      action</a>)</td>
+    </tr>
+    <tr>
+    <td width="83" align="center" height="19"><b>quit</b></td>
+    <td width="259" height="19"><br>
+      For both <a href="#TopMenu">TOPMENU</a> and <a href="#Toolbar">TOOLBAR</a>, the
+      <a href="InteractionModel.html#CTRLGACTIONS"> action
+view</a> has the attributes TEXT=&quot;Quit&quot;,&nbsp;<br>
+      COMMENT=&quot;Exit the program&quot;,&nbsp;<br>
+      IMAGE=&quot;exit&quot;.<br>
+    </td>
+    <td width="201" height="19">&nbsp;<a href="InteractionModel.html">Action</a> 
+      is not listed in the file</td>
+    <td width="338" height="19">Over-ridden by the form specification file.<br>
+    </td>
+    </tr>
+    <tr>
+    <td width="83" align="center" height="19"><b>*accept&nbsp;</b></td>
+    <td width="259" height="19">Not listed in the form file.</td>
+    <td width="201" height="19">TEXT=&quot;OK&quot;<br>
+      AcceleratorName=&quot;Return&quot;&nbsp;<br>
+      AcceleratorName2=&quot;Enter&quot;&nbsp;&nbsp;</td>
+    <td width="338" height="19">This action is not defined in a MENU instruction&nbsp;(<a href="TutChap04.html#PredefinedActions">pre-defined
+      action</a>.)</td>
+    </tr>
+    <tr>
+    <td width="83" align="center" height="19"><b>*cancel&nbsp;</b></td>
+    <td width="259" height="19">Not listed in the form file.</td>
+    <td width="201" height="19">TEXT=&quot;Cancel&quot;<br>
+      AcceleratorName=&quot;Escape&quot;&nbsp;</td>
+    <td width="338" height="19">This action is not defined in a MENU instruction
+      (<a href="TutChap04.html#PredefinedActions">pre-defined
+      action</a>.)</td>
+    </tr>
+  </table>
+
+
+<p>* The <a href="TutChap04.html#PredefinedActions">pre-defined actions</a> <b>accept</b> and
+<b>cancel</b> do not have <a href="InteractionModel.html#CTRLGACTIONS">action views</a> defined in
+the form specification file; by default, they appear on this form as buttons in the
+righthand section of the form when the CONSTRUCT statement is active.&nbsp; Their attributes are taken from the <b>
+default.4ad</b> file.</p>
+
+<h3>Images </h3>
+<p>The image files specified in these definitions are among the files
+provided with the <b> Genero Desktop Client</b>, in the <b>pics </b>subdirectory. </p>
+
+</body>
+</html>

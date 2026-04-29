@@ -1,0 +1,310 @@
+<HTML>
+<HEAD>
+<TITLE>Functions</TITLE>
+<META http-equiv="Content-Type" content="text/html">
+<LINK href="../FglTechRef.css" type="text/css" rel="stylesheet">
+</HEAD>
+
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<hr width="100%">
+<h1><a name="PAGE_HEADER">Functions</a></h1>
+<p>Summary:</p>
+<ul>
+  <li><a href="#DEFINITION">Definition</a></li>
+  <li><a href="#USAGE">Usage</a></li>
+  <li><a href="#FGL_STACK">BDL stack</a></li>
+  <li><a href="#EXAMPLES">Examples</a></li>
+</ul>
+<p><i>See also:</i> <a href="Variables.html">Variables</a>, <a href="DataTypes.html">Data
+Types</a>, <a href="FlowControl.html">Flow Control</a></p>
+<hr width="100%">
+<h3><a name="DEFINITION">Definition</a></h3>
+<h4>Purpose:</h4>
+<p>The <tt><a name="FUNCTION">FUNCTION</a></tt> statement defines a named program block containing a set of
+statements to be executed when the function is invoked.</p>
+<h4><a name="SYNTAX">Syntax:</a></h4>
+<code>[PUBLIC|PRIVATE] FUNCTION <i>function-name</i> ( <u>[</u>  <i>argument</i> <u>[</u>,<u>...]</u>
+<u>]</u> )<br>
+&nbsp; <u>[</u> <i>define-statement</i>  <u>|</u>  <i>constant-statement</i> <u>]</u><br>
+&nbsp; <u>{</u> <i>fgl-statement</i>  <u>|</u> <i>sql-statement</i> <u>|</u> <i>return-statement</i>
+<u>}</u> <u>[...]</u><br>
+END FUNCTION</code>
+
+
+<p>where <i>return-statement</i> is:</p>
+<code>RETURN <i>expression</i> <u>[</u>,<u>...]</u></code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>function-name</i> is the identifier that you declare for this function
+    and must be unique among all the names of functions or reports in the same
+    program.</li>
+  <li><i>argument</i> is the name of a formal argument to this function. Its scope of reference is local to the function.</li>
+  <li><i>define-statement</i> is used to define function arguments and local
+    <a href="Variables.html">variables</a>.</li>
+  <li><i>constant-statement</i> can be used to declare local
+    <a href="Constants.html">constants</a>.</li>
+  <li><i>fgl-statement</i> is any instruction supported by the language.</li>
+  <li><i>sql-statement</i> is any <a href="StaticSql.html"> static SQL</a> instruction supported by the language.</li>
+  <li><i>expression</i> is any <a href="Expressions.html">expression</a>
+    supported by the language.</li>
+</ol>
+<hr width="100%">
+<h3><a name="USAGE">Usage</a></h3>
+The <tt> FUNCTION</tt> block both declares and defines a function. The function
+    declaration specifies the identifier of the function and the identifiers of
+    its formal arguments (if any). A <tt> FUNCTION</tt> block cannot appear within the <a href="Programs.html#MAIN_BLOCK"> MAIN</a> block,
+    in a <a href="Reports.html"> REPORT</a> block, or within another <tt> FUNCTION</tt> block.
+<p>By default, functions are public; They can be called by any other module of
+the program. If a function is only used by the current module, you may want to
+hide that function to other modules, to make sure that it will not be called by
+mistake. To keep a function local to the module, add the <tt>PRIVATE</tt>
+keyword before the function header. Private functions are only hidden to
+external modules, all function of the current module can still call local
+private functions.</p>
+<p>The <a href="DataTypes.html"> data type</a> of each formal argument of the function must be specified by
+    a <a href="Variables.html">DEFINE</a> statement that immediately follows
+    the argument list. The actual argument in a call to the function need not be of the declared <a href="DataTypes.html"> data type</a>
+    of the formal argument. If <a href="DataConversions.html">data
+    type conversion</a> is not possible, a runtime error occurs.</p>
+<p>Function arguments are passed by value (i.e. value is copied on the stack)
+for basic data types and records, while <a href="Arrays.html">dynamic arrays</a>
+and <a href="BuiltInClasses.html">objects</a> are passed by reference (i.e. a
+handle to the original data is copied on the stack and thus allows modification
+of the original data inside the function). See also <a href="#FGL_STACK">BDL
+Stack</a> section.</p>
+
+<p>Local <a href="Variables.html"> variables</a> are not visible in other program blocks.
+The identifiers of local <a href="Variables.html"> variables</a> must be unique among the variables that
+are declared in the same <tt> FUNCTION</tt> definition. Any global or module <a href="Variables.html"> variable</a>
+that has the same identifier as a local variable, however, is not visible within the scope
+of the local variable.</p>
+
+<p>A function that returns one or more values to the calling routine must
+include the <i>return-statement</i>. Values specified in <tt>RETURN</tt> must
+correspond in number and position, and must be of the same or of
+<a href="DataConversions.html">compatible data types</a>, to the variables in
+the <tt>RETURNING</tt> clause of the <a href="FlowControl.html#FC_CALL">CALL</a> statement.
+If the function returns a single value, it can be invoked as an operand within a
+<a href="Expressions.html">expression</a>. Otherwise, you must invoke it with the
+<a href="FlowControl.html#FC_CALL">CALL</a>  statement with a <tt>RETURNING</tt> clause.
+An error results if the list of returned values in the <tt>RETURN</tt> statement
+conflicts in number or in data type with the <tt>RETURNING</tt> clause of the
+<a href="FlowControl.html#FC_CALL">CALL</a>  statement that invokes the function.
+See also <a href="#FGL_STACK">BDL Stack</a> section.</p>
+
+<p>Any <a href="FlowControl.html#FC_GOTO"> GOTO</a> or <a href="Exceptions.html"> WHENEVER ERROR GOTO</a> statement
+in a function must reference a statement label within the same <tt>FUNCTION</tt> block.
+
+<p>A function can invoke itself recursively with a <a href="FlowControl.html#FC_CALL">CALL</a> statement.
+    
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>If no argument is specified, an empty argument list must still be
+  supplied, enclosed between the parentheses.</li>
+  <li>If the name is also the name of a built-in function, an error occurs
+  at link time, even if the program does not reference the built-in function.</li>
+</ol>
+
+<hr width="100%">
+
+<h3><a name="FGL_STACK">BDL Stack</a></h3>
+<p>When passing arguments to a function or when returning values from a
+function, you are using the Genero BDL stack. When you call a function, parameters are
+pushed on the stack; before the function code executes, parameters are
+popped from the stack in the local variables defined in the function. When
+a function returns values, data is pushed on the stack and popped into variables
+specified in the <tt>RETURNING</tt> clause of the caller.</p>
+<p>Elements are pushed on the stack in a given order, then popped from the stack
+in the reverse order. This is transparent to the BDL programmer. However, if you
+want to implement a <a href="CExtensions.html">C Extension</a>, you must keep
+this in mind.</p>
+<p>According to the data type, parameters are passed <u>by value</u> or <u>by
+reference</u>.</p>
+<h4>Parameter types passed by value</h4>
+<p>The following data types are passed <u>by value</u> to a function:</p>
+<ul>
+  <li>
+    <p align="left"><a href="DataTypes.html#DT_INTEGER">INT</a>, <a href="DataTypes.html#DT_SMALLINT">SMALLINT</a>,
+    <a href="DataTypes.html#DT_FLOAT">FLOAT</a>, <a href="DataTypes.html#DT_SMALLFLOAT">SMALLFLOAT</a>,
+    <a href="DataTypes.html#DT_DECIMAL">DECIMAL</a>, <a href="DataTypes.html#DT_MONEY">MONEY</a></li>
+  <li><a href="DataTypes.html#DT_CHAR">CHAR</a>, <a href="DataTypes.html#DT_VARCHAR">VARCHAR</a>,
+    <a href="DataTypes.html#DT_STRING">STRING</a></li>
+  <li><a href="DataTypes.html#DT_DATE">DATE</a>, <a href="DataTypes.html#DT_DATETIME">DATETIME</a>,
+    <a href="DataTypes.html#DT_INTERVAL">INTERVAL</a></li>
+  <li><a href="Records.html">RECORD</a> (see note below)</li>
+  <li><a href="Arrays.html">Static ARRAYs</a> (see note below)</li>
+</ul>
+<p>When passing by value, the runtime system pushes a copy of the parameter data
+on the stack. As a result, inside the function, the local variable value
+receiving the parameter value can be changed without affecting the data used by
+the caller.</p>
+<p>You can pass a <a href="Records.html">RECORD</a> structure as a function
+parameter with the dot star (<tt>.*</tt>) notation. In this case, the record is
+expanded and each member of the structure is pushed on the stack. The receiving
+local variables in the function can then be defined individually or with the
+same record structure as the caller. The next example illustrates this:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> rec <tt>RECORD</tt>
+<CODE class=linenumber>03   </CODE>   a <tt>INT</tt>, b <tt>VARCHAR</tt>(50)
+<CODE class=linenumber>04</CODE>   <tt>END RECORD</tt>
+<CODE class=linenumber>05</CODE>   <tt>CALL</tt> func_r(rec.*)
+<CODE class=linenumber>06</CODE>   <tt>CALL</tt> func_ab(rec.*)
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>08</CODE> -- function defining a record like that in the caller
+<CODE class=linenumber>09</CODE> <tt>FUNCTION</tt> func_r(r)
+<CODE class=linenumber>10</CODE>   <tt>DEFINE</tt> r <tt>RECORD</tt>
+<CODE class=linenumber>11   </CODE>   a <tt>INT</tt>, b <tt>VARCHAR</tt>(50)
+<CODE class=linenumber>12</CODE>   <tt>END RECORD</tt>
+<CODE class=linenumber>13</CODE>   ...
+<CODE class=linenumber>14</CODE> <tt>END FUNCTION</tt>
+<CODE class=linenumber>15</CODE> -- function defining two individual variables
+<CODE class=linenumber>16</CODE> <tt>FUNCTION</tt> func_ab(a, b)
+<CODE class=linenumber>17</CODE>   <tt>DEFINE</tt> a <tt>INT</tt>, b <tt>VARCHAR</tt>(50)
+<CODE class=linenumber>18</CODE>   ...
+<CODE class=linenumber>19</CODE> <tt>END FUNCTION</tt></PRE>
+
+
+<p>It is possible to pass a complete <a href="Arrays.html">static ARRAY</a> as
+a function parameter, but this is not recommended.&nbsp; in this case, the 
+complete array is copied on the stack and every element is passed by value. The 
+receiving local variables in the function must be defined with the same static 
+array definition as the caller:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> arr <tt>ARRAY</tt>[5]<tt> OF INT</tt>
+<CODE class=linenumber>03</CODE>   <tt>CALL</tt> func(arr)
+<CODE class=linenumber>04</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>05</CODE> -- function defining same static array as the caller 
+<CODE class=linenumber>06</CODE> <tt>FUNCTION</tt> func(x)
+<CODE class=linenumber>07</CODE>   <tt>DEFINE</tt> x <tt>ARRAY</tt>[5]<tt> OF INT</tt>
+<CODE class=linenumber>08</CODE>   ...
+<CODE class=linenumber>09</CODE> <tt>END FUNCTION</tt></PRE>
+
+
+<p>Therefore, it is better to use dynamic arrays instead.</p>
+<h4>Parameter types passed by reference</h4>
+<p>The following data types are passed <u>by reference</u> to a function:</p>
+<ul>
+  <li><a href="Arrays.html">Dynamic ARRAYs</a></li>
+  <li><a href="BuiltInClasses.html">Built-in Class Objects</a></li>
+  <li><a href="JavaBridge.html">Java Class Object</a></li>
+  <li><a href="DataTypes.html#DT_BYTE">BYTE</a> or <a href="DataTypes.html#DT_TEXT">TEXT</a></li>
+</ul>
+<p>Passing a <a href="Arrays.html">dynamic ARRAY</a> as a function parameter or
+as returning element is
+legal and efficient. When passed as parameter, the runtime system pushes <u> a reference</u> of the dynamic array
+on the stack, and the receiving local variables in the function can then
+manipulate the original data. You can also return a dynamic array from a
+function: The runtime system pushes also a reference of the dynamic array. The next example illustrates this:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> arr <tt>DYNAMIC ARRAY OF INT</tt>
+<CODE class=linenumber>03</CODE>   <tt>DISPLAY</tt> arr.getLength()
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> arr = init(10)
+<CODE class=linenumber>03</CODE>   <tt>DISPLAY</tt> arr.getLength()
+<CODE class=linenumber>04</CODE>   <tt>CALL</tt> modify(arr)
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY</tt> arr[50]
+<CODE class=linenumber>06</CODE>   <tt>DISPLAY</tt> arr[51]
+<CODE class=linenumber>07</CODE>   <tt>DISPLAY</tt> arr.getLength()
+<CODE class=linenumber>08</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>09</CODE> --
+<CODE class=linenumber>10</CODE> <tt>FUNCTION</tt> init(c)
+<CODE class=linenumber>11</CODE>   <tt>DEFINE</tt> c <tt>INT</tt>
+<CODE class=linenumber>12</CODE>   <tt>DEFINE</tt> x <tt>DYNAMIC ARRAY OF INT</tt>
+<CODE class=linenumber>13</CODE>   <tt>FOR</tt> i=1 <tt>TO</tt> c
+<CODE class=linenumber>14</CODE>      <tt>LET</tt> x[i] = i
+<CODE class=linenumber>15</CODE>   <tt>END FOR</tt>
+<CODE class=linenumber>16</CODE>   <tt>RETURN</tt> x
+<CODE class=linenumber>17</CODE> <tt>END FUNCTION</tt><CODE class=linenumber>
+18</CODE> --
+<CODE class=linenumber>19</CODE> <tt>FUNCTION</tt> modify(x)
+<CODE class=linenumber>20</CODE>   <tt>DEFINE</tt> x <tt>DYNAMIC ARRAY OF INT</tt>
+<CODE class=linenumber>21</CODE>   <tt>LET</tt> x[50] = 222
+<CODE class=linenumber>22</CODE>   <tt>LET</tt> x[51] = 333
+<CODE class=linenumber>23</CODE> <tt>END FUNCTION</tt></PRE>
+<p>Output of the program:</p>
+<p>&nbsp; <font face="Courier New"><font size="2">&nbsp;&nbsp; 0<br>
+ </font></font>&nbsp; <font size="2">&nbsp;&nbsp;10<br>
+&nbsp; 222<br>
+&nbsp; 333<br>
+&nbsp;&nbsp; 51 </font></p>
+<p>Like other OOP languages, Genero passes objects of <a href="BuiltInClasses.html">built-in
+classes</a> or <a href="JavaBridge.html">java classes</a> by reference. It
+would not make much sense to pass an object by value, actually. The runtime
+pushes the reference of the object on the stack (i.e. the object handler is
+passed by value), and the reference is then popped to the receiving object variable
+in the function. The function can then be used to manipulate the original object.</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> ch base.Channel
+<CODE class=linenumber>03</CODE>   <tt>LET</tt> ch= base.Channel.create()
+<CODE class=linenumber>04</CODE>   <tt>CALL</tt> open(ch)
+<CODE class=linenumber>05</CODE>   <tt>CALL</tt> ch.close()
+<CODE class=linenumber>06</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>07</CODE> -- function using the channel object reference
+<CODE class=linenumber>08</CODE> <tt>FUNCTION</tt> open(x)
+<CODE class=linenumber>09</CODE>   <tt>DEFINE</tt> x base.Channel
+<CODE class=linenumber>10</CODE>   <tt>CALL</tt> x.openFile(&quot;filename&quot;,&quot;r&quot;)
+<CODE class=linenumber>11</CODE> <tt>END FUNCTION</tt></PRE>
+
+
+<p><a href="DataTypes.html#DT_BYTE">BYTE</a> or <a href="DataTypes.html#DT_TEXT">TEXT</a>
+data types are actually large data object handlers internally implemented as
+&quot;LOB locators&quot;. When you pass a BYTE or TEXT to a function, the LOB
+locator is pushed on the stack and popped to the receiving BYTE or TEXT variable
+in the function. The actual LOB data is not copied, only the LOB handler is
+passed by value. However, the data of the LOB locator is copied - information
+like <a href="Variables.html#VA_LOCATE">LOCATE</a> filename is copied. If you
+modify the locator inside the function, the locator in the caller will become
+invalid.</p>
+<p><b><font color="#FF0000">Warning:</font> You should not <a href="Variables.html#VA_LOCATE">re-locate</a>
+a BYTE or TEXT locator in a function. Since the LOB locator information is
+copied by value, modifying the LOB handler inside a function makes the LOB
+handler of the caller invalid.</b></p>
+<h4>Returning values from functions</h4>
+<p>When you return values from a function with the <tt>RETURN</tt> clause, the
+values are pushed on the stack and popped to the variables specified in the <tt>RETURNING</tt>
+clause.</p>
+<p>Simple data types that are passed by value are returned by value following the
+same principle. Complex data types are not returned by value, only the reference
+is pushed on the stack. You can, for example, create an object or a dynamic array
+in a function and return it to the caller for usage.</p>
+<h4>Implicit data type conversion on the stack</h4>
+<p>When a value or a reference is popped from the stack, implicit data
+conversion takes place. This means, for example, that you can pass a string value
+to a function that defines the receiving variable as a numeric data type; no
+compilation error will occur, but you can get a runtime error if the string
+cannot be converted to a numeric. The same principle applies to values returned
+from functions, since the stack is also used in this case.</p>
+<p>For more details about possible data conversions, see the <a href="DataConversions.html">Data
+Type Conversion Table</a>.</p>
+<hr width="100%">
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+
+<h4>Example 1: Function fetching customer data from the database.</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> findCustomerNumber(name)
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> name <tt>VARCHAR</tt>(50)
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> num <tt>INTEGER</tt>
+<CODE class=linenumber>04</CODE>   <tt>CONSTANT</tt> sqltxt = &quot;SELECT cust_num FROM customer WHERE cust_name = ?&quot;
+<CODE class=linenumber>05</CODE>   <tt>PREPARE</tt> stmt <tt>FROM</tt> sqltxt
+<CODE class=linenumber>06</CODE>   <tt>EXECUTE</tt> stmt <tt>INTO</tt> num <tt>USING</tt> name
+<CODE class=linenumber>07</CODE>   <tt>IF</tt> SQLCA.SQLCODE = 100 <tt>THEN</tt>
+<CODE class=linenumber>08</CODE>      <tt>LET</tt> num =-1
+<CODE class=linenumber>09</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>10</CODE>   <tt>RETURN</tt> num
+<CODE class=linenumber>11</CODE> <tt>END FUNCTION</tt></PRE>
+
+
+<h4>Example 2: A private function.</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>PRIVATE FUNCTION</tt> checkIdentifier(name)
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> name <tt>VARCHAR</tt>(50)
+<CODE class=linenumber>03</CODE>   <tt>IF </tt>name <tt>IS NULL THEN RETURN FALSE END IF</tt>
+<CODE class=linenumber>04</CODE>   <tt>IF </tt>name <tt>MATCHES </tt>&quot;[0123456789]*&quot; <tt>THEN RETURN FALSE END IF</tt>
+<CODE class=linenumber>05</CODE>   <tt>RETURN TRUE</tt>
+<CODE class=linenumber>06</CODE> <tt>END FUNCTION</tt></PRE>
+
+
+</BODY>
+
+</HTML>

@@ -1,0 +1,319 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Language Features</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Language Features</a></H1>
+<p>Summary: </p>
+
+<ul>
+  <li><a href="#LF_INTRO">Introduction</a></li>
+  <li><a href="#LF_INSCASE">Lettercase Insensitivity</a></li>
+  <li><a href="#LF_SPACE">Whitespace Separators</a></li>
+  <li><a href="#LF_QUOTES">Quotation Marks</a></li>
+  <li><a href="#LF_TERMIN">Statement Terminator</a></li>
+  <li><a href="#LF_CHARSET">Character Set</a></li>
+  <li><a href="#LF_COMMENTS">Comments</a></li>
+  <li><a href="#LF_PROGCOMP">Program Components</a></li>
+  <li><a href="#LF_SQLSUP">SQL Support</a></li>
+  <li><a href="#LF_IDENTS">Identifiers</a></li>
+  <li><a href="#LF_PREPRO">Preprocessor Directives</a></li>
+</ul>
+
+
+<HR>
+
+<h2><a name="LF_INTRO">Introduction</a></h2>
+<p>Genero BDL is an English-like programming language designed
+for creating relational database applications.</p>
+<p>The language includes high-level instructions to implement
+the user interface of the applications, generate reports, and
+execute SQL statements to communicate with database servers.</p>
+<HR>
+
+<h2><a name="LF_INSCASE">Lettercase Insensitivity</a></h2>
+<p>BDL is <i>case insensitive</i>, making no distinction between uppercase and
+lowercase letters, except within quoted strings. Use pairs of double ( <tt>&quot;</tt> )
+or single ( <tt>'</tt> ) quotation marks in the code to preserve the lettercase of
+character literals, filenames, and names of database entities.</p>
+<p>You can mix uppercase and lowercase letters in the identifiers that you
+assign to language entities, but any uppercase letters in BDL identifiers are
+automatically shifted to lowercase during compilation.</p>
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li>It is strongly recommended that you define a naming convention for your
+    projects. For example, you can use underscore notation (<tt>get_user_name</tt>). If
+    you plan to use the Java notation (<tt>getUserName</tt>), do not forget that BDL is
+    case insensitive (<tt>getusername</tt> is the same identifier as <tt>getUserName</tt>).</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>With Genero BDL you can import and use Java classes
+    and objects in BDL code. Genero BDL is case-sensitive regarding Java
+    elements. For more details about Java support, see the <a href="JavaBridge.html">Java
+    Interface</a>.&nbsp;</li>
+</ol>
+
+
+<HR>
+
+<h2><a name="LF_SPACE">Whitespace Separators</a></h2>
+<p>BDL is free-form, like C or Pascal, and generally ignores TAB characters,
+LINEFEED characters, comments, and extra blank spaces between statements or
+statement elements. You can freely use these whitespace characters to enhance 
+the readability of your
+source code.</p>
+<p>Blank (ASCII 32) characters act as delimiters in some contexts. Blank spaces
+must separate successive keywords or identifiers, but cannot appear within a
+keyword or identifier. Pairs of double ( &quot; ) or single ( ' ) quotation
+marks must delimit any character string that contains a blank (ASCII 32) or
+other whitespace character, such as LINEFEED or RETURN.</p>
+<HR>
+
+<h2><a name="LF_QUOTES">Quotation Marks</a></h2>
+<p>In BDL, string literals are delimited by single (<tt>'</tt>) or double (<tt>&quot;</tt>)
+quotation marks:</p>
+<blockquote>
+<PRE><tt>'Valid character string'</tt>
+<tt>&quot;Another valid character string&quot;</tt></PRE>
+</blockquote>
+<p>Do not mix double and single quotation marks as delimiters of the same
+string. For example, the following is not a valid character string:</p>
+<blockquote>
+<PRE><tt>'Not A valid character string&quot;</tt></PRE>
+</blockquote>
+<p>In SQL statements, when accessing a non-Informix relational
+database, such as a DB2 database from IBM, double quotation marks might not be
+recognized as database object name delimiters. In the SQL language, the standard
+specifications recommend that you use single quotes for string literals and double
+quotes for database object identifiers like table or column names.&nbsp;</p>
+<p>To include literal quotation marks within a quoted string, precede each
+literal quotation mark with the backslash (\), or else enclose the string
+between a pair of the opposite type of quotation marks:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY</tt> &quot;Type 'Y' if you want to reformat your disk.&quot;
+<CODE class=linenumber>03</CODE>   <tt>DISPLAY</tt> 'Type &quot;Y&quot; if you want to reformat your disk.'
+<CODE class=linenumber>04</CODE>   <tt>DISPLAY</tt> 'Type \'Y\' if you want to reformat your disk.'
+<CODE class=linenumber>05</CODE> <tt>END MAIN</tt></PRE>
+
+<p>A string literal can be written on multiple lines. The compiler merges lines
+by removing the new-line character.</p>
+<p>For more details, see <a href="Literals.html#LT_STRING">String Literals</a>.</p>
+
+<HR>
+
+<h2><a name="LF_ESCAPE">Escape Symbols</a></h2>
+<p>The compiler treats a backslash ( <tt>\</tt> ) as the default escape symbol, and treats
+the immediately following symbol as a literal, rather than as having special
+significance. To specify anything that includes a literal backslash, enter
+double ( <tt>\\</tt> ) backslashes wherever a single backslash is required. Similarly,
+use <tt>\\\\</tt> to represent a literal double backslash.</p>
+
+<p>For more details, see <a href="Literals.html#LT_STRING">String Literals</a>.</p>
+
+<HR>
+
+<h2><a name="LF_TERMIN">Statement Terminator</a></h2>
+<p>BDL requires no statement terminators, but you can use the semicolon ( ;
+) as a statement terminator in some cases, PREPARE and PRINT statements for 
+example.</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY</tt> &quot;Hello, World&quot;  <tt>DISPLAY</tt> &quot;Hello, World&quot;
+<CODE class=linenumber>03</CODE>   <tt>DISPLAY</tt> &quot;Hello, World&quot;; <tt>DISPLAY</tt> &quot;Hello, World&quot;
+<CODE class=linenumber>04</CODE> <tt>END MAIN</tt></PRE>
+
+<HR>
+
+<h2><a name="LF_CHARSET">Character Set</a></h2>
+<p>The language requires the ASCII character set, but also
+supports characters from the client locale in data
+values, identifiers, form specifications, and reports.</font></p>
+<HR>
+
+<h2><a name="LF_COMMENTS">Comments</a></h2>
+<p>A comment is text in the source code to assist human readers, but which BDL
+ignores. (This meaning of <i>comment </i>is unrelated to the COMMENTS attribute
+in a form, or to the OPTIONS COMMENT LINE statement, both of which control
+on-screen text displays to assist users of the application.)</p>
+<p>You can indicate comments in any of several ways:</p>
+<ul>
+  <li>A comment can begin with the left-brace ( <tt>{</tt> ) and end with the
+    right-brace ( <tt>}</tt> ) symbol. These can be on the same line or on
+    different lines.</li>
+  <li>The sharp ( <tt>#</tt> ) symbol can begin a comment that terminates at the end of the same
+    line.</li>
+  <li>You can use a pair of minus signs ( <tt>--</tt> ) to begin a comment
+    that terminates at the end of the current line. (This comment indicator
+    conforms to the ANSI standard for SQL.)</li>
+</ul>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>Within a quoted string, 4GL interprets comment indicators as literal characters, rather than as comment indicators.</li>
+  <li>You cannot use braces ( <tt>{ }</tt> ) to nest comments within comments.</li>
+  <li>Comments cannot appear in the SCREEN section of a <a href="FormSpecFiles.html"> form
+    specification file</a>.</li>
+  <li>The <tt>#</tt> symbol cannot indicate comments in an
+    SQL statement block, nor in the text of a prepared statement.</li>
+  <li>You cannot specify consecutive minus signs ( <tt>--</tt> ) in
+    arithmetic expressions, because BDL interprets
+    what follows as a comment. Instead, use a blank space or parentheses to
+    separate consecutive arithmetic minus signs.</li>
+  <li>The symbol that immediately follows the <tt>--</tt> comment indicator must not be the sharp (#)
+    symbol, unless you intend to compile the same source file with the Informix 4GL product.</li>
+</ol>
+
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li>For clarity and to simplify program maintenance, it is recommended that you
+    document your code by including comments in your source files.</li>
+  <li> You can use comment indicators during program development to disable
+    statements without deleting them from your source code modules.</li>
+</ol>
+
+<HR>
+
+<h2><a name="LF_PROGCOMP">Program Components</a></h2>
+<p>BDL programs are built from source code files with the language compiler, form
+compiler, and message compiler. Source code files can be:</p>
+
+
+<h3>Database Schema Files (<tt>.sch</tt>, <tt>.att</tt>, <tt>.val</tt>)</h3>
+
+<p>The Database Schema Files describe the structure of the database tables.
+See <a href="DatabaseSchema.html">Database Schema</a> for more details.</p>
+
+<h3>Form Specification Files (<tt>.per</tt>)</h3>
+
+<p>In Form Specification Files, you define the layout of application screens.
+See <a href="FormSpecFiles.html">Forms</a> for more details.</p>
+
+<h3>Program Sources Files (<tt>.4gl</tt>)</h3>
+
+<p>In Program Source Files, you define the structure of the program with
+instruction blocks ( like <tt>MAIN</tt>, <tt>FUNCTION</tt> or <tt>REPORT</tt>
+). The program starts from the <tt>MAIN</tt> block. The instruction blocks
+contain BDL instructions that are be executed by the runtime system in the
+order that they appear in the code. Program blocks cannot be nested, nor
+any program block divided among more than one source code module.</p>
+
+<p>Some BDL instructions can include other instructions. Such instructions are
+called <i>compound statements</i>. Every compound statement of BDL supports the
+END keyword to mark the end of the compound statement construct within the
+source code module. Most compound statements also support the EXIT <i>statement </i>keywords,
+to transfer control of execution to the statement that follows the END <i>statement</i>
+keywords, where <i>statement </i>is the name of the compound statement. By
+definition, every compound statement can contain at least one statement block, a
+group of one or more consecutive SQL statements or other BDL statements. In the
+syntax diagram of a compound statement, a statement block always includes this
+element.</p>
+
+<h3>Message Files (<tt>.msg</tt>)</h3>
+
+<p>The Message Files hold texts that can be loaded at runtime. Each text is
+identified by a number. See <a href="MessageFiles.html">Message Files</a> for
+more details.</p>
+
+<h3>Localized Strings (<tt>.str</tt>)</h3>
+
+<p>The Localized Strings allow you to customize application strings, which are
+loaded automatically at runtime. Each string is
+identified by an identifier. See <a href="LocalizedStrings.html">Localized
+Strings</a> for
+more details.</p>
+
+<h3>Resource Files (<tt>.4st</tt>, <tt>.4ad</tt>, <tt>.4tm</tt>, <tt>.4tb</tt>, <tt>.4sm</tt>)</h3>
+
+<p>The Resource Files can be used to centralize application elements and
+settings in external XML files. Resource Files include <a href="PresentationStyles.html">Presentation
+Styles</a>, <a href="ActionDefaults.html">Action Defaults</a>, <a href="Topmenus.html">TopMenu
+definitions</a>, <a href="Toolbars.html">ToolBar definitions</a>, 
+<a href="StartMenus.html">StartMenu
+definiitions</a>.</p>
+
+<HR>
+
+<h2><a name="LF_SQLSUP">SQL Support</a></h2>
+<p>A limited syntax of SQL is supported directly by the BDL compiler, so you can
+write common SQL statements such as SELECT, INSERT, UPDATE or DELETE directly in
+your source code:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> n <tt>INTEGER</tt>, s <tt>CHAR</tt>(20)
+<CODE class=linenumber>03</CODE>   <tt>DATABASE</tt> stores
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> s = &quot;Sansino&quot;
+<CODE class=linenumber>05</CODE>   <tt>SELECT COUNT(*) INTO</tt> n<tt> FROM </tt>customer <tt>WHERE </tt>custname = s
+<CODE class=linenumber>06</CODE>   <tt>DISPLAY</tt> &quot;Rows found: &quot; || n
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p>For SQL statements that have a syntax that is not supported directly by the
+compiler, the language provides SQL statement preparation from strings as in
+other languages.</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> txt <tt>CHAR</tt>(20)
+<CODE class=linenumber>03</CODE>   <tt>DATABASE</tt> stores
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> txt = &quot;SET DATE_FORMAT = YMD&quot;
+<CODE class=linenumber>05</CODE>   <tt>PREPARE </tt>sh<tt> FROM </tt>txt
+<CODE class=linenumber>06</CODE>   <tt>EXECUTE </tt>sh
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt></PRE>
+
+<p>For more details about SQL statement preparation, see the <a href="DynamicSql.html">Dynamic
+SQL Instructions</a>.</p>
+
+<HR>
+
+<h2><a name="LF_IDENTS">Identifiers</a></h2>
+
+<p>A BDL identifier is a character string that is declared as the name of a
+program entity. Identifiers must
+conform to the following rules:</p>
+<ul>
+  <li>It must include at least one character, without any limitation in size.</li>
+  <li>Only ASCII letters, digits, and underscore ( _ ) symbols are valid.</li>
+  <li>Blanks, hyphens, and other non-alphanumeric characters are not allowed.</li>
+  <li>The initial character must be a letter or an underscore.</li>
+  <li>Common identifiers are not case sensitive, so <tt>my_Var </tt>and <tt>MY_vaR</tt> both
+    denote the same identifier. However, in some cases, identifiers are case
+    sensitive (like action names in the <a href="DynamicUI.html#ABSTRACTUI">AUI
+    tree</a>). Therefore, it is recommended to always write identifiers in lower
+    case to avoid mistakes.</li>
+</ul>
+<p>Within non-English locales, BDL identifiers can include non-ASCII
+characters in identifiers, if those characters are defined in the code set of
+the locale that <tt>CLIENT_LOCALE</tt> specifies. In multibyte East Asian locales
+that support languages whose written form is not alphabet-based, such as
+Chinese, Japanese, or Korean, an identifier does not need to begin with a letter.
+It is however recommended to program in ASCII.</p>
+
+<HR>
+
+<h2><a name="LF_PREPRO">Preprocessor Directives</a></h2>
+<p>The language supports preprocessing instructions, which allow you to write
+macros and conditional compilation rules:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>&amp;include </tt>&quot;myheader.4gl&quot;
+<CODE class=linenumber>02</CODE> <tt>FUNCTION</tt> debug( msg )
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> msg <tt>STRING</tt>
+<CODE class=linenumber>04</CODE> <tt>&amp;ifdef </tt>DEBUG
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY</tt> msg
+<CODE class=linenumber>06</CODE> <tt>&amp;endif</tt>
+<CODE class=linenumber>07</CODE> <tt>END FUNCTION</tt></PRE>
+
+<p>See <a href="Preprocessor.html">The Preprocessor</a> for more details. </p>
+
+<HR>
+
+</BODY>
+</HTML>

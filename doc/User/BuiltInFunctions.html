@@ -1,0 +1,2578 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Built-in Functions</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Built-in Functions</a></H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#DEFINITION">What is a built-in function?</a></li>
+  <li><a href="#FUNCLIST">List of built-in functions</a></li>
+  <li><a href="#DESUPLIST">List of de-supported functions</a></li>
+  <li><a href="#KEYCODES">The key code table</a></li>
+</ul>
+
+
+<p><i>See also:</i> <a href="UtilityFunctions.html">Utility Functions</a>, <a href="Variables.html">Variables</a>, <a href="Functions.html">Functions</a>,
+<a href="Operators.html">Operators</a>, <a href="BuiltInClasses.html">Built-in
+Classes</a>.</p>
+
+
+<HR>
+
+<h3><a name="DEFINITION">What is a built-in function?</a></h3>
+
+<p>A built-in function is a predefined <a href="Functions.html">function</a>
+that is included in the <a href="FglTerms.html#RUNTIME_SYSTEM">runtime system</a>
+or provided as a library function automatically linked to your programs. You do not
+have to link with any additional BDL library to create your programs.
+The built-in functions are part of the language. </p>
+
+
+<p>Built-in functions are not <a href="Operators.html">operators</a>.
+    Some operators have the same syntax as functions, but these are real language
+    operators that have a specific order of precedence. Operators can be used in
+    different contexts according to the BDL grammar. See for example: <a href="Operators.html#OP_YEAR">YEAR(date)</a>,
+<a href="Operators.html#OP_MONTH">MONTH(date)</a>, <a href="Operators.html#OP_DAY">DAY(date)</a>,<a href="Operators.html#OP_WEEKDAY">WEEKDAY(date)</a>,
+<a href="Operators.html#OP_MDY">MDY(integer,integer,integer)</a> <a href="Operators.html#OP_GET_FLDBUF">GET_FLDBUF(field)</a>,
+<a href="Operators.html#OP_INFIELD">INFIELD(field)</a>, <a href="Operators.html#OP_FIELD_TOUCHED">FIELD_TOUCHED(field)</a></p>
+
+
+<p>See also <a href="UtilityFunctions.html">Utility Functions</a>. </p>
+
+
+<HR>
+
+<h3><a name="FUNCLIST">List of built-in functions</a></h3>
+
+  <table border="0" width="95%">
+    <tr>
+      <td width="26%" bgcolor="#C0C0C0" valign="top"><b>Function</b></td>
+      <td bgcolor="#C0C0C0" valign="top"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_ARG_VAL">ARG_VAL()</a></td>
+      <td valign="top">Returns a command line argument by position.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_ARR_COUNT">ARR_COUNT()</a></td>
+      <td valign="top">Returns the number of records entered in a
+        program array during or after execution of the <a href="InputArray.html">INPUT
+        ARRAY</a> statement.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_ARR_CURR">ARR_CURR()</a></td>
+      <td valign="top">Returns the current row in a <a href="DisplayArray.html">DISPLAY
+        ARRAY</a> or <a href="InputArray.html">INPUT
+        ARRAY</a>.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_DOWNSHIFT">DOWNSHIFT()</a></td>
+      <td valign="top">Returns a string value in which all
+        uppercase characters in its argument are converted to lowercase.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_ERR_GET">ERR_GET()</a> 
+ </td>
+      <td valign="top">Returns the text corresponding to an error number.</td>
+    </tr>
+	<tr>
+      <td width="26%" valign="top"><a href="#BF_ERR_PRINT">ERR_PRINT()</a> 
+ </td>
+      <td valign="top">Prints in the <a href="MessageDisplay.html#ERROR">error
+        line</a> the text corresponding to an error number.</td>
+    </tr>
+	<tr>
+      <td width="26%" valign="top"><a href="#BF_ERR_QUIT">ERR_QUIT()</a> 
+ </td>
+      <td valign="top">Prints in the <a href="MessageDisplay.html#ERROR">error
+        line</a> the text corresponding to an error number and terminates
+        the program.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_ERRORLOG">ERRORLOG()</a></td>
+      <td valign="top">Copies the string passed as a parameter into the
+        <a href="#BF_STARTLOG">error log file</a>.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_BUFFERTOUCHED">FGL_BUFFERTOUCHED()</a></td>
+      <td valign="top">Returns <a href="Programs.html#PC_TRUE"> TRUE</a>
+        if the current input buffer was modified since the field was selected.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DB_DRIVER_TYPE">FGL_DB_DRIVER_TYPE()</a></td>
+      <td valign="top">Returns the code of the current database driver (ifx, ora,
+        ads, ...)</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DECIMAL_TRUNCATE">FGL_DECIMAL_TRUNCATE()</a></td>
+      <td valign="top">Truncates a decimal to the precision specified.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DECIMAL_SQRT">FGL_DECIMAL_SQRT()</a></td>
+      <td valign="top">Computes the square root of a decimal number.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DECIMAL_EXP">FGL_DECIMAL_EXP()</a></td>
+      <td valign="top">Computes the exponent of a decimal number.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DECIMAL_LOGN">FGL_DECIMAL_LOGN()</a></td>
+      <td valign="top">Computes the natural logarithm of a decimal number.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DECIMAL_POWER">FGL_DECIMAL_POWER()</a></td>
+      <td valign="top">Raises a decimal to the power of exponent, using real
+        numbers.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DIALOG_GETBUFFER">FGL_DIALOG_GETBUFFER()</a></td>
+      <td valign="top">Returns the value of the current field as a string.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DIALOG_GETBUFFERLENGTH">FGL_DIALOG_GETBUFFERLENGTH()</a>
+      </td>
+      <td valign="top">When using a paged display array, returns the number of
+        rows to fill the array buffer.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DIALOG_GETBUFFERSTART">FGL_DIALOG_GETBUFFERSTART()</a>
+      </td>
+      <td valign="top">When using a paged display array, returns the row offset
+        to fill the array buffer.</td>
+    </tr>
+	<tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_GETCURSOR">FGL_DIALOG_GETCURSOR()</a> </td>
+      <td valign="top">Returns the position of the edit cursor in
+        the current field.</td>
+    </tr>
+	<tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DIALOG_GETFIELDNAME">FGL_DIALOG_GETFIELDNAME()</a></td>
+      <td valign="top">Returns the name of the current input field.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DIALOG_GETKEYLABEL">FGL_DIALOG_GETKEYLABEL()</a></td>
+      <td valign="top">Returns the text associated to a key in the
+        current interactive instruction.</td>
+    </tr>
+	<tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DIALOG_GETSELECTIONEND">FGL_DIALOG_GETSELECTIONEND()</a></td>
+      <td valign="top">Returns the position of the last selected character in
+        the text of the current field.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DIALOG_INFIELD">FGL_DIALOG_INFIELD()</a></td>
+      <td valign="top">Returns <a href="Programs.html#PC_TRUE"> TRUE</a>
+        if the field passed as a parameter is the current input field.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DIALOG_SETBUFFER">FGL_DIALOG_SETBUFFER()</a></td>
+      <td valign="top">Sets the value of the current field as a string.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DIALOG_SETCURRLINE">FGL_DIALOG_SETCURRLINE()</a></td>
+      <td valign="top">Moves to a specific row in a record list.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DIALOG_SETCURSOR">FGL_DIALOG_SETCURSOR()</a> </td>
+      <td valign="top">Sets the position of the input cursor
+        within the current field.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DIALOG_SETFIELDORDER">FGL_DIALOG_SETFIELDORDER()</a></td>
+      <td valign="top">Enables or disables field order constraint.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DIALOG_SETKEYLABEL">FGL_DIALOG_SETKEYLABEL()</a></td>
+      <td valign="top">Sets the text associated to a key for the
+        current interactive instruction.</td>
+    </tr>
+	<tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DIALOG_SETSELECTION">FGL_DIALOG_SETSELECTION()</a></td>
+      <td valign="top">Selects a part of the text in the current field.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DRAWBOX">FGL_DRAWBOX()</a> </td>
+      <td valign="top">Draws a rectangle based on character terminal
+        coordinates in the current open window.</td>
+    </tr>
+	<tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_DRAWLINE">FGL_DRAWLINE()</a> </td>
+      <td valign="top">Draws a line based on character terminal coordinates
+        in the current open window.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_GETCURSOR">FGL_GETCURSOR()</a></td>
+      <td valign="top">Returns the position of the edit cursor in the current 
+		field.</td>
+    </tr>
+	<tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_GETENV">FGL_GETENV()</a></td>
+      <td valign="top">Returns the value of the environment variable
+        having the name you specify as argument.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_GETFILE">FGL_GETFILE()</a></td>
+      <td valign="top">Transfers a file from the front-end to the application
+        server machine.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_GETHELP">FGL_GETHELP( )</a>
+      </td>
+      <td valign="top">Returns the help message according to a number.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_GETKEY">FGL_GETKEY()</a></td>
+      <td valign="top">In TUI mode, waits for a keystroke and returns
+        corresponding key number.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_GETKEYLABEL">FGL_GETKEYLABEL()</a></td>
+      <td valign="top">Returns the default label associated to a
+        key.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_GETPID">FGL_GETPID( )</a></td>
+      <td valign="top">Returns the system process id.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_GETRESOURCE">FGL_GETRESOURCE( )</a></td>
+      <td valign="top">Returns the value of an <a href="FglProfile.html">FGLPROFILE</a>
+        entry.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_GETVERSION">FGL_GETVERSION( )</a>
+      </td>
+      <td valign="top">Returns the build number of the runtime system.</td>
+    </tr>
+	<tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_GETWIN_HEIGHT">FGL_GETWIN_HEIGHT()</a></td>
+      <td valign="top">Returns the number of rows of the <a href="WindowsAndForms.html">
+        current window</a>.</td>
+    </tr>
+	<tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_GETWIN_WIDTH">FGL_GETWIN_WIDTH()</a></td>
+      <td valign="top">Returns the width of the <a href="WindowsAndForms.html">current
+        window</a> as a number of columns.</td>
+    </tr>
+	<tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_GETWIN_X">FGL_GETWIN_X()</a></td>
+      <td valign="top">Returns the horizontal position of the
+        <a href="WindowsAndForms.html">current window</a>.</td>
+    </tr>
+	<tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_GETWIN_Y">FGL_GETWIN_Y()</a></td>
+      <td valign="top">Returns the vertical position of the
+        <a href="WindowsAndForms.html">current window</a>.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_KEYVAL">FGL_KEYVAL()</a></td>
+      <td valign="top">Returns the key code of a logical or physical key.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_LASTKEY">FGL_LASTKEY()</a></td>
+      <td valign="top">Returns the <a href="#KEYCODES"> key code</a> of
+        the last key pressed by the user.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_PUTFILE">FGL_PUTFILE()</a></td>
+      <td valign="top">Transfers a file from from the application server machine
+        to the front-end.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_REPORT_PRINT_BINARY_FILE">FGL_REPORT_PRINT_BINARY_FILE()</a></td>
+      <td valign="top">Prints a file containing binary data during
+        a <a href="Reports.html">report</a>.</td>
+    </tr>
+	<tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_REPORT_SET_DOCUMENT_HANDLER">FGL_REPORT_SET_DOCUMENT_HANDLER()</a></td>
+      <td valign="top">Defines the document handler to be used for a <a href="Reports.html">report</a>.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_SET_ARR_CURR">FGL_SET_ARR_CURR()</a>
+      </td>
+      <td valign="top">Sets the current line in a record list.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_SETENV">FGL_SETENV()</a>
+      </td>
+      <td valign="top">Sets an environment variable</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_SETKEYLABEL">FGL_SETKEYLABEL()</a></td>
+      <td valign="top">Sets the default label associated to a key.</td>
+    </tr>
+	<tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_SETSIZE">FGL_SETSIZE()</a></td>
+      <td valign="top">Sets the size of the main application
+        window.</td>
+    </tr>
+	<tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_SETTITLE">FGL_SETTITLE()</a></td>
+      <td valign="top">Sets the title of the main application
+        window.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_SYSTEM">FGL_SYSTEM()</a></td>
+      <td valign="top">Executes a command in the application server.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_WIDTH">FGL_WIDTH()</a></td>
+      <td valign="top">Returns the number of columns needed to
+        represent the string.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_FGL_WINDOW_GETOPTION">FGL_WINDOW_GETOPTION()</a></td>
+      <td valign="top">Returns the attributes of the <a href="WindowsAndForms.html">current
+window</a>.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_LENGTH">LENGTH()</a></td>
+      <td valign="top">Returns the number of characters of the string
+        passed as a parameter.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_NUM_ARGS">NUM_ARGS()</a></td>
+      <td valign="top">Returns the number of program arguments.</td>
+    </tr>
+	<tr>
+      <td width="26%" valign="top"><a href="#BF_SCR_LINE">SCR_LINE()</a></td>
+      <td valign="top">Returns the number of the current screen
+record in its <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS"> screen array</a>.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_SET_COUNT">SET_COUNT()</a></td>
+      <td valign="top">Specifies the number of records that contain
+data in a <a href="Arrays.html">static array</a>.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_SHOWHELP">SHOWHELP()</a></td>
+      <td valign="top">Displays a runtime help message,
+        corresponding to its specified argument, from the current help file.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_STARTLOG">STARTLOG()</a></td>
+      <td valign="top">Initializes error logging and opens the error
+        log file passed as a parameter.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"><a href="#BF_UPSHIFT">UPSHIFT()</a></td>
+      <td valign="top">Returns a string value in which all
+        lowercase characters in its argument are converted to uppercase.</td>
+    </tr>
+    <tr>
+      <td width="26%" valign="top"></td>
+      <td valign="top"></td>
+    </tr>
+  </table>
+
+
+<HR>
+
+<h3><a name="DESUPLIST">List of de-supported built-in functions:</a></h3>
+
+  <table border="0" width="95%">
+    <tr>
+      <td width="40%" bgcolor="#C0C0C0"><b>Function</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><font color="#FF0000"><i>FGL_FORMFIELD_GETOPTION()</i></font></td>
+      <td valign="top">Returns attributes of a specified form
+        field.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><font color="#FF0000"><i>FGL_GETUITYPE()</i></font></td>
+      <td valign="top">Returns the type of the front end.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><font color="#FF0000"><i>FGL_SCR_SIZE( )</i></font></td>
+      <td valign="top">Returns the number of rows of a screen
+        array of the current form.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><font color="#FF0000"><i>FGL_WINDOW_OPEN( )</i></font></td>
+      <td valign="top">Opens a new window with coordinates and size.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><font color="#FF0000"><i>FGL_WINDOW_OPENWITHFORM( )</i></font></td>
+      <td valign="top">Opens a new window with coordinates and form.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><font color="#FF0000"><i>FGL_WINDOW_CLEAR( )</i></font></td>
+      <td valign="top">Clears the window having the name that is passed as
+        a parameter.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><font color="#FF0000"><i>FGL_WINDOW_CLOSE( )</i></font></td>
+      <td valign="top">Closes the window having the name that is passed as
+        a parameter.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><font color="#FF0000"><i>FGL_WINDOW_CURRENT( )</i></font></td>
+      <td valign="top">Makes current the window having the name that is passed
+        as a parameter.</td>
+    </tr>
+  </table>
+
+
+<HR>
+
+<h3><a name="BF_ARG_VAL">ARG_VAL( )</a></h3>
+
+
+<h4>Purpose:</h4><p>This function returns a command line argument by position. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL ARG_VAL( <i>position</i> INTEGER ) RETURNING <i>
+result</i> STRING</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>position</i> is the argument position. 0 returns the name of the
+    program, 1 returns the first argument.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+<p>This function provides a mechanism for passing values to the program through
+the command line that invokes the program. You can design a program to expect or
+allow arguments after the name of the program in the command line.</p>
+<p>Like all built-in functions, <code>ARG_VAL()</code> can be invoked from any program
+block. You can use it to pass values to <a href="Programs.html#MAIN_BLOCK">MAIN</a>,
+which cannot have formal arguments, but you are not restricted to calling <code>ARG_VAL()</code> 
+from the MAIN statement. You can use the <code>ARG_VAL()</code>  function to
+retrieve individual arguments during program execution. You can also use the
+<a href="#BF_NUM_ARGS">NUM_ARGS()</a> function to determine how many arguments
+follow the program name on the command line.</p>
+<p>If <i>position</i>  is greater than 0, <code>ARG_VAL(<i>position</i>)</code> 
+returns the command-line
+argument used at a given position. The value of <i>position </i>must be between 0
+and the value returned by <a href="#BF_NUM_ARGS">NUM_ARGS()</a>, the number of
+command-line arguments.
+The expression <code>ARG_VAL(0)</code>  returns the name of the application program.</p>
+<p><i>See also:</i> <a href="#BF_NUM_ARGS">NUM_ARGS()</a>.</p>
+
+
+<HR>
+
+<h3><a name="BF_NUM_ARGS">NUM_ARGS( )</a></h3>
+
+
+<h4>Purpose:</h4><p>This function returns the number of program
+arguments. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL NUM_ARGS( ) RETURNING <i>result</i> INTEGER</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li>returns 0 if no arguments are passed to the program.</li>
+</ol>
+
+
+<p><i>See also:</i>    <a href="#BF_ARG_VAL">ARG_VAL()</a>.</p>
+
+
+<HR>
+
+
+<h3><a name="BF_SCR_LINE">SCR_LINE( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function returns the number of the current screen
+record in its <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS"> screen array</a>.&nbsp; </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>During a <a href="DisplayArray.html">DISPLAY ARRAY</a> or <a href="InputArray.html">INPUT
+    ARRAY</a> statement.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL SCR_LINE( ) RETURNING <i>result</i> INTEGER</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li>The current record is the line of a screen array that is highlighted at
+    the beginning of a <tt>BEFORE ROW</tt> or <tt>AFTER ROW</tt> clause.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>When using new graphical objects such as <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLEs</a>,
+    this function can return an invalid screen array line number, because the
+    current row may not be visible if the user scrolls in the list with
+    scrollbars.&nbsp;</li>
+</ol>
+
+
+<p><i>See also:</i>      <a href="#BF_ARR_CURR">ARR_CURR()</a>.</p>
+
+
+<HR>
+
+
+<h3><a name="BF_SET_COUNT">SET_COUNT( )</a></h3>
+
+
+<h4>Purpose:</h4><p>This function specifies the number of rows containing
+explicit data in a <a href="Arrays.html">static array</a> used by the next
+dialog. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>Before a <a href="DisplayArray.html">DISPLAY ARRAY</a> or <a href="InputArray.html">INPUT
+    ARRAY</a> statement.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL SET_COUNT( <i>nbrows</i> INTEGER )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>nbrows</i> defines the number of explicit rows in the <a href="Arrays.html">static
+    array</a>.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+
+
+<p>When using a <a href="Arrays.html">static
+    array</a> in an <a href="InputArray.html">INPUT ARRAY</a> (with <tt>WITHOUT DEFAULTS</tt>
+clause) or a <a href="DisplayArray.html">DISPLAY ARRAY</a> statement, you must specify the
+number of rows in the array which contain explicit data. In typical applications, these
+array elements contain the values retrieved from a <tt>SELECT</tt> statement
+controlled by a <a href="ResultSets.html">database cursor</a>.</p>
+
+
+<p>Note that you can specify the number of rows with the
+<code>SET_COUNT()</code> function or with the <tt>COUNT</tt> attribute of
+<a href="InputArray.html">INPUT ARRAY</a> and <a href="DisplayArray.html">DISPLAY ARRAY</a> statements.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> You do not have to specify the number
+of rows when using a <a href="Arrays.html">dynamic array</a>. When using a
+dynamic array, the number of rows is defined by the getLength() method of the
+array object.</b></p>
+
+
+<p><i>See also:</i>      <a href="#BF_ARR_CURR">ARR_CURR()</a>, <a href="#BF_FGL_SET_ARR_CURR">FGL_SET_ARR_CURR()</a>.&nbsp;</p>
+
+
+<HR>
+
+<h3><a name="BF_ARR_COUNT">ARR_COUNT( )</a></h3>
+
+
+<h4>Purpose:</h4><p>This function returns the number of records entered in a
+program array during or after execution of the <a href="InputArray.html">INPUT
+ARRAY</a> statement. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>Can be called at any place in the program, but should be limited to
+    usage inside or after <a href="InputArray.html">INPUT ARRAY</a>  or <a href="DisplayArray.html">DISPLAY
+    ARRAY</a> blocks.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL ARR_COUNT( ) RETURNING <i>result</i> INTEGER</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li>Returns the current number of records that exist in the current array.</li>
+  <li>Typically used inside <a href="InputArray.html">INPUT ARRAY</a>  blocks,
+    can also be called in <a href="DisplayArray.html">DISPLAY ARRAY</a>.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+<p>You can use <code>ARR_COUNT()</code> to determine the number of program records that
+are currently stored in a program array.
+In typical Genero BDL applications, these records correspond to values from the
+<a href="ResultSets.html">result set</a> of retrieved database rows from the most recent query. By first calling the
+<a href="#BF_SET_COUNT"> SET_COUNT()</a>  function or by using the <tt>COUNT</tt> attribute of
+<a href="InputArray.html">INPUT ARRAY</a>, you can set an upper limit on the value that <code>ARR_COUNT()</code> 
+returns.</p>
+<p> <code>ARR_COUNT()</code>  returns a positive integer, corresponding to the index of the furthest record within the program array that the
+user accessed. Not
+all the rows <i>counted </i>by <code>ARR_COUNT()</code>  necessarily contain data (for
+example, if the user presses the DOWN ARROW key more times than there are rows of
+data).</p>
+
+
+<p><i>See also:</i>  <a href="InputArray.html">INPUT ARRAY</a>, <a href="DisplayArray.html">DISPLAY
+ARRAY</a>, <a href="#BF_ARR_CURR">ARR_CURR()</a>.&nbsp;</p>
+
+
+<HR>
+
+<h3><a name="BF_ARR_CURR">ARR_CURR( )</a></h3>
+
+
+<h4>Purpose:</h4><p>This function returns the current row in a <a href="DisplayArray.html">DISPLAY
+ARRAY</a> or <a href="InputArray.html">INPUT
+        ARRAY</a>. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>During a <a href="DisplayArray.html">DISPLAY ARRAY</a> or <a href="InputArray.html">INPUT
+    ARRAY</a> statement.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL ARR_CURR( ) RETURNING <i>result</i> INTEGER</code>
+
+
+<h4>Usage:</h4>
+<p>The <code>ARR_CURR()</code> function returns an integer value that identifies
+the current row of a list of rows in a <a href="InputArray.html">INPUT ARRAY</a>
+or <a href="DisplayArray.html">DISPLAY
+    ARRAY</a>  instruction. The first row is numbered 1.</p>
+<p>You can pass <code>ARR_CURR()</code>  as an argument when you call a function. In this way
+the function receives as its argument the current record of whatever array is
+referenced in the <a href="InputArray.html">INPUT ARRAY</a> or <a href="DisplayArray.html">DISPLAY
+ ARRAY</a> statement.</p>
+<p>The <code>ARR_CURR()</code> function can be used to force a <a href="FlowControl.html#FC_FOR">FOR</a> loop to begin beyond the
+first line of an array by setting a variable to <code>ARR_CURR()</code>  and using that
+variable as the starting value for the <a href="FlowControl.html#FC_FOR"> FOR</a>
+loop.</p>
+
+
+<p>The built-in functions <code>ARR_CURR()</code>  and <a href="#BF_SCR_LINE"> SCR_LINE()</a> can return
+different values if the program array is larger than the screen array.</p>
+
+
+<p><i>See also:</i>  <a href="InputArray.html">INPUT ARRAY</a>, <a href="DisplayArray.html">DISPLAY
+ARRAY</a>, <a href="#BF_ARR_COUNT">ARR_COUNT()</a>, <a href="#BF_FGL_SET_ARR_CURR">FGL_SET_ARR_CURR()</a>,
+<a href="#BF_SCR_LINE">SCR_LINE()</a>, <a href="ClassDialog.html#getCurrentRow">DIALOG.getCurrentRow()</a>.&nbsp;</p>
+
+
+<HR>
+
+
+<h3><a name="BF_ERR_GET">ERR_GET( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function returns the text corresponding to an <a href="FglErrors.html"> error number</a>. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL ERR_GET( <i>error-number</i> INTEGER ) RETURNING <i>
+result</i> STRING</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>error-number</i> is a <a href="FglErrors.html">runtime error</a> or an Informix
+    SQL error.</li>
+  <li>For development only.</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning: </font>Informix SQL error numbers can only be supported if the program is
+    connected to an Informix database.</b></p>
+
+
+<p><i>See also:</i> <a href="#BF_ERRORLOG">ERRORLOG()</a>, <a href="#BF_STARTLOG">STARTLOG()</a>,
+<a href="#BF_ERR_QUIT">ERR_QUIT()</a>, <a href="#BF_ERR_PRINT">ERR_PRINT()</a>, <a href="Exceptions.html">Exceptions</a>.</p>
+
+
+<HR>
+
+
+<h3><a name="BF_ERR_PRINT">ERR_PRINT( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function prints in the <a href="MessageDisplay.html#ERROR">error
+line</a> the text corresponding to an <a href="FglErrors.html"> error number</a>. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL ERR_PRINT( <i>error-number</i> INTEGER )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>error-number</i> is a <a href="FglErrors.html">runtime error</a> or an Informix
+    SQL error.</li>
+  <li>For development only.</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning:</font> Informix SQL error numbers can only be supported if the program is
+    connected to an Informix database.</b></p>
+
+
+<p><i>See also:</i>     <a href="#BF_ERRORLOG">ERRORLOG()</a>, <a href="#BF_STARTLOG">STARTLOG()</a>,
+<a href="#BF_ERR_QUIT">ERR_QUIT()</a>, <a href="#BF_ERR_GET">ERR_GET()</a>, <a href="Exceptions.html">Exceptions</a>.</p>
+
+
+<HR>
+
+
+<h3><a name="BF_ERR_QUIT">ERR_QUIT( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function prints in the <a href="MessageDisplay.html#ERROR">error
+line</a> the text corresponding to an <a href="FglErrors.html"> error number</a> and terminates
+the program. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL ERR_QUIT( <i>error-number</i> INTEGER )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>error-number</i> is a <a href="FglErrors.html">runtime error</a> or an Informix
+    SQL error.</li>
+  <li>For development only.</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning: </font>Informix SQL error numbers can only be supported if the program is
+    connected to an Informix database.</b></p>
+
+
+<p><i>See also:</i>     <a href="#BF_ERRORLOG">ERRORLOG()</a>, <a href="#BF_STARTLOG">STARTLOG()</a>,
+<a href="#BF_ERR_QUIT">ERR_QUIT()</a>, <a href="#BF_ERR_GET">ERR_GET()</a>, <a href="Exceptions.html">Exceptions</a>.</p>
+
+
+<HR>
+
+
+<h3><a name="BF_ERRORLOG">ERRORLOG( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function copies the string passed as parameter into the
+<a href="#BF_STARTLOG">error log file</a>. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL ERRORLOG( <i>text</i> STRING )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>text</i> is the character string to be inserted in the error log file.</li>
+  <li>The error log must be started with <a href="#BF_STARTLOG">STARTLOG()</a>.</li>
+</ol>
+
+
+<p><i>See also:</i>     <a href="#BF_STARTLOG">STARTLOG()</a>, <a href="Exceptions.html">Exceptions</a>.</p>
+
+
+<HR>
+
+
+<h3><a name="BF_SHOWHELP">SHOWHELP( )</a></h3>
+
+
+<h4>Purpose:</h4><p>This function function displays a runtime help message,
+corresponding to its specified argument, from the current help file. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL SHOWHELP( <i>help-number</i> INTEGER )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>help-number</i> is the help message number in the current help file.</li>
+  <li>You set the current help file with the <tt>HELP FILE</tt> clause of the
+    <a href="Programs.html">OPTIONS</a> instruction.</li>
+</ol>
+
+
+<p><i>See also:</i> <a href="Programs.html">OPTIONS</a>, <a href="MessageFiles.html">Message
+Files</a>.</p>
+
+
+<HR>
+
+
+<h3><a name="BF_STARTLOG">STARTLOG( )</a></h3>
+
+
+<h4>Purpose:</h4><p>This function initializes error logging and opens the error
+log file passed as the parameter. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At the beginning of the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL STARTLOG( <i>filename</i> STRING )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>filename</i> is the name of the error log file.</li>
+  <li>Runtime errors are automatically reported.</li>
+  <li>You can insert error records manually with the <a href="#BF_ERRORLOG">ERRORLOG()</a>
+    function.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+<p>Call <code>STARTLOG()</code> in the <a href="Programs.html#MAIN_BLOCK">MAIN</a> program
+block to open or create an error log file. After <code>STARTLOG()</code>  has been invoked, a record of every subsequent error that
+occurs during the execution of your program is written in the error log file. If
+you need to report specific application errors, use the <a href="#BF_ERRORLOG">ERRORLOG()</a>
+ function to make an entry in the error log file.</p>
+
+<p>The default format of an error record consists of the date, time, source-module name
+and line number, error number, and error message. If you invoke the <code>STARTLOG()</code>
+function, the format of the error records appended to the error log file after each
+subsequent error are as follows:</p>
+
+<pre>Date: 03/06/99 Time: 12:20:20
+Program error at &quot;stock_one.4gl&quot;, line number 89.
+SQL statement error number -239.
+Could not insert new row - duplicate value in a UNIQUE INDEX column.
+SYSTEM error number -100
+ISAM error: duplicate value for a record with unique key.</pre>
+
+<p>The <code>STARTLOG()</code> and <a href="#BF_ERRORLOG">ERRORLOG()</a> functions can be
+used for <i>instrumenting </i>a program, to track how the program is used. This use is not
+only valuable for improving the program but also for recording work habits and detecting
+attempts to breach security.</p>
+
+<p>If the argument of <code>STARTLOG()</code>  is not the name of an existing file,
+<code>STARTLOG()</code>  creates one. If the file already exists, <code>STARTLOG()</code> 
+opens it and positions the file pointer so that subsequent error messages can be appended
+to this file. The following program fragment invokes <code>STARTLOG()</code>, specifying
+the name of the error log file in a quoted string that includes a pathname and a file
+extension. The function definition includes a call to the built-in <a href="#BF_ERRORLOG">ERRORLOG()</a>
+ function, which adds a message to the error log file:</p>
+
+<pre><code class="linenumber">01</code>   <tt>CALL </tt>STARTLOG(&quot;/var/myapp/logs/error-&quot; || fgl_getpid() || &quot;.log&quot;)
+<code class="linenumber">02</code>   ...
+<code class="linenumber">03</code>   <tt>CALL</tt> ERRORLOG(&quot;The current user is not allowed to perform order validation&quot;)</pre>
+
+<p><i>See also:</i> <a href="#BF_ERRORLOG">ERRORLOG()</a>, <a href="Exceptions.html">Exceptions</a>.</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_BUFFERTOUCHED">FGL_BUFFERTOUCHED( )</a></h3>
+
+
+<h4>Purpose:</h4><p>This function returns <a href="Programs.html#PC_TRUE"> TRUE</a> 
+if the input buffer was modified after the current field was selected. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>In <tt>AFTER FIELD</tt>, <tt>AFTER INPUT</tt>, <tt>AFTER CONSTRUCT</tt>, <tt>ON
+    KEY</tt>, <tt>ON ACTION</tt> blocks.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_BUFFERTOUCHED( ) RETURNING <i>result</i> INTEGER</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li>returns <a href="Programs.html#PC_TRUE"> TRUE</a> if the input
+    buffer has been touched after the current field was selected.</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning: </font>This function <u>is not</u> equivalent to <a href="Operators.html#OP_FIELD_TOUCHED">FIELD_TOUCHED()</a>:
+    The flag returned by <tt>FGL_BUFFERTOUCHED()</tt> is reset when you enter 
+    a new field, while <tt>FIELD_TOUCHED()</tt> returns always <a href="Programs.html#PC_TRUE"> TRUE</a> 
+    for a field that was modified during the interactive instruction.</b></p>
+
+
+<p><i>See also:</i>    <a href="#BF_FGL_DIALOG_SETBUFFER">FGL_DIALOG_SETBUFFER()</a>,
+<a href="#BF_FGL_DIALOG_GETBUFFER">FGL_DIALOG_GETBUFFER()</a>.</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_DB_DRIVER_TYPE">FGL_DB_DRIVER_TYPE( )</a></h3>
+
+<h4>Purpose:</h4><p>Returns the 3-letter identifier/code of the current database
+driver. </p>
+
+
+<h4>Syntax:</h4><code>CALL FGL_DB_DRIVER_TYPE( ) RETURNING <i>type</i> CHAR(3)</code>
+
+
+<h4>Usage:</h4>
+<p>This function can be called after connecting to a database server with the <tt>CONNECT</tt>
+or <tt>DATABASE</tt> instructions, in order to identify the type of the target
+database with the driver type. Returned value is the 3-letter driver code. See <a href="Connections.html#DS_ODI_CP_DRIVER">Connections</a>
+page for more details about the list of database driver codes.</p>
+
+
+<p>The function returns <a href="Programs.html#PC_NULL">NULL</a> if there is no
+current database driver (i.e. if database connection is not yet established).</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_DECIMAL_TRUNCATE">FGL_DECIMAL_TRUNCATE( )</a></h3>
+
+<h4>Purpose:</h4><p>Returns a decimal truncated to the precision passed as
+parameter. </p>
+
+
+<h4>Syntax:</h4><code>CALL FGL_DECIMAL_TRUNCATE( <i>value</i> DECIMAL, <i>decimals</i>
+INTEGER ) RETURNING <i>result</i> 
+DECIMAL</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>value </i>is the decimal to be converted.</li>
+  <li><i>decimals</i> defines the number of digits after the decimal point.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+<p>This function truncates the decimal to the number of decimal digits
+specified. The value is not rounded, it is just truncated. For example, when
+truncating 12.345 to 2 decimal digits, the result will be 12.34, not 12.35.</p>
+
+<HR>
+
+<h3><a name="BF_FGL_DECIMAL_SQRT">FGL_DECIMAL_SQRT( )</a></h3>
+
+<h4>Purpose:</h4><p>Computes the square root of the decimal passed as parameter. </p>
+
+
+<h4>Syntax:</h4><code>CALL FGL_DECIMAL_SQRT( <i>value</i> DECIMAL ) RETURNING <i>result</i> 
+DECIMAL</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>value </i>is the decimal to be computed.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="BF_FGL_DECIMAL_EXP">FGL_DECIMAL_EXP( )</a></h3>
+
+<h4>Purpose:</h4><p>Returns the value of Euler's constant (e) raised to the
+power of the decimal passed as parameter. </p>
+
+
+<h4>Syntax:</h4><code>CALL FGL_DECIMAL_EXP( <i>value</i> DECIMAL ) RETURNING <i>result</i> 
+DECIMAL</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>value </i>is the decimal to be computed.</li>
+</ol>
+
+<HR>
+
+<h3><a name="BF_FGL_DECIMAL_LOGN">FGL_DECIMAL_LOGN( )</a></h3>
+
+<h4>Purpose:</h4><p>Returns the natural logarithm of the decimal passed as
+parameter. </p>
+
+
+<h4>Syntax:</h4><code>CALL FGL_DECIMAL_LOGN( <i>value</i> DECIMAL ) RETURNING <i>result</i> 
+DECIMAL</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>value </i>is the decimal to be computed.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="BF_FGL_DECIMAL_POWER">FGL_DECIMAL_POWER( )</a></h3>
+
+<h4>Purpose:</h4><p>Raises decimal to the power of the real exponent. </p>
+
+
+<h4>Syntax:</h4><code>CALL FGL_DECIMAL_POWER( <i>base</i> DECIMAL, <i>exp</i> DECIMAL ) RETURNING <i>result</i> 
+DECIMAL</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>base </i>is the decimal to be raise to the power of <i>exp</i>.</li>
+  <li><i>exp </i>is the exponent.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+<p>Unlike the ** operator, the FGL_DECIMAL_POWER() supports real numbers for the
+exponent.</p>
+
+
+<HR>
+
+
+<h3><a name="BF_FGL_DIALOG_GETBUFFER">FGL_DIALOG_GETBUFFER( )</a></h3>
+
+
+<h4>Purpose:</h4><p>This function returns the value of the current field as a
+string. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>In <a href="RecordInput.html">INPUT</a> , <a href="InputArray.html">INPUT
+ARRAY</a>, <a href="Construct.html">CONSTRUCT</a> instructions.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_DIALOG_GETBUFFER( ) RETURNING <i>result</i> 
+STRING</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li>Returns the content of the input buffer of the current field.</li>
+  <li>Only useful in a <a href="Construct.html">CONSTRUCT</a> instruction,
+    because there is no variable associated to fields in this case.</li>
+</ol>
+
+
+<p><i>See also:</i>    <a href="#BF_FGL_DIALOG_SETBUFFER">FGL_DIALOG_SETBUFFER()</a>,
+<a href="#BF_FGL_BUFFERTOUCHED">FGL_BUFFERTOUCHED()</a>, <a href="Operators.html#OP_GET_FLDBUF">GET_FLDBUF()</a>.</p>
+
+
+<HR>
+
+
+<h3><a name="BF_FGL_DIALOG_SETBUFFER">FGL_DIALOG_SETBUFFER( )</a></h3>
+
+
+<h4>Purpose:</h4><p>This function sets the input buffer of the current field,
+and assigns corresponding program variable when using <tt>UNBUFFERED</tt> mode. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>In <a href="RecordInput.html">INPUT</a> , <a href="InputArray.html">INPUT
+ARRAY</a>, <a href="Construct.html">CONSTRUCT</a> instructions.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_DIALOG_SETBUFFER( <i>value</i> STRING )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>value</i> is the text to set in the current input buffer.</li>
+  <li>Only useful in a <a href="Construct.html">CONSTRUCT</a> instruction,
+    because there is no variable associated to fields in this case.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+    <p align="left">With the default <i>buffered</i> input mode, this
+    function modifies the input buffer of the current field; the <a href="RecordInput.html">corresponding
+    input variable</a> is not assigned. It makes no sense to call this function
+    in <tt>BEFORE FIELD</tt> blocks of <tt>INPUT</tt> and <tt>INPUT ARRAY</tt>.
+    However, if the statement is using the <tt>UNBUFFERED</tt> mode, the
+    function will set both the field buffer and the program variable. If the
+    string set by the function does not represent a valid value that can be
+    stored by the program variable, the buffer and the variable will be set to <a href="Programs.html#PC_NULL">NULL</a>.
+<p><b><font color="#FF0000">Warning:</font> This function sets the 'touched' flag of the current form field, and the
+    'touched' flag of the dialog. Therefore, both <a href="Operators.html#OP_FIELD_TOUCHED">FIELD_TOUCHED()</a>
+    and
+<a href="#BF_FGL_BUFFERTOUCHED">FGL_BUFFERTOUCHED()</a> would return <a href="Programs.html#PC_TRUE"> TRUE</a> 
+    if you call this function.</b></p>
+
+
+<p><i>See also:</i>    <a href="#BF_FGL_DIALOG_GETBUFFER">FGL_DIALOG_GETBUFFER()</a>,
+<a href="#BF_FGL_BUFFERTOUCHED">FGL_BUFFERTOUCHED()</a>, <a href="Operators.html#OP_GET_FLDBUF">GET_FLDBUF()</a>.</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_DIALOG_GETFIELDNAME">FGL_DIALOG_GETFIELDNAME( )</a></h3>
+
+
+<h4>Purpose:</h4><p>This function returns the name of the current input field. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>In <a href="RecordInput.html">INPUT</a> , <a href="InputArray.html">INPUT
+ARRAY</a> or <a href="Construct.html">CONSTRUCT</a>  instructions.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_DIALOG_GETFIELDNAME( ) RETURNING <i>result</i> 
+STRING</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li>Returns the name of the current input field.</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning: </font>Only the column part of the field name is returned.</b></p>
+
+
+<p><i>See also:</i>    <a href="#BF_FGL_DIALOG_INFIELD">FGL_DIALOG_INFIELD()</a>.</p>
+
+
+<HR>
+
+
+<h3><a name="BF_FGL_DIALOG_INFIELD">FGL_DIALOG_INFIELD( )</a></h3>
+
+
+<h4>Purpose:</h4><p>This function returns <a href="Programs.html#PC_TRUE"> TRUE</a>
+if the field passed as the parameter
+is the current input field. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>In <a href="RecordInput.html">INPUT</a> , <a href="InputArray.html">INPUT
+ARRAY</a> or <a href="Construct.html">CONSTRUCT</a> instructions.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_DIALOG_INFIELD( <i>field-name</i> STRING ) 
+RETURNING <i>result</i> INTEGER</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>field-name</i> is the name if the <a href="FormSpecFiles.html">form field</a>.</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning: </font>Only the column part of the field name is returned.</b></p>
+
+
+<p><i>See also:</i>    <a href="Operators.html#OP_INFIELD">INFIELD()</a>.&nbsp;</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_DIALOG_SETCURSOR">FGL_DIALOG_SETCURSOR( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function sets the position of the input cursor in the
+current field. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>In interactive instructions control blocks, when staying in the current
+    field.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_DIALOG_SETCURSOR( <i>index</i> INTEGER )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>index</i> is the character position in the text.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+
+
+<p>This function has only an effect when staying in the current field, it should
+not be called in an <tt>AFTER FIELD</tt> or <tt>AFTER ROW</tt> for example. Note
+that you can also use <a href="#BF_FGL_DIALOG_SETSELECTION">FGL_DIALOG_SETSELECTION()</a>
+to select a piece of text in a field.</p>
+
+
+<p><i>See also:</i> <a href="#BF_FGL_GETCURSOR">FGL_GETCURSOR()</a>, <a href="#BF_FGL_DIALOG_SETSELECTION">FGL_DIALOG_SETSELECTION()</a>.</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_DIALOG_SETFIELDORDER">FGL_DIALOG_SETFIELDORDER( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function enables or disables field order constraint. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At the beginning of the program or around <a href="RecordInput.html">INPUT</a>
+    instructions.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_DIALOG_SETFIELDORDER( <i>active</i> INTEGER )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li>When <i>active</i> is <a href="Programs.html#PC_TRUE">TRUE</a>, the field order is constrained.</li>
+  <li>When <i>active</i> is <a href="Programs.html#PC_FALSE">FALSE</a>, the field order is not constrained.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+
+
+<p>Typical BDL applications control user input with <tt>BEFORE FIELD</tt> and
+<tt>AFTER FIELD</tt> blocks. In many cases the field order and&nbsp; the
+sequential execution of <tt>AFTER FIELD</tt>  blocks is important in order to validate
+the data entered by the user. But with graphical front ends you can use the mouse
+to move to a field. By default the runtime system executes all <tt>BEFORE FIELD</tt>
+and <tt>AFTER FIELD</tt> blocks of the fields used by the interactive instruction,
+from the origin field to the target field selected by mouse click. If needed, you
+can force the runtime system to ignore all intermediate field triggers, by
+calling this function with a <a href="Programs.html#PC_FALSE">FALSE</a>
+attribute.</p>
+
+
+<HR>
+
+
+<h3><a name="BF_FGL_DIALOG_SETCURRLINE">FGL_DIALOG_SETCURRLINE( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function moves to a specific row in a record list. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>During a <a href="DisplayArray.html">DISPLAY ARRAY</a>
+    or <a href="InputArray.html">INPUT ARRAY</a>  instruction, inside <tt>BEFORE
+    DISPLAY</tt> / <tt>BEFORE INPUT</tt> or <tt>ON ACTION</tt> / <tt>ON KEY</tt>
+    blocks only.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_DIALOG_SETCURRLINE( <i>line</i> INTEGER, <i>row</i>
+INTEGER )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>line</i> is the line number in the <a href="FormSpecFiles.html">screen array</a>.</li>
+  <li><i>row</i> is the row number is the <a href="Arrays.html">array variable</a>.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+
+
+<p>Moves to the row / screen line specified. See <a href="#BF_FGL_SET_ARR_CURR">FGL_SET_ARR_CURR()</a>
+for more details.</p>
+
+
+<p><b><font color="#FF0000">Warning: </font>The <i>line</i> parameter is ignored in <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a>
+    mode.</b></p>
+
+
+<HR>
+
+
+<h3><a name="BF_FGL_SET_ARR_CURR">FGL_SET_ARR_CURR( )</a>  </h3>
+
+
+<h4>Purpose:</h4><p>This function moves to a specific row in a record list. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>During a <a href="DisplayArray.html">DISPLAY ARRAY</a>
+    or <a href="InputArray.html">INPUT ARRAY</a>  instruction, inside <tt>BEFORE
+    DISPLAY</tt> / <tt>BEFORE INPUT</tt> or <tt>ON ACTION</tt> / <tt>ON KEY</tt>
+    blocks only.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_SET_ARR_CURR( <i>row</i> INTEGER )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>row</i> is the row number is the <a href="Arrays.html">array variable</a>.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+This function is typically used to control navigation in a <tt>DISPLAY ARRAY</tt>
+or <tt>INPUT ARRAY</tt>, within an <tt>ON ACTION</tt> or <tt>ON KEY</tt> block.
+The function can also be used inside <tt>BEFORE DISPLAY</tt> or <tt>BEFORE INPUT</tt>
+blocks, to jump to a specific row when the dialog starts. You should not use
+this function in an other context.
+<p><b><font color="#FF0000">Warning:</font> Control blocks like <tt>BEFORE ROW</tt>  and field/row validation in <tt>INPUT ARRAY</tt>
+    are performed, as if the user moved
+    to another row, except when the function is called in <tt>BEFORE DISPLAY</tt>
+    or <tt>BEFORE INPUT</tt>.</b></p>
+
+
+<p>When a new row is reached by using with this function, the first
+editable field gets the focus.</p>
+
+
+<HR>
+
+
+<h3><a name="BF_FGL_SETENV">FGL_SETENV( )</a>  </h3>
+
+
+<h4>Purpose:</h4><p>This function sets the value of an environment variable. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_SETENV( <i>variable</i> STRING, <i>value</i>
+STRING )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>variable</i> is the name of the environment variable.</li>
+  <li><i>value</i> is the value to be set.</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning: </font>Use this function at your own risk: You may experience unexpected results
+    if you change environment variables that are already used by the current
+    program - for example, when you are connected to INFORMIX and you change the INFORMIXDIR environment variable.</b></p>
+<p>There is a little difference between Windows and UNIX platforms when
+    passing a <a href="Programs.html#PC_NULL">NULL</a>  as<i> </i>the <i>value</i>
+    parameter: On Windows, the environment variable is removed, while on UNIX,
+    the environment variable gets an empty value (i.e. it is not removed from
+    the environment).</p>
+
+
+<p><i>See also:</i> <a href="#BF_FGL_GETENV">FGL_GETENV()</a></p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_DRAWBOX">FGL_DRAWBOX( )</a>  </h3>
+
+
+<h4>Purpose:</h4><p>This function draws a rectangle based on the character terminal
+coordinates in the current open window. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_DRAWBOX( <i>height</i>, <i>width</i>, <i>line</i>,
+<i>column</i>, <i>color</i> INTEGER )</code>
+
+
+<p><b><font color="#FF0000">Warning: </font>This function is provided for backward compatibility.</b></p>
+
+
+<p><i>See also:</i>    <a href="#BF_FGL_DRAWLINE">FGL_DRAWLINE()</a>.&nbsp;</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_DRAWLINE">FGL_DRAWLINE( )</a>  </h3>
+
+
+<h4>Purpose:</h4><p>This function draws a line based on the character terminal
+coordinates in the current open window. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_DRAWLINE( <i>posX, posY</i>, <i>width</i>, <i>color</i>
+INTEGER )</code>
+
+
+<p><b><font color="#FF0000">Warning: </font>This function is provided for backward compatibility.</b></p>
+
+
+<p><i>See also:</i>    <a href="#BF_FGL_DRAWBOX">FGL_DRAWBOX()</a>.&nbsp;</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_LASTKEY">FGL_LASTKEY( )</a>  </h3>
+
+
+<h4>Purpose:</h4><p>This function returns the <a href="#KEYCODES"> key code</a>
+corresponding to the logical key that the user most recently typed in the form. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>Any interactive instruction.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_LASTKEY( ) RETURNING <i>result</i> INTEGER</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li>The function returns NULL if no key has been pressed.</li>
+</ol>
+
+
+<h4>Usage:</h4><p>The <code>FGL_LASTKEY()</code> function returns a numeric code
+corresponding to the user's last keystroke before the function was called. For
+example, if the last key that the user pressed was a lowercase <i>s</i>, the
+function returns the code 115 (i.e. the ASCII character set code). </p>
+
+
+<p>Note that the value of <code>FGL_LASTKEY()</code> is undefined in a <a href="Menus.html">MENU</a>
+statement. </p>
+
+
+<p>It is not required to know the specific key codes returned by <code>FGL_LASTKEY()</code>:
+The <a href="#BF_FGL_KEYVAL">FGL_KEYVAL()</a> function can be used to compare
+the key code of the last key pressed. The FGL_KEYVAL() function lets you compare
+the last key pressed with a logical of physical key. For example, you do not
+need to know the physical key defined to validate a dialog, you can use the
+logical name &quot;accept&quot; instead. For a complete list of key codes and
+logical key names, see the <a href="#KEYCODES">Key code table</a>. </p>
+
+
+<p><b><font color="#FF0000">Warning: </font>This function is provided for backward compatibility.
+The Genero BDL Abstract User Interface protocol is based on logical events, not
+only key events. For example, in GUI mode, when selecting a new row with the
+mouse in a table, there is no key press as when moving in a static screen array
+in TUI mode. However, Genero BDL tries to emulate as much as possible keystrokes
+from non-keystroke events.&nbsp;</b></p>
+
+
+<p><i>See also:</i>    <a href="#BF_FGL_KEYVAL">FGL_KEYVAL()</a>, <a href="#KEYCODES"> key code</a>.</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_KEYVAL">FGL_KEYVAL( )</a> </h3>
+
+<h4>Purpose:</h4>
+<p>This function returns the <a href="#KEYCODES">key code</a> of a logical or physical key.</p>
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+<h4>Syntax:</h4>
+<code>CALL FGL_KEYVAL( <i>string</i> STRING ) RETURNING <i>result</i> INTEGER</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>string</i> can be a single character, a digit, a printable symbol
+    like @, #, $ or a special keyword such as ACCEPT.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+
+<p> <code>FGL_KEYVAL()</code> can be used in form-related statements to examine a value returned by the
+<a href="#BF_FGL_LASTKEY">FGL_LASTKEY()</a> and <a href="#BF_FGL_GETKEY">FGL_GETKEY()</a> functions.</p>
+
+Key names recognized by <code>FGL_KEYVAL()</code> are: <tt>ACCEPT</tt>, <tt>HELP</tt>,
+    <tt>NEXT</tt>, <tt>RETURN</tt>, <tt>DELETE</tt>, <tt>INSERT</tt>, <tt>NEXTPAGE</tt>,
+    <tt>RIGHT</tt>, <tt>DOWN</tt>, <tt>INTERRUPT</tt>, <tt>PREVIOUS</tt>, <tt>TAB</tt>,
+    <tt>ESC</tt>, <tt>ESCAPE</tt>, <tt>LEFT</tt>, <tt>PREVPAGE</tt>, <tt>UP</tt>,
+    <tt>F1</tt> through <tt>F64</tt>, <tt>CONTROL-<i>character</i></tt>
+    (where <i>character</i> can be any letter except A, D, H, I, J, L, M, R, or X )
+
+<p> The function returns NULL if the parameter does not correspond to a valid
+    key.</p>
+
+<p> If you specify a single character, <code>FGL_KEYVAL()</code> considers the case.
+    In all other instances, the function ignores the case of its argument, which
+    can be uppercase or lowercase letters.</p>
+
+<p>To determine whether the user has performed an action, such as inserting a row, specify the logical
+name of the action (such as INSERT) rather than the name of the physical key (such as F1).
+For example, the logical name of the Accept action is ACCEPT, while the default
+physical key is ESCAPE. To test if the key most recently
+pressed by the user corresponds to the Accept action, specify <code>FGL_KEYVAL(&quot;ACCEPT&quot;)</code> rather
+than <code>FGL_KEYVAL(&quot;ESCAPE&quot;)</code> or <code>FGL_KEYVAL(&quot;ESC&quot;)</code>.
+Otherwise, if a key other than ESCAPE is set as the Accept key and the user presses that key,
+<code>FGL_LASTKEY()</code> does not return a code equal to <code>FGL_KEYVAL(&quot;ESCAPE&quot;)</code>.</p>
+
+
+<p>Note that the value returned by <code>FGL_LASTKEY()</code> is undefined in a MENU statement.</p>
+
+
+<p><b><font color="#FF0000">Warning: </font>This function is provided for backward compatibility especially for <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI
+    mode</a> applications. <code>FGL_KEYVAL()</code> is well supported in text
+    mode, but this function can only be emulated in GUI mode, because the
+    front-ends communicate with the runtime system with other events as
+    keystrokes.</b></p>
+
+<p><i>See also:</i>    <a href="#BF_FGL_LASTKEY">FGL_LASTKEY()</a>, <a href="#BF_FGL_GETKEY">FGL_GETKEY()</a>.</p>
+
+
+<HR>
+
+
+<h3><a name="BF_FGL_REPORT_PRINT_BINARY_FILE">FGL_REPORT_PRINT_BINARY_FILE( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function prints a file containing binary data during a <a href="Reports.html">report</a>. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>In a <a href="Reports.html">REPORT</a> routine.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_REPORT_PRINT_BINARY_FILE( <i>filename</i>
+STRING )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>filename</i> is the name of the binary file.</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning: </font>This function is provided for backward compatibility.</b></p>
+
+
+<HR>
+
+
+<h3><a name="BF_FGL_REPORT_SET_DOCUMENT_HANDLER">FGL_REPORT_SET_DOCUMENT_HANDLER( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function redirects the next <a href="Reports.html">report</a>
+to an XML document handler. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>Before / After the execution of a <a href="Reports.html">REPORT</a>.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_REPORT_SET_DOCUMENT_HANDLER( <i>handler</i> om.SaxDocumentHandler )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>handler </i>is the <a href="ClassSaxDocumentHandler.html">document
+    handler</a> variable.</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning: </font>You should use the <tt>TO XML HANDLER</tt> of
+    <tt><a href="Reports.html#RPT_XML"> START REPORT</a></tt>.</b></p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_GETCURSOR">FGL_DIALOG_GETCURSOR( )</a>  / FGL_GETCURSOR() </h3>
+
+
+<h4>Purpose:</h4><p>This function returns the position of the edit cursor in the
+current field. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>In interactive instructions.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_DIALOG_GETCURSOR( ) RETURNING <i>index</i> INTEGER</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>index</i> is the character position in the text.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+<p>The FGL_DIALOG_GETCURSOR() function can be used in conjunction with <a href="#BF_FGL_DIALOG_GETSELECTIONEND">FGL_DIALOG_GETSELECTIONEND()</a>
+to get the position of the edit cursor and the piece of text that is selected in
+the current field. </p>
+
+
+<p><i>See also: </i> <a href="#BF_FGL_DIALOG_GETSELECTIONEND">FGL_DIALOG_GETSELECTIONEND()</a>,
+<a href="#BF_FGL_DIALOG_SETCURSOR">FGL_DIALOG_SETCURSOR()</a>,
+<a href="#BF_FGL_DIALOG_SETSELECTION">FGL_DIALOG_SETSELECTION()</a></p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_GETWIN_HEIGHT">FGL_GETWIN_HEIGHT( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function returns the number of rows of the <a href="WindowsAndForms.html">current
+window</a>. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_GETWIN_HEIGHT( ) RETURNING <i>result</i> INTEGER</code>
+<p><b><font color="#FF0000">Warning: </font>This function is provided for backward compatibility.</b></p>
+
+
+<p><i>See also:</i>  <a href="#BF_FGL_GETWIN_WIDTH">FGL_GETWIN_WIDTH()</a>.</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_GETWIN_WIDTH">FGL_GETWIN_WIDTH( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function returns the width of the <a href="WindowsAndForms.html">current
+window</a> as a number of columns. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_GETWIN_WIDTH( ) RETURNING <i>result</i> INTEGER</code>
+<p>
+<b><font color="#FF0000">Warning: </font>This function is provided for backward compatibility.</b>
+
+
+<p><i>See also:</i>  <a href="#BF_FGL_GETWIN_WIDTH">FGL_GETWIN_WIDTH()</a>.</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_GETWIN_X">FGL_GETWIN_X( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function returns the horizontal position of the <a href="WindowsAndForms.html">current
+window</a>. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_GETWIN_X( ) RETURNING <i>result</i> INTEGER</code>
+<p>
+<b><font color="#FF0000">Warning: </font>This function is provided for backward compatibility.</b>
+
+
+<p><i>See also:</i>   <a href="#BF_FGL_GETWIN_Y">FGL_GETWIN_Y()</a>.</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_GETWIN_Y">FGL_GETWIN_Y( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function returns the vertical position of the <a href="WindowsAndForms.html">current
+window</a>. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_GETWIN_X( ) RETURNING <i>result</i> INTEGER</code>
+<p>
+<b><font color="#FF0000">Warning: </font>This function is provided for backward compatibility.</b>
+
+
+<p><i>See also:</i>   <a href="#BF_FGL_GETWIN_X">FGL_GETWIN_X()</a>.</p>
+
+
+<HR>
+
+<h3><a name="BF_LENGTH">LENGTH( )</a></h3>
+
+
+<h4>Purpose:</h4><p>This function returns the number of bytes of the expression passed as parameter. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL LENGTH( <i>expression</i> ) RETURNING <i>result</i> 
+INTEGER</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>expression</i> is any valid <a href="Expressions.html">expression</a>.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+<p>The LENGTH() function counts the number of bytes of a string.</p>
+<p>
+<b><font color="#FF0000">Warning: </font>The function counts bytes, not characters. This is important in a
+    multi-byte environment.</b><p>Note that most database servers support an equivalent scalar function in the SQL
+    language, but the result may be different from the Genero BDL built-in function.
+    For example, Oracle's LENGTH() function returns NULL when the string is
+    empty.&nbsp;</p>
+Trailing blanks are not counted in the length of the string.
+<p>If the parameter is <a href="Programs.html#PC_NULL">NULL</a>,
+    the function returns zero.</p>
+
+
+<p><i>See also:</i> <a href="#BF_FGL_WIDTH">FGL_WIDTH()</a>.</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_GETVERSION">FGL_GETVERSION( )</a></h3>
+
+
+<h4>Purpose:</h4><p>This function returns the build number of the runtime
+system. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_GETVERSION( ) RETURNING <i>result</i>  STRING</code>
+<p><b><font color="#FF0000">Warning: </font>The is provided for debugging info only; please do not write business code
+    dependent on the build number. The format of the build number returned by this function is subject of
+    change in future versions.</b></p>
+
+<HR>
+
+<h3><a name="BF_FGL_GETHELP">FGL_GETHELP( )</a></h3>
+
+
+<h4>Purpose:</h4><p>Returns the help text according to its identifier by reading
+the current help file. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program, after the definition of the current help file
+    (OPTIONS HELP FILE).</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_GETHELP( <i>id</i> INTEGER ) RETURNING <i>result</i> 
+STRING</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>id</i> is the help text identifier.</li>
+</ol>
+
+
+<p><i>See also:</i>    The <a href="Programs.html#PROGRAM_OPTIONS">OPTIONS</a>
+instruction.</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_GETPID">FGL_GETPID( )</a></h3>
+
+
+<h4>Purpose:</h4><p>This function returns the system process identifier. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_GETPID() RETURNING <i>result</i> INTEGER</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li>The process identifier is provided by the operating system; it is normally
+    unique.</li>
+</ol>
+
+
+<p><i>See also:</i>   <a href="#BF_FGL_SYSTEM">FGL_SYSTEM()</a>.</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_DIALOG_GETBUFFERSTART">FGL_DIALOG_GETBUFFERSTART( )</a> </h3>
+
+<h4>Purpose:</h4><p>This function returns the row offset of the page to feed a
+paged display array. </p>
+
+<h4>Syntax:</h4>
+<code>CALL FGL_DIALOG_GETBUFFERSTART( ) RETURNING <i>result</i> INTEGER</code>
+
+<h4>Usage:</h4>
+
+<p>See <a href="DisplayArray.html">DISPLAY ARRAY</a>.</p>
+
+
+<p><b><font color="#FF0000">Warning: </font>This function must be called in the
+context of the ON FILL BUFFER trigger. The returned value is undefined if the
+function is used outside this trigger.</b></p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_DIALOG_GETBUFFERLENGTH">FGL_DIALOG_GETBUFFERLENGTH( )</a> </h3>
+
+<h4>Purpose:</h4><p>This function returns the number of rows of the page to feed
+a paged display array. </p>
+
+<h4>Syntax:</h4>
+<code>CALL FGL_DIALOG_GETBUFFERLENGTH( ) RETURNING <i>result</i> INTEGER</code>
+
+<h4>Usage:</h4>
+
+<p>See <a href="DisplayArray.html">DISPLAY ARRAY</a>.</p>
+
+
+<p><b><font color="#FF0000">Warning: </font>This function must be called in the
+context of the ON FILL BUFFER trigger. The returned value is undefined if the
+function is used outside this trigger.</b></p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_PUTFILE">FGL_PUTFILE</a></h3>
+<h4>Purpose:</h4>
+<p>Transfers a file from the application server machine to the front end
+workstation.</p>
+<h4>Syntax:</h4>
+<code>CALL fgl_putfile(<i>src</i> STRING, <i>dst</i> STRING)</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>src</i> contains the name of the source file to send.</li>
+    <li><i>dst</i> contains the name of the file to write on the front end.</li>
+</ol>
+<p><b><font color="#FF0000">Warning:</font> Using this function can result in a
+security hole if you allow the end user to specify the file paths without
+control. There is not limitation on the file content or file paths: If the user
+executing the application on the server side is allowed to read critical server
+files, the program could transfer these files on the client workstation. On the
+other hand, critical files can be written on the client workstation. It is in
+the hands of the programmer to implement file path and/or file content
+restrictions in the programs using FGL_PUTFILE().</b></p>
+<p>See also: <a href="#BF_FGL_GETFILE">FGL_GETFILE()</a>.</p>
+<HR>
+
+<h3><a name="BF_FGL_GETFILE">FGL_GETFILE</a></h3>
+<h4>Purpose:</h4>
+<p>Transfers a file from the front end workstation to the application server
+machine.</p>
+<h4>Syntax:</h4>
+<code>CALL fgl_getfile(<i>src</i> STRING, <i>dst</i> STRING)</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>src</i> contains the name of the source file to retrieve from the front end 
+	workstation.</li>
+    <li><i>dst</i> contains the name of the file to write on the server side.</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning:</font> Using this function can result in a
+security hole if you allow the end user to specify the file paths without
+control. There is not limitation on the file content or file paths: If the user
+executing the application on the server side is allowed to write critical server
+files, the program could transfer files from the client workstation and
+overwrite critical server files. On the other hand, critical files can be read
+from the client workstation and copied on the application server. It is in the
+hands of the programmer to implement file path and/or file content restrictions
+in the programs using FGL_GETFILE().</b></p>
+<p>See also: <a href="#BF_FGL_PUTFILE">FGL_PUTFILE()</a>.</p>
+
+
+<HR>
+
+
+<h3><a name="BF_FGL_GETENV">FGL_GETENV( )</a></h3>
+
+
+<h4>Purpose:</h4><p>This function returns the value of the environment variable
+having the name you specify as the argument. </p>
+
+
+<h4>Syntax:</h4><code>CALL FGL_GETENV( <i>variable</i> STRING ) RETURNING <i>
+result</i> STRING</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>variable</i> is the name of the environment variable.</li>
+  <li>If the specified environment variable is not defined, the function returns
+    a <a href="Programs.html#PC_NULL">NULL</a> value.</li>
+  <li>If the environment variable is defined but does not have a value assigned
+    to it, the function returns blank spaces.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+
+
+<p>The argument of <code>FGL_GETENV()</code> must be the name of an environment variable. If the
+requested value exists in the current user environment, the function returns it
+as a character string and then returns control of execution to the calling
+context.&nbsp;</p>
+
+
+<p><b><font color="#FF0000">Warning: </font>If the returned value can be a long character string, be sure to declare
+    the receiving <a href="Variables.html">variable</a> with sufficient size
+    to store the character value returned by the function. Otherwise, the value
+    will be truncated.</b></p>
+
+
+<p><i>See also:</i> <a href="#BF_FGL_SETENV">FGL_SETENV()</a></p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_GETKEY">FGL_GETKEY( )</a> </h3>
+
+<h4>Purpose:</h4>
+<p>Waits for a keystroke and returns the <a href="#KEYCODES">key code</a> corresponding to the pressed physical key.</p>
+
+<h4>Syntax:</h4>
+<code>CALL FGL_GETKEY() RETURNING <i>keynum</i> INTEGER</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>keynum</i> is the integer key code of the pressed key, equivalent of <a href="#BF_FGL_KEYVAL">FGL_KEYVAL()</a>.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>Unlike <a href="#BF_FGL_LASTKEY">FGL_LASTKEY()</a>, which can return a value
+indicating the logical effect of whatever key the user pressed,
+<code>FGL_GETKEY()</code> returns an integer representing the <a href="#KEYCODES">key code</a>
+of the physical key that the user pressed.
+The <code>FGL_GETKEY()</code> function recognizes the same codes for keys that the
+<a href="#BF_FGL_KEYVAL">FGL_KEYVAL()</a> function returns.
+Unlike <code>FGL_KEYVAL()</code> , which can only return keystrokes that are entered
+during dialogs, <code>FGL_GETKEY()</code> can be called outside a dialog context.</p>
+
+<p><b><font color="#FF0000">Warning: </font>This function is provided for backward compatibility and works
+only in <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI mode</a>.</b></p>
+
+<p><i>See also:</i> <a href="#BF_FGL_KEYVAL">FGL_KEYVAL()</a>.</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_GETKEYLABEL">FGL_GETKEYLABEL( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function returns the default label associated to a key. </p>
+
+
+<h4>Syntax:</h4><code>CALL FGL_GETKEYLABEL( <i>keyname</i> STRING ) RETURNING <i>
+result</i> STRING</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>keyname</i> is the logical name of a key such as <tt>F11</tt> or <tt>DELETE</tt>,
+    <tt>INSERT</tt>, <tt>CANCEL</tt>.</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning: </font>This function is provided for backward compatibility.</b></p>
+
+
+<p><i>See also:</i>    <a href="#BF_FGL_SETKEYLABEL">FGL_SETKEYLABEL()</a>, <a href="#BF_FGL_DIALOG_GETKEYLABEL">FGL_DIALOG_GETKEYLABEL()</a>.</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_SETKEYLABEL">FGL_SETKEYLABEL( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function sets the default label associated to a key. </p>
+
+
+<h4>Syntax:</h4><code>CALL FGL_SETKEYLABEL( <i>keyname</i> STRING, <i>label</i>
+STRING )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>keyname</i> is the logical name of a key such as <tt>F11</tt> or <tt>DELETE</tt>,
+    <tt>INSERT</tt>, <tt>CANCEL</tt>.</li>
+  <li><i>label</i> is the text associated to the key.</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning: </font>This function is provided for backward compatibility.</b></p>
+
+
+<p><i>See also:</i>    <a href="#BF_FGL_SETKEYLABEL">FGL_SETKEYLABEL()</a>, <a href="#BF_FGL_DIALOG_SETKEYLABEL">FGL_DIALOG_SETKEYLABEL()</a>.</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_DIALOG_GETKEYLABEL">FGL_DIALOG_GETKEYLABEL( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function returns the label associated to a key for the
+current interactive instruction. </p>
+
+
+<h4>Syntax:</h4><code>CALL FGL_DIALOG_GETKEYLABEL( <i>keyname</i> STRING ) 
+RETURNING <i>result</i> STRING</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>keyname</i> is the logical name of a key such as <tt>F11</tt> or <tt>DELETE</tt>,
+    <tt>INSERT</tt>, <tt>CANCEL</tt>.</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning: </font>This function is provided for backward compatibility.</b></p>
+
+
+<p><i>See also:</i>    <a href="#BF_FGL_SETKEYLABEL">FGL_SETKEYLABEL()</a>, <a href="#BF_FGL_DIALOG_SETKEYLABEL">FGL_DIALOG_SETKEYLABEL()</a>.</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_DIALOG_GETSELECTIONEND">FGL_DIALOG_GETSELECTIONEND( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function returns position of the last selected
+character in the current field text. </p>
+
+
+<h4>Syntax:</h4><code>CALL FGL_DIALOG_GETSELECTIONEND( ) 
+RETURNING <i>position</i> INTEGER</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>position</i> is the position of the last selected character in the
+    current field text.</li>
+  <li><i>position</i> is zero if the complete text is selected.</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning: </font>The edit cursor position returned by     <a href="#BF_FGL_GETCURSOR">FGL_DIALOG_GETCURSOR()</a>
+    will be lower as the position returned by <code>FGL_DIALOG_GETSELECTIONEND()</code>
+    if the text has been selected backwards.</b></p>
+
+
+<p><i>See also:</i>     <a href="#BF_FGL_GETCURSOR">FGL_DIALOG_GETCURSOR()</a>, <a href="#BF_FGL_DIALOG_SETSELECTION">FGL_DIALOG_SETSELECTION()</a>.</p>
+
+
+<HR>
+
+
+<h3><a name="BF_FGL_DIALOG_SETKEYLABEL">FGL_DIALOG_SETKEYLABEL( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function sets the label associated to a key for the
+current interactive instruction. </p>
+
+
+<h4>Syntax:</h4><code>CALL FGL_DIALOG_SETKEYLABEL( <i>keyname</i> STRING, <i>label</i>
+STRING )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>keyname</i> is the logical name of a key such as <tt>F11</tt> or <tt>DELETE</tt>,
+    <tt>INSERT</tt>, <tt>CANCEL</tt>.</li>
+  <li><i>label</i> is the text associated to the key.</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning: </font>This function is provided for backward
+compatibility, you should use <a href="ActionDefaults.html">Action Defaults</a>
+instead.</b></p>
+
+
+<p><i>See also:</i>    <a href="#BF_FGL_SETKEYLABEL">FGL_SETKEYLABEL()</a>, <a href="#BF_FGL_DIALOG_GETKEYLABEL">FGL_DIALOG_GETKEYLABEL()</a>.</p>
+
+
+<HR>
+
+
+<h3><a name="BF_FGL_DIALOG_SETSELECTION">FGL_DIALOG_SETSELECTION( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function selects the text in the current field. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>In interactive instructions control blocks, when staying in the current
+    field.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_DIALOG_SETSELECTION( <i>cursor</i> INTEGER, <i>end</i>
+INTEGER )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>cursor</i> defines the edit cursor position.&nbsp;</li>
+  <li><i>end</i> defines the selection end position.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+Here <i>cursor</i> defines the character position of the edit cursor (equivalent
+to     <a href="#BF_FGL_GETCURSOR">FGL_DIALOG_GETCURSOR()</a> position), while <i>end</i> defines the
+character position of the end of the text selection (equivalent to <a href="#BF_FGL_DIALOG_GETSELECTIONEND">FGL_DIALOG_GETSELECTIONEND()</a>
+position).
+<p>Note that <i>cursor</i> can be lower, greater or equal to <i>end</i>.</p>
+
+
+<p>This function has only an effect when staying in the current field, it should
+not be called in an <tt>AFTER FIELD</tt> or <tt>AFTER ROW</tt> for example.</p>
+
+
+<p><i>See also:</i> <a href="#BF_FGL_DIALOG_SETCURSOR">FGL_DIALOG_SETCURSOR()</a>,     <a href="#BF_FGL_GETCURSOR">FGL_DIALOG_GETCURSOR()</a>, <a href="#BF_FGL_DIALOG_GETSELECTIONEND">FGL_DIALOG_GETSELECTIONEND()</a>.</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_SETSIZE">FGL_SETSIZE( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function sets the size of the main application window. </p>
+
+
+<h4>Syntax:</h4><code>CALL FGL_SETSIZE( <i>height</i> INTEGER, <i>width</i> 
+INTEGER
+)</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>height</i> is the number of lines of the window.</li>
+  <li><i>width</i> is the number of columns of the window.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+<p>This function defines the size of the main window when using the <a href="DynamicUI.html#TRADITIONAL_MODE">traditional
+GUI mode</a>.</p>
+
+
+<p><i>See also:</i>      <a href="#BF_FGL_SETTITLE">FGL_SETTITLE()</a>, <a href="ClassInterface.html#setSize">ui.Interface.setSize()</a>.</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_SETTITLE">FGL_SETTITLE( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function sets the title of the main application window. </p>
+
+
+<h4>Syntax:</h4><code>CALL FGL_SETTITLE( <i>label</i>
+STRING )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>label</i> is the text of the title.&nbsp;</li>
+</ol>
+
+
+<p><font color="#FF0000"><b>Warning: </b></font><b>This function is provided for backward compatibility.</b></p>
+
+
+<p><i>See also:</i>     <a href="#BF_FGL_SETSIZE">FGL_SETSIZE()</a>.</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_SYSTEM">FGL_SYSTEM( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function runs a command in background on the
+application server. </p>
+
+
+<h4>Syntax:</h4><code>CALL FGL_SYSTEM( <i>command</i> STRING )</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>command</i> is the command line to be executed on the server.&nbsp;</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning: </font>This function is provided for backward compatibility.
+In older versions, the function could raise a terminal emulator on the front-end
+to show the command output on the workstation. This feature is no longer supported
+by Genero BDL.</b></p>
+
+
+<HR>
+
+
+<h3><a name="BF_FGL_WIDTH">FGL_WIDTH()</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function returns the number of columns needed to
+represent the printed version of the expression. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_WIDTH( <i>expression</i> ) RETURNING <i>result</i> 
+INTEGER</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>expression</i> is any valid <a href="Expressions.html">expression</a>.</li>
+  <li>Trailing blanks are counted in the length of the string.</li>
+  <li>If the parameter is <a href="Programs.html#PC_NULL">NULL</a>,
+    the function returns zero.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+
+
+<p>This function returns the number of columns that will be used if you display <i>expression</i>
+on a text terminal. The number of columns used by a character depends on the glyph
+(i.e. the graphical symbol used to draw the character on the screen). For
+example, an ASCII character like A<b> </b>uses one column, while one Chinese
+character uses 2 columns (i.e. on a text terminal, the size of one Chinese
+character takes the same size as AB).</p>
+
+
+<p><i>See also:</i>
+ <a href="#BF_LENGTH">LENGTH()</a>.</p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_WINDOW_GETOPTION">FGL_WINDOW_GETOPTION( )</a> </h3>
+
+
+<h4>Purpose:</h4><p>This function returns attributes of the <a href="WindowsAndForms.html">current
+window</a>. </p>
+
+
+<h4>Syntax:</h4><code>CALL FGL_WINDOW_GETOPTION( <i>attribute</i> STRING ) 
+RETURNING <i>result</i> STRING</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>attribute</i> is the name of a window attribute. This can be one of
+    <tt>name</tt>, <tt>x</tt>, <tt>y</tt>, <tt>width</tt>, <tt>height</tt>,
+    <tt>formline</tt>, <tt>messageline</tt>.</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning: </font>This function is provided for backward compatibility.</b></p>
+
+
+<HR>
+
+<h3><a name="BF_FGL_GETRESOURCE">FGL_GETRESOURCE( )</a></h3>
+
+
+<h4>Purpose:</h4><p>This function returns the value of an <a href="FglProfile.html">FGLPROFILE</a>
+entry. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL FGL_GETRESOURCE( <i>name</i> STRING ) RETURNING <i>
+result</i> STRING</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>name</i> is the FGLPROFILE entry name to be read.</li>
+  <li>If the entry does not exist in the configuration file, the function
+    returns <a href="Programs.html#PC_NULL">NULL</a>.</li>
+  <li>See also <a href="FglProfile.html">FGLPROFILE definition</a>.</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning: </font>FGLPROFILE entry names are <u>not</u> case sensitive.</b></p>
+
+
+<HR>
+
+<h3><a name="BF_DOWNSHIFT">DOWNSHIFT( )</a></h3>
+
+
+<h4>Purpose:</h4><p>This function returns returns a string value in which all
+uppercase characters in its argument are converted to lowercase. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL DOWNSHIFT( <i>source</i> STRING ) RETURNING <i>result</i> 
+STRING</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>source</i> is the character string to convert to lowercase letters.</li>
+  <li>Non-alphabetic or lowercase characters are not altered.</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning: </font>Conversion depends on <a href="Localization.html">locale settings</a> (the
+    LC_CTYPE environment variable).</b></p>
+
+
+<p><i>See also:</i>   <a href="#BF_UPSHIFT">UPSHIFT()</a>.</p>
+
+
+<HR>
+
+
+<h3><a name="BF_UPSHIFT">UPSHIFT( )</a></h3>
+
+
+<h4>Purpose:</h4><p>This function returns a string value in which all
+lowercase characters in its argument are converted to uppercase. </p>
+
+
+<h4>Context:</h4>
+<ol>
+  <li>At any place in the program.</li>
+</ol>
+
+
+<h4>Syntax:</h4><code>CALL UPSHIFT( <i>source</i> STRING ) RETURNING <i>result</i> 
+STRING</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>source</i> is the character string to convert to uppercase letters.</li>
+  <li>Non-alphabetic or uppercase characters are not altered.</li>
+</ol>
+
+
+<p><b><font color="#FF0000">Warning: </font>Conversion depends on <a href="Localization.html">locale settings</a> (the
+    LC_CTYPE environment variable).</b></p>
+
+
+<p><i>See also:</i>   <a href="#BF_DOWNSHIFT">DOWNSHIFT()</a>.</p>
+
+
+<HR>
+
+
+<h3><a name="KEYCODES">The key code table</a></h3>
+
+
+<p><b><font color="#FF0000">Warning:</font> These are internal key codes. Avoid
+hard-coding these numbers in your sources; otherwise your 4gl source will not be
+compatible with future versions of Genero BDL. Always use the <a href="#BF_FGL_KEYVAL">FGL_KEYVAL(<i>keyname</i>)</a>
+function instead.</b></p>
+
+
+<div align="center">
+  <center>
+  <table border="0" width="90%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Value</b></td>
+      <td width="20%" bgcolor="#C0C0C0"><b>Key name</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%" valign="top"><tt>1 to 26</tt></td>
+      <td width="20%" valign="top"><tt>Control-<i>x</i></tt></td>
+      <td valign="top">Control key,&nbsp; where <i>x</i> is the any letter from
+        A to Z. The key code corresponding to Control-A is 1, Control-B is 2,
+        etc.</td>
+    </tr>
+    <tr>
+      <td width="20%" valign="top"><tt><i>others &lt; 256</i></tt></td>
+      <td width="20%" valign="top"><tt>ASCII chars</tt></td>
+      <td valign="top">Other codes correspond to the ASCII characters set.</td>
+    </tr>
+    <tr>
+      <td width="20%" valign="top"><tt>2000</tt></td>
+      <td width="20%" valign="top"><tt>up</tt></td>
+      <td valign="top">The up-arrow logical key.</td>
+    </tr>
+    <tr>
+      <td width="20%" valign="top"><tt>2001</tt></td>
+      <td width="20%" valign="top"><tt>down</tt></td>
+      <td valign="top">The down-arrow logical key.</td>
+    </tr>
+    <tr>
+      <td width="20%" valign="top"><tt>2002</tt></td>
+      <td width="20%" valign="top"><tt>left</tt></td>
+      <td valign="top">The left-arrow logical key.</td>
+    </tr>
+    <tr>
+      <td width="20%" valign="top"><tt>2003</tt></td>
+      <td width="20%" valign="top"><tt>right</tt></td>
+      <td valign="top">The right-arrow logical key.</td>
+    </tr>
+    <tr>
+      <td width="20%" valign="top"><tt>2005</tt></td>
+      <td width="20%" valign="top"><tt>nextpage</tt></td>
+      <td valign="top">The next-page logical key.</td>
+    </tr>
+    <tr>
+      <td width="20%" valign="top"><tt>2006</tt></td>
+      <td width="20%" valign="top"><tt>prevpage</tt></td>
+      <td valign="top">The previous-page logical key.</td>
+    </tr>
+    <tr>
+      <td width="20%" valign="top"><tt>2008</tt></td>
+      <td width="20%" valign="top"><tt>help</tt></td>
+      <td valign="top">The help logical key.</td>
+    </tr>
+    <tr>
+      <td width="20%" valign="top"><tt>2011</tt></td>
+      <td width="20%" valign="top"><tt>interrupt</tt></td>
+      <td valign="top">The interrupt logical key.</td>
+    </tr>
+    <tr>
+      <td width="20%" valign="top"><tt>2020</tt></td>
+      <td width="20%" valign="top"><tt>home</tt></td>
+      <td valign="top">The home logical key.</td>
+    </tr>
+    <tr>
+      <td width="20%" valign="top"><tt>2021</tt></td>
+      <td width="20%" valign="top"><tt>end</tt></td>
+      <td valign="top">The end logical key.</td>
+    </tr>
+    <tr>
+      <td width="20%" valign="top"><tt>2016</tt></td>
+      <td width="20%" valign="top"><tt>accept</tt></td>
+      <td valign="top">The accept logical key.</td>
+    </tr>
+    <tr>
+      <td width="20%" valign="top"><tt>2017</tt></td>
+      <td width="20%" valign="top"><tt>backspace</tt></td>
+      <td valign="top">The backspace logical key.</td>
+    </tr>
+    <tr>
+      <td width="20%" valign="top"><tt>3000 to 3255</tt></td>
+      <td width="20%" valign="top"><tt>F<i>x</i></tt></td>
+      <td valign="top">Function key, where <i>x</i> is the number of the
+        function key. The key code corresponding to a function key F<i>x</i> is
+        3000+<i>x</i>-1, for example, 3011 corresponds to F12.</td>
+    </tr>
+  </table>
+
+
+  </center>
+</div>
+
+
+</BODY>
+</HTML>

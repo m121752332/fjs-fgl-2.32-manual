@@ -1,0 +1,1475 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<TITLE>ODI Adaptation Guide for MySQL</TITLE>
+<meta http-equiv="Content-Type" content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p><a href="../index.html">Back to Contents</a></p>
+
+<HR>
+
+<H1>ODI Adaptation Guide For MySQL 5.x.x</H1>
+
+<p><font color="#000080">Installation</font></p>
+<div align="center">
+  <center>
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIMYS_PREP01">Install MySQL and create a database</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS_PREP02">Prepare the runtime environment</a></td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<p><font color="#000080">Database concepts</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIMYS007a">Database concepts</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS039">Data storage concepts</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS008a">Data consistency and concurrency management</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS009">Transactions handling</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS016">Defining database users</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">Data dictionary </font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIMYS010">BOOLEAN data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS011">CHARACTER data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS021">NUMERIC data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS001">DATE and DATETIME data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS036">INTERVAL data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS005">SERIAL data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS004">ROWIDs</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS030">Very large data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS012">Constraints</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS019">Name resolution of SQL objects</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS100">Data type conversion table</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">Data manipulation</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIMYS003">Reserved words</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS006">Outer joins</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS009">Transactions handling</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS017">Temporary tables</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS018">Substrings in SQL</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS019">Name resolution of SQL objects</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS020">Database object name delimiters</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS024">MATCHES and LIKE conditions</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS034">Syntax of UPDATE statements</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">BDL programming</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIMYS005">SERIAL data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS025">INFORMIX specific SQL statements in BDL</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS028">INSERT cursors</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS031">Cursors WITH HOLD</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS008b">SELECT FOR UPDATE</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS032">UPDATE/DELETE WHERE CURRENT OF &lt;cursor&gt;</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS046">The LOAD and UNLOAD instructions</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS047">SQL Interruption</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMYS048">Scrollable Cursors</a></td>
+  </tr>
+</table>
+</center></div>
+
+<hr>
+
+<h2><a name="ODIMYS_PREP">Runtime configuration</a></h2>
+
+<blockquote>
+  	<h3><a name="ODIMYS_PREP01">Install MySQL and create a database</a></h3>
+	<ol>
+		<li>
+        <p><b><font color="#FF0000">Warning:</font></b> Supported MySQL versions are
+        <b>5.0</b> and higher, MySQL <b>4.1.2</b> drivers are still be
+        available, but MySQL version 4.1 is de-supported by the database vendor
+        since January 2010.</p></li>
+		<li>
+		<p>Install the MySQL Server on your computer. You  can download packages from
+      	<a href="http://www.mysql.com">www.mysql.com</a>.</p></li>
+		<li>
+        <p>Configure the server with the appropriate <i>storage engine</i>:<br><font color="#FF0000"><b>Warning</b></font>: In order to have transaction
+      support by default, you must use a storage engine that supports
+        transactional tables.<br>
+        The <b>INNODB</b>  is a storage engine supporting transactions. In order
+        to use this storage engine as default, set the next configuration
+        parameter in the <b>my.cnf</b>  or 
+		<b>my.ini</b>  file:<br>
+		<font face="Courier New">&nbsp; [mysqld]<br>&nbsp; default-storage-engine = INNODB</font><br>You can also set the default table type option in the command line when
+      starting the engine:<br><font face="Courier New">&nbsp; mysqld_safe
+        --default-storage-engine=InnoDB</font></p>
+		</li>
+		<li>
+		<p>The <b>mysqld</b>  process must be started to listen to database client
+      connections. See MySQL documentation for more details about starting the
+      database server process.</p></li>
+		<li>
+		<p>Create a database user dedicated to your application,
+      the <b>application administrator.</b>&nbsp;
+      Connect as the MySQL root user and GRANT all privileges to this user:<br>
+		<font face="Courier New">&nbsp; mysql -u root<br>&nbsp; ...<br>&nbsp; mysql&gt; grant all privileges on *.*<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      to '<i>mysuser</i>'@'localhost'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      identified by '<i>password</i>';</font></p></li>
+		<li>
+		<p>Connect as the application
+      administrator and create a MySQL database with the <b>CREATE DATABASE</b>
+      statement:<br><font face="Courier New">&nbsp; mysql -u <i>mysuser</i><br>&nbsp; ...<br>&nbsp; mysql&gt; create database 
+		<i>mydatabase</i>;</font></p></li>
+		<li>
+		<p>Create the <b>application tables</b>. Do
+      not forget to convert INFORMIX data types to MySQL data types.
+      See issue <a href="#ODIMYS100">ODIMYS100</a> for more details. If you have
+      a transactional-safe table handler activated by default, you do not need
+      to specify the TYPE option.</p></li>
+	</ol>
+	<h3><a name="ODIMYS_PREP02">Prepare the runtime environment</a></h3>
+	<ol>
+		<li>
+		<p>In order to connect to MySQL, you must have a MySQL database driver &quot;<b>dbmmys*</b>&quot;
+        in FGLDIR/dbdrivers.</p>
+		</li>
+		<li>
+		<p>The <b>MySQL client software</b>
+      is required to connect to a database server. Check if the
+      MySQL client library (<b>libmysqlclient.*</b>) is installed on the system.<br>
+		<br><b><font color="#FF0000">Warning:</font> MySQL ships the client library as a
+      simple .a archive, there is no shared library provided by default. You
+      must create a .so or .DLL library in order to use one of the MySQL 
+		database
+      drivers.</b><br><br>For example, to create a <b>libmysqlclient.so</b> shared library on Linux,
+      execute the following commands:<br><br><font face="Courier New">$ cd $MYSQL_HOME/lib<br>$ mkdir tmp<br>$ cd tmp<br>$ ar -x ../libmysqlclient.a<br>$ gcc --shared -o ../libmysqlclient.so *.o -lz<br>$ cd ..<br>% rm -rf tmp</font></p>
+		</li>
+    <li><p>Make sure that the MySQL client environment variables are properly
+      set. Check for example <b>MYSQL_HOME</b> (the path to the installation
+      directory), <b>DATADIR</b> (the path to the data files directory), etc. See MySQL
+      documentation for more details about client environment variables to be
+      set.</p>
+
+    </li>
+    <li><p>Verify the environment variable
+      defining the search path for the database client shared library (libmysqlclient.so
+      on UNIX, LIBMYSQL.dll on Windows). On UNIX platforms, the variable is specific to the operating system. 
+	For example, on Solaris and Linux systems, it is <b>LD_LIBRARY_PATH</b>, on
+      AIX it is <b>LIBPATH</b>, or HP/UX it is <b>SHLIB_PATH</b>. On Windows,
+      you define the DLL search path in the <b>PATH</b> environment variable.</p>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0">
+      <p align="center"><font color="#0000FF"><b>MySQL version</b></font></td>
+    <td bgcolor="#C0C0C0" width="70%">
+      <p align="center"><font color="#0000FF"><b>Shared library environment
+      setting</b></font></td>
+  </tr>
+  <tr>
+    <td><font color="#0000FF"><b>MySQL 5.0 and higher</b></font></td>
+    <td align="center" width="70%">
+      <p align="left"><i>UNIX</i>: Add <b>$MYSQL_HOME/lib</b> to LD_LIBRARY_PATH
+      (or its equivalent).<br>
+      <i>Windows</i>: Add <b>%MYSQL_HOME%\bin</b> to PATH.</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td align="center" width="70%"></td>
+  </tr>
+</table>
+    </li>
+    <li><p>To verify if the MySQL client environment is correct, you can
+      start the MySQL command interpreter:<br>
+      <br>
+      <font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;&nbsp; $ mysql <i>dbname</i>
+      -u <i>appadmin</i>  -p</font></p>
+    </li>
+		<li>
+		<p>Set up the <b>fglprofile</b> entries for <a href="Connections.html#DS_ODI_DBVSPEC"> database
+        connections</a>.<br>
+        <br>
+        <b><font color="#FF0000">Warning:</font></b> <b>Make sure that you are
+        using the ODI driver corresponding to the database client and server
+        version. Because Informix features emulation are dependant from the
+        database server version, it is mandatory to use the same version of the
+        database client and ODI driver as the server version.</b></p>
+		</li>
+	</ol>
+</blockquote>
+
+<hr>
+
+<h2><a name="ODIMYS001">ODIMYS001 - DATE and DATETIME data types</a></h3>
+
+</h2>
+
+<p>INFORMIX provides two data types to store dates and time information: 
+
+<ul>
+  <li><b>DATE</b> = for year, month and day storage.</li>
+  <li><b>DATETIME</b> = for year to fraction(1-5) storage.</li>
+</ul>
+
+<p>MySQL provides the following data type to store dates:</p>
+
+<ul>
+  <li><b>DATE</b> = for year, month, day storage.</li>
+  <li><b>TIME</b> = for hour, minute, second storage.</li>
+  <li><b>DATETIME</b> = for year, month, day, hour, minute, second storage.</li>
+  <li><b>TIMESTAMP</b> = automatically updated when row is touched.</li>
+</ul>
+
+<p><b>String representing date time information:</b>
+
+<p>INFORMIX is able to convert quoted strings to DATE / DATETIME data if the string contents matches environment parameters (i.e. DBDATE, GL_DATETIME). As in INFORMIX, MySQL can convert quoted strings to datetime data according the ISO datetime format ( YYYY-MM-DD hh:mm:ss' ).
+
+<p><b>Date arithmetic:</b> 
+
+<ul>
+  <li>INFORMIX supports date arithmetic on DATE and DATETIME values. The result of an arithmetic expression involving dates/times is a number of days when only DATEs are used and an INTERVAL value if a DATETIME is used in the expression.</li>
+  <li>In MySQL, the result of an arithmetic expression involving DATE values is  an INTEGER representing a number of days.</li>
+  <li>INFORMIX  automatically converts an integer to a date when the integer is used to set a value of a date column. MySQL does not support this automatic conversion.</li>
+  <li>Complex DATETIME expressions ( involving INTERVAL values for example) are INFORMIX specific and have no equivalent in MySQL.</li>
+</ul>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>MySQL has the same <b>DATE</b> data type as INFORMIX ( year, month, day ). So you can use MySQL DATE data type for
+INFORMIX DATE columns.</p>
+
+<p>MySQL <b>TIME</b> data type can be used to store INFORMIX DATETIME HOUR TO SECOND values. The database interface makes the conversion automatically.</p>
+
+<p>INFORMIX DATETIME values with any precision from YEAR to SECOND can
+be stored in MySQL <b>DATETIME</b> columns. The database interface makes the conversion
+automatically. Missing date or time parts default to 1900-01-01 00:00:00. For example,
+when using a DATETIME HOUR TO MINUTE with the value of &quot;11:45&quot;, the
+MySQL DATETIME value will be &quot;1900-01-01 11:45:00&quot;.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> SQL Statements using expressions with TODAY / CURRENT /&nbsp; EXTEND must be reviewed and adapted to the native syntax.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Literal DATETIME and INTERVAL expressions (i.e. DATETIME ( 1999-10-12) YEAR TO DAY) are not converted.</p>
+
+<hr>
+
+<h2><a name="ODIMYS003">ODIMYS003 - Reserved words</a></h3>
+
+</h2>
+
+<p>SQL object names like table and column names cannot be SQL reserved words in MySQL.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Table or column names which are MySQL reserved words must be renamed.</p>
+
+<hr>
+
+<h2><a name="ODIMYS004">ODIMYS004 - ROWIDs</a></h3>
+
+</h2>
+
+<p>When creating a table, INFORMIX automatically adds a
+&quot;ROWID&quot; integer column (applies to non-fragmented tables only). The
+ROWID column is auto-filled with a unique number and can be used
+like a primary key to access a given row.</p>
+
+<p>MySQL does not have an equivalent for the INFORMIX ROWID pseudo-column.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> ROWIDs are not supported. You must review the code using ROWIDs and use primary key columns instead.</p>
+
+<hr>
+
+<h2><a name="ODIMYS030">ODIMYS030 - Very large data types</a>
+
+</h2>
+
+<p> INFORMIX uses the TEXT and BYTE data types to store very large texts or
+images. MySQL provides TINYTEXT, TEXT, MEDIUMTEXT, LONGTEXT, TINYBLOB, BLOB,
+MEDIUMBLOB and LONGBLOB data types.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Starting with MySQL version 5.0, the database interface can convert BDL TEXT data to LONGTEXT and BYTE data to
+LONG BLOB.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Genero TEXT/BYTE program
+variables have a limit of 2 gigabytes, make sure that the large object data does
+not exceed this limit.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Because MySQL CHAR and VARCHAR
+cannot exceed 255 bytes, we recommend to use the MySQL TEXT type to store CHAR/VARCHAR
+values with a size larger as 255 bytes. When fetching TEXT columns from a MySQL
+database, these will be treated as CHAR/VARCHAR types by the MySQL database driver. See <a href="#ODIMYS011">CHAR/VARCHAR
+types</a> for more details.</p>
+
+<hr>
+
+<h2><a name="ODIMYS005">ODIMYS005 - SERIAL data type</a></h3>
+
+</h2>
+
+<p>INFORMIX supports the SERIAL, SERIAL8 and BIGSERIAL data types to produce automatic
+integer sequences. SERIAL is based on INTEGER (32 bit), while SERIAL8 and
+BIGSERIAL can store 64 bit integers: </p>
+<ul>
+	<li>The table column must be of type SERIAL, SERIAL8 or BIGSERIAL.</li>
+	<li>To generate a new serial, no value or a zero 
+	value is specified in the INSERT statement:<br>
+	<font size="2" face="Courier New">&nbsp;&nbsp; INSERT INTO tab1 ( c ) VALUES ( 'aa' )<br>
+	&nbsp;&nbsp; INSERT INTO tab1 ( k, c ) VALUES ( 0, 'aa' )</font></li>
+	<li>After INSERT, the new SERIAL value is provided in
+	<font face="Courier New" color="#FF0000">SQLCA.SQLERRD[2]</font>, while the
+      new SERIAL8 and BIGSERIAL value must be fetched with a <font face="Courier New" color="#FF0000">SELECT
+      dbinfo('bigserial')</font> query.</li>
+</ul>
+<p>INFORMIX allows you to insert rows with a value different from zero for
+    a serial column. Using an explicit value will automatically increment the internal serial
+    counter, to avoid conflicts with future INSERT statements that are using a zero value:<br>
+    <font face="Courier New">&nbsp;&nbsp;&nbsp; CREATE TABLE tab ( k SERIAL );&nbsp; --&gt; internal counter = 0<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 1<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 10 );&nbsp; --&gt; internal counter = 10<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 11<br>
+&nbsp;&nbsp;&nbsp; DELETE FROM tab;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; --&gt;
+internal counter = 11<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 12</font></p>
+
+<p>MySQL supports the AUTO_INCREMENT column definition option as well as the
+SERIAL keyword: 
+
+<ul>
+  <li>In CREATE TABLE, you specify a auto-incremented column with the AUTO_INCREMENT attribute</li>
+  <li>Auto-incremented columns have the same behavior as INFORMIX SERIAL columns</li>
+  <li>You define a start value with ALTER TABLE tabname AUTO_INCREMENT = value</li>
+  <li>The column must be the primary key.</li>
+  <li>When using the InnoDB engine, AUTO_INCREMENTED columns might re-use unused
+    sequences after a server restart.<br>
+    Actually, when the server restarts, it issues a SELECT
+    MAX(auto_increment_column) on each table with such as column to identify the
+    next sequence to be generated. If you insert rows that generate the numbers
+    101, 102 and 103, then you delete rows 102 and 103; When the server is
+    restarted next generated number will be 101 + 1 = 102.</li>
+  <li>SERIAL is a synonym for BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE.</li>
+</ul>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The INFORMIX SERIAL data type is emulated with MySQL <b>AUTO_INCREMENT</b> option.
+After an insert, <font >SQLCA.SQLERRD[2]</font> holds the last generated serial value.
+<font >However, SQLCA.SQLERRD[2] is defined as an INTEGER, it cannot hold values
+from BIGINT auto incremented columns. If you are using BIGINT auto incremented
+columns, you must use the LAST_INSERT_ID() SQL function.</font></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> AUTO_INCREMENT columns must be primary keys. This is handled automatically when you create a table in a BDL program.</p>
+
+<p>Like Informix, MySQL allows to specify a zero for auto-incremented columns,
+however, for SQL portability, INSERT statements should be reviewed to remove the SERIAL column from
+the list.<br>
+For example, the following statement:<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col1,col2) VALUES (<b>0</b>, p_value)</font><br>
+can be converted to :<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col2) VALUES (p_value)<br>
+</font>Static SQL INSERT using records defined from the schema file must also be
+reviewed :<br>
+<font face="Courier New">&nbsp;&nbsp; DEFINE rec LIKE tab.*</font><br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab VALUES ( rec.*
+)&nbsp;&nbsp; -- will use the serial column</font><br>
+can be converted to :<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab VALUES rec.* -- without
+braces, serial column is removed</font></p>
+
+<hr>
+
+<h2><a name="ODIMYS006">ODIMYS006 - Outer joins</a></h3>
+
+</h2>
+
+<p>In INFORMIX SQL, outer tables can be defined in the <b> FROM</b> clause with the <b>OUTER</b> keyword:</p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM a, <b><font color="#0000A0">OUTER(b)</font></b>
+ WHERE a.key = b.akey</font></pre>
+  <pre><font face="Courier New">SELECT ... FROM a, <b><font color="#0000A0">OUTER(b,OUTER(c))</font></b>
+ WHERE a.key = b.akey
+   AND b.key1 = c.bkey1
+   AND b.key2 = c.bkey2 </font></pre>
+</blockquote>
+
+<p>MySQL 3.23 supports the ANSI outer join syntax:</p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM <b><font color="#0000A0">cust LEFT OUTER JOIN order
+                     ON cust.key = order.custno</font></b></font></pre>
+  <pre><font face="Courier New">SELECT ...
+  FROM <b><font color="#0000A0">cust</font></b></font><b><font
+face="Courier New" color="#0000A0"> LEFT OUTER JOIN order
+                 LEFT OUTER JOIN item
+                 ON order.key = item.ordno
+            ON cust.key = order.custno</font></b><font
+face="Courier New">
+ WHERE order.cdate &gt; current date</font></pre>
+</blockquote>
+
+<p>See the MySQL reference for a complete description of the syntax.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>For better SQL portability, you should use the ANSI outer join syntax instead
+of the old Informix OUTER syntax.</p>
+
+<p>The MySQL interface can convert most INFORMIX OUTER specifications to ANSI outer joins.</p>
+
+<p>Prerequisites:</p>
+
+<ol>
+  <li>In the FROM clause, the main table must be the first item and the outer tables must figure from left to right in the order of outer levels.<br>
+    &nbsp;&nbsp; Example which does not work : &quot;FROM OUTER(tab2), tab1&quot;.</li>
+  <li>The outer join in the WHERE part must use the table name as prefix.<br>
+    &nbsp;&nbsp; Example : &quot;WHERE tab1.col1 = tab2.col2&quot;.</li>
+</ol>
+
+<p>Restrictions:</p>
+
+<ol>
+  <li>Additional conditions on outer table columns cannot be detected and therefore are not supported :<br>
+    &nbsp;&nbsp;Example : &quot;... FROM tab1, OUTER(tab2) WHERE tab1.col1 = tab2.col2 AND
+    tab2.colx &gt; 10&quot;.</li>
+  <li>Statements composed by 2 or more SELECT instructions using OUTERs are
+    not supported.<br>
+    &nbsp; Example : &quot;SELECT ... UNION SELECT&quot; or &quot;SELECT ... WHERE col IN
+    (SELECT...)&quot;</li>
+</ol>
+
+<p>Notes:</p>
+
+<ol>
+  <li>Table aliases are detected in OUTER expressions.<br>
+    &nbsp;&nbsp; OUTER example with table alias : &quot;OUTER( tab1 alias1)&quot;.</li>
+  <li>In the outer join, &lt;outer table&gt;.&lt;col&gt; can be placed on
+    both right or left side of the equal sign.<br>
+    &nbsp;&nbsp; OUTER join example with table on the left : &quot;WHERE outertab.col1 =
+    maintab.col2 &quot;.</li>
+  <li>Table names detection is not case-sensitive.<br>
+    &nbsp;&nbsp; Example : &quot;SELECT ... FROM tab1, TAB2 WHERE tab1.col1 = tab2.col2&quot;.</li>
+  <li><a href="#ODIMYS017">Temporary tables</a> are supported in OUTER specifications.</li>
+</ol>
+
+<hr>
+
+<h2><a name="ODIMYS007a">ODIMYS007a - Database concepts</a></h3>
+
+</h2>
+
+<p>Most BDL applications use only one database entity (in the meaning of INFORMIX). But the same BDL application can connect to different occurrences of the same database schema, allowing several users to connect to those different databases.</p>
+
+<p>Like INFORMIX servers, MySQL can handle multiple database entities. Tables created by a user can be accessed without the owner prefix by other users as long as they have access privileges to these tables.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Create a MySQL database for each INFORMIX database.&nbsp;</p>
+
+<hr>
+
+<h2><a name="ODIMYS008a">ODIMYS008a - Data consistency and concurrency management</a></h3>
+
+</h2>
+
+<p><b>Data consistency</b> involves readers which want to access data
+currently modified by writers and <b>concurrency data access</b> involves several writers
+accessing the same data for modification. <b>Locking granularity </b>defines the amount of
+data concerned when a lock is set (row, page, table, ...).</p>
+
+<p><u>INFORMIX</u></p>
+
+<p>INFORMIX uses a locking mechanism to handle data consistency and
+concurrency. When a process changes database information with UPDATE, INSERT or DELETE,
+an <b>exclusive lock</b> is set on the touched rows. The lock remains active until the end
+of the transaction. Statements performed outside a transaction are treated as a
+transaction containing a single operation and therefore release the locks immediately after
+execution. SELECT statements can set <b>shared locks</b> according to the <b>isolation level</b>.
+In case of locking conflicts (for example, when two processes want to acquire
+an exclusive lock on the same row for modification or when a writer is trying to modify
+data protected by a shared lock), the behavior of a process can be changed by setting the 
+<b>lock wait mode</b>.</p>
+
+<p>Control:</p>
+
+<ul>
+  <li>Lock wait mode : SET LOCK MODE TO ...</li>
+  <li>Isolation level : SET ISOLATION TO ...</li>
+  <li>Locking granularity : CREATE TABLE ... LOCK MODE {PAGE|ROW}</li>
+  <li>Explicit exclusive lock : SELECT ... FOR UPDATE</li>
+</ul>
+
+<p>Defaults:</p>
+
+<ul>
+  <li>The default isolation level is read committed.</li>
+  <li>The default lock wait mode is &quot;not wait&quot;.</li>
+  <li>The default locking granularity is per page.</li>
+</ul>
+
+<p><u>MySQL</u></p>
+
+<p>When data is modified, <b>exclusive locks</b> are set and held until
+the end of the transaction. For data consistency, MySQL uses a <b>locking
+mechanism</b>. Readers must wait for writers as in INFORMIX.</p>
+
+<p>Control:</p>
+
+<ul>
+  <li>No lock wait mode control is provided.</li>
+  <li>Isolation level : SET TRANSACTION ISOLATION LEVEL ...</li>
+  <li>Explicit exclusive lock : SELECT ... FOR UPDATE</li>
+</ul>
+
+<p>Defaults:</p>
+
+<ul>
+  <li>The default isolation level is Read Committed.</li>
+  <li>The default locking granularity is per table (pre page when using BDB tables).</li>
+</ul>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+  <p>The <font size="2" face="Courier New">
+  SET ISOLATION TO ... </font>INFORMIX syntax is replaced by <font size="2" face="Courier New">
+  SET SESSION TRANSACTION ISOLATION LEVEL ... </font>in MySQL. The next table
+  shows the isolation level mappings done by the MySQL database driver:</p>
+
+<div align="center">
+  <center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><font color="#0000FF"><b>SET ISOLATION
+      instruction in program</b></font></td>
+    <td width="60%" bgcolor="#C0C0C0"><font color="#0000FF"><b>Native SQL
+      command</b></font></td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO DIRTY READ</td>
+    <td width="60%">SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO COMMITTED READ<br>
+      &nbsp; [READ COMMITTED] [RETAIN UPDATE LOCKS]</td>
+    <td width="60%">SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO CURSOR STABILITY</td>
+    <td width="60%">SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO REPEATABLE READ</td>
+    <td width="60%">SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ</td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<p>For portability, it is recommended that you work with INFORMIX in the read committed isolation level, make  processes wait for each other (lock mode wait), and create tables with the &quot;lock mode row&quot; option.</p>
+
+<p>See INFORMIX and MySQL documentation for more details about data consistency, concurrency and locking mechanisms.</p>
+
+<hr>
+
+<h2><a name="ODIMYS008b">ODIMYS008b - SELECT FOR UPDATE</a></h3>
+
+</h2>
+
+<p>A lot of BDL programs use pessimistic locking in order to avoid several users editing the same rows at the same time. </p>
+
+<p><font face="Courier New">&nbsp;&nbsp; DECLARE cc CURSOR FOR<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SELECT ... FROM tab WHERE ... FOR UPDATE<br>
+&nbsp;&nbsp; OPEN cc<br>
+&nbsp;&nbsp; FETCH cc &lt;-- lock is acquired<br>
+&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp; CLOSE cc &lt;-- lock is released</font></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> MySQL
+locking mechanism depends upon the transaction manager. The default locking
+granularity is per table when you use the default non-transactional
+configuration. You must use the InnoDB Storage Engine to get transactions and
+locking mechanisms.</p>
+
+<p>SELECT ... FOR UPDATE is only supported since MySQL version 6.0. Locks are
+released at the end of the transaction.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Check if the MySQL storage engine supports SELECT FOR UPDATE, otherwise
+review the program logic.</p>
+
+<hr>
+
+<h2><a name="ODIMYS009">ODIMYS009 - Transactions handling</a></h3>
+
+</h2>
+
+<p>INFORMIX and MySQL handle transactions  in a similar manner. </p>
+
+<p>INFORMIX native mode (non ANSI):</p>
+
+<ul>
+  <li>Transactions are started with BEGIN WORK.</li>
+  <li>Transactions are validated with COMMIT WORK.</li>
+  <li>Transactions are canceled with ROLLBACK WORK.</li>
+  <li>Savepoints can be set with SAVEPOINT <i>name</i> [UNIQUE].</li>
+  <li>Transactions can be rolled back to a savepoint with ROLLBACK [WORK] TO
+    SAVEPOINT [<i>name</i>].</li>
+  <li>Savepoints can be released with RELEASE SAVEPOINT <i>name</i>.</li>
+  <li>Statements executed outside of a transaction are automatically committed.</li>
+  <li>DDL statements can be executed (and canceled) in transactions.</li>
+</ul>
+
+<p>MySQL :
+
+<ul>
+  <li>Transactions are started with START TRANSACTION. </li>
+  <li>Transactions are validated with COMMIT [WORK].</li>
+  <li>Transactions are canceled with ROLLBACK [WORK].</li>
+  <li>Savepoints can be placed with SAVEPOINT <i>name</i>.</li>
+  <li>Transactions can be rolled back to a savepoint with ROLLBACK [WORK] TO [SAVEPOINT]
+    <i>name</i>.</li>
+  <li>Savepoints can be be released with RELEASE SAVEPOINT <i>name</i>.</li>
+  <li>Statements executed outside of a transaction are automatically committed.</li>
+  <li>DDL statements can be executed (and canceled) in transactions.</li>
+</ul>
+
+<p><b><u><em>Solution:</em></u></b> </p>
+
+<p>INFORMIX transaction handling commands are automatically converted to MySQL instructions to start, validate or cancel transactions.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> MySQL does
+not support  transactions by default. You must set the server system parameter <b>table_type=InnoDB</b>.</p>
+
+<p>Regarding the transaction control instructions, the BDL applications do not have to be modified in order to work with MySQL, as long as you have a transaction manager installed with
+MySQL.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b>  If you want to use savepoints,
+do not use the UNIQUE keyword in the savepoint declaration, always specify the
+savepoint name in ROLLBACK TO SAVEPOINT, and do not drop savepoints with RELEASE
+SAVEPOINT.</p>
+
+<hr>
+
+<h2><a name="ODIMYS010">ODIMYS010 - BOOLEAN data type</a>
+
+</h2>
+
+<p>INFORMIX supports the BOOLEAN data type, which can store 't' or 'f' values.
+Genero BDL implements the BOOLEAN data type in a different way: As in other
+programming languages, Genero BOOLEAN stores integer values 1 or 0 (for TRUE or
+FALSE). The type was designed this way to assign the result of a Boolean
+expression to a BOOLEAN variable.</p>
+
+<p>MySQL supports the BOOLEAN data type and stores 1 or 0 integer values for
+TRUE and FALSE.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The MySQL database interface supports the BOOLEAN data type.</p>
+
+<hr>
+
+<h2><a name="ODIMYS011">ODIMYS011 - CHARACTER data types</a></h3>
+
+</h2>
+
+<p>INFORMIX supports following character data types:</p>
+<ul>
+  <li>CHAR(N) with N&lt;= 32767 bytes</li>
+  <li>VARCHAR(N[,M]) with N&lt;=255 bytes</li>
+  <li>NCHAR(N) with N&lt;= 32767 bytes</li>
+  <li>NVARCHAR(N[,M]) with N&lt;=255 bytes</li>
+  <li>LVARCHAR (not covered in this section)</li>
+</ul>
+<p>In INFORMIX, both CHAR/VARCHAR and NCHAR/ NVARCHAR data types can be used to
+store single-byte or multi-byte encoded character strings. The only difference
+between CHAR/VARCHAR and NCHAR/NVARCHAR is for sorting: N[VAR]CHAR types use the
+collation order, while [VAR]CHAR types use the byte order. The character set
+used to store strings in CHAR/VARCHAR/NCHAR/NVARCHAR columns is defined by the
+DB_LOCALE environment variable. The character set used by applications is
+defined by the CLIENT_LOCALE environment variable. Note that INFORMIX uses Byte
+Length Semantics (the size N that you specify in [VAR]CHAR(N) is expressed in
+bytes, not characters as in some other databases)</p>
+
+<p>MySQL supports the following character data types:</p>
+
+<ul>
+  <li>CHAR(N) with N&lt;= 255 characters</li>
+  <li>VARCHAR(N) with N&lt;= 65535 characters</li>
+  <li>NCHAR(N) with N&lt;= 255 characters (UTF-8 only)</li>
+  <li>NVARCHAR(N) with N&lt;= 65535 characters (UTF-8 only)</li>
+</ul>
+<p><b><font color="#FF0000">Warning:</font></b> With MySQL version 4, CHAR/VARCHAR
+with a size exceeding 255 characters are silently converted to TEXT columns.
+With later versions, you get now an SQL error when trying to define a CHAR or VARCHAR column with a
+size greater as the limit. Also, before version MySQL 5.0.3, VARCHAR limit was
+255 characters, starting with 5.0.3 the limit is 65535 characters (but INFORMIX
+VARCHAR has a limit of 255 bytes, anyway).</p>
+
+<p>Note that MySQL uses Character Length Semantics to define the size of CHAR/VARCHAR
+columns, while INFORMIX and Genero use Byte Length Semantics.</p>
+
+<p>MySQL can support multiple character sets, you can run the SHOW CHARACTER SET
+statement to list supported encodings. There are different configuration levels
+to define the character set used by MySQL to store data. The <u>server character
+set</u> defines the default for <u>database character sets</u> if not specified
+in the CREATE DATABASE command. You can even define a specific character set at
+the table and column level, but this is not recommended with Genero
+applications. The database character set is used to store CHAR and VARCHAR
+columns. The NCHAR and NATIONAL VARCHAR types use a predefined character which
+can be different from the database character set. In MySQL the national
+character set is UTF-8.</p>
+
+<p>MySQL can automatically convert from/to the client and server characters
+sets. In the client applications, you define the character set with the SET
+NAMES instruction.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>INFORMIX [VAR]CHAR(N) types can be mapped to MySQL [VAR]CHAR(N) types, as
+long as the MySQL size limit is not reached.</p>
+
+<p>Review your database schema when using CHAR and VARCHAR columns
+with a size exceeding the MySQL limits: If you need to store CHAR or VARCHAR strings larger as
+the MySQL limit, you
+can use the MySQL <b>text</b> type. When using CHAR/VARCHAR types in CREATE
+TABLE, the SQL Translator converts to <b>text</b> if the size is bigger as 255. When fetching <b>tinytext</b> and <b>text</b>
+columns from the MySQL database, the MySQL database driver treats such columns as CHAR/VARCHAR,
+to emulate INFORMIX CHAR columns with a size greater as 255.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> For each <b>text</b> column
+fetched from MySQL, the MySQL database driver needs to allocate a temporary string buffer of <b>65535
+bytes</b>. Keep in mind that <b>text</b> columns may have be created by CREATE
+TABLE using CHAR/VARCHAR with size&gt;255. The memory used by this temporary
+buffer is freed when freeing the cursor.</p>
+
+<p>  Keep in mind that MySQL
+uses Character Length Semantics regarding CHAR/VARCHAR sizes: When you define a
+CHAR(20) and the database character set is multi-byte, the MySQL column can hold
+more bytes/characters as the INFORMIX CHAR(20) type. For example, in UTF-8, you
+can store 20 é (e-acute) characters in PGS CHAR(20), but only IFX CHAR(20) can
+only store 10 of such characters, because in UTF-8, é is encoded with 2 bytes.
+Even if Genero uses Byte Length Semantics when you define a CHAR/VARCHAR
+variable, a good practice is to use the same sizes for MySQL CHAR/VARCHAR
+columns: You could then store more characters in the PGS columns as the Genero
+variable can hold, but this is not a problem.</p>
+
+<p>You can store single-byte or multi-byte character strings in MySQL CHAR, VARCHAR and
+TEXT columns.</p>
+
+<p>Do not forget to properly define the client character set, which must
+correspond to the runtime system character set.</p>
+
+<p>See also the section about <a href="Localization.html">Localization</a>.</p>
+
+<hr>
+
+<h2><a name="ODIMYS012">ODIMYS012 - Constraints</a></h3>
+
+</h2>
+
+<p><b>Constraint naming syntax:</b></p>
+
+<p>Both INFORMIX and MySQL support primary key, unique, foreign key and default,
+but the constraint naming syntax is different : MySQL expects the
+&quot;CONSTRAINT&quot; keyword <b> before</b> the constraint specification and INFORMIX
+expects it <b>after</b>.</p>
+
+<p><b>UNIQUE constraint example:</b></p>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>INFORMIX</b></font></td>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>MySQL</b></font></td>
+  </tr>
+  <tr>
+    <td width="50%"><font face="Courier New">CREATE TABLE scott.emp (<br>
+    ...<br>
+    empcode CHAR(10) UNIQUE<br>
+    &nbsp;&nbsp;&nbsp;<b>[CONSTRAINT pk_emp]</b>,<br>
+    ...</font></td>
+    <td width="50%"><font face="Courier New">CREATE TABLE scott.emp (<br>
+    ...<br>
+    empcode CHAR(10)<br>
+    &nbsp;&nbsp;&nbsp;<b>[CONSTRAINT pk_emp]</b> UNIQUE,<br>
+    ...</font></td>
+  </tr>
+</table>
+
+<p><b>Primary keys:</b></p>
+
+<p>Like INFORMIX, MySQL creates an index to enforce PRIMARY KEY constraints
+(some RDBMS do not create indexes for constraints).&nbsp; Using &quot;CREATE
+UNIQUE INDEX&quot;&nbsp;to define unique constraints is obsolete (use primary
+keys or a secondary key instead).</p>
+
+<p><b><font color="#FF0000">Warning:</font></b>  In MySQL, the name of a PRIMARY
+KEY is PRIMARY.</p>
+
+<p><b>Unique constraints:</b></p>
+
+<p>Like INFORMIX, MySQL creates an index to enforce UNIQUE constraints (some
+RDBMS do not create indexes for constraints).</p>
+
+<p><b><font color="#FF0000">Warning:</font></b>  When using a unique constraint,
+INFORMIX allows only one row with a NULL value, while MySQL allows several rows
+with NULL! Using CREATE UNIQUE INDEX is obsolete.</p>
+
+<p><b>Foreign keys:</b></p>
+
+<p>Both INFORMIX and MySQL support the ON DELETE CASCADE option. In MySQL,
+foreign key constraints are checked immediately, so NO ACTION and RESTRICT are
+the same.</p>
+
+<p><b>Check constraints:</b></p>
+
+<p><b><font color="#FF0000">Warning:</font></b>  Check constraints are not yet
+supported in MySQL.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><b>Constraint naming syntax:</b></p>
+
+<p>The database interface does not convert constraint naming expressions when
+creating tables from BDL programs. Review the database creation scripts to adapt
+the constraint naming clauses for MySQL.</p>
+
+<hr>
+
+<h2><a name="ODIMYS016">ODIMYS016 - Defining database users</a></h3>
+
+</h2>
+
+<p>INFORMIX users are defined at the operating system level, they must be members of the 'informix' group, and the database administrator must grant CONNECT, RESOURCE or DBA privileges to those users.</p>
+
+<p>MySQL users must be registered in the database. They are created with the <b>GRANT</b> SQL instruction:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; $ mysql -u root -pmanager --host orion test</font></p>
+
+<p><font face="Courier New">&nbsp;&nbsp; mysql&gt; GRANT ALL PRIVILEGES ON * TO mike IDENTIFIED BY 'pswd';</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>According to the application logic (is it a multi-user application ?), you have to create one or several MySQL users.</p>
+
+<hr>
+
+<h2><a name="ODIMYS017">ODIMYS017 - Temporary tables </a></h3>
+
+</h2>
+
+<p>INFORMIX temporary tables are created through the
+<font face="Courier New" ><b> CREATE TEMP TABLE </b></font>DDL instruction
+or through a <b><font face="Courier New" >SELECT ... INTO TEMP</font></b> statement.
+Temporary tables are automatically dropped when the SQL session ends, but they can be
+dropped with the DROP TABLE command. There is no name conflict when several users create
+temporary tables with the same name.</p>
+
+<p>INFORMIX allows you to create indexes on temporary tables. No name conflict occurs when several users create an index on a temporary table by using the same index identifier.</p>
+
+<p>MySQL support temporary tables with the following syntax:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; </font></font><font face="Courier New">CREATE
+  TEMPORARY TABLE tablename ( <i>coldefs</i> )<br>
+  &nbsp;&nbsp;&nbsp; CREATE TEMPORARY TABLE tablename LIKE <i>other-table</i></font></p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>In BDL, INFORMIX temporary tables instructions are converted to generate native SQL Server temporary tables.</p>
+
+<hr>
+
+<h2><a name="ODIMYS018">ODIMYS018 - Substrings in SQL</a></h3>
+
+</h2>
+
+<p>INFORMIX SQL statements can use subscripts on columns defined with the character data type:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 WHERE <font
+color="#0000A0"><b>col1[2,3]</b></font> = 'RO' <br>
+&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 WHERE <font color="#0000A0"><b>col1[10]</b></font>&nbsp;
+= 'R'&nbsp;&nbsp; -- Same as col1[10,10]<br>
+&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <font color="#0000A0"><b>col1[2,3]</b></font>
+= 'RO' WHERE ...<br>
+&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 ORDER BY <font color="#0000A0"><b>col1[1,3]</b></font></font></p>
+
+<p>.. while MySQL provides the SUBSTR( ) function, to extract a substring from a string expression : </p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT .... FROM tab1 WHERE <font
+color="#0000A0"><b>SUBSTRING(col1,2,3)</b></font> = 'RO'<br>
+&nbsp;&nbsp;&nbsp; SELECT <font color="#0000A0"><b>SUBSTRING('Some text',6,3)</b></font> ...&nbsp;&nbsp; -- Gives 'tex'</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>You must replace all INFORMIX col[x,y] expressions by SUBSTRING(col,x,y-x+1).</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> In UPDATE
+instructions, setting column values through subscripts will produce an error with MySQL :<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <font color="#0000A0"><b>col1[2,3]</b></font> = 'RO' WHERE ...</font><br>
+is converted to:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <font color="#0000A0"><b>SUBSTRING(col1,2,(3-2+1))</b></font> = 'RO' WHERE ...</font></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Column
+subscripts in ORDER BY expressions are also converted and produce an error with MySQL :<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 ORDER BY <font color="#0000A0"><b>col1[1,3]</b></font></font><br>
+is converted to:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 ORDER BY <font color="#0000A0"><b>SUBSTRING(col1,1,(3-1+1))</b></font></font></p>
+
+<hr>
+
+<h2><a name="ODIMYS019">ODIMYS019 - Name resolution of SQL objects</a></h3>
+
+</h2>
+
+<p>INFORMIX uses the following form to identify a SQL object:</p>
+
+<p><font face="Courier New">&nbsp;
+[database[@dbservername]:][{owner|&quot;owner&quot;}.]identifier</font></p>
+
+<p>With MySQL, an object name takes the following form:<br><br>
+<font face="Courier New">&nbsp; [database.]identifier</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Check for single or double quoted table or column names in your source and remove them.</p>
+
+<hr>
+
+<h2><a name="ODIMYS020">ODIMYS020 - Database object name delimiters</a></h3>
+
+</h2>
+
+<p>INFORMIX identifies database object names with double quotes, while MySQL does not use the double quotes as database object identifiers.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Check your programs for database object names having double quotes:<br><br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp;WHERE &quot;tabname&quot;.&quot;colname&quot; = &quot;a string value&quot;</font><br><br>
+should be written as follows:<br><br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp;WHERE tabname.colname = 'a string value'</font></p>
+
+<hr>
+
+<h2><a name="ODIMYS021">ODIMYS021 - NUMERIC data types</a></h3>
+
+</h2>
+
+<p>INFORMIX supports several data types to store numbers:</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><font color="#0000FF"><b>INFORMIX Data Type</b></font></td>
+    <td width="60%" bgcolor="#C0C0C0"><font color="#0000FF"><b>Description</b></font></td>
+  </tr>
+  <tr>
+    <td width="40%">SMALLINT</td>
+    <td width="60%">16 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">INT/INTEGER</td>
+    <td width="60%">32 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">BIGINT</td>
+    <td width="60%">64 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">INT8</td>
+    <td width="60%">64 bit signed integer (replaced by BIGINT)</td>
+  </tr>
+  <tr>
+    <td width="40%">DEC/DECIMAL(p)</td>
+    <td width="60%">Floating-point decimal number</td>
+  </tr>
+  <tr>
+    <td width="40%">DEC/DECIMAL(p,s)</td>
+    <td width="60%">Fixed-point decimal number</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY</td>
+    <td width="60%">Equivalent to DECIMAL(16,2)</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY(p)</td>
+    <td width="60%">Equivalent to DECIMAL(p,2)</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY(p,s)</td>
+    <td width="60%">Equivalent to DECIMAL(p,s)</td>
+  </tr>
+  <tr>
+    <td width="40%">REAL/SMALLFLOAT</td>
+    <td width="60%">approx floating point (C float)</td>
+  </tr>
+  <tr>
+    <td width="40%">DOUBLE PREC./FLOAT</td>
+    <td width="60%">approx floating point (C double) </td>
+  </tr>
+</table>
+</center></div>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>MySQL supports the following data types to store numbers:</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><b><font color="#0000FF">MySQL data type</font></b></td>
+    <td width="60%" bgcolor="#C0C0C0"><b><font color="#0000FF">Description</font></b></td>
+  </tr>
+  <tr>
+    <td width="40%">DECIMAL(p)</td>
+    <td width="60%">Stores whole numeric numbers up to p digits (not floating
+      point)</td>
+  </tr>
+  <tr>
+    <td width="40%">DECIMAL(p,s)</td>
+    <td width="60%">Maximum precision depends on MySQL Version, see
+      documentation.</td>
+  </tr>
+  <tr>
+    <td width="40%">FLOAT[(M,D)<u>]</u></td>
+    <td width="60%">4 bytes variable precision</td>
+  </tr>
+  <tr>
+    <td width="40%">DOUBLE[(M,D)<u>]</u></td>
+    <td width="60%">8 bytes variable precision</td>
+  </tr>
+  <tr>
+    <td width="40%">SMALLINT</td>
+    <td width="60%">16 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">INTEGER</td>
+    <td width="60%">32 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">BIGINT</td>
+    <td width="60%">64 bit signed integer</td>
+  </tr>
+</table>
+</center></div>
+
+<p><b><font color="#FF0000">Warning:</font></b>  Before MySQL 5.0.3, the maximum
+range of DECIMAL values is the same as for DOUBLE. Since MySQL 5.0.3, DECIMAL
+can store real precision numbers as INFORMIX, however, the maximum number of
+digits depends on the version of MySQL, see documentation for more details. We
+strongly recommend to make tests (INSERT+SELECT) to check if large decimals are
+properly inserted and fetched back.&nbsp;</p>
+
+<hr>
+
+<h2><a name="ODIMYS024">ODIMYS024 - MATCHES and LIKE in SQL conditions</a></h3>
+
+</h2>
+
+<p>INFORMIX supports MATCHES and LIKE in SQL statements.
+MySQL supports the LIKE statement as in INFORMIX,
+plus the ~ operators that are similar but different from the INFORMIX MATCHES operator.</p>
+
+<p>MATCHES allows brackets to specify a set of matching characters at a given position:<br>
+<font face="Courier New">&nbsp;&nbsp; ( col MATCHES '[Pp]aris' )</font><br>
+<font face="Courier New">&nbsp;&nbsp; ( col MATCHES '[0-9][a-z]*' )</font><br>
+In this case, the LIKE statement has no equivalent feature.</p>
+
+<p>The following substitutions must be done to convert a MATCHES condition to a LIKE condition: 
+
+<ul>
+  <li>MATCHES keyword must be replaced by LIKE.</li>
+  <li>All '<font face="Courier">*</font>' characters must be replaced by '<font face="Courier">%</font>'.</li>
+  <li>All '<font face="Courier">?</font>' characters must be replaced by '<font face="Courier">_</font>'.</li>
+  <li>Remove all brackets expressions.</li>
+</ul>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> SQL statements using MATCHES expressions must be reviewed in order to use LIKE expressions.</p>
+
+<p>See also: <a href="SqlProgramming.html#PORT_MATCHES">MATCHES operator in SQL
+Programming</a>.</p>
+
+<hr>
+
+<h2><a name="ODIMYS025">ODIMYS025 - INFORMIX specific SQL statements in BDL </a></h3>
+
+</h2>
+
+<p>The BDL compiler supports several INFORMIX specific SQL statements that have no meaning when using MySQL:</p>
+
+<p>(removed a sentence as unnecessary) 
+
+<ul>
+  <li>CREATE DATABASE</li>
+  <li>DROP DATABASE</li>
+  <li>START DATABASE (SE only)</li>
+  <li>ROLLFORWARD DATABASE</li>
+  <li>SET [BUFFERED] LOG</li>
+  <li>CREATE TABLE with special options (storage, lock mode, etc.)</li>
+</ul>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Review your BDL source and remove all static SQL statements which are INFORMIX specific.</p>
+
+<hr>
+
+<h2><a name="ODIMYS028">ODIMYS028 - INSERT cursors</a></h3>
+
+</h2>
+
+<p>INFORMIX supports insert cursors. An &quot;insert cursor&quot; is a special BDL cursor declared with an INSERT statement instead of a SELECT statement. When this kind of cursor is open, you can use the PUT instruction to add rows and the FLUSH instruction to insert the records into the database.</p>
+
+<p>For INFORMIX database with transactions, OPEN, PUT and FLUSH instructions must be executed within a transaction.</p>
+
+<p>MySQL does not support insert cursors.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Insert cursors are emulated by the MySQL database interface.</p>
+
+<hr>
+
+<h2><a name="ODIMYS031">ODIMYS031 - Cursors WITH HOLD</a></h3>
+
+</h2>
+
+<p>INFORMIX closes opened cursors automatically when a transaction ends unless the WITH HOLD option is used in the DECLARE instruction. In MySQL, opened cursors using SELECT statements without a FOR UPDATE clause are not closed when a transaction ends. Actually, all MySQL cursors are 'WITH HOLD' cursors unless the FOR UPDATE clause is used in the SELECT statement. </p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Cursors declared FOR UPDATE and using the WITH HOLD option cannot be supported with MySQL because FOR UPDATE cursors are automatically closed by MySQL when the transaction ends.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>BDL cursors that are not declared &quot;WITH HOLD&quot; are automatically closed by the database interface when a COMMIT WORK or ROLLBACK WORK is performed.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Since MySQL automatically
+closes FOR UPDATE cursors when the transaction ends, opening cursors
+declared FOR UPDATE and WITH HOLD option results in an SQL error that does not normally
+appear with INFORMIX, in the same conditions. Review the program logic in order to find
+another way to set locks.</font></p>
+
+<hr>
+
+<h2><a name="ODIMYS032">ODIMYS032 - UPDATE/DELETE WHERE CURRENT OF &lt;cursor&gt;</a></h3>
+
+</h2>
+
+<p>INFORMIX allows positioned UPDATEs and DELETEs with the &quot;WHERE CURRENT OF &lt;cursor&gt;&quot; clause, if the cursor has been DECLARED with a SELECT ...  FOR UPDATE statement.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> WHERE CURRENT OF is not supported by MySQL.</p>
+
+<hr>
+
+<h2><a name="ODIMYS034">ODIMYS034 - Syntax of UPDATE statements</a></h3>
+
+</h2>
+
+<p>INFORMIX allows a  specific syntax for UPDATE statements:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET ( &lt;col-list&gt; ) = ( &lt;val-list&gt; )</font></p>
+
+<p>or</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET table.* = myrecord.*<br>
+&nbsp;&nbsp;&nbsp; UPDATE table SET * = myrecord.*</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Static UPDATE statements using the above syntax are converted <b>by the compiler</b> to the standard form:<br><br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET column=value [,...] </font></p>
+
+<hr>
+
+<h2><a name="ODIMYS036">ODIMYS036 - INTERVAL data type</a></h3>
+
+</h2>
+
+<p>INFORMIX INTERVAL data type stores a value that represents a span of time.
+INTERVAL types are divided into two classes : <i>year-month intervals</i> and <i>day-time intervals</i>.</p>
+
+<p>MySQL provides an INTERVAL data type, but it is totally different from the INFORMIX INTERVAL type. For example, you specify an INTERVAL literal as follows :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; 25 years 2 months 23 days</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> The INTERVAL
+data type is not well supported because the database server has no equivalent
+native data type. However, you can store into and retrieve from CHAR columns BDL
+INTERVAL values.</p>
+
+<hr>
+
+<h2><a name="ODIMYS039">ODIMYS039 - Data storage concepts </a></h3>
+
+</h2>
+
+<p>An attempt should be made to preserve as much of the storage information as possible when converting from INFORMIX to MySQL. Most important storage decisions made for INFORMIX database objects (like initial sizes and physical placement) can be reused for the MySQL database.</p>
+
+<p>Storage concepts are quite similar in INFORMIX and in MySQL, but the names are different.</p>
+
+<hr>
+
+<h2><a name="ODIMYS046">ODIMYS046 - The LOAD and UNLOAD instructions</a></h3>
+
+</h2>
+
+<p>INFORMIX provides two SQL instructions to export / import data from / into a database table: The UNLOAD instruction copies rows from a database table into a text file and the LOAD instructions insert rows from a text file into a database table.</p>
+
+<p>MySQL does not provide LOAD and UNLOAD instructions.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>LOAD and UNLOAD instructions are supported.</p>
+
+<hr>
+<h2><a name="ODIMYS047">ODIMYS047 -&nbsp;SQL Interruption</a></h3>
+</h2>
+<p>With INFORMIX, it is possible to interrupt a long running query if the SQL
+INTERRUPT ON option is set by the Genero program. The database server returns
+SQLCODE -213, which can be trapped to detect a user interruption.</p>
+<p><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp; MAIN<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DEFINE n INTEGER<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DEFER INTERRUPT<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OPTIONS SQL INTERRUPT ON<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DATABASE test1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHENEVER ERROR CONTINUE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- Start long query (self join takes time)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- From now on, user can hit CTRL-C in TUI mode
+to stop the query<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SELECT COUNT(*) INTO n FROM customers a,
+customers b<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHERE a.cust_id
+&lt;&gt; b.cust_id<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IF SQLCA.SQLCODE == -213 THEN<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DISPLAY &quot;Statement was
+interrupted by user...&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EXIT PROGRAM 1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END IF<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHENEVER ERROR STOP<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp;&nbsp; END MAIN</font></p>
+<p><u><em>Solution:</em></u></p>
+<p><b><font color="#FF0000">Warning:</font></b> SQL Interruption is not
+supported with MySQL.</p>
+
+<hr>
+
+<h2><a name="ODIMYS048">ODIMYS048 -&nbsp;Scrollable Cursors</a></h2>
+
+<p>The Genero programming language supports scrollable cursors with the <b>SCROLL</b>
+keyword, as shown in the following code example:&nbsp;</p>
+
+<p>
+<font face="Courier New" size="2">
+&nbsp;&nbsp;&nbsp;DECLARE c1 <b>SCROLL</b> CURSOR FOR SELECT * FROM customers
+ORDER BY cust_name<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH FIRST c1 INTO rec_cust.*<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH NEXT c1 INTO rec_cust.*<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH LAST c1 INTO rec_cust.*</font></p>
+
+<p>MySQL 6.0 does not support native scrollable cursors.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>The MySQL database driver emulates scrollable cursors with temporary
+files. On UNIX, the temp files are created in the directory defined by the
+DBTEMP, TMPDIR, TEMP or TMP environment variables (the default is /tmp). On Windows, the
+temp files are created with the _tempnam() MSVCRT API call.&nbsp;</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Native scrollable cursors are
+normally handled by the database server (only pieces of the result-set are sent
+to the client application). With emulated scrollable cursors, when scrolling to
+the last row, all rows will be fetched into the temporary file. This can
+generate a lot of network traffic and can produce a large temporary file if the
+result-set contains a lot of rows. Additionally, programs are dependent on the
+file system resource allocated to the OS user (ulimit).</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  In case of a runtime system
+crash, the temporary files created for scrollable cursors are not removed
+automatically. Therefore, is it possible that you will find some unexpected files in
+the temp directory. Before removing such files, you must make sure that these
+files are no longer used by running processes. Recent operating systems take care
+of that, by removing unused temp files periodically.</p>
+
+<hr>
+
+<h2><a name="ODIMYS100">ODIMYS100 - Data type conversion table</a></h3>
+
+</h2>
+
+<div align="center">
+  <center><table border="0" width="80%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>INFORMIX Data Types</b></font></td>
+          <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>MySQL Data Types</b></font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">CHAR(n)</font></td>
+          <td width="50%"><font face="Courier New">CHAR(n) <font color="#FF0000">(n&gt;255c
+            =&gt; TEXT(n))</font></font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">VARCHAR(n)</font></td>
+          <td width="50%"><font face="Courier New">VARCHAR(n) <font color="#FF0000">(n&gt;255c
+            =&gt; TEXT(n))</font></font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">BOOLEAN</font></td>
+          <td width="50%"><font face="Courier New">BOOLEAN</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">SMALLINT</font></td>
+          <td width="50%"><font face="Courier New">SMALLINT</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">INTEGER</font></td>
+          <td width="50%"><font face="Courier New">INTEGER</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">BIGINT</font></td>
+          <td width="50%"><font face="Courier New">BIGINT</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">DOUBLE PREC/FLOAT[(n)]</font></td>
+          <td width="50%"><font face="Courier New">DOUBLE</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">REAL/SMALLFLOAT</font></td>
+          <td width="50%"><font face="Courier New">FLOAT</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">DECIMAL(p,s)</font></td>
+          <td width="50%"><font face="Courier New">DECIMAL(p,s)</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">MONEY(p,s)</font></td>
+          <td width="50%"><font face="Courier New">DECIMAL(p,s)</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">DATE</font></td>
+          <td width="50%"><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">DATETIME HOUR TO SECOND</font></td>
+          <td width="50%"><font face="Courier New">TIME</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">DATETIME q1 TO q2</font></td>
+          <td width="50%"><font face="Courier New">DATETIME <font color="#FF0000">(YYY-MM-DD hh:mm:ss)</font></font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">INTERVAL q1 TO q2</font></td>
+          <td width="50%"><font face="Courier New">CHAR(50)</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">TEXT</font></td>
+          <td width="50%"><font face="Courier New">MEDIUMTEXT / LONGTEXT <font color="#FF0000" size="2" face="Courier New">(using
+            &lt;= 2Gb!)</font></font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">BYTE</font></td>
+          <td width="50%"><font face="Courier New">MEDIUMBLOB / LONGBLOB <font color="#FF0000" size="2" face="Courier New">(using
+            &lt;= 2Gb!)</font></font></td>
+        </tr>
+      </table>
+  </center>
+</div>
+
+</body>
+</html>

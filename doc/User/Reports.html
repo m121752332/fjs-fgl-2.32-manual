@@ -1,0 +1,2752 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Reports</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR width="100%">
+
+<H1><a name="PAGE_HEADER">Reports</a></H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#DEFINITION">What are reports?</a></li>
+  <li><a href="#RPT_XML">XML output for reports</a></li>
+  <li><a href="#RPT_CONFIG">Report Engine Configuration</a></li>
+  <li><a href="#RPT_DRIVER">Report Driver Instructions</a></li>
+  <li><a href="#RPT_DEFINITION">Report Routine Structure</a>
+    <ul>
+      <li><a href="#RPT_DF_DEFINE">The DEFINE section</a></li>
+      <li><a href="#RPT_DF_OUTPUT">The OUTPUT section</a></li>
+      <li><a href="#RPT_DF_ORDERBY">The ORDER BY section</a></li>
+      <li><a href="#RPT_DF_FORMAT">The FORMAT section</a></li>
+    </ul>
+  </li>
+  <li><a href="#RPT_STMT">Statements in Report Routine</a></li>
+  <li><a href="#RPT_PROTOTYPE">Report Routine Prototype</a></li>
+  <li><a href="#RPT_TWOPASS">Two-Pass Reports</a></li>
+  <li>Report Instructions
+    <ul>
+       <li><a href="#RPT_STMT_EXIT">EXIT REPORT</a></li>
+       <li><a href="#RPT_STMT_PRINT">PRINT</a></li>
+       <li><a href="#RPT_STMT_PRINTX">PRINTX</a></li>
+       <li><a href="#RPT_STMT_NEED">NEED</a></li>
+       <li><a href="#RPT_STMT_PAUSE">PAUSE</a></li>
+       <li><a href="#RPT_STMT_SKIP">SKIP</a></li>
+    </ul>
+  </li>
+  <li>Report Operators
+    <ul>
+       <li><a href="Operators.html#OP_COLUMN">COLUMN</a></li>
+       <li><a href="#RPT_OPER_LINENO">LINENO</a></li>
+       <li><a href="#RPT_OPER_PAGENO">PAGENO</a></li>
+       <li><a href="#RPT_OPER_SPACES">SPACES</a></li>
+       <li><a href="#RPT_OPER_WORDWRAP">WORDWRAP</a></li>
+       <li><a href="Operators.html#OP_USING">USING</a></li>
+       <li><a href="Operators.html#OP_ASCII">ASCII</a></li>
+    </ul>
+  </li>
+  <li>Report Aggregate Functions
+    <ul>
+       <li><a href="#RPT_AGGR_COUNT">COUNT(*)</a></li>
+       <li><a href="#RPT_AGGR_PERCENT">PERCENT(*)</a></li>
+       <li><a href="#RPT_AGGR_SUM">SUM()</a></li>
+       <li><a href="#RPT_AGGR_AVG">AVG()</a></li>
+       <li><a href="#RPT_AGGR_MIN">MIN()</a></li>
+       <li><a href="#RPT_AGGR_MAX">MAX()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p> <i>See also:</i>
+<a href="Programs.html">Programs</a>,
+<a href="Variables.html">Variables</a>,
+<a href="ResultSets.html">Result set</a></p>
+
+<HR width="100%">
+
+<h3><a name="DEFINITION">Definition</a></h3>
+
+<p>A report can arrange and format the data according to your instructions and display the
+output on the screen, send it to a printer, or store it as a file for future use.</p>
+
+<p> To implement a report, a program must include two distinct components:</p>
+
+<ul>
+  <li> The <a href="#RPT_DRIVER"> Report Driver</a> specifies what data
+   the report includes.</li>
+  <li> The <a href="#RPT_DEFINITION">Report Routine</a> formats the data
+   for output.</li>
+</ul>
+
+<p>The Report Driver retrieves the specified rows from a database, stores their
+values in program variables, and sends these - one input record at a time - to
+the Report Routine. After the last input record is received and formatted,
+the runtime system calculates any aggregate values based on all the data
+and sends the entire report to some output device.</p>
+
+<p align="center"><img border="0" src="../Images/REPFig01.png"></p>
+
+<p>By separating the two tasks of data retrieval and data formatting, the
+runtime system simplifies the production of recurrent reports and makes it easy to apply
+the same report format to different data sets.</p>
+
+<p>The report engine supports the following features:</p>
+
+<ul>
+  <li> The option to display <a href="#RPT_DF_OUTPUT"> report output</a> to the screen for editing.</li>
+  <li> Full control over page layout for your report, including <a href="#RPT_FMT_FPH">first
+    page header</a> and generic <a href="#RPT_FMT_PH"> page headers</a>, <a href="#RPT_FMT_PT"> page
+    trailers</a>, <a href="#RPT_STMT_PRINT"> columnar presentation</a>, and special formatting
+    <a href="#RPT_FMT_BAG"> before groups</a> and <a href="#RPT_FMT_BAG">after
+    groups</a> sorted by value.</li>
+  <li> Facilities for creating the report either from the rows returned by a cursor or from
+    input records assembled from any other source, such as output from several different
+    <tt>SELECT</tt> statements through the <a href="#RPT_DRIVER">Report Driver</a>.</li>
+  <li> Control blocks to manipulate data from a database cursor on a row-by-row basis, either
+    before or after the row is formatted by the report.</li>
+  <li> Aggregate functions that can calculate and display <a href="#RPT_AGGR_COUNT">frequencies</a>,
+    <a href="#RPT_AGGR_PERCENT">percentages</a>, <a href="#RPT_AGGR_SUM">sums</a>,
+    <a href="#RPT_AGGR_AVG">averages</a>, <a href="#RPT_AGGR_MIN">minimum</a>, and
+    <a href="#RPT_AGGR_MAX">maximum</a> values.</li>
+  <li>The <tt>USING</tt> operator and other <a href="BuiltInFunctions.html"> built-in functions</a>
+    and <a href="Operators.html"> operators</a> for formatting and displaying information in
+    output from the report.</li>
+  <li> The <tt>WORDWRAP</tt> operator to format long character strings that occupy multiple
+    lines of output from the report.</li>
+  <li> The option to update the database or execute any sequence of SQL and other statements
+    while writing a report, if the intermediate values calculated by the report meet specified
+    criteria; for example, to write an alert message containing a second report.</li>
+  <li> Stopping a report in the report definition code, with <a href="#RPT_STMT_EXIT">EXIT
+    REPORT</a> or <a href="#RPT_DRV_TERMINATE">TERMINATE REPORT</a>.</li>
+  <li> Generation of XML output with the <a href="#RPT_XML">TO XML HANDLER</a>
+    clause.</li>
+</ul>
+
+<p>The report engine supports one-pass reports and two-pass reports. The
+one-pass requires sorted data to be produced by the report driver in order to
+handle before/after groups properly. The two-pass record handles sort internally
+and does not need sorted data from the report driver. During the first pass, the
+report engine sorts the data and stores the sorted values in a temporary file in
+the database. During the second pass, it calculates any aggregate values and
+produces output from data in the temporary files.</p>
+
+<HR width="100%">
+
+<h3><a name="RPT_XML">XML output for reports</a></h3>
+
+<p>For better integration with external tools based on XML standards, Genero BDL
+introduced the <a href="#RPT_STMT_PRINTX">PRINTX</a> instruction to generate XML
+output from reports.</p>
+
+<p>The purpose of XML-based&nbsp; reports is to sort and group data, not to
+decorate. Data decoration and formatting can be done by external tools, or you can redirect the
+XML report output to a <a href="ClassSaxDocumentHandler.html">SAX
+Document Handler</a> object to process the output and
+generate for example HTML pages.</p>
+
+<p>To produce an XML report, you must start the report with the <a href="#RPT_DRV_START">TO
+XML HANDLER</a> clause in the <tt>START REPORT</tt> instruction, and then use the <a href="#RPT_STMT_PRINTX">PRINTX</a>
+statement inside the report routine:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   ...
+<CODE class=linenumber>03</CODE>   <tt>START REPORT</tt> orders_report <tt>TO XML HANDLER </tt>om.XmlWriter.createFileWriter(&quot;orders.xml&quot;)
+<CODE class=linenumber>04</CODE>   ...
+<CODE class=linenumber>05</CODE> <tt>END MAIN</tt><CODE class=linenumber>
+06</CODE> <tt>REPORT </tt>order_report(rec)<CODE class=linenumber>
+07</CODE>   ...
+<CODE class=linenumber>08</CODE>   <tt>FORMAT</tt><CODE class=linenumber>
+09</CODE>     <tt>ON EVERY ROW</tt><CODE class=linenumber>
+10</CODE>     <tt>   PRINTX NAME </tt>= order rec.*<CODE class=linenumber>
+11</CODE>   ...
+<CODE class=linenumber>12</CODE> <tt>END REPORT</tt></pre>
+
+
+<p>If all the reports of the program must generate XML output, you can also use
+the global function <a href="BuiltInFunctions.html#BF_FGL_REPORT_SET_DOCUMENT_HANDLER">fgl_report_set_document_handler()</a>.</p>
+
+
+<p>The generated XML output contains the structure of the formatted pages, with
+page header, page trailer and group sections. Every PRINTX instruction will
+generate a <code>&lt;Print&gt;</code> node with a list of <code>&lt;Item&gt;</code>
+nodes containing the data. The XML processor can use this structure to format
+and render the output as needed.</p>
+
+
+<p>If a new report is started with <tt>START REPORT</tt> instruction inside a <tt>REPORT</tt>
+routine producing XML, and if there is no destination specified in the <tt>START
+REPORT</tt> instruction, the sub-report inherits the XML output target of the
+parent, and sub-report nodes will be merged into the parent XML output.</p>
+
+
+<p>The output of an XML report will have the following node structure:</p>
+
+
+<pre>&lt;Report ...&gt;
+   &lt;PageHeader pageNo=&quot;...&quot;&gt;
+      ...
+   &lt;/PageHeader&gt;
+   &lt;Group&gt;
+      &lt;BeforeGroup&gt;
+         &lt;Print name=&quot;...&quot;&gt;
+             &lt;Item name=&quot;...&quot; type=&quot;...&quot; value=&quot;...&quot; isoValue=&quot;...&quot; /&gt;
+             &lt;Item name=&quot;...&quot; type=&quot;...&quot; value=&quot;...&quot; isoValue=&quot;...&quot; /&gt;
+             ...
+         &lt;/Print&gt;
+         ...
+      &lt;/BeforeGroup&gt;
+      &lt;OnEveryRow&gt;
+         &lt;Print name=&quot;...&quot;&gt;
+             &lt;Item name=&quot;...&quot; type=&quot;...&quot; value=&quot;...&quot; isoValue=&quot;...&quot; /&gt;
+             &lt;Item name=&quot;...&quot; type=&quot;...&quot; value=&quot;...&quot; isoValue=&quot;...&quot; /&gt;
+             ...
+         &lt;/Print&gt;
+         ...
+      &lt;/OnEveryRow&gt;
+
+      ...
+      &lt;AfterGroup&gt;
+         &lt;Print name=&quot;...&quot;&gt;
+             &lt;Item name=&quot;...&quot; type=&quot;...&quot; value=&quot;...&quot; isoValue=&quot;...&quot; /&gt;
+             &lt;Item name=&quot;...&quot; type=&quot;...&quot; value=&quot;...&quot; isoValue=&quot;...&quot; /&gt;
+             ...
+         &lt;/Print&gt;
+      &lt;/AfterGroup&gt;
+      ...
+   &lt;/Group&gt;
+   ...
+
+   &lt;OnLastRow ...&gt;
+      ...
+   &lt;/OnLastRow&gt;
+
+   &lt;PageTrailer ...&gt;
+      ...
+   &lt;/PageTrailer&gt;
+
+&lt;/Report&gt;</pre>
+
+
+<h4><a name="XML_CONDITIONAL_NODES">Output of conditional statements used in the report</a></h4>
+
+
+<p>If <tt>PRINTX</tt> commands are used inside program flow control instructions
+like <tt>IF</tt>, <tt>CASE</tt>, <tt>FOR</tt>, <tt>FOREACH</tt> and <tt>WHILE</tt>,
+the XML output will contain additional nodes to identify such conditional print
+instructions:</p>
+
+
+<pre>&lt;For&gt;
+  &lt;ForItem&gt;
+    &lt;Print name=&quot;...&quot;&gt;
+      &lt;Item name=&quot;...&quot; type=&quot;...&quot; value=&quot;...&quot; isoValue=&quot;...&quot; /&gt;
+    &lt;/Print&gt;
+    ...
+  &lt;/ForItem&gt;
+  ...
+&lt;/For&gt;</pre>
+
+
+<pre>&lt;While&gt;
+  &lt;WhileItem&gt;
+    &lt;Print name=&quot;...&quot;&gt;
+      &lt;Item name=&quot;...&quot; type=&quot;...&quot; value=&quot;...&quot; isoValue=&quot;...&quot; /&gt;
+    &lt;/Print&gt;
+    ...
+  &lt;/WhileItem&gt;
+  ...
+&lt;/While&gt;</pre>
+
+
+<pre>&lt;Foreach&gt;
+  &lt;ForeachItem&gt;
+    &lt;Print name=&quot;...&quot;&gt;
+      &lt;Item name=&quot;...&quot; type=&quot;...&quot; value=&quot;...&quot; isoValue=&quot;...&quot; /&gt;
+    &lt;/Print&gt;
+    ...
+  &lt;/ForeachItem&gt;
+  ...
+&lt;/Foreach&gt;</pre>
+
+
+<pre>&lt;Case&gt;
+  &lt;When id=&quot;<i>position</i>&quot;&gt;
+    &lt;Print name=&quot;...&quot;&gt;
+      &lt;Item name=&quot;...&quot; type=&quot;...&quot; value=&quot;...&quot; isoValue=&quot;...&quot; /&gt;
+    &lt;/Print&gt;
+    ...
+  &lt;/When&gt;
+  ...
+&lt;/Case&gt;</pre>
+
+
+<pre>&lt;If&gt;
+  &lt;IfThen&gt;
+    &lt;Print name=&quot;...&quot;&gt;
+      &lt;Item name=&quot;...&quot; type=&quot;...&quot; value=&quot;...&quot; isoValue=&quot;...&quot; /&gt;
+    &lt;/Print&gt;
+    ...
+  &lt;/IfThen&gt;
+  &lt;IfElse&gt;
+    &lt;Print name=&quot;...&quot;&gt;
+      &lt;Item name=&quot;...&quot; type=&quot;...&quot; value=&quot;...&quot; isoValue=&quot;...&quot; /&gt;
+    &lt;/Print&gt;
+    ...
+  &lt;/IfElse&gt;
+&lt;/If&gt;</pre>
+
+
+<p>That information can be useful to process an XML report output.</p>
+
+
+<HR width="100%">
+
+<h3><a name="RPT_CONFIG">Report Engine Configuration</a></h3>
+
+<p>By default, GROUP aggregate functions such as <a href="#RPT_AGGR_SUM">SUM()</a>
+ return a <a href="Programs.html#PC_NULL">NULL</a> value if all items values are <a href="Programs.html#PC_NULL">NULL</a>.
+You can force the report engine to return a zero decimal value with the
+following <a href="FglProfile.html">FGLPROFILE</a>
+ setting:</p>
+<p><code>Report.aggregateZero = <u>{</u>true<u>|</u>false<u>}</u></code></p>
+<p>When this entry is set to true, aggregate functions return zero when all
+values are <a href="Programs.html#PC_NULL">NULL</a>.</p>
+<p>Default value is : false (Aggregate functions evaluate to <a href="Programs.html#PC_NULL">NULL</a>
+if all items are <a href="Programs.html#PC_NULL">NULL</a>)</p>
+
+<HR width="100%">
+
+<h3><a name="RPT_DRIVER">The Report Driver</a></h3>
+
+<p>The Report Driver retrieves data, starts the report engine and sends the data (as input records)
+to be formatted by the <tt>REPORT</tt>  routine.</p>
+
+
+<h4>Usage:</h4>
+
+<p> A report driver can be
+part of the <tt>MAIN</tt> program block, or it can be in one or more
+<a href="Functions.html">functions</a>.</p>
+
+<p> The report driver typically consists
+of a loop
+(such as <a href="FlowControl.html#FC_WHILE">WHILE</a>, <a href="FlowControl.html#FC_FOR">FOR</a>,
+or <a href="ResultSets.html#RS_FOREACH">FOREACH</a>) with the following statements to process
+the report:</p>
+
+<div align="center">
+  <center>
+<table width="90%">
+  <tbody>
+    <tr>
+      <td bgColor="#c0c0c0" width="170"><b>Instruction</b></td>
+      <td bgColor="#c0c0c0" width="446"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="170"> <a href="#RPT_DRV_START"> START REPORT</a></td>
+      <td vAlign="top" width="446">This statement is required to instantiate the report
+         driver.&nbsp;</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="170"><a href="#RPT_DRV_OUTPUT"> OUTPUT TO REPORT</a></td>
+      <td vAlign="top" width="446">Provide data for one row to the report driver.</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="170"><a href="#RPT_DRV_FINISH"> FINISH REPORT</a>
+      </td>
+      <td vAlign="top" width="446">Normal&nbsp;termination of the report.</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="170"><a href="#RPT_DRV_TERMINATE">TERMINATE REPORT</a>
+      </td>
+      <td vAlign="top" width="446">Cancels the processing of the report.</td>
+    </tr>
+  </tbody>
+</table>
+  </center>
+</div>
+
+
+<p>A report driver is started by the <tt>START REPORT</tt> instruction. Once
+started, data can be provided to the report driver through the <tt>OUTPUT TO REPORT</tt>
+statement. To instruct the report engine to terminate output processing, use the
+<tt>FINISH REPORT</tt> instruction. To cancel a report from outside the report
+routine, use <tt>TERMINATE REPORT</tt> (from inside the report routine, you
+cancel the report with <tt>EXIT REPORT</tt>).</p>
+
+<p>In order to handler report interruption, the report driver can check if the <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a>
+variable is <a href="Programs.html#PC_TRUE">TRUE</a> to stop the loop when the
+user asked to interrupt the report execution (see example below).</p>
+
+<p>It is possible to execute several report drivers at the same time. It is even
+possible to invoke a report driver inside a <tt>REPORT</tt>  routine, which
+is different from the current driver.</p>
+
+<p>The programmer must make sure that the runtime system will always execute these
+instructions in the following order:</p>
+
+<ol>
+  <li><tt>START REPORT</tt> </li>
+  <li><tt>OUTPUT TO REPORT</tt> </li>
+  <li><tt>FINISH REPORT</tt> </li>
+</ol>
+
+
+<h4>Example:</h4>
+
+<PRE><CODE class=linenumber>01 </CODE><tt>DATABASE</tt> stores7
+<CODE class=linenumber>02</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE </tt>rcust <tt>RECORD LIKE </tt>customer.*
+<CODE class=linenumber>04</CODE>   <tt>DECLARE </tt>cu1 <tt>CURSOR FOR SELECT </tt>*<tt> FROM </tt>customer
+<CODE class=linenumber>05</CODE>   <tt>LET </tt>int_flag = <tt>FALSE</tt>
+<CODE class=linenumber>06</CODE>   <tt>START REPORT </tt>myrep
+<CODE class=linenumber>07</CODE>   <tt>FOREACH</tt> cu1 <tt>INTO </tt>rcust.*
+<CODE class=linenumber>08</CODE>      <tt>IF </tt>int_flag <tt>THEN EXIT FOREACH END IF</tt>
+<CODE class=linenumber>09</CODE>      <tt>OUTPUT TO REPORT </tt>myrep(rcust.*)
+<CODE class=linenumber>10</CODE>   <tt>END FOREACH</tt>
+<CODE class=linenumber>11</CODE>   <tt>IF </tt>int_flag <tt>THEN</tt>
+<CODE class=linenumber>12</CODE>     <tt>TERMINATE REPORT </tt>myrep
+<CODE class=linenumber>13</CODE>   <tt>ELSE</tt>
+<CODE class=linenumber>14</CODE>     <tt>FINISH REPORT </tt>myrep
+<CODE class=linenumber>15</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>16</CODE> <tt>END MAIN</tt></PRE>
+
+<HR width="100%">
+
+
+<h3><a name="RPT_DRV_START">START REPORT</a></h3>
+
+<h4>Syntax:</h4>
+
+<p><code>
+START REPORT <i>report-name</i> <u><br>
+</u> &nbsp; <u>[</u> TO <i><a href="#to-clause">to-clause</a></i> <u>]<br>
+</u>&nbsp;
+<u>[</u>&nbsp;WITH <i><a href="#dimension-option">dimension-option</a></i> <u>[</u>,<u>...]</u>
+<u>]</u>
+</code>
+</p>
+
+<p><a name="to-clause">where <i>to-clause</i> is one of:</a></p>
+
+<p><code><u>{</u> SCREEN<br>
+<u>|</u> PRINTER<br>
+<u>|</u>  <u>[</u>FILE<u>]</u><i> filename<br>
+</i><u>|</u>&nbsp;PIPE <i>program</i> <u>[</u> IN FORM
+MODE <u>|</u>  IN LINE MODE <u>]</u><br>
+<u>|</u>&nbsp;XML HANDLER <i>sax-handler-object</i><br>
+<u>|</u>&nbsp;OUTPUT <i><a href="#destination-option">destination-option</a></i><br>
+<u>}</u></code></p>
+
+<p><a name="destination-option">where <i>destination-option</i> is one of:</a></p>
+
+<p><code><u>{</u>&nbsp;&quot;SCREEN&quot;<i><br>
+</i>
+<u>|</u>
+&quot;PRINTER&quot;<br>
+<u>|</u> &quot;FILE&quot; DESTINATION <i>filename</i><br>
+ <u>|</u>&nbsp;&quot;PIPE <u>{</u> 
+IN FORM MODE <u>|</u>  IN LINE MODE <u>}</u>&quot; DESTINATION <i>program</i>&nbsp;&nbsp;<br>
+ <u>|</u> <i>variable </i><u>[</u><i> </i>DESTINATION <u>{</u> <i>program</i>  | <i>filename</i>
+<u>}</u> <u>]
+</u><br>
+ <u>}</u>
+</code>
+</p>
+
+<p><a name="dimension-option">where <i>dimension-option</i> is one of:</a></p>
+
+<p><code><u>{</u><br>
+&nbsp; LEFT MARGIN&nbsp;= <i>m-left</i><br>
+<u>|</u> RIGHT MARGIN&nbsp; = <i>m-right</i><br>
+<u>|</u> TOP
+MARGIN&nbsp;= <i>m-top</i><br>
+<u>|</u> BOTTOM MARGIN = <i>m-bottom</i><br>
+<u>|</u> PAGE LENGTH&nbsp;= <i>m-length</i><br>
+<u>|</u> TOP OF PAGE&nbsp;= <i>c-top</i><u><br>
+}</u> </code></p>
+
+<h4>Notes:</h4>
+
+<ol>
+  <li><i>report-name</i> is a report that has been defined as a <tt>REPORT</tt>
+    routine.</li>
+  <li><i>filename</i> is a <a href="Expressions.html#EX_STRING">string
+    expression</a> specifying the file that receives output.</li>
+  <li><i>program</i> is a <a href="Expressions.html#EX_STRING">string expression</a>
+    specifying a program, a shell script, or a command line to receive output.</li>
+  <li><i>variable</i> is a <a href="Variables.html">variable</a> of type
+    <a href="DataTypes.html#DT_STRING">STRING</a>
+    that specifies one of: <code>SCREEN</code>, <code>PRINTER</code>, <code>FILE</code>,
+    <code>PIPE</code>, <code>PIPE IN LINE MODE</code>, <code> PIPE IN FORM
+    MODE</code>.&nbsp; If <code>PRINTER</code> is specified, the 
+	<a href="EnvironmentVariables.html#EV_DBPRINT"><tt>DBPRINT</tt></a> environment 
+	variable specifies which printer. </li>
+  <li><i>sax-handler-object</i> is a variable referencing an <a href="ClassSaxDocumentHandler.html">om.SaxDocumentHandler</a>
+    instance.</li>
+  <li><i>m-left</i> is the left margin&nbsp;in number of characters.</li>
+  <li><i>m-right</i> is the right margin&nbsp;in number of characters.</li>
+  <li><i>m-top</i> is the top margin in number of lines.</li>
+  <li><i>m-bottom</i>   is the bottom  margin in number of lines.</li>
+	<li><i>m-length</i> is the total number of lines on the page.</li>
+  <li><i>c-top</i> is a string that defines the page-eject character sequence.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>DEFINE </tt>file_name <tt>VARCHAR</tt>(200), page_size <tt>INTEGER</tt>
+<CODE class=linenumber>02</CODE> ...
+<CODE class=linenumber>03</CODE> <tt>START REPORT </tt>myrep
+<CODE class=linenumber>04</CODE>   <tt>TO FILE</tt> file_name
+<CODE class=linenumber>05</CODE>   <tt>WITH PAGE LENGTH </tt>= page_size</PRE>
+
+<h4>Usage:</h4>
+
+The <tt>START REPORT</tt> statement initializes a report. The instruction allows
+you to specify the report output destination and the page dimensions and
+margins.
+<p><tt>START REPORT</tt> typically precedes a loop instruction such as <a href="FlowControl.html">FOR,
+FOREACH, or WHILE</a> in which <a href="#RPT_DF_OUTPUT">OUTPUT TO REPORT</a>
+feeds the report routine with data. After the loop terminates, <a href="#RPT_DRV_FINISH">FINISH
+REPORT</a> completes the processing of the output.</p>
+
+
+<h4><font color="#ff0000">Warnings:</font></h4>
+<ol>
+  <li>If a <tt>START REPORT</tt> statement references a report that is already running,
+    the report is re-initialized; any output might be unpredictable.</li>
+</ol>
+
+<h5>Output specification</h5>
+<p>The <tt>TO</tt> clause can be used to specify a destination for output. If
+you omit the <tt>TO</tt> clause, the Genero runtime system sends report output
+to the destination specified in the
+    <a href="#RPT_DEFINITION">REPORT definition</a>. If the REPORT routine does
+not define an <a href="#RPT_DF_OUTPUT">OUTPUT clause</a>, the report output is
+sent by default to the report viewer when in GUI mode, or to the screen when in
+TUI mode.</p>
+<p>Report output can be specified dynamically as follows:</p>
+<ul>
+  <li>The <tt>TO FILE</tt> option can specify the <i>filename </i>as a character
+    variable that is assigned at runtime.</li>
+  <li>
+    <p ALIGN="LEFT">The <tt>TO PIPE</tt> option can specify the <i>program </i>as
+    a character variable that is assigned at runtime.</li>
+  <li>
+    <p ALIGN="LEFT">The <tt>TO OUTPUT</tt> option can specify the report output
+    with a string expression, described later in detail.</li>
+</ul>
+<p>The <tt>SCREEN</tt> option specifies that output is to the report window. The way the
+report is displayed to the end user depends on whether you are in TUI mode or GUI mode.
+In TUI mode, the report output displays to the terminal screen. In GUI mode, the
+report output displays in a dedicated popup window called the Report Viewer.</p>
+<p>The <tt>PRINTER</tt> option instructs the runtime system to output the report
+to the device or program defined by the <a href="EnvironmentVariables.html#EV_DBPRINT">DBPRINT</a> 
+environment	variable.</p>
+<p>When using the <tt>FILE</tt> option, you can specify a file name as the report
+destination. Output will be sent to the specified file. If the file exists, its
+content will be overwritten by the new report output. Note that the <tt>FILE</tt>
+keyword is optional, but it's best to include it to make your code more readable.</p>
+<p>The <tt>PIPE</tt> option defines a program, shell script, or command line to 
+which the report output must be sent, using the standard input channel. When using
+the TUI mode, you can use the <tt>IN [LINE|FORM] MODE</tt> option to specify
+whether the program is in line mode or in formatted mode when report output is sent to a pipe. 
+See <a href="Programs.html#options-run">screen modes</a> for more details.</p>
+<p>The <tt>TO OUTPUT</tt> option allows you to specify one of the above output
+options dynamically at runtime. The character string expression must be one
+of: <code>&quot;SCREEN&quot;</code>, <code>&quot;PRINTER&quot;</code>, <code>&quot;FILE&quot;</code>,
+<code>&quot;PIPE&quot;</code>, <code>&quot;PIPE IN LINE MODE&quot;</code>, <code>&quot; PIPE IN FORM
+    MODE&quot;</code>.&nbsp;If the expression specifies <code>&quot;FILE&quot;</code>
+or <code>&quot;PIPE&quot;</code>, you can also specify a <i>filename </i>or <i>program
+</i>in a character variable following the <tt>DESTINATION</tt> keyword.</p>
+<p>The <tt>XML HANDLER</tt> option indicates that the report output will be
+generated as XML and re-directed to a SAX-document handler. When using XML
+output, the report result can be shown in the Genero Report Engine installed on
+the front-end workstation. See <a href="#RPT_XML">XML output</a> for more details.</p>
+<h5>Page dimensions specification</h5>
+<p>The <tt>WITH</tt> clause defines the dimensions of each report page and the
+left, top, right and bottom margins. The values corresponding to a margin and page length must be valid
+<a href="Expressions.html#EX_INTEGER">integer expressions</a>. The margins can be defined in 
+any order, but a comma &quot;,&quot; is required to separate two <a href="#dimension-option">page dimensions
+options</a>.</p>
+<ul>
+  <li>The <tt>LEFT MARGIN</tt> clause defines the number of blank spaces to
+    include at the start of each new line of output. The default is 5.</li>
+  <li>
+    <p ALIGN="LEFT">The <tt>RIGHT MARGIN</tt> clause defines the total number of
+    characters in each line of output, including the left margin. If you omit
+    this but specify <tt>FORMAT EVERY ROW</tt>, the default is 132.</li>
+  <li>
+    <p ALIGN="LEFT">The <tt>TOP MARGIN</tt> clause specifies how many blank
+    lines appear above the first line of text on each page of output. The
+    default is 3.</li>
+  <li>
+    <p ALIGN="LEFT">The <tt>BOTTOM MARGIN</tt> clause specifies how many blank
+    lines follow the last line of output on each page. The default is 3.</li>
+  <li>
+    <p ALIGN="LEFT">The <tt>PAGE LENGTH </tt>clause specifies the total number
+    of lines on each page, including data, the margins, and any page headers or
+    page trailers from the <tt>FORMAT</tt> section. The default page length is
+    66 lines.</li>
+</ul>
+<p ALIGN="LEFT">In addition to the page dimension options, the <tt>TOP OF PAGE</tt>
+clause can specify a page-eject sequence for a printer. On some systems,
+specifying this value can reduce the time required for a large report to produce
+output, because <a href="#RPT_STMT_SKIP">SKIP TO TOP OF PAGE</a> can substitute
+this value for multiple linefeeds.</p>
+
+<HR width="100%">
+
+
+<h3><a name="RPT_DRV_OUTPUT">OUTPUT TO REPORT</a></h3>
+
+<h4>Syntax:</h4>
+
+<p><code>OUTPUT TO REPORT <i>report-name </i>( <i>parameters </i>)</code></p>
+
+<h4>Notes:</h4>
+
+<ol>
+  <li><i>report-name</i> is the name of the report to which the <i>parameters</i>
+    should be sent.</li>
+  <li><i>parameters</i> is the data that needs to be sent to the report.  As
+    in a <a href="FlowControl.html#FC_CALL">function call</a>, <i>parameters</i> must
+    match the <a href="#RPT_DF_DEFINE">DEFINE section</a> of the report routine.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+
+<p ALIGN="LEFT">The <tt>OUTPUT TO REPORT</tt> instruction feeds the <a href="#RPT_DEFINITION">Report Routine</a>
+with a single set of data values (called an <i>input record</i>), which
+corresponds usually to one printed line in the report output.</p>
+<p ALIGN="LEFT">An <i>input record </i>is the ordered set of values returned by
+the expressions that you list between the parentheses following the report
+name in the <tt>OUTPUT TO REPORT</tt> statement. The specified values are passed
+to the report routine, as part of the <i>input record</i>. The <i>input record</i>
+typically corresponds to a retrieved row from the database. The set of values is
+usually grouped in a <a href="Records.html">RECORD</a> variable and best
+practice is to define a <a href="UserTypes.html">User Type</a> in order to ease
+the variable definitions required in the code implementing the report driver and
+the report routine definition, for example:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>SCHEMA </tt>stores
+<CODE class=linenumber>02</CODE> <tt>TYPE </tt>t_cust <tt>RECORD LIKE </tt>customer.*
+<CODE class=linenumber>03</CODE> ...
+<CODE class=linenumber>04</CODE> <tt>DEFINE </tt>r_cust t_cust
+<CODE class=linenumber>05</CODE> ...
+<CODE class=linenumber>06</CODE>   <tt>OUTPUT TO REPORT </tt>cust_report(r_cust.*)
+<CODE class=linenumber>07</CODE> ...
+<CODE class=linenumber>08</CODE> <tt>REPORT </tt>cust_report(r)
+<CODE class=linenumber>09   </CODE> <tt>DEFINE </tt>r t_cust
+<CODE class=linenumber>10</CODE>   ...</PRE>
+
+<p ALIGN="LEFT">You typically include the <tt>OUTPUT TO REPORT</tt> statement
+within a <a href="FlowControl.html#FC_WHILE">WHILE</a>, <a href="FlowControl.html#FC_FOR">FOR</a>,
+or <a href="ResultSets.html#RS_FOREACH">FOREACH</a> loop, so that the program
+passes data to the report one <i>input record</i> at a time. The next example
+uses a <tt>FOREACH</tt> loop to fetch data from the database and pass it as <i>input
+record</i> to a report:</p>
+<pre><CODE class=linenumber>01</CODE> <tt>SCHEMA</tt> stores
+<CODE class=linenumber>02</CODE> <tt>DEFINE</tt> o <tt>LIKE </tt>orders.*
+<CODE class=linenumber>03</CODE> ...
+<CODE class=linenumber>04</CODE> <tt>DECLARE</tt> order_c <tt>CURSOR FOR</tt>
+<CODE class=linenumber>05</CODE>   <tt>  SELECT </tt>orders.*
+<CODE class=linenumber>06</CODE>     <tt>  FROM</tt> orders <tt>ORDER BY</tt> ord_cust
+<CODE class=linenumber>07</CODE>   <tt>START REPORT</tt> order_list 
+<CODE class=linenumber>08</CODE>   <tt>FOREACH</tt> order_c <tt>INTO</tt> o.*
+<CODE class=linenumber>09</CODE>     <tt>OUTPUT TO REPORT </tt>order_list(o.*)
+<CODE class=linenumber>10</CODE>   <tt>END FOREACH</tt>
+<CODE class=linenumber>11</CODE>   <tt>FINISH REPORT</tt> order_list
+<CODE class=linenumber>12</CODE> ...</pre>
+
+
+<p ALIGN="LEFT">Special consideration should be taken regarding row ordering
+with reports: For example if the report groups rows with <a href="#RPT_FMT_BAG">BEFORE
+GROUP OF</a> and/or <a href="#RPT_FMT_BAG">AFTER GROUP OF</a> sections, the rows
+must be ordered by the column specified in these sections, and rows should
+preferably be ordered by the <i>report driver</i> to avoid <a href="#RPT_TWOPASS">two-pass
+reports</a>.</p>
+<p ALIGN="LEFT">If <tt>OUTPUT TO REPORT</tt> is not executed, none of the
+control blocks of the report routine are executed, even if the program also
+includes the <a href="#RPT_DRV_START">START REPORT</a> and <a href="#RPT_DRV_FINISH">FINISH
+REPORT</a> statements.</p>
+
+
+<h4><font color="#ff0000">Warnings:</font></h4>
+<ol>
+  <li>The members of the <i>input record</i> that you specify in the expression
+    list of the <tt>OUTPUT TO REPORT</tt> statement must correspond to elements
+    of the formal argument list in the REPORT definition in their number and
+    their position, and must be of compatible data types.&nbsp; At compile time,
+    the number of parameters passed with the <tt>OUTPUT TO REPORT</tt>
+    instruction is not checked against the
+    <a href="#RPT_DF_DEFINE">DEFINE section</a>  of the report routine. This is
+    a known behavior of the language.</li>
+  <li>Arguments of the <a href="DataTypes.html#DT_TEXT">TEXT</a> and <a href="DataTypes.html#DT_BYTE">BYTE</a>
+    data types are passed by reference rather than by value; arguments of other
+    data types are passed by value. A report can use the <a href="#RPT_OPER_WORDWRAP">WORDWRAP</a>
+    operator with the <a href="#RPT_STMT_PRINT">PRINT</a> statement to display
+    TEXT values. A report cannot display BYTE values; the character string
+    &lt;byte value&gt; in output from the report indicates a BYTE value.</li>
+</ol>
+
+<HR width="100%">
+
+<h3><a name="RPT_DRV_FINISH">FINISH REPORT</a> </h3>
+
+<h4>Syntax:</h4>
+
+<p><code>FINISH REPORT <i>report-name</i></code></p>
+
+<h4>Notes:</h4>
+
+<ol>
+  <li><i>report-name</i> is the name of the report to be ended.</li>
+  <li><tt>FINISH REPORT</tt> must be the last statement in the report driver.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p><tt>FINISH REPORT</tt>   closes the report driver. Therefore, it must be the
+last statement in the report driver and must follow a <tt>START REPORT</tt>
+statement that specifies the name of the same report.</p>
+
+<p><tt>FINISH REPORT</tt> <b> </b> does the following:</p>
+
+<ol>
+  <li>Completes the second pass, if report is a <a href="#RPT_TWOPASS">two-pass
+    report</a>. These 'second pass'
+    activities handle the calculation and output of any aggregate values that are
+    based on all the input records in the report, such as <tt>COUNT(*)</tt> or
+    <tt>PERCENT(*)</tt> with no <tt>GROUP</tt> qualifier.</li>
+  <li>Executes any <tt>AFTER GROUP OF</tt> control blocks.</li>
+  <li>Executes any <tt>PAGE HEADER</tt>, <tt>ON LAST ROW</tt>, and <tt>PAGE TRAILER</tt>
+    control blocks to complete the report.</li>
+  <li>Copies data from the output buffers of the report to the destination.</li>
+  <li>Closes the Select cursor on any temporary table that was created to order the
+    input records or to perform aggregate calculations.</li>
+</ol>
+
+<HR width="100%">
+
+<h3><a name="RPT_DRV_TERMINATE">TERMINATE REPORT</a></h3>
+
+
+
+<h4>Syntax:</h4>
+
+
+<p><code>TERMINATE REPORT <i>report-name</i></code>
+
+
+
+</p>
+
+
+<h4>Notes:</h4>
+
+<ol>
+  <li><i>report-name</i> is the name of the report to be canceled.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+
+<p><tt>TERMINATE REPORT</tt> cancels the report processing. It is typically used
+when the program (or the user) becomes aware that
+a problem prevents the report from producing part of its intended output, or
+when the user interrupted the report processing.</p>
+
+<p><tt>TERMINATE REPORT</tt> has the following effects:</p>
+
+<ul>
+  <li> Terminates the processing of the current report.</li>
+  <li> Deletes any intermediate files or temporary tables that were created in
+    processing the report.</li>
+</ul>
+
+<p>The <a href="#RPT_STMT_EXIT">EXIT REPORT</a> instruction has the same effect,
+except that it can be used inside the report definition.</p>
+
+
+<HR width="100%">
+
+<h3><a name="RPT_DEFINITION">Report Definition</a></h3>
+
+<h4><a name="SYNTAX">Syntax:</a></h4>
+
+<p><code>[PUBLIC|PRIVATE] REPORT <i>report-name </i> (<i>argument-list</i>)<br>
+&nbsp;&nbsp;&nbsp; <u>[</u> <i>define-section&nbsp; </i><u>]</u><br>
+&nbsp;&nbsp;&nbsp; <u>[</u>  <i>output-section&nbsp; </i><u>]</u><br>
+&nbsp;&nbsp;&nbsp; <u>[</u>   <i>sort-section </i><u>]</u><br>
+&nbsp;&nbsp;&nbsp; <u>[</u> <i>format-section&nbsp; </i><u>]</u><br>
+END REPORT
+</code>
+
+<p>where <i>define-section</i> is:</p>
+
+<p><code>DEFINE <i>variable-definition</i> <u>[,...]</u></code>
+</p>
+
+<p>where <i>output-section</i> is:</p>
+
+<p><code>OUTPUT&nbsp;<br>
+<u>[</u><br>
+&nbsp; REPORT TO<br>
+&nbsp; <u>{</u><br>
+&nbsp; &nbsp;&nbsp;&nbsp; SCREEN<br>
+&nbsp;&nbsp;&nbsp; <u>|</u> PRINTER<br>
+&nbsp; &nbsp; <u>|</u>&nbsp;<u>[</u> FILE<i> </i><u>]</u> <i>filename<br>
+&nbsp;&nbsp;&nbsp;
+</i> 
+<u>|</u>&nbsp;PIPE <i>program</i> <u>[</u> IN FORM
+MODE <u>|</u>  IN LINE MODE <u>]</u><br>
+ &nbsp; <u>}</u> <br>
+<u>]</u><br>
+<u>[</u><br>
+&nbsp; <u>[</u> WITH <u>]<br>
+</u>
+&nbsp; <u>[</u>  LEFT MARGIN&nbsp;<i>m-left </i><u>]</u>&nbsp;<br>
+&nbsp; <u>[</u>  RIGHT MARGIN&nbsp;<i>m-right</i>
+<u>]</u>&nbsp;<br>
+&nbsp; <u>[</u>  TOP
+MARGIN&nbsp;<i>m-top</i>&nbsp;<u>]</u>&nbsp;<br>
+&nbsp; <u>[</u>  BOTTOM MARGIN <i>m-bottom</i>&nbsp;<u>]</u>&nbsp;<br>
+&nbsp; <u>[</u>  PAGE LENGTH&nbsp;<i>m-length</i>&nbsp;<u>]</u>&nbsp;<br>
+&nbsp; <u>[</u>  TOP OF PAGE&nbsp;<i>c-top&nbsp;</i><u>]</u>&nbsp;<br>
+ <u>]
+</u></code>
+</p>
+
+<p>where <i>sort-section</i> is:</p>
+
+<p><code> ORDER <u>[</u> EXTERNAL <u>]</u> BY <i>report-variable</i> <u>[,...]</u></code></p>
+
+<p>where <i>format-section</i> is:</p>
+
+<p><code>FORMAT EVERY ROW</code>
+</p>
+
+<p>or:
+</p>
+
+
+<p><code> FORMAT<br>
+&nbsp; &nbsp;<i>control-block</i><br>
+&nbsp;&nbsp; &nbsp;&nbsp; <u>[</u>  <i>report-only-fgl-statement <u>|</u>   sql-statement <u>|</u> 
+<a href="#RPT_STMT_ONLY"> report-statement</a> </i><u>]</u><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <u>[...]</u><br>
+&nbsp;&nbsp;&nbsp; <u>[...]</u></code>
+
+
+
+</p>
+
+
+<p>where <i>control-block</i> can be one of:
+
+
+
+</p>
+
+
+<p><code><u>{</u><br>
+<u>[</u>  FIRST <u>]</u>  PAGE HEADER<br>
+<u>|</u>&nbsp; ON EVERY ROW<br>
+<u>|</u>&nbsp; BEFORE GROUP OF <i>report-variable<br>
+</i>
+<u>|</u>&nbsp; AFTER GROUP OF <i>report-variable<br>
+</i>
+<u>|</u>&nbsp; PAGE TRAILER <i><br>
+</i><u>|</u>&nbsp; ON LAST ROW<br>
+<u>}</u></code>
+
+
+
+</p>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>variable-definition</i> follows the
+<a href="Variables.html#VA_DEFINE">DEFINE</a>  instruction syntax and declares <i>report-variables</i>.</li>
+  <li><i>report-variable</i> is the name of a variable declared in the DEFINE
+    section.</li>
+  <li><i>report-only-fgl-statement</i> is a sub-set of all the regular language
+    statements (see warning below).</li>
+  <li><i>sql-statement</i> is a valid static SQL statement.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>The report definition formats input records. Like the <tt>FUNCTION</tt> or
+<tt>MAIN</tt> statement, it is a program block that can be the scope of local
+variables. It is not, however, a function; it is not reentrant, and
+<tt><a href="FlowControl.html#FC_CALL">CALL</a></tt> cannot invoke it.
+The report definition receives data from its driver in sets called input records.
+These records can include program records, but other data types are also supported. Each input
+record is formatted and printed as specified by control blocks and statements
+within the report definition. Most statements and functions can be included in
+a report definition, and certain specialized statements and operators for
+formatting output can appear only in a report definition.</p>
+
+<p>Like <tt>MAIN</tt> or <tt>FUNCTION</tt>, the report definition must appear
+outside any other program block. It must begin with the <tt>REPORT</tt> statement
+and must end with the <tt>END REPORT</tt> keywords.</p>
+
+<p><b><font color="#FF0000">Warning:</font> Some statements are prohibited in a <tt>REPORT</tt> 
+routine control block. For example, it is not possible to use <tt>CONSTRUCT</tt>,
+<tt>INPUT</tt>, <tt>DEFER</tt>, <tt>DEFINE</tt>, <tt>REPORT</tt>, <tt>RETURN</tt>
+instructions in a control block of a report.&nbsp;</b></p>
+
+<p>By default, report routines are public; They can be called by any other module of
+the program. If a report routine is only used by the current module, you may want to
+hide that routine to other modules, to make sure that it will not be called by
+mistake. To keep a report routine local to the module, add the <tt>PRIVATE</tt>
+keyword before the report header. Private report routines are only hidden to
+external modules, all function of the current module can still call local
+private report routines.</p>
+
+<p>The <i><a href="#RPT_DF_DEFINE">define-section</a></i> declares the data
+    types of local variables used within the report, and of any variables (the
+    input records) that are passed as arguments to the report by the calling
+    statement. Reports without arguments or local variables do not require a
+    <tt>DEFINE</tt> section.</p>
+The <i><a href="#RPT_DF_OUTPUT">output-section</a></i> can set margin and
+    page size values, and can also specify where to send the formatted
+    output. Output from the report consists of successive pages, each containing
+    a fixed number of lines whose margins and maximum number of characters
+    are fixed.
+<p>The <i><a href="#RPT_DF_ORDERBY">sort-section</a></i> specifies how the
+    rows have to be sorted. The specified sort order determines the order in
+    which the runtime system processes any <tt>GROUP OF</tt> control blocks in
+    the <tt>FORMAT</tt> section.
+<p>The <i><a href="#RPT_DF_FORMAT">format-section</a> </i> is required. It
+    specifies the appearance of the report, including page headers, page trailers,
+    and aggregate functions of the data. It can also contain control blocks that
+    specify actions to take before or after specific groups of rows are processed.
+    (Alternatively, it can produce a default report by only specifying
+     <tt>FORMAT EVERY ROW</tt>).
+
+<HR width="100%">
+
+<h3><a name="RPT_DF_DEFINE">The DEFINE Section</a></h3>
+
+<h4>Syntax:</h4>
+
+<p>The syntax of the report <tt>DEFINE</tt> section is the same as for the <a href="Variables.html#VA_DEFINE">DEFINE statement</a>,
+except that you cannot define arrays or array members for records.</p>
+
+<h4>Usage:</h4>
+
+<p>This section declares a data type for each formal argument in the <tt>REPORT</tt>
+prototype and for any additional local variables that can be referenced only
+within the <tt>REPORT</tt> program block. The <tt>DEFINE</tt> section is required
+if you pass arguments to the report or if you reference local variables in the
+report.</p>
+
+<p>For declaring local report variables, the same rules apply to the <tt>DEFINE</tt>
+section as to the <a href="Variables.html#VA_DEFINE">DEFINE</a> statement in
+<tt>MAIN</tt> and <tt>FUNCTION</tt> program blocks. There are some differences
+and exceptions, however:</p>
+
+<ul>
+  <li> Report arguments cannot be of type <tt>ARRAY</tt>.</li>
+  <li> Report arguments cannot be records that include <tt>ARRAY</tt> members.</li>
+  <li> Report local variables are not allocated on the stack at every <tt>OUTPUT
+    TO REPORT</tt> call: The scope of the variables in the <tt>DEFINE</tt>
+    section is local to the report routine, but the lifetime is the duration of
+    the program, like module or global variables. In other words, report
+    variables persist across <tt>OUTPUT TO REPORT</tt>  calls.</li>
+</ul>
+
+<p>Data types of local variables that are not formal arguments are unrestricted.
+You must include arguments in the report prototype and declare them in the
+<tt>DEFINE</tt> section, if any of the following conditions is true:</p>
+
+<ul>
+  <li> If you specify <tt>FORMAT EVERY ROW</tt> to create a default report, you
+    must pass all the values for each record of the report.</li>
+  <li> If an <a href="#RPT_DF_ORDERBY"> ORDER BY section</a> is included, you must
+    pass all the values that <tt>ORDER BY</tt> references for each input record of
+    the report.</li>
+  <li> If you use the <tt>AFTER GROUP OF</tt> control block, you must pass at
+    least the arguments that are named in that control block.</li>
+  <li> If an aggregate that depends on all records of the report appears anywhere
+    except in the <tt>ON LAST ROW</tt> control block, you must pass each of the
+    records of the report through the argument list.</li>
+</ul>
+
+<p>Aggregates dependent on all records include:</p>
+
+<ul>
+  <li> <tt>GROUP PERCENT(*)</tt> (anywhere in a report).</li>
+  <li> Any aggregate without the <tt>GROUP</tt> keyword (anywhere outside the <tt>ON LAST ROW</tt>
+    control block).</li>
+</ul>
+
+<p>If your report calls an aggregate function, an error might result if any
+argument of an aggregate function is not also a format argument of the report.
+You can, however, use global or module variables as arguments of aggregates if
+the value of the variable does not change while the report is executing.</p>
+
+<p>A report can reference variables of global or module scope that are not
+declared in the <tt>DEFINE</tt> section. Their values can be printed, but they
+can cause problems in aggregates and in <tt>BEFORE GROUP OF</tt> and
+<tt>AFTER GROUP OF</tt> clauses. Any references to non-local variables can
+produce unexpected results, however, if their values change while a <a href="#RPT_TWOPASS">two-pass
+report</a> is executing.</p>
+
+<HR width="100%">
+
+
+<h3><a name="RPT_DF_OUTPUT">The OUTPUT Section</a></h3>
+
+<h4>Syntax:</h4>
+
+<p><code> OUTPUT&nbsp;<br>
+<u>[</u><br>
+&nbsp; REPORT TO<br>
+&nbsp; <u>{</u><br>
+&nbsp; &nbsp;&nbsp;&nbsp; SCREEN<br>
+&nbsp;&nbsp;&nbsp; <u> |</u> PRINTER<br>
+&nbsp; &nbsp; <u> |</u>&nbsp;<u>[</u> FILE<i> </i><u>]</u> <i>filename<br>
+</i> 
+&nbsp;&nbsp; &nbsp;<u>|</u> PIPE <u>[</u> IN FORM MODE <u>|</u> IN
+LINE MODE <u>]</u> <i>program</i> &nbsp;<br>
+ &nbsp; <u>}</u> <br>
+<u>]</u><br>
+<u>[</u><br>
+ &nbsp; <u>[</u> WITH <u>]<br>
+</u>
+&nbsp; <u>[</u>  LEFT MARGIN&nbsp;<i>m-left </i><u>]</u>&nbsp;<br>
+&nbsp; <u>[</u>  RIGHT MARGIN&nbsp;<i>m-right</i>
+<u>]</u>&nbsp;<br>
+&nbsp; <u>[</u>  TOP
+MARGIN&nbsp;<i>m-top</i>&nbsp;<u>]</u>&nbsp;<br>
+&nbsp; <u>[</u>  BOTTOM MARGIN <i>m-bottom</i>&nbsp;<u>]</u>&nbsp;<br>
+&nbsp; <u>[</u>  PAGE LENGTH&nbsp;<i>m-length</i>&nbsp;<u>]</u>&nbsp;<br>
+&nbsp; <u>[</u>  TOP OF PAGE&nbsp;<i>c-top&nbsp;</i><u>]</u>&nbsp;<br>
+ <u>]
+</u></code>
+</p>
+
+<h4>Notes:</h4>
+
+<ol>
+  <li><i>program</i> is a <a href="DataTypes.html#DT_STRING">string</a>
+    <a href="Literals.html#LT_STRING">literal</a>,
+    <a href="Globals.html">global</a>, or <a href="Constants.html">constant</a>
+    specifying the name of a program, shell script, command receiving the output.</li>
+  <li><i>filename </i>is a <a href="DataTypes.html#DT_STRING">string</a>
+    <a href="Literals.html#LT_STRING">literal</a>,
+    <a href="Globals.html">global</a>, or <a href="Constants.html">constant</a>
+    specifying the file which receives the output of the report.</li>
+  <li><i>m-left</i> is the left margin&nbsp;in number of characters.</li>
+  <li><i>m-right</i> is the right margin&nbsp;in number of characters.</li>
+  <li><i>m-top</i> is the top margin in number of lines.</li>
+  <li><i>m-bottom</i> is an integer the bottom margin in number of lines.</li>
+  <li><i>c-top</i> is a string that defines the page-eject character sequence.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>The <tt>OUTPUT</tt> section can specify the destination and dimensions for
+output from the report and the page-eject sequence for the printer. If you omit the
+<tt>OUTPUT</tt> section, the report uses default values to format each page.
+This section is superseded by any corresponding
+<tt><a href="#RPT_DRV_START"> START REPORT</a></tt> specifications.</p>
+
+<p>The <tt>OUTPUT</tt> section can direct the output from the report to a
+printer, file, or pipe, and can initialize the page dimensions and margins of
+report output.&nbsp; If <code>PRINTER</code> is specified, the 
+<a href="EnvironmentVariables.html#EV_DBPRINT"><tt>DBPRINT</tt></a> environment 
+	variable specifies which printer. </p>
+
+<p>The <tt><a href="#RPT_DRV_START"> START REPORT</a></tt> statement of the report driver can override all of
+these specifications by assigning another destination in its <tt>TO</tt> clause
+or by assigning other dimensions, margins, or another page-eject sequence in the
+<tt>WITH</tt> clause.</p>
+
+<p>Because the size specifications for the dimensions and margins of a page of
+report output that the <tt>OUTPUT</tt> section can specify must be literal integers,
+you might prefer to reset these values in the <tt>START REPORT</tt> statement,
+where you can use variables to assign these values dynamically at runtime.</p>
+
+<HR width="100%">
+
+
+<h3><a name="RPT_DF_ORDERBY">The ORDER BY Section</a></h3>
+
+<h4>Purpose:</h4>
+
+<p>This section specifies how the variables of the input records are to be sorted. It is
+required if the report driver does not send sorted data to the report. The
+specified sort order determines the order in which the runtime system processes
+any <tt>GROUP OF</tt> control blocks in the <a href="#RPT_DF_FORMAT">FORMAT</a>
+section.</p>
+
+<h4>Syntax:</h4>
+
+<p><code>ORDER <u>[</u> EXTERNAL <u>]</u> BY <i>report-variable </i><u>[</u> DESC <u>|</u>
+ASC <u>]</u> <u>[</u>,...<u>]</u></code></p>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>report-variable&nbsp;</i>identifies one of the <a href="Variables.html">variables</a>
+    passed to the report routine to be used for sorting rows.<br>
+    The variables must
+    be separated by a comma.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>The <tt>ORDER BY</tt> section specifies a sort list for the input records.
+Include this section if values that the report definition receives from the
+report driver are significant in determining how <tt>BEFORE GROUP OF</tt> or
+<tt>AFTER GROUP OF</tt> control blocks will process the data in the formatted
+report output.</p>
+
+<p>If you omit the <tt>ORDER BY</tt> section, the runtime system processes
+input records in the order received from the
+<a href="#RPT_DRIVER">report driver</a> and processes any <tt>GROUP OF</tt>
+control blocks in their order of appearance in the <tt>FORMAT</tt> section.
+If records are not sorted in the <a href="#RPT_DRIVER"> report driver</a>,
+the <tt>GROUP OF</tt> control blocks might be executed at random intervals
+(that is, after any input record) because unsorted values tend to change from
+record to record.</p>
+
+<p>If you specify only one variable in the <tt>GROUP OF</tt> control blocks, and the input records are already sorted in sequence on that variable by the
+<tt>SELECT</tt> statement, you do not need to include an <tt>ORDER BY</tt>
+section in the report.</p>
+<p>Specify <tt>ORDER EXTERNAL BY</tt> if the input records have already been
+sorted by the <tt>SELECT</tt>  statement used by the
+    <a href="#RPT_DF_OUTPUT"> report driver</a>. The list of variables after the
+keywords <tt>ORDER EXTERNAL BY</tt> control the execution order of <tt>GROUP BY</tt>
+control blocks.</p>
+<p>Without the <tt>EXTERNAL</tt> keyword, the report becomes a <a href="#RPT_TWOPASS">two-pass
+report</a>,
+meaning that the report engine processes the set of input records twice. During
+the first pass, the report engine sorts the data and stores the sorted values in
+a temporary table in the database. During the second pass, it calculates any
+aggregate values and produces output from data in the temporary files.</p>
+<p>With the <tt>EXTERNAL</tt> keyword, the report engine only needs to make a
+single pass through the data: it does not need to build the temporary table in
+the database for sorting the data. However, note that if the report routine
+contains aggregations functions such as <a href="#RPT_AGGR_PERCENT">GROUP
+PERCENT(*)</a>, the report will become a <a href="#RPT_TWOPASS">two-pass report</a>
+because such aggregation function needs all rows to compute the value.</p>
+
+<p>The <tt>DESC</tt> or <tt>ASC</tt> clause defines the sort order.</p>
+<HR width="100%">
+
+
+
+<h3><a name="RPT_DF_FORMAT">The FORMAT Section</a></h3>
+
+
+
+<h4>Purpose:</h4>
+
+
+
+<p>A report definition must contain a <tt>FORMAT</tt> section. The <tt>FORMAT</tt>
+section determines how the output
+from the report will look. It works with the values that are passed to the <tt>REPORT</tt>
+program block through the argument list or
+with global or module variables in each record of the report. In a source file, the
+<tt>FORMAT</tt> section begins with the <tt>FORMAT</tt> keyword and ends with the <tt>
+END REPORT</tt> keywords.</p>
+
+
+
+<h4>Syntax:</h4>
+
+
+
+<p>Default format:</p>
+
+
+<p><code> FORMAT
+ EVERY ROW</code>
+
+
+
+</p>
+
+
+<p>Custom format:
+
+
+
+</p>
+
+
+<p><code> FORMAT<br>
+&nbsp; &nbsp;<i>control-block</i><br>
+&nbsp;&nbsp; &nbsp;&nbsp; <u>[</u>  <i>report-only-fgl-statement <u>|</u>   sql-statement <u>|</u> 
+<a href="#RPT_STMT_ONLY"> report-statement</a> </i><u>]</u><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <u>[...]</u><br>
+&nbsp;&nbsp;&nbsp; <u>[...]</u></code>
+
+
+
+</p>
+
+
+<p>where <i>control-block</i> can be one of:
+
+
+
+</p>
+
+
+<p><code><u>{</u><br>
+<u>[</u>  FIRST <u>]</u>  PAGE HEADER<br>
+<u>|</u>&nbsp; ON EVERY ROW<br>
+<u>|</u>&nbsp; BEFORE GROUP OF <i>report-variable<br>
+</i>
+<u>|</u>&nbsp; AFTER GROUP OF <i>report-variable<br>
+</i>
+<u>|</u>&nbsp; PAGE TRAILER <i><br>
+</i><u>|</u>&nbsp; ON LAST ROW<br>
+<u>}</u></code>
+
+
+
+</p>
+
+
+<h4>Notes:
+
+
+
+</h4>
+
+
+<ol>
+  <li><i>report-only-fgl-statement</i>  is any language instruction supported in
+    the report routine.</li>
+  <li><i>sql-statement</i> is any SQL statement supported by the language.</li>
+  <li><i><a href="#RPT_STMT_ONLY">report-statement</a></i> is any report-specific instruction.</li>
+  <li><i>report-variable</i> is the name of a variable declared in the DEFINE
+    section.</li>
+  <li>&nbsp;</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>The <tt>FORMAT</tt> section is made up of the following <i>Control Blocks</i>:</p>
+
+<ul>
+  <li><a href="#RPT_FMT_FPH">FIRST PAGE HEADER</a></li>
+  <li><a href="#RPT_FMT_PH">PAGE HEADER</a></li>
+  <li><a href="#RPT_FMT_PT">PAGE TRAILER</a></li>
+  <li><a href="#RPT_FMT_BAG">BEFORE GROUP OF</a></li>
+  <li><a href="#RPT_FMT_BAG">AFTER GROUP OF</a></li>
+  <li><a href="#RPT_FMT_OEROW">ON EVERY ROW</a></li>
+  <li><a href="#RPT_FMT_LROW">ON LAST ROW</a></li>
+</ul>
+
+<p>If you use the <tt>FORMAT EVERY ROW</tt>, no other statements or control blocks
+are valid. The <tt>EVERY ROW</tt> keywords specify a default output format,
+including every input record that is passed to the report.</p>
+
+<p>Control blocks define the structure of a report by specifying one or more
+statements to be executed when specific parts of the report are processed.</p>
+
+<p>If a report driver includes <tt>START REPORT</tt> and <tt>FINISH REPORT</tt>
+statements, but no data records are passed to the report, no control blocks are
+executed. That is, unless the report executes an <tt>OUTPUT TO REPORT</tt>
+statement that passes at least one input record to the report; then neither the
+<tt>FIRST PAGE HEADER</tt> control block nor any other control block is executed</p>
+
+<p>Apart from <tt>BEFORE GROUP OF</tt> and <tt>AFTER GROUP OF</tt>, each control
+block must appear only one time.</p>
+
+<p>More complex <tt>FORMAT</tt> sections can contain control blocks like
+<tt>ON EVERY ROW</tt> or <tt>BEFORE GROUP OF</tt>, which contain statements to
+execute while the report is being processed. Control blocks can contain report
+execution statements and other executable statements.</p>
+
+<p>See also <a href="#RPT_STMT">statements and report format section</a>.</p>
+
+<p>A control block may invoke most <i>fgl-statements</i> and <i>sql-statements</i>,
+except those listed in <a href="#RPT_STMT_PROHIB">prohibited statements</a>.</p>
+
+<p>The <tt>BEFORE/AFTER GROUP OF</tt> control blocks can include aggregate functions
+to instruct the report engine to automatically compute such values.</p>
+
+<p>A <i><a href="#RPT_STMT_ONLY">report-statement</a></i> is a
+statement specially designed for the report format section.
+It cannot be used in any other part of the program.</p>
+
+<p>The sequence in which the <tt>BEFORE GROUP OF</tt> and <tt>AFTER GROUP OF</tt>
+control blocks are executed depends on the sort list in the
+<tt><a href="#RPT_DF_ORDERBY"> ORDER BY</a></tt> section, regardless of the
+physical sequence in which these control blocks appear within the <tt>FORMAT</tt>
+section.</p>
+
+<HR width="100%">
+
+<h3><a name="RPT_FMT_EROW">FORMAT EVERY ROW</a></h3>
+
+A report routine written with <tt>FORMAT EVERY ROW</tt> formats the report in
+a simple default format, containing only the values that are passed to the
+<tt>REPORT</tt> program block through its arguments, and the names of the arguments.
+You cannot modify the <tt>EVERY ROW</tt> statement with any of the statements listed
+in <a href="#RPT_STMT_ONLY">report execution statements</a>, and neither can you
+include any control blocks in the <tt>FORMAT</tt> section.<p>The report engine uses
+as column headings the names of the variables that the report driver passes as
+arguments at runtime. If all fields of each input record can fit horizontally on
+a single line, the default report prints the names across the top of each page and
+the values beneath. Otherwise, it formats the report with the names down the left
+side of the page and the values to the right, as in the previous example. When a
+variable contains a null value, the default report prints only the name of the
+variable, with nothing for the value.</p>
+
+<p>The following example is a brief report specification that uses <tt>FORMAT
+EVERY ROW</tt>. We assume here that the cursor that retrieved the
+input records for this report was declared with an <tt>ORDER BY</tt> clause,
+so that no <tt>ORDER BY</tt> section is needed in this report definition:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>DATABASE</tt> stores7
+<CODE class=linenumber>02</CODE>
+<CODE class=linenumber>03</CODE> <tt>REPORT </tt>simple( order_num, customer_num, order_date )
+<CODE class=linenumber>04</CODE>
+<CODE class=linenumber>05</CODE>   <tt>DEFINE</tt> order_num <tt>LIKE </tt>orders.order_num,
+<CODE class=linenumber>06</CODE>         customer_num <tt>LIKE </tt>orders.customer_num,
+<CODE class=linenumber>07</CODE>         order_date <tt>LIKE </tt>orders.order_date
+<CODE class=linenumber>08</CODE>
+<CODE class=linenumber>09</CODE>   <tt>FORMAT EVERY ROW</tt>
+<CODE class=linenumber>10</CODE>
+<CODE class=linenumber>11</CODE> <tt>END REPORT</tt></PRE>
+
+<p>The above example would produce the following output:</p>
+
+<pre>order_num customer_num order_date
+     1001         104  01/20/1993
+     1002         101  06/01/1993
+     1003         104  10/12/1993
+     1004         106  04/12/1993
+     1005         116  12/04/1993
+     1006         112  09/19/1993
+     1007         117  03/25/1993
+     1008         110  11/17/1993
+     1009         111  02/14/1993
+     1010         115  05/29/1993
+     1011         104  03/23/1993
+     1012         117  06/05/1993</pre>
+
+<HR width="100%">
+
+
+<h3><a name="RPT_FMT_FPH">FIRST PAGE HEADER</a></h3>
+
+<p>This control block specifies the action that the runtime system takes before
+it begins processing the first input record. You can use it, for example, to
+specify what appears near the top of the first page of output from the report.</p>
+
+<p>Because the runtime system executes the <tt>FIRST PAGE HEADER</tt> control block
+before generating any output, you can use this control block to initialize variables
+that you use in the <tt>FORMAT</tt> section.</p>
+
+<p>If a report driver includes <tt>START REPORT</tt> and <tt>FINISH REPORT</tt>
+statements, but no data records are passed to the report, this control block is
+not executed. That is, unless the report executes an <tt>OUTPUT TO REPORT</tt>
+statement that passes at least one input record to the report, neither the
+<tt>FIRST PAGE HEADER</tt> control block nor any other control block is executed.</p>
+
+<p>As its name implies, you can also use a <tt>FIRST PAGE HEADER</tt> control block
+to produce a title page as well as column headings. On the first page of a report,
+this control block overrides any <tt>PAGE HEADER</tt> control block.
+That is, if both a <tt>FIRST PAGE HEADER</tt> and a <tt>PAGE HEADER</tt> control
+block exist, output from the first appears at the beginning of the first page,
+and output from the second begins all subsequent pages.</p>
+
+<p>The <tt>TOP MARGIN</tt> (set in the <tt>OUTPUT</tt> section) determines how
+close the header appears to the top of the page.</p>
+
+<h4><font color="#ff0000">Warnings:</font></h4>
+<ol>
+  <li> You cannot include a <tt>SKIP</tt> integer <tt>LINES</tt> statement inside
+    a loop within this control block.</li>
+  <li> The <tt>NEED</tt> statement is not valid within this control block.</li>
+  <li> If you use an <tt>IF</tt>…<tt>THEN</tt>…<tt>ELSE</tt> statement within this
+    control block, the number of lines displayed by any <tt>PRINT</tt> statements
+    following the <tt>THEN</tt> keyword must be equal to the number of lines
+    displayed by any <tt>PRINT</tt> statements following the <tt>ELSE</tt> keyword.</li>
+  <li> If you use a <tt>CASE</tt>, <tt>FOR</tt>, or <tt>WHILE</tt> statement
+    that contains a <tt>PRINT</tt> statement within this control block, you must
+    terminate the <tt>PRINT</tt> statement with a semicolon ( ; ).
+    The semicolon suppresses any <tt>LINEFEED</tt> characters in the loop, keeping
+    the number of lines in the header constant from page to page.</li>
+  <li> You cannot use a <tt>PRINT</tt> filename statement to read and display text
+    from a file within this control block</li>
+</ol>
+
+<p>Corresponding restrictions also apply to <tt>CASE</tt>, <tt>FOR</tt>, <tt>IF</tt>,
+<tt>NEED</tt>, <tt>SKIP</tt>, <tt>PRINT</tt>, and <tt>WHILE</tt> statements in
+<tt>PAGE HEADER</tt> and <tt>PAGE TRAILER</tt> control blocks.</p>
+
+<HR width="100%">
+
+<h3><a name="RPT_FMT_PH">PAGE HEADER</a></h3>
+
+<p>This control block is executed whenever a new page is added to the report.
+The <tt>PAGE HEADER</tt> control block specifies the action that the runtime takes
+before it begins processing each page of the report. It can specify what information,
+if any, appears at the top of each new page of output from the report.</p>
+
+<p>The <tt>TOP MARGIN</tt> specification (in the <a href="#RPT_DF_OUTPUT">OUTPUT</a>
+section) affects how many blank lines appear above the output produced by
+statements in the <tt>PAGE HEADER</tt> control block.</p>
+
+<p>You can use the <tt>PAGENO</tt> operator in a <tt>PRINT</tt> statement within a
+<tt>PAGE HEADER</tt> control block to automatically display the current page number
+at the top of every page.</p>
+
+<p>The <tt>FIRST PAGE HEADER</tt> control block overrides this control block on the
+first page of a report.</p>
+
+<p>New group values can appear in the <tt>PAGE HEADER</tt> control block when this
+control block is executed after a simultaneous end-of-group and end-of-page
+situation.</p>
+
+<p>The runtime system delays the processing of the <tt>PAGE HEADER</tt> control
+block until it encounters the first <tt>PRINT</tt>, <tt>SKIP</tt>, or <tt>NEED</tt>
+statement in the <tt>ON EVERY ROW</tt>, <tt>BEFORE GROUP OF</tt>, or
+<tt>AFTER GROUP OF</tt> control block. This order guarantees that any group columns
+printed in the <tt>PAGE HEADER</tt> control block have the same values as the
+columns printed in the <tt>ON EVERY ROW</tt> control block.</p>
+
+
+<h4><font color="#ff0000">Warnings:</font></h4>
+<ol>
+  <li>Warnings that apply to <a href="#RPT_FMT_FPH">FIRST PAGE HEADER</a> also
+    apply to <tt>PAGE HEADER</tt>.&nbsp;</li>
+</ol>
+
+<HR width="100%">
+
+
+<h3><a name="RPT_FMT_PT">PAGE TRAILER</a></h3>
+
+<p>The <tt>PAGE TRAILER</tt> control block specifies what information, if any,
+appears at the bottom of each page of output from the report.</p>
+
+<p>The runtime system executes the statements in the <tt>PAGE TRAILER</tt>
+control block before the <tt>PAGE HEADER</tt> control block when a new page is needed.
+New pages can be initiated by any of the following conditions:</p>
+
+<ul>
+  <li><tt>PRINT</tt> attempts to print on a page that is already full.</li>
+  <li><tt>SKIP TO TOP OF PAGE</tt> is executed.</li>
+  <li><tt>SKIP</tt> n <tt>LINES</tt> specifies more lines than are available on
+    the current page.</li>
+  <li><tt>NEED</tt> specifies more lines than are available on the current page.</li>
+</ul>
+
+<p>You can use the <tt>PAGENO</tt> operator in a <tt>PRINT</tt> statement within a
+<tt>PAGE TRAILER</tt> control block to automatically display the page number at the
+bottom of every page, as in the following example:</p>
+
+<pre><CODE class=linenumber>01</CODE><tt> PAGE TRAILER
+</tt><CODE class=linenumber>02</CODE><tt>    PRINT COLUMN </tt>28, <tt>PAGENO USING</tt> &quot;page &lt;&lt;&lt;&lt;&quot;</pre>
+
+<p>The <tt>BOTTOM MARGIN</tt> specification (in the <a href="#RPT_DF_OUTPUT"> OUTPUT
+section</a>) affects how close to the bottom of the page the output displays the page
+trailer.</p>
+
+<h4><font color="#ff0000">Warnings:</font></h4>
+<ol>
+  <li>Warnings that apply to <a href="#RPT_FMT_FPH">FIRST PAGE HEADER</a>
+    also apply to <tt>PAGE TRAILER</tt>.&nbsp;</li>
+</ol>
+
+<HR width="100%">
+
+
+<h3><a name="RPT_FMT_BAG">BEFORE/AFTER GROUP OF</a></h3>
+
+<p>The <tt>BEFORE/AFTER GROUP OF</tt> control blocks specify what action the runtime
+system takes respectively before or after it processes a group of input records.
+Group hierarchy is determined by the <tt>ORDER BY</tt> specification in the
+<tt>SELECT</tt> statement or in the report definition.</p>
+
+<p>A group of records is all of the input records that contain the same value for
+the variable whose name follows the <tt>AFTER GROUP OF</tt> keywords. This group
+variable must be passed through the report arguments. A report can include no more
+than one <tt>AFTER GROUP OF</tt> control block for any group variable.</p>
+
+<p>When the runtime system executes the statements in a <tt>BEFORE/AFTER GROUP OF</tt>
+control block, the report variables have the values from the first / last record of
+the new group. From this perspective, the <tt>BEFORE/AFTER GROUP OF</tt> control block
+could be thought of as the &quot;on first / last record of
+group&quot;  control block.</p>
+
+<p>Each <tt>BEFORE GROUP OF</tt> block is executed in order, from highest to lowest
+priority, at the start of a report (after any <tt>FIRST PAGE HEADER</tt> or
+<tt>PAGE HEADER</tt> control blocks, but before processing the first record) and on
+these occasions:</p>
+
+<ul>
+  <li> Whenever the value of the group variable changes (after any <tt>AFTER GROUP OF</tt>
+    block for the old value completes execution)</li>
+  <li> Whenever the value of a higher-priority variable in the sort list changes (after
+    any <tt>AFTER GROUP OF</tt> block for the old value completes execution)</li>
+</ul>
+
+<p>The runtime system executes the <tt>AFTER GROUP OF</tt> control block on these
+occasions:</p>
+
+<ul>
+  <li> Whenever the value of the group variable changes.</li>
+  <li> Whenever the value of a higher-priority variable in the sort list changes.</li>
+  <li> At the end of the report (after processing the last input record but before
+    the runtime system executes any <tt>ON LAST ROW</tt> or <tt>PAGE TRAILER</tt>
+    control blocks). In this case, each <tt>AFTER GROUP  OF</tt>
+    control block is
+    executed in ascending priority.</li>
+</ul>
+
+<p>How often the value of the group variable changes depends in part on whether the
+input records have been sorted by the <tt>SELECT</tt> statement:</p>
+
+<ul>
+  <li> If records are already sorted, the <tt>BEFORE/AFTER GROUP OF</tt> block
+    executes before the runtime system processes the first record of the group.</li>
+  <li> If records are not sorted, the <tt>BEFORE GROUP OF</tt> block might be executed
+    after any record because the value of the group variable can change with each record.
+    If no <tt>ORDER BY</tt> section is specified, all <tt>BEFORE/AFTER GROUP OF</tt>
+    control blocks are executed in the same order in which they appear in the
+    <tt>FORMAT</tt> section. The <tt>BEFORE/AFTER GROUP OF</tt> control blocks
+    are designed to work with sorted data.</li>
+</ul>
+
+<p>You can sort the records by specifying a sort list in either of the following areas:</p>
+<ul>
+  <li> An <tt>ORDER BY</tt> section in the report definition</li>
+  <li> The <tt>ORDER BY</tt> clause of the <tt>SELECT</tt> statement in the report driver</li>
+</ul>
+
+<p>To sort data in the report definition (with an <tt>ORDER BY</tt> section), make
+sure that the name of the group variable appears in both the <tt>ORDER BY</tt>
+section and in the <tt>BEFORE GROUP OF</tt> control block.</p>
+
+<p>To sort data in the <tt>ORDER BY</tt> clause of a <tt>SELECT</tt> statement, perform
+the following tasks:</p>
+
+<ul>
+  <li> Use the column name in the <tt>ORDER BY</tt> clause of the <tt>SELECT</tt>
+    statement as the group variable in the <tt>BEFORE GROUP OF</tt> control block.</li>
+  <li>If the report contains <tt>BEFORE</tt> or <tt>AFTER GROUP OF</tt> control blocks,
+    make sure that you include an <tt>ORDER EXTERNAL BY</tt> section in the report to
+    specify the precedence of variables in the sort list.</li>
+</ul>
+
+<p>If you specify sort lists in both the report driver and the report definition, the
+sort list in the <tt>ORDER BY</tt> section of the <tt>REPORT</tt> takes precedence.<br>
+When the runtime system starts to generate a report, it first executes the
+<tt>BEFORE GROUP OF</tt> control blocks in descending order of priority before it
+executes the <tt>ON EVERY ROW</tt> control block. If the report is not already at the
+top of the page, the <tt>SKIP TO TOP OF PAGE</tt> statement in a <tt>BEFORE GROUP OF</tt>
+control block causes the output for each group to start at the top of a page.</p>
+
+<p>If the sort list includes more than one variable, the runtime system sorts the
+records by values in the first variable (highest priority). Records that have the
+same value for the first variable are then ordered by the second variable and so
+on until records that have the same values for all other variables are ordered by
+the last variable (lowest priority) in the sort list.</p>
+
+<p>The <tt>ORDER BY</tt> section determines the order in which the runtime system
+processes <tt>BEFORE GROUP OF</tt> and <tt>AFTER GROUP OF</tt> control blocks.
+If you  omit the <tt>ORDER BY</tt>
+section, the runtime system processes any
+<tt>GROUP OF</tt> control blocks in the lexical order of their appearance within
+the <tt>FORMAT</tt> section.</p>
+
+<p>If you include an <tt>ORDER BY</tt> section, and the <tt>FORMAT</tt> section
+contains more than one <tt>BEFORE GROUP OF</tt> or <tt>AFTER GROUP OF</tt> control
+block, the order in which these control blocks are executed is determined by the
+sort list in the <tt>ORDER BY</tt> section. In this case, their order within the <tt>FORMAT</tt> 
+section is not significant because the sort list overrides their lexical order.</p>
+
+<p>The runtime system processes all the statements in a <tt>BEFORE GROUP OF</tt> or
+<tt>AFTER GROUP OF</tt> control block on these occasions:</p>
+
+<ul>
+  <li> Each time the value of the current group variable changes.</li>
+  <li> Each time the value of a higher-priority variable changes. How often the
+    value of the group variable changes depends in part on whether the input
+    records have been sorted. If the records are sorted, <tt>AFTER GROUP OF</tt>
+    executes after the runtime system processes the last record of the group of
+    records; <tt>BEFORE GROUP OF</tt> executes before the runtime system processes
+    the first records with the same value for the group variable. If the records
+    are not sorted, the <tt>BEFORE GROUP OF</tt> and <tt>AFTER GROUP OF</tt>
+    control blocks might be executed before and after each record because the
+    value of the group variable might change with each record.
+    All the <tt>AFTER GROUP OF</tt> and <tt>BEFORE GROUP OF</tt> control blocks
+    are executed in the same lexical order in which they appear in the
+    <tt>FORMAT</tt> section.</li>
+</ul>
+
+<p>In the <tt>AFTER GROUP OF</tt> control block, you can include the <tt>GROUP</tt>
+keyword to qualify aggregate report functions like <tt>AVG()</tt>, <tt>SUM()</tt>,
+<tt>MIN()</tt>, or <tt>MAX()</tt>:</p>
+
+<pre><CODE class=linenumber>01</CODE>  <tt>AFTER GROUP OF</tt> r.order_num
+<CODE class=linenumber>02</CODE>    <tt>PRINT</tt> r.order_date, 7 <tt>SPACES</tt>,
+<CODE class=linenumber>03</CODE>         r.order_num <tt>USING</tt>&quot;###&amp;&quot;, 8 <tt>SPACES</tt>,
+<CODE class=linenumber>04</CODE>         r.ship_date, &quot; &quot;,
+<CODE class=linenumber>05</CODE>         <tt>GROUP SUM</tt>(r.total_price) <tt>USING</tt>&quot;$$$$,$$$,$$$.&amp;&amp;&quot;
+<CODE class=linenumber>06</CODE>  <tt>AFTER GROUP OF</tt> r.customer_num
+<CODE class=linenumber>07</CODE>    <tt>PRINT</tt> 42 <tt>SPACES</tt>, &quot;-------------------&quot;
+<CODE class=linenumber>08</CODE>    <tt>PRINT</tt> 42 <tt>SPACES</tt>, <tt>GROUP SUM</tt>(r.total_price) <tt>USING</tt>&quot;$$$$,$$$,$$$.&amp;&amp;&quot;</pre>
+
+<p>Using the <tt>GROUP</tt> keyword to qualify an aggregate function is only
+valid within the <tt>AFTER GROUP OF</tt> control block. It is not valid, for example,
+in the <tt>BEFORE GROUP OF</tt> control block.</p>
+
+<p>After the last input record is processed, the runtime system executes the
+<tt>AFTER GROUP OF</tt> control blocks before it executes the <tt>ON LAST ROW</tt>
+control block.</p>
+
+<HR width="100%">
+
+
+<h3><a name="RPT_FMT_OEROW">ON EVERY ROW</a></h3>
+
+<p>The <tt>ON EVERY ROW</tt> control block specifies the action to be taken by
+the runtime system for every input record that is passed to the report definition.</p>
+
+<p>The runtime system executes the statements within the <tt>ON EVERY ROW</tt>
+control block for each new input record that is passed to the report.
+The following example is from a report that lists all the customers, their addresses,
+and their telephone numbers across the page:</p>
+
+<pre><CODE class=linenumber>01</CODE>  <tt>ON EVERY ROW</tt>
+<CODE class=linenumber>02</CODE>    <tt>PRINT</tt> r.fname, &quot; &quot;, r.lname, &quot; &quot;,
+<CODE class=linenumber>03</CODE>         r.address1, &quot; &quot;, r.cust_phone</pre>
+
+<p>The runtime system delays processing the <tt>PAGE HEADER</tt> control block (or the
+<tt>FIRST PAGE HEADER</tt> control block, if it exists) until it encounters the first
+<tt>PRINT</tt>, <tt>SKIP</tt>, or <tt>NEED</tt> statement in the <tt>ON EVERY ROW</tt>
+control block.</p>
+
+<p>If a <tt>BEFORE GROUP OF</tt> control block is triggered by a change in the value
+of a variable, the runtime system executes all appropriate <tt>BEFORE GROUP OF</tt>
+control blocks (in the order of their priority) before it executes the
+<tt>ON EVERY ROW</tt> control block. Similarly, if execution of an <tt>AFTER GROUP OF</tt>
+control block is triggered by a change in the value of a variable, the runtime system
+executes all appropriate <tt>AFTER GROUP OF</tt> control blocks (in the reverse order
+of their priority) before it executes the <tt>ON EVERY ROW</tt> control block.</p>
+
+<HR width="100%">
+
+
+<h3><a name="RPT_FMT_LROW">ON LAST ROW</a></h3>
+
+<p>The <tt>ON LAST ROW</tt> control block specifies the action that the runtime
+system is to take after it processes the last input record that was passed to the
+report definition and encounters the <tt>FINISH REPORT</tt> statement.</p>
+
+<p>The statements in the <tt>ON LAST ROW</tt> control block are executed after the
+statements in the <tt>ON EVERY ROW</tt> and <tt>AFTER GROUP OF</tt> control blocks
+if these blocks are present.</p>
+
+<p>When the runtime system processes the statements in an <tt>ON LAST ROW</tt>
+control block, the variables that the report is processing still have the values
+from the final record that the report processed. The <tt>ON LAST ROW</tt> control
+block can use aggregate functions to display report totals.</p>
+
+<HR width="100%">
+
+
+<h3><a name="RPT_STMT">Statements in Report Definition Routine</a></h3>
+
+<h4><a name="RPT_STMT_PROHIB">Prohibited Statements</a></h4>
+
+<p> Language statements that have no meaning
+inside a report definition routine
+are prohibited. The following table shows some of the statements that are
+not valid within any control block of the <tt>FORMAT</tt> section of a
+<tt>REPORT</tt> program block:</p>
+
+<div align="center">
+  <center>
+
+<table width="80%">
+  <tr>
+    <td width="33%"><tt>CONSTRUCT</tt></td>
+    <td width="33%"><tt>FUNCTION</tt></td>
+    <td width="33%"><tt>MENU</tt></td>
+  </tr>
+  <tr>
+    <td width="33%"><tt>DEFER</tt></td>
+    <td width="33%" ><tt>INPUT</tt></td>
+    <td width="33%"><tt>PROMPT</tt></td>
+  </tr>
+  <tr>
+    <td width="33%"><tt>DEFINE</tt></td>
+    <td width="33%" ><tt>INPUT ARRAY</tt></td>
+    <td width="33%"><tt>REPORT</tt></td>
+  </tr>
+  <tr>
+    <td width="33%"><tt>DISPLAY ARRAY</tt></td>
+    <td width="33%" ><tt>MAIN</tt></td>
+    <td width="33%"><tt>RETURN</tt></td>
+  </tr>
+</table>
+
+  </center>
+</div>
+
+<p> A compile-time error is issued if you attempt to include any of these
+statements in a control block of a report. You can call a function that
+includes some of these statements, but this is not recommended.</p>
+
+
+<h4><a name="RPT_STMT_ONLY">Report Control Statements</a></h4>
+
+<p>The following statements can appear only in control blocks of the
+<tt>FORMAT</tt> section of a report definition:</p>
+
+<div align="center">
+  <center>
+<table width="90%">
+    <tr>
+      <td bgColor="#c0c0c0" width="13%"><b>Statement</b></td>
+      <td bgColor="#c0c0c0"><b>Effect</b></td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="13%"> <tt>EXIT REPORT</tt></td>
+      <td vAlign="top"> Cancels processing of the report from within the report
+        definition.</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="13%"><tt>NEED</tt></td>
+      <td vAlign="top"> Forces a page break unless some specified
+        number of lines is available on the current page of the report.</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="13%"><tt>PAUSE</tt></td>
+      <td vAlign="top"> Allows the user to control scrolling of screen
+        output (This statement has no effect if output is sent to any
+        destination except the screen.)</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="13%"><tt>PRINT</tt></td>
+      <td vAlign="top"> Appends a specified item to the output of the report.</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="13%"><tt>SKIP</tt></td>
+      <td vAlign="top"> Inserts blank lines into a report or forces a page break.</td>
+    </tr>
+</table>
+  </center>
+</div>
+
+<HR width="100%">
+
+
+<h3><a name="RPT_PROTOTYPE">The Report Prototype</a></h3>
+
+<p>When defining a report routine, the report name must immediately follow the
+<tt>REPORT</tt> keyword. The name must be unique among function and report names
+within the program. Its scope is the entire program.</p>
+
+<p>The list of formal arguments of the report must be enclosed in parentheses
+and separated by commas. These are local variables that store values that the
+calling routine passes to the report. The compiler issues an error unless you
+declare their <a href="DataTypes.html"> data types</a> in the subsequent
+<a href="#RPT_DF_DEFINE"> DEFINE</a> section.
+You can include a <a href="Records.html"> program record</a> in the formal
+argument list, but you cannot append the <tt>.*</tt> symbols to the name of
+the record. Arguments can be of any data type except <a href="Arrays.html">ARRAY</a>,
+or a record with an ARRAY member.</p>
+
+<p>When you call a report, the formal arguments are assigned values from the
+argument list of the <a href="#RPT_DRV_OUTPUT"> OUTPUT TO REPORT</a> statement.
+These actual arguments that you pass must match, in number and position,
+the formal arguments of the <tt> REPORT</tt> routine.
+The <a href="DataTypes.html"> data types</a> must be compatible, but they need
+not be identical. The runtime system can perform some
+<a href="DataConversions.html">conversions</a> between compatible data types.</p>
+
+<p>The names of the actual arguments and the formal arguments do not have to
+match.</p>
+
+<p>You must include the following items in the list of formal arguments:</p>
+
+<ul>
+  <li> All the values for each row sent to the report in the following cases:
+    <ul>
+      <li> If you include an <a href="#RPT_DF_ORDERBY"> ORDER BY</a> section or <tt> GROUP PERCENT(*)</tt> function</li>
+      <li> If you use a global aggregate function (one over all rows of the
+       report) anywhere in the report, except in the <a href="#RPT_FMT_LROW"> ON LAST ROW</a> control block</li>
+      <li> If you specify the <a href="#RPT_FMT_EROW"> FORMAT EVERY ROW</a> default format</li>
+    </ul>
+  </li>
+  <li> Any variables referenced in the following group control blocks:
+    <ul>
+      <li> <a href="#RPT_FMT_BAG"> AFTER GROUP OF</a></li>
+      <li> <a href="#RPT_FMT_BAG"> BEFORE GROUP OF</a></li>
+    </ul>
+  </li>
+</ul>
+
+<HR width="100%">
+
+<h3><a name="RPT_TWOPASS">Two-Pass Reports</a></h3>
+
+<p>The report engine supports one-pass reports and two-pass reports. The
+one-pass report requires sorted data to be produced by the report driver in order to
+handle before/after groups properly. The two-pass report
+handles sorts  internally
+and does not need sorted data from the report driver. During the first pass, the
+report engine sorts the data and stores the sorted values in a temporary file in
+the database. During the second pass, it calculates any aggregate values and
+produces output from data in the temporary files.</p>
+
+<p>A report is defined as a two-pass report if it includes any of the following items:</p>
+<ul>
+  <li> An <a href="#RPT_DF_ORDERBY"> ORDER BY</a>  section without the
+    <tt>EXTERNAL</tt> keyword.</li>
+  <li> The <tt> GROUP PERCENT(*)</tt> aggregate function anywhere in the report.</li>
+  <li> Any aggregate function that has no <tt> GROUP</tt> keyword in any control
+    block other than <a href="#RPT_FMT_LROW"> ON LAST ROW</a>.</li>
+</ul>
+
+<p>Two-pass reports create temporary tables.
+The <a href="#RPT_DRV_FINISH"> FINISH REPORT</a> statement uses values from these
+tables to calculate any global aggregates, and then deletes the tables.</p>
+
+<h4><font color="#FF0000">Warnings</font>:</h4>
+<ol>
+  <li>A two-pass report is one that creates a temporary table. Therefore, the report
+    engine requires that the program be
+    connected to a database when the report runs.
+    Make sure that the database server and the database driver supports
+    temporary table creation and indexes creation on temporary tables.</li>
+</ol>
+
+<HR width="100%">
+
+<h3><a name="RPT_STMT_EXIT">EXIT REPORT</a></h3>
+
+
+
+<h4>Syntax:</h4>
+
+
+<p><code>EXIT REPORT</code>
+
+
+
+</p>
+
+
+<h4>Usage:</h4>
+
+<p><tt>EXIT REPORT</tt> cancels the report processing. It must appear in the <a href="#RPT_DF_FORMAT">FORMAT</a> section
+of the report definition. It is useful after the program (or the user) becomes aware that
+a problem prevents the report from producing part of its intended output.</p>
+
+<p><tt>EXIT REPORT</tt> has the following effects:</p>
+
+<ul>
+  <li> Terminates the processing of the current report.</li>
+  <li> Deletes any intermediate files or temporary tables that were created in
+    processing the report.</li>
+</ul>
+
+<p>You cannot use the <a href="Functions.html"> RETURN</a> statement as a substitute
+for <tt>EXIT REPORT</tt>. An error is issued if <tt> RETURN</tt> is encountered
+within the definition of a report.</p>
+
+
+<HR width="100%">
+
+
+<h3>
+<a name="RPT_STMT_PRINT">PRINT</a></h3>
+
+
+
+<h4>Syntax:</h4>
+
+
+<p><code>PRINT<br>
+&nbsp;<u>{</u>&nbsp;<br>
+&nbsp;&nbsp;&nbsp; <i>expression</i> <br>
+&nbsp; <u>|</u> COLUMN <i>left-offset</i><br>
+&nbsp; <u>|</u> PAGENO<br>
+&nbsp; <u>|</u> LINENO<br>
+&nbsp; <u>|</u> <i>num-spaces</i> SPACES<br>
+&nbsp; <u>|</u> <u>[</u>GROUP<u>]</u> COUNT(*) <u>[</u> WHERE <i>condition</i> <u>]</u><br>
+&nbsp; <u>|</u> <u>[</u>GROUP<u>]</u> PERCENT(*) <u>[</u> WHERE <i>condition</i>
+<u>]</u><br>
+&nbsp; <u>|</u> <u>[</u>GROUP<u>]</u> AVG( <i>variable</i> ) <u>[</u> WHERE <i>condition</i>
+<u>]</u><br>
+&nbsp; <u>|</u> <u>[</u>GROUP<u>]</u> SUM( <i>variable</i> ) <u>[</u> WHERE <i>condition</i>
+<u>]</u><br>
+&nbsp; <u>|</u> <u>[</u>GROUP<u>]</u> MIN( <i>variable</i> ) <u>[</u> WHERE <i>condition</i>
+<u>]</u><br>
+&nbsp; <u>|</u> <u>[</u>GROUP<u>]</u> MAX( <i>variable</i> ) <u>[</u> WHERE <i>condition</i>
+<u>]</u><br>
+&nbsp; <u>|</u> <i>char-expression</i> WORDWRAP <u>[</u> RIGHT MARGIN <i>rm</i> <u>]</u><br>
+&nbsp; <u>|</u> FILE<i> &quot;file-name</i>&quot;<br>
+&nbsp;<u>}</u> <u>[,...]<br>
+</u> &nbsp; <u>[</u> ; <u>]</u></code>
+
+
+
+</p>
+
+
+<h4>Notes:</h4>
+
+<ol>
+  <li><i>expression</i> is any legal language <a href="Expressions.html">expression</a>.</li>
+  <li><i>left-offset</i> is described in <a href="Operators.html#OP_COLUMN">COLUMN</a>.</li>
+  <li><i>num-spaces</i> is described in <a href="#RPT_OPER_SPACES">SPACES</a>.</li>
+  <li><i>char-expression</i> is a <a href="Expressions.html#EX_STRING">string
+    expression</a> or a <a href="DataTypes.html#DT_TEXT">TEXT variable</a>.</li>
+  <li><i>file-name</i> is a <a href="Expressions.html#EX_STRING">string
+    expression</a>, or a quoted string, that  specifies the name of a text file to
+    include in the output from the report.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>You cannot use <tt>PRINT</tt> to display a <a href="DataTypes.html#DT_BYTE">BYTE</a>
+    value. The string &quot;&lt;byte value&gt;&quot; is the only output from <tt>PRINT</tt>
+    of any object that is not of the <a href="DataTypes.html#DT_TEXT">TEXT</a>
+    data type.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+
+
+<p>This statement can include character data in the form of an ASCII file, a <a href="DataTypes.html#DT_TEXT">TEXT</a>
+variable, or a comma-separated expression list of character expressions in the
+output of the report. (For <a href="DataTypes.html#DT_TEXT">TEXT</a> variable or
+filename, you cannot specify additional output in the same <tt>PRINT</tt>
+statement.) You cannot display a <a href="DataTypes.html#DT_BYTE">BYTE</a>
+value. Unless its scope of reference is global or the current module, any
+program variable in expression list must be declared in the <a href="#RPT_DF_DEFINE">DEFINE</a>
+section.</p>
+<p>The <tt>PRINT FILE</tt> statement reads the contents of the specified
+filename into the report, beginning at the current character position. This
+statement permits you to insert a multiple-line character string into the output
+of a report. If <i>file-name</i> stores the value of a TEXT variable, the <tt>PRINT
+FILE <i>file-name</i></tt> statement has the same effect as specifying <tt>PRINT
+<i>text-variable</i></tt>. (But only PRINT variable can include the <a href="#RPT_OPER_WORDWRAP">WORDWRAP</a>
+operator)</p>
+<p><tt>PRINT</tt> statement output begins at the current character position,
+sometimes called simply the current position. On each page of a report, the
+initial default character position is the first character position in the first
+line. This position can be offset horizontally and vertically by margin and
+header specifications and by executing any of the following statements:</p>
+<ul>
+  <li>The <a href="#RPT_STMT_PRINT">SKIP</a> statement moves it down to the left
+    margin of a new line.</li>
+  <li>The <a href="#RPT_STMT_EXIT">NEED</a> statement can conditionally move it
+    to a new page.</li>
+  <li>The <tt>PRINT</tt> statement moves it horizontally (and sometimes down).</li>
+</ul>
+<p>Unless you use the keyword <tt>CLIPPED</tt> or <tt>USING</tt>, values are
+displayed with widths (including any sign) that depend on their declared data
+types.</p>
+<div align="center">
+  <center>
+<table width="90%">
+    <tr>
+      <td bgColor="#c0c0c0" width="20%"><b>Data Type</b></td>
+      <td bgColor="#c0c0c0"><b>Default Print With</b></td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="20%"> <tt>BYTE</tt></td>
+      <td vAlign="top"> N/A</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="20%"><tt>CHAR</tt></td>
+      <td vAlign="top"> Length of character data type declaration.</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="20%"><tt>DATE</tt></td>
+      <td vAlign="top"> <a href="EnvironmentVariables.html#EV_DBDATE">DBDATE</a>
+        dependant, 10 if DBDATE = &quot;MDY4/&quot;</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="20%"><tt>DATETIME</tt></td>
+      <td vAlign="top"> From 2 to 25, as implied in the data type declaration.</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="20%"><tt>DECIMAL</tt></td>
+      <td vAlign="top"> (2 + p + s), where p is the precision and s is the scale from the data type
+        declaration.</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="20%"><tt>FLOAT</tt></td>
+      <td vAlign="top"> 14</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="20%"><tt>INTEGER</tt></td>
+      <td vAlign="top"> 11</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="20%"><tt>INTERVAL</tt></td>
+      <td vAlign="top"> From 3 to 25, as implied in the data type declaration.</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="20%"><tt>MONEY</tt></td>
+      <td vAlign="top"> (2 + c + p + s), where c is the length of the currency
+        defined by <a href="EnvironmentVariables.html#EV_DBMONEY">DBMONEY</a>
+        and p is the precision and s is the scale from the data type
+        declaration.</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="20%"><tt>NCHAR</tt></td>
+      <td vAlign="top"> Length of character data type declaration.</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="20%"><tt>NVARCHAR</tt></td>
+      <td vAlign="top"> Length current value in the variable.</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="20%"><tt>SMALLFLOAT</tt></td>
+      <td vAlign="top"> 14</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="20%"><tt>SMALLINT</tt></td>
+      <td vAlign="top"> 6</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="20%"><tt>STRING</tt></td>
+      <td vAlign="top"> Length current value in the variable.</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="20%"><tt>TEXT</tt></td>
+      <td vAlign="top"> Length current value in the variable.</td>
+    </tr>
+    <tr>
+      <td vAlign="top" width="20%"><tt>VARCHAR</tt></td>
+      <td vAlign="top"> Length current value in the variable.</td>
+    </tr>
+</table>
+  </center>
+</div>
+<p>Unless you specify the <tt>FILE</tt> or <tt>WORDWRAP</tt> option, each <tt>PRINT</tt>
+statement displays output on a single line. For example, this fragment displays
+output on two lines:</p>
+<pre><CODE class=linenumber>01</CODE>  <tt>PRINT </tt>fname, lname
+<CODE class=linenumber>02</CODE>  <tt>PRINT </tt>city, &quot;, &quot;, state, &quot; &quot;, zipcode</pre>
+
+
+<p>If you terminate a <tt>PRINT</tt> statement with a semicolon, however, you
+suppress the implicit LINEFEED character at the end of the line. The next
+example has the same effect as the <tt>PRINT</tt> statements in the previous
+example:</p>
+<pre><CODE class=linenumber>01</CODE>  <tt>PRINT </tt>fname;
+<CODE class=linenumber>02</CODE>  <tt>PRINT </tt>lname
+<CODE class=linenumber>03</CODE>  <tt>PRINT </tt>city, &quot;, &quot;, state, &quot; &quot;, zipcode</pre>
+
+
+<p>The expression list of a <tt>PRINT</tt> statement returns one or more values
+that can be displayed as printable characters. The expression list can contain <a href="#RPT_DF_DEFINE">report
+variables</a>, <a href="BuiltInFunctions.html">built-in functions</a> and <a href="Operators.html">operators</a>.
+Some of these can appear only in a <tt>REPORT</tt> program block such as <tt>PAGENO</tt>,
+<tt>LINENO</tt>, <tt>PERCENT</tt>.</p>
+<p>If the expression list applies the <a href="Operators.html#OP_USING">USING</a>
+operator to format a <a href="DataTypes.html#DT_DATE">DATE</a> or <a href="DataTypes.html#DT_MONEY">MONEY</a>
+value, the format string of the <tt>USING</tt> operator takes precedence over
+the <a href="EnvironmentVariables.html">DBDATE</a>, <a href="EnvironmentVariables.html">DBMONEY</a>,
+and <a href="EnvironmentVariables.html">DBFORMAT</a> environment variables.</p>
+<p>Aggregate report functions summarize data from several records in a report.
+The syntax and effects of aggregates in a report resemble those of SQL aggregate
+functions but are not identical.</p>
+<p>The expression (in parentheses) that <a href="#RPT_AGGR_SUM">SUM( )</a>, <a href="#RPT_AGGR_AVG">AVG(
+)</a>, <a href="#RPT_AGGR_MIN">MIN( )</a>, or <a href="#RPT_AGGR_MAX">MAX( )</a>
+takes as an argument is typically of a number or <a href="DataTypes.html#DT_INTERVAL">INTERVAL</a>
+data type; <a href="Arrays.html">ARRAY</a>, <a href="DataTypes.html#DT_BYTE">BYTE</a>,
+<a href="Records.html">RECORD</a>, and <a href="DataTypes.html#DT_TEXT">TEXT</a>
+are not valid. The <a href="#RPT_AGGR_SUM">SUM( )</a>, <a href="#RPT_AGGR_AVG">AVG(
+)</a>, <a href="#RPT_AGGR_MIN">MIN( )</a>, and <a href="#RPT_AGGR_MAX">MAX( )</a>
+aggregates ignore input records for which their arguments have null values, but
+each returns <a href="Programs.html#PC_NULL">NULL</a> if every record
+has a null value for the argument.</p>
+<p>The <tt>GROUP</tt> keyword is an optional keyword that causes the aggregate
+function to include data only for a group of records that have the same value
+for a variable that you specify in an <a href="#RPT_FMT_BAG">AFTER GROUP OF</a>
+control block. An aggregate function can only include the <tt>GROUP</tt> keyword
+within an <a href="#RPT_FMT_BAG">AFTER GROUP OF</a> control block.</p>
+<p>The optional <tt>WHERE</tt> clause allows you to select among records passed
+to the report, so that only records for which the <a href="Expressions.html#EX_BOOLEAN">Boolean
+expression</a> is <a href="Programs.html#PC_TRUE">TRUE</a> are
+included.</p>
+
+
+<h4>Example:</h4>
+
+<p>The following example is from the <a href="#RPT_DF_FORMAT">FORMAT</a> section
+of a report definition that displays both quoted strings and values from rows of
+the customer table:</p>
+
+<pre><CODE class=linenumber>01</CODE>  <tt>FIRST PAGE HEADER</tt>
+<CODE class=linenumber>02</CODE>     <tt>PRINT COLUMN</tt> 30, &quot;CUSTOMER LIST&quot;
+<CODE class=linenumber>03</CODE>     <tt>SKIP</tt> 2 <tt>LINES</tt>
+<CODE class=linenumber>04</CODE>     <tt>PRINT</tt> &quot;Listings for the State of &quot;, thisstate
+<CODE class=linenumber>05</CODE>  <tt>SKIP</tt> 2 <tt>LINES</tt>
+<CODE class=linenumber>06</CODE>     <tt>PRINT</tt> &quot;NUMBER&quot;, <tt>COLUMN</tt> 12, &quot;NAME&quot;, <tt>COLUMN</tt> 35, &quot;LOCATION&quot;,
+<CODE class=linenumber>07</CODE>           <tt>COLUMN</tt> 57, &quot;ZIP&quot;, <tt>COLUMN</tt> 65, &quot;PHONE&quot;
+<CODE class=linenumber>08</CODE>     <tt>SKIP</tt> 1 <tt>LINE</tt>
+<CODE class=linenumber>09</CODE>  <tt>PAGE HEADER</tt>
+<CODE class=linenumber>10</CODE>     <tt>PRINT</tt> &quot;NUMBER&quot;, <tt>COLUMN</tt> 12, &quot;NAME&quot;, COLUMN 35, &quot;LOCATION&quot;,
+<CODE class=linenumber>11          </CODE>  <tt>COLUMN</tt> 57, &quot;ZIP&quot;, <tt>COLUMN</tt> 65, &quot;PHONE&quot;
+<CODE class=linenumber>12</CODE>     <tt>SKIP</tt> 1 <tt>LINE</tt>
+<CODE class=linenumber>13</CODE>  <tt>ON EVERY ROW</tt>
+<CODE class=linenumber>14</CODE>     <tt>PRINT</tt> customer_num <tt>USING</tt> &quot;###&amp;&quot;, COLUMN 12, fname CLIPPED,
+<CODE class=linenumber>15</CODE>          1 <tt>SPACE</tt>, lname <tt>CLIPPED</tt>, <tt>COLUMN</tt> 35, city CLIPPED, &quot;, &quot;,
+<CODE class=linenumber>16</CODE>          state, <tt>COLUMN</tt> 57, zipcode, <tt>COLUMN</tt> 65, phone</pre>
+
+
+<HR width="100%">
+
+
+<h3>
+<a name="RPT_STMT_PRINTX">PRINTX</a></h3>
+
+
+
+<h4>Syntax:</h4>
+
+
+<p><code>PRINTX&nbsp;[NAME = <i>identifier</i>] <i>expression</i></code>
+
+
+
+</p>
+
+
+<h4>Notes:</h4>
+
+<ol>
+  <li><i>identifier</i> is the name to be used in the XML node.</li>
+  <li><i>expression</i> is any legal language <a href="Expressions.html">expression</a>.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+
+
+<p>The <tt>PRINTX</tt> statement is similar to <a href="#RPT_STMT_PRINT">PRINT</a>,
+except that it prints data in XML format. You typically write a complete report with <tt>PRINTX</tt> statements, to
+generate an XML output.</p>
+
+<p>To generate XML output, you must redirect the report output into a <a href="ClassSaxDocumentHandler.html">SAX
+document handler</a> by calling the <a href="BuiltInFunctions.html#BF_FGL_REPORT_SET_DOCUMENT_HANDLER">fgl_report_set_document_handler()</a>
+global function or with the <tt>TO XML HANDLER</tt> clause of <a href="#RPT_DRV_START">START
+REPORT</a>:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   ...
+<CODE class=linenumber>03</CODE>   <tt>START REPORT</tt> orders_report <tt>TO XML HANDLER </tt>om.XmlWriter.createFileWriter(&quot;orders.xml&quot;)
+<CODE class=linenumber>04</CODE>   ...
+<CODE class=linenumber>05</CODE> <tt>END MAIN</tt></pre>
+
+
+<p>Note that unlike normal <tt> PRINT</tt> instructions, the <tt> PRINTX</tt> outputs both
+<a href="DataTypes.html#DT_TEXT"> TEXT</a> and <a href="DataTypes.html#DT_BYTE">
+BYTE</a> data. The <tt> BYTE</tt> data is encoded to <b>Base64</b> before output.</p>
+
+<HR width="100%">
+
+<h3><a name="RPT_STMT_NEED">NEED</a></h3>
+
+<h4>Syntax:</h4>
+<p><code>NEED <i>num-lines</i> LINE<u>[</u>S<u>]</u></code></p>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>num-lines</i> is the number of lines.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>This statement has the effect of a conditional <a href="#RPT_STMT_SKIP">SKIP
+TO TOP OF PAGE</a> statement, the condition being that the number to which the
+integer expression evaluates is greater than the number of lines that remain on
+the current page.</p>
+<p>The <tt>NEED</tt> statement can prevent the report from dividing parts of the
+output that you want to keep together on a single page. In the following
+example, the <tt>NEED</tt> statement causes the <a href="#RPT_STMT_PRINT">PRINT</a>
+statement to send output to the next page unless at least six lines remain on
+the current page:</p>
+<pre><CODE class=linenumber>01</CODE>  <tt>AFTER GROUP OF</tt> r.order_num
+<CODE class=linenumber>02</CODE>    <tt>NEED</tt> 6 <tt>LINES</tt>
+<CODE class=linenumber>03</CODE>    <tt>PRINT</tt> &quot; &quot;, r.order_date, &quot;  &quot;, <tt>GROUP SUM</tt>(r.total_price)</pre>
+
+<p>The <tt>LINES</tt> value specifies how many lines must remain between the line above the current character position and the bottom margin for the next
+<tt> PRINT</tt> statement to produce output on the current page. If fewer than <tt>LINES</tt>
+remain
+on the page, the report engine prints both the <a href="#RPT_FMT_PT"> PAGE TRAILER</a>
+and the <a href="#RPT_FMT_PH"> PAGE HEADER</a>.</p>
+<p>The <tt> NEED</tt> statement does not include the <tt> BOTTOM MARGIN</tt> value when it
+compares <tt>LINES</tt> to the number of lines remaining on the current page. <tt> NEED</tt> is
+not valid in <a href="#RPT_FMT_FPH"> FIRST PAGE HEADER</a>, <a href="#RPT_FMT_PH"> PAGE
+HEADER</a>, or <a href="#RPT_FMT_PT"> PAGE TRAILER</a> blocks.</p>
+
+<HR width="100%">
+
+<h3><a name="RPT_STMT_PAUSE">PAUSE</a> <b><font color="#FF0000">TUI mode Only!</font></b></h3>
+
+<h4>Syntax:</h4>
+<p><code>PAUSE <u>[</u> &quot;<i>comment</i>&quot; <u>]</u></code></p>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>comment</i> is an optional comment to be displayed.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>Output is sent by default to the screen unless the <a href="#RPT_DRV_START">START
+REPORT</a> statement or the <a href="#RPT_DF_OUTPUT">OUTPUT</a> section
+specifies a destination for report output.</p>
+<p>The <tt>PAUSE</tt> statement can be executed only if the report sends its
+output to the screen. It has no effect if you include a <tt>TO</tt> clause in
+either of these contexts:</p>
+<ul>
+  <li>In the <a href="#RPT_DF_OUTPUT">OUTPUT</a> section of the report
+    definition.</li>
+  <li>In the <a href="#RPT_DRV_START">START REPORT</a> statement of the report
+    driver.</li>
+</ul>
+<p>Include the <tt>PAUSE</tt> statement in the <a href="#RPT_FMT_PH"> PAGE
+HEADER</a> or <a href="#RPT_FMT_PT"> PAGE TRAILER</a> block of the report. For
+example, the following code causes the runtime system to skip a line and pause
+at the end of each page of report output displayed on the screen:</p>
+<pre><CODE class=linenumber>01</CODE>  <tt>PAGE TRAILER</tt>
+<CODE class=linenumber>02</CODE>    <tt>SKIP </tt>1 <tt>LINE</tt>
+<CODE class=linenumber>03</CODE>    <tt>PAUSE</tt> &quot;Press return to continue&quot;</pre>
+
+
+<HR width="100%">
+
+
+<h3><a name="RPT_STMT_SKIP">SKIP</a></h3>
+
+<h4>Syntax:</h4>
+<p><code>SKIP <u>{</u> <i>num-lines</i> LINE<u>[</u>S<u>]</u> <u>|</u> TO TOP OF PAGE <u>}</u></code></p>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>num-lines</i> is the number of lines.</li>
+  <li>The <tt>LINE</tt> and <tt>LINES</tt> keywords are synonyms in the SKIP
+    statement.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The <tt>SKIP n LINES</tt> statement cannot appear within a <a href="FlowControl.html#FC_CASE">CASE</a>
+    statement, a <a href="FlowControl.html#FC_FOR">FOR</a> loop, or a <a href="FlowControl.html#FC_WHILE">WHILE</a>
+    loop.</li>
+  <li>The <tt>SKIP TO TOP OF PAGE</tt> statement cannot appear in a <a href="#RPT_FMT_FPH">FIRST
+    PAGE HEADER</a>, <a href="#RPT_FMT_PH"> PAGE HEADER</a> or <a href="#RPT_FMT_PT"> PAGE TRAILER</a>
+    control block.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>The <tt>SKIP</tt> statement allows you to insert blank lines into report
+output or to skip to the top of the next page as if you had included an
+equivalent number of <a href="#RPT_STMT_PRINT">PRINT</a> statements without
+specifying any expression list.</p>
+<p>Output from any <a href="#RPT_FMT_PH"> PAGE HEADER</a> or <a href="#RPT_FMT_PT"> PAGE TRAILER</a>
+control block appears in its usual location.</p>
+
+<h4>Example:</h4>
+
+<pre><CODE class=linenumber>01</CODE>  <tt>FIRST PAGE HEADER</tt>
+<CODE class=linenumber>02</CODE>    <tt>PRINT </tt>&quot;Customer List&quot;
+<CODE class=linenumber>03</CODE>    <tt>SKIP </tt>2 <tt>LINES</tt>
+<CODE class=linenumber>04</CODE>    <tt>PRINT </tt>&quot;Number        Name               Location&quot;
+<CODE class=linenumber>05</CODE>    <tt>SKIP </tt>1 <tt>LINE</tt>
+<CODE class=linenumber>06</CODE>  <tt>PAGE HEADER</tt>
+<CODE class=linenumber>07</CODE>    <tt>PRINT </tt>&quot;Number        Name               Location&quot;
+<CODE class=linenumber>08</CODE>    <tt>SKIP </tt>1 <tt>LINE</tt>
+<CODE class=linenumber>09</CODE>  <tt>ON EVERY ROW</tt>
+<CODE class=linenumber>10</CODE>    <tt>PRINT </tt>r.customer_num, r.fname, r.city</pre>
+
+
+<HR width="100%">
+
+
+<h3>
+<a name="RPT_OPER_LINENO">LINENO</a></h3>
+
+
+
+<h4>Syntax:</h4>
+
+
+<p><code>LINENO</code>
+
+
+
+</p>
+
+
+<h4>Usage:</h4>
+
+
+<p>This operator takes no operand but returns the value of the line number of
+the report line that is currently printing. The report engine calculates the
+line number by calculating the number of lines from the top of the current page,
+including the <a href="#RPT_DRV_START">TOP MARGIN</a>.</p>
+<h4>Example:</h4>
+<p>In the following example, a <tt>PRINT</tt> statement instructs the report to
+calculate and display the current line number, beginning in the tenth character
+position after the left margin:</p>
+<pre><CODE class=linenumber>01</CODE>  <tt>ON EVERY ROW</tt>
+<CODE class=linenumber>02</CODE>    <tt>IF LINENO </tt>&gt; 9 <tt>THEN</tt>
+<CODE class=linenumber>03</CODE>      <tt>PRINT COLUMN </tt>10, &quot;Line:&quot;, <tt>LINENO USING </tt>&quot;&lt;&lt;&lt;&quot;
+<CODE class=linenumber>04</CODE>    <tt>END IF</tt></pre>
+
+
+<HR width="100%">
+
+
+<h3>
+<a name="RPT_OPER_PAGENO">PAGENO</a></h3>
+
+
+
+<h4>Syntax:</h4>
+
+
+<p><code>PAGENO</code>
+
+
+
+</p>
+
+
+<h4>Usage:</h4>
+
+
+<p>This operator takes no operand but returns the number of the page the report
+engine is currently printing.</p>
+<p>You can use <tt>PAGENO</tt> in the <a href="#RPT_FMT_PH"> PAGE HEADER</a> or <a href="#RPT_FMT_PT"> PAGE TRAILER</a>
+ block, or in other control blocks to  number
+the  pages of a report  sequentially.</p>
+<h4>Example:</h4>
+<p>If you use the SQL aggregate <tt>COUNT(*)</tt> in the <tt>SELECT</tt>
+statement to find how many records are returned by the query, and if the number
+of records that appear on each page of output is both fixed and known, you can
+calculate the total number of pages, as in the following example:</p>
+<pre><CODE class=linenumber>01</CODE>  <tt>FIRST PAGE HEADER</tt>
+<CODE class=linenumber>02</CODE>    <tt>SELECT COUNT(*) INTO </tt>cnt<tt> FROM </tt>customer
+<CODE class=linenumber>03</CODE>    <tt>LET </tt>y = cnt/50 -- Assumes 50 records per page
+<CODE class=linenumber>04</CODE>  <tt>ON EVERY ROW</tt>
+<CODE class=linenumber>05</CODE>    <tt>PRINT COLUMN </tt>10, r.customer_num, ...
+<CODE class=linenumber>06</CODE>  <tt>PAGE TRAILER</tt>
+<CODE class=linenumber>07</CODE>    <tt>PRINT PAGE PAGENO USING </tt>&quot;&lt;&lt;&quot; <tt>OF </tt>cnt USING &quot;&lt;&lt;&quot;</pre>
+
+<p>If the calculated number of pages was 20, the first page trailer would be:</p>
+
+<p><code>Page 1 of 20</code></p>
+<p><tt>PAGENO</tt> is incremented with each page, so the last page trailer would
+be:</p>
+<p><code>Page 20 of 20</code></p>
+
+
+<HR width="100%">
+
+
+<h3>
+<a name="RPT_OPER_SPACES">SPACES</a></h3>
+
+
+
+<h4>Syntax:</h4>
+
+
+<p><code><i>num-spaces</i> SPACES</code>
+
+
+
+</p>
+
+
+<h4>Notes:</h4>
+
+<ol>
+  <li><i>num-spaces</i> is the number of spaces.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+
+
+<p>This operator returns a string of blanks, equivalent to a quoted string
+containing the specified number of blanks.</p>
+<p>In a <a href="#RPT_STMT_PRINT">PRINT</a> statement, these blanks are inserted
+at the current character position.</p>
+<p>Its operand must be an <a href="Expressions.html#EX_INTEGER">integer
+expression</a> that returns a positive number, specifying an offset (from the
+current character position) no greater than the difference (right margin -
+current position). After <tt>PRINT SPACES</tt> has executed, the new current
+character position has moved to the right by the specified number of characters.</p>
+<p>Outside <a href="#RPT_STMT_PRINT">PRINT</a> statements, <tt>SPACES</tt> and
+its operand must appear within parentheses: <tt>(<i>n</i> SPACES)</tt>.</p>
+<h4>Example:</h4>
+<pre><CODE class=linenumber>01</CODE> <tt>ON EVERY ROW</tt>
+<CODE class=linenumber>02</CODE>    <tt>LET </tt>s = (<tt>6 SPACES</tt>), &quot;=ZIP&quot;
+<CODE class=linenumber>03</CODE>    <tt>PRINT </tt>r.fname, <tt>2 SPACES</tt>, r.lname, s</pre>
+
+
+<HR width="100%">
+
+
+<h3>
+<a name="RPT_OPER_WORDWRAP">WORDWRAP</a></h3>
+
+
+
+<h4>Syntax:</h4>
+
+
+<p><code>WORDWRAP <u>[</u> RIGHT MARGIN <i>position</i> <u>]</u></code>
+
+
+
+</p>
+
+
+<h4>Notes:</h4>
+
+<ol>
+  <li><i>position</i> defines the temporary right margin, as a number of
+    characters, counting from the left.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+
+
+<p>The <tt>WORDWRAP</tt> operator automatically wraps successive segments of
+long character strings onto successive lines of report output. Any string value
+that is too long to fit between the current position and the right margin is
+divided into segments and displayed between temporary margins:</p>
+<ul>
+  <li>The current character position becomes the temporary left margin.</li>
+  <li>Unless you
+specify <tt>RIGHT MARGIN</tt>, the right margin defaults to 132, or to the size
+value from the <tt>RIGHT MARGIN</tt> clause of the <a href="#RPT_DF_OUTPUT">OUTPUT</a>
+section or <a href="#RPT_DRV_START">START REPORT</a> instruction.</li>
+</ul>
+<p>Specify <tt>WORDWRAP RIGHT MARGIN <i>integer</i></tt>&nbsp; to set a temporary
+right margin as a number of characters, counting from the left edge of the page. This value cannot be
+smaller than the current character position or greater than right margin defined
+for the report. The current character position becomes the temporary left
+margin. These temporary values override the specified or default left and right
+margins of the report.</p>
+<p>After the <a href="#RPT_STMT_PRINT">PRINT</a> statement has executed, any
+explicit or default margins defined in the <tt>RIGHT MARGIN</tt> clause of the
+<a href="#RPT_DF_OUTPUT">OUTPUT</a>
+section or <a href="#RPT_DRV_START">START REPORT</a> instruction are restored.</p>
+<p>The following <a href="#RPT_STMT_PRINT">PRINT</a> statement specifies a
+temporary left margin in column 10 and a temporary right margin in column 70 to
+display the character string that is stored in the variable called <i>mynovel</i>:</p>
+<pre><CODE class=linenumber>01</CODE>  <font FACE="Courier" SIZE="1"><tt>PRINT COLUMN </tt>10, mynovel <tt>WORDWRAP RIGHT MARGIN</tt> 70 </pre>
+
+
+</font>
+<p>The data string can include printable ASCII characters. It can also include
+the TAB (ASCII 9), LINEFEED (ASCII 10), and ENTER (ASCII 13) characters to
+partition the string into words that consist of sub-strings of other printable
+characters. Other nonprintable characters might cause runtime errors. If the
+data string cannot fit between the margins of the current line, the report
+engine breaks the
+line at a word division, and pads the line with blanks at the right.</p>
+<p>From left to right, the report engine expands any TAB character to enough blank spaces to
+reach the next tab stop. By default, tab stops are in every eighth column,
+beginning at the left-hand edge of the page. If the next tab stop or a string of
+blank characters extends beyond the right margin, the report engine takes these actions:</p>
+<ol>
+  <li>Prints blank characters only to the right margin.</li>
+  <li>Discards any remaining blanks from the blank string or tab.</li>
+  <li>Starts a new line at the temporary left margin.</li>
+  <li>Processes the next word.</li>
+</ol>
+<p>The report engine starts a new line when a word plus the next blank space cannot fit on the
+current line. If all words are separated by a single space, this action creates
+an even left margin. The following rules are applied (in descending order of
+precedence) to the portion of the data string within the right margin:</p>
+<ul>
+  <li>Break at any LINEFEED, or ENTER, or LINEFEED, ENTER pair.</li>
+  <li>Break at the last blank (ASCII 32) or TAB character before the right margin.</li>
+  <li>Break at the right margin, if no character farther to the left is a blank,
+ENTER, TAB, or LINEFEED character.</li>
+</ul>
+<p>The report engine maintains page discipline under the <tt> WORDWRAP</tt> option. If the string is too
+long for the current page, the report engine executes the statements in any page trailer and
+header control blocks before continuing output onto a new page.</p>
+<p>For Japanese locales, a suitable break can also be made between the Japanese
+characters. However, certain characters must not begin a new line, and some
+characters must not end a line. This convention creates the need for KINSOKU processing, whose purpose is to format the line properly, without any prohibited
+word at the beginning or ending of a line.</p>
+<p>Reports use the wrap-down method for WORDWRAP and KINSOKU processing. The
+wrap-down method forces down to the next line characters that are prohibited
+from ending a line. A character that precedes another that is prohibited from
+beginning a line can also wrap down to the next line. Characters that are
+prohibited from beginning or ending a line must be listed in the locale. 4GL
+tests for prohibited characters at the beginning and ending of a line, testing
+the first and last visible characters. The KINSOKU processing only happens once
+for each line. That is, no further KINSOKU processing occurs, even if prohibited
+characters are still on the same line after the first KINSOKU processing.</p>
+
+
+<HR width="100%">
+
+
+<h3>
+<a name="RPT_AGGR_COUNT">COUNT</a></h3>
+
+
+
+<h4>Syntax:</h4>
+
+
+<p><code><u>[</u>GROUP<u>]</u> COUNT(*) <u>[</u> WHERE <i>condition</i> <u>]</u></code>
+
+
+
+</p>
+
+
+<h4>Usage:</h4>
+
+
+<p>This aggregate returns the total number of records qualified by the optional <tt>WHERE</tt>
+condition.&nbsp;</p>
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>You must include the <tt>(*)</tt> symbol.</li>
+</ol>
+
+
+<h4>Example:</h4>
+
+<p>The following fragment of a report definition uses the <a href="#RPT_FMT_BAG">AFTER
+GROUP OF</a> control block and <tt>GROUP</tt> keyword to form sets of records
+according to how many items are in each order. The last <a href="#RPT_STMT_PRINT">PRINT</a>
+statement calculates the total price of each order, adds a shipping charge, and
+prints the result. Because no <tt> WHERE</tt> clause is specified here, GROUP SUM( )
+combines the <i> total_price</i> of every item in the group included in the order.</p>
+
+<pre><CODE class=linenumber>01</CODE>  <tt>AFTER GROUP OF</tt> number
+<CODE class=linenumber>02</CODE>    <tt>SKIP</tt> 1 <tt>LINE</tt>
+<CODE class=linenumber>03</CODE>    <tt>PRINT</tt> 4 <tt>SPACES</tt>, &quot;Shipping charges for the order: &quot;,
+<CODE class=linenumber>04       </CODE>   ship_charge <tt>USING</tt> &quot;$$$$.&amp;&amp;&quot;
+<CODE class=linenumber>05</CODE>    <tt>PRINT</tt> 4 <tt>SPACES</tt>, &quot;Count of small orders: &quot;,
+<CODE class=linenumber>06</CODE>         <tt>GROUP COUNT</tt>(*) <tt>WHERE</tt> total_price &lt; 200.00 <tt>USING</tt> &quot;##,###&quot;
+<CODE class=linenumber>07</CODE>    <tt>SKIP</tt> 1 <tt>LINE</tt>
+<CODE class=linenumber>08</CODE>    <tt>PRINT</tt> 5 <tt>SPACES</tt>, &quot;Total amount for the order: &quot;,
+<CODE class=linenumber>09</CODE>          ship_charge + <tt>GROUP SUM</tt>(total_price) <tt>USING</tt> &quot;$$,$$$,$$$.&amp;&amp;&quot;</pre>
+
+
+<HR width="100%">
+
+
+<h3><a name="RPT_AGGR_PERCENT">PERCENT</a></h3>
+
+<h4>Syntax:</h4>
+
+<p><code><u>[</u>GROUP<u>]</u> PERCENT(*) <u>[</u> WHERE <i>condition</i> <u>]</u></code></p>
+
+<h4>Usage:</h4>
+
+<p>This aggregate returns the percentage of the total number of records
+qualified by the optional <tt>WHERE</tt> condition.</p>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>Makes a <a href="#RPT_TWOPASS">two-pass report</a> when not using the <tt>GROUP</tt>
+    keyword and is used in any control block other than <tt>ON LAST ROW</tt>, or
+    when using the <tt>GROUP PERCENT(*)</tt> anywhere in the report.</li>
+</ol>
+
+<HR width="100%">
+
+
+<h3>
+<a name="RPT_AGGR_SUM">SUM</a></h3>
+
+
+
+<h4>Syntax:</h4>
+
+
+<p><code><u>[</u>GROUP<u>]</u> SUM(<i> expression </i>) <u>[</u> WHERE <i>condition</i>
+<u>]</u></code>
+
+
+
+</p>
+
+
+<h4>Usage:</h4>
+
+
+<p>This aggregate evaluates as the total of expression among all records or
+among records qualified by the optional <tt>WHERE</tt> clause and any <tt>GROUP</tt>
+specification.</p>
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>Makes a <a href="#RPT_TWOPASS">two-pass report</a> when not using the <tt>GROUP</tt>
+    keyword and is used in any control block other than <tt>ON LAST ROW</tt>.</li>
+  <li>If one of the values is <a href="Programs.html#PC_NULL">NULL</a>, it is
+    ignored.</li>
+  <li>By default, if all values are <a href="Programs.html#PC_NULL">NULL</a>,
+    the result of the aggregate is <a href="Programs.html#PC_NULL">NULL</a>. <i>
+	See also: </i><a href="#RPT_CONFIG">Report Engine Configuration</a>.</li>
+</ol>
+
+
+<HR width="100%">
+
+
+<h3>
+<a name="RPT_AGGR_AVG">AVG</a></h3>
+
+
+
+<h4>Syntax:</h4>
+
+
+<p><code><u>[</u>GROUP<u>]</u> AVG(<i> expression </i>) <u>[</u> WHERE <i>condition</i>
+<u>]</u></code>
+
+
+
+</p>
+
+
+<h4>Usage:</h4>
+
+
+<p>This aggregate evaluates as the average (that is, the arithmetic mean value)
+of expression among all records or among records qualified by the optional <tt>WHERE</tt>
+clause and any <tt>GROUP</tt> specification.</p>
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>Makes a <a href="#RPT_TWOPASS">two-pass report</a> when not using the <tt>GROUP</tt>
+    keyword and is used in any control block other than <tt>ON LAST ROW</tt>.</li>
+  <li>If one of the values is <a href="Programs.html#PC_NULL">NULL</a>, it is
+    ignored.</li>
+  <li>By default, if all values are <a href="Programs.html#PC_NULL">NULL</a>,
+    the result of the aggregate is <a href="Programs.html#PC_NULL">NULL</a>. <i>
+	See also: </i><a href="#RPT_CONFIG">Report Engine Configuration</a>.</li>
+</ol>
+
+
+<HR width="100%">
+
+
+<h3>
+<a name="RPT_AGGR_MIN">MIN</a></h3>
+
+
+
+<h4>Syntax:</h4>
+
+
+<p><code><u>[</u>GROUP<u>]</u> MIN(<i> expression </i>) <u>[</u> WHERE <i>condition</i>
+<u>]</u></code>
+
+
+
+</p>
+
+
+<h4>Usage:</h4>
+
+
+<p>For number, currency, and interval values, <tt>MIN(<i>expression</i>)</tt>
+returns the minimum value for <i>expression</i> among all records or among
+records qualified by the <tt>WHERE</tt> clause and any <tt>GROUP</tt>
+specification. For DATETIME or DATE data values, greater than means later and 
+less than means earlier in time. Character strings are sorted according to their 
+first character. If your program is executed in the default (U.S. English) 
+locale, for character data types, greater than means after in the ASCII 
+collating sequence, where a&gt; A&gt; 1, and less than means before in the ASCII 
+sequence, where 1&lt; A&lt; a.</p>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>Makes a <a href="#RPT_TWOPASS">two-pass report</a> when not using the <tt>GROUP</tt>
+    keyword and is used in any control block other than <tt>ON LAST ROW</tt>.</li>
+</ol>
+
+
+<HR width="100%">
+
+
+<h3>
+<a name="RPT_AGGR_MAX">MAX</a></h3>
+
+
+
+<h4>Syntax:</h4>
+
+
+<p><code><u>[</u>GROUP<u>]</u> MAX(<i> expression </i>) <u>[</u> WHERE <i>condition</i>
+<u>]</u></code>
+
+
+
+</p>
+
+
+<h4>Usage:</h4>
+
+
+<p>For number, currency, and interval values, <tt>MAX(<i>expression</i>)</tt>
+returns the maximum value for <i>expression</i> among all records or among
+records qualified by the <tt>WHERE</tt> clause and any <tt>GROUP</tt>
+specification. For DATETIME or DATE data values, greater than means later and 
+less than means earlier in time. Character strings are sorted according to their 
+first character. If your program is executed in the default (U.S. English) 
+locale, for character data types, greater than means after in the ASCII 
+collating sequence, where a&gt; A&gt; 1, and less than means before in the ASCII 
+sequence, where 1&lt; A&lt; a.</p>
+
+
+
+
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>Makes a <a href="#RPT_TWOPASS">two-pass report</a> when not using the <tt>GROUP</tt>
+    keyword and is used in any control block other than <tt>ON LAST ROW</tt>.</li>
+</ol>
+
+
+
+
+
+
+</BODY>
+</HTML>

@@ -1,0 +1,566 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Localized Strings</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1>Localized Strings </H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#DEFINITION">What are Localized Strings?</a>
+    <ul>
+      <li><a href="#DEF_4GL_PER">Identifying localized strings in .4gl and .per sources</a></li>
+      <li><a href="#DEF_XML">Identifying localized strings in XML files</a></li>
+    </ul>
+  </li>
+  <li><a href="#SYNTAX">Syntax</a>
+    <ul>
+      <li><a href="#SYNTAX1">Syntax 1</a></li>
+      <li><a href="#SYNTAX2">Syntax 2</a></li>
+      <li><a href="#SYNTAX3">Syntax 3</a></li>
+    </ul>
+  </li>
+  <li><a href="#STEPS">Internationalization steps</a></li>
+  <li><a href="#SOURCES">Source String Files</a></li>
+  <li><a href="#EXTRACTING">Extracting Strings</a></li>
+  <li><a href="#COMPILING">Compiling String Files</a></li>
+  <li><a href="#RUNTIME">Using String Files at Runtime</a></li>
+  <li><a href="#PREDSTRINGS">Predefined Application Strings</a></li>
+  <li><a href="#EXAMPLE">Example</a></li>
+</ul>
+
+
+<p><i>See also:</i>  <a href="Localization.html">Localization</a>, <a href="Programs.html">Programs</a>, <a href="FglProfile.html">FGLPROFILE</a></p>
+
+
+<HR>
+
+<h3><a name="DEFINITION">What are Localized Strings?</a></h3>
+
+<p> Localized Strings provide a means of writing applications in which the text
+of strings can be customized on site. This feature can be used to implement
+internationalization in your application, or to use site-specific text (for
+example, when business terms change based on territory). </p>
+
+
+<p> This string localization feature does not define language
+identification.&nbsp; It is a simple way to define external resource files which
+the
+runtime system can search, in order to assign text to strings in the BDL
+application. The text is replaced at runtime in the p-code
+modules (<b>42m</b>), in the compiled <a href="FormSpecFiles.html">form
+specification files</a> (<b>42f</b>), and in any XML resource files loaded in
+the <a href="DynamicUI.html">Abstract User Interface tree</a> (<b>4ad</b>, <b>4st</b>,
+<b>4tb</b>, and so on). </p>
+
+
+<h4> <a name="DEF_4GL_PER">Identifying localized strings in <b>.4gl</b> and <b>.per</b>
+sources</a> </h4>
+
+
+<p>By using a simple <a href="#SYNTAX">notation</a>, you can identify the
+Localized Strings in the
+source code: </p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY </tt>%&quot;my text&quot;
+<CODE class=linenumber>03</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p>The <a href="Tools.html#TL_FGLCOMP">fglcomp</a> and <a href="Tools.html#TL_FGLFORM">fglform</a>
+compilers have been extended to support a new option to extract the Localized
+Strings. This allows the Localized Strings to be extracted into <a href="#SOURCES">Source
+String Files</a>.&nbsp;From the original <b>.str</b> Source String File, you can create other files containing different
+text (for example, one file for each language you want to support). Then, you must use the <a href="Tools.html#TL_FGLMKSTR">fglmkstr</a>
+ tool to compile the source string files into a binary version. By
+convention, compiled string resource files must have the <b>42s</b>
+extension. </p>
+
+
+<p>By default, the compiled string files are loaded at runtime, according to the
+name of the program (<b>42r</b>). It is also possible to define global
+string files in the <a href="FglProfile.html">FGLPROFILE</a> configuration file.
+<i>See also:</i> <a href="#RUNTIME">Using String Files at Runtime</a>. </p>
+
+
+<h4><a name="DEF_XML">Identifying localized strings in XML files</a> </h4>
+
+
+<p>In <b>42m</b> p-code modules, the Localized Strings are coded in a
+proprietary binary format. But, for XML files such as <a href="ActionDefaults.html">Action
+Defaults</a> files (<b>4ad</b>), the localized strings must be written with a specific node, following the XML standards. To support localized strings in XML files, any file loaded into the Abstract
+User Interface tree is parsed to search for <code>&lt;LStr&gt;</code> nodes. The <code>&lt;LStr&gt;</code> nodes define the same attributes as in the
+parent node with
+localized string identifiers, for example: </p>
+
+
+<pre><CODE class=linenumber>01</CODE> &lt;Label text=&quot;Hello!&quot; &gt;
+<CODE class=linenumber>02</CODE>   &lt;LStr text=&quot;label01&quot; /&gt;
+<CODE class=linenumber>03 </CODE>&lt;/Label&gt;</pre>
+
+
+<p>The runtime system automatically replaces corresponding attributes in the
+parent node (text=&quot;Hello!&quot;), with the localized text found in the
+compiled string files, according to the string identifier (label01). After
+interpretation, the <code>&lt;LStr&gt;</code> nodes are removed from the XML
+data. </p>
+
+
+<p><b><font color="#FF0000">Warning:</font> To take effect, a localized
+attribute in the LStr node must have a corresponding attribute in the parent
+node.</b> </p>
+
+
+<HR>
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+
+<h4><a name="SYNTAX1">Syntax 1: Static Localized String</a></h4>
+<p><code>&nbsp; %&quot;<i>sid</i>&quot;</code></p>
+
+
+<h4><a name="SYNTAX2">Syntax 2: Dynamic Localized String</a></h4>
+<p><code>&nbsp; LSTR(<i>eid</i>)</code></p>
+
+
+<h4><a name="SYNTAX3">Syntax 3: Localized String in XML files</a></h4>
+<p><code>&nbsp; &lt;<i>ParentNode</i> <i>attribute</i> = &quot;<i>default-text</i>&quot; <u>[</u>...<u>]</u>
+ &gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &lt;LStr <i>attribute</i> = &quot;<i>sid</i>&quot; <u>[</u>...<u>]</u>
+/&gt;<br>
+&nbsp; &lt;/<i>ParentNode</i>&gt;</code></p>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>sid</i> is a character <a href="Literals.html#LT_STRING"> string literal</a> that defines both the string
+    identifier and the default text.</li>
+  <li><i>eid</i> is a character <a href="Expressions.html#EX_STRING"> string expression</a>
+    used at runtime as string
+    identifier to load the text.</li>
+  <li><i>attribute</i> is the attribute in the parent node that will get the localized
+    string identified by <i>sid</i>.</li>
+  <li><i>default-test</i> is the default text of an attribute, if not localized
+    string is found for <i>sid</i>.</li>
+  <li><i>ParentNode</i> is the node type of the parent where the localized
+    strings must be applied.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+<p>A Localized String can be used in the source code of program modules or form
+specification files to identify a text string that must be converted at
+runtime.</p>
+
+
+<p><u>Static Localized Strings</u></p>
+
+
+<p>A&nbsp;Localized String begins with a percent sign (<code>%</code>),&nbsp; followed by the
+name of the
+string which will be used to
+identify the text to be loaded. Since the name is a string, you can use any type
+of characters in the name, but it is recommended that you use a naming
+convention. For example, you can specify a path by using several identifiers
+separated by a dot, without any special characters such as space or tab:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY </tt>%&quot;common.helloworld&quot;
+<CODE class=linenumber>03</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p>The string after the percent sign defines both the localized string
+identifier and the default text to be used for extraction, or the default text
+when no string resource files are provided at runtime.</p>
+
+
+<p>You can use this notation in form specification files as well, at any place
+where a string literal can be used.</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>LAYOUT</tt>
+<CODE class=linenumber>02</CODE>   <tt>VBOX</tt>
+<CODE class=linenumber>03</CODE>     <tt>GROUP </tt>g1 (<tt>TEXT</tt>=%&quot;group01&quot;)
+<CODE class=linenumber>04</CODE> <tt>...</tt></PRE>
+
+
+<p><b><font color="#FF0000">Warning:</font> It is not possible to specify a static
+localized string directly in the area of containers like <a href="FormSpecFiles.html#FF_CONTAINER_GRID">GRID</a>,
+<a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE</a> or <a href="FormSpecFiles.html#FF_CONTAINER_SCROLLGRID">SCROLLGRID</a>.
+You must use label fields to use localized strings in layout labels:</b></p>
+<PRE><CODE class=linenumber>01</CODE> <tt>LAYOUT</tt>
+<CODE class=linenumber>02</CODE>   <tt>GRID</tt>
+<CODE class=linenumber>03</CODE>   {
+<CODE class=linenumber>04</CODE>     [lab01  |f001              ]
+<CODE class=linenumber>05</CODE>   {
+<CODE class=linenumber>06</CODE>   <tt>END</tt>
+<CODE class=linenumber>07</CODE> <tt>END</tt>
+<CODE class=linenumber>08</CODE> <tt>ATTRIBUTES</tt>
+<CODE class=linenumber>09</CODE> <tt>LABEL </tt>lab01 : <tt>TEXT</tt>=%&quot;myform.label01&quot;;
+<CODE class=linenumber>10</CODE> <tt>EDIT </tt>f001 = <tt>FORMONLY</tt>.field01;
+<CODE class=linenumber>11</CODE> <tt>END</tt></PRE>
+
+
+<p><u>Dynamic Localized Strings</u></p>
+
+<p>The language provides a special operator to load a Localized String
+dynamically, using an expression as string identifier. The name of this operator
+is <tt>LSTR()</tt>, and the syntax is described above.</p>
+
+<p>The following code example builds a Localized String identifier with an
+integer and loads the corresponding string with the <tt> LSTR()</tt> operator:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <tt>LET </tt>n = 234
+<CODE class=linenumber>04</CODE>   <tt>DISPLAY LSTR</tt>(&quot;str&quot;||n)  -- loads string 'str234'
+<CODE class=linenumber>05</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p><i>See also:</i> The <a href="Operators.html#OP_SFMT">SFMT() operator</a></p>
+
+
+<HR>
+
+<h3><a name="STEPS">Internationalization steps</a></h3>
+<p>In order to internationalize an existing application, follow the process
+described below:</p>
+<ol>
+  <li>Identify the current character set used in your sources and make sure the <a href="Localization.html">locale</a>
+    is set correctly.</li>
+  <li>In .<b>4gl</b> sources, add a <a href="#SYNTAX">% prefix</a> to the
+    strings that must be localized / translated.</li>
+  <li>In <b>.per</b> sources, replace hard-coded text with
+	<a href="FormSpecFiles.html#FF_ITEMTYPE_LABEL">static
+    labels</a> and define <a href="FSFAttributes.html#FA_TEXT">TEXT</a>
+    attributes with a % prefix.</li>
+  <li><a href="#EXTRACTING">Extract</a> the strings from the sources with
+    <b>fglcomp -m</b> and <b>fglform -m</b>.</li>
+  <li>Organize the generated <b>.str</b> files (identify duplicated strings and
+    put them in a common file).<br>
+    You can, for example, extract all strings of the application in a unique file,
+    sort the lines, and use the <i>uniq</i> UNIX command.</li>
+  <li>At this point, the string keys are the same as the string text.<br>
+    These string keys could be used as is, but it's better to define a normalized name using ASCII characters only.<br>
+    For example, replace:<br>
+    <code>&nbsp;&nbsp; &quot;Customer List&quot; = &quot;Customer List&quot;</code><br>
+    With:<br>
+    <code>&nbsp;&nbsp; &quot;customer.list.title&quot; = &quot;Customer List&quot;</code>
+  </li>
+  <li>In sources, replace the original string text with the new string keys.
+    Strings to be replaced can be located by their % prefix.<br>
+    You can, for example, use a script with an utility like the <i>sed</i> UNIX
+    command to read the .<b>str</b> files and apply the changes automatically.
+  </li>
+  <li>Recompile the <b>.4gl</b> and <b>.per</b> sources (these should be ASCII
+    now, so the locale should not matter).
+  </li>
+  <li>Compile the .<b>str</b> files in the locale used by these files, and check
+    whether the application displays the text properly.
+  </li>
+  <li>Copy the existing <b>.str</b> files, and translate the string text into
+    another language (making sure the locale is correct).</li>
+  <li>Compile the new <b>.str</b> files, and copy the <b>.42s</b> files into
+    another distribution directory, defined with the <a href="#RUNTIME">environment
+    variable</a> search path.<br>
+    A set of <b>.42s</b> files using the same language and code-set is typically
+    copied in a distribution directory with a name identifying the locale.<br>
+    For example:<br>
+    <code>&nbsp;&nbsp;
+    /opt/app/resource/strings/en_US.iso8859-1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    -- English strings in iso8859-1 code-set<br>
+    &nbsp;&nbsp;
+    /opt/app/resource/strings/fr_FR.iso8859-1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    -- French strings in iso8859-1 code-set<br>
+    &nbsp;&nbsp;
+    /opt/app/resource/strings/jp_JP.utf8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    -- Japanese strings in utf-8 code-set</code>
+  </li>
+</ol>
+<p>Future edits to the .<b>per</b> and .<b>4gl</b> source files should be done
+in the ASCII locale, and .<b>str</b> string files must be edited with their specific
+locale.</p>
+
+
+<HR>
+
+<h3><a name="SOURCES">Source String Files</a></h3>
+<p>By convention, the source files of Localized Strings have the <b>.str</b>
+extension.</p>
+<h4>Defining a string:</h4>
+<p>You define a list of string identifiers, and the corresponding
+text, by using the following syntax:</p>
+<p><code>&quot;<i>identifier</i>&quot; =
+&quot;<i>string</i>&quot;</code></p>
+
+
+<h4>Special characters:</h4>
+<p>The <a href="Tools.html#TL_FGLMKSTR">fglmkstr</a> compiler
+accepts the backslash &quot;\&quot; as the escape character, to define non-printable
+characters:</p>
+<p><code>\l&nbsp;&nbsp; \n&nbsp;&nbsp; \r&nbsp;&nbsp;
+\t&nbsp;&nbsp; \\</code></p>
+
+
+<h4>Example:</h4>
+<pre><CODE class=linenumber>01</CODE> &quot;id001&quot; = &quot;Some text&quot;
+<CODE class=linenumber>02</CODE> &quot;this.is.a.path.for.a.very.long.string.identifier&quot; = &quot;Customer List&quot;
+<CODE class=linenumber>03 </CODE>&quot;special.characters.backslash&quot; = &quot;\\&quot;
+<CODE class=linenumber>04 </CODE>&quot;special.characters.newline&quot; = &quot;\n&quot;</pre>
+
+
+<HR>
+
+<h3><a name="EXTRACTING">Extracting Strings</a></h3>
+<p>In order to extract Localized String from <a href="#SOURCES">Source String
+Files</a>, use the <a href="Tools.html#TL_FGLCOMP">fglcomp</a> and <a href="Tools.html#TL_FGLFORM">fglform</a>
+ compilers with the <code>-m</code> option:</p>
+<p><code>$ fglcomp -m mymodule.4gl</code></p>
+
+
+<p>The compilers dumps all localized string to stdout. This output can be redirected to a file to 
+generate the default <a href="#SOURCES">Source String File</a> with all the localized strings used in the 4gl file.</p>
+
+
+<HR>
+
+<h3><a name="COMPILING">Compiling String Files</a></h3>
+<p>The <a href="#SOURCES">Source String Files</a> (<b>.str</b>) must be compiled to binary files (<b>.42s</b>)
+in order to be used at runtime.</p>
+<p>To compile a Source String File, use the <a href="Tools.html#TL_FGLMKSTR">fglmkstr</a>
+compiler:</p>
+<p><code>$ fglmkstr <i>filename</i>.str</code></p>
+
+
+<p>This tool generates a <b> .42s</b> file with the <i>filename</i> prefix.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> When compiling a string file, you
+must set the <a href="Localization.html">locale</a> (character set)
+corresponding to the encoding used in the .str file.</b></p>
+
+
+<HR>
+
+<h3><a name="RUNTIME">Using String Files at Runtime</a></h3>
+
+
+<h4>Distributing string resource files</h4>
+<p>The &quot;<code>42s</code>&quot; <a href="#COMPILING">Compiled
+String Files</a> must be distributed with the program files in
+a directory specified in the <a href="EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href="EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a>
+environment variable.</p>
+
+
+<h4>Setting the correct locale</h4>
+
+<p>The <a href="Localization.html">locale</a> (character set) corresponding to
+the encoding used in the <b>.42s</b> files must be set before starting the
+application. If the locale is wrong, the strings will not be loaded correctly.</p>
+
+
+<h4>How does the runtime system load the strings?</h4>
+
+<p>Searching for a string resource in the <b>.42s</b>  files follows this
+order of precedence:</p>
+
+<ol>
+  <li>The files defined in <a href="FglProfile.html">FGLPROFILE</a> (see below),</li>
+  <li>A file having the same name prefix as the current &quot;<code>42r</code>&quot; program,</li>
+  <li>A file with the name &quot;<code>default.42s</code>&quot;.</li>
+</ol>
+
+<p>For each string file, the runtime system searches in the following directories:</p>
+
+<ol>
+  <li>The current directory,</li>
+  <li>The path list defined in the <a href="EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href="EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a> environment variable,</li>
+  <li>The <code>FGLDIR/lib</code> directory.</li>
+</ol>
+
+<p>A string is loaded in memory only once (if the same string is defined in
+another file, it is ignored).</p>
+
+<h4>What happens if a string is not defined in a resource file?</h4>
+
+<p>If a localized string is not defined in a resource files, the runtime system
+uses the string identifier as default text.&nbsp;</p>
+
+
+<h4>What happens if a string is defined more that once?</h4>
+
+<p>When a localized string is defined in several resource files, the runtime
+system uses the first string found.</p>
+
+<p>For example, if the string &quot;hello&quot; is defined in <code>program.42s</code>
+as &quot;hello from program&quot;, and in <code>default.42s</code> as
+&quot;hello from default&quot;, the runtime system will use the text &quot;hello
+from program&quot;.</p>
+
+
+<h4>Defining a list of string resource files in FGLPROFILE</h4>
+
+<p>You can specify a list of Compiled String Files with entries in the
+<a href="FglProfile.html">FGLPROFILE</a>
+ configuration file. The file name must be specified without a file extension. The runtime system searches
+for a file with the &quot;<code>42s</code>&quot;
+extension in the current directory and in the path list defined
+in the <a href="EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href="EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a>
+environment variable.</p>
+
+<p><u>List of resource files</u></p>
+
+<p>To define the list of resource files to be used, specify the total
+number of files with:</p>
+
+<p><code>fglrun.localization.file.count = <i>integer</i></code></p>
+
+<p>And for each file, define the filename (without the <b>42s</b> extension), including an index number, with:</p>
+
+<p><code>fglrun.localization.file.<i>index</i>.name = &quot;<i>filename</i>&quot;</code></p>
+
+
+<p>Start <i>index</i> at 1.</p>
+<p><u>Warning switches</u></p>
+<p>If the text of a string is not found at runtime, the DVM can show a warning, for
+development purposes.</p>
+<p><code>fglrun.localization.warnKeyNotFound = <i>boolean</i></code></p>
+<p>By default, this warning switch is disabled.</p>
+
+
+<h4>Organizing .42s resource files in distribution directories</h4>
+
+<p>A set of <b>.42s</b> files using the same language and code-set is typically
+copied in a distribution directory with a name identifying the locale.</p>
+<p>
+    For example:</p>
+<p><code>&nbsp;&nbsp;
+/opt/app/resource/strings/en_US.iso8859-1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --
+English strings in iso8859-1 code-set<br>
+&nbsp;&nbsp;
+/opt/app/resource/strings/fr_FR.iso8859-1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --
+French strings in iso8859-1 code-set<br>
+&nbsp;&nbsp;
+/opt/app/resource/strings/jp_JP.utf8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+-- Japanese strings in utf-8 code-set</code></p>
+<p>At runtime, the list of string files is defined with <b>fglrun.localization</b>
+entries in <a href="FglProfile.html">FGLPROFILE</a>, and you specify the search
+path for the current locale with the <a href="EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href="EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a>
+environment variable.</p>
+
+
+<HR>
+
+<h3><a name="PREDSTRINGS">Predefined Application Strings</a></h3>
+<h4>What is a Predefined Application String?</h4>
+<p>In some situations, the runtime system needs to display text to the user.
+For example, the runtime system library includes a report viewer, which displays
+a form. By default the text is in English, and you may need to localize the
+text in another language. So the strings of this component must be
+'localizable', as in other application strings.&nbsp;</p>
+<p>To customize the built-in strings, the runtime system uses the mechanism of
+localized strings.</p>
+<p>All strings used by the runtime system are centralized in a unique file:</p>
+<p><code>$FGLDIR/src/default.str</code></p>
+<p>which is compiled into:</p>
+<p><code>$FGLDIR/lib/default.42s</code></p>
+<p>This file is always loaded by the runtime system.</p>
+<p>To overwrite the defaults, you can re-define these strings in your own
+localized string files. <i>See also:</i> <a href="#RUNTIME">Using String Files at Runtime</a>.</p>
+
+
+<HR>
+
+<h3><a name="EXAMPLE">Example</a></h3>
+
+
+<p>The <a href="#SOURCES">Source String File</a> &quot;common.str&quot; (a <a href="#COMPILING">compiled
+version</a> must be created):</p>
+<pre><CODE class=linenumber>01 </CODE>&quot;common.accept&quot; = &quot;OK&quot;
+<CODE class=linenumber>02 </CODE>&quot;common.cancel&quot; = &quot;Cancel&quot;
+<CODE class=linenumber>03 </CODE>&quot;common.quit&quot; = &quot;Quit&quot;</pre>
+
+
+<p>The <a href="#SOURCES">Source String File</a> &quot;actions.str&quot; (a <a href="#COMPILING">compiled
+version</a> must be created):</p>
+<pre><CODE class=linenumber>01 </CODE>&quot;action.append&quot; = &quot;Append&quot;
+<CODE class=linenumber>02 </CODE>&quot;action.modify&quot; = &quot;Modify&quot;
+<CODE class=linenumber>03 </CODE>&quot;action.delete&quot; = &quot;Delete&quot;</pre>
+
+
+<p>The <a href="#SOURCES">Source String File</a> &quot;customer.str&quot; (a <a href="#COMPILING">compiled
+version</a> must be created):</p>
+<pre><CODE class=linenumber>01</CODE> &quot;customer.mainwindow.title&quot; = &quot;Customers&quot;
+<CODE class=linenumber>02</CODE> &quot;customer.listwindow.title&quot; = &quot;Customer List&quot;
+<CODE class=linenumber>03</CODE> &quot;customer.l_custnum&quot; = &quot;Number:&quot;
+<CODE class=linenumber>04</CODE> &quot;customer.l_custname&quot; = &quot;Name:&quot;
+<CODE class=linenumber>05</CODE> &quot;customer.c_custname&quot; = &quot;The customer name&quot;
+<CODE class=linenumber>06</CODE> &quot;customer.g_data&quot; = &quot;Customer data&quot;
+<CODE class=linenumber>07</CODE> &quot;customer.g_actions&quot; = &quot;Actions&quot;
+<CODE class=linenumber>08 </CODE>&quot;customer.qdelete&quot; = &quot;Are you sure you want to delete this customer?&quot;</pre>
+
+
+<p>The <a href="#COMPILING"> FGLPROFILE configuration file parameters</a>:</p>
+<PRE><CODE class=linenumber>01</CODE> fglrun.localization.file.count = 2
+<CODE class=linenumber>02</CODE> fglrun.localization.file.1.name = &quot;common&quot;
+<CODE class=linenumber>03</CODE> fglrun.localization.file.2.name = &quot;actions&quot;</PRE>
+
+
+<p>Remark: The 'customer' string file does not have to to listed in FGLPROFILE
+since it is loaded as it has the same name as the program.</p>
+
+
+<p>The form specification file &quot;f1.per&quot;:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>LAYOUT </tt>(<tt>TEXT</tt>=%&quot;customer.mainwindow.title&quot;)
+<CODE class=linenumber>02</CODE>   <tt>GRID</tt>
+<CODE class=linenumber>03</CODE>   {
+<CODE class=linenumber>04</CODE>    &lt;g g1                                    &gt;
+<CODE class=linenumber>05</CODE>     [lab1       ] [f01            ]
+<CODE class=linenumber>06</CODE>     [lab2       ] [f02                     ]
+<CODE class=linenumber>07</CODE> 
+<CODE class=linenumber>08</CODE>    &lt;g g2                                    &gt;
+<CODE class=linenumber>09</CODE>     [b1               ] [b2                ]
+<CODE class=linenumber>10</CODE> 
+<CODE class=linenumber>11</CODE>   }
+<CODE class=linenumber>12</CODE>   <tt>END</tt>
+<CODE class=linenumber>13</CODE> <tt>END</tt>
+<CODE class=linenumber>14</CODE> <tt>ATTRIBUTES</tt>
+<CODE class=linenumber>15</CODE>   <tt>LABEL  </tt>lab1 : <tt>TEXT</tt>=%&quot;customer.l_custnum&quot;;
+<CODE class=linenumber>16</CODE>   <tt>EDIT   </tt>f01  = <tt>FORMONLY</tt>.custnum;
+<CODE class=linenumber>17</CODE>   <tt>LABEL  </tt>lab2 : <tt>TEXT</tt>=%&quot;customer.l_custname&quot;;
+<CODE class=linenumber>18</CODE>   <tt>EDIT   </tt>f02  = <tt>FORMONLY</tt>.custname, <tt>COMMENT</tt>=%&quot;customer.c_custname&quot;;
+<CODE class=linenumber>19</CODE>   <tt>BUTTON </tt>b1   : edit, <tt>TEXT</tt>=%&quot;action.modify&quot;;
+<CODE class=linenumber>20</CODE>   <tt>BUTTON </tt>b2   : quit, <tt>TEXT</tt>=%&quot;common.quit&quot;;
+<CODE class=linenumber>21</CODE>   <tt>GROUP  </tt>g1   : <tt>TEXT</tt>=%&quot;customer.g_data&quot;;
+<CODE class=linenumber>22</CODE>   <tt>GROUP  </tt>g2   : <tt>TEXT</tt>=%&quot;customer.g_actions&quot;;
+<CODE class=linenumber>23</CODE> <tt>END</tt></PRE>
+
+
+<p>The program &quot;customer.4gl&quot; using the strings file:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>rec <tt>RECORD</tt>
+<CODE class=linenumber>03</CODE>   <tt>          </tt>custnum <tt>INTEGER</tt>,
+<CODE class=linenumber>04</CODE>   <tt>          </tt>custname <tt>CHAR</tt>(20)
+<CODE class=linenumber>05</CODE>   <tt>       END RECORD</tt>
+<CODE class=linenumber>06</CODE>   <tt>OPEN WINDOW </tt>w1 <tt>WITH FORM </tt>&quot;f1&quot;
+<CODE class=linenumber>07</CODE>   <tt>MENU</tt>
+<CODE class=linenumber>08</CODE>     <tt>ON ACTION </tt>edit
+<CODE class=linenumber>09</CODE>        <tt>INPUT BY NAME </tt>rec.*
+<CODE class=linenumber>10</CODE>     <tt>ON ACTION </tt>quit
+<CODE class=linenumber>11</CODE>        <tt>EXIT MENU</tt>
+<CODE class=linenumber>12</CODE>   <tt>END MENU</tt>
+<CODE class=linenumber>13</CODE> <tt>END MAIN</tt></PRE>
+
+
+</BODY>
+</HTML>

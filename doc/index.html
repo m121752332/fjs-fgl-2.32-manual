@@ -1,0 +1,289 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Genero BDL User Guide</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+
+<BODY>
+
+<div align="center">
+  <center>
+  <table border="0" cellpadding="0" cellspacing="0" width="95%">
+    <tr>
+      <td valign="top" width="100%">
+        <H1>Genero Business Development Language User Guide</H1>
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <td><b>Version</b>:<b>       2.32</b></td>
+          </tr>
+        </table>
+      </td>
+      <td>&nbsp;</td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<br>
+
+<div align="center">
+  <center>
+  <table border="0" cellpadding="0" cellspacing="0" width="95%">
+    <tr>
+      <td valign="top" align="center" bgcolor="#CABCAA" colspan="4">
+<H2 align="center"><a name="REFERENCE">Genero Business Development Language</a></H2>
+      </td>
+    </tr>
+    <tr>
+      <td width="25%" valign="top" align="center" bgcolor="#D8D3C2"><b>General</b></td>
+      <td width="25%" valign="top" align="center" bgcolor="#D8D3C2"><b>Language Basics</b></td>
+      <td width="25%" valign="top" align="center" bgcolor="#D8D3C2"><b>Advanced
+        Features</b></td>
+      <td width="25%" valign="top" align="center" bgcolor="#D8D3C2"><b>Upgrading</b></td>
+    </tr>
+    <tr>
+      <td width="25%" valign="top" bgcolor="#EBE8E0">
+  <UL>
+    <LI><a href="User/IntroBDL.html">Introduction</a>
+    <LI><a href="User/DocConv.html">Documentation Conventions</a>
+    <LI><a href="User/LanguageFeatures.html">Language Features</a>
+    <LI><a href="User/FglTerms.html">Common Terms</a>
+    <LI><a href="User/DynamicUI.html">Dynamic User Interface</a>
+    <LI><a href="User/Installation.html">Installation and Setup</a><LI><a href="User/Tools.html">Tools and Components</a>
+    <LI><a href="User/FAQList.html">FAQ List</a>
+    <LI><a href="User/SearchIndex.html">General Index</a>
+  </UL>
+      </td>
+      <td width="25%" valign="top" bgcolor="#EBE8E0">
+  <UL>
+    <LI><a href="User/DataTypes.html">Data Types</a>
+    <LI><a href="User/Literals.html">Literals</a>
+    <LI><a href="User/Expressions.html">Expressions</a>
+    <LI><a href="User/Operators.html">Basic Syntax Elements</a>
+    <LI><a href="User/Exceptions.html">Exceptions</a>
+    <LI><a href="User/Variables.html">Variables</a>
+    <LI><a href="User/Constants.html">Constants</a>
+    <LI><a href="User/Records.html">Records</a>
+    <LI><a href="User/Arrays.html">Arrays</a>
+    <LI><a href="User/UserTypes.html">User Types</a>
+    <LI><a href="User/BuiltInClasses.html">Built-in Classes</a>
+  </UL>
+      </td>
+      <td width="25%" valign="top" bgcolor="#EBE8E0">
+  <UL>
+    <LI><a href="User/Programs.html">Programs</a>
+    <LI><a href="User/DatabaseSchema.html">Database Schema</a>
+    <LI><a href="User/Globals.html">Globals</a>
+    <LI><a href="User/FlowControl.html">Flow Control</a>
+    <LI><a href="User/Functions.html">Functions</a>
+    <LI><a href="User/Localization.html">Localization</a>
+    <LI><a href="User/LocalizedStrings.html">Localized Strings</a>
+    <LI><a href="User/DataConversions.html">Data Conversions</a>
+    <LI><a href="User/EnvironmentVariables.html">Environment Variables</a>
+    <LI><a href="User/FglProfile.html">FGLPROFILE</a>
+    <LI><a href="User/Reports.html">Reports</a>
+  </UL>
+  
+      </td>
+      <td width="25%" valign="top" bgcolor="#EBE8E0">
+  <UL>
+    <LI><a href="User/NewFeatures.html">New Features</a>
+    <LI><a href="User/MigI4GL.html">I4GL Migration Guide</a>
+    <LI><a href="User/Mig0000.html">BDS Migration Guide</a>
+    <LI><a href="User/Mig0001.html">1.3x Upgrade Guide</a>
+    <LI><a href="User/Mig0002.html">2.0x Upgrade Guide</a>
+    <LI><a href="User/Mig0003.html">2.1x Upgrade Guide</a>
+    <LI><a href="User/Mig0004.html">2.2x Upgrade Guide</a>
+    <LI><a href="User/Mig0005.html">2.3x Upgrade Guide</a>
+  </UL>
+  
+      </td>
+    </tr>
+    <tr>
+      <td width="25%" valign="top" align="center" bgcolor="#D8D3C2"><b>SQL Management</b></td>
+      <td width="25%" valign="top" align="center" bgcolor="#D8D3C2"><b>User Interface (1)</b></td>
+      <td width="25%" valign="top" align="center" bgcolor="#D8D3C2"><b>User Interface (2)</b></td>
+      <td width="25%" valign="top" align="center" bgcolor="#D8D3C2"><b>User Interface (3)</b></td>
+    </tr>
+    <tr>
+      <td width="25%" valign="top" bgcolor="#EBE8E0">
+  <UL>
+    <LI><a href="User/Connections.html">Database Connections</a>
+    <LI><a href="User/Transactions.html">Transactions</a>
+    <LI><a href="User/StaticSql.html">Static SQL</a>
+    <LI><a href="User/DynamicSql.html">Dynamic SQL</a>
+    <LI><a href="User/ResultSets.html">Result Sets</a>
+    <LI><a href="User/PositionedUpdates.html">Positioned Updates</a>
+    <LI><a href="User/InsertCursors.html">Insert Cursors</a>
+    <LI><a href="User/InOutSql.html">I/O SQL Instructions</a>
+    <LI><a href="User/SqlProgramming.html">SQL Programming</a>
+  </UL>
+      </td>
+      <td width="25%" valign="top" bgcolor="#EBE8E0">
+  <UL>
+    <LI><a href="User/InteractionModel.html">Interaction Model</a>
+    <LI><a href="User/WindowsAndForms.html">Windows and Forms</a>
+    <LI><a href="User/ActionDefaults.html">Action Defaults</a>
+    <LI><a href="User/PresentationStyles.html">Presentation Styles</a>
+    <LI><a href="User/FormSpecFiles.html">Form Specification Files</a>
+    <LI><a href="User/FSFAttributes.html">Form Attributes</a>
+    <LI><a href="User/Layout.html">Form Rendering</a>
+  </UL>
+  
+      </td>
+      <td width="25%" valign="top" bgcolor="#EBE8E0">
+  <UL>
+    <LI><a href="User/Menus.html">Menus</a>
+    <LI><a href="User/RecordDisplay.html">Record Display</a>
+    <LI><a href="User/RecordInput.html">Record Input</a>
+    <LI><a href="User/DisplayArray.html">Array Display</a>
+    <LI><a href="User/InputArray.html">Array Input</a>
+    <LI><a href="User/Construct.html">Query By Example</a>
+    <LI><a href="User/MultipleDialogs.html">Multiple Dialogs</a>
+    <LI><a href="User/Prompt.html">Prompt for Values</a>
+    <LI><a href="User/MessageDisplay.html">Displaying Messages</a>
+  </UL>
+  
+      </td>
+      <td width="25%" valign="top" bgcolor="#EBE8E0">
+  <UL>
+    <LI><a href="User/Toolbars.html">Toolbars</a>
+    <LI><a href="User/Topmenus.html">Topmenus</a>
+    <LI><a href="User/TreeViews.html">Tree Views</a>
+    <LI><a href="User/DragAndDrop.html">Drag &amp; Drop</a>
+    <LI><a href="User/WebComponent.html">Web Component</a>
+    <LI><a href="User/StartMenus.html">StartMenus</a>
+    <LI><a href="User/Canvas.html">Canvas</a>
+    <LI><a href="User/MessageFiles.html">Message Files</a>
+    <LI><a href="User/MDIWindows.html">MDI Windows</a>
+    <LI><a href="User/FrontEndFunctions.html">Front End Functions</a>
+    <LI><a href="User/FEProtocol.html">Front End Protocol</a>
+  </UL>
+  
+      </td>
+    </tr>
+    <tr>
+      <td width="25%" valign="top" align="center" bgcolor="#D8D3C2"><b>Built-in Classes (1)</b></td>
+      <td width="25%" valign="top" align="center" bgcolor="#D8D3C2"><b>Built-in Classes (2)</b></td>
+      <td width="25%" valign="top" align="center" bgcolor="#D8D3C2"><b>Programming</b></td>
+      <td width="25%" valign="top" align="center" bgcolor="#D8D3C2"><b>Tutorial</b></td>
+    </tr>
+    <tr>
+      <td width="25%" valign="top" bgcolor="#EBE8E0">
+  <UL>
+    <LI><a href="User/ClassApplication.html">base.Application</a>
+    <LI><a href="User/ClassChannel.html">base.Channel</a>
+    <LI><a href="User/ClassStringBuffer.html">base.StringBuffer</a>
+    <LI><a href="User/ClassStringTokenizer.html">base.StringTokenizer</a>
+    <LI><a href="User/ClassTypeInfo.html">base.TypeInfo</a>
+    <LI><a href="User/ClassMessageServer.html">base.MessageServer</a>
+    <LI><a href="User/ClassInterface.html">ui.Interface</a>
+    <LI><a href="User/ClassWindow.html">ui.Window</a>
+    <LI><a href="User/ClassForm.html">ui.Form</a>
+    <LI><a href="User/ClassDialog.html">ui.Dialog</a>
+    <LI><a href="User/ClassComboBox.html">ui.ComboBox</a>
+    <LI><a href="User/ClassDragDrop.html">ui.DragDrop</a>
+  </UL>
+  
+      </td>
+      <td width="25%" valign="top" bgcolor="#EBE8E0">
+  <UL>
+    <LI><a href="User/ClassDomDocument.html">om.DomDocument</a>
+    <LI><a href="User/ClassDomNode.html">om.DomNode</a>
+    <LI><a href="User/ClassNodeList.html">om.NodeList</a>
+    <LI><a href="User/ClassSaxAttributes.html">om.SaxAttributes</a>
+    <LI><a href="User/ClassSaxDocumentHandler.html">om.SaxDocumentHandler</a>
+    <LI><a href="User/ClassXmlReader.html">om.XmlReader</a>
+    <LI><a href="User/ClassXmlWriter.html">om.XmlWriter</a>
+  </UL>
+  
+  <p>
+  
+      </td>
+      <td width="25%" valign="top" bgcolor="#EBE8E0">
+  <UL>
+    <LI><a href="User/CompilingPrograms.html">Compiling Programs</a>
+    <LI><a href="User/Debugger.html">Debugger</a>
+    <LI><a href="User/Profiler.html">Program Profiler</a>
+    <LI><a href="User/Optimization.html">Optimization</a>
+    <LI><a href="User/Preprocessor.html">Preprocessor</a>
+    <LI><a href="User/FileExtensions.html">File Extensions</a>
+    <LI><a href="User/FglErrors.html">FGL Errors</a>
+    <LI><a href="User/AutoDoc.html">Automatic source documentation generator</a>
+    <LI><a href="User/CodeEditing.html">Source code editing</a>
+  </UL>
+  
+  <p>
+  
+      </td>
+      <td width="25%" valign="top" bgcolor="#EBE8E0">
+  <UL>
+    <LI><a href="User/TutIndex.html">Summary</a>
+    <LI><a href="User/TutChap01.html">Overview </a>
+    <LI><a href="User/TutChap02.html">Using Genero BDL</a>
+    <LI><a href="User/TutChap03.html">Displaying Data (Windows/Forms)</a>
+    <LI><a href="User/TutChap04.html">Query by Example</a>
+    <LI><a href="User/TutChap05.html">Enhancing the Form</a>
+    <LI><a href="User/TutChap06.html">Add/Update/Delete</a>
+    <LI><a href="User/TutChap07.html">Array Display</a>
+    <LI><a href="User/TutChap08.html">Array Input</a>
+    <LI><a href="User/TutChap09.html">Reports</a>
+    <LI><a href="User/TutChap10.html">Localization</a>
+    <LI><a href="User/TutChap11.html">Master/Detail</a>
+    <LI><a href="User/TutChap12.html">Changing the User Interface Dynamically</a>
+    <LI><a href="User/TutChap13.html">Master/Detail using Multiple Dialogs</a></UL>
+      </td>
+    </tr>
+    <tr>
+      <td width="25%" valign="top" align="center" bgcolor="#D8D3C2"><b>ODI Adaptation Guides</b></td>
+      <td width="25%" valign="top" align="center" bgcolor="#D8D3C2"><b>Library</b></td>
+      <td width="25%" valign="top" align="center" bgcolor="#D8D3C2"><b>Extending the Language</b></td>
+      <td width="25%" valign="top" align="center" bgcolor="#D8D3C2"></td>
+    </tr>
+    <tr>
+      <td width="25%" valign="top" bgcolor="#EBE8E0">
+
+<ul>
+  <li><a href="User/odiagads.html">Genero db</a></li>
+  <li><a href="User/odiagifx.html">IBM Informix</a></li>
+  <li><a href="User/odiagdb2.html">IBM DB2 UDB</a></li>
+  <li><a href="User/odiagmsv.html">Microsoft SQL Server</a></li>
+  <li><a href="User/odiagmys.html">MySQL</a></li>
+  <li><a href="User/odiagora.html">Oracle Server</a></li>
+  <li><a href="User/odiagpgs.html">PostgreSQL</a></li>
+  <li><a href="User/odiagsqt.html">SQLite</a></li>
+  <li><a href="User/odiagase.html">Sybase ASE</a></li>
+  <li><a href="User/odiagasa.html">Sybase ASA</a></li>
+</ul>
+
+
+      </td>
+      <td width="25%" valign="top" bgcolor="#EBE8E0">
+   <UL>
+    <LI><a href="User/BuiltInFunctions.html">Built-in Functions</a>
+    <LI><a href="User/UtilityFunctions.html">Utility Functions</a>
+    <LI><a href="User/WinDDE.html">DDE Support</a>
+    <LI><a href="User/XmlUtils.html">XML Utilities</a>
+    <LI><a href="User/Ext_os_Path.html">File Manipulation functions</a>
+    <LI><a href="User/Ext_util_Math.html">Mathematical functions</a>
+    </UL>
+      </td>
+      <td width="25%" valign="top" bgcolor="#EBE8E0">
+  <UL>
+    <LI><a href="User/JavaBridge.html">Java Interface</a>
+    <LI><a href="User/CExtensions.html">C-Extensions</a>
+  </UL>
+  
+      </td>
+      <td width="25%" valign="top" bgcolor="#EBE8E0">
+  <UL>
+  </UL>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+</BODY>
+</HTML>

@@ -1,0 +1,448 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>om.DomNode</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The DomNode class</a> </H1>
+
+<p>Summary:</p>
+
+<ul>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#METHODS">Methods</a></li>
+  <li><a href="#USAGE">Usage</a><ul>
+  <li><a href="#Node_creation_removal">Node creation/removal</a></li>
+	<li><a href="#In_Out_utilities">In/Out utilities</a></li>
+	<li><a href="#Node_Identification">Node Identification</a></li>
+	<li><a href="#Attributes_management">Attributes management</a></li>
+	<li><a href="#Tree_navigation">Tree navigation</a></li>
+</ul>
+	</li>
+  <li><a href="#EXAMPLES">Examples</a></li>
+</ul>
+<p><i>See also:</i>
+<a href="BuiltInClasses.html">Built-in Classes</a>, <a href="XmlUtils.html">XML
+Utilities</a>, <a href="ClassNodeList.html">NodeList</a></p>
+
+<HR>
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+<p>The <b>DomNode</b> class provides methods to manipulate a node of a data
+tree, following the <a href="XmlUtils.html"> DOM</a> standards.</p>
+
+<h4>Syntax:</h4>
+
+<p><code>om.DomNode</code></p>
+
+<h4>Notes:</h4>
+<ol>
+  <li>A DomNode object is a node (or element) of a
+    <a href="ClassDomDocument.html">DomDocument</a>.</li>
+</ol>
+
+
+<HR>
+
+
+<h3><a name="METHODS">Methods:</a></h3>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#66FFCC" colspan="2"><b>Object Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%" valign="top"><b>Name</b></td>
+    <td bgcolor="#C0C0C0" valign="top"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#E8E8E8" width="50%" colspan="2" valign="top"><b>Node creation</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#appendChild">appendChild</a>( src om.DomNode )</code></td>
+    <td valign="top">Adds an existing DomNode at the end of the list of children in this node.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#createChild">createChild</a>( tag </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>   om.DomNode</code></td>
+    <td valign="top">Creates a DomNode and adds it to the children list of this node.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#insertBefore">insertBefore</a>( new om.DomNode, exn om.DomNode )</code></td>
+    <td valign="top">Inserts an existing DomNode just before the node referenced by <i>exn</i>.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#removeChild">removeChild</a>( node om.DomNode )</code></td>
+    <td valign="top">Removes the child node referenced by <i>node</i> and removes any of its descendents.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#replaceChild">replaceChild</a>( new om.DomNode, old om.DomNode )</code></td>
+    <td valign="top">Replaces the child node referenced by <i>old</i> by the node <i>new</i>.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#E8E8E8" width="50%" colspan="2" valign="top"><b>In/Out Utilities</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#loadXml">loadXml</a>( file </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>   om.DomNode</code></td>
+    <td valign="top">Creates a new DomNode object by loading an XML file and attaches it to
+      this node as a child. The new created node object is returned from the
+      function.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#parse">parse</a>( source </code><tt>STRING</tt><code> ) </code></td>
+    <td valign="top">Parses a source string in XML format and creates a new
+      DomNode from it.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#toString">toString</a>( ) </code><tt>RETURNING
+      STRING</tt></td>
+    <td valign="top">Serializes the DomNode to a string in XML format.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#writeXml">writeXml</a>( file </code><tt>STRING</tt><code> )</code></td>
+    <td valign="top">Writes an XML file with the current node.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#write">write</a>( shd </code><tt>om.SaxDocumentHandler</tt><code> )</code></td>
+    <td valign="top">Outputs an xml-tree to a sax document handler.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#E8E8E8" width="50%" colspan="2" valign="top"><b>Node identification</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getId">getId</a>( )<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td valign="top">Returns the internal integer identifier automatically assigned to an
+      Abstract User Interface DomNode. Returns -1 for nodes that are not part of
+      the <a href="DynamicUI.html">Abstract User Interface tree</a>.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getTagName">getTagName</a>( )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td valign="top">Returns the tag name of the node.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#E8E8E8" width="50%" colspan="2" valign="top"><b>Attributes management</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#setAttribute">setAttribute</a>( att </code><tt>STRING, </tt><code>val </code><tt>STRING</tt><code>
+      ) </code></td>
+    <td valign="top">Sets the attribute <i>att</i> with value <i>val</i>.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getAttribute">getAttribute</a>( att </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td valign="top">Returns the value of the attribute having the name <i>att</i>.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getAttributeInteger">getAttributeInteger</a>(att </code><tt>STRING, </tt><code>def
+      </code><tt>INTEGER</tt><code>)<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td valign="top">Returns the value of the attribute having the name <i>att</i> as an
+      integer value. Returns <i>def</i> if the attribute is not defined.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getAttributeString">getAttributeString</a>(att </code><tt>STRING, </tt><code>def
+      </code><tt>STRING</tt><code>)<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td valign="top">Returns the value of the attribute having the name <i>att</i> as a
+      string value. Returns <i>def</i> if the attribute is not defined.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getAttributeName">getAttributeName</a>( pos </code><tt>INTEGER</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td valign="top">Returns the name of the attribute at the position <i>pos</i> (1 =
+      first).</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getAttributesCount">getAttributesCount</a>()<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td valign="top">Returns the number of attributes of this DomNode.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getAttributeValue">getAttributeValue</a>( pos </code><tt>INTEGER</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td valign="top">Returns the value of the attribute at the position <i>pos</i> (1 =
+      first).</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#removeAttribute">removeAttribute</a>( att </code><tt>STRING</tt><code> ) </code></td>
+    <td valign="top">Deletes the attribute identified by <i>att</i>.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#E8E8E8" width="50%" colspan="2" valign="top"><b>Tree navigation</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getChildCount">getChildCount</a>( )<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td valign="top">Returns the number of children.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getChildByIndex">getChildByIndex</a>( pos </code><tt>INTEGER</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>   om.DomNode</code></td>
+    <td valign="top">Returns the child node at index <i>pos</i> (1 =
+      first).</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getFirstChild">getFirstChild</a>( )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>   om.DomNode</code></td>
+    <td valign="top">Returns the first child node.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getLastChild">getLastChild</a>( )<br>
+      &nbsp; </code><tt>RETURNING </tt><code>om.DomNode</code></td>
+    <td valign="top">Returns the last DomNode in the list of children.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getNext">getNext</a>( )<br>
+      &nbsp; </code><tt>RETURNING </tt><code>om.DomNode</code></td>
+    <td valign="top">Returns the next sibling DomNode of this node.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getParent">getParent</a>( )<br>
+      &nbsp; </code><tt>RETURNING </tt><code>om.DomNode</code></td>
+    <td valign="top">Returns the parent DomNode of this node.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getPrevious">getPrevious</a>( )<br>
+      &nbsp; </code><tt>RETURNING </tt><code>om.DomNode</code></td>
+    <td valign="top">Returns the previous sibling DomNode of this node.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#selectByTagName">selectByTagName</a>( name </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING </tt><code>om.NodeList</code></td>
+    <td valign="top">Creates a list of nodes by recursively searching nodes by tag name.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#selectByPath">selectByPath</a>( path </code><tt>STRING</tt><code>  )<br>
+      &nbsp; </code><tt>RETURNING </tt><code>om.NodeList</code></td>
+    <td valign="top">Creates a list of nodes by recursively searching nodes matching an XPath-like
+      pattern.</td>
+  </tr>
+</table>
+
+
+<HR>
+
+
+<h3><a name="USAGE">Usage:</a></h3>
+<h4><a name="Node_creation_removal">Node creation/removal</a></h4>
+<p>To create an instance of the DomNode class from scratch, you must 
+instantiate the object using one of the methods provided in the DomNode class:
+</p>
+<p><code><a name="createChild">createChild()</a></code> creates a child node and adds it to the 
+children list.</p>
+<p><code><a name="appendChild">appendChild()</a></code> adds an existing node to the 
+end of the children list. The appended node must have been created with a
+document method such as <a href="ClassDomDocument.html#createElement">DomDocument.createElement()</a>.</p>
+<p><code><a name="insertBefore">insertBefore()</a></code> inserts an existing node before the
+node specified as second parameter. The inserted node must have been created
+with a document method such as <a href="ClassDomDocument.html#createElement">DomDocument.createElement()</a>.</p>
+<p><code><a name="replaceChild">replaceChild()</a></code> replaces the specified child node with a 
+different child node. The replacing node must have been created with a document
+method such as <a href="ClassDomDocument.html#createElement">DomDocument.createElement()</a>.
+The replaced node will be dropped from the document.</p>
+<p>Other methods to create DomNode objects are available
+    from the <a href="ClassDomDocument.html">DomDocument</a> class.
+For example, to create a <i>text node</i>, use the <code>createChars()</code> 
+method of a DomDocument object; to create an <i>entity node</i>, 
+use the <code>createEntity()</code>  method of a DomDocument object.
+</p>
+<p><code><a name="removeChild">removeChild()</a></code>&nbsp; removes the specified child node.</p>
+<h4><a name="In_Out_utilities">In/Out utilities</a></h4>
+<p>The DomNode class provides the <code><a name="writeXml">writeXml</a>()</code> method
+    to save the <a href="XmlUtils.html"> DOM</a> tree into a file in <a href="XmlUtils.html">XML</a> format.</p>
+<p>The method <code><a name="write">write</a>()</code> outputs an xml-tree to a sax document handler.</p>
+<p>The method <code><a name="loadXml">loadXml()</a></code> creates a new 
+DomNode object by loading an XML file and attaches it to this node as a child. </p>
+<p>Use the <a name="toString"><code>toString()</code></a> method to generate a
+string in <a href="XmlUtils.html">XML</a> format from the DomNode. To scan an
+XML source string and create a DomNode from, use the <a name="parse"><code>parse()</code></a>
+method. </p>
+<h4><a name="Attributes_management">Attributes management</a></h4>
+<p>A DomNode object can have attributes with values, except if it is a <i>text node</i>. In this case, you can only get/set the text
+    of the node, since text nodes cannot have attributes. The DomNode class provides a complete set of methods to modify
+    attribute values:
+<p><code><a name="getAttribute">getAttribute</a>()</code> returns the value of the attribute having the 
+specified name.
+<p><code><a name="setAttribute">setAttribute</a>()</code> sets the value of the specified attribute.
+<p><code><a name="getAttributeInteger">getAttributeInteger</a>()</code> returns the value of the specified attribute as an integer value.
+<p><code><a name="getAttributeString">getAttributeString</a>()</code> returns the value of the specified attribute as a string value.
+<p><code><a name="getAttributeName">getAttributeName</a>()</code> returns the name of the attribute at the specified position.
+<p><code><a name="getAttributesCount">getAttributesCount</a>()</code>returns the number of attributes of this DomNode.
+<p><code><a name="getAttributeValue">getAttributeValue</a>()</code> returns the value of the attribute at the specified position. 
+<p><code><a name="removeAttribute">removeAttribute</a>()</code> deletes the specified attribute.
+
+<h4><a name="Node_Identification">Node Identification</a></h4>
+<p>To get the tag name of the <a href="XmlUtils.html"> DOM</a> node, use
+    the <code><a name="getTagName">getTagName</a>()</code> method.</p>
+<p>The method <code><a name="getId">getId</a>()</code> returns the internal integer 
+identifier automatically assigned to an DomNode. </p>
+
+<h4><a name="Tree_navigation">Tree navigation</a></h4>
+<p>A DomNode object can have zero or more DomNode children that can have, in turn, other children.
+The DomNode class provides a complete set of methods to manipulate<i> DomNode</i> child objects.
+<p><code><a name="getChildCount">getChildCount</a>()</code> returns the number of children.
+<p><code><a name="getChildByIndex">getChildByIndex</a>()</code> returns the child node at the specified index position.
+<p><code><a name="getFirstChild">getFirstChild</a>()</code> returns the first child node.
+<p><code><a name="getLastChild">getLastChild</a>()</code> returns the last DomNode in the list of children.
+<p><code><a name="getNext">getNext</a>()</code> returns the next sibling DomNode of this node.
+<p><code><a name="getParent">getParent</a>() </code>returns the parent DomNode of this node.
+<p><code><a name="getPrevious">getPrevious</a>() </code>returns the previous sibling DomNode of this node.
+<p>The <code><a name="selectByTagName">selectByTagName</a>()</code> and <code><a name="selectByPath">selectByPath</a>()</code> methods
+allow you to search for children nodes according to a tag name (i.e. a type of
+node) or by using an XPath-like search criteria. 
+See the <a href="ClassNodeList.html">NodeList</a> class for more details.
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>Tag and attribute names are case sensitive; &quot;Wheel&quot; is not the
+    same as &quot;wheel&quot;.</li>
+  <li>Text nodes cannot have attributes, but they have plain text.</li>
+  <li>In text nodes, the characters can be accessed with the <tt>@chars</tt>
+    attribute name.</li>
+  <li>In XML representation, a text node is the text itself. Do not confuse it with
+    the parent node. For example, <tt>&lt;Item id=&quot;32&quot;&gt;Red
+    shoes&lt;/Item&gt;</tt> represents 2 nodes: The parent 'Item' node and a
+    text node with string 'Red shoes'.</li>
+</ol>
+
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li>If you need to identify an element, use a common attribute like &quot;name&quot;.</li>
+  <li>If you need to label an element, use a common attribute like &quot;text&quot;.</li>
+</ol>
+
+
+<HR>
+
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+
+<h4>Example 1:</h4>
+
+<p>To create a <a href="XmlUtils.html"> DOM</a> tree with the following structure
+(represented in XML format):</p>
+
+<PRE>&lt;Vehicles&gt;
+   &lt;Car name=&quot;Corolla&quot; color=&quot;Blue&quot; weight=&quot;1546&quot;&gt;Nice car!&amp;nbsp;Yes, very nice!
+   &lt;/Car&gt;
+   &lt;Bus name=&quot;Maxibus&quot; color=&quot;Yellow&quot; weight=&quot;5278&quot;&gt;
+      &lt;Wheel width=&quot;315&quot; diameter=&quot;925&quot; /&gt;
+      &lt;Wheel width=&quot;315&quot; diameter=&quot;925&quot; /&gt;
+      &lt;Wheel width=&quot;315&quot; diameter=&quot;925&quot; /&gt;
+      &lt;Wheel width=&quot;315&quot; diameter=&quot;925&quot; /&gt;
+   &lt;/Bus&gt;
+&lt;/Vehicles&gt;</PRE>
+
+<p>You write the following:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> d om.DomDocument
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> r, n, t, w om.DomNode
+<CODE class=linenumber>04</CODE>   <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<CODE class=linenumber>05</CODE>
+<CODE class=linenumber>06</CODE>   <tt>LET</tt> d = om.DomDocument.create(&quot;Vehicles&quot;)
+<CODE class=linenumber>07</CODE>   <tt>LET</tt> r = d.getDocumentElement()
+<CODE class=linenumber>08</CODE>
+<CODE class=linenumber>09</CODE>   <tt>LET</tt> n = r.createChild(&quot;Car&quot;)
+<CODE class=linenumber>10</CODE>   <tt>CALL</tt> n.setAttribute(&quot;name&quot;,&quot;Corolla&quot;)
+<CODE class=linenumber>11</CODE>   <tt>CALL</tt> n.setAttribute(&quot;color&quot;,&quot;Blue&quot;)
+<CODE class=linenumber>12</CODE>   <tt>CALL</tt> n.setAttribute(&quot;weight&quot;,&quot;1546&quot;)
+<CODE class=linenumber>13</CODE>
+<CODE class=linenumber>14</CODE>   <tt>LET</tt> t = d.createChars(&quot;Nice car!&quot;)
+<CODE class=linenumber>15</CODE>   <tt>CALL</tt> n.appendChild(t)
+<CODE class=linenumber>16</CODE>   <tt>LET</tt> t = d.createEntity(&quot;nbsp&quot;)
+<CODE class=linenumber>17</CODE>   <tt>CALL</tt> n.appendChild(t)
+<CODE class=linenumber>18</CODE>   <tt>LET</tt> t = d.createChars(&quot;Yes, very nice!&quot;)
+<CODE class=linenumber>19</CODE>   <tt>CALL</tt> n.appendChild(t)
+<CODE class=linenumber>20</CODE>
+<CODE class=linenumber>21</CODE>   <tt>LET</tt> n = r.createChild(&quot;Bus&quot;)
+<CODE class=linenumber>22</CODE>   <tt>CALL</tt> n.setAttribute(&quot;name&quot;,&quot;Maxibus&quot;)
+<CODE class=linenumber>23</CODE>   <tt>CALL</tt> n.setAttribute(&quot;color&quot;,&quot;yellow&quot;)
+<CODE class=linenumber>24</CODE>   <tt>CALL</tt> n.setAttribute(&quot;weight&quot;,&quot;5278&quot;)
+<CODE class=linenumber>25</CODE>   <tt>FOR</tt> i=1 <tt>TO</tt> 4
+<CODE class=linenumber>26</CODE>     <tt>LET</tt> w = n.createChild(&quot;Wheel&quot;)
+<CODE class=linenumber>27</CODE>     <tt>CALL</tt> w.setAttribute(&quot;width&quot;,&quot;315&quot;)
+<CODE class=linenumber>28</CODE>     <tt>CALL</tt> w.setAttribute(&quot;diameter&quot;,&quot;925&quot;)
+<CODE class=linenumber>29</CODE>   <tt>END FOR</tt>
+<CODE class=linenumber>30</CODE>
+<CODE class=linenumber>31</CODE>   <tt>CALL</tt> r.writeXml(&quot;Vehicles.xml&quot;)
+<CODE class=linenumber>32</CODE>
+<CODE class=linenumber>33</CODE> <tt>END MAIN</tt></PRE>
+
+<h4>Example 2:</h4>
+
+<p>The following example displays a <a href="XmlUtils.html">DOM</a> tree content
+recursively:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> displayDomNode(n,e)
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> n om.DomNode
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> e, i, s <tt>INTEGER</tt>
+<CODE class=linenumber>04</CODE>
+<CODE class=linenumber>05</CODE>   <tt>LET</tt> s = e*2
+<CODE class=linenumber>06</CODE>   <tt>DISPLAY</tt> s <tt>SPACES</tt> || &quot;Tag: &quot; || n.getTagName()
+<CODE class=linenumber>07</CODE>
+<CODE class=linenumber>08</CODE>   <tt>DISPLAY</tt> s <tt>SPACES</tt> || &quot;Attributes:&quot;
+<CODE class=linenumber>09</CODE>   <tt>FOR</tt> i=1 <tt>TO</tt> n.getAttributesCount()
+<CODE class=linenumber>10</CODE>      <tt>DISPLAY</tt> s <tt>SPACES</tt> || &quot;  &quot; || n.getAttributeName(i) || &quot;=[&quot; || n.getAttributeValue(i) ||&quot;]&quot;
+<CODE class=linenumber>11</CODE>   <tt>END FOR</tt>
+<CODE class=linenumber>12</CODE>   <tt>LET</tt> n = n.getFirstChild()
+<CODE class=linenumber>13</CODE>
+<CODE class=linenumber>14</CODE>   <tt>DISPLAY</tt> s <tt>SPACES</tt> || &quot;Child Nodes:&quot;
+<CODE class=linenumber>15</CODE>   <tt>WHILE</tt> n <tt>IS NOT NULL</tt>
+<CODE class=linenumber>16</CODE>     <tt>CALL</tt> displayDomNode(n,e+1)
+<CODE class=linenumber>17</CODE>     <tt>LET</tt> n = n.getNext()
+<CODE class=linenumber>18</CODE>   <tt>END WHILE</tt>
+<CODE class=linenumber>19</CODE>
+<CODE class=linenumber>20</CODE> <tt>END FUNCTION</tt></PRE>
+
+<h4>Example 3:</h4>
+
+<p>The following example outputs a Dom tree without indentation.</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> d om.DomDocument
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> r, n, t, w om.DomNode
+<CODE class=linenumber>04</CODE>   <tt>DEFINE</tt> dh om.SaxDocumentHandler
+<CODE class=linenumber>05</CODE> 
+<CODE class=linenumber>06</CODE>   <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<CODE class=linenumber>07</CODE> 
+<CODE class=linenumber>08</CODE>   <tt>LET</tt> dh = om.XmlWriter.createPipeWriter(&quot;cat&quot;)
+<CODE class=linenumber>09</CODE>   <tt>CALL</tt> dh.setIndent(<tt>FALSE</tt>)
+<CODE class=linenumber>10</CODE>
+<CODE class=linenumber>11</CODE>   <tt>LET</tt> d = om.DomDocument.create(&quot;Vehicles&quot;)
+<CODE class=linenumber>12</CODE>   <tt>LET</tt> r = d.getDocumentElement()
+<CODE class=linenumber>13</CODE>
+<CODE class=linenumber>14</CODE>   <tt>LET</tt> n = r.createChild(&quot;Car&quot;)
+<CODE class=linenumber>15</CODE>   <tt>CALL</tt> n.setAttribute(&quot;name&quot;,&quot;Corolla&quot;)
+<CODE class=linenumber>16</CODE>   <tt>CALL</tt> n.setAttribute(&quot;color&quot;,&quot;Blue&quot;)
+<CODE class=linenumber>17</CODE>   <tt>CALL</tt> n.setAttribute(&quot;weight&quot;,&quot;1546&quot;)
+<CODE class=linenumber>18</CODE>
+<CODE class=linenumber>19</CODE>   <tt>LET</tt> t = d.createChars(&quot;Nice car!&quot;)
+<CODE class=linenumber>20</CODE>   <tt>CALL</tt> n.appendChild(t)
+<CODE class=linenumber>21</CODE>
+<CODE class=linenumber>22</CODE>   <tt>LET</tt> n = r.createChild(&quot;Bus&quot;)
+<CODE class=linenumber>23</CODE>   <tt>CALL</tt> n.setAttribute(&quot;name&quot;,&quot;Maxibus&quot;)
+<CODE class=linenumber>24</CODE>   <tt>CALL</tt> n.setAttribute(&quot;color&quot;,&quot;yellow&quot;)
+<CODE class=linenumber>25</CODE>   <tt>CALL</tt> n.setAttribute(&quot;weight&quot;,&quot;5278&quot;)
+<CODE class=linenumber>26</CODE>   <tt>FOR</tt> i=1 <tt>TO</tt> 4
+<CODE class=linenumber>27</CODE>     <tt>LET</tt> w = n.createChild(&quot;Wheel&quot;)
+<CODE class=linenumber>28</CODE>     <tt>CALL</tt> w.setAttribute(&quot;width&quot;,&quot;315&quot;)
+<CODE class=linenumber>29</CODE>     <tt>CALL</tt> w.setAttribute(&quot;diameter&quot;,&quot;925&quot;)
+<CODE class=linenumber>30</CODE>   <tt>END</tt> <tt>FOR</tt>
+<CODE class=linenumber>31</CODE>
+<CODE class=linenumber>32</CODE>   <tt>CALL</tt> r.write(dh)
+<CODE class=linenumber>33</CODE>
+<CODE class=linenumber>34</CODE> <tt>END</tt> <tt>MAIN</tt></PRE>
+
+</BODY>
+</HTML>

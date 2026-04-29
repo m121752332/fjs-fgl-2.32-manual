@@ -1,0 +1,789 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+  <head>
+    <title>Preprocessor</title>
+    <meta http-equiv="Content-Type" content="text/html">
+    <link href="../FglTechRef.css" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <p><a href="../index.html">Back to Contents</a></p>
+    <hr>
+    <h1>The Preprocessor</h1>
+    <p>Summary:</p>
+    <ul>
+      <li><a href="#DEFINITION">Basics</a></i>
+      <li><a href="#CMDLINE">Command line syntax</a></i>
+      <li><a href="#FGLPP_INCLUDE">File inclusion</a> <tt>&amp;include</tt></i>
+      <li><a href="#FGLPP_SIMPLE_MACRO">Simple macro definition</a> <tt>&amp;define</tt></i>
+      <li><a href="#FGLPP_FUNCTION_MACRO">Function macro definition</a><tt> &amp;define</tt></i>
+      <li><a href="#FGLPP_STRINGIFICATION">Stringification</a></i>
+      <li><a href="#FGLPP_CONCATENATION">Concatenation</a></i>
+      <li><a href="#FGLPP_PREDEFINED">Predefined macros</a></i>
+      <li><a href="#FGLPP_UNDEF">Un-define a macro</a><tt> &amp;undef</tt></i>
+      <li><a href="#FGLPP_CONDITION">Conditional compilation</a><tt> &amp;ifdef,&amp;ifndef,&amp;else,&amp;endif</tt></li></i>
+    </ul>
+    <p><i>See also:</i> <a href="Programs.html">Programs</a>, <a href="Tools.html">Tools</a></p>
+    <hr>
+    <h3><a name="DEFINITION">Basics</a></h3>
+    <p>
+      The preprocessor is used to transform your sources before compilation. It 
+      allows you to include other files and to define macros that will be expanded 
+      when used in the source. It behaves similar to the C Preprocessor, with some 
+      differences.
+    </p>
+    <p>The preprocessor transforms files as follows:</p>
+    <ul>
+      <li>
+      The source file is read and split into lines.
+      <li>
+      Continued lines are merged into one long line if it is part of a preprocessor 
+      definition.
+      <li>
+      Comments are not removed unless they appear in a macro definition.
+      <li>
+        Each line is split into a list of lexical tokens.</li>
+    </ul>
+    <p>The preprocessor implements the following features :</p>
+    <ol>
+      <li>
+      File inclusion
+      <li>
+      Conditional compilation
+      <li>
+        Macro definition and expansion</li>
+    </ol>
+    <p>There are two kind of macros:</p>
+    <ol>
+      <li>
+      Simple macros
+      <li>
+        Function macros</li>
+    </ol>
+    where function macros look like function calls.
+    <p>If a preprocessing directive is invalid, the compilers will generate a <b>.err</b>
+    file with the preprocessing error included in the source file at the line
+    position where the problem exists. When using the -M option, preprocessor
+    errors will be printed to <b>stderr</b>, like regular compiler errors.</p>
+    <hr>
+    <h3><a name="CMDLINE">Compilers command line options</a></h3>
+    <p>Preprocessor options can be used with <a href="Tools.html#TL_FGLCOMP">fglcomp</a>
+      and <a href="Tools.html#TL_FGLFORM">fglform</a> compilers.</p>
+    <h4>File inclusion path:</h4>
+    <p><code>&nbsp;-I <i>path</i></code></p>
+    The <b>-I</b> option defines a path used to search files included by the <tt>&amp;include</tt>
+    directives.
+    <h4>Macro definition:</h4>
+    <p><code>&nbsp;-D <i>identifier</i></code></p>
+    The <b>-D</b> option defines a macro with the value 1, so that it can be used 
+    conditional directives like <tt>&amp;ifdef</tt>.
+    <h4>Preprocessing only:</h4>
+    <p><code>&nbsp;-E</code></p>
+    <p>By using the <b>-E</b> option, only the pre-processing phase is done by the 
+      compilers. Result is dumped in standard output.</p>
+    <h4>Preprocessing options:</h4>
+    <p><code>&nbsp;-p [nopp|noln|fglpp]</code></p>
+    <p>When using option <tt>-p nopp</tt>, it disables the preprocessor phase.</p>
+    <p>By using option <tt>-p noln</tt> with the <b>-E</b> preprocessing-only option, 
+      you can remove line number information and un-necessary empty lines.</p>
+    By default, the preprocessor expects an ampersand '<b>&amp;</b>' as 
+    preprocessor symbol for macros. The option <tt>-p fglpp</tt> enables the old 
+    syntax, using the sharp '<b>#</b>' as preprocessor symbol. Note that the
+    sharp '<b>#</b>' syntax is not compatible with single-line comments.
+    <h4>Examples:</h4>
+    <p><code>fglcomp -E -D DEBUG -I /usr/sources/headers program.4gl</code></p>
+    <p><code>fglcomp -E -p fglpp -I /usr/sources/headers program.4gl</code></p>
+    <p><code>fglcomp -E -p nopp -I /usr/sources/headers program.4gl</code></p>
+    <hr>
+    <h3><a name="FGLPP_INCLUDE">File Inclusion</a></h3>
+    <h4>Purpose:</h4>
+    The <tt>&amp;include</tt> directive instructs the preprocessor to include a 
+    file. The included file will be scanned and processed before continuing with 
+    the rest of the current file.
+    <h4>Syntax:
+    </h4>
+    <code>&amp;include "<i>filename</i>"</code>
+    <h4>Notes:</h4>
+    <ol>
+      <li>
+        <i>filename</i> is searched first in the directory containing the current file, 
+        then in the directories listed in the include path. (-I option). The file name 
+        can be followed by spaces and comments.</li>
+    </ol>
+    <h4>Example:
+    </h4>
+    <div align="center">
+      <center>
+        <table border="0" width="90%">
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Source: File A</b></td>
+          </tr>
+          <tr>
+            <td valign="top">
+              <pre><code class=linenumber>01</code> First line
+<code class=linenumber>02</code> <tt>&amp;include</tt> &quot;B&quot;
+<code class=linenumber>03</code> Third line</pre>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Source: File B</b></td>
+          </tr>
+          <tr>
+            <td valign="top">
+              <pre><code class=linenumber>01</code> Second line</pre>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Result</b></td>
+          </tr>
+          <tr>
+            <td valign="top">
+              <pre><code class=linenumber>01</code> &amp; 1 &quot;A&quot;
+<code class=linenumber>02</code> First line
+<code class=linenumber>03</code> &amp; 1 &quot;B&quot;
+<code class=linenumber>04</code> Second line
+<code class=linenumber>05</code> &amp; 3 &quot;A&quot;
+<code class=linenumber>06</code> Third line</pre>
+            </td>
+          </tr>
+        </table>
+      </center>
+    </div>
+    <p>These preprocessor directives inform the compiler of its current location with 
+      special preprocessor comments, so the compiler can provide the right error 
+      message when a syntax error occurs.</p>
+    <p>The preprocessor-generated comments use the following format:</p>
+    <p><code>&amp; <i>number</i> "<i>filename</i>"</code>
+    </p>
+    <p>where:</p>
+    <ul>
+      <li>
+        <i>number</i>
+      is the current line in the preprocessed file
+      <li>
+        <i>filename</i> is the current file name</li>
+    </ul>
+    <h4>Recursive inclusions</h4>
+    <p>Recursive inclusions are not allowed. Doing so will fail and output an error 
+      message.</p>
+    <p>The following example is incorrect:</p>
+    <div align="center">
+      <center>
+        <table border="0" width="90%">
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Source: File A</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="25%">
+              <pre><code class=linenumber>01</code> <tt>&amp;include</tt> &quot;B&quot;</pre>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Source: File B</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="25%">
+              <pre><code class=linenumber>01</code> HELLO
+<code class=linenumber>02</code> <tt>&amp;include</tt> &quot;A&quot;</pre>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#c0c0c0"><b>fglcomp -M A.4gl output</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre>B.4gl:2:1:2:1:error:(-8029) Multiple inclusion of the source file 'A'.</pre>
+            </td>
+          </tr>
+        </table>
+      </center>
+    </div>
+    <p>But including the same file several times is allowed:</p>
+    <div align="center">
+      <center>
+        <table border="0" width="90%">
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Source: File A</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="25%">
+              <pre><code class=linenumber>01</code> <tt>&amp;include</tt> &quot;B&quot;
+<code class=linenumber>02</code> <tt>&amp;include</tt> &quot;B&quot;  -- correct</pre>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Source: File B</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="25%">
+              <pre><code class=linenumber>01</code> HELLO</pre>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Result</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> &amp; 1 &quot;A&quot;
+<code class=linenumber>02</code> &amp; 1 &quot;B&quot;
+<code class=linenumber>03</code> HELLO
+<code class=linenumber>04</code> &amp; 2 &quot;A&quot;
+<code class=linenumber>05</code> &amp; 1 &quot;B&quot;
+<code class=linenumber>06</code> HELLO</pre>
+            </td>
+          </tr>
+        </table>
+      </center>
+    </div>
+    <hr>
+    <h3><a name="FGLPP_SIMPLE_MACRO">Simple macro definition</a></h3>
+    A macro is identified by its name and body.&nbsp; As the preprocessor scans the 
+    text, it substitutes the macro body for the name identifier.
+    <h4>Syntax:</h4>
+    <code>&amp;define <i>identifier</i> <i>body</i></code>
+    <h4>Notes:</h4>
+    <ol>
+      <li>
+        <i>identifier</i>
+      is the name of the macro. Any valid identifier can be used.
+      <li>
+        <i>body</i> is any sequence of tokens until the end of the line.</li>
+    </ol>
+    After substitution, the macro definition is replaced with blank lines.
+    <h4>Examples:</h4>
+    <p>The following example show macro substitution with 2 simple macros:</p>
+    <div align="center">
+      <center>
+        <table border="0" width="90%">
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Source: File A</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> <tt>&amp;define</tt> MAX_TEST 12
+<code class=linenumber>02</code> <tt>&amp;define</tt> HW &quot;Hello world&quot;
+<code class=linenumber>03</code>
+<code class=linenumber>04</code> <tt>MAIN</tt>
+<code class=linenumber>05</code>   <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<code class=linenumber>06</code>   <tt>FOR</tt> i=1 <tt>TO</tt> MAX_TEST 
+<code class=linenumber>07</code>     <tt>DISPLAY</tt> HW
+<code class=linenumber>08</code>   <tt>END</tt> <tt>FOR</tt>
+<code class=linenumber>09</code> <tt>END</tt> <tt>MAIN</tt></pre>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Result</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> &amp; 1 &quot;A&quot;
+<code class=linenumber>02</code> 
+<code class=linenumber>03</code> 
+<code class=linenumber>04</code>
+<code class=linenumber>05</code> <tt>MAIN</tt>
+<code class=linenumber>06</code>   <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<code class=linenumber>07</code>   <tt>FOR</tt> i=1 <tt>TO</tt> 12
+<code class=linenumber>08</code>     <tt>DISPLAY</tt> &quot;Hello world&quot;
+<code class=linenumber>09</code>   <tt>END</tt> <tt>FOR</tt>
+<code class=linenumber>10</code> <tt>END</tt> <tt>MAIN</tt></pre>
+            </td>
+          </tr>
+        </table>
+      </center>
+    </div>
+    <p>
+      The macro definition can be continued on multiple lines, but when the macro is 
+      expanded, it is joined to a single line as follows:
+    </p>
+    <div align="center">
+      <center>
+        <table border="0" width="90%">
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Source: File A</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> <tt>&amp;define</tt> TABLE_VALUES 1, \
+<code class=linenumber>02</code>                      2, \
+<code class=linenumber>03</code>                      3
+<code class=linenumber>04</code> <tt>DISPLAY</tt> TABLE_VALUES      </pre>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Result</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> &amp; 1 &quot;A&quot;
+<code class=linenumber>02</code> 
+<code class=linenumber>03</code> 
+<code class=linenumber>04</code> 
+<code class=linenumber>05</code> <tt>DISPLAY</tt> 1, 2, 3</pre>
+            </td>
+          </tr>
+        </table>
+      </center>
+    </div>
+    <p>The source file is processed sequentially, so a macro takes effect at the place 
+      it has been written:</p>
+    <div align="center">
+      <center>
+        <table border="0" width="90%">
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Source: File A</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> <tt>DISPLAY</tt> X
+<code class=linenumber>02</code> <tt>&amp;define</tt> X &quot;Hello&quot;
+<code class=linenumber>03</code> <tt>DISPLAY</tt> X      </pre>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Result</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> &amp; 1 &quot;A&quot;
+<code class=linenumber>02</code> <tt>DISPLAY</tt> X
+<code class=linenumber>03</code>
+<code class=linenumber>04</code> <tt>DISPLAY</tt> &quot;Hello&quot;</pre>
+            </td>
+          </tr>
+        </table>
+      </center>
+    </div>
+    <p>The macro body is expanded only when the macro is applied :</p>
+    <div align="center">
+      <center>
+        <table border="0" width="90%">
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Source: File A</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> <tt>&amp;define</tt> AA BB
+<code class=linenumber>02</code> <tt>&amp;define</tt> BB 12
+<code class=linenumber>03</code> <tt>DISPLAY</tt> AA     </pre>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Result</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> &amp; 1 &quot;A&quot;
+<code class=linenumber>02</code> 
+<code class=linenumber>03</code> 
+<code class=linenumber>04</code> <tt>DISPLAY</tt> 12</pre>
+            </td>
+          </tr>
+        </table>
+      </center>
+    </div>
+    <ul>
+      <li>
+      AA is first expanded to BB.
+      <li>
+      The text is rescanned and BB is expanded to 12.
+      <li>
+        When the macro AA is defined, BB is not known yet; but it is known when the 
+        macro AA is used.</li>
+    </ul>
+    <p>In order to prevent infinite recursion, a macro cannot be expanded recursively.</p>
+    <div align="center">
+      <center>
+        <table border="0" width="90%">
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Source: File A</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> <tt>&amp;define</tt> A B
+<code class=linenumber>02</code> <tt>&amp;define</tt> B A
+<code class=linenumber>03</code> <tt>&amp;define</tt> C C
+<code class=linenumber>04</code> A C      </pre>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Result</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> &amp; 1 &quot;A&quot;
+<code class=linenumber>02</code> 
+<code class=linenumber>03</code> 
+<code class=linenumber>04</code> 
+<code class=linenumber>05</code> A C</pre>
+            </td>
+          </tr>
+        </table>
+      </center>
+    </div>
+    <ul>
+      <li>
+      A is first expanded to B.
+      <li>
+      B is expanded to A.
+      <li>
+      A is not expanded again as it appears in its own expansion.
+      <li>
+        C expands to C and can not be expanded further.</li>
+    </ul>
+    <hr>
+    <h3><a name="FGLPP_FUNCTION_MACRO">Function macro definition</a></h3>
+    Function macros are macros which can take arguments.
+    <h4>Syntax:</h4>
+    <code>&amp;define <i>identifier</i>( <i>arglist</i> ) <i>body</i></code>
+    <h4>Notes:</h4>
+    <ol>
+      <li>
+        <i>identifier</i>
+      is the name of the macro. Any valid identifier can be used.
+      <li>
+        <i>body</i>
+      is any sequence of tokens until the end of the line.
+      <li>
+        <i>arglist</i>
+      is a list of identifiers separated with commas and optionally whitespace.
+      <li>
+        There must be NO space or comment between the macro name and the opening 
+        parenthesis. Otherwise the macro is not a function macro, but a simple macro.</li>
+    </ol>
+    <h4>Example:</h4>
+    <div align="center">
+      <center>
+        <table border="0" width="90%">
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Source: File A</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> <tt>&amp;define</tt> function_macro(a,b) a + b
+<code class=linenumber>02</code> <tt>&amp;define</tt> simple_macro (a,b) a + b
+<code class=linenumber>03</code> function_macro( 4 , 5 )
+<code class=linenumber>04</code> simple_macro (1,2)      </pre>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Result</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> &amp; 1 &quot;A&quot;
+<code class=linenumber>02</code> 
+<code class=linenumber>03</code> 
+<code class=linenumber>04</code> 4 + 5
+<code class=linenumber>05</code> (a,b) a + b (1,2)</pre>
+            </td>
+          </tr>
+        </table>
+      </center>
+    </div>
+    <p>A function macro can have an empty argument list. In this case, parenthesis are 
+      required for the macro to be expanded. As we can see in the next example, line 
+      03 is not expanded because it there is no '()' after <i>foo</i>. The function 
+      macro cannot be applied even if it has no arguments.
+    </p>
+    <center>
+      <table border="0" width="90%">
+        <tr>
+          <td bgcolor="#c0c0c0"><b>Source: File A</b></td>
+        </tr>
+        <tr>
+          <td valign="top" width="50%">
+            <pre><code class=linenumber>01</code> <tt>&amp;define</tt> foo() yes
+<code class=linenumber>02</code> foo()
+<code class=linenumber>03</code> foo      </pre>
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#c0c0c0"><b>Result</b></td>
+        </tr>
+        <tr>
+          <td valign="top" width="50%">
+            <pre><code class=linenumber>01</code> &amp; 1 &quot;A&quot;
+<code class=linenumber>02</code>
+<code class=linenumber>03</code> yes
+<code class=linenumber>04</code> foo</pre>
+          </td>
+        </tr>
+      </table>
+    </center>
+    <p>The comma separates arguments. Macro parameters containing a comma can be used 
+      with parenthesis. In the following example Line 02 has been substituted, but 
+      line 03 produced an error, because the number of parameters is incorrect.</p>
+    <div align="center">
+      <center>
+        <table border="0" width="90%">
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Source: File A</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> <tt>&amp;define</tt> one_parameter(a) a
+<code class=linenumber>02</code> one_parameter((a,b))
+<code class=linenumber>03</code> one_parameter(a,b)      </pre>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#c0c0c0"><b>fglcomp -M output</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre>source.4gl:3:1:3:1:error:(-8039) Invalid number of parameters for macro one_parameter.</pre>
+            </td>
+          </tr>
+        </table>
+      </center>
+    </div>
+    <p>Macro arguments are completely expanded and substituted before the function 
+      macro expansion.</p>
+    <p>A macro argument can be left empty.</p>
+    <div align="center">
+      <center>
+        <table border="0" width="90%">
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Source: File A</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> <tt>&amp;define</tt> two_args(a,b) a b
+<code class=linenumber>02</code> two_args(,b)
+<code class=linenumber>03</code> two_args(,)
+<code class=linenumber>04</code> two_args() 
+<code class=linenumber>05</code> two_args(,,)      </pre>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#c0c0c0"><b>fglcomp -M output</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre>source.4gl:4:1:4:1:error:(-8039) Invalid number of parameters for macro two_args.
+source.4gl:5:1:5:1:error:(-8039) Invalid number of parameters for macro two_args.</pre>
+            </td>
+          </tr>
+        </table>
+      </center>
+    </div>
+    <p>Macro arguments appearing inside strings are not expanded.</p>
+    <div align="center">
+      <center>
+        <table border="0" width="90%">
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Source: File A</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> <tt>&amp;define</tt> foo(x) &quot;x&quot;
+<code class=linenumber>02</code> foo(toto)      </pre>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Result</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> &amp; 1 &quot;A&quot;
+<code class=linenumber>02</code>
+<code class=linenumber>03</code> &quot;x&quot;</pre>
+            </td>
+          </tr>
+        </table>
+      </center>
+    </div>
+    <hr>
+    <h3><a name="FGLPP_STRINGIFICATION">Stringification</a></h3>
+    <p>
+      The stringification transformation allows you to create a string using a macro 
+      parameter. When a macro parameter is used with a preceding '<tt>#</tt>', it is 
+      replaced by a string containing the literal text of the argument. The argument 
+      is not macro expanded before the substitution.
+    </p>
+    <h4>Example:</h4>
+    <div align="center">
+      <center>
+        <table border="0" width="90%">
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Source: File A</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> <tt>&amp;define</tt> test(x) <tt>IF</tt> x <tt>THEN</tt> \
+<code class=linenumber>02</code>                 <tt>DISPLAY</tt> <tt>#</tt>x||&quot; is true.&quot;  \
+<code class=linenumber>03</code>               <tt>ELSE </tt>\
+<code class=linenumber>04</code>                 <tt>DISPLAY</tt> <tt>#</tt>x||&quot; is false.&quot; \
+<code class=linenumber>05</code>               <tt>END</tt> <tt>IF</tt>
+<code class=linenumber>06</code> test(1=2)      </pre>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Result</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> &amp; 1 &quot;A&quot;
+<code class=linenumber>02</code>
+<code class=linenumber>03</code>
+<code class=linenumber>04</code>
+<code class=linenumber>05</code>
+<code class=linenumber>06</code>
+<code class=linenumber>07</code> <tt>IF</tt> 1=2 <tt>THEN</tt> <tt>DISPLAY</tt> &quot;1=2&quot;||&quot; is true.&quot; <tt>ELSE</tt> <tt>DISPLAY</tt> &quot;1=2&quot;||&quot; is false.&quot; <tt>END</tt> <tt>IF</tt></pre>
+            </td>
+          </tr>
+        </table>
+      </center>
+    </div>
+    <p>Line 07 has been split on multiple lines for readability. The preprocessor 
+      output is merged on one line.</p>
+    <hr>
+    <h3><a name="FGLPP_CONCATENATION">Concatenation</a></h3>
+    <p>
+      The operator '<tt>##</tt>' can be used to merge two tokens while expanding a 
+      macro. The two tokens on either side of each '<tt>##</tt>' are combined to 
+      create a single token.
+    </p>
+    <p>All tokens can not be merged. Usually these tokens are identifiers, or numbers. 
+      The concatenation result produces an identifier.
+    </p>
+    <h4>Example:</h4>
+    <div align="center">
+      <center>
+        <table border="0" width="90%">
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Source: File A</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> <tt>&amp;define</tt> COMMAND(NAME) <tt>#</tt>NAME, NAME <tt>##</tt> _command
+<code class=linenumber>02</code> COMMAND(quit)      </pre>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Result</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> &amp; 1 &quot;A&quot;
+<code class=linenumber>02</code>
+<code class=linenumber>03</code> &quot;quit&quot;, quit_command</pre>
+            </td>
+          </tr>
+        </table>
+      </center>
+    </div>
+    <hr>
+    <h3><a name="FGLPP_PREDEFINED">Predefined macros</a></h3>
+    <p>The preprocessor predefines 2 macros:
+    </p>
+    <ol>
+      <li>
+        <code>__LINE__</code>
+      expands to the current line number. Its definition changes with each new line 
+      of the code.
+      <li>
+        <code>__FILE__</code> expands to the name of the current file as a string 
+        constant. Ex : "subdir/file.inc"</li>
+    </ol>
+    <p>These macros are often used to generate error messages.</p>
+    <p>An <tt>&amp;include</tt> directive changes the values of <tt>__FILE__</tt> and <tt>__LINE__</tt>
+      to correspond to the included file.</p>
+    <hr>
+    <h3><a name="FGLPP_UNDEF">Un-defining a macro</a></h3>
+    You are allowed to un-define a macro and then redefine it with a new body.
+    <h4>Syntax:</h4>
+    <code>&amp;undef <i>identifier</i></code>
+    <h4>Usage:</h4>
+    <p>If a macro is redefined without having been undefined previously, the 
+      preprocessor issues a warning and replaces the existing definition with the new 
+      one.</p>
+    <h4>Example:</h4>
+    <div align="center">
+      <center>
+        <table border="0" width="90%">
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Source: File A</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> <tt>&amp;define</tt> HELLO &quot;hello&quot;
+<code class=linenumber>02</code> <tt>DISPLAY</tt> HELLO
+<code class=linenumber>03</code> <tt>&amp;undef</tt> HELLO
+<code class=linenumber>04</code> <tt>DISPLAY</tt> HELLO</pre>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Result</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> &amp; 1 &quot;A&quot;
+<code class=linenumber>02</code>
+<code class=linenumber>03</code> <tt>DISPLAY</tt> &quot;hello&quot;
+<code class=linenumber>04</code> <tt>DISPLAY</tt> HELLO</pre>
+            </td>
+          </tr>
+        </table>
+      </center>
+    </div>
+    <hr>
+    <h3><a name="FGLPP_CONDITION">Conditional compilation</a></h3>
+    <p>Conditional processing is supported with the <tt>&amp;ifdef</tt> and <tt>&amp;ifndef</tt>
+      directives.
+    </p>
+    <h4>Syntax 1:</h4>
+    <code>&amp;ifdef <i>identifier<br>
+      </i>...<u><br>
+        [</u>&amp;else<br>
+      ...<u>]<br>
+      </u>&amp;endif</code>
+    <h4>Syntax 2:</h4>
+    <code>&amp;ifndef <i>identifier<br>
+      </i>...<u><br>
+        [</u>&amp;else<br>
+      ...<u>]<br>
+      </u>&amp;endif</code>
+    <h4>Notes:</h4>
+    <ol>
+      <li>
+        The comment following <tt>&amp;endif</tt> is not required. However, it can help 
+        to match the corresponding <tt>&amp;ifdef</tt> or <tt>&amp;ifndef</tt>.
+      <li>
+        Even if the condition is evaluated to false, the content of the <tt>&amp;ifdef</tt>
+      block is still scanned and tokenized. Therefore, it must be lexically correct.
+      <li>
+        Sometimes it is useful to use some code if a macro is not defined. You can use <tt>&amp;ifndef</tt>, 
+        that evaluates to true if the macro is not defined.</li>
+    </ol>
+    <h4>Example:</h4>
+    <div align="center">
+      <center>
+        <table border="0" width="90%">
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Source: File A</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> <tt>&amp;define</tt> IS_DEFINED
+<code class=linenumber>02</code> <tt>&amp;ifdef</tt> IS_DEFINED
+<code class=linenumber>03</code> <tt>DISPLAY</tt> &quot;The macro is defined&quot;
+<code class=linenumber>04</code> <tt>&amp;endif </tt> /* IS_DEFINE */</pre>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#c0c0c0"><b>Result</b></td>
+          </tr>
+          <tr>
+            <td valign="top" width="50%">
+              <pre><code class=linenumber>01</code> &amp; 1 &quot;A&quot;
+<code class=linenumber>02</code>
+<code class=linenumber>03</code>
+<code class=linenumber>04</code> <tt>DISPLAY</tt> &quot;The macro is defined&quot;
+<code class=linenumber>05</code></pre>
+            </td>
+          </tr>
+        </table>
+      </center>
+    </div>
+  </body>
+</html>

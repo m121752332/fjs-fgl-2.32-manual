@@ -1,0 +1,469 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>ui.Form</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The Form class</a> </H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#METHODS">Methods</a></li>
+  <li><a href="#USAGE">Usage</a>
+    <ul>
+      <li><a href="#setDefaultInitializer">Defining the default initializer for all forms</a></li>
+      <li><a href="#getNode">Getting the DOM node of the form</a></li>
+      <li><a href="#loadActionDefaults">Loading Action Defaults form the form</a></li>
+      <li><a href="#loadToolBar">Loading the form ToolBar</a></li>
+      <li><a href="#loadTopMenu">Loading the form TopMenu</a></li>
+      <li><a href="#findNode">Searching for a specific child node in the form</a></li>
+      <li><a href="#setElementText">Changing the text of form elements</a></li>
+      <li><a href="#setElementImage">Changing the image of form elements</a></li>
+      <li><a href="#setElementStyle">Changing the style of form elements</a></li>
+      <li><a href="#setElementHidden">Hiding or showing form elements</a></li>
+      <li><a href="#setFieldHidden">Hiding or showing a form field</a></li>
+      <li><a href="#setFieldStyle">Changing the style of a form field</a></li>
+      <li><a href="#ensureFieldVisible">Ensure the visibility of a form field</a></li>
+      <li><a href="#ensureElementVisible">Ensure the visibility of a form
+        element</a></li>
+    </ul>
+  </li>
+  <li><a href="#EXAMPLES">Examples</a>
+    <ul>
+      <li><a href="#EXAMPLE_1">Example 1: Implement a global form initialization function</a></li>
+      <li><a href="#EXAMPLE_2">Example 2: Hiding form elements dynamically</a></li>
+    </ul>
+  </li>
+</ul>
+
+
+<p>See also: <a href="BuiltInClasses.html">Built-in classes</a>, <a href="ClassWindow.html">Window
+class</a>, <a href="WindowsAndForms.html">Windows and Forms</a></p>
+
+
+<HR>
+
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+<p>The <b>Form</b> class is a <a href="BuiltInClasses.html">built-in
+class</a>  that provides an interface to the&nbsp;<a href="WindowsAndForms.html">forms</a>
+used by the program. </p>
+
+
+<h4>Syntax:</h4><code>ui.Form</code>
+
+
+<HR>
+
+
+<h3><a name="METHODS">Methods:</a></h3>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#3399FF" colspan="2"><b>Class Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%" valign="top"><b>Name</b></td>
+    <td bgcolor="#C0C0C0" valign="top"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#setDefaultInitializer">setDefaultInitializer</a>( fn </code><tt>STRING</tt><code>
+      )</code></td>
+    <td valign="top">Defines the default initialization function for all forms used by the
+      program. The function gets a <code>ui.Form</code> object as parameter.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#66FFCC" colspan="2" valign="top"><b>Object Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%" valign="top"><b>Name</b></td>
+    <td bgcolor="#C0C0C0" valign="top"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#ensureFieldVisible">ensureFieldVisible</a>( name
+      </code><tt>STRING</tt><code> )</code></td>
+    <td valign="top">Adapts the current form to make a field visible.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#ensureElementVisible">ensureElementVisible</a>( name
+      </code><tt>STRING</tt><code> )</code></td>
+    <td valign="top">Adapts the current form to make a form element visible.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#findNode">findNode</a>( t </code><tt>STRING</tt><code>, n </code><tt>STRING</tt><code>  )<br>
+      &nbsp;&nbsp;</code><tt>RETURNING</tt>  <code>om.DomNode</code></td>
+    <td valign="top">Returns the first descendant DOM node of type <i>t</i> and matching the name <i>n</i>
+      in the abstract representation of this window object.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getNode">getNode</a>(  )<br>
+      &nbsp;&nbsp;</code><tt>RETURNING</tt>  <code>om.DomNode</code></td>
+    <td valign="top">Returns the DOM representation of this Form.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#loadActionDefaults">loadActionDefaults</a>( fn </code><tt> STRING</tt><code>
+      )</code> </td>
+    <td valign="top">Loads the decoration for actions from a specific XML file into the <a href="DynamicUI.html">AUI
+      tree</a>. These action defaults are local to the form and take precedence over action defaults defined 
+      at the Interface level. See <a href="ActionDefaults.html">Action Defaults</a>
+      for more details.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#loadToolBar">loadToolBar</a>( fn </code><tt>STRING</tt><code>
+      )</code></td>
+    <td valign="top">Loads a <a href="Toolbars.html">Toolbar</a> XML definition into this
+      Form, where <i>fn</i> is the name of the file, without extension. If a
+      toolbar exists already in the form, it is replaced.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#loadTopMenu">loadTopMenu</a>( fn </code><tt>STRING</tt><code>
+      )</code></td>
+    <td valign="top">Loads a <a href="Topmenus.html">Topmenu</a> XML definition into this
+      Form, where <i>fn</i> is the name of the file, without extension. If a
+      topmenu exists already in the form, it is replaced.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#setElementHidden">setElementHidden</a>( name </code><tt>STRING</tt><code>,
+      v </code><tt>INTEGER</tt><code>
+      )</code></td>
+    <td valign="top">Changes the 'hidden' attribute of all elements identified by <i>name</i>. Values
+      of <i>v</i> can be 0,1 or 2.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#setElementText">setElementText</a>( name </code><tt>STRING</tt><code>,
+      v </code><tt>STRING</tt><code> )</code></td>
+    <td valign="top">Changes the 'text' attribute of all elements identified by <i>name</i>.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#setElementImage">setElementImage</a>( name </code><tt>STRING</tt><code>,
+      v </code><tt>STRING</tt><code> )</code></td>
+    <td valign="top">Changes the 'image' attribute of all elements identified by <i>name</i>.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#setElementStyle">setElementStyle</a>( name </code><tt>STRING</tt><code>,
+      v </code><tt>STRING</tt><code> )</code></td>
+    <td valign="top">Changes the 'style' attribute of all elements identified by <i>name</i>.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#setFieldHidden">setFieldHidden</a>( name </code><tt>STRING</tt><code>,
+      v </code><tt>INTEGER</tt><code>
+      )</code></td>
+    <td valign="top">Changes the 'hidden' attribute of a form field identified by <i>name</i>.
+      The <i>name</i> is a string containing the field qualifier, with an
+      optional prefix (&quot;<code>[table.]column</code>&quot;). Values of <i>v</i> can be 0,1 or 2.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#setFieldStyle">setFieldStyle</a>( name </code><tt>STRING</tt><code>,
+      v </code><tt>STRING</tt><code> )</code></td>
+    <td valign="top">Changes the 'style' attribute of the view of a form field identified by <i>name</i>.
+      The <i>name</i> is a string containing the field qualifier, with an
+      optional prefix (&quot;<code>[table.]column</code>&quot;).</td>
+  </tr>
+</table>
+
+
+<HR>
+
+
+<h3><a name="USAGE">Usage:</a></h3>
+
+
+<p>The Form class provides an interface to form objects created by an <a href="WindowsAndForms.html#OPEN_WINDOW">OPEN
+WINDOW WITH FORM</a> or <a href="WindowsAndForms.html#DISPLAY_FORM">DISPLAY FORM</a>
+instruction.</p>
+
+
+<p>A form object allows you to manipulate form elements by program, typically to
+hide some parts of a form with the <code>setElementHidden()</code> method. The
+runtime system is able to handle hidden fields during a dialog instruction. You
+can, for example, hide a GRO containing fields and labels.</p>
+<p>You can get a <a href="ClassForm.html">ui.Form</a> instance of the current
+form with the <a href="ClassWindow.html">ui.Window.getForm()</a> method.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font></b> The <a href="WindowsAndForms.html#OPEN_FORM">OPEN
+FORM</a> instruction does not create a <code>ui.Form</code> object; it just
+declares a handle. It is actually the <a href="WindowsAndForms.html#DISPLAY_FORM">DISPLAY
+FORM</a> instruction that instantiates a <code>ui.Form</code> object that will
+be attached to the <a href="WindowsAndForms.html">current window</a>. When a
+form is displayed with <a href="WindowsAndForms.html#DISPLAY_FORM">DISPLAY FORM</a> in
+different windows, the same <a href="FormSpecFiles.html">form specification file</a>
+will be used to create different <code>ui.Form</code> objects.&nbsp;</p>
+
+
+<h4><a name="setDefaultInitializer">Defining the default initializer for all
+forms</a></h4>
+
+
+<p>With the <code>setDefaultInitializer()</code> method, you can specify a
+default initialization function to implement global processing when a form is
+opened. The method takes the name of the initialization function as a parameter.
+That function will be called with a <code>ui.Form</code> object as a parameter.&nbsp;</p>
+
+
+<p><b><font color="#FF0000">Warning:</font></b> You must give the initialization
+function name in lower-case letters to the <code>setDefaultInitializer()</code>
+method. The BDL syntax allows case-insensitive functions names, but the runtime
+system must reference functions in lower-case letters internally.</p>
+
+
+<h4><a name="getNode">Getting the DOM node of the form</a></h4>
+
+
+<p>The <code>getNode()</code> method returns the DOM node containing the
+abstract representation of the window.</p>
+
+
+<h4><a name="loadActionDefaults">Loading Action Defaults for the form</a></h4>
+
+
+<p>You may want to load form specific <a href="ActionDefaults.html">Action
+Defaults</a> at runtime with the <code>loadActionDefaults()</code> method. This
+method takes the file name as parameter without the <b>.4ad</b> suffix. Existing
+action defaults will be replaced.</p>
+
+
+<h4><a name="loadToolBar">Loading the form ToolBar</a></h4>
+
+
+<p>The <code>loadToolBar()</code> method can be used to load a <a href="Toolbars.html">Toolbar</a>
+XML definition file into the form; for example, in the initialization function.
+If the form already contains a toolbar, it will be replaced by the new toolbar
+loaded from this function.</p>
+
+
+<h4><a name="loadTopMenu">Loading the form TopMenu</a></h4>
+
+
+<p>The <code>loadTopMenu()</code> method can be used to load a <a href="Topmenus.html">Topmenu</a>
+XML definition file into the form; for example, in the initialization function.
+If the form alreadycontains a topmenu, it will be replaced by the new topmenu
+loaded by this function.</p>
+
+
+<h4><a name="findNode">Searching for a specific child node in the form</a></h4>
+<p>The <code>findNode()</code> method allows you to search for a specific DOM node
+in the abstract representation of the form. You
+search for a child node by giving its type and the name of the element (i.e. the
+tagname and the value of the
+'name' attribute).</p>
+
+
+<h4><a name="setElementText">Changing the text of form elements</a></h4>
+
+
+<p>You may want to modify the text of a static label or group box during program
+execution. This can be done with the <code>setElementText()</code> method.
+You must pass the identifier of the form element (i.e. the element must have a
+name in the <b>.per</b> file).</p>
+
+
+<p>Note that all elements with this name will be affected.</p>
+
+
+<h4><a name="setElementImage">Changing the image of form elements</a></h4>
+
+
+<p>The image of a form element can be changed with the <code>setElementImage()</code> method.
+You must pass the identifier of the form element (i.e. the element must have a
+name in the <b>.per</b> file).</p>
+
+
+<p>Note that all elements with this name will be affected.</p>
+
+
+<h4><a name="setElementStyle">Changing the style of form elements</a></h4>
+
+
+<p>To change the decoration style of a form element, you can use the <code>setElementStyle()</code> 
+method, by passing the identifier of the form element (i.e. the element must have a
+name in the <b>.per</b> file).</p>
+
+
+<p>Note that all elements with this name will be affected.</p>
+
+
+<h4><a name="setElementHidden">Hiding or showing form elements</a></h4>
+
+
+<p>The <code>setElementHidden()</code> method changes the 'hidden' attribute of
+all form elements identified by a name.</p>
+
+
+<p>You specify an integer value for
+the 'hidden' attribute as follows:</p>
+
+
+<table border="0" width="90%">
+  <tr>
+    <td width="20%" bgcolor="#C0C0C0" align="center"><b>Hidden Value</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="20%" align="center" valign="top"><tt>0</tt></td>
+    <td valign="top">The element is visible.</td>
+  </tr>
+  <tr>
+    <td width="20%" align="center" valign="top"><tt>1</tt></td>
+    <td valign="top">The element is hidden and the user <u>cannot</u> make it
+      visible, typically used to hide information the user is not allowed to
+      see.</td>
+  </tr>
+  <tr>
+    <td width="20%" align="center" valign="top"><tt>2</tt></td>
+    <td valign="top">The element is hidden and the user can make it visible.</td>
+  </tr>
+</table>
+
+
+<p>Note that you should not hide all fields of a dialog, otherwise the dialog
+execution stops (at least one field must get the focus during a dialog
+execution).</p>
+
+
+<h4><a name="setFieldHidden">Hiding or showing a form field</a></h4>
+
+
+<p>You can use the <code>setFieldHidden()</code> method to change the 'hidden' attribute of
+a form field.</p>
+
+
+<p>Form fields are identified by a fully
+qualified field name in lower case letters (<code>&quot;table.column&quot;</code>
+or <code>&quot;formonly.field&quot;</code>).</p>
+
+
+<p>&nbsp;You specify an integer value for
+the 'hidden' attribute as follows:</p>
+
+
+<table border="0" width="90%">
+  <tr>
+    <td width="20%" bgcolor="#C0C0C0" align="center"><b>Hidden Value</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="20%" align="center" valign="top"><tt>0</tt></td>
+    <td valign="top">The field is visible.</td>
+  </tr>
+  <tr>
+    <td width="20%" align="center" valign="top"><tt>1</tt></td>
+    <td valign="top">The field is hidden and the user <u>cannot</u> make it
+      visible, typically used to hide information the user is not allowed to
+      see.</td>
+  </tr>
+  <tr>
+    <td width="20%" align="center" valign="top"><tt>2</tt></td>
+    <td valign="top">The field is hidden and the user can make it visible (for
+      example with a contextual menu, as in tables). This allows you to
+      define columns that are hidden by default, but can be shown by the user.</td>
+  </tr>
+</table>
+
+
+<h4><a name="setFieldStyle">Changing the style of a form field</a></h4>
+
+
+<p>To change the style of the view node of a form field, you must use the <code>setFieldStyle()</code> method.</p>
+
+
+<p>The form field is identified by a name with an optional prefix (<code>&quot;table.column&quot;</code>
+or <code>&quot;column&quot;</code>).</p>
+
+
+<h4><a name="ensureFieldVisible">Ensure the visibility of a form field</a></h4>
+
+
+<p>The <code>ensureFieldVisible()</code>  method can be used to make sure that
+the given form field is visible to the user. This method can for example be used
+to show a folder page by passing a field that is located in the folder page,
+even if the field is not used in a dialog.</p>
+
+
+<p>The form field is identified by a name with an optional prefix (<code>&quot;table.column&quot;</code>
+or <code>&quot;column&quot;</code>).</p>
+
+
+<p>Understand that this method does not give the focus to the field passed as
+parameter. The folder page or screen area shown by this method call is temporarily
+visible and can disappear at the next user interaction, resulting in the field being
+no longer visible. For example, with a folder having two pages, if the focus is
+in a field of the first page, and you make the second page visible with a call
+to the <code>ensureFieldVisible()</code>  method by passing a field located in
+the second page, when the user presses the TAB key, the focus will go to the
+next field in the first page and thus bring the first page to the top. If you
+want to show a folder page and give the focus to a specific field in that page,
+use <a href="MultipleDialogs.html#NEXT_FIELD">NEXT FIELD</a> instead.</p>
+
+
+<h4><a name="ensureElementVisible">Ensure the visibility of a form element</a></h4>
+
+
+<p>The <code>ensureElementVisible()</code>  method is similar to <a href="#ensureFieldVisible">ensureFieldVisible()</a>,
+except that it is designed to make any kind of form element visible, even if
+it's not a form field, such as a <a href="FormSpecFiles.html#FF_ITEMTYPE_LABEL">static
+label</a> or <a href="FormSpecFiles.html#FF_ITEMTYPE_IMAGE">static image</a>.</p>
+
+
+<p>The form element is identified by its name. As several form elements can have
+the same name, the first form element found will be selected.&nbsp;</p>
+
+
+<HR>
+
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+<h4><a name="EXAMPLE_1">Example 1: Implement a global form initialization function.</a></h4>
+
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02   </code> <tt>CALL</tt> ui.Form.setDefaultInitializer(&quot;init&quot;)
+<code class="linenumber">03   </code> <tt>OPEN FORM</tt> f1<tt> FROM</tt> &quot;items&quot;
+<code class="linenumber">04   </code> <tt>DISPLAY FORM</tt> f1 -- Form appears in the default SCREEN window
+<code class="linenumber">05   </code> <tt>OPEN WINDOW</tt> w1<tt> WITH FORM</tt> &quot;customer&quot;
+<code class="linenumber">06   </code> <tt>OPEN WINDOW</tt> w2<tt> WITH FORM</tt> &quot;orders&quot;
+<code class="linenumber">07   </code> <tt>DISPLAY FORM</tt> f1 -- Form appears in w2 window
+<code class="linenumber">08   </code> <tt>MENU</tt> &quot;Test&quot;
+<code class="linenumber">09      </code> <tt>COMMAND</tt> &quot;exit&quot; <tt>EXIT MENU</tt>
+<code class="linenumber">10    </code><tt>END MENU</tt>
+<code class="linenumber">11 </code><tt>END MAIN</tt>
+<code class="linenumber">12 </code>
+<code class="linenumber">13 </code><tt>FUNCTION </tt>init(f)
+<code class="linenumber">14   </code> <tt>DEFINE</tt> f ui.Form
+<code class="linenumber">15   </code> <tt>DEFINE</tt> n om.DomNode
+<code class="linenumber">16    </code><tt>CALL </tt>f.loadTopMenu(&quot;mymenu&quot;)
+<code class="linenumber">17    </code><tt>LET </tt>n = f.getNode()
+<code class="linenumber">18    </code><tt>DISPLAY </tt>&quot;Init: &quot;, n.getAttribute(&quot;name&quot;)
+<code class="linenumber">19</code> <tt>END FUNCTION</tt></pre>
+
+
+<h4><a name="EXAMPLE_2">Example 2: Hiding form elements dynamically.</a></h4>
+
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02   </code> <tt>DEFINE</tt> w ui.Window
+<code class="linenumber">03   </code> <tt>DEFINE</tt> f ui.Form
+<code class="linenumber">04   </code> <tt>DEFINE</tt> custid <tt>INTEGER</tt>
+<code class="linenumber">05   </code> <tt>DEFINE</tt> custname <tt>CHAR</tt>(10)
+<code class="linenumber">06   </code> <tt>OPEN WINDOW</tt> w1<tt> WITH FORM</tt> &quot;customer&quot;
+<code class="linenumber">07    </code><tt>LET </tt>w = ui.Window.getCurrent()
+<code class="linenumber">08    </code><tt>LET </tt>f = w.getForm()
+<code class="linenumber">09    </code><tt>INPUT BY NAME </tt>custid, custname
+<code class="linenumber">10      </code><tt>ON ACTION </tt>hide
+<code class="linenumber">11      </code>  <tt>CALL </tt>f.setFieldHidden(&quot;customer.custid&quot;,1)
+<code class="linenumber">12      </code>  <tt>CALL </tt>f.setElementHidden(&quot;label_custid&quot;,1)
+<code class="linenumber">13      </code><tt>ON ACTION </tt>show
+<code class="linenumber">14      </code>  <tt>CALL </tt>f.setFieldHidden(&quot;customer.custid&quot;,0)
+<code class="linenumber">15      </code>  <tt>CALL </tt>f.setElementHidden(&quot;label_custid&quot;,0)
+<code class="linenumber">16    </code><tt>END INPUT</tt>
+<code class="linenumber">17</code> <tt>END MAIN</tt></pre>
+
+
+</BODY>
+</HTML>

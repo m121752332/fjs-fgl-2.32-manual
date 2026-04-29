@@ -1,0 +1,573 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Data Conversions</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Data Conversions</a></H1>
+<p> Summary:</p>
+
+<ul>
+  <li><a href="#DEFINITION">Data Conversion</a></li>
+  <li><a href="#CONVERSION_TABLE">Conversion table</a></li>
+</ul>
+
+
+<p><i>See also:</i> <a href="DataTypes.html">Data Types</a>.</p>
+
+
+<HR>
+
+<h3><a name="DEFINITION">Data Conversion</a></h3>
+
+<p> The runtime system performs data conversion implicitly without objection,
+as long as the data conversion is valid. For example, when you assign a number expression
+to a character variable, the runtime system converts the resulting number to
+a literal string.</p>
+
+
+<p> Conversion rules apply to variable assignment, function parameters, and
+returned values.</p>
+
+
+<p> Data conversions from or to character string values involve environment
+    and locale settings like <a href="EnvironmentVariables.html#EV_DBDATE">DBDATE</a>,
+<a href="EnvironmentVariables.html#EV_DBFORMAT">DBFORMAT</a>.</p>
+
+
+<p> When using the default exception handler, if a conversion error occurs, <a href="Programs.html#PV_STATUS">STATUS</a>
+ is zero and
+    the target is set to zero for <tt>SMALLINT</tt>, <tt>INTEGER</tt>, <tt>SMALLFLOAT</tt>
+and <tt>FLOAT</tt> data types or <a href="Programs.html#PC_NULL">NULL</a> for
+all other data types.</p>
+
+
+<b><font color="#FF0000">Warning: </font>The global <a href="Programs.html#PV_STATUS">STATUS</a>
+    variable is not set when a conversion error occurs unless you have enabled <tt>
+    ANY ERROR</tt> detection with the <a href="Exceptions.html">WHENEVER</a>
+    instruction.</b>
+
+
+<HR>
+
+<h3><a name="CONVERSION_TABLE">Conversion Table</a></h3>
+
+<p> The following table shows which pairs of data types are compatible.</p>
+
+
+<h4>Conversion table:</h4>
+<div align="center">
+  <center>
+  <table border="1" width="95%" bordercolor="#000000">
+    <tr>
+      <td bgcolor="#C0C0C0" colspan="18">
+        <p align="center"><b>Columns represent source data types and lines represent
+        receiving data types.</b></p>
+      </td>
+    </tr>
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0">&nbsp;</td>
+      <td width="5%" bgcolor="#C0C0C0" align="center" valign="bottom">
+		<font size="2"><b>c<br>
+		h<br>
+		a<br>
+		r</b></font></td>
+      <td width="5%" bgcolor="#C0C0C0" align="center" valign="bottom">
+		<font size="2"><b>v<br>
+		a<br>
+		r<br>
+		c<br>
+		h<br>
+		a<br>
+		r</b></font></td>
+      <td width="5%" bgcolor="#C0C0C0" align="center" valign="bottom">
+		<font size="2"><b>s<br>
+		t<br>
+		r<br>
+		i<br>
+		n<br>
+		g</b></font></td>
+      <td width="5%" bgcolor="#C0C0C0" align="center" valign="bottom">
+		<font size="2"><b>b<br>
+		i<br>
+		g<br>
+		i<br>
+		n<br>
+		t</b></font></td>
+      <td width="5%" bgcolor="#C0C0C0" align="center" valign="bottom">
+		<font size="2"><b>i<br>
+		n<br>
+		t<br>
+		e<br>
+		g<br>
+		e<br>
+		r</b></font></td>
+      <td width="5%" bgcolor="#C0C0C0" align="center" valign="bottom">
+		<font size="2"><b>s<br>
+		m<br>
+		a<br>
+		l<br>
+		l<br>
+		i<br>
+		n<br>
+		t</b></font></td>
+      <td width="5%" bgcolor="#C0C0C0" align="center" valign="bottom">
+		<font size="2"><b>t<br>
+		i<br>
+		n<br>
+		y<br>
+		i<br>
+		n<br>
+		t</b></font></td>
+      <td width="5%" bgcolor="#C0C0C0" align="center" valign="bottom">
+		<font size="2"><b>b<br>
+		o<br>
+		o<br>
+		l<br>
+		e<br>
+		a<br>
+		n</b></font></td>
+      <td width="5%" bgcolor="#C0C0C0" align="center" valign="bottom">
+		<font size="2"><b>f<br>
+		l<br>
+		o<br>
+		a<br>
+		t</b></font></td>
+      <td width="5%" bgcolor="#C0C0C0" align="center" valign="bottom">
+		<font size="2"><b>s<br>
+		m<br>
+		a<br>
+		l<br>
+		l<br>
+		f<br>
+		l<br>
+		o<br>
+		a<br>
+		t</b></font></td>
+      <td width="5%" bgcolor="#C0C0C0" align="center" valign="bottom">
+		<font size="2"><b>d<br>
+		e<br>
+		c<br>
+		i<br>
+		m<br>
+		a<br>
+		l</b></font></td>
+      <td width="5%" bgcolor="#C0C0C0" align="center" valign="bottom">
+		<font size="2"><b>m<br>
+		o<br>
+		n<br>
+		e<br>
+		y</b></font></td>
+      <td width="5%" bgcolor="#C0C0C0" align="center" valign="bottom">
+		<font size="2"><b>d<br>
+		a<br>
+		t<br>
+		e</b></font></td>
+      <td width="5%" bgcolor="#C0C0C0" align="center" valign="bottom">
+		<font size="2"><b>d<br>
+		a<br>
+		t<br>
+		e<br>
+		l<br>
+		i<br>
+		n<br>
+		e</b></font></td>
+      <td width="5%" bgcolor="#C0C0C0" align="center" valign="bottom">
+		<font size="2"><b>i<br>
+		n<br>
+		t<br>
+		e<br>
+		r<br>
+		v<br>
+		a<br>
+		l</b></font></td>
+      <td width="5%" bgcolor="#C0C0C0" align="center" valign="bottom">
+		<font size="2"><b>t<br>
+		e<br>
+		x<br>
+		t</b></font></td>
+      <td width="5%" bgcolor="#C0C0C0" align="center" valign="bottom">
+		<font size="2"><b>b<br>
+		y<br>
+		t<br>
+		e</b></font></td>
+    </tr>
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0"><b><font size="2">char</font></b></td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1, 8</td>
+      <td width="5%" bgcolor="#CCFFCC">1, 9</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+    </tr>
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0"><b><font size="2">varchar</font></b></td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1,  8</td>
+      <td width="5%" bgcolor="#CCFFCC">1,  9</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+    </tr>
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0"><b><font size="2">string</font></b></td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1,  8</td>
+      <td width="5%" bgcolor="#CCFFCC">1,  9</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+    </tr>
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0"><b><font size="2">bigint</font></b></td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3</td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3</td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 4</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 4</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 4</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 4</td>
+      <td width="5%" bgcolor="#CCFFCC">11</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+    </tr>
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0"><b><font size="2">integer</font></b></td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3</td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3</td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 4</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 4</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 4</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 4</td>
+      <td width="5%" bgcolor="#CCFFCC">11</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+    </tr>
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0"><b><font size="2">smallint</font></b></td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3</td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3</td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 4</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 4</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 4</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 4</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 11</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+    </tr>
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0"><b><font size="2">tinyint</font></b></td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3</td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3</td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 4</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 4</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 4</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 4</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 11</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+    </tr>
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0"><b><font size="2">boolean</font></b></td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3</td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3</td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 4</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 4</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 4</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 4</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 11</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+    </tr>
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0"><b><font size="2">float</font></b></td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3, 5</td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3, 5</td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3, 5</td>
+      <td width="5%" bgcolor="#CCFFCC">10</td>
+      <td width="5%" bgcolor="#CCFFCC">10</td>
+      <td width="5%" bgcolor="#CCFFCC">10</td>
+      <td width="5%" bgcolor="#CCFFCC">10</td>
+      <td width="5%" bgcolor="#CCFFCC">10</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">11</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+    </tr>
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0"><b><font size="2">smallfloat</font></b></td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3, 5</td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3, 5</td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3, 5</td>
+      <td width="5%" bgcolor="#CCFFCC">5, 10</td>
+      <td width="5%" bgcolor="#CCFFCC">5, 10</td>
+      <td width="5%" bgcolor="#CCFFCC">10</td>
+      <td width="5%" bgcolor="#CCFFCC">10</td>
+      <td width="5%" bgcolor="#CCFFCC">10</td>
+      <td width="5%" bgcolor="#CCFFCC">5</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 5</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 5</td>
+      <td width="5%" bgcolor="#CCFFCC">5, 11</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+    </tr>
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0"><b><font size="2">decimal</font></b></td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3, 6</td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3, 6</td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3, 6</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 6</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 6</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 6</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 6</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 11</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+    </tr>
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0"><b><font size="2">money</font></b></td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3, 6</td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3, 6</td>
+      <td width="5%" bgcolor="#CCFFCC">2, 3, 6</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">3</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 6</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 6</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 6</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 6</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 11</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+    </tr>
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0"><b><font size="2">date</font></b></td>
+      <td width="5%" bgcolor="#CCFFCC">2</td>
+      <td width="5%" bgcolor="#CCFFCC">2</td>
+      <td width="5%" bgcolor="#CCFFCC">2</td>
+      <td width="5%" bgcolor="#CCFFCC">11</td>
+      <td width="5%" bgcolor="#CCFFCC">11</td>
+      <td width="5%" bgcolor="#CCFFCC">11</td>
+      <td width="5%" bgcolor="#CCFFCC">11</td>
+      <td width="5%" bgcolor="#CCFFCC">11</td>
+      <td width="5%" bgcolor="#CCFFCC">3,4,11</td>
+      <td width="5%" bgcolor="#CCFFCC">3,4,11</td>
+      <td width="5%" bgcolor="#CCFFCC">3,4,11</td>
+      <td width="5%" bgcolor="#CCFFCC">3,4,11</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+      <td width="5%" bgcolor="#CCFFCC">12, 14</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+    </tr>
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0"><b><font size="2">datetime</font></b></td>
+      <td width="5%" bgcolor="#CCFFCC">2</td>
+      <td width="5%" bgcolor="#CCFFCC">2</td>
+      <td width="5%" bgcolor="#CCFFCC">2</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#CCFFCC">13, 14</td>
+      <td width="5%" bgcolor="#CCFFCC">7, 14</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+    </tr>
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0"><b><font size="2">interval</font></b></td>
+      <td width="5%" bgcolor="#CCFFCC">2</td>
+      <td width="5%" bgcolor="#CCFFCC">2</td>
+      <td width="5%" bgcolor="#CCFFCC">2</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#CCFFCC">3, 7</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+    </tr>
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0"><b><font size="2">text</font></b></td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#CCFFCC">1</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+    </tr>
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0"><b><font size="2">byte</font></b></td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#FF9999">15</td>
+      <td width="5%" bgcolor="#CCFFCC">&nbsp;</td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<h4>Notes:</h4>
+<ol>
+  <li>If the result of converting a value to a character string is longer than
+    the receiving variable, the character string is truncated from the right.</li>
+  <li>Character string values must depict a literal of the receiving data type.</li>
+  <li>If the value exceeds the range of the receiving data type, an overflow
+    error occurs.</li>
+  <li>Any fractional part of the value is truncated.</li>
+  <li>If the passed value contains more significant digits than the receiving
+    data type supports, low-order digits are discarded.</li>
+  <li>If the passed value contains more fractional digits than the receiving
+    data type supports, low-order digits are discarded.</li>
+  <li>Differences in qualifiers can cause truncation from the left or right.</li>
+  <li>DBMONEY and DBFORMAT control the format of the converted string.</li>
+  <li>DBFORMAT, DBDATE, or GL_DATE controls the format of the result.</li>
+  <li>Rounding errors can produce an assigned value with fractional parts.</li>
+  <li>An integer value corresponding to a count of days is assigned.&nbsp;</li>
+  <li>An implicit <a href="Operators.html#OP_EXTEND">EXTEND</a>( value, YEAR TO
+    DAY ) is performed.</li>
+  <li>The <a href="DataTypes.html#DT_DATE">DATE</a> becomes a <a href="DataTypes.html#DT_DATETIME">DATETIME
+    YEAR TO DAY</a> literal before assignment.</li>
+  <li>If the passed value has less precision than the receiving variable, any
+    missing time unit values are obtained from the system clock.</li>
+  <li><font color="#FF0000"><b>Unsupported conversion.</b></font></li>
+</ol>
+
+
+</BODY>
+</HTML>

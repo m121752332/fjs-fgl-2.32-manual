@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Globals</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<h1><a name="PAGE_HEADER">Globals</a></h1>
+<p> Summary:</p>
+
+<ul>
+  <li><a href="#DEFINITION">Definition</a></li>
+  <li><a href="#EXAMPLES">Examples</a></li>
+</ul>
+
+
+<p><i>See also: </i> <a href="Variables.html">Variables</a>, <a href="Arrays.html">Arrays</a>,
+<a href="Records.html">Records</a>, <a href="Constants.html">Constants</a>, <a href="Programs.html">Programs</a></p>
+
+
+<HR>
+
+<h3><a name="DEFINITION">Definition</a></h3>
+
+<h4>Purpose:</h4>
+
+<p>The <tt><a name="GLOBALS">GLOBALS</a></tt> instruction can be used to declare
+variables, constants and types for the whole program.</p>
+
+
+<h4>Syntax 1: Global block declaration</h4>
+
+<code>GLOBALS<br>
+&nbsp; <i>declaration-statement<br>
+&nbsp; </i><u>[</u>,...<u>]</u><br>
+ END GLOBALS</code>
+
+<h4>Syntax 2: Importing global variables</h4>
+
+<code>GLOBALS <i>&quot;filename&quot;</i></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li>In <b>Syntax 1</b>, <i>declaration-statement </i>is a <a href="Variables.html#DEFINITION">variable</a>, <a href="Constants.html">constant</a> 
+    or <a href="UserTypes.html">user type</a> declaration.</li>
+  <li>In <b>Syntax 2</b>,&nbsp; <i>filename</i> is the name of a file containing the definition of global
+    variables. Use this syntax to include a global declarations in the current module.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>Do not write a <i>declaration-statement</i> outside a <tt>GLOBALS … END GLOBALS</tt> block in a <tt>GLOBALS</tt> file.
+  </li>
+  <li>If you modify <i>filename</i>, you must recompile all the modules that include <i>filename.</i>
+  </li>
+</ol>
+
+
+<h4>Usage:</h4>
+<p>In general, a program <a href="Variables.html#DEFINITION">variable</a>, <a href="Constants.html">constant</a> 
+or <a href="UserTypes.html">user type</a> is in scope only in the same <a href="Functions.html">FUNCTION</a>, <a href="Programs.html#MAIN_BLOCK">
+MAIN</a>, or <a href="Reports.html"> REPORT</a> program block in which it was declared.</p>
+
+<p>To extend the scope of a <a href="Variables.html#DEFINITION">variable</a>, <a href="Constants.html">constant</a> 
+or <a href="UserTypes.html">user type</a> beyond the source module in which they
+are declared, you can declare it as global in a &quot;globals&quot; file:</p>
+
+<ol>
+  <li>Declare global elements in a <tt>GLOBALS … END GLOBALS</tt> block in
+    specific files.</li>
+  <li>Import the global symbols in other modules with <tt>GLOBALS &quot;<i>filename</i></tt><tt>&quot;<i></i> </tt> statements.</li>
+</ol>
+
+<p>The <i>filename</i> must contain the <b>.4gl</b> suffix. It can be a a
+relative or an absolute path. To specify a path, the slash (/) directory
+separator can be used for Unix and Windows platforms.</p>
+
+<p>If a local element has the same name as another variable that you declare in the
+<tt> GLOBALS</tt>  statement, only the local variable is visible within its scope of reference.</p>
+
+<p>You can declare several <tt> GLOBALS</tt> blocks in the same module.</p>
+
+<p>A <tt>GLOBALS</tt> file must not contain any executable statement.</p>
+
+<p>You do not compile the source file containing the <tt>GLOBALS</tt> block.</p>
+
+<p>You can declare several <tt> GLOBALS &quot;<i>filename</i>&quot; </tt>in
+    the same module.</p>
+
+<p>Although you can include multiple <tt>GLOBALS … END GLOBALS</tt> 
+statements in the same application, do not declare the same identifier within more than one
+<tt>GLOBALS</tt> declaration. Even if several declarations of a global elements defined in multiple places are identical, declaring any global
+element more 
+than once can result in compilation errors or unpredictable runtime behavior.</p>
+
+<p>A <tt>GLOBALS</tt> block can hold <tt>GLOBALS &quot;filename&quot;</tt> instructions.
+In such case, the specified files will be included recursively.</p>
+
+
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li>Use only a few global variables, too much global variables makes the source code
+    difficult to maintain and denies reusability.</li>
+  <li>There is no need to compile <i>filename,</i> 
+    but compiling <i>filename</i>
+    might be useful to detect syntax errors.</li>
+  <li>To improve the readability of your source code, prefix global variables by 
+	&quot;g_&quot;.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+
+<h4>Example 1: Multiple GLOBALS file</h4>
+
+
+<p>labels.4gl : This module defines the text that should be displayed on the
+screen</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>GLOBALS</tt>
+<CODE class=linenumber>02</CODE>   <tt>CONSTANT</tt> g_lbl_val = &quot;Index:&quot;
+<CODE class=linenumber>03</CODE>   <tt>CONSTANT</tt> g_lbl_idx = &quot;Value:&quot;
+<CODE class=linenumber>04</CODE> <tt>END GLOBALS</tt></PRE>
+
+
+<p>globals.4gl : Declares a global array and a constant containing its size</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>GLOBALS</tt> &quot;labels.4gl&quot; -- this statement could be line 2 of main.4gl                                                                                                                                    
+<CODE class=linenumber>02</CODE> <tt>GLOBALS</tt>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> g_idx <tt>ARRAY</tt>[100] OF <tt>CHAR</tt>(10)
+<CODE class=linenumber>04</CODE>   <tt>CONSTANT</tt> g_idxsize = 100
+<CODE class=linenumber>05</CODE> <tt>END GLOBALS</tt></PRE>
+
+
+<p>database.4gl : This module could be dedicated to database access</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>GLOBALS</tt> &quot;globals.4gl&quot;
+<CODE class=linenumber>02</CODE> <tt>FUNCTION</tt> get_id()
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> li <tt>INTEGER</tt>
+<CODE class=linenumber>04</CODE>   <tt>FOR</tt> li = 1 <tt>TO</tt> g_idxsize -- this could be a FOREACH statement
+<CODE class=linenumber>05</CODE>       <tt>LET</tt> g_idx[li] = g_idxsize - li
+<CODE class=linenumber>06</CODE>   <tt>END FOR</tt>
+<CODE class=linenumber>07</CODE> <tt>END FUNCTION</tt></PRE>
+
+
+<p>main.4gl : Fill in the global array and display the result</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>GLOBALS</tt> &quot;globals.4gl&quot;
+<CODE class=linenumber>02</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>03</CODE>   <tt>DISPLAY</tt> &quot;Initializing constant values for this application...&quot;
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY</tt> &quot;Filling the data from function get_idx in module database.4gl...&quot;
+<CODE class=linenumber>06</CODE>   <tt>CALL</tt> get_id()
+<CODE class=linenumber>07</CODE>   <tt>DISPLAY</tt> &quot;Retrieving a few values from g_idx&quot;
+<CODE class=linenumber>08</CODE>   <tt>CALL</tt> display_data()
+<CODE class=linenumber>09</CODE> <tt>END MAIN</tt>                                                                                                                                    
+<CODE class=linenumber>10</CODE> <tt>FUNCTION</tt> display_data()
+<CODE class=linenumber>11</CODE>   <tt>DEFINE</tt> li <tt>INTEGER</tt>
+<CODE class=linenumber>12</CODE>   <tt>LET</tt> li = 1
+<CODE class=linenumber>13</CODE>   <tt>WHILE</tt> li &lt;= 10 <tt>AND</tt> li &lt;= g_idxsize
+<CODE class=linenumber>14</CODE>       <tt>DISPLAY</tt> g_lbl_idx <tt>CLIPPED</tt> || li || &quot; &quot; || g_lbl_val <tt>CLIPPED</tt> || g_idx[li]
+<CODE class=linenumber>15</CODE>       <tt>LET</tt> li = li + 1
+<CODE class=linenumber>16</CODE>   <tt>END WHILE</tt>
+<CODE class=linenumber>17</CODE> <tt>END FUNCTION</tt></PRE>
+
+
+</BODY>
+</HTML>

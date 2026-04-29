@@ -1,0 +1,3230 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<TITLE>ODI Adaptation Guide for ORACLE</TITLE>
+<meta http-equiv="Content-Type" content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p><a href="../index.html">Back to Contents</a></p>
+
+<HR>
+
+<H1>ODI Adaptation Guide For Oracle 8.x, 9.x, 10.x, 11.x</H1>
+
+<p><font color="#000080">Installation</font></p>
+
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIORA_PREP01">Install ORACLE and create a database</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA_PREP02">Prepare the runtime environment</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">Database concepts</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIORA007a">Database concepts</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA039">Data storage concepts</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA008a">Data consistency and concurrency management</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA009a">Transactions handling</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA016a">Defining database users</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA016b">Setting privileges</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">Data dictionary </font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIORA041">BOOLEAN data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA011a">CHARACTER data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA021">NUMERIC data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA001">DATE and DATETIME data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA036">INTERVAL data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA005">SERIAL data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA004">ROWIDs</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA030">Very large data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA053">The ALTER TABLE instruction</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA012">Constraints</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA013">Triggers</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA014">Stored procedures</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA019">Name resolution of SQL objects</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA051">Setup database statistics</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA055">NULLs in indexed columns</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA100">Data type conversion table</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">Data manipulation</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIORA003">Reserved words</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA006">Outer joins</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA009a">Transactions handling</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA017">Temporary tables</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA018">Substrings in SQL</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA011b">The LENGTH( ) function</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA011c">Empty character strings</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA019">Name resolution of SQL objects</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA020">String delimiters and object names</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA022">Getting one row with SELECT</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA024">MATCHES and LIKE conditions</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA029">SQL functions and constants</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA033">Querying system catalog tables</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA034">Syntax of UPDATE statements</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA047">The USER constant</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA052">The GROUP BY clause</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA054">The star in SELECT statements</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">BDL programming</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIORA005">SERIAL data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA010">Handling SQL errors when preparing statements</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA025">INFORMIX specific SQL statements in BDL</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA028">INSERT cursors</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA031">Cursors WITH HOLD</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA008b">SELECT FOR UPDATE</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA032">UPDATE/DELETE WHERE CURRENT OF &lt;cursor&gt;</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA046">The LOAD and UNLOAD instructions</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA056">SQL Interruption</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIORA057">Scrollable Cursors</a></td>
+  </tr>
+</table>
+</center></div>
+
+<hr>
+
+<h2 align="left"><a name="ODIORA_PREP">Runtime configuration</a></h2>
+
+<blockquote>
+  <h3 align="left"><a name="ODIORA_PREP01">Install Oracle and create a database</a></h3>
+  <ol>
+    <li><p>Install the ORACLE Server on your computer.</p>
+    </li>
+    <li><p>Create and setup the Oracle <b>instance</b>.<br>
+      <br>
+      <font color="#FF0000">Warning: If you plan to create a database a
+      multi-byte character set like UTF-8, make sure to use <a href="#ODIORA011a">byte
+      length semantics</a>.</font></p>
+    </li>
+    <li><p>Set up and start a <b>listener</b> if you plan to use a client / server architecture.</p>
+    </li>
+    <li><p>Create a database user dedicated to your application, the <b>application administrator</b> which will manage the database tables of the application:<br><br>
+      <font face="Courier New">&nbsp;&nbsp; $ sqlplus / AS SYSDBA<br>
+      &nbsp;&nbsp; ...<br>
+      &nbsp;&nbsp; sqlplus&gt; CREATE USER <i>appadmin</i> IDENTIFIED BY <i>password;</i></font><br><br>
+      You must grant privileges to this user:<br><br>
+      <font face="Courier New">&nbsp;&nbsp; sqlplus&gt; GRANT CONNECT, RESOURCE TO <i>appadmin;</i></font><br><br>
+    </li>
+    <li><p>If you plan to use the default temporary table emulation, you
+      must create the <b>TEMPTABS</b> tablespace. Note that this tablespace must
+      be created as <b>permanent</b> tablespace.
+      See issue <a href="#ODIORA017">ODIORA017</a> for more details:<br>
+      <br>
+      <font face="Courier New">
+      &nbsp;&nbsp; sqlplus&gt; CREATE TABLESPACE <b>TEMPTABS<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b> DATAFILE
+      '<i>file</i>'<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SIZE 1M AUTOEXTEND ON
+      NEXT 1K;</font></p>
+    </li>
+    <li><p>Connect as the application administrator:</p>
+      <font face="Courier New">&nbsp;&nbsp; sqlplus&gt; CONNECT <i>appadmin</i>/<i>password</i></font><br>
+    </li>
+    <li><p>Create the <b>application tables</b>. Do
+      not forget to convert INFORMIX data types to Oracle data types.
+      See issue <a href="#ODIORA100">ODIORA100</a> for more details.
+      Check for reserved words in your table and column
+      names: Oracle 8i provides the V$RESERVED_WORDS view to track Oracle reserved words.</p>
+    </li>
+    <li><p>If you plan to use SERIAL emulation, you must choose
+      an emulation method. You are free to use a technique based on SEQUENCES or
+      based on the SERIALREG registration table.
+      If you want to use the registration table technique, you must create the <b>SERIALREG</b>
+      table and create a INSERT TRIGGER for each table using a SERIAL.
+      See issue <a href="#ODIORA005">ODIORA005</a> for more details.</p>
+    </li>
+  </ol>
+</blockquote>
+
+<blockquote>
+  <h3 align="left"><a name="ODIORA_PREP02">Prepare the runtime environment</a></h3>
+  <ol>
+    <li><p>In order to connect to ORACLE, you must have a database driver &quot;<b>dbmora*</b>&quot;
+      in FGLDIR/dbdrivers.</p>
+    </li>
+    <li><p>If you want to connect to a remote
+      Oracle server from an application server, you must install the <b>ORACLE Client Software </b> on your
+      application server and configure this part.</p>
+    </li>
+    <li><p>Make sure that the ORACLE client environment variables are properly
+      set. Check variables such as <b>ORACLE_HOME</b> (the path to the
+      installation directory), <b>ORACLE_SID</b> (the server identifier when
+      connecting locallly), etc. See Oracle documentation for more details.</p>
+    </li>
+    <li><p>Verify the environment variable
+      defining the search path for database client shared libraries (libclntsh.so
+      on UNIX, OCI.DLL on Windows). On UNIX platforms, the variable is specific to the operating system. 
+	For example, on Solaris and Linux systems, it is <b>LD_LIBRARY_PATH</b>, on
+      AIX it is <b>LIBPATH</b>, or HP/UX it is <b>SHLIB_PATH</b>. On Windows,
+      you define the DLL search path in the <b>PATH</b> environment variable.</p>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0">
+      <p align="center"><font color="#0000FF"><b>ORACLE version</b></font></td>
+    <td bgcolor="#C0C0C0" width="70%">
+      <p align="center"><font color="#0000FF"><b>Shared library environment
+      setting</b></font></td>
+  </tr>
+  <tr>
+    <td><font color="#0000FF"><b>Oracle 8.1 and higher</b></font></td>
+    <td align="center" width="70%">
+      <p align="left"><i>UNIX</i>: Add <b>$ORACLE_HOME/lib</b> to
+      LD_LIBRARY_PATH (or its equivalent).<br>
+      <i>Windows</i>: Add <b>%ORACLE_HOME%\bin</b> to PATH.</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td align="center" width="70%"></td>
+  </tr>
+</table>
+    </li>
+    <li><p>Check the database locale settings (<b>NLS_LANG</b>,
+      <b>NLS_DATE_FORMAT</b>, etc). The DB locale must match the locale used by
+      the runtime system (<b>LANG</b>).</p>
+    </li>
+    <li><p>&nbsp;
+      If you are using the TNS protocol, verify if the <b>ORACLE listener</b> is
+      started on the server.</p>
+    </li>
+    <li><p>To test the client environment settings, you can try to connect to
+      the ORACLE server with the SQL*Plus tool:
+		<p><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; $ sqlplus <i>username</i>/<i>password</i>@<i>service</i></font></p>
+    </li>
+    <li><p>Set up the <b>fglprofile</b> entries for <a href="Connections.html#DS_ODI_DBVSPEC"> database
+      connections</a>.<br>
+      <br>
+      <b><font color="#FF0000">Warning:</font></b> <b>Make sure that you are
+      using the ODI driver corresponding to the database client and server
+      version. Because Informix features emulation are dependant from the
+      database server version, it is mandatory to use the same version of the
+      database client and ODI driver as the server version.</b><br>
+    </li>
+    <li><p>Set up fglprofile for the SERIAL emulation method. The following entry
+      defines the SERIAL emulation method. You can either use the SEQUENCE based trigger or the
+      SERIALREG based trigger method:<br><font face="Courier New">&nbsp;&nbsp; dbi.database.<i>dbname</i>.ifxemul.datatype.serial.emulation =
+      &quot;(native|regtable)&quot;</font><br>The value 'native' selects the SEQUENCE based method and the value 'regtable' selects the SERIALREG
+       based method. This entry has no effect if <b>dbi.database.&lt;dbname&gt;.ifxemul.datatype.serial</b>
+      is set to 'false'.<br>
+      The default is SERIAL emulation enabled with native method (SEQUENCE-based).
+      See issue <a href="#ODIORA005">ODIORA005</a> for more details.</p>
+    </li>
+    <li><p>Define the database schema selection if needed.<br>
+      <font color="#FF0000">Warning : This is only supported in Oracle 8i (8.1.5) and higher.</font>
+      The following entry defines the database schema to be used by the application. The database interface 
+      automatically executes an &quot;ALTER SESSION SET CURRENT_SCHEMA &lt;owner&gt;&quot; instruction to
+      switch to a specific schema:<br><br>
+      <font face="Courier New">&nbsp;&nbsp; dbi.database.<i>dbname</i>.ora.schema = &quot;<i>name</i>&quot;</font><br><br>
+      Here <font color="#0000A0"><i>dbname</i></font> identifies the database name used in the BDL program
+      ( DATABASE <font color="#0000A0"><i>dbname</i></font> ) and <font color="#0000A0"><i>name</i></font> is
+      the schema name to be used in the ALTER SESSION instruction. If this entry is not defined, no
+      &quot;ALTER SESSION&quot; instruction is executed and the current schema defaults to the user's name.</p>
+    </li>
+    <li><p>Define pre-fetch parameters. Oracle offers high performance by
+      pre-fetching rows in memory. The pre-fetching parameters can be tuned with the
+      following entries:<br><br>
+      <font face="Courier New">&nbsp;&nbsp; dbi.database.<i>dbname</i>.ora.prefetch.rows = <i>integer</i><br>
+      &nbsp;&nbsp; dbi.database.<i>dbname</i>.ora.prefetch.memory = <i>integer</i> # in bytes</font><br><br>
+      Note: These values will be applied to all application cursors.<br><br>
+      The interface pre-fetches rows up to the prefetch.rows limit unless the prefetch.memory limit is reached, in which case the
+      interface returns as many rows as will fit in a buffer of size prefetch.memory. By default, pre-fetching is on and defaults to 10 rows,
+      the memory parameter is set to zero, which means that memory size is not included in computing the number of rows to prefetch.</p>
+    </li>
+    <li>If needed, define a specific command to generate session identifiers
+      with this FGLPROFILE setting:<br>
+      <br>
+      <font face="Courier New">&nbsp;&nbsp; dbi.database.<i>dbname</i>.ora.sid.command
+      = &quot;SELECT ...&quot;<br>
+      </font><br>
+      This unique session identifier will be used to create table names for
+      temporary table emulation.<br>
+      By default, the database driver will use &quot;SELECT USERENV('SESSIONID') FROM
+      DUAL&quot;.<font face="Courier New"><br>
+      </font>
+    </li>
+    <li>The default temporary table emulation uses regular permanent tables. If
+      this does not fit you needs, you can use GLOBAL TEMPORARY TABLES with this FGLPROFILE setting:<br>
+      <br>
+      <font face="Courier New">&nbsp;&nbsp; dbi.database.<i>dbname</i>.ifxemul.temptables.emulation
+      = &quot;global&quot;<br>
+      </font>
+    </li>
+    <li>By default, the Oracle database driver will use native scrollable cursors. You
+      can turn on scrollable cursor emulation with the next FGLPROFILE setting:<br>
+      <br>
+      <font face="Courier New">&nbsp;&nbsp; dbi.database.<i>dbname</i>.ora.cursor.scroll.emul
+      = true
+      </font>
+    </li>
+  </ol>
+</blockquote>
+
+<hr>
+
+<h2><a name="ODIORA001">ODIORA001 - DATE and DATETIME data types</a></h3>
+
+</h2>
+
+<p>INFORMIX provides two data types to store date and time information: 
+
+<ul>
+  <li><b>DATE</b> = for year, month and day storage.</li>
+  <li><b>DATETIME</b> = for year to fraction(1-5) storage.</li>
+</ul>
+
+<p>ORACLE provides only the following data types to store date and time data:</p>
+
+<ul>
+  <li><b>DATE</b> = for year, month, day, hour, min, second storage.</li>
+  <li><b>TIMESTAMP</b> <font color="#FF0000">(Oracle 9i)</font> = for year, month, day, hour, min, second, fraction storage.</li>
+</ul>
+
+<p><b>String representing date time information:</b>
+
+<p>INFORMIX is able to convert quoted strings to DATE / DATETIME data if the string  contains matching  environment parameters (i.e. DBDATE, GL_DATETIME).
+
+<p>As in INFORMIX, ORACLE can convert quoted strings to DATE or TIMESTAMP data if the contents of the string matches the  NLS date format parameters (NLS_DATE_FORMAT, NLS_TIMESTAMP_FORMAT).&nbsp; The TO_DATE( ) and TO_TIMESTAMP() SQL functions convert strings to dates or timestamps, according to a given format. The TO_CHAR( ) SQL function allows you to convert dates or timestamps to strings, according to a given format.
+
+<p><b>Date arithmetic:</b> 
+
+<ul>
+  <li>INFORMIX supports date arithmetic on DATE and DATETIME values. The result 
+	of an arithmetic expression involving dates/times is a number of days when 
+	only DATEs are used, and an INTERVAL value if a DATETIME is used in the 
+	expression. In ORACLE, the result of an arithmetic expression involving DATE 
+	values is a NUMBER of days; the decimal part is the fraction of the day ( 
+	0.5 = 12H00, 2.00694444 = (2 + (10/1440)) = 2 days and 10 minutes ).&nbsp; The result of an expression involving Oracle TIMESTAMP data is of type INTERVAL.
+    See Oracle documentation for more details.</li>
+  <li>INFORMIX automatically converts an integer to a date when the integer
+    is used to set a value of a date column. ORACLE does not support this automatic
+    conversion.</li>
+  <li>Complex DATETIME expressions ( involving INTERVAL values for example) are INFORMIX
+    specific and have no equivalent in ORACLE.</li>
+  <li>To compare dates that have time data in ORACLE, you can use the ROUND() or TRUNC() SQL functions.</li>
+</ul>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The ORACLE DATE type is used for INFORMIX DATE data. The
+database interface automatically sets the time part to midnight (00:00:00)
+during input/output operations. You must be very careful since manual modifications of the database might set the time
+part, for example :<br>
+&nbsp;&nbsp;&nbsp; UPDATE table SET date_col = SYSDATE<br>
+(SYSDATE is equivalent to CURRENT YEAR TO SECOND in INFORMIX).<br>
+After this kind of update, when columns have date values with a time part different from
+midnight, some SELECT  statements might not return all the expected rows.</p>
+
+<p>INFORMIX DATETIME data with any precision from YEAR to SECOND is
+stored in ORACLE DATE columns. The database interface makes the conversion automatically.
+Missing date or time parts default to 1900-01-01 00:00:00. For example, when using a
+DATETIME HOUR TO MINUTE with the value of &quot;11:45&quot;, the ORACLE DATE value will be
+&quot;1900-01-01 11:45:00&quot;.</p>
+
+<p>When using ORACLE 9i, INFORMIX DATETIME YEAR TO FRACTION(n) data is stored in ORACLE TIMESTAMP
+columns. The TIMESTAMP data type can store up to 9 digits in the fractional  part, and therefore
+can store all precisions of INFORMIX DATETIME.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Using
+integers (number of days since 1899/12/31) as dates is not supported by ORACLE. Check
+your code to detect where you are using integers with DATE columns.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Literal
+DATETIME and INTERVAL expressions (i.e. DATETIME ( 1999-10-12) YEAR TO DAY) are not converted.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> It is
+strongly recommended that you use BDL variables in dynamic SQL statements instead of quoted
+strings representing DATEs. For example :<br>
+<font face="Courier New">&nbsp;&nbsp; LET stmt = &quot;SELECT ... FROM customer
+WHERE creat_date &gt;'&quot;, adate,&quot;'&quot;<br>
+</font>is not portable.&nbsp;
+Use a question mark place holder instead and
+OPEN the cursor by USING adate :
+<font face="Courier New"><br> &nbsp;&nbsp; LET stmt = &quot;SELECT ... FROM customer WHERE creat_date &gt; ?&quot;</font></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Most
+arithmetic expressions involving dates ( for example, to add or remove a number of days
+from a date ) will produce the same result with ORACLE. But keep in mind that ORACLE
+evaluates date arithmetic expressions to NUMBERs ( &lt;days&gt;.&lt;fraction&gt; ) while
+INFORMIX evaluates to INTEGERs when only DATEs are used in the expression, or to INTERVALs
+if at least one DATETIME is used in the expression.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> DATE arithmetic expressions 
+using SQL parameters (USING variables) are not fully supported. For example:<small><font face="Courier New"> 
+&quot; SELECT ... WHERE datecol &lt; ? +
+1&quot;</font></small> generates an error at PREPARE time.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> SQL Statements
+using expressions with TODAY / CURRENT /&nbsp; EXTEND must be reviewed and
+adapted to the native syntax.</p>
+
+<hr>
+
+<h2><a name="ODIORA003">ODIORA003 - Reserved words</a></h3>
+
+</h2>
+
+<p>SQL object names like table and column names cannot be SQL reserved words in ORACLE.</p>
+
+<p>An example of a common word which is part of the ORACLE SQL grammar is '<b>level</b>'.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Table or column names which are ORACLE reserved words must be renamed.</p>
+
+<p>ORACLE reserved keywords are listed in the ORACLE documentation,  or Oracle 8i provides the V$RESERVED_WORDS view to track Oracle reserved words.
+All BDL application sources must be verified. To check if a given keyword is used in a source, you can use UNIX 'grep' or 'awk' tools. Most
+modifications can be done automatically with UNIX tools like 'sed' or 'awk'.</p>
+
+<hr>
+
+<h2><a name="ODIORA004">ODIORA004 - ROWIDs</a></h3>
+
+</h2>
+
+<p>When creating a table, INFORMIX automatically adds a
+&quot;ROWID&quot; integer column (applies to non-fragmented tables only). The
+ROWID column is auto-filled with a unique number and can be used
+like a primary key to access a given row.</p>
+
+<p>ORACLE supports ROWIDs, but the data type is different from INFORMIX ROWIDs: ORACLE rowids are CHAR(18). </p>
+
+<p> For example :
+<font face="Courier New"><b>AAAA8mAALAAAAQkAAA</b></font></p>
+
+<p>Since ORACLE rowids are physical addresses, they cannot be used as
+permanent row identifiers ( After a DELETE, an INSERT statement might reuse the physical
+place of the deleted row, to store the new row ).</p>
+
+<p>With INFORMIX, SQLCA.SQLERRD[6] contains the ROWID of the last  INSERTed or UPDATEd row. This is not supported with ORACLE because ORACLE ROWID are not INTEGERs.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>If the BDL application uses INFORMIX rowids as primary keys, the program logic should be reviewed in order to use the real primary keys (usually, serials which can be supported) or ORACLE rowids as CHAR(18) ( INFORMIX rowids will fit in this char data type).</p>
+
+<p>If you cannot avoid the use of rowids, you must change the type of the variables which hold ROWID values. Instead of using INTEGER, you must use CHAR(18).  INFORMIX rowids (INTEGERs) will automatically fit into a CHAR(18) variable.</p>
+
+<p>All references to SQLCA.SQLERRD[6] must be removed because this variable will not contain the ROWID of the last INSERTed or UPDATEd row when using the ORACLE interface.</p>
+
+<hr>
+
+<h2><a name="ODIORA005">ODIORA005 - SERIAL data types</a>
+
+</h2>
+
+<p>INFORMIX supports the SERIAL, SERIAL8 and BIGSERIAL data types to produce automatic
+integer sequences. SERIAL is based on INTEGER (32 bit), while SERIAL8 and
+BIGSERIAL can store 64 bit integers: </p>
+<ul>
+	<li>The table column must be of type SERIAL, SERIAL8 or BIGSERIAL.</li>
+	<li>To generate a new serial, no value or a zero 
+	value is specified in the INSERT statement:<br>
+	<font size="2" face="Courier New">&nbsp;&nbsp; INSERT INTO tab1 ( c ) VALUES ( 'aa' )<br>
+	&nbsp;&nbsp; INSERT INTO tab1 ( k, c ) VALUES ( 0, 'aa' )</font></li>
+	<li>After INSERT, the new SERIAL value is provided in
+	<font face="Courier New" color="#FF0000">SQLCA.SQLERRD[2]</font>, while the
+      new SERIAL8 and BIGSERIAL value must be fetched with a <font face="Courier New" color="#FF0000">SELECT
+      dbinfo('bigserial')</font> query.</li>
+</ul>
+<p>INFORMIX allows you to insert rows with a value different from zero for
+    a serial column. Using an explicit value will automatically increment the internal serial
+    counter, to avoid conflicts with future INSERT statements that are using a zero value:<br>
+    <font face="Courier New">&nbsp;&nbsp;&nbsp; CREATE TABLE tab ( k SERIAL );&nbsp; --&gt; internal counter = 0<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 1<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 10 );&nbsp; --&gt; internal counter = 10<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 11<br>
+&nbsp;&nbsp;&nbsp; DELETE FROM tab;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; --&gt;
+internal counter = 11<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 12</font></p>
+
+<p>ORACLE sequences: 
+
+<ul>
+  <li>Sequences are totally detached from tables.</li>
+  <li>The purpose of sequences is to provide unique integer numbers.</li>
+  <li>Sequences are identified by a sequence name.</li>
+  <li>To create a sequence, you must use the CREATE SEQUENCE statement.<br>
+    Once a sequence is created, it is permanent (like a table).</li>
+  <li>To get a new sequence value, you must use the <b>nextval</b>
+    keyword, preceded by the name of the sequence.<br>
+    The <b>&lt;seqname&gt;.nextval</b> expression can be used in INSERT statements :<br>
+    <font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; INSERT INTO
+    tab1 VALUES ( <font color="#0000A0"><b>tab1_seq.nextval</b></font>, ... )</font></li>
+  <li>To get the last generated number, ORACLE provides the <b>currval</b> keyword :<br>
+    <font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SELECT
+    &lt;seqname&gt;.<font color="#0000A0"><b>currval</b></font> FROM DUAL</font></li>
+</ul>
+
+<p>Remark: In order to improve performance, ORACLE can handle a set
+of sequences in the cache (See CREATE SEQUENCE syntax in the ORACLE
+documentation).</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>When using Oracle, the SERIAL data type can be emulated with INSERT
+TRIGGERs. In BDL programs, the SQLCA structure is filled as expected: After an insert,
+<font >SQLCA.SQLERRD[2] h</font>olds the last generated serial value. <font >However,
+SQLCA.SQLERRD[2] is defined as an INTEGER, it cannot hold values from BIGSERIAL
+(NUMBER(20)) auto incremented columns. If you are using BIGSERIAL columns, you
+must the fetch the sequence pseudo-column CURR_VAL or fetch the LASTSERIAL
+column from the SERIALREG table if used.</font></p>
+
+<p>The triggers can be created <u>manually</u> during the
+database creation procedure, or <b>automatically</b> from a BDL program: When a BDL
+program executes a CREATE [TEMP] TABLE with a SERIAL column, the Oracle interface
+
+automatically converts the SERIAL data type to NUMBER(10,0) and  dynamically creates the  
+trigger. For <a href="#ODIORA017">temporary tables</a>, the trigger is dropped
+automatically after a &quot;DROP TABLE temptab&quot; or when the program disconnects from
+the database.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> Users
+executing programs which create tables with SERIAL columns must have the <b>CONNECT</b>
+and <b>RESOURCE</b> roles assigned to create triggers and sequences.</p>
+
+<p>In database creation scripts, all SERIAL[(n)] data types must be
+converted to NUMBER(10,0) data types and you must create the triggers (and the sequences
+when using sequence-based triggers). See below for more details. SERIAL8[(n)]
+and BIGSERIAL[(n)] must be replaced by NUMBER(20,0).</p>
+
+<p><b><font color="#FF0000">Warning</font></b> : With Oracle,
+INSERT statements using NULL for the SERIAL column will produce a new serial
+value:<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col1,col2) VALUES (<b>NULL</b>,'data')</font><br>
+This behavior is mandatory in order to support INSERT statements which do not use the serial column:<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col2) VALUES ('data')</font><br>
+Check whether your application uses tables with a SERIAL column that can contain a NULL value.</p>
+
+<p>For SQL portability, INSERT statements should be reviewed to remove the SERIAL column from
+the list.<br>
+For example, the following statement:<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col1,col2) VALUES (<b>0</b>, p_value)</font><br>
+can be converted to :<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col2) VALUES (p_value)<br>
+</font>Static SQL INSERT using records defined from the schema file must also be
+reviewed :<br>
+<font face="Courier New">&nbsp;&nbsp; DEFINE rec LIKE tab.*</font><br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab VALUES ( rec.*
+)&nbsp;&nbsp; -- will use the serial column</font><br>
+can be converted to :<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab VALUES rec.* -- without
+braces, serial column is removed</font></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> Since the
+INFORMIX SERIAL data type simulation is implemented in the ORACLE database, inserting rows
+with ORACLE tools like SQL*Plus or SQL*Loader will raise the INSERT triggers. When loading
+big tables, you can disable triggers with ALTER TRIGGER [ENABLE | DISABLE] (see ORACLE
+documentation for more details). After re-activation of the serial triggers, the SERIAL
+sequences must be re-initialized (use serialpkg.create_sequence('tab','col') or re-execute
+the PL/SQL script containing the sequence and trigger creation.</p>
+
+<p>You are free to use <b>SEQUENCE based insert triggers</b>
+(1) or <b>SERIALREG based insert triggers</b> (2). The second solution needs the
+<b> SERIALREG</b> table to register serials.</p>
+
+<p>With the following fglprofile entry, you define the technique to be used for SERIAL emulation:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;
+dbi.database.&lt;dbname&gt;.ifxemul.datatype.serial.emulation = {&quot;native&quot;|&quot;regtable&quot;}</font></p>
+
+<p>The '<b>native</b>' value defines the SEQUENCE-based technique and the '<b>regtable</b>' defines the SERIALREG-based technique.</p>
+
+<p>This entry must be used with :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; dbi.database.&lt;dbname&gt;.ifxemul.serial = {true|false}</font></p>
+
+<p>If this entry is set to false, the emulation method specification entry is ignored.</p>
+
+<p>When no entry is specified, the default is SERIAL emulation enabled with 'native' method (SEQUENCE-based).<br><br>
+<u>1. Using SEQUENCES based triggers</u></p>
+
+<p>Each table having a SERIAL column needs an INSERT TRIGGER and a SEQUENCE dedicated to SERIAL generation.</p>
+
+<p> To know how to write those sequences and triggers,&nbsp; you can create a small Genero
+ program that creates a table with a SERIAL column. Set the FGLSQLDEBUG
+ environment variable and run the program. The debug output will show you the
+ native SQL commands to create the sequence and the trigger.</p>
+
+<p><u>2. Using SERIALREG based triggers</u></p>
+
+<p>Each table having a SERIAL column needs an INSERT TRIGGER which uses the SERIALREG table dedicated to SERIAL registration.</p>
+
+<p>First, you must prepare the database and create the SERIALREG table as follows:<br><br>
+  <font face="Courier New">CREATE TABLE SERIALREG (<br>
+  &nbsp;&nbsp;&nbsp;&nbsp; TABLENAME VARCHAR2(50) NOT NULL,<br>
+  &nbsp;&nbsp;&nbsp;&nbsp; LASTSERIAL NUMBER(20,0) NOT NULL,<br>
+  &nbsp;&nbsp;&nbsp;&nbsp; PRIMARY KEY ( TABLENAME )<br>
+  )</font></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> This table must exist in the database before creating the serial
+triggers.</p>
+
+<p>In database creation scripts, all SERIAL[(n)] data types must be converted
+ to INTEGER data types and you must create one trigger for each
+ table. SERIAL8/BIGSERIAL columns must be converted to NUMBER(20,0). To know how to write those triggers,&nbsp; you can create a small Genero
+ program that creates a table with a SERIAL column. Set the FGLSQLDEBUG
+ environment variable and run the program. The debug output will show you the
+ native trigger creation command.</p>
+
+<p><b><font color="#FF0000">Warning</font></b> : The serial
+production is based on the SERIALREG table which registers the last generated number for
+each table. If you delete rows of this table, sequences will restart at start
+values and you might get duplicated values.</p>
+
+<hr>
+
+<h2><a name="ODIORA006">ODIORA006 - Outer joins</a></h3>
+
+</h2>
+
+<p>In INFORMIX SQL, outer joins can be defined in the <b> FROM</b> clause with the <b>OUTER</b> keyword:</p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM a, <b><font color="#0000A0">OUTER(b)</font></b> WHERE a.key = b.akey</font></pre>
+  <pre><font face="Courier New">SELECT ... FROM a, <b><font color="#0000A0">OUTER(b,OUTER(c))</font></b> WHERE a.key = b.akey AND b.key1 = c.bkey1 AND b.key2 = c.bkey2 </font></pre>
+</blockquote>
+
+<p>ORACLE expects the <b>(+)</b> operator in the join
+condition. You must set a (+) after columns of the tables which must have NULL values when
+no record matches the condition:</p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM a, b WHERE a.key = b.key <b><font color="#0000A0">(+)</font></b></font></pre>
+  <pre><font face="Courier New">SELECT ... FROM a, b, c WHERE a.key = b.akey <b><font color="#0000A0">(+)</font></b>
+   AND b.key1 = c.bkey1 <b><font color="#0000A0">(+)</font></b>
+   AND b.key2 = c.bkey2 <font color="#0000A0"><b>(+)</b></font> </font></pre>
+</blockquote>
+
+<p>When using additional conditions on outer tables, the (+) operator also has to be  used. For example :</p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM a, <b><font color="#0000A0">OUTER(b)</font></b> WHERE a.key = b.akey AND b.colx &gt; 10</font></pre>
+</blockquote>
+
+<p>Must be converted to :</p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM a, b WHERE a.key = b.akey </font><font face="Courier New" color="#0000A0"><b>(+)</b></font><font face="Courier New">
+   AND b.colx </font><font face="Courier New" color="#0000A0"><b>(+)</b></font><font face="Courier New"> &gt; 10</font></pre>
+</blockquote>
+
+<p>The ORACLE outer joins restriction :</p>
+
+<p>In a query that performs outer joins of more than two pairs of tables, a single table can only be the NULL generated table for one other table. The following case is not allowed : 
+<font face="Courier New">WHERE a.col = b.col (+) AND b.col (+) = c.col </font> </p>
+
+<p><u><em><b>Solution</b></em></u><font face="Courier New">:</font></p>
+
+<p>For better SQL portability, you should use the ANSI outer join syntax instead
+of the old Informix OUTER syntax.</p>
+
+<p>The Oracle interface can convert most INFORMIX OUTER specifications to Oracle outer joins.</p>
+
+<p>Prerequisites : 
+
+<ol>
+  <li>In the FROM clause, the main table must be the first item and the
+    outer tables must figure from left to right in the order of outer levels.<br>
+    &nbsp;&nbsp; Example which does not work : &quot;<font face="Courier New">FROM OUTER(tab2), tab1</font> &quot;.</li>
+  <li>The outer join in the WHERE part must use the table name as prefix.<br>
+    &nbsp;&nbsp; Example : &quot;<font face="Courier New">WHERE tab1.col1 = tab2.col2</font> &quot;.</li>
+</ol>
+
+<p>Restrictions : 
+
+<ol>
+  <li>Statements composed by 2 or more SELECT instructions are not supported.<br>
+    &nbsp; Example : &quot;<font face="Courier New">SELECT ... UNION SELECT</font>&quot; or &quot;<font face="Courier New">SELECT ... WHERE col IN
+    (SELECT...)</font>&quot;</li>
+</ol>
+
+<p>Notes:: 
+
+<ol>
+  <li>Table aliases are detected in OUTER expressions.<br>
+    &nbsp;&nbsp; OUTER example with table alias : <font face="Courier New">&quot;OUTER( tab1 alias1)</font>&quot;.</li>
+  <li>In the outer join, &lt;outer table&gt;.&lt;col&gt; can be placed on
+    both right or left  sides  of the equal sign.<br>
+    &nbsp;&nbsp; OUTER join example with table on the left : &quot;<font face="Courier New">WHERE outertab.col1 =
+    maintab.col2</font> &quot;.</li>
+  <li>Table names detection is not case-sensitive.<br>
+    &nbsp;&nbsp; Example : &quot;<font face="Courier New">SELECT ... FROM tab1, TAB2 WHERE tab1.col1 = tab2.col2</font>&quot;.</li>
+  <li><a href="#ODIORA017">Temporary tables</a> are supported in OUTER specifications.</li>
+</ol>
+
+<hr>
+
+<h2><a name="ODIORA007a">ODIORA007a - Database concepts</a></h3>
+
+</h2>
+
+<p>Most of BDL applications use only one database entity (in the meaning of INFORMIX). But the same BDL application can connect to different occurrences of the same database schema, allowing several users to connect to those different databases.</p>
+
+<p>INFORMIX servers can handle multiple database entities, while ORACLE servers manage only one database. ORACLE can manage multiple schemas, but by default other users must give the owner name as prefix to the table name:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SELECT * FROM <b>stores</b>.customer</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>In an ORACLE database, each user can manage his own database schema. You can dedicate a database user to administer each occurrence of the application database.</p>
+
+<p>Starting with version 8.1.5, any user can select the current database schema with the following SQL command:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ALTER SESSION SET
+CURRENT_SCHEMA = &quot;&lt;schema&gt;&quot;</font></p>
+
+<p>Using this instruction, any user can access the tables without giving the owner prefix as long as the table owner has granted the privileges to access the tables.</p>
+
+<p>You can make the database interface select the current schema automatically with  the following fglprofile entry :</p>
+
+<p><font face="Courier New">&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; dbi.database.&lt;dbname&gt;.schema = &quot;&lt;schname&gt;&quot;</font></p>
+
+<p>When using multiple database schemas, it is recommended that you create them in separated tablespaces to enable independent backups and keep logical sets of tables together. The simplest way is to define a default tablespace when creating the schema owner :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CREATE USER &lt;user&gt;
+IDENTIFIED BY &lt;pswd&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>DEFAULT TABLESPACE &lt;tabspacename&gt;</b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TEMPORARY
+TABLESPACE &lt;tmptabspace&gt;</font></p>
+
+<hr>
+
+<h2><a name="ODIORA008a">ODIORA008a - Data consistency and concurrency management</a></h3>
+
+</h2>
+
+<p><b>Data consistency</b> involves readers that want to access data
+currently modified by writers and <b>concurrency data access</b> involves several writers
+accessing the same data for modification. <b>Locking granularity</b> defines the amount of
+data concerned when a lock is set (row, page, table, ...).</p>
+
+<p><u>INFORMIX</u></p>
+
+<p>INFORMIX uses a locking mechanism to handle data consistency and
+concurrency. When a process changes database information with UPDATE, INSERT or DELETE,
+an <b>exclusive lock</b> is set on the touched rows. The lock remains active until the end
+of the transaction. Statements performed outside a transaction are treated as a
+transaction containing a single operation and therefore release the locks immediately
+after execution. SELECT statements can set <b>shared locks</b> according to
+the <b>isolation level</b>. In case of locking conflicts (for example, when two processes want to acquire
+an exclusive lock on the same row for modification or when a writer is trying to modify
+data protected by a shared lock), the behavior of a process can be changed by setting the 
+<b>lock
+wait mode</b>.</p>
+
+<p>Control:
+
+<ul>
+  <li>Lock wait mode : SET LOCK MODE TO ...</li>
+  <li>Isolation level : SET ISOLATION TO ...</li>
+  <li>Locking granularity : CREATE TABLE ... LOCK MODE {PAGE|ROW}</li>
+  <li>Explicit exclusive lock : SELECT ... FOR UPDATE</li>
+</ul>
+
+<p>Defaults:
+
+<ul>
+  <li>The default isolation level is read committed.</li>
+  <li>The default lock wait mode is &quot;not wait&quot;.</li>
+  <li>The default locking granularity is page.</li>
+</ul>
+
+<p><u>ORACLE</u></p>
+
+<p>When data is modified, <b>exclusive locks</b> are set and held until
+the end of the transaction. For data consistency, ORACLE uses a <b>multi-version
+consistency model</b>: a copy of the original row is kept for readers before performing
+writer modifications. Readers do not have to wait for writers as in INFORMIX. The simplest
+way to think of Oracle's implementation of read consistency is to imagine each user
+accessing a private copy of the database, hence the multi-version consistency model.
+The <b>lock wait mode</b> cannot be changed session wide as in INFORMIX;
+the waiting behavior can be controlled with a SELECT FOR UPDATE NOWAIT only. Locks are set at the 
+<b>row level</b>
+in ORACLE, and this cannot be changed.</p>
+
+<p>Control : 
+
+<ul>
+  <li>Lock wait mode (on SELECT only): SELECT ... FOR UPDATE NOWAIT</li>
+  <li>Isolation level : SET TRANSACTION ISOLATION LEVEL TO ...</li>
+  <li>Explicit exclusive lock : SELECT ... FOR UPDATE [NOWAIT]</li>
+</ul>
+
+<p>Defaults : 
+
+<ul>
+  <li>The default isolation level is Read Committed ( readers cannot see uncommitted data, no shared lock is set when reading data ).</li>
+</ul>
+
+<p>The main difference between INFORMIX and ORACLE is that readers do not have to wait for writers in ORACLE.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+  <p>The <font size="2" face="Courier New">
+  SET ISOLATION TO ... </font>INFORMIX syntax is replaced by <font size="2" face="Courier New">ALTER
+  SESSION SET ISOLATION_LEVEL ... </font>in Oracle. The next table shows the
+  isolation level mappings done by the database driver:</p>
+
+<div align="center">
+  <center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><font color="#0000FF"><b>SET ISOLATION
+      instruction in program</b></font></td>
+    <td width="60%" bgcolor="#C0C0C0"><font color="#0000FF"><b>Native SQL
+      command</b></font></td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO DIRTY READ</td>
+    <td width="60%">ALTER SESSION SET ISOLATION_LEVEL = READ COMMITTED</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO COMMITTED READ<br>
+      &nbsp; [READ COMMITTED] [RETAIN UPDATE LOCKS]</td>
+    <td width="60%">ALTER SESSION SET ISOLATION_LEVEL = READ COMMITTED</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO CURSOR STABILITY</td>
+    <td width="60%">ALTER SESSION SET ISOLATION_LEVEL = READ COMMITTED</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO REPEATABLE READ</td>
+    <td width="60%">ALTER SESSION SET ISOLATION_LEVEL = SERIALIZABLE</td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<p>ORACLE does not provide a dirty read mode, the (session wide) lock wait mode cannot be changed and the locking precision is always at the row level.  Based on this, it is recommended that you work with INFORMIX in the read committed isolation level (default), make  processes wait for each other (lock mode wait), and use the default page-level locking granularity.</p>
+
+<p>See INFORMIX and ORACLE documentation for more details about data consistency, concurrency and locking mechanisms.</p>
+
+<hr>
+
+<h2><a name="ODIORA008b">ODIORA008b - SELECT FOR UPDATE</a></h3>
+
+</h2>
+
+<p>A lot of BDL programs use pessimistic locking in order to prevent several users editing the same rows at the same time.</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;DECLARE cc CURSOR FOR<br>
+&nbsp;&nbsp; &nbsp; SELECT ... FOR UPDATE [OF col-list]<br>
+&nbsp;&nbsp;OPEN cc<br>
+&nbsp;&nbsp;FETCH cc &lt;-- lock is acquired<br>
+&nbsp;&nbsp;CLOSE cc &lt;-- lock is released</font> 
+
+<ul>
+  <li>The row must be fetched in order to set the lock.</li>
+  <li>If the cursor is local to a transaction, the lock is released when
+    the transaction ends.<br>
+    If the cursor is declared &quot;WITH HOLD&quot;, the lock is released when
+    the cursor is closed.</li>
+</ul>
+
+<p>ORACLE allows individual and exclusive row locking with :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;SELECT ... FOR UPDATE [OF col-list]</font> 
+
+<ul>
+  <li>A lock is acquired for each selected row when the cursor is opened,
+    before the first fetch.</li>
+  <li>Cursors using SELECT ... FOR UPDATE are automatically closed when the
+    transaction ends;<br>
+    <b><font color="#FF0000">Warning :</font></b> Locks are
+    <b>not</b> released <b>when a cursor is closed</b>.</li>
+</ul>
+
+<p>ORACLE's locking granularity is at the row level.</p>
+
+<p>To control the behavior of the program when locking rows, INFORMIX provides a specific instruction to set the wait mode :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; SET LOCK MODE TO { WAIT | NOT WAIT | WAIT <em>seconds</em> }</font></p>
+
+<p>The default mode is NOT WAIT. This as an INFORMIX specific SQL statement.</p>
+
+<p>In order to simulate the same behavior in ORACLE, your can use the NOWAIT keyword in the SELECT ... FOR UPDATE statement, as follows:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT ... FOR UPDATE [OF col-list] <b>NOWAIT</b> </font></p>
+
+<p>With this option, ORACLE  immediately returns an SQL error if the row is locked by another user.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> The database
+interface is based on an emulation of an INFORMIX engine using transaction logging.
+Therefore, opening a SELECT ... FOR UPDATE cursor declared outside a transaction will
+raise an SQL error -255 (not in transaction).</p>
+
+<p><font color="#FF0000"><b>Warning :</b></font> Cursors
+declared with SELECT ... FOR UPDATE using the &quot;WITH HOLD&quot; clause cannot be
+supported with ORACLE. See <a href="#ODIORA031">ODIORA031</a> and <a href="#ODIORA032">ODIORA032</a>
+for more details.</p>
+
+<p>If your BDL application is using pessimistic locking with SELECT ...
+FOR UPDATE, you must review the program logic to OPEN cursor and CLOSE cursor
+statements inside transactions (BEGIN WORK + COMMIT WORK / ROLLBACK WORK).</p>
+
+<hr>
+
+<h2><a name="ODIORA009a">ODIORA009a - Transactions handling</a></h3>
+
+</h2>
+
+<p>INFORMIX and ORACLE handle transactions differently. The differences in the transactional models can affect the program logic. </p>
+
+<p>INFORMIX native mode (non ANSI): 
+
+<ul>
+  <li>DDL statements can be executed (and canceled) in transactions.</li>
+  <li>Transactions must be started with BEGIN WORK. Statements executed outside of a transaction are automatically committed.</li>
+</ul>
+
+<p>ORACLE : 
+
+<ul>
+  <li>Beginnings  of transactions are implicit; two transactions are delimited by COMMIT or ROLLBACK. </li>
+  <li>The current transaction is automatically committed when a DDL statement is executed. </li>
+</ul>
+
+<p>Transactions in stored procedures: avoid using transactions in stored  procedures to allow the client applications to handle transactions, in accordance with the transaction model.</p>
+
+<p>INFORMIX version 11.50 introduces savepoints with the following instructions:</p>
+
+<pre>    SAVEPOINT <i>name</i> <u>[</u>UNIQUE<u>]</u>
+    ROLLBACK <u>[</u>WORK<u>]</u> TO SAVEPOINT <u>[</u><i>name</i><u>]</u> <u>]</u>
+    RELEASE SAVEPOINT <i>name</i></pre>
+
+<p>ORACLE supports savepoints too. However, there are differences:</p>
+
+<ol>
+  <li>Savepoints cannot be declared as UNIQUE</li>
+  <li>Rollback must always specify the savepoint name</li>
+  <li>You cannot release savepoints (RELEASE SAVEPOINT)</li>
+</ol>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Regarding transaction control instructions, BDL applications
+do not have to be modified in order to work with ORACLE.
+The INFORMIX behavior is simulated with an auto-commit mode in the
+ORACLE interface. A switch to the explicit commit mode is done when a BEGIN WORK is
+performed by the BDL program.</p>
+
+<p><font color="#FF0000"><b>Warning</b></font> :
+When executing a DDL statement inside a transaction, ORACLE 
+automatically commits the transaction. Therefore, you must extract the DDL statements
+from transaction blocks.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b>  If you want to use savepoints,
+do not use the UNIQUE keyword in the savepoint declaration, always specify the
+savepoint name in ROLLBACK TO SAVEPOINT, and do not drop savepoints with RELEASE
+SAVEPOINT.</p>
+
+<p>See also <a href="#ODIORA008b">ODIORA008b</a></p>
+
+<hr>
+
+<h2><a name="ODIORA010">ODIORA010 - Handling SQL errors when preparing statements</a></h3>
+
+</h2>
+
+<p>The ORACLE interface&nbsp; is implemented with the ORACLE Call Interface (OCI). This library does not provide a way to send SQL statements to the database server during the BDL PREPARE instruction, as in the INFORMIX interface. The statement is sent to the server only when opening the cursors or when executing the statement. </p>
+
+<p>Therefore, when preparing an SQL statement with the BDL PREPARE instruction, no SQL errors can be returned if the statement has syntax  errors, or if a column or a table name does not exist in the database. However, an SQL error will occur after the OPEN or EXECUTE instructions.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Make sure your BDL programs do not test the STATUS or SQLCA.SQLCODE variable just after PREPARE instructions.</p>
+
+<p>Change the program logic in order to handle the SQL errors when opening the cursors (OPEN) or when executing SQL statements (EXECUTE).</p>
+
+<hr>
+
+<h2><a name="ODIORA041">ODIORA041 - BOOLEAN data type</a>
+
+</h2>
+
+<p>INFORMIX supports the BOOLEAN data type, which can store 't' or 'f' values.
+Genero BDL implements the BOOLEAN data type in a different way: As in other
+programming languages, Genero BOOLEAN stores integer values 1 or 0 (for TRUE or
+FALSE). The type was designed this way to assign the result of a Boolean
+expression to a BOOLEAN variable.</p>
+
+<p>Oracle does not implement a native BOOLEAN type in SQL types, but have a
+BOOLEAN type in PL/SQL.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The Oracle database interface converts BOOLEAN type to CHAR(1) columns and
+stores '1' or '0' values in the column.</p>
+
+<hr>
+
+<h2><a name="ODIORA011a">ODIORA011a - CHARACTER data types</a></h3>
+
+</h2>
+
+<p>INFORMIX supports following character data types:</p>
+<ul>
+  <li>CHAR(N) with N&lt;= 32767 bytes</li>
+  <li>VARCHAR(N[,M]) with N&lt;=255 bytes</li>
+  <li>NCHAR(N) with N&lt;= 32767 bytes</li>
+  <li>NVARCHAR(N[,M]) with N&lt;=255 bytes</li>
+  <li>LVARCHAR (not covered in this section)</li>
+</ul>
+<p>In INFORMIX, both CHAR/VARCHAR and NCHAR/ NVARCHAR data types can be used to
+store single-byte or multi-byte encoded character strings. The only difference
+between CHAR/VARCHAR and NCHAR/NVARCHAR is for sorting: N[VAR]CHAR types use the
+collation order, while [VAR]CHAR types use the byte order. The character set
+used to store strings in CHAR/VARCHAR/NCHAR/NVARCHAR columns is defined by the
+DB_LOCALE environment variable. The character set used by applications is
+defined by the CLIENT_LOCALE environment variable. Note that INFORMIX uses Byte
+Length Semantics (the size N that you specify in [VAR]CHAR(N) is expressed in
+bytes, not characters as in some other databases)</p>
+
+<p>ORACLE provides the following types to store character strings:</p>
+
+<ul>
+  <li>CHAR(N) with an upper limit of 2000 bytes</li>
+  <li>VARCHAR2(N) with an upper limit of 4000 bytes</li>
+  <li>NCHAR(N) with an upper limit of 2000 bytes</li>
+  <li>VARCHAR2(N) with an upper limit of 4000 bytes</li>
+</ul>
+
+<p>With ORACLE [N]CHAR(N)/[N]VARCHAR2(N) types, the size N can be specified in
+character or byte units, according to length semantics settings.</p>
+
+<p><font color="#FF0000"><b>Warning</b></font> : When
+comparing VARCHAR2 values in ORACLE, the trailing blanks are significant;
+this is not the case when using INFORMIX VARCHARs. But comparison with columns of type CHAR is
+similar to INFORMIX. See blank-padded and non-padded comparison semantics in ORACLE
+documentation.</p>
+
+<div align="center">
+  <center>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="15%"><font color="#0000FF"><b>Data type</b></font></td>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>INFORMIX</b></font></td>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>ORACLE</b></font></td>
+  </tr>
+  <tr>
+    <td width="15%"><font face="Courier New">CHAR</font></td>
+    <td width="50%"><font face="Courier New">'aaa&nbsp; ' = 'aaa'</font></td>
+    <td width="50%"><font face="Courier New">'aaa&nbsp;&nbsp; ' = 'aaa'</font></td>
+  </tr>
+  <tr>
+    <td width="15%"><font face="Courier New">VARCHAR</font></td>
+    <td width="50%"><font face="Courier New">'aaa&nbsp; ' = 'aaa'</font></td>
+    <td width="50%"><font face="Courier New">'aaa&nbsp;&nbsp; ' &lt;&gt; 'aaa'</font></td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<p><font color="#FF0000"><b>Warning:</b></font>
+ORACLE treats empty strings like NULL values; INFORMIX doesn't.
+See issue <a href="#ODIORA011c">ODIORA011c</a> for more details.</p>
+
+<p>With ORACLE, you can define a Database Character Set and a National Character
+Set: ORACLE uses the Database Character Set to store string data in the
+CHAR/VARCHAR2 columns, and uses the National Character Set for NCHAR/NVARCHAR2
+columns.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>INFORMIX CHAR(N) types can be mapped to ORACLE CHAR(N) types, with N&lt;=
+2000 bytes. INFORMIX VARCHAR(N) columns must be mapped to ORACLE VARCHAR2(N),
+with N&lt;= 4000 bytes.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Check that your database
+schema does not use CHAR or VARCHAR types with a length exceeding the ORACLE
+limits of CHAR/VARCHAR2.</p>
+
+<p>Since INFORMIX and Genero are using Byte Length Semantics for CHAR/VARCHAR
+sizes, you should use also Byte Length Semantics when defining ORACLE
+CHAR/VARCHAR2 columns. The size will be the same for Genero program variables
+and ORACLE database columns.&nbsp;</p>
+
+<p>The ORACLE client character set must correspond to the Genero runtime system
+locale (LANG/LC_ALL). You can define the ORACLE client character set with the
+NLS_LANG environment variable.</p>
+
+<p>See also the section about <a href="Localization.html">Localization</a>.</p>
+
+<hr>
+
+<h2><a name="ODIORA011b">ODIORA011b - The LENGTH( ) function </a></h3>
+
+</h2>
+
+<p>INFORMIX provides the LENGTH() function:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT LENGTH(&quot;aaa&quot;), LENGTH(col1) FROM table </font></p>
+
+<p>Oracle has a equivalent function with the same name, but there is some difference:</p>
+
+<p>INFORMIX does not count the trailing blanks neither for CHAR not for VARCHAR
+expressions, while Oracle counts the trailing blanks.</p>
+
+<p>With the Oracle LENGTH function, when using a CHAR column,
+values are always blank padded, so the function returns the size of the CHAR
+column. When using a VAR CHAR column, trailing blanks are significant, and the function returns the
+number of characters, including trailing blanks.</p>
+
+<p>The INFORMIX LENGTH() function returns 0 when the given string is empty. That means,
+ <font face="Courier New">LENGTH('')</font> is 0.</p>
+
+<p>Since ORACLE handles empty strings (<font face="Courier New">''</font>) as NULL values,
+writing &quot;<font face="Courier New">LENGTH('')</font>&quot; is equivalent
+to &quot;<font face="Courier New">LENGTH(NULL)</font>&quot;. In this case, the function returns NULL.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The ORACLE database interface cannot simulate the behavior of the
+INFORMIX LENGTH() function.</p>
+
+<p>You must check if the trailing blanks are significant when using the LENGTH()
+function.</p>
+
+<p>If you want to count the number of character by ignoring the trailing blanks,
+you must use the RTRIM() function:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT LENGTH(RTRIM(col1)) FROM table</font></p>
+
+<p>SQL conditions which verify that the result of LENGTH( ) is greater
+that a given number do not have to be changed, because the expression evaluates to false
+if the given string is empty (<font face="Courier New">NULL&gt;n</font>) :<br>
+<font face="Courier New">&nbsp;&nbsp; SELECT * FROM x WHERE <b>LENGTH(col)&gt;0</b></font></p>
+
+<p>Only SQL conditions that compare the result of LENGTH() to zero will
+not work if the column is NULL. You must check your BDL code for such conditions :<br>
+<font face="Courier New">&nbsp;&nbsp; SELECT * FROM x WHERE <b>
+LENGTH(col)=0</font></b><br><br>
+In this case, you must add a test to verify if the column is null:<br>
+<font face="Courier New">&nbsp;&nbsp; SELECT * FROM x WHERE <b>( LENGTH(col)=0 OR col IS NULL )</b></font></p>
+
+<p>In addition,  when retrieving the result of a LENGTH( ) expression into a BDL variable, you must check that the variable is not NULL.</p>
+
+<p>In ORACLE, you can use the NVL( ) function in order to get a non-null value :<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SELECT * FROM x WHERE <b>NVL(LENGTH(c),0)</b>=0</font><br><br>
+INFORMIX Dynamic Server 7.30 supports the NVL() function, as in ORACLE. So you can write the same SQL for both INFORMIX 7.30 and ORACLE 8, as shown
+in the above example.</p>
+
+<p>If the INFORMIX version supports stored procedures, you can create the following stored procedure in the INFORMIX database in order to use NVL( ) expressions :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; create procedure nvl( val char(512), def char(512) )<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; returning char(512);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if val is null then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return def;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return val;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; end if;<br>
+&nbsp;&nbsp; end procedure;
+</font></p>
+
+<p>With this stored procedure, you can write NVL( ) expressions
+like <font face="Courier New"> <b>NVL(LENGTH(c),0)</b></font>.
+This should work in almost all cases and provides upward compatibility with
+INFORMIX Dynamic Server 7.30.</p>
+
+<hr>
+
+<h2><a name="ODIORA011c">ODIORA011c - Empty character strings </a></h3>
+
+</h2>
+
+<p>INFORMIX SQL and ORACLE SQL handle empty quoted strings differently. ORACLE SQL
+does not distinguish between <font face="Courier New">''</font>
+and NULL, while INFORMIX SQL treats<font face="Courier New">''</font> ( or&nbsp;
+<font face="Courier New">&quot;&quot;</font> ) as a string with a length of zero.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> Using
+literal string values which are empty (</font><font face="Courier New">''</font>
+) for INSERT or UPDATE statements will result in the storage of NULLs with
+ORACLE, while INFORMIX would store the value as a string with a length of zero:</p>
+
+<blockquote>
+  <p><font face="Courier New">insert into tab1 ( col1, col2 ) values ( NULL, '' )</font></p>
+</blockquote>
+
+<p><b><font color="#FF0000">Warning:</font></b> Using the
+comparison expression (<font face="Courier New">col=''</font>)
+with ORACLE has no meaning because an empty string is equivalent to NULL;&nbsp;
+(<font face="Courier New">col=NULL</font>) expressions will always evaluate to
+FALSE because this is not a correct expression: The expression should be (
+<font face="Courier New">col IS NULL</font>).</p>
+
+<blockquote>
+  <p><font face="Courier New">select * from tab1 where col2 IS NULL</font></p>
+</blockquote>
+
+<p>In INFORMIX 4GL, when setting a variable with an empty string
+constant, it is automatically set to a NULL value. When using one or more space
+characters, the value is set to one space character:</p>
+
+<blockquote>
+  <p><font face="Courier New">define x char(10)<br>
+  let x = &quot;&quot;<br>
+  if x is null then <small>-- evaluates to TRUE</small><br>
+  let x = &quot;&nbsp;&nbsp;&nbsp; &quot;<br>
+  if x = &quot; &quot; then&nbsp;&nbsp; <small>-- evaluates to TRUE</small></font></p>
+</blockquote>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>The ORACLE database interface cannot automatically convert comparison expressions
+like (<font face="Courier New">col=&quot;&quot;</font>) to (
+<font face="Courier New">col IS NULL</font>) because this would require an SQL
+grammar parser. The interface could convert expressions like (
+<font face="Courier New">col=&quot;&quot;</font>), but it would do this for the whole SQL statement:</p>
+
+<blockquote>
+  <p><font face="Courier New">UPDATE tab1 SET col1 = &quot;&quot; WHERE col2 = &quot;&quot;</font></p>
+</blockquote>
+
+<p>Would be converted to an incorrect SQL statement:</p>
+
+<blockquote>
+  <p><font face="Courier New">UPDATE tab1 SET col1 IS NULL WHERE col2 IS NULL</font></p>
+</blockquote>
+
+<p>To increase portability, you should avoid the usage of literal
+string values with a length of zero in SQL statements; this would resolve storage and
+Boolean expressions evaluation differences between INFORMIX and ORACLE.</p>
+
+<p>NULL or program variables can be used instead. Program variables set
+with empty strings (<font face="Courier New">let x=&quot;&quot;</font>)
+are automatically converted to NULL by BDL and therefore are stored as NULL
+when using both INFORMIX or ORACLE databases.</p>
+
+<hr>
+
+<h2><a name="ODIORA012">ODIORA012 - Constraints</a></h3>
+
+</h2>
+
+<p><b>Constraint naming syntax:</b></p>
+
+<p>Both INFORMIX and ORACLE support primary key, unique, foreign key,
+default and check constraints, but the constraint naming syntax is different : ORACLE
+expects the &quot;CONSTRAINT&quot; keyword <b>before</b> the constraint
+specification and INFORMIX expects it <b>after</b>.</p>
+
+<p><b>UNIQUE constraint example:</b></p>
+<div align="left">
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>INFORMIX</b></font></td>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>ORACLE</b></font></td>
+  </tr>
+  <tr>
+    <td width="50%"><font face="Courier New">CREATE TABLE scott.emp (<br>
+    ...<br>
+    empcode CHAR(10) UNIQUE<br>
+    &nbsp;&nbsp;&nbsp;<b>[CONSTRAINT pk_emp]</b>,<br>
+    ...</font></td>
+    <td width="50%"><font face="Courier New">CREATE TABLE scott.emp (<br>
+    ...<br>
+    empcode CHAR(10)<br>
+    &nbsp;&nbsp;&nbsp;<b>[CONSTRAINT pk_emp]</b> UNIQUE,<br>
+    ...</font></td>
+  </tr>
+</table>
+</div>
+
+<p><b>Primary keys:</b></p>
+
+<p>Like INFORMIX, ORACLE creates an index to enforce PRIMARY KEY
+constraints (some RDBMS do not create indexes for constraints).&nbsp; Using &quot;CREATE
+UNIQUE INDEX&quot;&nbsp; to define unique constraints is obsolete (use primary keys or
+a secondary key instead).</p>
+
+<p><b>Unique constraints:</b></p>
+
+<p>Like INFORMIX, ORACLE creates an index to enforce UNIQUE constraints
+(some RDBMS do not create indexes for constraints).
+</p>
+<p><font color="#FF0000"><b>Warning:</b></font> When using a unique constraint,
+INFORMIX allows only one row with a NULL value, while ORACLE allows several rows with
+NULL! Using CREATE UNIQUE INDEX is obsolete.</p>
+
+<p><b>Foreign keys:</b></p>
+
+<p>Both INFORMIX and ORACLE support the ON DELETE CASCADE option. To
+defer constraint checking, INFORMIX provides the SET CONSTRAINT command while ORACLE
+provides the ENABLE and DISABLE clauses.</p>
+
+<p><b>Check constraints:</b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> The check
+condition may be any valid expression that can be evaluated to TRUE or FALSE, including
+functions and literals. You must verify that the expression is not INFORMIX specific.</p>
+
+<p><b>Null constraints:</b></p>
+
+<p>INFORMIX and ORACLE support not null constraints, but INFORMIX does
+not allow you to give a name to &quot;NOT NULL&quot; constraints.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><b>Constraint naming syntax:</b></p>
+
+<p>The database interface does not convert constraint naming expressions when creating tables from BDL programs.
+Review the database creation scripts to adapt the constraint naming clauses for ORACLE.</p>
+
+<hr>
+
+<h2><a name="ODIORA013">ODIORA013 - Triggers</a></h3>
+
+</h2>
+
+<p>INFORMIX and ORACLE provide triggers with similar features, but the trigger creation syntax and the programming languages are totally different.</p>
+
+<p>INFORMIX triggers define the stored procedures to be called when a database event occurs (before | after&nbsp; insert | update | delete ...), while ORACLE triggers can hold a procedural block.</p>
+
+<p>In ORACLE, triggers can be created with 'CREATE OR REPLACE' to keep privileges settings. With INFORMIX, you must drop and create again.</p>
+
+<p>ORACLE V8 provides an 'INSTEAD OF' option to  completely replace the INSERT, UPDATE or DELETE statement. This is provided to implement complex storage operations, for example on views that are usually read-only ( you can attach triggers to views ).</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> ORACLE
+allows you to create multiple triggers on the same table for the same trigger event, but it
+does not guarantee the execution order.</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>INFORMIX triggers must be converted to ORACLE triggers &quot;by hand&quot;.</p>
+
+<hr>
+
+<h2><a name="ODIORA014">ODIORA014 - Stored procedures</a></h3>
+
+</h2>
+
+<p>Both INFORMIX and ORACLE support stored procedures, but the programming languages are totally different : <b>SPL</b> for INFORMIX versus <b>PL/SQL</b> for ORACLE.</p>
+
+<p>In Oracle, stored procedures and functions can be implemented in
+packages (similar to BDL modules). This is a powerful feature which enables structured
+procedural programming in the database. ORACLE itself implements system tools with
+packages (dbms_sql, dbms_output, dbms_lock). Procedures, functions and packages can be
+created with 'CREATE OR REPLACE' to keep privileges settings.<br>
+With INFORMIX, you must drop and create again.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> ORACLE uses
+a different privilege context when using dynamic SQL in PL/SQL;
+roles are not effective.
+Users must have direct privileges settings in order to perform DDL or DML operations
+inside dynamic SQL.</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>INFORMIX stored procedures must be converted to ORACLE &quot;by hand&quot;.</p>
+
+<p>Try to use ORACLE packages in order to group stored procedures into modules.</p>
+
+<hr>
+
+<h2><a name="ODIORA016a">ODIORA016a - Defining database users</a></h3>
+
+</h2>
+
+<p>INFORMIX users are defined at the operating system level, they must be members of the 'informix' group, and the database administrator must grant CONNECT, RESOURCE or DBA privileges to those users.</p>
+
+<p>ORACLE users must be createed in the database with a CREATE USER command.
+Oracle supports different sort of user authentications.<br>
+Following command defines a user authenticated by the database server (must give
+username and password to connect):<br>
+<font face="Courier New">&nbsp;&nbsp; CREATE USER &lt;username&gt; IDENTIFIED <b>BY &lt;pswd&gt;</b><br>
+</font>Users defined at the operating system level can be declared as
+ORACLE users with the &quot;IDENTIFIED EXTERNALLY&quot; clause :<br>
+<font face="Courier New">&nbsp;&nbsp; CREATE USER OPS$&lt;username&gt; IDENTIFIED <b>EXTERNALLY</b></font><br>
+In this case, ORACLE trusts the operating system, and users can connect to the database
+without giving any user name and password.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> By default,
+database users authenticated by the operating systems have a name with the
+&quot;OPS$&quot; prefix. The 'OPS$' prefix can be changed with the OS_AUTHENT_PREFIX
+server parameter. You can set this parameter to blank <font
+face="Courier New">(&quot;&quot;</font>) in order to use the same user
+names in the system and in the ORACLE database. See ORACLE documentation ( &quot;Server
+Administrators Guide&quot;, &quot;User authentication&quot; ) for more details.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b>  When creating a user with OS
+authentication, the user name in the database must be in uppercase letters, even
+if the OS user name is lowercase.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> For Windows
+NT operating system authentication to work, the SQLNET.AUTHENTICATION_SERVICES parameter
+must be set as follows in %ORACLE_HOME%\NETWORK\ADMIN\SQLNET.ORA :<br><br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SQLNET.AUTHENTICATION_SERVICES = (NTS)</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Based on the application logic (is it a multi-user application ?), you must create
+one or several ORACLE users. As INFORMIX users are operating system users, we recommend
+that you use the OS authentication services offered by ORACLE.</p>
+
+<hr>
+
+<h2><a name="ODIORA016b">ODIORA016b - Setting privileges</a></h3>
+
+</h2>
+
+<p>INFORMIX and ORACLE user privileges management are quite similar.</p>
+
+<p>ORACLE provides roles to group privileges which then can be assigned
+to users. Starting with version 7.20, INFORMIX provides roles too. But users must execute
+the SET ROLE statement in order to enable a role. ORACLE users do not have to explicitly
+set a role, they are assigned to a default privilege domain (set of roles). More than one
+role can be  enabled  at a time with ORACLE.</p>
+
+<p>INFORMIX users must have at least the CONNECT privilege to access the database:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; GRANT <b>CONNECT</b> TO (PUBLIC|user) </font></p>
+
+<p>ORACLE users must have at least the CREATE SESSION privilege to access the database. This privilege is part of the CONNECT role.<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; GRANT <b>CONNECT</b> TO (PUBLIC|user) </font></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> INFORMIX
+database privileges do NOT correspond exactly to ORACLE CONNECT, RESOURCE and DBA roles.
+However, roles can be created with equivalent privileges.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Create a role which groups INFORMIX CONNECT privileges, and assign this role to the application users :</p>
+
+<blockquote>
+  <pre><font face="Courier New">CREATE ROLE ifx_connect IDENTIFIED BY oracle;</font>
+<font face="Courier New">GRANT CREATE SESSION, ALTER SESSION, CREATE ANY VIEW, ... TO ifx_connect;
+GRANT ifx_connect TO user1;</font></pre>
+</blockquote>
+
+<hr>
+
+<h2><a name="ODIORA017">ODIORA017 - Temporary tables </a></h3>
+
+</h2>
+
+<p>INFORMIX temporary tables are created through the
+<font face="Courier New" ><b> CREATE TEMP TABLE </b></font>
+DDL instruction or through a <b><font face="Courier New" >SELECT ... INTO TEMP</font></b> statement.
+Temporary tables are automatically dropped when the SQL session ends, but they can
+also be dropped with the DROP TABLE command. There is no name conflict when several users create
+temporary tables with the same name.</p>
+
+<p>Remark: BDL reports create a temporary table when the rows are not
+sorted externally (by the source SQL statement).</p>
+
+<p>INFORMIX allows you to create indexes on temporary tables. No name conflict occurs when several users create an index on a temporary table by using the same index identifier.</p>
+
+<p>ORACLE does not support temporary tables as INFORMIX does. ORACLE
+8.1 provides GLOBAL TEMPORARY TABLEs which are shared among processes (only data is
+temporary and local to a SQL process). INFORMIX does not shared temp tables among SQL
+processes; each process can create its own temp table without table name conflicts.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>In accordance with some prerequisites, temporary tables creation in BDL programs can be supported by the database interface.</p>
+
+<p>The temporary table emulation can use regular tables or GLOBAL
+TEMPORARY tables. The way the driver converts INFORMIX temp table
+statements to Oracle regular tables or global temporary tables is driven by
+the following FGLPROFILE entry:</p>
+
+<p><font face="Courier New">dbi.database.&lt;dbname&gt;.ifxemul.temptables.emulation = {
+&quot;default&quot; | &quot;global&quot; }</font></p>
+
+<p>By default, the database driver uses regular tables (<i>default</i>
+emulation). This default
+emulation provides maximum compatibility with INFORMIX temporary tables, but
+requires real table creation which can be a significant overhead with Oracle. The
+<i>
+global</i> emulation uses native Oracle Global Temporary Tables, requiring only
+one initial table creation and thus making programs run faster. However, the <i>global</i>
+emulation mode has to be used carefully because of some
+limitations and constraints.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> When
+creating a temporary table, you perform a Data Definition Language statement. Oracle
+ automatically commits the current transaction when executing a DDL statement. Therefore,
+you must avoid temp table creation/destruction in transactions.</p>
+
+<h3>Using the <i>default</i> temporary table emulation</h3>
+
+<p><b>How does the <i>default</i> emulation work?</b> 
+
+<ul>
+  <li>INFORMIX CREATE TEMP TABLE and SELECT INTO TEMP statements are
+    automatically converted to ORACLE &quot;CREATE TABLE&quot;. The name of the
+    temporary table is converted to a unique table name.<br>
+    </li>
+  <li>Tables are created in the current schema.<br>
+    </li>
+  <li>Temporary tables are created with the option
+    TABLESPACE TEMPTABS so that data is stored in a dedicated tablespace named &quot;<b>TEMPTABS</b>&quot;. Of course
+    the TEMPTABS tablespace must exist before running programs, otherwise temporary table creation will fail.
+    You create a tablespace with the CREATE TABLESPACE SQL command. Using a
+    specific tablespace for temporary tables allows you to specify storage
+    options, for example to use a physical device
+    which can be different from the disk drive used for real data storage. Additionally,
+    backups of permanent application tables can be performed without the data of temporary tables.<br>
+    </li>
+  <li>Starting with Oracle 10g, dropped tables are saved in the recycle bin by
+    default. You may want to avoid the recycle bin feature at the database level
+    or session level with:<br>
+    <font face="Courier New">&nbsp; ALTER SYSTEM SET recyclebin = OFF scope=both</font><br>
+    or:<br>
+    <font face="Courier New">&nbsp; ALTER SESSION SET recyclebin = OFF</font><br>
+    </li>
+  <li>Once the temporary table has been created, all other SQL statements performed in
+    the current SQL session are parsed to convert the original table name to the
+    corresponding unique table name.<br>
+    </li>
+  <li>When the BDL program disconnects from the database (for example, when
+    it ends or when a CLOSE DATABASE instruction is executed), the tables
+    which have not been removed with an explicit &quot;DROP TABLE&quot; are automatically
+    removed by the database interface. However, if the program crashes, the
+    tables will remain in the database, so you may need to cleanup the database
+    from time to time.
+    </li>
+</ul>
+
+<p><b>Prerequisites when using the <i>default</i> emulation:</b> 
+
+<ul>
+  <li>Application users must have sufficient <b>privileges</b> to
+    create database tables in their own schema (usually, &quot;CONNECT&quot; and
+    &quot;RESOURCE&quot; roles).<br>
+    </li>
+  <li>When using the default emulation based on permanent tables, you must create a
+    dedicated tablespace named &quot;<b>TEMPTABS</b>&quot;.<br>
+    <font color="#FF0000"><b>Warning:</b></font>  The TEMPTABS  tablespace must be of type
+    &quot;<b>permanent</b>&quot;, as it will hold permanent tables used to
+    emulate INFORMIX temp tables.<br>
+ Make sure it is big enough to hold  all
+    the data, and check for automatic extension.<br>
+    For more details, see &quot;CREATE TABLESPACE&quot; in the Oracle documentation.
+    </li>
+</ul>
+
+<p><b>Limitations of the <i>default</i> emulation: </b> 
+
+<ul>
+  <li><font color="#FF0000"><b>Warning:</b></font>  When using the default
+    emulation, the real name of an emulated temporary
+    table will get the following format:<br>
+    <font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    tt&lt;number&gt;_&lt;original_name&gt;</font><br>
+    Where &lt;number&gt; is the Oracle AUDSID session id returned by:<br>
+    <font face="Courier New">&nbsp;&nbsp;&nbsp;SELECT USERENV('SESSIONID') FROM DUAL</font><br>
+    As Oracle 9i and 10g table names can't exceed 30 characters in length, and since
+    session ids are persistent over server shutdown, you must pay attention to the
+    names of your temporary tables. For example, if you create a temp table with the
+    name TEMP_CUSTOMER_INVOICES (22c) it leaves 30 - (3 + 22) = 5 characters left for
+    the session id, which gives a limit of 99999 sessions.<br>
+    To workaround this limitation, you can provide your own SQL command to generate a
+    unique session id with the following FGLPROFILE entry:<br>
+    <font face="Courier New"><b>&nbsp;&nbsp;dbi.database.&lt;dbname&gt;.ora.sid.command = "select ..."</b></font><br>
+    As an example, you can use the SID column value from V$SESSION:<br>
+    <font face="Courier New">&nbsp;&nbsp;SELECT SID FROM V$SESSION WHERE AUDSID = USERENV('SESSIONID')</font><br>
+ </li>
+  <li>You are not allowed to use the unique table name format in your own
+    database schema. Make sure you are not using table or column names with the following
+    format:<br>
+    <font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    tt&lt;number&gt;_&lt;original_name&gt;</font><br>
+  <li>Tokens matching the original table names are converted to unique
+    names in all SQL statements. Make sure you are not using the temp table name for other
+    database objects, like columns. The following example illustrates this limitation :<br>
+    <font face="Courier New">&nbsp; CREATE TABLE tab1 ( key INTEGER, <b>tmp1</b> 
+    CHAR(20) )<br>
+    &nbsp; CREATE TEMP TABLE <b>tmp1</b> ( col1 INTEGER, col2 CHAR(20) )<br>
+    &nbsp; SELECT <b>tmp1</b> FROM tab1 WHERE ...</font></li>
+</ul>
+
+<p><b>Maintenance of <i>default</i> emulation:</b> 
+
+<ul>
+  <li>If you want to list the tables created by specific user, do the
+    following:<br>
+    <font face="Courier New">&nbsp; SELECT * FROM ALL_TABLES WHERE OWNER =
+    '&lt;user_name&gt;'<br>
+    </font>Remark: as with other database object names, the user name is stored
+    in uppercase letters if it has been created without using double quotes (
+    <font face="Courier New">create user scott</font> ... = stored name is
+    &quot;SCOTT&quot; ).</li>
+</ul>
+
+<p><b>Creating indexes on temporary tables with <i>default</i> emulation:</b> 
+
+<ul>
+  <li>Indexes created on temporary tables must have unique names too. The
+    database interface detects CREATE INDEX statements which are using temporary tables and
+    converts the index name to unique names.</li>
+</ul>
+
+<ul>
+  <li>DROP INDEX statements are also detected to replace the original index name by the real name.</li>
+</ul>
+
+<p><b>SERIALs in temporary table creation with <i>default</i> emulation:</b> 
+
+<ul>
+  <li>You can use the SERIAL data type when creating a temporary table.<br>
+    Sequences and triggers will be created in the current schema.<br>
+    See
+    issue about <a href="#ODIORA005">SERIALs</a> for more details.</li>
+</ul>
+
+<h3>Using the <i>global</i> temporary table emulation</h3>
+
+<p><b><font color="#FF0000">Warning:</font></b> The <i>global</i> temporary
+table emulation is provided to get benefit of the Oracle GLOBAL TEMPORARY
+TABLES, by sharing the same table structure with multiple SQL sessions, reducing
+the cost of the CREATE TABLE statement execution. However, this emulation does
+not provide the same level of INFORMIX compatibility as the <i>default</i>
+emulation, and
+must be used carefully. See below for more details about the limitations and
+constraints.</p>
+
+<p><b>How does the <i>global</i> emulation work?</b> 
+
+<ul>
+  <li>INFORMIX CREATE TEMP TABLE and SELECT INTO TEMP statements are
+    automatically converted to ORACLE &quot;CREATE GLOBAL TEMPORARY TABLE&quot;.
+    The original table name is kept, but it gets a &quot;<b>TEMPTABS</b>&quot;
+    schema prefix, to share the underlying table structure with other database
+    users.<br>
+    </li>
+  <li>The Global Temporary Tables are created with the &quot;ON COMMIT PRESERVE
+    ROWS&quot; option, to keep the rows in the table when a transaction ends.<br>
+    </li>
+  <li>The Global Temporary Tables are created in a specific schema called &quot;<b>TEMPTABS</b>&quot;.
+    If the table exists already, error ORA-00955 will just be ignored by the
+    database driver. This allows to do several CREATE TEMP TABLE statements in
+    your programs with no SQL error, to emulate the INFORMIX behavior.
+    This works fine as long as the table name is unique for a given structure
+    (column count and data types must match).<br>
+    </li>
+  <li>Once the Global Temporary Table has been created, all other SQL statements performed in
+    the current SQL session are parsed to convert the original table name to
+    TEMPTABS.<i>original-tablename</i>.<br>
+    </li>
+  <li>When doing a DROP TABLE <i>temp-table</i> statement in the program, the database driver
+    converts it to a DELETE statement, to remove all data added by the
+    current session. A next CREATE TEMP TABLE or SELECT INTO TEMP will fail with
+    error ORA-00955 but since this error is ignored, it will be transparent for
+    the program. Note that we can't use TRUNCATE TABLE because that would
+    required at least DROP ANY TABLE privileges for all users.<br>
+    </li>
+  <li>When the BDL program disconnects from the database (for example, when
+    it ends or when a CLOSE DATABASE instruction is executed), the tables
+    which have not been dropped by the program with an explicit DROP TABLE
+    statement will be automatically cleaned by Oracle.
+    </li>
+</ul>
+
+<p><b>Prerequisites when using the <i>global </i>emulation:</b> 
+
+<ul>
+  <li>You must create a database user (schema) dedicated to this emulation, with
+    the name &quot;<b>TEMPTABS</b>&quot;.<br>
+    </li>
+  <li>All database users must have sufficient privileges to use Global Temporary
+    Tables in the <b>TEMPTABS</b> schema: If you want programs to create Global
+    Temporary Table on the fly, you must grant a CREATE ANY TABLE + CREATE ANY
+    INDEX system privilege to all users. But this means that all users will be
+    able to create/drop tables in any schema (Here Oracle (10g) is missing some
+    fine-grained system privilege to create/drop tables in a particular schema).
+    You better &quot;prepare&quot; the database by creating the Global Temporary
+    Table with the TEMPTABS user (do not forget to specify ON COMMIT PRESERVE
+    ROWS option), and give INSERT, UPDATE, DELETE and SELECT object privileges
+    to PUBLIC, for example:<br>
+    <font face="Courier New">&nbsp; CREATE GLOBAL TEMPORARY TABLE
+    temptabs.mytable<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ( k INT PRIMARY KEY, c CHAR(10) )
+    ON COMMIT PRESERVE ROWS;<br>
+    &nbsp; CREATE UNIQUE INDEX temptabs.ix1 ON temptabs.mytable ( C )<br>
+    &nbsp; GRANT SELECT, UPDATE, INSERT, DELETE ON temptabs.mytable TO PUBLIC;</font>
+    </li>
+</ul>
+
+<p><b>Limitations of the <i>global </i>emulation:</b> 
+
+<ul>
+  <li>
+    <b><font color="#FF0000">Warning:</font></b>  Global Temporary Tables are shared by multiple
+    users/sessions. In order to have the <i>global</i>
+    emulation working properly with your application, each temporary table name
+    must be unique for a given table structure, for all programs. You must for
+    example avoid to use generic names such as <b>tmp1</b>. It is recommended to
+    use table names as follows:&nbsp;<br>
+    <font face="Courier New">&nbsp; CREATE TEMP TABLE custinfo_1 ( cust_id INTEGER,
+    cust_name VARCHAR(50) )<br>
+    &nbsp; CREATE TEMP TABLE custinfo_2 ( cust_id INTEGER, cust_name
+    VARCHAR(50), cust_addr VARCHAR(200) )<br>
+    </font>
+  <li>Tokens matching the original table names are converted to unique
+    names in all SQL statements. Make sure you are not using the temp table name for other
+    database objects, like columns. The following example illustrates this limitation :<br>
+    <font face="Courier New">&nbsp; CREATE TABLE tab1 ( key INTEGER, <b>tmp1</b> CHAR(20) )<br>
+    &nbsp; CREATE TEMP TABLE <b>tmp1</b> ( col1 INTEGER, col2 CHAR(20) )<br>
+    &nbsp; SELECT <b>tmp1</b> FROM tab1 WHERE ...</font></li>
+</ul>
+
+<p><b>Creating indexes on temporary tables with <i>global </i>emulation:</b> 
+
+<ul>
+  <li>Indexes created on temporary tables get also the <b>TEMPTABS</b> schema
+    prefix.<br>
+  </li>
+  <li>When executing a DROP INDEX statement on a temporary table in a program,
+    the database driver just ignores the statement.</li>
+</ul>
+
+<p><b>SERIALs in temporary table creation with <i>global </i>emulation :</b> 
+
+<ul>
+  <li>You can use the SERIAL data type when creating a temporary table.<br>
+    Sequences and triggers will be created in the <b>TEMPTABS</b> schema too.<br>
+    See
+    issue about <a href="#ODIORA005">SERIALs</a> for more details.</li>
+</ul>
+
+<hr>
+
+<h2><a name="ODIORA018">ODIORA018 - Substrings in SQL</a></h3>
+
+</h2>
+
+<p>INFORMIX SQL statements can use subscripts on columns defined with the character data type : <br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 WHERE
+<b>col1[2,3]</b> = 'RO' <br>
+&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 WHERE <b>col1[10]</b>&nbsp;
+= 'R'&nbsp;&nbsp; -- Same as col1[10,10]<br>
+&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <b>col1[2,3]</b>
+= 'RO' WHERE ...<br>
+&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 ORDER BY <b>col1[1,3]</b></font></p>
+
+<p>.. while ORACLE provides the SUBSTR( ) function, to extract a
+sub-string from a string expression : <br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT .... FROM tab1 WHERE
+<b>SUBSTR(col1,2,2)</b> = 'RO'<br>
+&nbsp;&nbsp;&nbsp; SELECT <b>SUBSTR('Some text',6,3)</b>
+FROM DUAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font>-- Gives 'tex'</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>You must replace all INFORMIX col[x,y] expressions by SUBSTR(col,x,y-x+1).</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> In UPDATE
+instructions, setting column values through subscripts will produce an error with ORACLE :<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <b>col1[2,3]</b>
+= 'RO' WHERE ...<br></font> is converted to:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <b>SUBSTR(col1,2,3-2+1)</b>
+= 'RO' WHERE ...</font></p>
+
+<hr>
+
+<h2><a name="ODIORA019">ODIORA019 - Name resolution of SQL objects</a></h3>
+
+</h2>
+
+<p>INFORMIX uses the following form to identify an SQL object:<br>
+<font face="Courier New">&nbsp; [database[@dbservername]:][{owner|&quot;owner&quot;}.]identifier</font></p>
+
+<p>The ANSI convention is to use double quotes for identifier delimiters (For example : &quot;tabname&quot;.&quot;colname&quot;).</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> When using double-quoted
+identifiers, both INFORMIX and ORACLE become case sensitive. Unlike INFORMIX,
+ORACLE database object names are stored in UPPERCASE in system catalogs.
+That means that SELECT &quot;col1&quot; FROM &quot;tab1&quot; will produce an error
+because those objects are identified by &quot;COL1&quot; and &quot;TAB1&quot; in ORACLE system catalogs.</p>
+
+<p>Remark: in INFORMIX ANSI compliant databases: 
+
+<ul>
+  <li>The table name must include &quot;owner&quot;, unless the connected user is the owner of the database object.</li>
+  <li>The database server shifts the owner name to uppercase letters before the statement executes, unless the owner name is enclosed in double quotes. </li>
+</ul>
+
+<p>With ORACLE, an object name takes the following form:<br>
+<font face="Courier New">&nbsp;&nbsp; [(schema|&quot;schema&quot;).](identifier|&quot;identifier&quot;)[@database-link]</font></p>
+
+<p>Remark: ORACLE has separate namespaces for different classes of objects (tables, views, triggers, indexes, clusters).</p>
+
+<p>Object names are limited to 30 chars in ORACLE.</p>
+
+<p>An ORACLE database schema is owned by a user (usually, the application administrator) and this user must create PUBLIC SYNONYMS to provide a global scope for his table names. PUBLIC SYNONYMS can have the same name as the schema objects they point to.</p>
+
+<p><b><u><em>Solution:</em></u></b> </p>
+
+<p>Check that you do not use singl-quoted or double-quoted table names or column names in your source. Those quotes must be removed because the database interface automatically converts double quotes to single quotes, and ORACLE does not allow single quotes as database object name delimiters.</p>
+
+<p>See also issue <a href="#ODIORA007a">ODIORA007a</a></p>
+
+<hr>
+
+<h2><a name="ODIORA020">ODIORA020 - String delimiters and object names</a></h3>
+
+</h2>
+
+<p>The ANSI string delimiter character is the single quote ( 'string'). Double quotes are used to delimit database object names (&quot;object-name&quot;).</p>
+
+<p><u>Example</u>:<font face="Courier New"> WHERE &quot;tabname&quot;.&quot;colname&quot; = 'a string value'</font></p>
+
+<p>INFORMIX allows double quotes as string delimiters, but ORACLE doesn't. This is important, since many BDL programs use that character to delimit the strings in SQL commands.</p>
+
+<p>Remark: this problem concerns only double quotes within SQL statements. Double quotes used in pure BDL string expressions are not subject to  SQL compatibility problems.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>The ORACLE database interface can automatically replace all double quotes by single quotes.</p>
+
+<p>Escaped string delimiters can be used inside strings like the following :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; 'This is a single quote : '''<br>
+&nbsp;&nbsp;&nbsp;&nbsp; 'This is a single quote : \''<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &quot;This is a double quote : &quot;&quot;&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &quot;This is a double quote : \&quot;&quot;</font></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Database
+object names cannot be delimited by double quotes because the database interface cannot
+determine the difference between a database object name and a quoted string !</p>
+
+<p>For example, if the program executes the SQL statement:<br>
+&nbsp;&nbsp;&nbsp;
+<font face="Courier New">WHERE &quot;tabname&quot;.&quot;colname&quot;
+= &quot;a string value&quot;</font><br>
+replacing all double quotes by single quotes would produce :<br>
+&nbsp;&nbsp;&nbsp;
+<font face="Courier New">WHERE 'tabname'.'colname' = 'a string value'</font><br>
+This would produce an error since
+<font face="Courier New"> 'tabname'.'colname'</font> is not allowed by ORACLE.</p>
+
+<p>Although double quotes are replaced automatically in SQL statements, you should use only single quotes to enforce portability.</p>
+
+<hr>
+
+<h2><a name="ODIORA021">ODIORA021 - NUMERIC data types</a></h3>
+
+</h2>
+
+<p>INFORMIX supports several data types to store numbers: </p>
+
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><font color="#0000FF"><b>INFORMIX data type</b></font></td>
+    <td width="60%" bgcolor="#C0C0C0"><font color="#0000FF"><b>Description</b></font></td>
+  </tr>
+  <tr>
+    <td width="40%">SMALLINT</td>
+    <td width="60%">16 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">INT/INTEGER</td>
+    <td width="60%">32 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">BIGINT</td>
+    <td width="60%">64 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">INT8</td>
+    <td width="60%">64 bit signed integer (replaced by BIGINT)</td>
+  </tr>
+  <tr>
+    <td width="40%">DEC/DECIMAL(p)</td>
+    <td width="60%">Floating-point decimal number</td>
+  </tr>
+  <tr>
+    <td width="40%">DEC/DECIMAL(p,s)</td>
+    <td width="60%">Fixed-point decimal number</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY</td>
+    <td width="60%">Equivalent to DECIMAL(16,2)</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY(p)</td>
+    <td width="60%">Equivalent to DECIMAL(p,2)</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY(p,s)</td>
+    <td width="60%">Equivalent to DECIMAL(p,s)</td>
+  </tr>
+  <tr>
+    <td width="40%">REAL/SMALLFLOAT</td>
+    <td width="60%">approx floating point (C float)</td>
+  </tr>
+  <tr>
+    <td width="40%">DOUBLE PREC./FLOAT</td>
+    <td width="60%">approx floating point (C double) </td>
+  </tr>
+</table>
+</center></div>
+
+<p>ORACLE supports only one data type to store numbers: </p>
+
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><font color="#0000FF"><b>ORACLE data type</b></font></td>
+    <td width="60%" bgcolor="#C0C0C0"><font color="#0000FF"><b>Description</b></font></td>
+  </tr>
+  <tr>
+    <td width="40%">NUMBER(p,s)&nbsp;&nbsp; <small>(1&lt;=p&lt;= 38, -84&lt;=s&lt;=127)</small></td>
+    <td width="60%">Fixed point decimal numbers.</td>
+  </tr>
+  <tr>
+    <td width="40%">NUMBER(p)&nbsp;&nbsp; <small>(1&lt;=p&lt;= 38)</small></td>
+    <td width="60%">Integer numbers with a precision of p.</td>
+  </tr>
+  <tr>
+    <td width="40%">NUMBER</td>
+    <td width="60%">Floating point decimals with a precision of 38 digits.</td>
+  </tr>
+  <tr>
+    <td width="40%">FLOAT(b)&nbsp;&nbsp; <small>(1&lt;=b&lt;= 126)</small></td>
+    <td width="60%">Floating point numbers with a binary precision b. This is a sub-type of NUMBER.</td>
+  </tr>
+  <tr>
+    <td width="40%">BINARY_FLOAT&nbsp;&nbsp; <small>(since Oracle 10g)</small></td>
+    <td width="60%">32-bit floating point number.</td>
+  </tr>
+  <tr>
+    <td width="40%">BINARY_DOUBLE&nbsp;&nbsp; <small>(since Oracle 10g)</small></td>
+    <td width="60%">64-bit floating point number.</td>
+  </tr>
+</table>
+</center></div>
+
+<p><b><font color="#FF0000">Warning:</font></b> ANSI types like SMALLINT,
+INTEGER are supported by ORACLE but will be converted to the native NUMBER type.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> When dividing
+INTEGERs or SMALLINTs, INFORMIX rounds the result ( 7 / 2 = 3 ),
+while ORACLE doesn't, because it does not have a native integer data type ( 7 / 2 = 3.5 )</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>We recommend that you use the following conversion rules:</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="20%"><font color="#0000FF"><b>INFORMIX data type</b></font></td>
+    <td bgcolor="#C0C0C0" width="20%"><font color="#0000FF"><b>ORACLE data type
+      (before 10g)</b></font></td>
+    <td bgcolor="#C0C0C0" width="20%"><font color="#0000FF"><b>ORACLE data type
+      (since 10g)</b></font></td>
+  </tr>
+  <tr>
+    <td width="20%">DECIMAL(p,s), MONEY(p,s)</td>
+    <td width="20%">NUMBER(p,s)</td>
+    <td width="20%">NUMBER(p,s)</td>
+  </tr>
+  <tr>
+    <td width="20%">DECIMAL(p)</td>
+    <td width="20%">FLOAT(p * 3.32193)</td>
+    <td width="20%">FLOAT(p * 3.32193)</td>
+  </tr>
+  <tr>
+    <td width="20%">DECIMAL <i><font color="#FF0000"> (not recommended)</font></i></td>
+    <td width="20%">FLOAT</td>
+    <td width="20%">FLOAT</td>
+  </tr>
+  <tr>
+    <td width="20%">SMALLINT</td>
+    <td width="20%">NUMBER(5,0)</td>
+    <td width="20%">NUMBER(5,0)</td>
+  </tr>
+  <tr>
+    <td width="20%">INTEGER</td>
+    <td width="20%">NUMBER(10,0)</td>
+    <td width="20%">NUMBER(10,0)</td>
+  </tr>
+  <tr>
+    <td width="20%">BIGINT</td>
+    <td width="20%">NUMBER(20,0)</td>
+    <td width="20%">NUMBER(20,0)</td>
+  </tr>
+  <tr>
+    <td width="20%">INT8</td>
+    <td width="20%">NUMBER(20,0)</td>
+    <td width="20%">NUMBER(20,0)</td>
+  </tr>
+  <tr>
+    <td width="20%">SMALLFLOAT</td>
+    <td width="20%"><b>NUMBER</b></td>
+    <td width="20%"><b>BINARY_FLOAT</b></td>
+  </tr>
+  <tr>
+    <td width="20%">FLOAT[(p)]</td>
+    <td width="20%"><b>NUMBER</b></td>
+    <td width="20%"><b>BINARY_DOUBLE</b></td>
+  </tr>
+</table>
+</center></div>
+
+<p>Avoid dividing integers in SQL statements. If you do divide an integer, use the TRUNC() function with ORACLE.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> When creating a table directly
+in sqlplus, using ANSI data types INTEGER, SMALLINT, you do actually create
+columns with the native NUMBER type, which has a precision of 38 digits. The
+NUMBER type cannot be supported by Genero BDL because there is no equivalent
+type (DECIMAL precision limit is 32 digits, not 38). The same problem exists
+when using SMALLFLOAT or FLOAT Informix types 4gl in programs doing CREATE TABLE
+with Oracle versions older than 10g: These Informix types are mapped to NUMBER
+and cannot be used in 4gl or extracted by <a href="DatabaseSchema.html">fgldbsch</a>
+(The native Oracle FLOAT(b) type could have been used, but this type is reserved
+to map DECIMAL(p) Informix types). Starting with Oracle 10g, you can use
+SMALLFLOAT or FLOAT, these will respectively be converted to BINARY_DOUBLE and
+BINARY_FLOAT native Oracle types.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  Mote that when creating a table
+in a BDL program with DECIMAL (without precision) or with SMALLFLOAT/FLOAT types
+(if Oracle version is older as 10g), the SQL translator will respectively
+convert these types to native Oracle FLOAT and NUMBER types, but these types
+have a higher precision as the Informix / BDL DECIMAL type, thus the <a href="DatabaseSchema.html">fgldbsch
+schema extractor</a> will fail to extract such columns. Anyway, as a general
+recommendation, you should not use such floating point numeric types in business
+applications.</p>
+
+<hr>
+
+<h2><a name="ODIORA022">ODIORA022 - Getting one row with SELECT</a></h3>
+
+</h2>
+
+<p>With INFORMIX, you must use the system table with a condition on the table id :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; SELECT user FROM systables <b>WHERE tabid=1</b></font></p>
+
+<p>Oracle provides the <b>DUAL</b> table to generate one row only.</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; SELECT user FROM <b>DUAL</b> </font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Check the BDL sources for &quot;FROM systables WHERE tabid=1&quot; and use dynamic SQL to resolve this problem.</p>
+
+<hr>
+
+<h2><a name="ODIORA024">ODIORA024 - MATCHES and LIKE in SQL conditions</a></h3>
+
+</h2>
+
+<p>INFORMIX supports MATCHES and LIKE in SQL statements, while ORACLE supports the LIKE statement only.</p>
+
+<p>MATCHES allows you to use brackets to specify a set of matching characters at a given position :<br>
+<font face="Courier New">&nbsp;&nbsp; ( col MATCHES '[Pp]aris' )</font>.<br>
+<font face="Courier New">&nbsp;&nbsp; ( col MATCHES '[0-9][a-z]*' )</font>.<br>
+In this case, the LIKE statement has no equivalent feature.</p>
+
+<p>The following substitutions must be done to convert a MATCHES condition to a LIKE condition: 
+
+<ul>
+  <li>MATCHES keyword must be replaced by LIKE.</li>
+  <li>All '<font face="Courier">*</font>' characters must be replaced by '<font face="Courier">%</font>'.</li>
+  <li>All '<font face="Courier">?</font>' characters must be replaced by '<font face="Courier">_</font>'.</li>
+  <li>Remove all brackets expressions.</li>
+</ul>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> SQL statements
+using MATCHES expressions must be reviewed in order to use LIKE expressions.</p>
+
+<p>ORACLE provides the TRANSLATE function which can be used to replace MATCHES in
+specific cases. The TRANSLATE function replaces all occurrences of characters listed
+in a '<em>from</em>' set, with the corresponding character defined in a '<em>to</em>'
+set.<br>
+<font face="Courier New"><b>INFORMIX</b> : WHERE col MATCHES
+'[0-9][0-9][0-9]'<br>
+<b>ORACLE</b>&nbsp; &nbsp;: WHERE TRANSLATE(col,'0123456789','9999999999')='999'</font></p>
+
+<p>See also: <a href="SqlProgramming.html#PORT_MATCHES">MATCHES operator in SQL
+Programming</a>.</p>
+
+<hr>
+
+<h2><a name="ODIORA025">ODIORA025 - INFORMIX specific SQL statements in BDL </a></h3>
+
+</h2>
+
+<p>The BDL compiler supports several INFORMIX specific SQL statements that have no meaning when using ORACLE:</p>
+
+<p>deleted the next sentence as not necessary 
+
+<ul>
+  <li>CREATE DATABASE</li>
+  <li>DROP DATABASE</li>
+  <li>START DATABASE (SE only)</li>
+  <li>ROLLFORWARD DATABASE</li>
+  <li>SET [BUFFERED] LOG</li>
+  <li>CREATE TABLE with special options (storage, lock mode, etc.)</li>
+</ul>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Review your BDL source and remove all static SQL statements which are INFORMIX specific.</p>
+
+<hr>
+
+<h2><a name="ODIORA028">ODIORA028 - INSERT cursors</a></h3>
+
+</h2>
+
+<p>INFORMIX supports insert cursors. An &quot;insert cursor&quot; is a special BDL cursor declared with an INSERT statement instead of a SELECT statement. When this kind of cursor is open, you can use the PUT instruction to add rows and the FLUSH instruction to insert the records into the database.</p>
+
+<p>For INFORMIX database with transactions, OPEN, PUT and FLUSH instructions must be executed within a transaction.</p>
+
+<p>ORACLE does not support insert cursors.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Insert cursors are emulated by the ORACLE database interface.</p>
+
+<hr>
+
+<h2><a name="ODIORA029">ODIORA029 - SQL functions and constants </a></h3>
+
+</h2>
+
+<p>Almost all INFORMIX functions and SQL constants have a different name or behavior in ORACLE. </p>
+
+<p>Here is a comparison list of functions and constants:</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>INFORMIX</b></font></td>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>ORACLE</b></font></td>
+  </tr>
+  <tr>
+    <td width="50%">today</td>
+    <td width="50%">trunc( sysdate )</td>
+  </tr>
+  <tr>
+    <td width="50%">current year to second</td>
+    <td width="50%">sysdate</td>
+  </tr>
+  <tr>
+    <td width="50%">day( value )</td>
+    <td width="50%">to_number( to_char( value, 'dd' ) )</td>
+  </tr>
+  <tr>
+    <td width="50%">extend( dtvalue, first to last )</td>
+    <td width="50%">to_date( nvl( to_char( dtvalue, 'fmt-mask' ), '19000101000000' ), 'fmt-mask' )</td>
+  </tr>
+  <tr>
+    <td width="50%">mdy(m,d,y)</td>
+    <td width="50%">to_date( to_char(m,'09') || to_char(d,'09') ||<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; to_char(y,'0009'), 'MMDDYYYY' )</td>
+  </tr>
+  <tr>
+    <td width="50%">month( date )</td>
+    <td width="50%">to_number( to_char( date, 'mm' ) )</td>
+  </tr>
+  <tr>
+    <td width="50%">weekday( date )</td>
+    <td width="50%">to_number( to_char( date, 'd' ) ) -1</td>
+  </tr>
+  <tr>
+    <td width="50%">year( date )</td>
+    <td width="50%">to_number( to_char( date, 'yyyy' ) )</td>
+  </tr>
+  <tr>
+    <td width="50%">date( &quot;string&quot; | integer )</td>
+    <td width="50%">No equivalent - Depends from DBDATE in IFX</td>
+  </tr>
+  <tr>
+    <td width="50%">user</td>
+    <td width="50%">user <em>! Uppercase/lowercase: See</em> <a href="#ODIORA047">ODIORA047</a></td>
+  </tr>
+  <tr>
+    <td width="50%">trim( [leading | trailing | both &quot;char&quot; FROM] &quot;string&quot;)</td>
+    <td width="50%">ltrim( ) and rtrim( )</td>
+  </tr>
+  <tr>
+    <td width="50%">length( c )</td>
+    <td width="50%">length( c ) <em>! Different behavior: See</em> <a href="#ODIORA011b">ODIORA011b</a></td>
+  </tr>
+  <tr>
+    <td width="50%">pow(x,y)</td>
+    <td width="50%">power(x,y)</td>
+  </tr>
+</table>
+</center></div>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> You must review the SQL
+statements using TODAY / CURRENT / EXTEND expressions.</p>
+
+<p>You can define stored functions in the ORACLE database, to simulate INFORMIX functions. This works only for
+functions that are not already implemented by ORACLE:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;create or replace function month( adate in date ) <br>
+&nbsp; return number <br>
+&nbsp; is <br>
+&nbsp;&nbsp;&nbsp; v_month number; <br>
+&nbsp; begin <br>
+&nbsp;&nbsp;&nbsp; v_month := to_number( to_char( adate, 'mm' ) ); <br>
+&nbsp;&nbsp;&nbsp; return (v_month); <br>
+&nbsp; end month;</font></p>
+
+<hr>
+
+<h2><a name="ODIORA030">ODIORA030 - Very large data types</a></h3>
+
+</h2>
+
+<p> INFORMIX uses the TEXT and BYTE data types to store very large texts or
+images. ORACLE 8 provides CLOB, BLOB, and BFILE data types. Columns of these types store a kind of pointer ( lob locator ). This technique allows you to use more than one CLOB / BLOB / BFILE column per a table.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The ORACLE database interface can convert BDL TEXT data to CLOB and BYTE data to BLOB.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Genero TEXT/BYTE program
+variables have a limit of 2 gigabytes, make sure that the large object data does
+not exceed this limit.</p>
+
+<p><font color="#FF0000"><b>Warning</b></font> : ORACLE BFILEs are not supported.</p>
+
+<hr>
+
+<h2><a name="ODIORA031">ODIORA031 - Cursors WITH HOLD</a></h3>
+
+</h2>
+
+<p>INFORMIX closes opened cursors automatically when a transaction ends unless the WITH HOLD option is used in the DECLARE instruction. In ORACLE, opened cursors using SELECT statements without a FOR UPDATE clause are not closed when a transaction ends. Actually, all ORACLE cursors are 'WITH HOLD' cursors unless the FOR UPDATE clause is used in the SELECT statement. </p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>BDL cursors that are not declared &quot;WITH HOLD&quot; are automatically closed by the database interface when a COMMIT WORK or ROLLBACK WORK is performed.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Since ORACLE automatically
+closes&nbsp; FOR UPDATE cursors when the transaction ends, opening cursors
+declared FOR UPDATE and WITH HOLD results in an SQL error that does not normally
+appear with INFORMIX, in the same conditions. Review the program logic in order to find
+another way to set locks.</p>
+
+<hr>
+
+<h2><a name="ODIORA032">ODIORA032 - UPDATE/DELETE WHERE CURRENT OF &lt;cursor&gt;</a></h3>
+
+</h2>
+
+<p>INFORMIX allows positioned UPDATEs and DELETEs with the &quot;WHERE CURRENT OF &lt;cursor&gt;&quot; clause, if the cursor has been DECLARED with a SELECT ...  FOR UPDATE statement.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> UPDATE/DELETE ... WHERE CURRENT OF
+&lt;cursor&gt; is not support by the Oracle database API. However, ROWIDs can be
+used for positioned updates/deletes.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>UPDATE/DELETE ... WHERE CURRENT OF instructions are managed by the ORACLE database interface. The ORACLE database interface replaces &quot;WHERE CURRENT OF &lt;cursor&gt;&quot;&nbsp; by&nbsp; &quot;WHERE ROWID=:rid&quot; and sets the value of the ROWID returned by the last FETCH done with the given cursor..</p>
+
+<hr>
+
+<h2><a name="ODIORA033">ODIORA033 - Querying system catalog tables</a></h3>
+
+</h2>
+
+<p>As in INFORMIX, ORACLE provides system catalog tables (actually, system views). But the table names and their structure are quite different. </p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> No automatic conversion of INFORMIX system tables is provided by the database interface.</p>
+
+<hr>
+
+<h2><a name="ODIORA034">ODIORA034 - Syntax of UPDATE statements</a></h3>
+
+</h2>
+
+<p>INFORMIX allows a  specific syntax for UPDATE statements :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET ( &lt;col-list&gt; ) = ( &lt;val-list&gt; )</font></p>
+
+<p>or</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET table.* = myrecord.*<br>
+  &nbsp;&nbsp;&nbsp; UPDATE table SET * = myrecord.*</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Static UPDATE statements using the above syntax are converted <b>by the compiler</b> to the standard form:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET column=value [,...] </font></p>
+
+<hr>
+
+<h2><a name="ODIORA036">ODIORA036 - INTERVAL data type</a></h3>
+
+</h2>
+
+<p>INFORMIX's INTERVAL data type stores a value that represents a span
+of time. INTERVAL types are divided into two classes : <b><i>year-month intervals</i></b> and 
+<b><i>day-time intervals</i>.</b></p>
+
+<p>ORACLE 8i does not provide a data type similar to INFORMIX INTERVAL. </p>
+
+<p>Starting from version 9i, ORACLE provides the INTERVAL data type similar to
+INFORMIX, with two classes (YEAR TO MONTH and DAY TO SECOND), but Oracle's
+INTERVAL cannot be defined with a precision different from these two classes
+(for example, you cannot define an INTERVAL HOUR TO MINUTE in Oracle). The class
+DAY TO SECOND(n) is equivalent to the INFORMIX INTERVAL class DAY TO FRACTION(n).</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><b>When using Oracle 8i</b></p>
+
+<p>It is not recommended that you use the INTERVAL data type because Oracle 8i has no equivalent native data type. This would cause problems when doing INTERVAL arithmetic on the database server side. However, INTERVAL values can be stored in CHAR columns.</p>
+
+<p><b>When using Oracle 9i and higher</b></p>
+
+<p>INFORMIX INTERVAL YEAR(n) TO MONTH data is stored in Oracle INTERVAL YEAR(n) TO MONTH columns. These data types are equivalent.</p>
+
+<p>INFORMIX INTERVAL DAY(n) TO FRACTION(p) data is stored in Oracle INTERVAL DAY(n) TO SECOND(p) columns. These data types are equivalent.</p>
+
+<p>Other INFORMIX INTERVAL types must be stored in CHAR() columns as with Oracle 8i, because the high qualifier precision cannot be specified with Oracle INTERVALs. For example,
+INFORMIX INTERVAL HOUR(5) TO MINUTE has no native equivalent in Oracle.</p>
+
+<hr>
+
+<h2><a name="ODIORA039">ODIORA039 -&nbsp;Data storage concepts </a>
+
+</h2>
+
+<p>An attempt should be made to preserve as much of the storage specification as possible when converting from INFORMIX to ORACLE. Most important storage decisions made for INFORMIX database objects (like initial sizes and physical placement) can be reused for the ORACLE database.</p>
+
+<p>Storage concepts are quite similar in INFORMIX and in ORACLE, but the names are different.</p>
+
+<p>The following table compares INFORMIX storage concepts to ORACLE storage concepts :</p>
+
+<div align="center"><center>
+
+<table border="0" width="95%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="33%"><font color="#0000FF"><b>INFORMIX</b></font></td>
+    <td bgcolor="#C0C0C0" width="33%"><font color="#0000FF"><b>ORACLE</b></font></td>
+  </tr>
+  <tr>
+    <td width="66%" colspan="2" bgcolor="#C0C0C0"><font color="#0000FF">Physical units of storage</font></td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">The largest unit of physical disk space is
+    a &quot;<b>chunk</b>&quot;, which can be allocated either as a cooked file ( I/O
+    is controlled by the OS) or as raw device (=UNIX partition, I/O is controlled by the
+    database engine). A &quot;dbspace&quot; uses at least one &quot;chunk&quot; for storage.<br>
+    You must add &quot;chunks&quot; to &quot;dbspaces&quot; in order to increase the size of
+    the logical unit of storage.</td>
+    <td width="33%" valign="top">One or more &quot;<b>data files</b>&quot;
+    are created for each &quot;tablespace&quot; to physically store the data of all logical
+    structures. Like INFORMIX &quot;chunks&quot;, a &quot;data file&quot; can be an OS file or
+    a raw device.<br>
+    You can add &quot;data files&quot; to a &quot;tablespace&quot; in order to increase the
+    size of the logical unit of storage or you can use the AUTOEXTEND option when using OS
+    files.</td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">A &quot;<b>page</b>&quot; is the
+    smallest physical unit of disk storage that the engine uses to read from and write to
+    databases.<br>
+    A &quot;chunk&quot; contains a certain number of &quot;pages&quot;.<br>
+    The size of a &quot;page&quot; must be equal to the operating system's block size.</td>
+    <td width="33%" valign="top">At the finest level of granularity, ORACLE
+    stores data in &quot;<b>data blocks</b>&quot; which size corresponds to a
+    multiple of the operating system's block size. <br>
+    You set the &quot;data block&quot; size when creating the database.</td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">An &quot;<b>extent</b>&quot;
+    consists of a collection of contiguous &quot;pages&quot; that the engine uses to allocate
+    both initial and subsequent storage space for database tables.<br>
+    When creating a table, you can specify the first extent size and the size of future
+    extents with the EXTENT SIZE and NEXT EXTENT options.<br>
+    For a single table, &quot;extents&quot; can be located in different &quot;chunks&quot; of
+    the same &quot;dbspace&quot;.</td>
+    <td width="33%" valign="top">An &quot;<b>extent</b>&quot; is
+    a specific number of contiguous &quot;data blocks&quot;, obtained in a single allocation.<br>
+    When creating a table, you can specify the first extent size and the size of future
+    extents with the STORAGE() option.<br>
+    For a single table, &quot;extents&quot; can be located in different &quot;data files&quot;
+    of the same &quot;tablespace&quot;.</td>
+  </tr>
+  <tr>
+    <td width="66%" colspan="2" bgcolor="#C0C0C0" valign="top">
+    <font color="#0000FF">Logical units of storage</font></td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">A &quot;<b>table</b>&quot; is a
+    logical unit of storage that contains rows of data values.</td>
+    <td width="33%" valign="top">Same concept as INFORMIX.</td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">A &quot;<b>database</b>&quot; is
+    a logical unit of storage that contains table and index data. Each database also contains
+    a system catalog that tracks information about database elements like tables, indexes,
+    stored procedures, integrity constraints and user privileges.</td>
+    <td width="33%" valign="top">Same concept as INFORMIX, but one ORACLE
+    instance can manage only one database, in the meaning of INFORMIX.</td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">Database tables are created in a specific
+    &quot;<b>dbspace</b>&quot;, which defines a logical place to store data.<br>
+    If no dbspace is given when creating the table, INFORMIX defaults to the current database
+    dbspace.</td>
+    <td width="33%" valign="top">Database tables are created in a specific
+    &quot;<b>tablespace</b>&quot;, which defines a logical place to store data.<br>
+    If no tablespace is given when creating the table, ORACLE defaults to the user's default
+    tablespace.</td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">The total disk space allocated for a table
+    is the &quot;<b>tblspace</b>&quot;, which includes &quot;pages&quot; allocated
+    for data, indexes, blobs, tracking page usage within table extents.<br>
+    <font color="#FF0000"><b>Warning:</b></font> Do not confuse the INFORMIX
+    &quot;tblspace&quot; concept and ORACLE &quot;tablespaces&quot;.</td>
+    <td width="33%" valign="top">A &quot;<b>segment</b>&quot; is
+    a set of &quot;extents&quot; allocated for a certain logical structure. There are four
+    different types of segments, including data segments, index segments, rollback segments
+    and temporary segments.</td>
+  </tr>
+  <tr>
+    <td width="66%" colspan="2" bgcolor="#C0C0C0" valign="top">
+    <font color="#0000FF">Other concepts</font></td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">When initializing an INFORMIX engine, a
+    &quot;<b>root dbspace</b>&quot; is created to store information about all
+    databases, including storages information (chunks used, other dbspaces, etc.)</td>
+    <td width="33%" valign="top">Each ORACLE database has a &quot;<b>control
+    file</b>&quot; that records the physical structure of the database, like the database
+    name, location and names of &quot;data files&quot; and &quot;redo log&quot; files,
+    and time stamp of database creation.</td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">The &quot;<b>physical log</b>&quot;
+    is a set of continuous disk pages where the engine stores &quot;before-images&quot; of
+    data that has been modified during processing.<p>The &quot;<b>logical
+    log</b>&quot; is a set of &quot;<b>logical-log files</b>&quot; used to
+    record logical operations during on-line processing. All transaction information
+    is stored in the logical log files if a database has been created with transaction log.</p>
+    <p>INFORMIX combines &quot;physical log&quot; and &quot;logical
+    log&quot; information when doing fast recovery. Saved &quot;logical logs&quot; can be
+    used to restore a database from tape.</td>
+    <td width="33%" valign="top">A &quot;<b>rollback segment</b>&quot;
+    records the actions of SQL transactions that could be rolled back, and it records the data
+    as it existed before an operation in a transaction.<br><br>
+    The &quot;<b>redo log files</b>&quot; hold all changes made to the database, in
+    case the database experiences an instance failure.<br>
+    Each database has at least two &quot;redo log files&quot;.<br>
+    Redo entries record data that can be used to reconstruct all changes made to the database,
+    including the rollback segments stored in the database buffers of the SGA. Therefore, the
+    online redo log also protects rollback data.</td>
+  </tr>
+</table>
+</center></div>
+
+<hr>
+
+<h2><a name="ODIORA046">ODIORA046 -&nbsp;The LOAD and UNLOAD instructions </a>
+
+</h2>
+
+<p>INFORMIX provides two SQL instructions to export / import data from / into a database table: The UNLOAD instruction copies rows from a database table into a text file and the LOAD instructions insert rows from a text file into a database table.</p>
+
+<p>ORACLE does not provide LOAD and UNLOAD instructions, but provides external tools like SQL*Plus and SQL*Loader.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>In 4gl programs, the LOAD and UNLOAD instructions are supported with ORACLE, with some limitations:</p>
+
+<p><font color="#FF0000"><b>Warning: </b></font>There is a difference when using ORACLE DATE
+columns.&nbsp; DATE columns created in the ORACLE database are equivalent to INFORMIX
+DATETIME YEAR TO SECOND columns.&nbsp; In LOAD and UNLOAD, all ORACLE DATE columns are treated
+as INFORMIX DATETIME YEAR TO SECOND columns and thus will be unloaded with the
+&quot;YYYY-MM-DD hh:mm:ss&quot;&nbsp; format.<br>
+The same problem appears for INFORMIX INTEGER and SMALLINT values, which are stored in an
+ORACLE database as NUMBER(?) columns. Those values will be unloaded as INFORMIX
+DECIMAL(10) and DECIMAL(5) values, that is, with a trailing dot-zero &quot;.0&quot;.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> When
+using an INFORMIX database, simple dates are unloaded using the DBDATE format (ex:
+&quot;23/12/1998&quot;). Therefore, unloading from an INFORMIX database for loading into
+an ORACLE database is not supported.</p>
+
+<hr>
+
+<h2><a name="ODIORA047">ODIORA047 - The USER constant </a></h3>
+
+</h2>
+
+<p>Both INFORMIX and ORACLE provide the <b>USER</b> constant,
+which  identifies the current user connected to the database server.</p>
+
+<p><u>Example:</u></p>
+
+<blockquote>
+  <p><b>INFORMIX</b>: <font face="Courier New">SELECT <b>USER</b> FROM systables WHERE tabid=1</font><br>
+  <b>ORACLE</b>: <font face="Courier New">SELECT <b>USER</b> FROM DUAL</font></p>
+</blockquote>
+
+<p>However, there is a difference: 
+
+<ul>
+  <li>INFORMIX returns the user identifier as defined in the operating system, where it can be case sensitive (UNIX) or not (NT).</li>
+  <li>ORACLE returns the user identifier which is stored in the database.  By default ORACLE converts the user name to uppercase letters, if you do not put the user name in double quotes when creating it.</li>
+</ul>
+
+<p>This is important if your application stores user names in database
+records (for example, to audit  data modifications). You can, for example, connect to
+ORACLE with the name 'scott', and perform the following SQL operations :<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; (1) INSERT INTO mytab ( creator, comment )<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; VALUES
+( <b>USER</b>, 'example' );<br>
+&nbsp;&nbsp;&nbsp;&nbsp; (2) SELECT * FROM mytab<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHERE
+creator = 'scott';<br>
+</font>The first command inserts 'SCOTT' (in uppercase letters) in the
+creator column. The second statement will not find the row.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>When creating a user in ORACLE, you can put double quotes around the user name in order to force ORACLE to store the given user identifier as is :</p>
+
+<blockquote>
+  <p><font face="Courier New">CREATE USER &quot;scott&quot; IDENTIFIED BY &lt;pswd&gt;</font></p>
+</blockquote>
+
+<p>To verify the user names defined in the ORACLE database, connect as SYSTEM and list the records of the ALL_USERS table as follows :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT * FROM ALL_USERS<br>
+<pre>
+    USERNAME     USER_ID      CREATED
+    ------------------------------------------------------------
+    SYS                0      02-OCT-98
+    SYSTEM             5      02-OCT-98
+    DBSNMP            17      02-OCT-98
+    FBDL              20      03-OCT-98
+    Toto              21      03-OCT-98</font></pre>
+
+<hr>
+
+<h2><a name="ODIORA051">ODIORA051 - Setup database statistics</a></h3>
+
+</h2>
+
+<p>INFORMIX provides a special instruction to compute database statistics in order to help the optimizer to find the right query execution plan :</p>
+
+<blockquote>
+  <p><font face="Courier New">UPDATE STATISTICS ...</font></p>
+</blockquote>
+
+<p>Oracle has the following instruction to compute database statistics:</p>
+
+<blockquote>
+  <p><font face="Courier New">ANALYZE ...</font></p>
+</blockquote>
+
+<p>See Oracle documentation for more details.</p>
+
+<p><u><em><b>Solution:</b></em></u></p>
+
+<p>Centralize the optimization instruction in a function.</p>
+
+<hr>
+
+<h2><a name="ODIORA052">ODIORA052 - The GROUP BY clause </a></h3>
+
+</h2>
+
+<p>INFORMIX allows you to use column numbers in the GROUP BY clause</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; SELECT ord_date, sum(ord_amount) FROM
+order <b>GROUP BY 1</b></font></p>
+
+<p>Oracle does not support column numbers in the GROUP BY clause.</p>
+
+<p><u><em><b>Solution:</b></em></u></p>
+
+<p>Use column names instead:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; SELECT ord_date, sum(ord_amount) FROM
+order <b>GROUP BY </font>ord_date</b></p>
+
+<hr>
+
+<h2><a name="ODIORA053">ODIORA053 - The ALTER TABLE instruction </a></h3>
+
+</h2>
+
+<p>INFORMIX and ORACLE  have different implementations of the ALTER TABLE instruction. For example, INFORMIX allows you to use multiple ADD clauses separated by commas. This is not supported by ORACLE :</p>
+
+<p>INFORMIX: <br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; ALTER TABLE
+customer <b>ADD(col1 INTEGER), ADD(col2 CHAR(20))</b></font></p>
+
+<p>ORACLE:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; ALTER TABLE customer <b>ADD(col1 INTEGER, col2 CHAR(20))</b></font></p>
+
+<p><u><em><b>Solution:</b></em></u></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> No automatic
+conversion is done by the database interface. There is no real standard for this
+instruction ( that is, no common syntax for all database servers). Read the SQL
+documentation and review the SQL scripts or the BDL programs in order to use the database
+server specific syntax for ALTER TABLE.</p>
+
+<hr>
+
+<h2><a name="ODIORA054">ODIORA054 - The star (asterisk) in SELECT statements</a></h3>
+
+</h2>
+
+<p>INFORMIX allows you to use the star character in the select list along with other expressions :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; SELECT col1, <b>*</b> FROM tab1 ...</font></p>
+
+<p>Oracle does not support this. You must use the table name as a prefix to the star:</p>
+
+<p><font face="Courier New"> SELECT col1, <b>tab1.*</b> FROM tab1 ... </font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Always use the table name before the star.</p>
+
+<hr>
+
+<h2><a name="ODIORA055">ODIORA055 - NULLs in indexed columns</a></h3>
+
+</h2>
+
+<p>Oracle btree indexes do not store null values, while INFORMIX btree indexes do.
+This means that if you index a single column and
+select all the rows where that column is null, INFORMIX will do an indexed read
+to fetch just those rows, but Oracle will do a sequential scan of all rows to
+find them. Having an index unusable for &quot;is null&quot; criteria can also
+completely change the behavior and performance of more complicated selects
+without causing a sequential scan.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Declare the indexed columns as NOT NULL with a default value and change
+the programmatic logic. If you do not want to change the programs, partitioning the table so
+that the nulls have a partition of their own will reduce the sequential scan to
+just the nulls (un-indexed) partition, which is relatively fast.</p>
+
+<hr>
+
+<h2><a name="ODIORA056">ODIORA056 -&nbsp;SQL Interruption</a>
+
+</h2>
+
+<p>With INFORMIX, it is possible to interrupt a long running query if the SQL
+INTERRUPT ON option is set by the Genero program. The database server returns
+SQLCODE -213, which can be trapped to detect a user interruption.</p>
+
+<p>
+<font face="Courier New" size="2">&nbsp;&nbsp;&nbsp; MAIN<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DEFINE n INTEGER<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DEFER INTERRUPT<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OPTIONS SQL INTERRUPT ON<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DATABASE test1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHENEVER ERROR CONTINUE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- Start long query (self join takes time)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- From now on, user can hit CTRL-C in TUI mode
+to stop the query<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SELECT COUNT(*) INTO n FROM customers a,
+customers b<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHERE a.cust_id
+&lt;&gt; b.cust_id<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IF SQLCA.SQLCODE == -213 THEN<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DISPLAY &quot;Statement was
+interrupted by user...&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EXIT PROGRAM 1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END IF<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHENEVER ERROR STOP<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp;&nbsp; END MAIN</font></p>
+
+<p>Oracle supports SQL Interruption in a similar way as INFORMIX. The db
+client must issue an OCIBreak() OCI call to interrupt a query.</p>
+
+<p><u><em>Solution:</em></u></p>
+
+<p>The ORACLE database driver supports SQL interruption and converts the
+native SQL error code -1013 to the INFORMIX error code -213.</p>
+
+<hr>
+
+<h2><a name="ODIORA057">ODIORA057 -&nbsp;Scrollable Cursors</a></h2>
+
+<p>The Genero programming language supports scrollable cursors with the <b>SCROLL</b>
+keyword, as shown in the following code example:&nbsp;</p>
+
+<p>
+<font face="Courier New" size="2">
+&nbsp;&nbsp;&nbsp;DECLARE c1 <b>SCROLL</b> CURSOR FOR SELECT * FROM customers
+ORDER BY cust_name<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH FIRST c1 INTO rec_cust.*<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH NEXT c1 INTO rec_cust.*<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH LAST c1 INTO rec_cust.*</font></p>
+
+<p>Oracle 9.0 and higher support native scrollable cursors.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>By default, the Oracle database driver uses native scrollable cursors by
+setting the OCI_STMT_SCROLLABLE_READONLY statement attribute.</p>
+
+<p>However, if you experience problems with the native scrollable cursors
+provided by Oracle, you can turn on scrollable cursor emulation with the
+following FGLPROFILE entry:</p>
+
+<p>
+      <font face="Courier New">&nbsp;&nbsp; dbi.database.<i>dbname</i>.ora.cursor.scroll.emul
+      = true</font>
+</p>
+
+<p>When this FGLPROFILE setting is defined, the Oracle database driver emulates scrollable cursors with temporary
+files. On UNIX, the temp files are created in the directory defined by the
+DBTEMP, TMPDIR, TEMP or TMP environment variables (the default is /tmp). On Windows, the
+temp files are created with the _tempnam() MSVCRT API call.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Native scrollable cursors are
+normally handled by the database server (only pieces of the result-set are sent
+to the client application). With emulated scrollable cursors, when scrolling to
+the last row, all rows will be fetched into the temporary file. This can
+generate a lot of network traffic and can produce a large temporary file if the
+result-set contains a lot of rows. Additionally, programs are dependent on the
+file system resource allocated to the OS user (ulimit).</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  In case of a runtime system
+crash, the temporary files created for scrollable cursors are not removed
+automatically. Therefore, is it possible that you will find some unexpected files in
+the temp directory. Before removing such files, you must make sure that these
+files are no longer used by running processes. Recent operating systems take care
+of that, by removing unused temp files periodically.</p>
+
+<hr>
+
+<h2><a name="ODIORA100">ODIORA100 - Data type conversion table</a></h3>
+
+</h2>
+
+<div align="center">
+  <center><table border="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0"><font color="#0000FF"><b>INFORMIX Data Types</b></font></td>
+          <td bgcolor="#C0C0C0"><font color="#0000FF"><b>ORACLE Data Types<br>
+            (Versions 8.x)</b></font></td>
+          <td bgcolor="#C0C0C0"><font color="#0000FF"><b>ORACLE Data Types<br>
+            (Versions 9.x)</b></font></td>
+          <td bgcolor="#C0C0C0"><font color="#0000FF"><b>ORACLE Data Types<br>
+            (Versions 10g and higher)</b></font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">CHAR(n)</font></td>
+          <td><font face="Courier New">CHAR(n)<br>
+ <font color="#FF0000" size="2" face="Courier New">(Oracle limit = 2000c!)</font></font></td>
+          <td><font face="Courier New">CHAR(n)<br>
+ <font color="#FF0000" size="2" face="Courier New">(Oracle limit = 2000c!)</font></font></td>
+          <td><font face="Courier New">CHAR(n)<br>
+ <font color="#FF0000" size="2" face="Courier New">(Oracle limit = 2000c!)</font></font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">VARCHAR(n)</font></td>
+          <td><font face="Courier New">VARCHAR2(n)<br>
+ <font color="#FF0000" size="2" face="Courier New">(Oracle limit = 4000c!)</font></font></td>
+          <td><font face="Courier New">VARCHAR2(n)<br>
+ <font color="#FF0000" size="2" face="Courier New">(Oracle limit = 4000c!)</font></font></td>
+          <td><font face="Courier New">VARCHAR2(n)<br>
+ <font color="#FF0000" size="2" face="Courier New">(Oracle limit = 4000c!)</font></font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">BOOLEAN</font></td>
+          <td><font face="Courier New">CHAR(1)</font></td>
+          <td><font face="Courier New">CHAR(1)</font></td>
+          <td><font face="Courier New">CHAR(1)</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">SMALLINT</font></td>
+          <td><font face="Courier New">NUMBER(5,0)</font></td>
+          <td><font face="Courier New">NUMBER(5,0)</font></td>
+          <td><font face="Courier New">NUMBER(5,0)</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">INTEGER</font></td>
+          <td><font face="Courier New">NUMBER(10,0)</font></td>
+          <td><font face="Courier New">NUMBER(10,0)</font></td>
+          <td><font face="Courier New">NUMBER(10,0)</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">BIGINT</font></td>
+          <td><font face="Courier New">NUMBER(20,0)</font></td>
+          <td><font face="Courier New">NUMBER(20,0)</font></td>
+          <td><font face="Courier New">NUMBER(20,0)</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">INT8</font></td>
+          <td><font face="Courier New">NUMBER(20,0)</font></td>
+          <td><font face="Courier New">NUMBER(20,0)</font></td>
+          <td><font face="Courier New">NUMBER(20,0)</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">FLOAT[(n)]</font></td>
+          <td><font face="Courier New"><b>NUMBER</b></font></td>
+          <td><font face="Courier New"><b>NUMBER</b></font></td>
+          <td><font face="Courier New"><b>BINARY_DOUBLE</b></font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">SMALLFLOAT</font></td>
+          <td><font face="Courier New"><b>NUMBER</b></font></td>
+          <td><font face="Courier New"><b>NUMBER</b></font></td>
+          <td><font face="Courier New"><b>BINARY_FLOAT</b></font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DECIMAL(p,s)</font></td>
+          <td><font face="Courier New">NUMBER(p,s)</font></td>
+          <td><font face="Courier New">NUMBER(p,s)</font></td>
+          <td><font face="Courier New">NUMBER(p,s)</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DECIMAL(p)</font></td>
+          <td><font face="Courier New">FLOAT(p*3.32193)</font></td>
+          <td><font face="Courier New">FLOAT(p*3.32193)</font></td>
+          <td><font face="Courier New">FLOAT(p*3.32193)</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DECIMAL <font color="#FF0000" size="2" face="Courier New"><i>(not
+            recommended)</i></font></font></td>
+          <td><font face="Courier New">FLOAT</font></td>
+          <td><font face="Courier New">FLOAT</font></td>
+          <td><font face="Courier New">FLOAT</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">MONEY(p,s)</font></td>
+          <td><font face="Courier New">NUMBER(p,s)</font></td>
+          <td><font face="Courier New">NUMBER(p,s)</font></td>
+          <td><font face="Courier New">NUMBER(p,s)</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">TEXT</font></td>
+          <td><font face="Courier New">CLOB <font color="#FF0000" size="2" face="Courier New">(using
+            &lt;= 2Gb!)</font></font></td>
+          <td><font face="Courier New">CLOB <font color="#FF0000" size="2" face="Courier New">(using
+            &lt;= 2Gb!)</font></font></td>
+          <td><font face="Courier New">CLOB <font color="#FF0000" size="2" face="Courier New">(using
+            &lt;= 2Gb!)</font></font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">BYTE</font></td>
+          <td><font face="Courier New">BLOB <font color="#FF0000" size="2" face="Courier New">(using
+            &lt;= 2Gb!)</font></font></td>
+          <td><font face="Courier New">BLOB <font color="#FF0000" size="2" face="Courier New">(using
+            &lt;= 2Gb!)</font></font></td>
+          <td><font face="Courier New">BLOB <font color="#FF0000" size="2" face="Courier New">(using
+            &lt;= 2Gb!)</font></font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME YEAR TO YEAR</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME YEAR TO MONTH</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME YEAR TO DAY</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME YEAR TO HOUR</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME YEAR TO MINUTE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME YEAR TO SECOND</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME YEAR TO FRACTION(n)</font></td>
+          <td><font color="#FF0000" size="2" face="Courier New"><i><b>Not
+            supported</b></i></font></td>
+          <td><font face="Courier New"><b>TIMESTAMP(n)</b></font></td>
+          <td><font face="Courier New"><b>TIMESTAMP(n)</b></font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME MONTH TO MONTH</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME MONTH TO DAY</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME MONTH TO HOUR</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME MONTH TO MINUTE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME MONTH TO SECOND</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME MONTH TO FRACTION(n)</font></td>
+          <td><font color="#FF0000" size="2" face="Courier New"><i><b>Not
+            supported</b></i></font></td>
+          <td><font face="Courier New"><b>TIMESTAMP(n)</b></font></td>
+          <td><font face="Courier New"><b>TIMESTAMP(n)</b></font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME DAY TO DAY</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME DAY TO HOUR</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME DAY TO MINUTE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME DAY TO SECOND</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME DAY TO FRACTION(n)</font></td>
+          <td><font color="#FF0000" size="2" face="Courier New"><i><b>Not
+            supported</b></i></font></td>
+          <td><font face="Courier New"><b>TIMESTAMP(n)</b></font></td>
+          <td><font face="Courier New"><b>TIMESTAMP(n)</b></font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME HOUR TO HOUR</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME HOUR TO MINUTE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME HOUR TO SECOND</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME HOUR TO FRACTION(n)</font></td>
+          <td><font color="#FF0000" size="2" face="Courier New"><i><b>Not
+            supported</b></i></font></td>
+          <td><font face="Courier New"><b>TIMESTAMP(n)</b></font></td>
+          <td><font face="Courier New"><b>TIMESTAMP(n)</b></font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME MINUTE TO MINUTE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME MINUTE TO SECOND</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME MINUTE TO FRACTION(n)</font></td>
+          <td><font color="#FF0000" size="2" face="Courier New"><i><b>Not
+            supported</b></i></font></td>
+          <td><font face="Courier New"><b>TIMESTAMP(n)</b></font></td>
+          <td><font face="Courier New"><b>TIMESTAMP(n)</b></font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME SECOND TO SECOND</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME SECOND TO FRACTION(n)</font></td>
+          <td><font color="#FF0000" size="2" face="Courier New"><i><b>Not
+            supported</b></i></font></td>
+          <td><font face="Courier New"><b>TIMESTAMP(n)</b></font></td>
+          <td><font face="Courier New"><b>TIMESTAMP(n)</b></font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">DATETIME FRACTION TO FRACTION(n)</font></td>
+          <td><font color="#FF0000" size="2" face="Courier New"><i><b>Not
+            supported</b></i></font></td>
+          <td><font face="Courier New"><b>TIMESTAMP(n)</b></font></td>
+          <td><font face="Courier New"><b>TIMESTAMP(n)</b></font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">INTERVAL YEAR[(n)] TO MONTH</font></td>
+          <td><font face="Courier New"><b>CHAR(50)</b></font></td>
+          <td><font face="Courier New"><b>INTERVAL YEAR[(n)] TO MONTH</b></font></td>
+          <td><font face="Courier New"><b>INTERVAL YEAR[(n)] TO MONTH</b></font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">INTERVAL MONTH[(n)] TO MONTH</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">INTERVAL DAY[(n)] TO
+            FRACTION(p)</font></td>
+          <td><font face="Courier New"><b>CHAR(50)</b></font></td>
+          <td><font face="Courier New"><b>INTERVAL DAY[(n)] TO SECOND(p)</b></font></td>
+          <td><font face="Courier New"><b>INTERVAL DAY[(n)] TO SECOND(p)</b></font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">INTERVAL HOUR[(n)] TO HOUR</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">INTERVAL HOUR[(n)] TO MINUTE</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">INTERVAL HOUR[(n)] TO SECOND</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">INTERVAL HOUR[(n)] TO FRACTION(p)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">INTERVAL MINUTE[(n)] TO MINUTE</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">INTERVAL MINUTE[(n)] TO SECOND</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">INTERVAL MINUTE[(n)] TO FRACTION(p)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">INTERVAL SECOND[(n)] TO SECOND</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">INTERVAL SECOND[(n)] TO FRACTION(p)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+        </tr>
+        <tr>
+          <td><font face="Courier New">INTERVAL FRACTION[(n)] TO FRACTION</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+          <td><font face="Courier New">CHAR(50)</font></td>
+        </tr>
+      </table>
+  </center>
+</div>
+</body>
+</html>

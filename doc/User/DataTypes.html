@@ -1,0 +1,1083 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Data Types</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Data Types</a></H1>
+<p> The data types supported by the language: </p>
+
+<div align="center">
+  <center>
+
+<table border="0" width="90%">
+    <tr>
+      <td bgcolor="#C0C0C0"><b>Data Type</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td valign="top" colspan="2" bgcolor="#EEEEEE"><b>String Data Types</b></td>
+    </tr>
+    <tr>
+      <td valign="top"><a href="#DT_CHAR">CHAR</a></td>
+      <td valign="top">Fixed size character strings</td>
+    </tr>
+    <tr>
+      <td valign="top"><a href="#DT_VARCHAR">VARCHAR</a></td>
+      <td valign="top">Variable size character strings</td>
+    </tr>
+    <tr>
+      <td valign="top"><a href="#DT_STRING">STRING</a> </td>
+      <td valign="top">Dynamic size character strings</td>
+    </tr>
+    <tr>
+      <td valign="top" colspan="2" bgcolor="#EEEEEE"><b>Date and Datetime Data Types</b></td>
+    </tr>
+    <tr>
+      <td valign="top"><a href="#DT_DATE">DATE</a></td>
+      <td valign="top">Simple calendar dates</td>
+    </tr>
+    <tr>
+      <td valign="top"><a href="#DT_DATETIME">DATETIME</a></td>
+      <td valign="top">High precision date and hour data</td>
+    </tr>
+    <tr>
+      <td valign="top"><a href="#DT_INTERVAL">INTERVAL</a></td>
+      <td valign="top">High precision time intervals</td>
+    </tr>
+    <tr>
+      <td valign="top" colspan="2" bgcolor="#EEEEEE"><b>Numeric Data Types</b></td>
+    </tr>
+    <tr>
+      <td valign="top"><a href="#DT_TINYINT">TINYINT</a></td>
+      <td valign="top">1 byte signed integer</td>
+    </tr>
+    <tr>
+      <td valign="top"><a href="#DT_SMALLINT">SMALLINT</a></td>
+      <td valign="top">2 byte signed integer</td>
+    </tr>
+    <tr>
+      <td valign="top"><a href="#DT_INTEGER">INTEGER</a></td>
+      <td valign="top">4 byte signed integer</td>
+    </tr>
+    <tr>
+      <td valign="top"><a href="#DT_BIGINT">BIGINT</a></td>
+      <td valign="top">8 byte signed integer</td>
+    </tr>
+    <tr>
+      <td valign="top">
+        <p align="left"><a href="#DT_SMALLFLOAT">SMALLFLOAT</a></p>
+    </td>
+      <td valign="top">4 byte floating point decimal</td>
+    </tr>
+    <tr>
+      <td valign="top"><a href="#DT_FLOAT">FLOAT</a></td>
+      <td valign="top">8 byte floating point decimal</td>
+    </tr>
+  </center>
+    <center>
+    <tr>
+      <td valign="top"><a href="#DT_DECIMAL">DECIMAL</a></td>
+      <td valign="top">High precision decimals</td>
+    </tr>
+    <tr>
+      <td valign="top"><a href="#DT_MONEY">MONEY</a></td>
+      <td valign="top">High precision decimals with currency formatting</td>
+    </tr>
+    <tr>
+      <td valign="top" colspan="2" bgcolor="#EEEEEE"><b>Large Data Types</b></td>
+    </tr>
+    <tr>
+      <td valign="top"><a href="#DT_BYTE">BYTE</a></td>
+      <td valign="top">Large binary data (images)</td>
+    </tr>
+    <tr>
+      <td valign="top"><a href="#DT_TEXT">TEXT</a></td>
+      <td valign="top">Large text data (plain text)</td>
+    </tr>
+    <td valign="top" colspan="2" bgcolor="#EEEEEE"><b>BOOLEAN Data Types</b></td>
+    <tr>
+      <td valign="top"><a href="#DT_BOOLEAN">BOOLEAN</a></td>
+      <td valign="top">TRUE/FALSE bool</td>
+    </tr>
+</table>
+
+  </center>
+</div>
+
+
+<p> <i>See also:</i> <a href="DataConversions.html">Data Conversions</a>, <a href="Variables.html">Variables</a>,
+<a href="Programs.html">Programs</a>. </p>
+
+
+<HR>
+
+<h3><a name="DT_CHAR">CHAR data type</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>CHAR</tt> data type is a fixed-length character string data type. </p>
+
+<h4>Syntax:</h4><code> CH</code><code>AR[ACTER] <u> [</u> (<i>size</i>) <u> ]</u></code>
+<h4>Notes:</h4>
+<ol>
+  <li><tt>CHAR</tt> and <tt>CHARACTER</tt> are synonyms.</li>
+  <li> <i> size</i>  defines the length of the variable; the number of bytes 
+	allocated for the variable. The upper limit is <b>65534</b>.</li>
+  <li>When <i> size</i> is not specified, the default length is 1
+    character.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p><tt>CHAR</tt> variables are initialized to <a href="Programs.html#PC_NULL"> NULL</a> in functions, modules and
+globals.</p>
+
+<p>The <i>size</i> defines the number of <b>bytes</b> the variable can
+store. It is important to distinguish <u>bytes</u> from <u>characters</u>,
+because in a multi-byte character set, one character may be encoded on several
+bytes. For example, in the ISO-8859-1 character set, &quot;forêt&quot; uses 5
+bytes, while in the UTF-8 multi-byte character set, the same word occupies 6
+bytes, because the &quot;ê&quot; letter is coded with two bytes.</p>
+
+<p><tt>CHAR</tt> variables are always filled with trailing blanks, but the
+trailing blanks are not
+    significant in comparisons:</p>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <TT>DEFINE</TT> c <tt>CHAR</tt>(10)
+<CODE class=linenumber>03</CODE>   <TT>LET</TT> c = &quot;abcdef&quot;
+<CODE class=linenumber>04</CODE>   <TT>DISPLAY</TT> &quot;[&quot;, c ,&quot;]&quot;      -- displays [abcdef    ]
+<CODE class=linenumber>05</CODE>   <tt>IF</tt> c == &quot;abcdef&quot; <tt>THEN</tt>    -- this is TRUE
+<CODE class=linenumber>06</CODE>      <tt>DISPLAY </tt>&quot;equals&quot;
+<CODE class=linenumber>07</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>08</CODE> <TT>END MAIN</TT></PRE>
+
+<HR>
+
+<h3><a name="DT_VARCHAR">VARCHAR data type</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>VARCHAR</tt> data type is a variable-length character string data type, with
+a maximum size. </p>
+
+<h4>Syntax:</h4><code> VARC</code><code>HAR <u> [</u> ( <i>size</i>, <u>[</u><i>
+reserve </i><u>]</u> ) <u>]</u></code>
+<h4>Notes:</h4>
+<ol>
+  <li> The <i> size</i>  defines the maximum length of the variable; the maximum number of bytes the variable can store. 
+	The upper limit is <b>65534</b>.</li>
+  <li> <i>reserve</i> is not used, however its inclusion in the syntax for a <tt>
+	VARCHAR</tt> variable is permitted for compatibility with the
+    SQL data type.</li>
+  <li>When <i> size</i> is not specified, the default length&nbsp;is 1
+    character.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p><tt>VARCHAR</tt> variables are initialized to <a href="Programs.html#PC_NULL"> NULL</a> in functions, modules and
+globals.</p>
+
+<p>The <i>size</i> defines the maximum number of <b>bytes</b> the variable can
+store. It is important to distinguish <u>bytes</u> from <u>characters</u>,
+because in a multi-byte character set, one character may be encoded on several
+bytes. For example, in the ISO-8859-1 character set, &quot;forêt&quot; uses 5
+bytes, while in the UTF-8 multi-byte character set, the same word occupies 6
+bytes, because the &quot;ê&quot; letter is coded with two bytes.</p>
+
+<p><tt>VARCHAR</tt> variables store trailing blanks (i.e. <code>&quot;abc &quot;</code>
+is different from <code>&quot;abc&quot;</code>). Trailing blanks are displayed
+or printed in reports, but they are not
+    significant in comparisons:</p>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <TT>DEFINE</TT> vc <tt>VARCHAR</tt>(10)
+<CODE class=linenumber>03</CODE>   <TT>LET</TT> vc = &quot;abc  &quot;         -- two trailing blanks
+<CODE class=linenumber>04</CODE>   <TT>DISPLAY</TT> &quot;[&quot;, vc ,&quot;]&quot;     -- displays [abc  ]
+<CODE class=linenumber>05</CODE>   <tt>IF</tt> vc == &quot;abc&quot; <tt>THEN</tt>      -- this is TRUE
+<CODE class=linenumber>06</CODE>      <tt>DISPLAY </tt>&quot;equals&quot;
+<CODE class=linenumber>07</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>08</CODE> <TT>END MAIN</TT></PRE>
+
+<p>When you insert character data from <tt>VARCHAR</tt> variables into <tt>VARCHAR</tt>
+columns in a database table, the trailing blanks are kept. Likewise, when
+you fetch <tt>VARCHAR</tt> column values into <tt>VARCHAR</tt> variables,
+trailing blanks are kept.&nbsp;</p>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <TT>DEFINE</TT> vc <tt>VARCHAR</tt>(10)
+<CODE class=linenumber>03</CODE>   <tt>DATABASE</tt> test1
+<CODE class=linenumber>04</CODE>   <tt>CREATE TABLE</tt> table1 ( k <tt>INT</tt>, x <tt>VARCHAR</tt>(10) )
+<CODE class=linenumber>05</CODE>   <TT>LET</TT> vc = &quot;abc  &quot;         -- two trailing blanks
+<CODE class=linenumber>06</CODE>   <tt>INSERT INTO</tt> table1<tt> VALUES</tt> ( 1, vc )
+<CODE class=linenumber>07</CODE>   <tt>SELECT</tt> x <tt>INTO</tt> vc <tt>FROM</tt> table1 <tt>WHERE</tt> k = 1
+<CODE class=linenumber>08</CODE>   <TT>DISPLAY</TT> &quot;[&quot;, vc ,&quot;]&quot;     -- displays [abc  ]
+<CODE class=linenumber>09</CODE> <TT>END MAIN</TT></PRE>
+
+<b><font color="#FF0000">Warning:</font> In SQL statements, the behavior of the
+comparison operators when using <tt>VARCHAR</tt> values differs from one
+database to the other. IBM Informix is ignoring trailing blanks, but most other
+databases take trailing blanks of <tt>VARCHAR</tt> values into account. See 
+<a href="SqlProgramming.html#PORT_CHARVARCHAR">SQL
+Programming</a> for more details.</b>
+
+<HR>
+
+<h3><a name="DT_STRING">STRING data type</a>  </h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>STRING</tt> data type is a variable-length, dynamically allocated character string data
+type, without limitation. </p>
+
+<h4>Syntax:</h4><code>STRING</code>
+<h4>Usage:</h4>
+<p>The behavior of a <tt>STRING</tt> variable is similar to the <tt><a href="#DT_VARCHAR">
+VARCHAR</a></tt> data
+type. For example, as <tt>VARCHAR</tt> variables, <tt>STRING</tt> variables have significant trailing
+blanks (i.e. <code> &quot;abc&nbsp;&nbsp;
+    &quot;</code> is different from <code> &quot;abc&quot;</code>). There is no size limitation, it depends on available memory.</p>
+<p><b><font color="#FF0000">Warning:</font>  Unlike <tt>VARCHAR</tt>, a <tt>STRING</tt> 
+can hold a value of zero length without being <a href="Programs.html#PC_NULL">NULL</a>.
+For example, if you trim a string variable with the trim() method and if the
+original value is a set of blank characters, the result is an empty string. But
+testing the variable with the <a href="Operators.html#OP_ISNULL">IS NULL</a>
+operator will evaluate to <a href="Programs.html#PC_FALSE">FALSE</a>. Using a <tt>VARCHAR</tt>
+with the <a href="Operators.html#OP_CLIPPED">CLIPPED</a> operator would give a <tt>NULL</tt>
+string in this case.&nbsp;</b></p>
+<p><tt>STRING</tt> variables are initialized to <a href="Programs.html#PC_NULL"> NULL</a> in functions, modules and
+globals.</p>
+<p>The <tt>STRING</tt> data type is typically used to implement utility
+functions manipulating character string with unknown size. It cannot be used to
+store SQL character string data, because databases have rules that need a
+maximum size as for <tt>CHAR</tt> and <tt>VARCHAR</tt> types.&nbsp;</p>
+<b><font color="#FF0000">Warning:</font> The <tt>STRING</tt> data type cannot
+be used as SQL parameter of fetch buffer.</b>
+<p>Variables declared with the <tt>STRING</tt> data type can use built-in class methods such as
+    <tt>getLength()</tt> or <tt>toUpperCase()</tt>.</p>
+
+<h4>Methods:</h4>
+<p><b><font color="#FF0000">Warning:</font> The <tt>STRING</tt>  methods are all
+based on byte-length-semantics. In a multi-byte environment, the getLength() method
+returns the number of bytes, which can be different from the number of
+characters.</b></p>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#66FFCC" colspan="2"><b>Object Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><b>Name</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%"><code>append( str </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td>Returns a new string made by adding <i>str</i> to the end of the current
+      string.</td>
+  </tr>
+  <tr>
+    <td width="50%"><code>equals( src </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td>Returns <a href="Programs.html#PC_TRUE">TRUE</a> if the
+      string passed as parameters matches the current string. If one of the
+      strings is <a href="Programs.html#PC_NULL">NULL</a> the method
+      returns <a href="Programs.html#PC_FALSE">FALSE</a>.</td>
+  </tr>
+  <tr>
+    <td width="50%"><code>equalsIgnoreCase( src </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td>Returns <a href="Programs.html#PC_TRUE">TRUE</a> if the
+      string passed as parameters matches the current string, <u>ignoring
+      character case</u>. If one of the strings is <a href="Programs.html#PC_NULL">NULL</a>
+      the method returns <a href="Programs.html#PC_FALSE">FALSE</a>.</td>
+  </tr>
+  <tr>
+    <td width="50%"><code>getCharAt( pos </code><tt>INTEGER</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td>Returns the character at the byte position <i>pos</i> (starts at 1). Returns <a href="Programs.html#PC_NULL">NULL</a>
+      if the position does not match a valid character-byte position in the current
+      string or if the current string is null.</td>
+  </tr>
+  <tr>
+    <td width="50%"><code>getIndexOf( str </code><tt>STRING</tt><code>, spos </code><tt>INTEGER</tt><code>
+      )<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td>Returns the position of the sub-string <i>str</i> in the current string,
+      starting from byte position <i>spos</i>. Returns zero if the sub-string was not
+      found. Returns -1 if string is <a href="Programs.html#PC_NULL">NULL</a>.</td>
+  </tr>
+  <tr>
+    <td width="50%"><code>getLength( )<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td> This method counts the number of bytes, including trailing
+    blanks. The <a href="BuiltInFunctions.html#BF_LENGTH">LENGTH()</a>
+    built-in function ignores trailing blanks.</td>
+  </tr>
+  <tr>
+    <td width="50%"><code>subString( spos </code><tt>INTEGER</tt><code>, epos </code><tt>INTEGER</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td>Returns the sub-string starting at byte position <i>spos</i> and ending at <i>epos</i>.
+      Returns <a href="Programs.html#PC_NULL">NULL</a> if the
+      positions do not delimit a valid sub-string in the current string, or if
+      the current string is null.</td>
+  </tr>
+  <tr>
+    <td width="50%"><code>toLowerCase( )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td>Converts the current string to lowercase. Returns <a href="Programs.html#PC_NULL">NULL</a> 
+      if the string is null.</td>
+  </tr>
+  <tr>
+    <td width="50%"><code>toUpperCase( )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td>Converts the current string to uppercase. Returns <a href="Programs.html#PC_NULL">NULL</a> 
+      if the string is null.</td>
+  </tr>
+  <tr>
+    <td width="50%"><code>trim( )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td>Removes white space characters from the beginning and end of the current
+      string. Returns <a href="Programs.html#PC_NULL">NULL</a>  if the string is
+      null.</td>
+  </tr>
+  <tr>
+    <td width="50%"><code>trimLeft( )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td>Removes white space characters from the beginning of the current string.
+      Returns <a href="Programs.html#PC_NULL">NULL</a>  if the string is null.</td>
+  </tr>
+  <tr>
+    <td width="50%"><code>trimRight( )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td>Removes white space characters from the end of the current string.
+      Returns <a href="Programs.html#PC_NULL">NULL</a>  if the string is null.</td>
+  </tr>
+</table>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <TT>DEFINE</TT> s <tt>STRING</tt>
+<CODE class=linenumber>03</CODE>   <TT>LET</TT> s = &quot;abcdef  &quot;
+<CODE class=linenumber>04</CODE>   <TT>DISPLAY</TT> s || &quot;. (&quot; || s.getLength() || &quot;)&quot;
+<CODE class=linenumber>05</CODE>   <tt>IF</tt> s.trimRight() = &quot;abcdef&quot; <tt>THEN</tt>
+<CODE class=linenumber>06</CODE>   <tt>  DISPLAY</tt> s.toUpperCase()
+<CODE class=linenumber>07</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>08</CODE> <TT>END MAIN</TT></PRE>
+
+<HR>
+
+<h3><a name="DT_INTEGER">INTEGER data&nbsp; type</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>INTEGER</tt> data type is used for storing large whole numbers. </p>
+
+<h4>Syntax:</h4><code>   INT<u>[</u>EGER<u>]</u></code>
+<h4>Notes:</h4>
+<ol>
+  <li><tt>INT</tt> and <tt>INTEGER</tt> are synonyms.</li>
+</ol>
+<h4>Usage:</h4>
+<p>The storage of <tt>INTEGER</tt> variables is based on 4 bytes of signed data ( = 32 bits ).</p>
+<p>The value range is from -2,147,483,647 to +2,147,483,647.</p>
+<p>When assigning a whole number that exceeds the <tt>INTEGER</tt> range, the
+overflow error <a href="FglErrors.html#-1215">-1215</a> will be raised.</p>
+<p><tt>INTEGER</tt> variables are initialized to zero in functions, modules and
+globals.</p>
+<p>The <tt>INTEGER</tt>  type can be used to define variables storing values
+from SERIAL columns.</p>
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <TT>DEFINE</TT> i <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <TT>LET</TT> i = 1234567
+<CODE class=linenumber>04</CODE>   <TT>DISPLAY</TT> i
+<CODE class=linenumber>05</CODE> <TT>END MAIN</TT></PRE>
+
+<HR>
+
+<h3><a name="DT_SMALLINT">SMALLINT data type</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>SMALLINT</tt> data type is used for storing small whole numbers. </p>
+
+<h4>Syntax:</h4><code>  SMALLINT</code>
+<h4>Notes:</h4>
+<ol>
+  <li>Variables are initialized to zero in functions, modules and globals.</li>
+  <li><tt>SMALLINT</tt> values can be converted to strings.</li>
+</ol>
+<h4>Usage:</h4>
+<p>The storage of <tt>SMALLINT</tt> variables is based on 2 bytes of signed data ( = 16 bits ).</p>
+<p>The value range is from -32,767 to +32,767.</p>
+<p>When assigning a whole number that exceeds the <tt>SMALLINT</tt> range, the
+overflow error <a href="FglErrors.html#-1214">-1214</a> will be raised.</p>
+<p><tt>SMALLINT</tt> variables are initialized to zero in functions, modules and
+globals.</p>
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <TT>DEFINE</TT> i <tt>SMALLINT</tt>
+<CODE class=linenumber>03</CODE>   <TT>LET</TT> i = 1234
+<CODE class=linenumber>04</CODE>   <TT>DISPLAY</TT> i
+<CODE class=linenumber>05</CODE> <TT>END MAIN</TT></PRE>
+
+<HR>
+
+<h3><a name="DT_TINYINT">TINYINT data type</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>TINYINT</tt> data type is used for storing very small whole numbers. </p>
+
+<h4>Syntax:</h4><code>TINYINT</code>
+<h4>Notes:</h4>
+<ol>
+  <li>Variables are initialized to zero in functions, modules and globals.</li>
+  <li><tt>TINYINT</tt> values can be converted to strings.</li>
+</ol>
+<h4>Usage:</h4>
+<p>The storage of <tt>TINYINT</tt> variables is based on 1 byte of signed data ( =&nbsp; 
+8 bits ).</p>
+<p>The value range is from -128 to +127.</p>
+<p>When assigning a whole number that exceeds the <tt>TINYINT</tt> range, the
+overflow error <a href="FglErrors.html#-8097">-8097</a> will be raised.</p>
+<p><tt>TINYINT</tt> variables are initialized to zero in functions, modules and
+globals.</p>
+<b><font color="#FF0000">Warning:</font> The TINYINT variables cannot be NULL.</b>
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <TT>DEFINE</TT> i <tt>TINYINT</tt>
+<CODE class=linenumber>03</CODE>   <TT>LET</TT> i = 101
+<CODE class=linenumber>04</CODE>   <TT>DISPLAY</TT> i
+<CODE class=linenumber>05</CODE> <TT>END MAIN</TT></PRE>
+
+<hr>
+
+<h3><a name="DT_BIGINT">BIGINT data type</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>BIGINT</tt> data type is used for storing very large whole numbers. </p>
+
+<h4>Syntax:</h4><code>BIGINT</code>
+<h4>Notes:</h4>
+<ol>
+  <li>Variables are initialized to zero in functions, modules and globals.</li>
+  <li><tt>BIGINT</tt> values can be converted to strings.</li>
+</ol>
+<h4>Usage:</h4>
+<p>The storage of <tt>BIGINT</tt> variables is based on 8 bytes of signed data ( =&nbsp; 
+64 bits ).</p>
+<p>The value range is from -9223372036854775807 to +9223372036854775807.</p>
+<p>When assigning a whole number that exceeds the <tt>BIGINT</tt> range, the
+overflow error <a href="FglErrors.html#-1284">-1284</a> will be raised.</p>
+<p><tt>BIGINT</tt> variables are initialized to zero in functions, modules and
+globals.</p>
+<p>The <tt>BIGINT</tt> type can be used to define variables used in SQL
+statements. It can be used to store data from INT8, SERIAL8, BIGINT and BIGSERIAL
+columns. Note that <a href="Connections.html#SQLCA_RECORD">SQLCA.SQLERRD[2]</a>
+is an INTEGER, not a BIGINT: To retrieve the last generated BIGSERIAL or SERIAL8, you must
+use the IBM Informix dbinfo() SQL function (<code>SELECT dbinfo('bigserial') FROM
+systables WHERE tabid = 1</code>).</p>
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <TT>DEFINE</TT> i <tt>BIGINT</tt>
+<CODE class=linenumber>03</CODE>   <TT>LET</TT> i = 9223372036854775600
+<CODE class=linenumber>04</CODE>   <TT>DISPLAY</TT> i
+<CODE class=linenumber>05</CODE> <TT>END MAIN</TT></PRE>
+
+<hr>
+<h3><a name="DT_FLOAT">FLOAT data type</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>FLOAT</tt> data type stores values as double-precision floating-point binary
+numbers with up to 16 significant digits. </p>
+
+<h4>Syntax:</h4><code><u>{</u> FLOAT <u> |</u> DOUBLE PRECISION <u> }</u> <u>[</u>(<i>precision</i>)<u>]</u></code>
+<h4>Notes:</h4>
+<ol>
+  <li><tt>FLOAT</tt> and <tt>DOUBLE PRECISION</tt> are synonyms.</li>
+  <li>The <i>precision</i> can be specified but it has no effect in programs.</li>
+</ol>
+<h4>Usage:</h4>
+<p>The storage of <tt>FLOAT</tt> variables is based on 8 bytes of signed data ( =
+64 bits
+), this type is equivalent to the <b>double</b> data type in C.</p>
+<p><tt>FLOAT</tt> variables are initialized to zero in functions, modules and
+globals.</p>
+<p><tt>FLOAT</tt> values can be converted to strings according to the <a href="EnvironmentVariables.html#EV_DBMONEY"> DBMONEY</a>
+    environment variable (defines the decimal separator).</p>
+<font color="#008000">Tip: </font>This data type it is not recommended for exact decimal storage; use the <a href="#DT_MONEY">DECIMAL</a>
+    data type instead.
+
+<HR>
+
+<h3><a name="DT_SMALLFLOAT">SMALLFLOAT data type</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>SMALLFLOAT</tt> data type stores values as single-precision floating-point
+binary numbers with up to 8 significant digits. </p>
+
+<h4>Syntax:</h4><code>    <u>    {</u> SMALLFLOAT <u> |</u> REAL <u> }</u></code>
+<h4>Notes:</h4>
+<ol>
+  <li><tt>SMALLFLOAT</tt> and <tt>REAL</tt> are synonyms.</li>
+  <li><tt>SMALLFLOAT</tt> values can be converted to strings according to the 
+	<tt>DBMONEY</tt>
+    environment variable (which defines the decimal separator).</li>
+</ol>
+<h4>Usage:</h4>
+<p>The storage of <tt>SMALLFLOAT</tt> variables is based on 4 bytes of signed data ( =
+32 bits
+), this type is equivalent to the <b>float</b> data type in C.</p>
+<p><tt>SMALLFLOAT</tt> variables are initialized to zero in functions, modules and
+globals.</p>
+<p><tt>SMALLFLOAT</tt> values can be converted to strings according to the <tt><a href="EnvironmentVariables.html#EV_DBMONEY"> DBMONEY</a></tt>
+    environment variable (defines the decimal separator).</p>
+<font color="#008000">Tip: </font>This data type it is not recommended for exact decimal storage; use the <tt><a href="#DT_MONEY">DECIMAL</a></tt>
+    data type instead.
+
+<HR>
+
+<h3><a name="DT_DECIMAL">DECIMAL data type</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>DECIMAL</tt> data type is provided to handle large numeric values with exact
+decimal storage. </p>
+
+<h4>Syntax:</h4><code>   <u>   {</u> DEC<u>[</u>IMAL<u>]</u> <u> |</u> NUMERIC <u> }</u>
+<u> [</u> ( <i>precision</i><u>[</u>,<i>scale</i><u>]</u>
+) <u>
+]</u></code>
+<h4>Notes:</h4>
+<ol>
+  <li><tt>DEC</tt>, <tt>DECIMAL</tt> and <tt>NUMERIC</tt> are synonyms.</li>
+  <li><i>precision</i> defines the number of significant digits (limit is 32,
+    default is 16).</li>
+  <li><i>scale</i> defines the number of digits to the right of the decimal
+    point.</li>
+  <li>When no <i>scale</i> is specified, the data type defines a floating point
+    number.</li>
+</ol>
+<h4>Usage:</h4>
+<p>The <tt>DECIMAL</tt> data type must be used for storing number with
+fractional parts that must be calculated exactly.</p>
+<p><tt>DECIMAL</tt> variables are initialized to <a href="Programs.html#PC_NULL">NULL</a> in functions, modules and
+globals.</p>
+<p>The largest absolute value that a <tt>DECIMAL(p,s)</tt> can store without errors is
+    10<font size="3"><sup>p-s</sup></font> - 10<font size="3"><sup>s</sup></font>.
+The stored value can have up to 30 significant decimal digits in its fractional
+part, or up to 32 digits to the left of the decimal point.</p>
+<p>When you specify both the <i>precision</i> and <i>scale</i>, you define a
+decimal with a fixed point arithmetic. If the data type declaration specifies a <i>precision</i>
+but no <i>scale</i>, it defines a floating-point number with <i>precision</i>
+significant digits. If the data type declaration specifies no <i>precision</i>
+and <i>scale</i>, the default is <tt>DECIMAL(16)</tt>, a floating-point number
+with a precision of 16 digits.</p>
+<p><tt>DECIMAL</tt> values can be converted to strings according to the <tt><a href="EnvironmentVariables.html#EV_DBMONEY"> DBMONEY</a></tt>
+    environment variable (defines the decimal separator).</p>
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>In ANSI-compliant databases, DECIMAL data types do not provide floating
+    point numbers. When you define a database column as <tt>DECIMAL(16)</tt>, it
+    is equivalent to a <tt>DECIMAL(16,0)</tt> declaration. You should always
+    specify the scale to avoid mistakes.</li>
+  <li>When the default <a href="Exceptions.html">exception handler</a> is used,
+    if you try to assign a value larger than the Decimal definition (for
+    example, 12345.45 into DECIMAL(4,2) ), no out of range error occurs, and the
+    variable is assigned with <a href="Programs.html#PC_NULL">NULL</a>.
+    If <a href="Exceptions.html">WHENEVER ANY ERROR</a> is used, it raises error <a href="FglErrors.html">-1226</a>.
+    If you do not use
+<a href="Exceptions.html"> WHENEVER ANY ERROR</a>, the STATUS variable is not
+    set to <a href="FglErrors.html">-1226</a>.</li>
+</ol>
+<h5>high-precision math functions</h5>
+<p>A couple of precision math functions are available, to be used with DECIMAL
+values. These functions have a higher precision as the standard C library
+functions based on C double data type, which is equivalent to <a href="#DT_FLOAT">FLOAT</a>:</p>
+        <ul>
+          <li><a href="BuiltInFunctions.html#BF_FGL_DECIMAL_TRUNCATE">FGL_DECIMAL_TRUNCATE()</a></li>
+          <li><a href="BuiltInFunctions.html#BF_FGL_DECIMAL_SQRT">FGL_DECIMAL_SQRT()</a></li>
+          <li><a href="BuiltInFunctions.html#BF_FGL_DECIMAL_EXP">FGL_DECIMAL_EXP()</a></li>
+          <li><a href="BuiltInFunctions.html#BF_FGL_DECIMAL_LOGN">FGL_DECIMAL_LOGN()</a></li>
+          <li><a href="BuiltInFunctions.html#BF_FGL_DECIMAL_POWER">FGL_DECIMAL_POWER()</a></li>
+        </ul>
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <TT>DEFINE</TT> d1 <tt>DECIMAL</tt>(10,4)
+<CODE class=linenumber>03</CODE>   <TT>DEFINE</TT> d2 <tt>DECIMAL</tt>(10,3)
+<CODE class=linenumber>04</CODE>   <TT>LET</TT> d1 = 1234.4567
+<CODE class=linenumber>05</CODE>   <TT>LET</TT> d2 = d1 / 3 -- Rounds decimals to 3 digits
+<CODE class=linenumber>06</CODE>   <TT>DISPLAY</TT> d1, d2
+<CODE class=linenumber>07</CODE> <TT>END MAIN</TT></PRE>
+
+<HR>
+
+<h3><a name="DT_MONEY">MONEY data type</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>MONEY</tt> data type is provided to store currency amounts with exact
+decimal storage. </p>
+
+<h4>Syntax:</h4><code> MONEY <u> [</u> (<i>precision</i><u>[</u>,<i>scale</i><u>]</u>)
+<u> ]</u></code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>precision</i> defines the number of significant digits (limit is 32,
+    default is 16).</li>
+  <li><i>scale</i> defines the number of digits to the right of the decimal
+    point.</li>
+  <li>When no <i>scale</i> is specified, it defaults to 2.</li>
+</ol>
+<h4>Usage:</h4>
+<p>The <tt>MONEY</tt> data type is provided to store currency amounts. Its behavior
+is similar to the <a href="#DT_DECIMAL">DECIMAL</a>
+    data type, with some important differences:</p>
+<p>A <tt>MONEY</tt> variable is displayed with the currency symbol defined in
+the <a href="EnvironmentVariables.html#EV_DBMONEY">DBMONEY</a> environment
+variable.</p>
+<p>You cannot define floating-point numbers with <tt>MONEY</tt>: If you do not
+specific the <i>scale</i> in the data type declaration, it defaults to 2. If no <i>precision</i>
+/ <i>scale</i> parameters are specified, MONEY is interpreted as a
+DECIMAL(16,2).</p>
+<b><font color="#FF0000">Warning: </font>See the <a href="#DT_DECIMAL">DECIMAL</a> data type.</b>
+
+<HR>
+
+<h3><a name="DT_DATE">DATE data type</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>DATE</tt> data type stores calendar dates with a Year/Month/Day representation. </p>
+
+<h4>Syntax:</h4><code>  DATE</code>
+<h4>Usage:</h4>
+<p>Storage of <tt>DATE</tt> variables is based on a 4 byte integer representing the number of days
+    since 1899/12/31.</p>
+<p>
+The value range is from 0001-01-1 (-693594) to 9999-12-31 (2958464) .</p>
+<p>Because <tt> DATE</tt> values are stored as integers, you can use them in arithmetic <a href="Expressions.html">expressions</a>:
+the difference of two dates returns the number of days. This is possible (and
+portable) with language arithmetic <a href="Operators.html">operators</a>, but
+should be avoided in SQL statements, because not all databases support
+integer-based date arithmetic.</p>
+<p>Data conversions, input and display of <tt>DATE</tt> values are ruled by
+environment settings, such as the <a href="EnvironmentVariables.html#EV_DBDATE">DBDATE</a>
+ and <a href="EnvironmentVariables.html#EV_DBCENTURY">DBCENTURY</a> environment
+variables.</p>
+<p>Several built-in functions and constants are available such as <a href="Operators.html#OP_MDY">MDY()</a> and
+    <a href="Operators.html#OP_TODAY">TODAY</a>.</p>
+<p><tt>DATE</tt> variables are initialized to <b> zero (=1899/12/31)</b> in functions, modules and
+globals.</p>
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li>Integers can represent dates as a number of
+    days starting from 1899/12/31, and can be assigned to dates. It is not recommended
+    that you directly assign integers to
+    dates, however, for source code readability.</li>
+  <li>As Date-to-String conversion is based on an environment setting, it is not
+    recommended that you hardcode strings representing Dates.</li>
+</ol>
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <TT>DEFINE</TT> d <tt>DATE</tt>
+<CODE class=linenumber>03</CODE>   <TT>LET</TT> d = <tt>TODAY</tt>
+<CODE class=linenumber>04</CODE>   <TT>DISPLAY</TT> d, &quot;  &quot;, d+100
+<CODE class=linenumber>05</CODE> <TT>END MAIN</TT></PRE>
+
+<HR>
+
+<h3><a name="DT_DATETIME">DATETIME data type</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>DATETIME</tt> data type stores date and time data with time units from the year to fractions of a second. </p>
+
+<h4>Syntax:</h4><code>   DATETIME <i>qual1</i> TO <i>qual2</i><br>
+<br>
+where <i>qual1</i> can be one of:<br>
+<br>
+&nbsp; YEAR<br>
+&nbsp; MONTH<br>
+&nbsp; DAY<br>
+&nbsp; HOUR<br>
+&nbsp; MINUTE<br>
+&nbsp; SECOND<br>
+&nbsp; FRACTION<br>
+<br>
+and <i>qual2</i> can be one of:<br>
+<br>
+&nbsp; YEAR<br>
+&nbsp; MONTH<br>
+&nbsp; DAY<br>
+&nbsp; HOUR<br>
+&nbsp; MINUTE<br>
+&nbsp; SECOND<br>
+&nbsp; FRACTION<br>
+&nbsp; FRACTION(1)<br>
+&nbsp; FRACTION(2)<br>
+&nbsp; FRACTION(3)<br>
+&nbsp; FRACTION(4)<br>
+&nbsp; FRACTION(5)</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i> scale</i> defines the number of significant digits of the fractions of
+    a second.</li>
+	<li> <i>qual1</i> and <i>qual2</i> qualifiers define the precision of the <tt>DATETIME</tt>
+	variable.</li>
+</ol>
+<h4>Usage:</h4>
+<p>The <tt>DATETIME</tt> data type stores an instance in time, expressed as a
+calendar date and time-of-day.</p>
+<p>The <i>qual1</i> and <i>qual2</i> qualifiers define the precision of the <tt>DATETIME</tt>
+variable. The precision can range from a year through a fraction of second.</p>
+<p><tt>DATETIME</tt> arithmetic is based on the <a href="#DT_INTERVAL">INTERVAL</a>
+    data type, and can be combined with <a href="#DT_DATE">DATE</a> values:</p>
+
+<table border="0" width="60%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="30%"><b>Left Operand Type</b></td>
+      <td bgcolor="#C0C0C0" width="10%"><b>Operator</b></td>
+      <td bgcolor="#C0C0C0" width="30%"><b>Right Operand Type</b></td>
+      <td bgcolor="#C0C0C0" width="30%"><b>Result Type</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><tt>DATETIME</tt> </td>
+      <td valign="top" width="10%" align="center"><tt>-</tt></td>
+      <td valign="top" width="30%"><tt>DATETIME</tt> </td>
+      <td valign="top" width="30%"><tt>INTERVAL</tt></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><tt>DATETIME</tt> </td>
+      <td valign="top" width="10%" align="center"><tt>-</tt></td>
+      <td valign="top" width="30%"><tt>DATE</tt></td>
+      <td valign="top" width="30%"><tt>INTERVAL</tt></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><tt>DATETIME</tt> </td>
+      <td valign="top" width="10%" align="center"><tt>-</tt></td>
+      <td valign="top" width="30%"><tt>INTERVAL</tt></td>
+      <td valign="top" width="30%"><tt>DATETIME</tt></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><tt>DATETIME</tt> </td>
+      <td valign="top" width="10%" align="center"><tt>+</tt></td>
+      <td valign="top" width="30%"><tt>INTERVAL</tt></td>
+      <td valign="top" width="30%"><tt>DATETIME</tt></td>
+    </tr>
+</table>
+
+<p>The <a href="Operators.html#OP_CURRENT">CURRENT</a> operator provides current system date/time.</p>
+<p>You can assign <tt>DATETIME</tt> variables with <a href="Literals.html#LT_DATETIME">datetime
+literals</a> with a specific notation.</p>
+<p><tt>DATETIME</tt> variables are initialized to <a href="Programs.html#PC_NULL">NULL</a>
+in functions, modules and globals.</p>
+<p><tt>DATETIME</tt> values can be converted to strings by the ISO format (YYYY-MM-DD
+hh:mm:ss.fffff).</p>
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <TT>DEFINE</TT> d1, d2 <tt>DATETIME YEAR TO MINUTE</tt>
+<CODE class=linenumber>03</CODE>   <TT>LET</TT> d1 = <tt>CURRENT YEAR TO MINUTE</tt> 
+<CODE class=linenumber>04</CODE>   <TT>LET</TT> d2 = &quot;1998-01-23 12:34&quot;
+<CODE class=linenumber>05</CODE>   <TT>DISPLAY</TT> d1, d2
+<CODE class=linenumber>06</CODE> <TT>END MAIN</TT></PRE>
+
+<HR>
+
+<h3><a name="DT_INTERVAL">INTERVAL data type</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>INTERVAL</tt> data type stores spans of time as Year/Month or
+Day/Hour/Minute/Second/Fraction units. </p>
+
+<h4>Syntax 1: <i>year-month</i> class interval</h4><code>&nbsp;INTERVAL YEAR<u>[</u>(<i>precision</i>)<u>]</u>&nbsp;
+TO MONTH<br>
+|INTERVAL YEAR<u>[</u>(<i>precision</i>)<u>]</u>&nbsp; TO YEAR<br>
+|INTERVAL MONTH<u>[</u>(<i>precision</i>)<u>]</u> TO MONTH</code>
+
+<h4>Syntax 2: <i>day-time</i> class interval</h4>
+<p><code>&nbsp;INTERVAL DAY<u>[</u>(<i>precision</i>)<u>]</u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+TO FRACTION<u>[</u>(<i>scale</i>)<u>]</u><br>
+|INTERVAL DAY<u>[</u>(<i>precision</i>)<u>]</u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TO
+SECOND<br>
+|INTERVAL DAY<u>[</u>(<i>precision</i>)<u>]</u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TO
+MINUTE<br>
+|INTERVAL DAY<u>[</u>(<i>precision</i>)<u>]</u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TO
+HOUR<br>
+|INTERVAL DAY<u>[</u>(<i>precision</i>)<u>]</u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TO
+DAY<br>
+<br>
+|INTERVAL HOUR<u>[</u>(<i>precision</i>)<u>]</u>&nbsp;&nbsp;&nbsp;&nbsp; TO
+FRACTION<u>[</u>(<i>scale</i>)<u>]</u><br>
+|INTERVAL HOUR<u>[</u>(<i>precision</i>)<u>]</u>&nbsp;&nbsp;&nbsp;&nbsp; TO
+SECOND<br>
+|INTERVAL HOUR<u>[</u>(<i>precision</i>)<u>]</u>&nbsp;&nbsp;&nbsp;&nbsp; TO
+MINUTE<br>
+|INTERVAL HOUR<u>[</u>(<i>precision</i>)<u>]</u>&nbsp;&nbsp;&nbsp;&nbsp; TO HOUR<br>
+<br>
+|INTERVAL MINUTE<u>[</u>(<i>precision</i>)<u>]</u>&nbsp;&nbsp; TO FRACTION<u>[</u>(<i>scale</i>)<u>]</u><br>
+|INTERVAL MINUTE<u>[</u>(<i>precision</i>)<u>]</u>&nbsp;&nbsp; TO SECOND<br>
+|INTERVAL MINUTE<u>[</u>(<i>precision</i>)<u>]</u>&nbsp;&nbsp; TO MINUTE<br>
+<br>
+|INTERVAL SECOND<u>[</u>(<i>precision</i>)<u>]</u>&nbsp;&nbsp; TO FRACTION<u>[</u>(<i>scale</i>)<u>]</u><br>
+|INTERVAL SECOND<u>[</u>(<i>precision</i>)<u>]</u>&nbsp;&nbsp; TO SECOND<br>
+<br>
+|INTERVAL FRACTION<u>[</u>(<i>precision</i>)<u>]</u> TO FRACTION<u>[</u>(<i>scale</i>)<u>]</u></code></p>
+<h4>Notes:</h4>
+<ol>
+  <li><i>precision</i> defines the number of significant digits of the first
+    qualifier, it must be an integer from 1 to 9.<br>
+    For YEAR, the default is 4. For all other time units, the default is 2.<br>
+    For example, YEAR(5) indicates that the INTERVAL can store a
+    number of years with up to 5 digits.</li>
+</ol>
+<h4>Usage:</h4>
+<p>The <tt>INTERVAL</tt> data type stores a span of time, the difference between
+two points in time. It can also be used to store quantities that are measured in
+units of time, such as ages or times required for some activity.</p>
+<p>The <tt>INTERVAL</tt> data type falls in two classes, which are mutually 
+exclusive:</p>
+<ul>
+  <li><i>Year-time</i> intervals store a span of years, months or both.</li>
+  <li><i>Day-time</i> intervals store a span of days, hours, minutes, seconds
+    and fraction of seconds, or a contiguous subset of those units.</li>
+</ul>
+<p><tt>INTERVAL</tt> values can be negative.</p>
+<p align="left"><tt>INTERVAL</tt> arithmetic is possible, and can involve <tt><a href="#DT_DATETIME">DATETIME</a></tt>
+ as well as <a href="#DT_DECIMAL">DECIMAL</a> operands:</p>
+
+<table border="0" width="60%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="30%"><b>Left Operand Type</b></td>
+      <td bgcolor="#C0C0C0" width="10%"><b>Operator</b></td>
+      <td bgcolor="#C0C0C0" width="30%"><b>Right Operand Type</b></td>
+      <td bgcolor="#C0C0C0" width="30%"><b>Result Type</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><tt>INTERVAL</tt></td>
+      <td valign="top" width="10%" align="center"><tt>*</tt></td>
+      <td valign="top" width="30%"><tt>DECIMAL</tt></td>
+      <td valign="top" width="30%"><tt>INTERVAL</tt></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><tt>INTERVAL</tt></td>
+      <td valign="top" width="10%" align="center"><tt>/</tt></td>
+      <td valign="top" width="30%"><tt>DECIMAL</tt></td>
+      <td valign="top" width="30%"><tt>INTERVAL</tt></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><tt>INTERVAL</tt></td>
+      <td valign="top" width="10%" align="center"><tt>-</tt></td>
+      <td valign="top" width="30%"><tt>INTERVAL</tt></td>
+      <td valign="top" width="30%"><tt>INTERVAL</tt></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><tt>INTERVAL</tt></td>
+      <td valign="top" width="10%" align="center"><tt>+</tt></td>
+      <td valign="top" width="30%"><tt>INTERVAL</tt></td>
+      <td valign="top" width="30%"><tt>INTERVAL</tt></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><tt>DATETIME</tt></td>
+      <td valign="top" width="10%" align="center"><tt>-</tt></td>
+      <td valign="top" width="30%"><tt>INTERVAL</tt></td>
+      <td valign="top" width="30%"><tt>DATETIME</tt></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><tt>DATETIME</tt></td>
+      <td valign="top" width="10%" align="center"><tt>+</tt></td>
+      <td valign="top" width="30%"><tt>INTERVAL</tt></td>
+      <td valign="top" width="30%"><tt>DATETIME</tt></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><tt>DATETIME</tt></td>
+      <td valign="top" width="10%" align="center"><tt>-</tt></td>
+      <td valign="top" width="30%"><tt>DATETIME</tt></td>
+      <td valign="top" width="30%"><tt>INTERVAL</tt></td>
+    </tr>
+</table>
+
+<p>You can assign <tt>INTERVAL</tt> variable with <a href="Literals.html#LT_INTERVAL">interval
+literals</a> with a specific notation.</p>
+<p><tt>INTERVAL</tt> values can be converted to strings by using the ISO format
+(YYYY-MM-DD hh:mm:ss.fffff).</p>
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <TT>DEFINE</TT> i1 <tt>INTERVAL YEAR TO MONTH</tt>
+<CODE class=linenumber>03</CODE>   <TT>DEFINE</TT> i2 <tt>INTERVAL DAY</tt>(5)<tt> TO MINUTE</tt>
+<CODE class=linenumber>04</CODE>   <TT>LET</TT> i1 = &quot;2342-4&quot;
+<CODE class=linenumber>05</CODE>   <TT>LET</TT> i2 = &quot;23423 12:34&quot;
+<CODE class=linenumber>06</CODE>   <TT>DISPLAY</TT> i1, i2
+<CODE class=linenumber>07</CODE> <TT>END MAIN</TT></PRE>
+
+<HR>
+
+<h3><a name="DT_BYTE">BYTE data type</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>BYTE</tt> data type stores any type of binary data, such as images or
+sounds. </p>
+
+<h4>Syntax:</h4><code> BYTE</code>
+<h4>Usage:</h4>
+A <tt>BYTE</tt> variable is actually a 'locator' for a large object stored in a file
+    or in memory. The <tt>BYTE</tt> data type is a complex type that cannot be used like simple types
+    such as <tt>INTEGER</tt> or <tt>CHAR</tt>: It is designed to handle a large
+amount of unstructured binary data. This type has a theoretical limit of 2^31
+bytes, but the practical limit depends from the resources available to the
+process. You can use the <tt>BYTE</tt> data type to store, fetch or update the
+contents of a BYTE database column when using IBM Informix, or the content of a BLOB
+column when using another type of database.<p>
+<b><font color="#FF0000">Warning: </font>A <tt>BYTE</tt> variable must be initialized with the <a href="Variables.html#VA_LOCATE"> LOCATE</a>
+    instruction before usage. You might want to free resources allocated to the <tt>BYTE</tt>
+variable with the <a href="Variables.html#VA_FREE">FREE</a> instruction. Note
+that a <tt>FREE</tt> will remove the file if the LOB variable is located in a
+file.</b>
+<p>The <tt>LOCATE</tt> instruction basically defines where the large data object
+has to be stored (in file or memory). This instruction will actually allow you
+to fetch a LOB into memory or into a file, or insert a LOB from memory or from a
+file into the database.</p>
+<p><b><font color="#FF0000">Warning:</font> When you assign a <tt>BYTE</tt>
+variable to another <tt>BYTE</tt> variable, the LOB data is not duplicated, only
+the handler is copied.</b></p>
+
+<p>Note that if you need to clone the large object, you can use the I/O built-in
+methods to read/write data from/to a specific file. The large object can be
+located in memory, in a specific file or in a temporary file (the temp dir can
+be defined by <a href="EnvironmentVariables.html#EV_DBTEMP">DBTEMP</a>).</p>
+
+<h4>Methods:</h4>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#66FFCC" colspan="2"><b>Object Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><b>Name</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%"><code>readFile( fileName </code><tt>STRING</tt><code> ) </code></td>
+    <td>Reads data from a file and copies into memory or to the file used by the
+      variables according to the <a href="Variables.html#VA_LOCATE">LOCATE</a>
+      statement issued on the object.</td>
+  </tr>
+  <tr>
+    <td width="50%"><code>writeFile( fileName </code><tt>STRING</tt><code> ) </code></td>
+    <td>Writes data from the variable (memory or source file) to the destination
+      file passed as parameter. The file is created if it does not exist.</td>
+  </tr>
+</table>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <TT>DEFINE</TT> b <tt>BYTE</tt>
+<CODE class=linenumber>03</CODE>   <tt>DATABASE</tt> stock
+<CODE class=linenumber>04</CODE>   <TT>LOCATE</TT> b <tt>IN MEMORY</tt>
+<CODE class=linenumber>05</CODE>   <tt>SELECT</TT> png_image <tt>INTO</tt> b <tt>FROM</tt> images <tt>WHERE</tt> image_id = 123
+<CODE class=linenumber>06</CODE>   <tt>CALL</tt> b.writeFile(&quot;/tmp/image.png&quot;)
+<CODE class=linenumber>07</CODE> <TT>END MAIN</TT></PRE>
+
+<HR>
+
+<h3><a name="DT_TEXT">TEXT data type</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>TEXT</tt> data type stores large text data. </p>
+
+<h4>Syntax:</h4><code>  TEXT</code>
+<h4>Usage:</h4>
+A <tt>TEXT</tt> variable is actually a 'locator' for a large object stored in a file
+    or in memory. The <tt>TEXT</tt> data type is a complex type that cannot be used like
+basic character string types such
+    as <tt>VARCHAR</tt> or <tt>CHAR</tt>: It is designed to handle a large
+amount of text data. You can use this data type to store, fetch or update the
+contents of a TEXT database column when using IBM Informix, or the content of a CLOB
+column when using another type of database.<p>
+<b><font color="#FF0000">Warning: </font>A <tt>TEXT</tt> variable must be initialized with the <a href="Variables.html#VA_LOCATE"> LOCATE</a> instruction before
+    usage. You might want to free resources allocated to the <tt>TEXT</tt>
+variable with the <a href="Variables.html#VA_FREE">FREE</a> instruction. Note
+that a <tt>FREE</tt> will remove the file if the LOB variable is located in a
+file.</b>
+<p>The <tt>LOCATE</tt> instruction basically defines where the large data object
+has to be stored (in file or memory). This instruction will actually allow you
+to fetch a LOB into memory or into a file, or insert a LOB from memory or from a
+file into the database.</p>
+<p><b><font color="#FF0000">Warning:</font> When you assign a <tt>TEXT</tt>
+variable to another <tt>TEXT</tt> variable, the LOB data is not duplicated, only
+the handler is copied.</b></p>
+<p>You can assign <tt>TEXT</tt> variables to/from <tt>VARCHAR</tt>, <tt>CHAR</tt>
+and <tt>STRING</tt> variables.</p>
+
+<p>Note that if you need to clone the large object, you can use the I/O built-in
+methods to read/write data from/to a specific file. The large object can be
+located in memory or in a file.</p>
+
+<h4>Methods:</h4>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#66FFCC" colspan="2"><b>Object Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><b>Name</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%"><code>getLength()</code></td>
+    <td>Returns the size of the text in bytes.</td>
+  </tr>
+  <tr>
+    <td width="50%"><code>readFile( fileName </code><tt>STRING</tt><code> ) </code></td>
+    <td>Reads data from a file and copies into memory or to the file used by the
+      variables according to the <a href="Variables.html#VA_LOCATE">LOCATE</a>
+      statement issued on the object.</td>
+  </tr>
+  <tr>
+    <td width="50%"><code>writeFile( fileName </code><tt>STRING</tt><code> ) </code></td>
+    <td>Writes data from the variable (memory or source file) to the destination
+      file passed as parameter. The file is created if it does not exist.</td>
+  </tr>
+</table>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <TT>DEFINE</TT> t <tt>TEXT</tt>
+<CODE class=linenumber>03</CODE>   <tt>DATABASE</tt> stock
+<CODE class=linenumber>04</CODE>   <TT>LOCATE</TT> t <tt>IN FILE</tt> &quot;/tmp/mytext.txt&quot; 
+<CODE class=linenumber>05</CODE>   <tt>SELECT</TT> doc_text <tt>INTO</tt> t <tt>FROM</tt> documents <tt>WHERE</tt> doc_id = 123
+<CODE class=linenumber>06</CODE>   <tt>CALL</tt> t.writeFile(&quot;/tmp/document.txt&quot;)
+<CODE class=linenumber>07</CODE> <TT>END MAIN</TT></PRE>
+
+<hr>
+
+<h3><a name="DT_BOOLEAN">BOOLEAN data type</a></h3>
+<h4>Purpose:</h4>
+
+<p> The <tt>BOOLEAN</tt> data type stores a logical value, TRUE or FALSE. </p>
+
+<h4>Syntax:</h4><code>  BOOLEAN</code>
+<h4>Usage:</h4>
+<p>Boolean data types have two possible values: <tt> TRUE</tt> (1) and <tt> FALSE</tt> (0).
+Variables of this type can be used to store the result of a boolean <a href="Expressions.html">expression</a>.</p>
+<p>The <tt>BOOLEAN</tt> type can be used to define variables used in SQL
+statements, and can store values of IBM Informix BOOLEAN columns.</p>
+
+
+<b><font color="#FF0000">Warning:</font> While IBM Informix SQL BOOLEAN type accepts
+the 't' and 'f' values, the Genero BDL BOOLEAN type expects 0/FALSE and 1/TRUE
+integer values only. You can however insert/ fetch a BOOLEAN variable into/from
+a BOOLEAN column.</b>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>FUNCTION </tt>checkOrderStatus( cid )
+<CODE class=linenumber>02</CODE>   <TT>DEFINE</TT> oid <tt>INT</tt>, b <tt>BOOLEAN</tt>
+<CODE class=linenumber>03</CODE>   <tt>LET</tt> b = ( isValid(oid) <tt>AND </tt>isStored(oid) )
+<CODE class=linenumber>04</CODE>   <tt>IF NOT</tt> b<tt> THEN</tt>
+<CODE class=linenumber>05</CODE>     <tt>ERROR</tt> &quot;The order is not ready.&quot;
+<CODE class=linenumber>06</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>07</CODE> <TT>END FUNCTION</TT></PRE>
+
+<hr>
+<p>&nbsp;</p>
+
+</BODY>
+</HTML>

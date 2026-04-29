@@ -1,0 +1,409 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Arrays</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Arrays</a></H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#SYNTAX">Syntax</a>
+    <ul>
+      <li><a href="#ARRAY">Syntax 1: Static arrays</a></li>
+      <li><a href="#DYNAMIC_ARRAY">Syntax 2: Dynamic arrays</a></li>
+      <li><a href="#JAVA_ARRAY">Syntax 3: Java arrays</a></li>
+    </ul>
+  </li>
+  <li><a href="#CONFIG">Runtime Configuration for Arrays</a>
+    <ul>
+      <li><a href="#arrayIgnoreRangeError">Controlling of out of bounds index
+        error</a></li>
+    </ul>
+  </li>
+  <li><a href="#USAGE">Usage</a></li>
+  <li><a href="#EXAMPLES">Examples</a></li>
+</ul>
+
+
+<p><i>See also:</i> <a href="Variables.html">Variables</a>, <a href="Records.html">Records</a>,
+<a href="DataTypes.html">Data Types</a>.</p>
+
+
+<HR>
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+<h4>Purpose:</h4><p>Arrays can store a one-, two- or three-dimensional array of
+elements.</p>
+
+
+<h4>Syntax 1: <a name="ARRAY">Static array definition</a></h4><code>DEFINE <i>variable</i>
+ARRAY [ <i>size</i>
+<u>[</u>,<i>size</i>  <u>[</u>,<i>size</i><u>]</u>
+<u>
+]</u> ] OF <i>datatype</i></code>
+
+
+<h4>Syntax 2: <a name="DYNAMIC_ARRAY">Dynamic array definition</a></h4><code>DEFINE
+<i>variable</i> DYNAMIC
+ARRAY <u> [</u> WITH DIMENSION <i>rank</i> <u>]</u> OF <i>datatype</i></code>
+
+
+<h4>Syntax 2: <a name="JAVA_ARRAY">Java array definition</a></h4><code>DEFINE <i>variable</i>
+ARRAY <u> [</u> <u>]</u> OF <i>datatype</i></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>variable</i> defines the name of the array.</li>
+  <li><i>size</i> can be an <a href="Literals.html#LT_INTEGER">integer
+    literal</a> or an <a href="Constants.html">integer constant</a>. The upper
+    limit is <b>65535</b>.&nbsp;</li>
+  <li><i>rank</i> can be an <a href="Literals.html#LT_INTEGER">integer
+    literal</a>  of 1, 2, or 3. Default is 1.</li>
+  <li><i>datatype</i> can be any <a href="DataTypes.html">data type</a> or a <a href="Records.html">record
+    definition</a>.</li>
+</ol>
+
+
+<h4><a name="FGL_ARRAY_METHODS">Methods of Static and Dynamic arrays:</a></h4>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#66FFCC" colspan="2"><b>Object Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><b>Name</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%"><code>appendElement( )</code></td>
+    <td>Adds a new element at the end of a dynamic array. This method has no
+      effect on a static array.</td>
+  </tr>
+  <tr>
+    <td width="50%" height="22"><code>clear( )</code></td>
+    <td height="22">Removes all elements in a dynamic array. Sets all elements to NULL in a
+      static array.</td>
+  </tr>
+  <tr>
+    <td width="50%"><code>deleteElement( </code><tt> INTEGER</tt><code> )</code></td>
+    <td>Removes an element at the given position. In a static or dynamic array,
+      the elements after the given position are moved up. In a dynamic array,
+      the number of elements is decremented by 1.</td>
+  </tr>
+  <tr>
+    <td width="50%"><code>getLength( )<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td>Returns the length of a one-dimensional array.</td>
+  </tr>
+  <tr>
+    <td width="50%"><code>insertElement( </code><tt> INTEGER</tt><code> )</code></td>
+    <td>Inserts a new element at the given position. In a static or dynamic
+      array, the elements after the given position are moved down. In a dynamic array,
+      the number of elements is incremented by 1.</td>
+  </tr>
+</table>
+
+
+<h4><a name="JAVA_ARRAY_METHODS">Methods of Java arrays:</a></h4>
+<p>The Java Array type is an interface to a real Java array type, with the java
+array features. Java arrays must be instantiated before usage and have a fixed
+length.</p>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#3399FF" colspan="2"><b>Class Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><b>Name</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%"><code>create(int <i>size</i>)</code></td>
+    <td>Creates a new instance of a Java array with the given size.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#66FFCC" colspan="2"><b>Object Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><b>Name</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%"><code>getLength( )<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td>Returns the length of a one-dimensional array.</td>
+  </tr>
+</table>
+
+
+<HR>
+
+<h3><a name="CONFIG">Runtime Configuration for Arrays</a></h3>
+<h4><a name="arrayIgnoreRangeError">Controlling of out of bounds index error</a></h4>
+<p>By default, when an array index is out of range, <a href="Tools.html#TL_FGLRUN">fglrun</a>
+raises <a href="FglErrors.html#-1326">error -1326</a>. Note that this is only
+the case for static arrays: When using a dynamic array, new elements are
+allocated if the index is greater as the actual array size.</p>
+<p>Raising an index out of bounds error is natural for static arrays. However,
+in some situations, legacy 4gl code must execute without error and evaluate
+expressions using indexes that are greater as the size of the array, especially
+with Boolean expressions in IF statements as in following example:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>IF</tt> index &lt;= max_index <tt>OR</tt> arr[index] == some_value <tt>THEN</tt>
+<CODE class=linenumber>02</CODE>    ...
+<CODE class=linenumber>03</CODE> <tt>END IF</tt></PRE>
+
+<p>In the above example, since the 4GL language requires to evaluate all parts
+of a Boolean expression, the runtime system must get the value of the <i>arr[index]</i>
+element. This code was executing with Informix 4gl, but with the default Genero
+behavior, it will abort with error -1326 if the index is greater as the array
+size (i.e. <i>max_index</i>).</p>
+<p>You can use an <a href="FglProfile.html">FGLPROFILE</a>
+entry to control the behavior of the runtime system when an array index is out
+of bounds for a static array:</p>
+<p>&nbsp;&nbsp;&nbsp; <code>fglrun.arrayIgnoreRangeError = true</code></p>
+<p>When the above FGLPROFILE entry is set to true, the runtime system will return the
+<u> first element     of the array</u> if the index is &lt;=0 or greater than     the size of the
+array and continue with the normal program flow.</p>
+<p>Unless legacy code is relying on this behavior, you better leave the default
+to get array out of bounds errors when the index is invalid.</p>
+
+
+<HR>
+
+<h3><a name="USAGE">Usage</a></h3>
+
+<p>Arrays can store a one-, two- or three-dimensional array of variables, all of the
+same type. These can be any of the supported <a href="DataTypes.html">data types</a>
+or a <a href="Records.html">record</a> definition, but it cannot be another array
+(<tt>ARRAY .. OF ARRAY</tt>).</p>
+
+<p>The first syntax (<tt>ARRAY[<i>i</i><u>[</u>,<i>j</i><u>[</u>,<i>k</i><u>]]</u>]</tt>)
+defines traditional static arrays, which are defined with an explicit size for
+all dimensions. Static arrays have a size limit. The biggest static arrays size
+you can define is <b>65535</b>.</p>
+
+<p><b><font color="#FF0000">Warning: </font>Because of backward compatibility with
+Informix 4gl, all elements of static arrays are initialized, even if the array is
+not used. Therefore, it is not recommended that you define huge static arrays, as they 
+can use a lot of memory.</b></p>
+
+<p>The second syntax (<tt>DYNAMIC ARRAY</tt>) defines arrays with a variable
+size. Dynamic arrays have no theoretical size limit. The elements of dynamic arrays are
+allocated automatically by the runtime system, according to the indexes used.</p>
+
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>a1 <tt>ARRAY</tt>[100] <tt>OF INTEGER</tt> -- This is a static array
+<CODE class=linenumber>03</CODE>   <tt>DEFINE </tt>a2 <tt>DYNAMIC ARRAY</tt> <tt>OF INTEGER</tt> -- This is a dynamic array
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> a1[50] = 12456
+<CODE class=linenumber>05</CODE>   <tt>LET</tt> a2[5000] = 12456  -- Automatic allocation for element 5000
+<CODE class=linenumber>06</CODE>   <tt>LET</tt> a1[5000] = 12456  -- Runtime error!
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt></PRE>
+
+<p><b><font color="#FF0000">Warning:</font> A dynamic array element is allocated before it is used. For
+    example, when you assign array element with the <tt>LET</tt> instruction, if
+the element does not exist, it is created automatically. This is also true when
+using a dynamic array in a <tt>FOREACH</tt> loop.</b></p>
+
+
+<p>The elements of an array variable can be of any data type except an array
+    definition, but an element can be a record that contains an array member.</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>arr <tt>ARRAY</tt>[50] <tt>OF RECORD</tt>
+<CODE class=linenumber>03</CODE>            key <tt>INTEGER</tt>, 
+<CODE class=linenumber>04</CODE>            name <tt>CHAR</tt>(10), 
+<CODE class=linenumber>05</CODE>            address <tt>VARCHAR</tt>(200), 
+<CODE class=linenumber>06</CODE>            contacts <tt>ARRAY</tt>[50]<tt> OF VARCHAR</tt>(20) 
+<CODE class=linenumber>07</CODE>   <tt>    END RECORD</tt>
+<CODE class=linenumber>08</CODE>   <tt>LET</tt> arr[1].key = 12456
+<CODE class=linenumber>09</CODE>   <tt>LET</tt> arr[1].name = &quot;Scott&quot;
+<CODE class=linenumber>10</CODE>   <tt>LET</tt> arr[1].contacts[1] = &quot;Bryan COX&quot;
+<CODE class=linenumber>11</CODE>   <tt>LET</tt> arr[1].contacts[2] = &quot;Courtney FLOW&quot;
+<CODE class=linenumber>12</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p> A single array element can be referenced by specifying its coordinates in each dimension of the array.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font>  For Informix 4gl compatibility, the
+compiler allows the .* notation to assign a dynamic array with a record
+structure to another dynamic array with the same structure, but the behavior is
+not clearly specified. Unlike simple records, the array is actually copied <u>by
+reference</u>. We strongly discourage to use the .* notation with dynamic
+arrays.</b></p>
+
+
+<p>The <i>dynamic arrays</i> can be used as function parameter
+(or returning element) and will be passed <u>by reference</u> (i.e. the dynamic array can be modified
+inside the called function, and the caller will see the modifications). You can
+pass a <i>static array</i> as an argument of a function, but this is not
+recommended as all array members will be copied on the stack. Note also that a <i>static
+array</i> cannot be returned from a function.</p>
+<p>In the <tt>DEFINE</tt> section of a <a href="Reports.html"> REPORT</a> statement, formal arguments cannot be
+declared as arrays, nor as <a href="Records.html">record variables</a> that contain
+    array members.</p>
+
+
+<p>If you reference an array element in an r-value, with an index outside the
+allocated dimensions, you get a <b> -1326</b> runtime error:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>a <tt>DYNAMIC ARRAY</tt> <tt>OF INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <tt>LET</tt> a[50] = 12456
+<CODE class=linenumber>04</CODE>   <tt>DISPLAY</tt> a[100]  -- Runtime error
+<CODE class=linenumber>05</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p>Arrays can be queried with the <code>getLength()</code> method, to get the number
+of allocated elements:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>a <tt>DYNAMIC ARRAY</tt> <tt>OF INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <tt>LET</tt> a[5000] = 12456
+<CODE class=linenumber>04</CODE>   <tt>DISPLAY</tt> a.getLength()
+<CODE class=linenumber>05</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p>You can insert a new element at a given position with the <code>insertElement()</code> 
+method. The new element will be initialized to NULL. All subsequent elements are
+moved down by an offset of +1. Dynamic arrays will grow by 1, while static
+arrays will lose the last element:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>a <tt>DYNAMIC ARRAY</tt> <tt>OF INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <tt>LET</tt> a[10] = 11
+<CODE class=linenumber>04</CODE>   <tt>CALL</tt> a.insertElement(10)
+<CODE class=linenumber>05</CODE>   <tt>LET</tt> a[10] = 10
+<CODE class=linenumber>06</CODE>   <tt>DISPLAY</tt> a.getLength() -- shows 11
+<CODE class=linenumber>07</CODE>   <tt>DISPLAY</tt> a[10]  -- shows 10
+<CODE class=linenumber>08</CODE>   <tt>DISPLAY</tt> a[11]  -- shows 11
+<CODE class=linenumber>09</CODE> <tt>END MAIN</tt></PRE>
+
+<p> You can append a new element at
+the end of a dynamic array with the <code>appendElement()</code> 
+method. The new element will be initialized to NULL. Dynamic arrays will grow by 1, while static
+arrays will not be affected by this method:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>a <tt>DYNAMIC ARRAY</tt> <tt>OF INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <tt>LET</tt> a[10] = 10
+<CODE class=linenumber>04</CODE>   <tt>CALL</tt> a.appendElement()
+<CODE class=linenumber>05</CODE>   <tt>LET</tt> a[a.getLength()] = a.getLength()
+<CODE class=linenumber>06</CODE>   <tt>DISPLAY</tt> a.getLength() -- shows 11
+<CODE class=linenumber>07</CODE>   <tt>DISPLAY</tt> a[10]  -- shows 10
+<CODE class=linenumber>08</CODE>   <tt>DISPLAY</tt> a[11]  -- shows 11
+<CODE class=linenumber>09</CODE> <tt>END MAIN</tt></PRE>
+
+<p>The <code>deleteElement()</code> method can be used to remove elements from a
+static or dynamic array. Subsequent elements are moved up by an offset of -1.
+Dynamic arrays will shrink by 1, while static arrays will have NULLs in the last
+element.</p>
+
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>a <tt>DYNAMIC ARRAY</tt> <tt>OF INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <tt>LET</tt> a[10] = 9
+<CODE class=linenumber>04</CODE>   <tt>CALL</tt> a.deleteElement(5)
+<CODE class=linenumber>06</CODE>   <tt>DISPLAY</tt> a.getLength() -- shows 9
+<CODE class=linenumber>07</CODE>   <tt>DISPLAY</tt> a[9]  -- shows 9
+<CODE class=linenumber>08</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p>You can clear an array with the <code>clear()</code> 
+method. When used on a static array, this method sets all elements to NULL. When
+used on a dynamic array, it removes all elements:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>a <tt>DYNAMIC ARRAY</tt> <tt>OF INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <tt>LET</tt> a[10] = 11
+<CODE class=linenumber>04</CODE>   <tt>DISPLAY</tt> a.getLength() -- shows 10
+<CODE class=linenumber>05</CODE>   <tt>CALL</tt> a.clear()
+<CODE class=linenumber>06</CODE>   <tt>DISPLAY</tt> a.getLength() -- shows 0
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p>When used as a <a href="Functions.html">function</a> parameter, static arrays
+are passed <u>by value</u>, while dynamic arrays are passed <u>by reference</u>:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>a <tt>DYNAMIC ARRAY OF INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <tt>CALL</tt> fill(a)
+<CODE class=linenumber>04</CODE>   <tt>DISPLAY</tt> a.getLength() -- shows 2
+<CODE class=linenumber>05</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>06</CODE> <tt>FUNCTION</tt> fill(x)
+<CODE class=linenumber>07</CODE>   <tt>DEFINE </tt>x <tt>DYNAMIC ARRAY OF INTEGER</tt>
+<CODE class=linenumber>08</CODE>   <tt>CALL</tt> x.appendElement()
+<CODE class=linenumber>09</CODE>   <tt>CALL</tt> x.appendElement()
+<CODE class=linenumber>10</CODE> <tt>END FUNCTION</tt></PRE>
+
+
+<p>Array methods can be used on two- and three-dimensional arrays with the
+brackets notation:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>a2 <tt>DYNAMIC ARRAY WITH DIMENSION </tt>2 <tt>OF INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE </tt>a3 <tt>DYNAMIC ARRAY WITH DIMENSION </tt>3 <tt>OF INTEGER</tt>
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> a2[50,100]  = 12456
+<CODE class=linenumber>05</CODE>   <tt>LET</tt> a2[51,1000] = 12456
+<CODE class=linenumber>06</CODE>   <tt>DISPLAY</tt> a2.getLength()         -- shows 51
+<CODE class=linenumber>07</CODE>   <tt>DISPLAY</tt> a2[50].getLength()     -- shows 100
+<CODE class=linenumber>08</CODE>   <tt>DISPLAY</tt> a2[51].getLength()     -- shows 1000
+<CODE class=linenumber>09</CODE>   <tt>LET</tt> a3[50,100,100]  = 12456
+<CODE class=linenumber>10</CODE>   <tt>LET</tt> a3[51,101,1000] = 12456
+<CODE class=linenumber>11</CODE>   <tt>DISPLAY</tt> a3.getLength()         -- shows 51
+<CODE class=linenumber>12</CODE>   <tt>DISPLAY</tt> a3[50].getLength()     -- shows 100
+<CODE class=linenumber>13</CODE>   <tt>DISPLAY</tt> a3[51].getLength()     -- shows 101
+<CODE class=linenumber>14</CODE>   <tt>DISPLAY</tt> a3[50,100].getLength() -- shows 100
+<CODE class=linenumber>15</CODE>   <tt>DISPLAY</tt> a3[51,101].getLength() -- shows 1000
+<CODE class=linenumber>16</CODE>   <tt>CALL</tt> a3[50].insertElement(10)  -- inserts at 50,10
+<CODE class=linenumber>17</CODE>   <tt>CALL</tt> a3[50,10].insertElement(1)-- inserts at 50,10,1
+<CODE class=linenumber>18</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+
+<h4>Example 1: Using static and dynamic arrays.</h4>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>a1 <tt>DYNAMIC ARRAY</tt> <tt>OF INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> a2 <tt>DYNAMIC ARRAY WITH DIMENSION </tt>2<tt> OF INTEGER</tt>
+<CODE class=linenumber>04</CODE>   <tt>DEFINE</tt> a3 <tt>ARRAY</tt>[10<tt>,</tt>20]<tt> OF RECORD</tt>
+<CODE class=linenumber>05</CODE>               id <tt>INTEGER</tt>,
+<CODE class=linenumber>06</CODE>               name <tt>VARCHAR</tt>(100),
+<CODE class=linenumber>07</CODE>               birth <tt>DATE</tt>
+<CODE class=linenumber>08</CODE>            <tt>END RECORD</tt>
+<CODE class=linenumber>09</CODE>   <tt>LET</tt> a1[5000] = 12456
+<CODE class=linenumber>10</CODE>   <tt>LET</tt> a2[5000,300] = 12456
+<CODE class=linenumber>11</CODE>   <tt>LET</tt> a3[5,1].id = a1[50]
+<CODE class=linenumber>12</CODE>   <tt>LET</tt> a3[5,1].name = 'Scott'
+<CODE class=linenumber>13</CODE>   <tt>LET</tt> a3[5,1]<tt>.</tt>birth = <tt>TODAY</tt>
+<CODE class=linenumber>14</CODE> <tt>END MAIN</tt></PRE>
+
+
+<h4>Example 2: Here is the recommended way to fetch rows into a dynamic array.</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>SCHEMA </tt>stores
+<CODE class=linenumber>02</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE </tt>a <tt>DYNAMIC ARRAY</tt> <tt>OF RECORD LIKE </tt>customer.*
+<CODE class=linenumber>04</CODE>   <tt>DEFINE </tt>r <tt>RECORD LIKE </tt>customer.*
+<CODE class=linenumber>05</CODE>   <tt>DATABASE</tt> stores
+<CODE class=linenumber>06</CODE>   <tt>DECLARE</tt> c <tt>CURSOR FOR SELECT </tt>* <tt>FROM</tt> customer
+<CODE class=linenumber>07</CODE>   <tt>FOREACH</tt> c <tt>INTO</tt> r.*
+<CODE class=linenumber>08</CODE>     <tt>CALL</tt> a.appendElement()
+<CODE class=linenumber>09</CODE>     <tt>LET</tt> a[a.getLength()].* = r.*
+<CODE class=linenumber>10</CODE>   <tt>END FOREACH</tt>
+<CODE class=linenumber>11</CODE>   <tt>DISPLAY </tt>&quot;Rows found: &quot;, a.getLength()
+<CODE class=linenumber>12</CODE> <tt>END MAIN</tt></PRE>
+
+
+</BODY>
+</HTML>

@@ -1,0 +1,518 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>2.0x Upgrade Guide</TITLE>
+<META http-equiv="Content-Type" content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+
+<HR>
+
+<H1>2.0x Upgrade Guide</H1>
+
+<p>This page describes product changes you must be aware of when upgrading from version <b>1.xx</b> to version
+<b>2.0x</b> of Genero BDL.</p>
+
+<p><b><font color="#FF0000">Warning:</font> This is an incremental upgrade guide
+that covers only topics related to a specific version of Genero. Also check
+prior upgrade guides if you migrate from an earlier version.</b></p>
+
+<p>Summary:</p>
+<ol>
+  <li><a href="#DesupportedPlatforms">De-supported platforms</a></li>
+  <li><a href="#FrontEndCompatibility">Front-end compatibility</a></li>
+  <li><a href="#pcode-compat">P-Code compatibility</a></li>
+  <li><a href="#DesupportedInformixClients">De-supported Informix client
+    environments</a></li>
+  <li><a href="#fglmkrtm_removed">fglmkrtm installation tool removed</a></li>
+  <li><a href="#fglinstall_removed">fglinstall installation tool removed</a></li>
+  <li><a href="#NoMoreFglmkrun">Runner creation is no longer needed</a></li>
+  <li><a href="#LinkingUtilityLibrary">Linking the utility functions library</a></li>
+  <li><a href="#StaticCExtensions">Static C Extensions are de-supported</a></li>
+  <li><a href="#DynamicCExtensions">Dynamic C Extensions usage changes</a></li>
+  <li><a href="#WantColumnsAnchored">WantColumnsAnchored attribute is de-supported</a></li>
+  <li><a href="#PixelWidthHeight">PixelWidth / PixelHeight attributes are de-supported</a></li>
+  <li><a href="#PrefetchOracle">Pre-fetch parameters with Oracle</a></li>
+  <li><a href="#DesupPostgreSQL7">PostgreSQL 7 is de-supported</a></li>
+  <li><a href="#DesupAdabasD">Adabas D is de-supported</a></li>
+  <li><a href="#PreprocessorSyntax">Preprocessor directive syntax changed</a></li>
+  <li><a href="#StaticSQLCacheRemoved">Static SQL cache is removed</a></li>
+  <li><a href="#ConnectionDatabaseSchema">Connection database schema specification</a></li>
+  <li><a href="#fgldbsch">FGLDBSCH schema extraction tool</a></li>
+  <li><a href="#GlobalModuleVariable">Global and module variables using the same name</a></li>
+  <li><a href="#ConnectionParametersInformix">Connection Parameters in FGLPROFILE when using Informix</a></li>
+  <li><a href="#DesupSQLServer7">SQL Server 7 is de-supported</a></li>
+  <li><a href="#OpenUsingForeach">OPEN USING followed by FOREACH</a></li>
+  <li><a href="#InconsistentUsingClauses">Inconsistent USING clauses</a></li>
+  <li><a href="#FESQLC">FESQLC not provided in 2.00</a></li>
+  <li><a href="#RunInFormMode">Usage of RUN IN FORM MODE</a></li>
+  <li><a href="#TTYAndColorWhere">TTY and COLOR WHERE attribute</a></li>
+  <li><a href="#AutoHVBox">Automatic HBox/VBox</a></li>
+</ol>
+
+<HR>
+
+<h2><a name="DesupportedPlatforms">1. De-supported platforms</a></h2>
+<p>The following platforms are no longer supported by Genero BDL <b>2.0x</b>:</p>
+
+<ul>
+  <li>SUN Solaris 8-bit and 32-bit.</li>
+  <li>IBM AIX 4.3.3 and AIX 32-bit.</li>
+  <li>SCO Unixware lower than 7.1.3.</li>
+</ul>
+<p>For information about supported platforms, please refer to the <a href="Installation.html#INST_SUPPOS">Installation
+and Setup</a> section of this manual.</p>
+
+<HR>
+
+<h2><a name="FrontEndCompatibility">2. Front-end compatibility</a></h2>
+<p>Some <b>2.0x</b> bug fixes and new features needed modifications inside runtime system (fglrun)
+and front-ends (gdc, gwc). Therefore, if you upgrade the runtime system to the
+latest <b>2.0x</b> version, we strongly recommend to upgrade your workstations
+with the latest front-end version <b>2.0x</b> as well.</p>
+
+<HR>
+
+<h2><a name="pcode-compat">3. P-Code Compatibility</a></h2>
+<p>As a general rule, when upgrading to a major or minor version like 1.33 to
+2.00 or 2.00 to 2.02, you must recompile all your <b>.4gl</b> modules and <b>.per</b> form
+files. Re-compilation is not required when upgrading to a new maintenance
+release like 2.00.01 to 2.00.02.</p>
+
+<p>See also <a href="Installation.html#INST_UPGRADING">Installation and Setup</a>.</p>
+
+<HR>
+
+<h2><a name="DesupportedInformixClients">4. De-supported Informix client
+environments</a></h2>
+<p>The database interface of Genero BDL <b>2.00</b> was re-designed to allow
+dynamic loading of database drivers. The following Informix drivers and
+environments have been de-supported with this re-design:</p>
+
+<ul>
+  <li>ix210: Informix ESQL/C 2.10</li>
+  <li>ix410: Informix ESQL/C 4.10</li>
+  <li>ix501: Informix ESQL/C 5.01</li>
+  <li>ix711: Informix ESQL/C 7.11</li>
+  <li>ix720: Informix ESQL/C 7.20</li>
+</ul>
+
+<p>If required, old Informix drivers can be re-enabled in a next Genero BDL
+version. However, we strongly recommend you to upgrade the Informix Client
+Software development Kit (CSDK) to the most recent version supported by Genero
+BDL (see <a href="Installation.html#INST_SR_DBCLIENT">Installation notes</a>).</p>
+
+<HR>
+
+<h2><a name="fglmkrtm_removed">5. Setup installation tool removed</a></h2>
+<p>The <b>fglmkrtm</b> tool has been removed from the distribution. This tool
+was provided in previous versions to create a fglrun runner with the correct 
+database driver. In version <b>2.0x</b>, database drivers are now always loaded 
+dynamically. Refer to <a href="Connections.html">Connections</a> for more details
+about database driver configuration.</p>
+
+<HR>
+
+<h2><a name="fglinstall_removed">6. fglinstall installation tool removed</a></h2>
+<p>The <b>fglinstall</b> tool has been removed from the distribution. This tool
+was provided in previous versions to compile product message files, form files,
+and program modules provided in the distribution. The compiled versions of all
+these files are now included in the package.</p>
+
+<HR>
+
+<h2><a name="NoMoreFglmkrun">7. Runner creation is no longer needed</a></h2>
+<p>In version <b>2.0x</b>, you do not need to build a runner. The architecture is now based on shared libraries (or DLLs on
+Windows), and the database drivers are automatically loaded according to <a href="FglProfile.html">FGLPROFILE</a>
+configuration parameters.</p>
+<p>If you have C Extensions, you must re-build them as shared libraries. Refer 
+to <a href="CExtensions.html">C
+Extensions</a> for more details.</p>
+
+<h4><font color="#FF0000">Warning</font>: Database vendor client libraries (libclntsh,
+libcli, libpq, libaodbc) must be provided as shared objects (or DLL on Windows).</h4>
+
+<HR>
+
+<h2><a name="LinkingUtilityLibrary">8. Linking the utility functions library</a></h2>
+<p>In version <b>1.3x</b>, some utility functions (canvas draw* and database
+db_* functions) were linked automatically to the 42r program when using fglrun
+-l or fgllink. These functions are implemented in the fgldraw.4gl and
+fgldbutl.4gl modules, which were linked in the <b>libfgl.42x</b>  library and loaded automatically at runtime by fglrun.</p>
+<p>In version <b>2.0x</b>, all utility functions are now in the <b>libfgl4js.42x</b>
+library. So, if you use the draw* or db_* utility functions, you must now add
+the <b>libfgl4js.42x</b> library explicitly when using fglrun -l or fgllink, or
+you can use the fgl2p tool to link .42r programs. The fgl2p tool links the
+program with the <b>libfgl4js.42x</b> library by default.</p>
+<p>Note that starting with version <b>2.21</b>, the <b>libfgl.42x</b>
+library is no longer provided.</p>
+<p>Refer to <a href="UtilityFunctions.html">Utility Functions</a> for more details.</p>
+
+<HR>
+
+<h2><a name="StaticCExtensions">9. Static C Extensions are de-supported</a></h2>
+<p>In version <b>2.0x</b>, Static C Extensions must be re-written as Dynamic C
+Extensions.</p>
+<p>Refer to <a href="CExtensions.html">C
+Extensions</a> for more details.</p>
+
+<HR>
+
+<h2><a name="DynamicCExtensions">10. Dynamic C Extensions usage changes</a></h2>
+<p>In version <b>1.3x</b>, you must use <a href="FglProfile.html"> FGLPROFILE</a> entries to specify Dynamic C Extensions
+to be loaded at runtime.</p>
+<p>In version <b>2.0x</b>, Dynamic C Extensions are automatically loaded
+according to <a href="Programs.html#IMPORT"> IMPORT</a> instructions. The FGLPROFILE entries are no longer
+used.</p>
+<h4><font color="#FF0000">Warning:</font> Global variables (userData) can no 
+longer be
+shared between the runtime system and the C extensions. You must use
+functions to pass global variable values.</h4>
+<p>There is no longer a need to define the FGL_API_MAIN macro in the
+extension interface file.</p>
+
+<p>All C data type definitions are now centralized in the fglExt.h header file,
+header files like Date.h, MyDecimal.h have been removed from the distribution.</p>
+
+<p>Refer to <a href="CExtensions.html">C
+Extensions</a> for more details.</p>
+
+<HR>
+
+<H2><a name="WantColumnsAnchored">11. WantColumnAnchored attribute is de-supported</a></H2>
+
+<p>In version <b>1.3x</b>, the <tt>WANTCOLUMNSANCHORED</tt> attribute was
+undocumented but still supported by the language, to simplify migration from <b>1.20</b>.</p>
+
+<p>In version <b>2.0x</b>, the <tt>WANTCOLUMNSANCHORED</tt>  attribute is
+de-supported; you must use
+<a href="FSFAttributes.html#FA_UNMOVABLECOLUMNS">UNMOVABLECOLUMNS</a> to specify that table columns cannot be moved around by the user.</p>
+
+<HR>
+
+<H2><a name="PixelWidthHeight">12. PixelWidth / PixelHeight attribute is
+de-supported</a></H2>
+
+<p>In version <b>1.3x</b>, the <tt>PIXELWIDTH</tt> and <tt>PIXELHEIGHT</tt> attributes
+were used to specify the real size of an <a href="FormSpecFiles.html#FF_ITEMTYPE_IMAGE">IMAGE</a>
+form item.</p>
+
+<p>In version <b>2.0x</b>, you must use the <a href="FSFAttributes.html#FA_WIDTH">WIDTH</a>
+and <a href="FSFAttributes.html#FA_HEIGHT">HEIGHT</a> attributes to specify
+the size of an image:</p>
+
+<p>In the <b>.per</b> form file:</p>
+
+<pre><code class="linenumber">01</code> <tt>IMAGE</tt> img1 = <tt>FORMONLY.</tt>image1, <tt>HEIGHT </tt>= 100 <tt>PIXELS</tt>, <tt>WIDTH </tt>= 100 <tt>PIXELS</tt>;</pre>
+
+<p>The <tt>PIXELWIDTH</tt> and <tt>PIXELHEIGHT</tt> attributes are still
+supported by the form compiler, but are deprecated and will be removed in a
+future version.</p>
+
+<HR>
+
+<h2><a name="PrefetchOracle">13. Pre-fetch parameters with Oracle</a></h2>
+<p>Pre-fetch parameters allow an application to automatically fetch rows from the Oracle
+database when opening a cursor.</p>
+<p>In version <b>1.3x</b>, the default pre-fetch parameters are 50 rows and 65535
+bytes for the pre-fetch buffer. Some customers experienced a huge memory usage
+with those default values, when using a lot of cursors: It appears that the
+Oracle client is allocating a buffer of pre-fetch.memory (i.e. 64 Kbytes) for
+each cursor.</p>
+<p>In version <b>2.0x</b>, the default is 10 rows and 0 (zero) bytes for
+the pre-fetch buffer (memory), meaning that memory is not included in computing the number of
+rows to pre-fetch.</p>
+<p>For more details, refer to <a href="Connections.html#DS_ODI_DBVSPEC">Connections</a>.</p>
+
+<HR>
+
+<h2><a name="DesupPostgreSQL7">14. PostgreSQL 7 is de-supported</a></h2>
+<p>Version <b>1.3x</b> supports <b>PostgreSQL 7.1.x</b>, <b>7.2.x</b>, <b>7.3.x</b>,
+<b>7.4.x</b>.</p>
+
+<p>Version <b>2.0x</b> now de-supports all PostgreSQL versions <b>7</b>, but supports <b>PostgreSQL 8</b> and higher.</p>
+
+<p>Remark: <b>PostgreSQL 8</b> is available on Windows platforms.</p>
+
+<HR>
+
+<h2><a name="DesupAdabasD">15. Adabas D is de-supported</a></h2>
+<p> Version <b>2.0x</b> 
+ no longer supports <b>Adabas D 12</b>.</p>
+
+<HR>
+
+<h2><a name="PreprocessorSyntax">16. Preprocessor directive syntax changed</a></h2>
+
+<p>In version <b>1.3x</b>, the preprocessor directives start with a (<b>#</b>)
+sharp character, to be compliant with standard preprocessors (like <b>cpp</b>). 
+This caused too many conflicts with standard language comments that use
+the same character:</p>
+<pre><code class="linenumber">01</code> <tt>#include </tt>&quot;myheader.4gl&quot;
+<code class="linenumber">02</code> # This is a comment</pre>
+<p>In version <b>2.0x</b>, the preprocessor directives start with an
+ampersand character (&amp;):</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>&amp;include </tt>&quot;myheader.4gl&quot;
+<CODE class=linenumber>02</CODE> <tt>FUNCTION</tt> debug( msg )
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> msg <tt>STRING</tt>
+<CODE class=linenumber>04</CODE> <tt>&amp;ifdef </tt>DEBUG
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY</tt> msg
+<CODE class=linenumber>06</CODE> <tt>&amp;endif</tt>
+<CODE class=linenumber>07</CODE> <tt>END FUNCTION</tt></PRE>
+
+<p>The preprocessor is now integrated in the compiler, to achieve faster compilation.</p>
+
+<h4><font color="#FF0000">Warning:</font> To simplify the migration, the # sharp
+character is still supported when using the -p fglpp option of compiler.
+However, you should review your source code and use the &amp; character instead;
+# sharp will be de-supported in a future version.</h4>
+
+<HR>
+
+<h2><a name="StaticSQLCacheRemoved">17. Static SQL cache is removed</a></h2>
+<p> In version <b>1.3x</b>, the size of the static SQL cache is defined by a
+<a href="FglProfile.html">FGLPROFILE</a>
+entry:</p>
+<pre>dbi.sql.static.optimization.cache.size = <i>max</i></pre>
+<p>This entry was provided to optimize SQL execution without touching code using
+a lot of static SQL statements, especially when using non-Informix databases
+where the execution of static SQL statements is slower than with Informix. This is
+useful for fast migrations, but there were a lot of side effects and unexpected
+errors (refer to &quot;Connections&quot; in <b>1.3x</b> documentation for more
+details).</p>
+<p>In version <b>2.0x</b>, the Static SQL Cache has been removed for the reasons
+described above. Programs continue to run without changing the code, but if you
+want to optimize program execution, you must use <a href="DynamicSql.html">Dynamic
+SQL</a> (PREPARE + EXECUTE) as described in &quot;<a href="SqlProgramming.html#PERF_DYNSQL">SQL
+Programming</a>&quot;.</p>
+
+<HR>
+
+<h2><a name="ConnectionDatabaseSchema">18. Connection database schema specification</a></h2>
+<p> Version <b>1.3x</b> has an <a href="FglProfile.html">FGLPROFILE</a>
+entry to specify the database schema at runtime:</p>
+<pre>dbi.database.<i>dbname</i>.schema = &quot;<i>schema-name</i>&quot;</pre>
+<p>This entry could be used to select the native database schema after
+connecting to the server, for Oracle and Db2 only.</p>
+<p>In version <b>2.0x</b>, this entry is now specific to the Oracle and Db2
+database driver configuration parameters:</p>
+
+<pre>dbi.database.<i>dbname</i>.ora.schema = &quot;<i>schema-name</i>&quot;
+dbi.database.<i>dbname</i>.db2.schema = &quot;<i>schema-name</i>&quot;</pre>
+<p>For other database servers, this configuration parameter is not defined.</p>
+
+<h4><font color="#FF0000">Warning:</font> It is no longer possible to specify the
+&quot;schema&quot; parameter in the connection string (dbname+schema='name').</h4>
+
+<p>For more details, refer to <a href="Connections.html">Connections</a>.</p>
+
+<HR>
+
+<h2><a name="fgldbsch">19. FGLDBSCH schema extraction tool</a></h2>
+<p> <u>Unique tool</u></p>
+<p> Version <b>1.3x</b>  provides two schema extractors: fglschema and fgldbsch.
+The first can only extract schemas from Informix databases, while the second one
+can extract schemas from all supported databases.&nbsp;</p>
+<p>In version <b>2.0x</b>, the <a href="Tools.html#TL_FGLDBSCH">fgldbsch</a>
+tool has been extended to support the old fglschema options, and fglschema has
+been replaced by a simple script calling fgldbsch. When you call fglschema, you
+actually call fgldbsch. We recommend that you use fgldbsch with its specific <a href="Tools.html#TL_FGLDBSCH">options</a>.</p>
+
+<p><u>System tables</u></p>
+
+<p>  In 2.0x, <a href="Tools.html#TL_FGLDBSCH">fgldbsch</a> does not extract
+system tables by default. You must specify the -st option to get the system
+tables description in the schema files.</p>
+
+<p><u>Remote synonyms</u></p>
+
+<p>The original fglschema tool was searching for <i>remote synonyms</i> with
+Informix databases. The <a href="Tools.html#TL_FGLDBSCH">fgldbsch</a> tool of <b>
+2.0x</b>
+does not search for remote synonyms.</p>
+
+<p><u>Public and private synonyms</u></p>
+
+<p>Since bug fix <b>#5021</b> (build <b>620.313</b>), <a href="Tools.html#TL_FGLDBSCH">fgldbsch</a>
+does not extract <i>private synonyms</i> anymore. Only <i>public synonyms</i>
+are extracted. The <b>.sch</b> schema files do not contain table owners, and if two
+<i>private synonyms</i> have the same names, there is no way to distinguish them
+in the schema files. Therefore, to avoid any mistakes, <i>private synonyms</i>
+are not extracted anymore.</p>
+
+<p>See also: <a href="DatabaseSchema.html">Database Schema</a>.</p>
+
+<HR>
+
+<h2><a name="GlobalModuleVariable">20. Global and module variables using the same
+name</a></h2>
+<p>An important compiler bug has been fixed in <b>2.0x</b>. This bug is
+referenced as <b>#5752</b>: When you declare a module variable with the same
+name as a global variable, a compilation error must be thrown.</p>
+<p>This is critical to avoid confusion with the variable usage:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>GLOBALS</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> level <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE> <tt>END GLOBALS</tt></PRE>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>GLOBALS </tt>&quot;globals.4gl&quot;
+<CODE class=linenumber>02</CODE> <tt>DEFINE</tt> level <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE> <tt>FUNCTION</tt> func1()
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> level = 123  -- is this the global or the module variable?
+<CODE class=linenumber>05</CODE> <tt>END FUNCTION</tt></PRE>
+
+<p>In version <b>1.3x</b>, the compiler did not detect this and the module variable was
+used, but one might want to use the global variable instead!</p>
+<p>If you have module variables defined with the same name as global variables,
+the compiler now raises the following error:</p>
+<pre>-4319: The symbol 'variable-name' has been defined more than once.</pre>
+<p>You can easily fix this by renaming the module variable. There is no risk to
+do this modification, since the module variable was used in <b>1.3x</b>, not the global
+variable.</p>
+
+<p>Remark: The compiler now also detects duplicate global variable declaration.
+Just remove the duplicated lines in your source.</p>
+
+<HR>
+
+<h2><a name="ConnectionParametersInformix">21. Connection parameters in 
+FGLPROFILE when using Informix</a></h2>
+<p>In version <b>1.3x</b>, the dbi.database.* connection parameters defined in <a href="FglProfile.html">FGLPROFILE</a>
+are ignored by the Informix drivers.</p>
+<p>In version <b>2.0x</b>, the dbi.database.* connection parameters defined in <a href="FglProfile.html">FGLPROFILE</a>
+are used by the Informix driver, as well as other database vendor drivers. For example, if
+you connect to the database &quot;stores&quot;, and you have the following entries
+defined, the driver tries to connect as &quot;user1&quot; with password
+&quot;alpha&quot;:</p>
+<pre>dbi.database.<i>stores</i>.username = &quot;<i>user1</i>&quot;
+dbi.database.<i>stores</i>.password = &quot;<i>alpha</i>&quot;</pre>
+
+<p>You typically get SQL errors -387 or -329 when the wrong database login or
+the wrong database name is used.</p>
+
+<p>For more details, refer to <a href="Connections.html">Connections</a>.</p>
+
+<HR>
+
+<h2><a name="DesupSQLServer7">22. SQL Server 7 desupported</a></h2>
+<p>In version <b>2.0x</b>, <b> Microsoft SQL Server 7</b> is no longer supported.
+Microsoft support of this version ended the<b> first of January 2006</b>.</p>
+<p>Only <b>SQL Server 2000</b> and <b>2005</b> are supported by Genero <b>2.0x</b>. 
+You
+must upgrade your server to one of these versions of SQL Server.</p>
+
+<HR>
+
+<h2><a name="OpenUsingForeach">23. OPEN USING followed by FOREACH</a></h2>
+<h4><font color="#FF0000">Warning:</font> This topic applies to non-Informix databases
+only, and is no more an issue since version 2.11.11.&nbsp;</h4>
+<p>In version <b>1.3x</b>, you could use an OPEN USING instruction to specify
+the SQL parameters of a following FOREACH:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>PREPARE </tt>st1 <tt>FROM</tt> &quot;SELECT * FROM tab WHERE col&gt;?&quot;
+<CODE class=linenumber>02</CODE> <tt>DECLARE </tt>cu1 <tt>CURSOR FOR</tt> st1
+<CODE class=linenumber>03</CODE> <tt>OPEN </tt>cu1 <tt>USING</tt> var
+<CODE class=linenumber>04</CODE> <tt>FOREACH</tt> cu1 <tt>INTO</tt> rec.*
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY</tt> rec.*
+<CODE class=linenumber>06</CODE> <tt>END FOREACH</tt></PRE>
+
+<p>In this case, the FOREACH instruction was reusing the parameters provided in
+the last OPEN instruction. Supporting such a feature is complex and deters the 
+proper
+improvement of the database interface and database drivers. It was provided to
+support compatibility with very old Informix 4GL compilers, but it is not proper
+SQL programming.</p>
+<p>The database interface of version <b>2.00</b> has been rewritten for better performance. The above usage of FOREACH is no
+longer supported.</p>
+<p>To work around this issue, you can safely remove the OPEN instruction and put
+the USING clause in the FOREACH instruction:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>PREPARE </tt>st1 <tt>FROM</tt> &quot;SELECT * FROM tab WHERE col&gt;?&quot;
+<CODE class=linenumber>02</CODE> <tt>DECLARE </tt>cu1 <tt>CURSOR FOR</tt> st1
+<CODE class=linenumber>03</CODE> <tt>FOREACH</tt> cu1 <tt>USING</tt> var <tt>INTO</tt> rec.*
+<CODE class=linenumber>04</CODE>   <tt>DISPLAY</tt> rec.*
+<CODE class=linenumber>05</CODE> <tt>END FOREACH</tt></PRE>
+
+<p>This limitation has been removed in Genero BDL version <b>2.11.11</b> (bug
+#12002).</p>
+
+<HR>
+
+<h2><a name="InconsistentUsingClauses">24. Inconsistent USING clauses</a></h2>
+
+<h4><font color="#FF0000">Warning:</font> This issue applies to non-Informix databases only.</h4>
+<p>In version <b>1.3x</b>, it was possible to execute a prepared statement with
+the variable list changing at each <a href="DynamicSql.html#DS_EXECUTE">EXECUTE</a>
+statement:&nbsp;</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>DEFINE </tt>var1 <tt>DECIMAL</tt>(6,2)
+<CODE class=linenumber>02</CODE> <tt>DEFINE </tt>var2 <tt>CHAR</tt>(10)
+<CODE class=linenumber>03</CODE> <tt>DEFINE </tt>var3 <tt>DATE</tt>
+<CODE class=linenumber>04</CODE> <tt>PREPARE </tt>st1 <tt>FROM</tt> &quot;INSERT INTO tab1 VALUES ( ?. ?, ? )&quot;
+<CODE class=linenumber>05</CODE> <tt>EXECUTE </tt>st1 <tt>USING </tt>var1, var2, var3
+<CODE class=linenumber>06</CODE> <tt>EXECUTE </tt>st1 <tt>USING </tt>var2, var3, var1   -- different order = different data types</PRE>
+
+<p>The database interface of version <b>2.0x</b> has been rewritten for better performance. Having data types changing at each
+execute is no longer supported.</p>
+<p>Error <b>-254</b> will be raised if different data types are used in
+subsequent EXECUTE statements (with the same statement name).</p>
+
+<HR>
+
+<h2><a name="FESQLC">25. FESQLC not provided in 2.00</a></h2>
+
+<p>Genero BDL version <b>1.33</b>  has included an ESQL/C preprocessor named
+FESQLC. This component provides both SQL support and C API functions to
+manipulate complex types as dec_t.</p>
+<p>Because of runtime system architecture changes, the FESQLC preprocessor could
+not be shipped with <b>2.00</b>. However, version <b>2.01</b> provides again the
+FESQLC tool. Note also that version <b>2.00</b> implements Informix specific C
+API functions, to deploy your application without the Informix client software.
+For more details about the supported C API functions, have a look at the <a href="CExtensions.html">C
+Extensions</a>  page.</p>
+
+<HR>
+
+<h2><a name="RunInFormMode">26. Usage of RUN IN FORM MODE</a></h2>
+<p>In version <b>1.3x</b>, RUN...IN FORM MODE was recommended to run
+interactive applications.</p>
+<p>In version <b>2.0x</b>, RUN ... IN LINE MODE is recommended to run 
+interactive applications. The RUN command should be used as follows (in both <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a> and
+<a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a> mode):</p>
+<ol>
+  <li>When starting an interactive program, either use RUN ... IN LINE MODE or, 
+	if the default mode is LINE MODE, use the RUN instruction without
+    any option.</li>
+  <li>When starting a batch program that does not display any message, you
+    should use RUN ... IN FORM MODE.</li>
+</ol>
+<p>For more details about the RUN options, see the <a href="Programs.html#RUN">RUN</a>
+instruction.</p>
+
+<HR>
+
+<h2><a name="TTYAndColorWhere">27. TTY and COLOR WHERE attribute</a></h2>
+<p>In version <b>1.3x</b>, only some field types like EDIT or TEXTEDIT could
+support TTY attributes (COLOR, REVERSE), and the conditional COLOR WHERE
+attribute.</p>
+<p>In version <b>2.0x</b>, all type of fields now allow TTY attributes and
+the conditional <a href="FSFAttributes.html#FA_COLOR_WHERE">COLOR WHERE</a>
+attribute. So when using any ATTRIBUTE(&lt;tty-attribute&gt;) in programs, all
+fields will now be affected. For example, CHECKBOX and RADIOGROUP fields will
+now get a colored background, while in <b>1.3x</b> it was not the case.</p>
+
+<HR>
+
+<h2><a name="AutoHVBox">28. Automatic HBox/VBox</a></h2>
+<p>Starting with version <b>2.02.01</b>, the form compiler automatically adds
+HBox and VBox containers with splitter around stretchable form elements that are
+placed side-by-side. Thus, when recompiling your forms with this new version of <a href="Tools.html#TL_FGLFORM">fglform</a>,
+the generated <b>.42f</b> can get additional HBox/VBox nodes even if you did not
+touch the <b>.per</b> source file.</p>
+
+<p>For more details, see <a href="Layout.html#AUTO_HVBOX">Automatic Horizontal
+and Vertical Boxes</a> in the Form Rendering page.</p>
+
+</BODY>
+
+</HTML>

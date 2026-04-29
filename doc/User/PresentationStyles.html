@@ -1,0 +1,2595 @@
+<html>
+<head>
+    <title>Presentation Styles</title>
+    <meta http-equiv="Content-Type" content="text/html">
+    <link href="../FglTechRef.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+    <p>
+        <a href="../index.html">Back to Contents</a></p>
+    <hr>
+    <h1>
+        Presentation Styles</h1>
+    <p>
+        Summary:</p>
+    <ul>
+        <li><a href="#INTRO">Introduction</a>
+        <li><a href="#SYNTAX">Syntax</a>
+        <li><a href="#USAGE">Usage</a>
+        <ul>
+            <li><a href="#DEF_STYLE">Defining a Style</a></li>
+            <li><a href="#PSEUDO_SELECTORS">Pseudo selectors</a></li>
+            <li><a href="#USING_A_STYLE">Using a specific style</a>
+            <li><a href="#COMBINING_STYLES">Combining styles</a>
+            <li><a href="#STYLE_INHER">Style attribute inheritance</a>
+            <li><a href="#STYLES_IN_AUI">Styles in the AUI tree</a>
+            <li><a href="#XML_STYLE_FILE">Loading Presentation Styles</a>
+            <li><a href="#4ST_EXAMPLE">Example of 4st file content</a></li>
+            <li><a href="#LOAD_EXAMPLE">Example of 4st file loading</a></li>
+            <li><a href="#TTY_VS_STYLE_ATT">Combining TTY and Style attributes</a></li>
+        </ul>
+        </li>
+        <li><a href="#Element_Types">Element Types</a><li><a href="#COLORS">Colors</a>
+        <li><a href="#USING_FONTS">Using Fonts</a>
+        <li><a href="#FONTFAMILY">Font Families</a>
+        <li><a href="#FONTSIZE">Font Sizes</a>
+        <li><a href="#STYATT_REFERENCE">Style Attributes Reference</a><ul>
+            <li><a href="#STYATT_COMMON">Common Style Attributes</a>
+            <li><a href="#STYATT_WINDOW">Window Style Attributes </a>
+            <li><a href="#STYATT_STARTMENU">StartMenu Style Attributes</a>
+            <li><a href="#STYATT_MDI">MDI Container Style Attributes</a>
+            <li><a href="#STYATT_FOLDER">Folder Style Attributes</a>
+            <li><a href="#STYATT_ACTION">Action Style Attributes</a>
+            <li><a href="#STYATT_BUTTON">Button Style Attributes</a>
+            <li><a href="#STYATT_BUTTONEDIT">ButtonEdit Style Attributes</a>
+            <li><a href="#STYATT_TABLE">Table Style Attributes</a></li>
+            <li><a href="#STYATT_COMBOBOX">ComboBox Style Attributes</a></li>
+            <li><a href="#STYATT_DATEEDIT">DateEdit Style Attributes</a></li>
+            <li><a href="#STYATT_LABEL">Label Style Attributes</a></li>
+            <li><a href="#STYATT_IMAGE">Image Style Attributes</a></li>
+            <li><a href="#STYATT_MENU">Menu Style Attributes</a></li>
+            <li><a href="#STYATT_MESSAGE">Message Style Attributes</a></li>
+            <li><a href="#STYATT_PROGRESSBAR">ProgressBar Style Attributes</a></li>
+            <li><a href="#STYATT_RADIOGROUP">RadioGroup Style Attributes</a></li>
+            <li><a href="#STYATT_TEXTEDIT">TextEdit Style Attributes</a></li>
+            <li><a href="#STYATT_TOOLBAR">Toolbar Style Attributes</a></li>
+        </ul>
+        </li>
+    </ul>
+    <p>
+        <i>See also:</i> <a href="DynamicUI.html">Dynamic User Interface</a>.</p>
+    <hr>
+    <h2>
+        <a name="INTRO">Introduction</a></h2>
+    <p>
+        Presentation Styles allow you to define a set of decoration properties to be used in graphical
+        objects.
+        Presentation Styles are provided to centralize attributes related to the
+        appearance of user interface elements. </p>
+    <p>
+        Typical presentation attributes define font properties and foreground
+        and background colors. Some presentation attributes will be specific to
+        a given class of widgets (like the first day of week in a DATEEDIT). </p>
+    <p>
+        Presentation Styles are defined in a resource file having an extension 
+		of <b>4st,</b>&nbsp; which
+        must be distributed with other runtime files. </p>
+    <hr>
+    <h2>
+        <a name="SYNTAX">Syntax</a></h2>
+    <code>&lt;StyleList&gt;<br>
+        &nbsp; &lt;Style name=&quot;<i>style-identifier</i>&quot; &gt;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp; &lt;StyleAttribute name=&quot;<i>attribute-name</i>&quot;
+        value=&quot;<i>attribute-value</i>&quot; /&gt;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp; <u>[...]</u><br>
+        &nbsp; &lt;/Style&gt;<br>
+        &nbsp; <u>[...]</u><br>
+        &lt;/StyleList&gt;</code>
+    <p>
+        where <i>style-identifier</i> can be:</p>
+    <p>
+        <code><u>{</u> *<br>
+            <u>|</u> <i>element-type</i><br>
+            <u>|</u> .s<i>tyle-name</i><br>
+            <u>|</u> <i>element-type</i>.s<i>tyle-name</i> <u>}</u></code></p>
+    <h4>
+        Notes:</h4>
+    <ol>
+        <li><i>element-type</i> defines the type of the graphical object (for example, <code>
+            Window</code>).
+        <li><i>style-name</i> is the name of a specific style referenced by graphical objects
+            using the <code>style</code>
+        attribute.
+        <li><i>attribute-name</i>
+        defines the name of the attribute.
+        <li><i>attribute-value</i> defines the value to be assigned to <i>attribute-name</i>.</li>
+    </ol>
+    <hr>
+    <h2>
+        <a name="USAGE">Usage</a></h2>
+    <p>
+        Presentation Styles centralize the attributes related to the decoration 
+		of the elements of the user interface. Note that Presentation Styles are
+        only supported for the GUI front-ends. If you design an application for
+        the TUI mode, you can use TTY attributes. Styles are applied implicitly by 
+		using global styles, or explicitly by naming a specific style in the <code>
+            style</code> attribute of the element.</p>
+    <h3>
+        <u><a name="DEF_STYLE">Defining a style</a></u></h3>
+    <p>
+        &nbsp;In the definition of a style, the 'name' attribute
+        is used as a selector to apply style attributes to graphical elements.</p>
+	<p>
+        You can define a style as global or specific:</p>
+	<ul>
+		<li>A style identified by a star (*) is a global style that is automatically applied
+        to all elements:</li>
+	</ul>
+	<blockquote>
+		<pre><code class="linenumber">01</code> &lt;Style name=&quot;*&quot; &gt;</pre>
+	</blockquote>
+	<ul>
+		<li>A style identified by an <i>element-type</i> is a global style that 
+		is automatically applied to all objects of this type:</li>
+	</ul>
+	<blockquote>
+		<pre><code class="linenumber">01</code> &lt;Style name=&quot;Window&quot; &gt;
+<code class="linenumber">02</code> &lt;Style name=&quot;Edit&quot; &gt;
+<code class="linenumber">03</code> &lt;Style name=&quot;ComboBox&quot; &gt;</pre>
+	</blockquote>
+	<ul>
+		<li>A style identified by a <i>style-name</i> is a specific style that can be applied
+        to any element types using that style:&nbsp;</li>
+	</ul>
+	<blockquote>
+		<pre><code class="linenumber">01</code> &lt;Style name=&quot;.important&quot; &gt;
+<code class="linenumber">02</code> &lt;Style name=&quot;.smallfont&quot; &gt;</pre>
+	</blockquote>
+	<ul>
+		<li>A style identified by an <i>element-type</i> followed by a dot and a 
+		<i>style-name</i>
+        is a specific style that will only be applied to elements of the given type:&nbsp;</li>
+	</ul>
+	<blockquote>
+		<pre><code class="linenumber">01</code> &lt;Style name=&quot;Window.main&quot; &gt;
+<code class="linenumber">02</code> &lt;Style name=&quot;Edit.mandatory&quot; &gt;
+</pre>
+	</blockquote>
+<p>
+    <span style="text-decoration: underline">Priority:</span> When different styles
+    can be applied to an element, the following priority, from the most precise 
+	to the most generic, is used to determine the correct style&nbsp; :</p>
+    <ol>
+        <li><code>element-type.style-name</code></li>
+        <li><code>.style-name</code></li>
+        <li><code>element-type</code></li>
+        <li><code>*</code></li>
+    </ol>
+    <p>
+        For instance, to find the style which will be applied to an <code>Edit</code> having 
+		the style attribute
+        set to '<code>mandatory</code>', the following styles will be analyzed:</p>
+    <ol>
+        <li><code>Edit.mandatory</code></li>
+        <li><code>.mandatory</code></li>
+        <li><code>Edit</code></li>
+        <li><code>*</code></li>
+    </ol>    <h3>
+        <u><a name="PSEUDO_SELECTORS">Pseudo selectors</a></u></h3>
+    <p>
+        You can define a pseudo selector to make your style apply only when some conditions
+        are fulfilled. You must precede it with a colon. You can also combine 
+		the&nbsp; pseudo
+        selectors. If you do so, the style will be applied if all pseudo selector conditions
+        are fulfilled.</p>
+    <pre><code class="linenumber">01</code> &lt;Style name=&quot;Table:even:input&quot; &gt;
+<code class="linenumber">02</code> &lt;Style name=&quot;Edit:focus&quot; &gt;
+<code class="linenumber">03</code> &lt;Style name=&quot;Edit.important:focus&quot; &gt;</pre>
+<p>
+    Pseudo selectors have different priorities, and the style with the most important
+    pseudo selector will be used when several styles match.</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0" style="width: 7%">
+                <strong>Priority</strong></td>
+            <td bgcolor="#c0c0c0" width="25%">
+                <b>Pseudo selectors</b></td>
+            <td bgcolor="#c0c0c0">
+                <b>Condition</b></td>
+        </tr>
+        <tr>
+            <td style="width: 7%; text-align: center">
+                1</td>
+            <td width="25%" >
+                <code>focus</code></td>
+            <td >
+                the widget has the focus</td>
+        </tr>
+        <tr>
+            <td style="width: 7%; text-align: center">
+                2</td>
+            <td width="25%">
+                <code>query</code></td>
+            <td>
+                the widget is in construct mode</td>
+        </tr>
+        <tr>
+            <td style="width: 7%; text-align: center">
+                3</td>
+            <td width="25%">
+                <code>display</code></td>
+            <td>
+                the widget is in a display array</td>
+        </tr>
+        <tr>
+            <td style="width: 7%; text-align: center">
+                4</td>
+            <td width="25%">
+                <code>input</code></td>
+            <td>
+                the widget is in an input array, input or construct</td>
+        </tr>
+        <tr>
+            <td style="width: 7%; text-align: center">
+                5</td>
+            <td width="25%">
+                <code>even</code></td>
+            <td>
+                this widget is on an even row if an array (only Table)</td>
+        </tr>
+        <tr>
+            <td style="width: 7%; text-align: center">
+                6</td>
+            <td width="25%">
+                <code>odd</code></td>
+            <td >
+                this widget is on an odd row if an array (only Table)</td>
+        </tr>
+        <tr>
+            <td style="width: 7%;  text-align: center">
+                7</td>
+            <td width="25%" >
+                <code>inactive</code></td>
+            <td >
+                the widget is inactive</td>
+        </tr>
+        <tr>
+            <td style="width: 7%; text-align: center">
+                8</td>
+            <td width="25%">
+                <code>active</code></td>
+            <td>
+                the widget is active</td>
+        </tr>
+        <tr>
+            <td style="width: 7%; text-align: center">
+                9</td>
+            <td width="25%">
+                <code>message</code></td>
+            <td>
+                applies only to text displayed with the <a href="MessageDisplay.html#MESSAGE">MESSAGE
+                instruction</a></td>
+        </tr>
+        <tr>
+            <td style="width: 7%; text-align: center">
+                10</td>
+            <td width="25%">
+                <code>error</code></td>
+            <td>
+                applies only to text displayed with the <a href="MessageDisplay.html#ERROR">ERROR
+                instruction</a></td>
+        </tr>
+    </table>
+    <p>
+        Pseudo selectors also define the priority of your styles;: a more generic style will
+        be used if the pseudo-selector has higher priority.</p>
+    <p>
+        For instance: you want all important edits to have red text, but you want the current
+        field to be displayed in blue:</p>
+    <pre><code class="linenumber">01</code> &lt;Style name=&quot;Edit.important&quot; &gt;
+<code class="linenumber">02</code> &lt;Style name=&quot;:focus&quot; &gt;
+</pre>
+<p>Style ":focus" may be more generic than Edit.important; it will be used for the
+    focused item, as the pseudo selector is more precise.</p>
+    <h3>
+        <u><a name="USING_A_STYLE">Using a specific style</a></u></h3>
+    <p>
+        To apply a specific style, set the <i>style-name</i> in the <code>style</code> attribute
+        of the node representing the graphical element in the Abstract User Interface tree.</p>
+    <p>
+        There are different ways to set the <code>style</code> attribute of a element:</p>
+    <ul>
+        <li>In the <tt>ATTRIBUTES</tt> clause of instructions such as <a href="WindowsAndForms.html">
+            OPEN WINDOW</a>, <a href="MessageDisplay.html#MESSAGE">MESSAGE</a>, <a href="MessageDisplay.html#ERROR">ERROR</a>.
+        <li>As a form element attribute, in the <a href="FormSpecFiles.html">Form Specification
+            File</a>.
+        <li>Dynamically by a program, using the DOM API or a built-in class method like <a
+            href="ClassForm.html">setElementStyle()</a>.</li>
+    </ul>
+	<p>
+        For example,&nbsp; to define a style in a form file for a input field:</p>
+    <pre><code class="linenumber">01</code> <tt>EDIT </tt>f001 = customer.fname, <tt>STYLE </tt>= &quot;info&quot;;</pre>
+    <h3>
+        <u><a name="COMBINING_STYLES">Combining styles</a></u></h3>
+    <p>
+        You can combine several styles by using the space character as a separator in the
+        <code>style</code> attribute:</p>
+    <pre><code class="linenumber">01</code> <tt>EDIT </tt>f001 = customer.fname, <tt>STYLE </tt>= &quot;info highlight mandatory&quot;;</pre>
+    <p>
+        When several styles are combined,&nbsp;the same presentation attribute
+        might be defined by different styles. In this case, the first style 
+		listed that
+        defines the attribute takes precedence over the other styles.</p>
+    <p>
+        For example, if the&nbsp;<code>textColor</code> presentation attribute is defined
+        as follows by the styles <i>info</i>, <i>highlight</i> and <i>mandatory</i>:</p>
+    <ul>
+        <li><i>info</i> style does not define <code>textColor</code>.</li>
+        <li><i>highlight</i> style defines <code>textColor</code> as <b>blue</b>.</li>
+        <li><i>mandatory</i> style defines <code>textColor</code> as <b>red</b>.</li>
+    </ul>
+    <p>
+        Then the widgets having a style set to <code>&quot;info highlight mandatory&quot;</code> 
+		have <code>textColor</code> of <b>blue.</b></p>
+    <h3>
+        <u><a name="STYLE_INHER">Style Attribute Inheritance</a></u></h3>
+    <p>
+        A style attribute may be inherited by the descendants of a given node in the Abstract
+        User Interface tree. For example, when using a style defining a <code>fontFamily</code>
+        in a <tt>GROUPBOX</tt> container, you would expect that all the children in that
+        groupbox would have the same font. However, some style attributes should not be inherited,
+        such as <code>backgroundImage</code>.</p>
+    <p>
+        Style inheritance is implicitly defined based on the attribute. The following
+        sections contain tables with descriptions of style attributes, including the implicit
+        inheritance for each attribute.</p>
+    <h3>
+        <u><a name="STYLES_IN_AUI">Presentation Styles in the Abstract User Interface tree</a></u></h3>
+    <p>
+        Presentation Styles are defined in the <a href="DynamicUI.html">Abstract User Interface
+            tree</a>, under the <code>UserInterface</code> node, in a <code>StyleList</code>
+        node following the syntax described above. The <code>StyleList</code> node holds
+        a list of <code>Style</code> nodes that define a set of attribute values. Attribute
+        values are defined in <code>StyleAttribute</code> nodes, with a <code>name</code>
+        and a <code>value</code> attribute.</p>
+    <h3>
+        <u><a name="XML_STYLE_FILE">Loading Presentation Styles</a></u></h3>
+    <p>
+        Presentation Styles can be defined in an XML file that has the <b>4st</b>
+        extension. By default, the runtime system searches for a file named &quot;<code>default.4st</code>&quot;
+        in the current directory. If this file does not exist, it searches in the directories
+        defined in the <a href="EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href="EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a>
+        environment
+        variable. If the file was not found using DBPATH/FGLRESOURCEPATH, standard Genero
+    presentation styles are loaded
+        from &quot;<code>FGLDIR/lib/default.4st</code>&quot; file.</p>
+    <p>
+        You can overwrite the default search by loading a specific Presentation Style file
+        with the <a href="ClassInterface.html">ui.Interface.loadStyles()</a> method. This
+        method accepts an absolute path <u>with</u> the <b>4st</b> extension,
+        or a simple file name <u>without</u> the <b>4st</b> extension.
+        If you give a simple file name, for example &quot;<code>mystyles</code>&quot;, the
+        runtime system searches for the &quot;<code>mystyles.4st</code>&quot; file in the
+        current directory. If the file does not exist, it searches in the directories defined
+        in the <a href="EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href="EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a>
+        environment variable.</p>
+    <h4>
+        <font color="#ff0000">Warnings:</font></h4>
+    <ol>
+        <li>The presentation styles must be defined in a unique
+          <b>4st </b>file. When loading a styles file with the <a href="ClassInterface.html">ui.Interface.loadStyles()</a> 
+          method, current styles created from the default file or from a prior
+          load will be replaced. The styles will not be combined when loading
+          several files.</li>
+        <li>The default styles file located in <code>FGLDIR/lib</code> should
+          not be modified directly: your changes would be lost if you upgrade
+          Genero FGL. You better make a copy if the original file into the
+          program directory of your application.</li>
+    </ol>
+    <h3>
+        <u><a name="4ST_EXAMPLE">Example of 4st file content</a></u></h3>
+    <pre><code class="linenumber">01</code> &lt;StyleList&gt;
+<code class="linenumber">02</code> &lt;Style name=&quot;*&quot; &gt;
+<code class="linenumber">03 </code> &lt;StyleAttribute name=&quot;fontFamily&quot; value=&quot;serif&quot; /&gt;
+<code class="linenumber">04</code> &lt;/Style&gt;
+<code class="linenumber">05</code> &lt;Style name=&quot;.important&quot; &gt;
+<code class="linenumber">06 </code> &lt;StyleAttribute name=&quot;textColor&quot; value=&quot;#ff0000&quot; /&gt;
+<code class="linenumber">07</code> &lt;/Style&gt;
+<code class="linenumber">08</code> &lt;Style name=&quot;Window&quot; &gt;
+<code class="linenumber">09 </code> &lt;StyleAttribute name=&quot;toolBarPosition&quot; value=&quot;top&quot; /&gt;
+<code class="linenumber">10 </code> &lt;StyleAttribute name=&quot;statusBarType&quot; value=&quot;default&quot; /&gt;
+<code class="linenumber">11</code> &lt;/Style&gt;
+<code class="linenumber">12</code> &lt;Style name=&quot;Window.dialog&quot; &gt;
+<code class="linenumber">13 </code> &lt;StyleAttribute name=&quot;toolBarPosition&quot; value=&quot;none&quot; /&gt;
+<code class="linenumber">14 </code> &lt;StyleAttribute name=&quot;statusBarType&quot; value=&quot;node&quot; /&gt;
+<code class="linenumber">15</code> &lt;/Style&gt;
+<code class="linenumber">16</code> &lt;/StyleList&gt;</pre>
+
+    <h3><u><a name="LOAD_EXAMPLE">Example of 4st file loading</a></u></h3>
+    <pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02   </code> <tt>CALL</tt> ui.Interface.loadStyles(&quot;mystyles&quot;)
+<code class="linenumber">03   </code> ...
+<code class="linenumber">04</code> <tt>END MAIN</tt></pre>
+
+
+    <h3>
+        <a name="TTY_VS_STYLE_ATT">Combining TTY and Style attributes</a></h3>
+ TTY attributes can be <u>specific</u> to a form element or can be <u>inherited</u>
+    by an element from a parent node (i.e. the form/window). Specific element
+    TTY attributes are directly set in the element node in the AUI tree; they
+    can, for example, be defined with the <a href="FSFAttributes.html#FA_COLOR">COLOR</a>
+    attribute of form items. Inherited TTY attributes are taken from the the
+    parent nodes of the leaf element to be displayed. For example, when a form
+    is displayed with <a href="WindowsAndForms.html#DISPLAY_FORM">DISPLAY FORM</a>
+    followed by an <tt>ATTRIBUTE</tt> clause containing TTY color, font option
+    and/or video attributes, all static 
+	<a href="FormSpecFiles.html#FF_ITEMTYPE_LABEL">LABELs</a>
+    will be displayed with the TTY attributes of the form. Note however that the
+    form elements controlled by interactive instructions (i.e. form fields) will
+    explicitly get the TTY attributes defined by the <tt>ATTRIBUTE</tt> clause
+    of <a href="WindowsAndForms.html#OPEN_WINDOW">OPEN WINDOW</a>, <a href="WindowsAndForms.html#OPEN_FORM">OPEN
+    FORM</a>, <a href="RecordDisplay.html#DISPLAY_BY_NAME">DISPLAY TO / BY NAME</a>
+    or the current dialog statement, and must be considered specific TTY
+    attributes for the element.
+    <p>Specific TTY attributes defined for a form element have a <u> higher priority</u> than
+    style attributes, while inherited TTY attributes (set on one of the parent
+    elements) have a <u>lower priority</u> than style attributes defined for the
+    element.</p>
+    <p>To illustrate this rule, imagine a form defining 2 static labels and 2
+    fields, with all items using the <i>mystyle</i> presentation style, and one
+    of the labels and fields defining a specific blue text color:</p>
+    <pre><code class="linenumber">01</code> <tt>LABEL </tt>lab01: <tt>TEXT</tt>=&quot;Field 1:&quot;, <tt>COLOR </tt>= <tt>BLUE</tt>, <tt>STYLE </tt>= &quot;mystyle&quot;;
+<code class="linenumber">02</code> <tt>EDIT </tt>fld01 = <tt>FORMONLY</tt>.field01, <tt>COLOR </tt>= <tt>BLUE</tt>, <tt>STYLE </tt>= &quot;mystyle&quot;;
+<code class="linenumber">03</code> <tt>LABEL </tt>lab02: <tt>TEXT</tt>=&quot;Field 2:&quot;, <tt>STYLE </tt>= &quot;mystyle&quot;;
+<code class="linenumber">04</code> <tt>EDIT </tt>fld02 = <tt>FORMONLY</tt>.field02, <tt>STYLE </tt>= &quot;mystyle&quot;;</pre>
+    <p>The program displays the form (or window) with an <tt>ATTRIBUTES</tt>
+    clause using a red color, and the fields are used by an <tt>INPUT</tt> dialog
+    (with no <tt>ATTRIBUTES</tt> clause, so the default TTY attributes are gotten
+    from the <tt>OPEN FORM</tt> instruction):</p>
+    <pre><code class="linenumber">01</code> <tt>OPEN FORM </tt>f <tt>FROM</tt> &quot;ttyform&quot;
+<code class="linenumber">02</code> <tt>DISPLAY FORM </tt>f <tt>ATTRIBUTES</tt>(<tt>RED</tt>)
+<code class="linenumber">03</code> <tt>INPUT BY NAME </tt>field01, field02 <tt>WITHOUT DEFAULTS</tt></pre>
+    The .4st styles file defines the <i>mystyle</i> attributes as follows:<pre><code class="linenumber">01</code> &lt;StyleList&gt;
+<code class="linenumber">02</code>   &lt;Style name=&quot;Edit.mystyle&quot; &gt;
+<code class="linenumber">03     </code> &lt;StyleAttribute name=&quot;textColor&quot; value=&quot;green&quot; /&gt;
+<code class="linenumber">04</code>   &lt;/Style&gt;
+<code class="linenumber">02</code>   &lt;Style name=&quot;Label.mystyle&quot; &gt;
+<code class="linenumber">03     </code> &lt;StyleAttribute name=&quot;textColor&quot; value=&quot;magenta&quot; /&gt;
+<code class="linenumber">04</code>   &lt;/Style&gt;
+<code class="linenumber">16</code> &lt;/StyleList&gt;</pre>
+
+    <p>The text in the form field <i>fld01</i> is displayed in blue (from the
+    specific <tt>COLOR</tt> attribute), while <i>fld02</i> is displayed in red
+    (the TTY attribute of the form, the style <i>Edit.mystyle</i> being
+    ignored).</p>
+    <p>Since labels are not used by the interactive instructions, <i>lab01</i>
+    is displayed in blue (from the specific <tt>COLOR</tt> attribute), while <i>lab02</i>
+    is displayed in magenta (from the style <i>Label.mystyle</i>, the form TTY
+    attribute red being ignored).</p>
+
+
+    <hr>
+    <h2>
+        <a name="Element_Types">Element Types</a></h2>
+	<p>
+        Styles may apply to any graphical elements of the user interface, such 
+		as the following:</p>
+	<table border="0" width="56%" id="table1">
+		<tr>
+			<td width="224">
+			<ul>
+				<li>Button</li>
+				<li>ButtonEdit</li>
+				<li>CheckBox</li>
+				<li>ComboBox</li>
+				<li>DateEdit</li>
+				<li>Edit</li>
+				<li>Form</li>
+				<li>Image</li>
+			</ul>
+			</td>
+			<td>
+			<ul>				
+				<li>Label</li>
+				<li>RadioGroup</li>
+				<li>Slider</li>
+				<li>SpinEdit</li>
+				<li>Table</li>
+				<li>TimeEdit</li>
+				<li>Window</li>
+			</ul>
+			</td>
+		</tr>
+	</table>
+	<p>The name of the element when used in a style file is case-sensitive (CheckBox, 
+	not checkbox).</p>
+	<h2>
+        <a name="COLORS">Colors</a></h2>
+    <p>
+        This section describes how to specify a value for style attributes defining colors,
+        such as <code>textColor</code>.</p>
+    <h3>
+        Syntax:</h3>
+    <p>
+        <code><u>{</u> <i>generic-color</i> <u>|</u> #<i>rrggbb</i> <u>}</u></code></p>
+    <h3>
+        Notes:</h3>
+    <ol>
+        <li><i>generic-color</i>
+        is any of the predefined colors supported by the language.
+        <li><i>#rrggbb</i> is a numerical color defined by a red/green/blue specification.</li>
+    </ol>
+    <h3>
+        Usage:</h3>
+    <p>
+        The language defines a set of generic colors, interpreted by the front end according
+        to the graphical capability of the workstation.</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0">
+                <b>Generic color name</b></td>
+            <td bgcolor="#c0c0c0" width="25%">
+                <b>RGB Value</b></td>
+            <td bgcolor="#c0c0c0" width="25%">
+                <b>Color sample</b></td>
+        </tr>
+        <tr>
+            <td>
+                <code>white</code></td>
+            <td width="25%" align="center">
+                <code>#FFFFFF</code></td>
+            <td width="25%">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <code>black</code></td>
+            <td width="25%" align="center">
+                <code>#000000</code></td>
+            <td width="25%" bgcolor="#000000">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>darkGray</code></td>
+            <td width="25%" align="center">
+                <code>#A9A9A9</code></td>
+            <td width="25%" bgcolor="#a9a9a9">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>gray</code></td>
+            <td width="25%" align="center">
+                <code>#808080</code></td>
+            <td width="25%" bgcolor="#808080">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>lightGray</code></td>
+            <td width="25%" align="center">
+                <code>#D3D3D3</code></td>
+            <td width="25%" bgcolor="#d3d3d3">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>darkBlue</code></td>
+            <td width="25%" align="center">
+                <code>#00008B</code></td>
+            <td width="25%" bgcolor="#00008b">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>blue</code></td>
+            <td width="25%" align="center">
+                <code>#0000FF</code></td>
+            <td width="25%" bgcolor="#0000ff">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>lightBlue</code></td>
+            <td width="25%" align="center">
+                <code>#ADD8E6</code></td>
+            <td width="25%" bgcolor="#add8e6">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>darkCyan</code></td>
+            <td width="25%" align="center">
+                <code>#008B8B</code></td>
+            <td width="25%" bgcolor="#008b8b">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>cyan</code></td>
+            <td width="25%" align="center">
+                <code>#00FFFF</code></td>
+            <td width="25%" bgcolor="#00ffff">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>lightCyan</code></td>
+            <td width="25%" align="center">
+                <code>#E0FFFF</code></td>
+            <td width="25%" bgcolor="#e0ffff">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>darkMagenta</code></td>
+            <td width="25%" align="center">
+                <code>#8B008B</code></td>
+            <td width="25%" bgcolor="#8b008b">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>magenta</code></td>
+            <td width="25%" align="center">
+                <code>#FF00FF</code></td>
+            <td width="25%" bgcolor="#ff00ff">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>lightMagenta</code></td>
+            <td width="25%" align="center">
+                <code>#FFC0FF</code></td>
+            <td width="25%" bgcolor="#ffc0ff">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>darkOlive</code></td>
+            <td width="25%" align="center">
+                <code>#505000</code></td>
+            <td width="25%" bgcolor="#505000">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>olive</code></td>
+            <td width="25%" align="center">
+                <code>#808000</code></td>
+            <td width="25%" bgcolor="#808000">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>lightOlive</code></td>
+            <td width="25%" align="center">
+                <code>#AAAA44</code></td>
+            <td width="25%" bgcolor="#aaaa44">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>darkGreen</code></td>
+            <td width="25%" align="center">
+                <code>#006400</code></td>
+            <td width="25%" bgcolor="#006400">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>green</code></td>
+            <td width="25%" align="center">
+                <code>#00FF00</code></td>
+            <td width="25%" bgcolor="#00ff00">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>lightGreen</code></td>
+            <td width="25%" align="center">
+                <code>#90EE90</code></td>
+            <td width="25%" bgcolor="#90ee90">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>darkTeal</code></td>
+            <td width="25%" align="center">
+                <code>#005050</code></td>
+            <td width="25%" bgcolor="#005050">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>teal</code></td>
+            <td width="25%" align="center">
+                <code>#008080</code></td>
+            <td width="25%" bgcolor="#008080">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>lightTeal</code></td>
+            <td width="25%" align="center">
+                <code>#33CCCC</code></td>
+            <td width="25%" bgcolor="#33cccc">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>darkRed</code></td>
+            <td width="25%" align="center">
+                <code>#8B0000</code></td>
+            <td width="25%" bgcolor="#8b0000">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>red</code></td>
+            <td width="25%" align="center">
+                <code>#FF0000</code></td>
+            <td width="25%" bgcolor="#ff0000">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>lightRed</code></td>
+            <td width="25%" align="center">
+                <code>#FF8080</code></td>
+            <td width="25%" bgcolor="#ff8080">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>darkOrange</code></td>
+            <td width="25%" align="center">
+                <code>#FF8C00</code></td>
+            <td width="25%" bgcolor="#ff8c00">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>orange</code></td>
+            <td width="25%" align="center">
+                <code>#FFA500</code></td>
+            <td width="25%" bgcolor="#ffa500">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>lightOrange</code></td>
+            <td width="25%" align="center">
+                <code>#FFCC00</code></td>
+            <td width="25%" bgcolor="#ffcc00">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>darkYellow</code></td>
+            <td width="25%" align="center">
+                <code>#AAAA00</code></td>
+            <td width="25%" bgcolor="#aaaa00">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>yellow</code></td>
+            <td width="25%" align="center">
+                <code>#FFFF00</code></td>
+            <td width="25%" bgcolor="#ffff00">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <code>lightYellow</code></td>
+            <td width="25%">
+                <p align="center">
+                    <code>#FFFFE0</code></p>
+            </td>
+            <td width="25%" bgcolor="#ffffe0">
+                &nbsp;</td>
+        </tr>
+    </table>
+    <p>
+        You can also specify a generic system color:</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0" width="25%">
+                <b>Generic system color name</b></td>
+            <td bgcolor="#c0c0c0" width="25%">
+                <b>Meaning</b></td>
+        </tr>
+        <tr>
+            <td width="25%">
+                <code>window</code></td>
+            <td width="25%">
+                Window background.</td>
+        </tr>
+        <tr>
+            <td width="25%">
+                <code>windowText</code></td>
+            <td width="25%">
+                Text in Windows.</td>
+        </tr>
+        <tr>
+            <td width="25%">
+                <code>buttonFace</code></td>
+            <td width="25%">
+                Face color for three-dimensional display elements.</td>
+        </tr>
+        <tr>
+            <td width="25%">
+                <code>buttonText</code></td>
+            <td width="25%">
+                Text on PushButtons.</td>
+        </tr>
+        <tr>
+            <td width="25%">
+                <code>highLight</code></td>
+            <td width="25%">
+                Item(s) selected in a control.</td>
+        </tr>
+        <tr>
+            <td width="25%">
+                <code>highLightText</code></td>
+            <td width="25%">
+                Text of item(s) selected in a control</td>
+        </tr>
+        <tr>
+            <td width="25%">
+                <code>infoBackground</code></td>
+            <td width="25%">
+                Background color for tooltip controls.</td>
+        </tr>
+        <tr>
+            <td width="25%">
+                <code>infoText</code></td>
+            <td width="25%">
+                Text color for tooltip controls.</td>
+        </tr>
+        <tr>
+            <td width="25%">
+                <code>grayText</code></td>
+            <td width="25%">
+                Grayed (disabled) text.&nbsp;</td>
+        </tr>
+        <tr>
+            <td width="25%">
+                <code>appWorkSpace</code></td>
+            <td width="25%">
+                Background color of multiple document interface</td>
+        </tr>
+        <tr>
+            <td width="25%">
+                <code>background</code></td>
+            <td width="25%">
+                Desktop background</td>
+        </tr>
+    </table>
+    <p>
+        You can also specify a color with the RGB notation, starting with a # 
+		dash character.</p>
+    <p>
+        Each value of the RGB color specification must be provided in hexadecimal, in the
+        range [00-FF].</p>
+    <h3>
+        Examples:</h3>
+    <p>
+        <code>&lt;StyleAttribute name=&quot;textColor&quot; value=&quot;blue&quot; /&gt;<br>
+            &lt;StyleAttribute name=&quot;textColor&quot; value=&quot;#00FF45&quot; /&gt;</code></p>
+    <hr>
+    <h2>
+        <a name="USING_FONTS">Using Fonts</a></h2>
+    <p>
+        A desktop application should follow the current desktop settings. The <a href="FglTerms.html#FRONT_END"> front-end</a>
+    tries to determine the default font for the desktop,
+        and also offers a global font chooser to let the end-user define which font best
+        matches his expectations.</p>
+    <p>
+        In most cases it is not possible to know what a potential end-user might expect
+        regarding the font family. Therefore, the configuration should <strong>avoid</strong>
+        using explicit font families and use only the <code>fontWeight</code>/<code>fontStyle</code>/<code>fontSize</code>
+        properties. Only if the client can't determine a proper default font family for
+        the desired platform should a known font family be added to the configuration.</p>
+	<p>
+        Use abstract font sizes such as <code>medium</code>,
+        <code>large</code>, <code>small</code>, or sizes relative to the user-chosen font
+        (<samp>em</samp>
+        units), rather than absolute point values. In an HTML browser you can choose two
+        fonts (proportional/fixed), and a well-designed document should not use more than
+        2 fonts. This is also valid for applications.</p>
+    <hr>
+    <h2>
+        <a name="FONTFAMILY">Font Families</a></h2>
+    <p>
+        This section describes the possible values of the <code>fontFamily</code> style
+        attribute.</p>
+    <h3>
+        Syntax:</h3>
+    <p>
+        <code><i>font-family</i> <u>[</u>,...<u>]</u></code></p>
+    <h3>
+        Notes:</h3>
+    <ol>
+        <li><i>font-family</i>
+        defines a generic font family or a specific font family.
+        <li>You can specify a comma-separated list of fonts.</li>
+    </ol>
+    <h3>
+        Usage:</h3>
+    <p>
+        The language defines a set of generic font families, interpreted by the front end
+        according to the graphical capability of the workstation:</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0" width="25%">
+                <b>Generic font family name</b></td>
+            <td bgcolor="#c0c0c0" width="25%">
+                <b>Real font family example</b></td>
+            <td bgcolor="#c0c0c0">
+                <b>Text sample</b></td>
+        </tr>
+        <tr>
+            <td width="25%">
+                <code>serif</code></td>
+            <td width="25%">
+                <span style="font-family: Western">Times</span></td>
+            <td>
+                <span style="font-family: serif"><font face="Times New Roman"><strong>This is a nice
+                    font!</strong></font></span></td>
+        </tr>
+        <tr>
+            <td width="25%">
+                <code>sans-serif</code></td>
+            <td width="25%">
+                <span style="font-family: Western">Arial</span></td>
+            <td>
+                <span style="font-family: sans-serif"><font face="Arial"><strong>This is a nice font!</strong></font></span></td>
+        </tr>
+        <tr>
+            <td width="25%">
+                <code>cursive</code></td>
+            <td width="25%">
+                <span style="font-family: Western">Comic Sans Ms</span></td>
+            <td>
+                <strong class="css"><font face="Comic Sans MS">This is a nice font!</font></strong></td>
+        </tr>
+        <tr>
+            <td width="25%">
+                <code>fantasy</code></td>
+            <td width="25%">
+                <span style="font-family: Western">Algerian</span></td>
+            <td>
+                <strong class="css"><font face="Algerian">This is a nice font!</font></strong></td>
+        </tr>
+        <tr>
+            <td width="25%">
+                <code>monospace</code></td>
+            <td width="25%">
+                <span style="font-family: Western">Courier New</span></td>
+            <td>
+                <strong class="css"><font face="Courier New">This is a nice font!</font></strong></td>
+        </tr>
+    </table>
+    <p>
+        Any other name is interpreted as a specific font family, which identifies a local
+        font supported by the front-end. Usually, it is one of the fonts installed on the
+        workstation operating system. See front-end documentation for a list of supported
+        local fonts.</p>
+    <p>
+        Any font name containing white-spaces must be quoted, with single quotes.</p>
+    <p>
+        You can specify a comma-separated list of font families.</p>
+    <h3>
+        Examples:</h3>
+    <p>
+        <code>&lt;StyleAttribute name=&quot;fontFamily&quot; value=&quot;sans-serif&quot; /&gt;<br>
+            &lt;StyleAttribute name=&quot;fontFamily&quot; value=&quot;'Courier New'&quot; /&gt;<br>
+            &lt;StyleAttribute name=&quot;fontFamily&quot; value=&quot;'Times New Roman',Times,serif&quot;
+            /&gt;</code></p>
+    <hr>
+    <h2>
+        <a name="FONTSIZE">Font Sizes</a></h2>
+    <p>
+        This section describes the possible values of the <code>fontSize</code> style attribute.</p>
+    <h3>
+        Syntax:</h3>
+    <p>
+        <code><u>{</u> <i>generic-size</i> <u>|</u> <i>nn</i>pt <u>|</u> <i>xx</i>em <u>}</u></code></p>
+    <h3>
+        Notes:</h3>
+    <ol>
+        <li><i>generic-size</i> is one of the generic sizes such as '<code>small</code>' or
+            '<code>xx-large</code>'.
+        <li><i>nn</i>
+        defines an absolute size in number of points ( 1pt = 1/72 inches ).
+        <li><i>xx</i> defines an relative size in the size units of the client ( 1em = as large
+            as the font chosen in the client )</li>
+    </ol>
+    <h3>
+        Usage:</h3>
+    <p>
+        The language defines a set of generic font sizes, interpreted by the front end according
+        to the graphical capability of the workstation.</p>
+    <p>
+        <code>xx-small, x-small, small, medium, large, x-large, xx-large.</code></p>
+    <p>
+        You can also specify an absolute font size, by giving a numeric value followed by
+        the units (pt):</p>
+    <h3>
+        Examples:</h3>
+    <p>
+        <code>&lt;StyleAttribute name=&quot;fontSize&quot; value=&quot;medium&quot; /&gt;<br>
+            &lt;StyleAttribute name=&quot;fontSize&quot; value=&quot;xx-large&quot; /&gt;<br>
+            &lt;StyleAttribute name=&quot;fontSize&quot; value=&quot;12pt&quot; /&gt;<br>
+            &lt;StyleAttribute name=&quot;fontSize&quot; value=&quot;1em&quot; /&gt;</code></p>
+    <hr>
+    <h2>
+        <a name="STYATT_REFERENCE">Style Attributes Reference</a></h2>
+	<p>
+        A Style attribute may be a common attribute that can be applied to any 
+		graphical element.&nbsp;Other Style attributes apply only to a specific 
+		graphical element (see below).</p>
+	<h3>
+        <a name="STYATT_COMMON">Common Style Attributes</a></h3>
+    <p>
+        The style attributes described in this section apply to any graphical elements,
+        such as windows, layout containers, or form items.</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0">
+                <b>Attribute</b></td>
+            <td bgcolor="#c0c0c0" valign="top" style="width: 5%" align="center">
+                <b><a href="#STYLE_INHER">Inheritance</a></b></td>
+            <td bgcolor="#c0c0c0">
+                <b>Description</b></td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <code>backgroundImage</code></td>
+            <td valign="top" style="width: 5%" align="center">
+                No</td>
+            <td>
+                Defines an image file to be displayed in the background.<b><br>
+                </b>Value can be a simple local image file name without the extension, or an URL.<b><br>
+                </b>Default is no value (no background image).</td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <code>backgroundColor</code></td>
+            <td valign="top" style="width: 5%" align="center">
+                No</td>
+            <td>
+                Defines the color to be used to fill the background of the object.<b><br>
+                </b>For possible values, see <a href="#COLORS">Colors</a>.<br>
+                Default is no value (default color of the object).</td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <code>fontFamily</code></td>
+            <td valign="top" style="width: 5%" align="center">
+                Yes</td>
+            <td>
+                Defines the name of the font.<br>
+                For possible values, see <a href="#FONTFAMILY">Font Families</a>.<br>
+                Default is no value (default object font or inherited font).</td>
+        </tr>
+        <tr>
+            <td valign="top" height="51">
+                <code>fontSize</code></td>
+            <td valign="top" style="width: 5%" align="center" height="51">
+                Yes</td>
+            <td height="51">
+                Defines the size of the characters.<br>
+                For possible values, see <a href="#FONTSIZE">Font Sizes</a>.<br>
+                Default is no value (default object font or inherited font).</td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <code>fontStyle</code></td>
+            <td valign="top" style="width: 5%" align="center">
+                Yes</td>
+            <td>
+                Defines the style of characters.<br>
+                Values can be <code>&quot;normal&quot;,</code> <code>&quot;italic&quot;</code> or&nbsp;
+                <code>&quot;oblique&quot;</code>.&nbsp;<br>
+                Default is no value&nbsp; (default object font or inherited font).</td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <code>fontWeight</code></td>
+            <td valign="top" style="width: 5%" align="center">
+                Yes</td>
+            <td>
+                Defines the weight of the characters.<br>
+                Values can be <code>&quot;light&quot;</code>, <code>&quot;normal&quot;</code>, <code>
+                    &quot;bold&quot;</code>, <code>&quot;demi-bold&quot;</code> or&nbsp; <code>&quot;black&quot;</code>.<br>
+                Default is no value&nbsp; (default object font or inherited font).</td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <code>textColor</code></td>
+            <td valign="top" style="width: 5%" align="center">
+                Yes</td>
+            <td>
+                Defines the color to be used to paint the text of the object.<b><br>
+                </b>For possible values, see <a href="#COLORS">Colors</a>.<br>
+                Default is no value (default object color or inherited color).
+                </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <code>textDecoration</code></td>
+            <td valign="top" style="width: 5%" align="center">
+                Yes</td>
+            <td>
+                Defines the decoration for the text.<br>
+                Values can be <code>&quot;overline&quot;</code>, <code>&quot;underline&quot;</code>
+                or&nbsp; <code>&quot;line-through&quot;</code>.<br>
+                Default is no value (default object font or inherited font).</td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <code>border</code></td>
+            <td valign="top" style="width: 5%" align="center">
+                No</td>
+            <td>
+                Defines the border for the widget.<br>
+                If Value is <code>&quot;none&quot;</code>, it removes the border.<br>
+                Default is no value (the widget gets its default appearance).<br>
+                This attribute especially applies to Image, Edit, ButtonEdit, DateEdit, RadioGroup,
+                Group, Button, Action, MenuAction, Menu, and Dialog.</td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <code><A name="localAccelerators">localAccelerators</A> </code></td>
+            <td valign="top" style="width: 5%" align="center">
+                No</td>
+            <td>
+                Defines how the widget must behaves regarding key strokes.<br />
+                If value is <code>"yes"</code> (default), the local accelerators have higher priority.<br>
+                Ex:
+                    "HOME" key moves the cursor to the first position.<br />
+                    If value is <code>"no"</code>, the application accelerators have higher priority.<br>
+                Ex: "HOME"
+                        key selects the first row of the current array.<br />
+                        The following keys are managed "locally" if attribute defined to <code>"yes"</code>.
+                            <br />
+                            <U>TextEdits:</U> <code>left, right, up, down, (control+)home, (control+)end, (control+)backspace, (control+)delete</code>
+                            <br />
+                            <u>Edits Based widgets:</u> <code>left, right, home, end, (control+)backspace, (control+)delete</code>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <code><A name="imageCache">imageCache</A> </code></td>
+            <td valign="top" style="width: 5%" align="center">
+                No</td>
+            <td>
+                Defines if the image of the item can be cached of not by the front end.</br> If value is <code>"yes"</code> the front-end can cache the image locally.
+                By default, Image for image fields are not cached and image for form items (Button, TopMenu item, Toolbar item) are cached.</br>.
+            </td>
+        </tr>
+    </table>
+    <br />
+    <hr dir="ltr">
+    <h3 dir="ltr">
+        <a name="STYATT_WINDOW">Window Style Attributes</a></h3>
+    <p dir="ltr">
+        The following table shows the presentation attributes for <a href="WindowsAndForms.html">
+            Windows</a>:</p>
+    <table border="0" cellpadding="0" width="90%" dir="ltr">
+        <tr>
+            <td bgcolor="#c0c0c0" dir="ltr">
+                <b>Attribute</b></td>
+            <td bgcolor="#c0c0c0" width="5%" valign="top" dir="ltr" align="center">
+                <b><a href="#STYLE_INHER">Inheritance</a></b></td>
+            <td bgcolor="#c0c0c0" dir="ltr">
+                <b>Description</b></td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>windowType</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines the basic type of the window. Values can be <code>&quot;normal&quot;</code>
+                or <code>&quot;modal&quot;</code>.<br>
+                Normal windows are displayed as typical application windows. Modal windows are displayed
+                at the top of all other windows, typically used for temporary dialogs.<b><br>
+                </b>Default is <code>&quot;normal&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>windowState</code></td>
+            <td valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines the initial state of a window. Values can be <code>&quot;normal&quot;</code>
+                or <code>&quot;maximized&quot;</code>.<br>
+                Default is <code>&quot;normal&quot;</code>.</td>
+        </tr>
+            <td valign="top" dir="ltr">
+                <code>ignoreMinimizeSetting</code></td>
+            <td valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines if the stored settings "state=minimize" must be ignored when loading settings.<br/>
+                To be used when minimized windows should not be shown minimized again when reopen.<br/>
+                Values can be <code>&quot;yes&quot;</code> or <code>&quot;no&quot;</code> (default). 
+                </td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>windowOptionClose</code></td>
+            <td valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines if the window can be closed with a system menu option or window header button.
+                Values can be <code>&quot;yes&quot;</code>, <code>&quot;no&quot;</code> or <code>&quot;auto&quot;</code>.
+                When value is <code>&quot;auto&quot;</code>, the option is enabled according to
+                the window type.<br>
+                Default is <code>&quot;auto&quot;</code>.<br>
+                <b><font color="#ff0000">Warning:</font></b> This attribute may have different behavior
+                depending on the front end operating system. For example, when no system menu is
+                used, it may not be possible to have this option enabled.&nbsp;</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>windowOptionMinimize</code></td>
+            <td valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines if the window can be minimized with a system menu option or window header
+                button. Values can be <code>&quot;yes&quot;</code>, <code>&quot;no&quot;</code>
+                or <code>&quot;auto&quot;</code>. When value is <code>&quot;auto&quot;</code>, the
+                option is enabled according to the window type.<br>
+                Default is <code>&quot;auto&quot;</code>.<br>
+                <b><font color="#ff0000">Warning:</font></b> This attribute may have different behavior
+                depending on the front end operating system. For example, when no system menu is
+                used, it may not be possible to have this option enabled.&nbsp;</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>windowOptionMaximize</code></td>
+            <td valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines if the window can be maximized with a system menu option or window header
+                button. Values can be <code>&quot;yes&quot;</code>, <code>&quot;no&quot;</code>
+                or <code>&quot;auto&quot;</code>. When value is <code>&quot;auto&quot;</code>, the
+                option is enabled according to the window type.<br>
+                Default is <code>&quot;auto&quot;</code>.<br>
+                <b><font color="#ff0000">Warning:</font></b> This attribute may have different behavior
+                depending on the front end operating system. For example, when no system menu is
+                used, it may not be possible to have this option enabled.&nbsp;</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>windowSystemMenu</code></td>
+            <td valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines if the window shows a system menu. Values can be <code>&quot;yes&quot;</code>,
+                <code>&quot;no&quot;</code> or <code>&quot;auto&quot;</code>. When value is <code>&quot;auto&quot;</code>,
+                the system menu is enabled according to the window type.<br>
+                Default is <code>&quot;auto&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>sizable</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines if the window can be resized by the user. Values can be <code>&quot;yes&quot;</code>,
+                <code>&quot;no&quot;</code> or <code>&quot;auto&quot;</code>. When using <code>&quot;auto&quot;</code>,
+                the window becomes resizable if the content of the first displayed form has resizable
+                elements, for example when using a form with a <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">
+                    TABLE</a> container or an <a href="FormSpecFiles.html#FF_ITEMTYPE_TEXTEDIT">TEXTEDIT</a>
+                with <a href="FSFAttributes.html#FA_STRETCH">STRETCH</a> attribute.<br>
+                <b><font color="#ff0000">Warning:</font></b> On Linux, most of window managers don't take into account
+                <code>sizable</code> set to <code>&quot;no&quot;</code>.<br>
+                When using <code>&quot;auto&quot;</code>,
+                the window becomes resizable based on the first form used in the window; the content
+                of further forms is ignored.<br>
+                Default is <code>&quot;yes&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>position</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Indicates the initial position of the window. Values can be <code>&quot;default&quot;</code>,
+                <code>&quot;field&quot;</code>, <code>&quot;previous&quot;</code>, <code>&quot;center&quot;</code> or <code>&quot;center2&quot;</code>.<br />
+                When using <code>&quot;default&quot;</code>, the windows are displayed according
+                to the window manager rules. 
+                <br />
+                When using <code>"field"</code> the window is displayed below the current field (works as
+                <code>"default"</code> when current field does not exist).<br />
+                When using <code>"previous"</code> the window is displayed at the same position (top left corner) as the previous window.
+                (works as <code>"default"</code>
+                when there is no previous window).<br />
+                With <code>&quot;center&quot;</code>, the window is
+                displayed in the center of the screen.<br />
+                With <code>&quot;center2&quot;</code>, the
+                window is displayed in the center of the current window.<br>
+                Default is <code>&quot;default&quot;</code>.<br />
+                <strong><span style="color: #ff0000">Warning:</span></strong> for front-ends using
+                stored settings, <code>"field"</code>, <code>"previous"</code>
+                <span style="color: #800000; font-family: Courier New"> </span>and
+                <code>"previous"</code> have higher
+                priority than the settings.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>border</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines the border type of the window. Values can be <code>&quot;normal&quot;</code>,
+                <code>&quot;frame&quot;</code>, <code>&quot;tool&quot;</code> or <code>&quot;none&quot;</code>.
+                When using <code>&quot;normal&quot;</code>, the border is standard, with a normal
+                window header with a caption. When using <code>&quot;frame&quot;</code>, only a
+                frame appears, typically without a window header. When using <code>&quot;tool&quot;</code>,
+                a small window header is used. When using <code>&quot;none&quot;</code>, the window
+                has no border.<br>
+                Default is <code>&quot;normal&quot;</code><br>
+                <strong><span style="color: #ff0000">Warning:</span></strong>: On Linux KDE 3.x client machines,
+                any application that is started on the Genero Desktop Client with window style attribute <code>&quot;border&quot;</code> 
+                set to <code>&quot;tool&quot;</code> seems to disappear when you click elsewhere than on the window itself. But you can 
+                make it appear again by clicking on the GDC console. KDE also allows to configure this behavior: Press Alt-F3, then 
+                "Configure Window Behavior" => "Advanced" => uncheck "Hide utility windows for inactive applications".<br> 
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>forceDefaultSettings</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Indicates if the window content must be initialized with the saved positions and
+                sizes. By default, windows are re-opened at the position and with the size they
+                had when they were closed. You can force the use of the initial settings with this
+                attribute. This applies also to column position and width in tables.<br>
+                Default is <code>&quot;0&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>actionPanelPosition</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines the position of the action button frame (OK/Cancel).&nbsp; Values can be
+                <code>&quot;none&quot;</code>, <code>&quot;top&quot;</code>, <code>&quot;left&quot;</code>,
+                <code>&quot;bottom&quot;</code> or <code>&quot;right&quot;</code>.<br>
+                Default is <code>&quot;right&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>actionPanelButtonSize</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines the width of buttons. Values can be <code>&quot;normal&quot;</code>, <code>&quot;shrink&quot;</code>,
+                <code>&quot;tiny&quot;</code>, <code>&quot;small&quot;</code>, <code>&quot;medium&quot;</code>,
+                <code>&quot;large&quot;</code> or <code>&quot;huge&quot;</code>. When using <code>&quot;normal&quot;</code>
+                and <code>&quot;shrink&quot;</code>, buttons are sized according to the text or
+                image, where <code>&quot;shrink&quot;</code> uses the minimum size needed to display
+                the content of the button.<br>
+                Default is <code>&quot;normal&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>actionPanelButtonSpace</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines the space between buttons. Values can be <code>&quot;none&quot;</code>,
+                <code>&quot;tiny&quot;</code>, <code>&quot;small&quot;</code>, <code>&quot;medium&quot;</code>,
+                <code>&quot;large&quot;</code> or <code>&quot;huge&quot;</code>.<br>
+                Default is <code>&quot;medium&quot;</code>.</td>
+        </tr>
+		<tr>
+            <td valign="top" dir="ltr">
+                <code>actionPanelButtonTextAlign</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines the text alignment inside buttons. Values can be <code>&quot;left&quot;</code>, <code>&quot;center&quot;</code>,
+                <code>&quot;right&quot;</code>
+                Default is <code>&quot;left&quot;</code> when the button have an icon, <code>&quot;center&quot;</code> otherwise.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>actionPanelDecoration</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines the decoration of the action panel. Values can be <code>&quot;auto&quot;</code>,
+                <code>&quot;yes&quot;</code>, <code>&quot;no&quot;</code> and <code>&quot;dockable&quot;</code>.<br>
+                Default is <code>&quot;auto&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>actionPanelScroll</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines if the action panel is &quot;ring&quot; - that is,&nbsp; when&nbsp; the last button 
+				is shown,
+                pressing on the &quot;down&quot; button will show the first one again. Values can be
+                <code>&quot;0&quot;</code> or<code> &quot;1&quot;</code>. Default is <code>&quot;1&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>actionPanelScrollStep</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines how the action panel should scroll when clicking the &quot;down&quot; button,
+                to shown the next visible buttons. Values can be <code>&quot;line&quot;</code> or
+                <code>&quot;page&quot;</code>, default is <code>&quot;line&quot;</code>. When <code>
+                    &quot;line&quot;</code>, the panel will scroll by one line, and then show
+                only the next button. When <code>&quot;page&quot;</code>, the scrolling will be
+                done page by page.</td>
+        </tr>
+		<tr>
+            <td valign="top" dir="ltr">
+                <code>actionPanelHAlign</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines the alignment of the action panel when <code>actionPanelPosition </code>
+                is <code>&quot;top&quot;</code> or <code>&quot;bottom&quot;</code>. Values can be
+                <code>&quot;left&quot;</code>, <code>&quot;right&quot;</code> or <code>&quot;center&quot;</code>.<br>
+                Default is <code>&quot;left&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>ringMenuPosition</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines the position of the ring menu frame (<a href="Menus.html">MENU</a>).&nbsp;
+                Values can be <code>&quot;none&quot;</code>, <code>&quot;top&quot;</code>, <code>&quot;left&quot;</code>,
+                <code>&quot;bottom&quot;</code> or <code>&quot;right&quot;</code>.<br>
+                Default is <code>&quot;right&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>ringMenuButtonSize</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines the width of buttons. Values can be <code>&quot;normal&quot;</code>, <code>&quot;shrink&quot;</code>,
+                <code>&quot;tiny&quot;</code>, <code>&quot;small&quot;</code>, <code>&quot;medium&quot;</code>,
+                <code>&quot;large&quot;</code> or <code>&quot;huge&quot;</code>. When using <code>&quot;normal&quot;</code>
+                and <code>&quot;shrink&quot;</code>, buttons are sized according to the text or
+                image, where <code>&quot;shrink&quot;</code> uses the minimum size needed to display
+                the content of the button.<br>
+                Default is <code>&quot;normal&quot;</code>.</td>
+        </tr>
+		<tr>
+            <td valign="top" dir="ltr">
+                <code>ringMenuButtonTextAlign</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines the text alignment inside buttons. Values can be <code>&quot;left&quot;</code>, <code>&quot;center&quot;</code>,
+                <code>&quot;right&quot;</code>
+                Default is <code>&quot;left&quot;</code> when the button have an icon, <code>&quot;center&quot;</code> 
+				otherwise.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>ringMenuButtonSpace</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines the space between buttons. Values can be <code>&quot;none&quot;</code>,
+                <code>&quot;tiny&quot;</code>, <code>&quot;small&quot;</code>, <code>&quot;medium&quot;</code>,
+                <code>&quot;large&quot;</code> or <code>&quot;huge&quot;</code>.<br>
+                Default is <code>&quot;medium&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>ringMenuDecoration</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines the decoration of the menu panel. Values can be <code>&quot;auto&quot;</code>,
+                <code>&quot;yes&quot;</code>, <code>&quot;no&quot;</code> and <code>&quot;dockable&quot;</code>.<br>
+                Default is <code>&quot;auto&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>ringMenuScroll</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines if the ring menu is &quot;ring&quot; - that is. when the last button 
+				is shown,
+                pressing on the &quot;down&quot; button or using the &quot;down&quot; key will show the
+                first one again. Values can be <code>&quot;0&quot;</code> or<code> &quot;1&quot;</code>.
+                Default is <code>&quot;1&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>ringMenuScrollStep</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines how the ring menu should scroll when clicking &quot;down&quot; when the
+                visible button is selected, to show the next buttons. Values can be <code>&quot;line&quot;</code>
+                or <code>&quot;page&quot;</code>, default is <code>&quot;line&quot;</code>. When
+                <code>&quot;line&quot;</code>, the menu will scroll&nbsp; by one line, and show
+                only the next button. When <code>&quot;page&quot;</code>, the scrolling will be
+                done page by page.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>ringMenuHAlign</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines the alignment of the ring menu when <code>ringMenuPosition</code> is <code>&quot;top&quot;</code>
+                or <code>&quot;bottom&quot;</code>. Values can be <code>&quot;left&quot;</code>,
+                <code>&quot;right&quot;</code> or <code>&quot;center&quot;</code>.<br>
+                Default is <code>&quot;left&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>toolBarPosition</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Indicates the position of the <a href="Toolbars.html">toolbar</a>, when a toolbar
+                is defined. Values can be <code>&quot;none&quot;</code>, <code>&quot;top&quot;</code>,
+                <code>&quot;left&quot;</code>, <code>&quot;bottom&quot;</code> or <code>&quot;right&quot;</code>.<br>
+                Default is <code>&quot;top&quot;</code>.</td>
+        </tr>
+	  <tr>
+            <td valign="top" dir="ltr">
+                <code>toolBarDocking</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td>
+                Defines if the toolbar is movable and floatable.<br>
+                Values can be <code>&quot;yes&quot;</code> (default), <code> &quot;no&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>commentPosition</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines the output type of the status bar comment field. Values can be <code>&quot;statusbar&quot;</code>,
+                <code>&quot;popup&quot;</code>, <code>&quot;statustip&quot;</code>, <code>&quot;both&quot;</code>. 
+				<code><br>
+				&quot;popup&quot;</code> will bring a window popup to the front; it should be used with care, since it can annoy the user.
+                <code>&quot;statustip&quot;</code> will add a small "down" arrow button that will show the popup once the user clicks on it; 
+				this can be useful to display very long text. 
+				<code>
+				&quot;both&quot;</code> will display the comment text in a popup
+                window and then in the status bar.<br>
+                Default is <code>&quot;statusbar&quot;</code>.
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>messagePosition</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines the output type of the status bar message field. Values can be <code>&quot;statusbar&quot;</code>,
+                <code>&quot;popup&quot;</code>, <code>&quot;statustip&quot;</code>, <code>&quot;both&quot;</code>.<br>
+				<code>
+				&quot;popup&quot;</code> will bring a window popup to the front; it should be used with care, since it can annoy the user.
+                <code>&quot;statustip&quot;</code> will add a small "down" arrow button that will show the popup once the user clicks on it; 
+				this can be useful to display very long text. <code>
+				&quot;both&quot;</code> will display the message text in a popup
+                window and then in the status bar.<br>
+                Default is <code>&quot;statusbar&quot;</code>.
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>errorMessagePosition</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines the output type of the status bar error field. Values can be <code>&quot;statusbar&quot;</code>,
+                <code>&quot;popup&quot;</code>, <code>&quot;statustip&quot;</code>, <code>&quot;both&quot;</code>.<br>
+                <code>
+				&quot;popup&quot;</code> will bring a window popup to the front; it should be used with care, since it can annoy the user.
+                <code>&quot;statustip&quot;</code> will add a small "down" arrow button that will show the popup once the user clicks on it; 
+				this can be useful to display very long text. <code>
+				&quot;both&quot;</code> will display the error text in a popup
+                window and then in the status bar.<br>
+                Default is <code>&quot;statusbar&quot;</code>.
+            </td>
+        </tr>
+        <tr>
+         <tr>
+            <td valign="top" dir="ltr">
+                <code>formScroll</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines if scrollbars should always be displayed when the form is bigger than screen, or only when the window is maximized. 
+                Values can be <code>&quot;yes&quot;</code> or <code>&quot;no&quot;</code>.<br>
+                Default is <code>&quot;yes&quot;</code>.
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>statusBarType</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Defines the type of status bar the window will display. <a href="#STATUSBAR_TYPES">See
+                    below</a> for all possible values.<br>
+                Default is <code>&quot;default&quot;</code>.
+            </td>
+        </tr>
+    </table>
+    <h4 dir="ltr">
+        <a name="STATUSBAR_TYPES">Status bar types:</a></h4>
+    <p dir="ltr">
+        The next table shows all possible status bar types you can set with the 
+		<b>statusBarType</b>
+        attribute for Windows:</p>
+    <div align="center">
+        <center>
+            <table border="0" dir="ltr">
+                <tr>
+                    <td dir="ltr" bgcolor="#D3D3D3">
+                        <b>Value</b></td>
+                    <td dir="ltr" bgcolor="#D3D3D3">
+                        <b>Screenshot</b></td>
+                </tr>
+                <tr>
+                    <td dir="ltr">
+                        <code>default</code></td>
+                    <td dir="ltr">
+                        <img height="22" src="../Images/sbdefault.png" width="349" border="0"></td>
+                </tr>
+                <tr>
+                    <td dir="ltr">
+                        <code>lines1</code></td>
+                    <td dir="ltr">
+                        <img height="39" src="../Images/sblines1.png" width="349" border="0"></td>
+                </tr>
+                <tr>
+                    <td dir="ltr">
+                        <code>lines2</code></td>
+                    <td dir="ltr">
+                        <img height="39" src="../Images/sblines2.png" width="351" border="0"></td>
+                </tr>
+                <tr>
+                    <td dir="ltr">
+                        <code>lines3</code></td>
+                    <td dir="ltr">
+                        <img height="52" src="../Images/sblines3.png" width="351" border="0"></td>
+                </tr>
+                <tr>
+                    <td dir="ltr">
+                        <code>lines4</code></td>
+                    <td dir="ltr">
+                        <img height="39" src="../Images/sblines4.png" width="350" border="0"></td>
+                </tr>
+                <tr>
+                    <td dir="ltr">
+                        <code>lines5</code></td>
+                    <td dir="ltr">
+                        <img height="35" src="../Images/sblines5.png" width="349" border="0"></td>
+                </tr>
+                <tr>
+                    <td dir="ltr">
+                        <code>lines6</code></td>
+                    <td dir="ltr">
+                        <img height="23" src="../Images/sblines6.png" width="348" border="0"></td>
+                </tr>
+                <tr>
+                    <td dir="ltr">
+                        <code>panels1</code></td>
+                    <td dir="ltr">
+                        <img height="26" src="../Images/sbpanels1.png" width="352" border="0"></td>
+                </tr>
+                <tr>
+                    <td dir="ltr">
+                        <code>panels2</code></td>
+                    <td dir="ltr">
+                        <img height="26" src="../Images/sbpanels2.png" width="352" border="0"></td>
+                </tr>
+                <tr>
+                    <td dir="ltr">
+                        <code>panels3</code></td>
+                    <td dir="ltr">
+                        <img height="25" src="../Images/sbpanels3.png" width="353" border="0"></td>
+                </tr>
+                <tr>
+                    <td dir="ltr">
+                        <code>panels4</code></td>
+                    <td dir="ltr">
+                        <img height="22" src="../Images/sbpanels4.png" width="351" border="0"></td>
+                </tr>
+                <tr>
+                    <td dir="ltr">
+                        <code>panels5</code></td>
+                    <td dir="ltr">
+                        <img height="26" src="../Images/sbpanels5.png" width="353" border="0"></td>
+                </tr>
+                <tr>
+                    <td dir="ltr">
+                        <code>panels6</code></td>
+                    <td dir="ltr">
+                        <img border="0" src="../Images/sbpanels6.png" width="352" height="27"></td>
+                </tr>
+                <tr>
+                    <td dir="ltr">
+                        <code>panels7</code></td>
+                    <td dir="ltr">
+                        <img border="0" src="../Images/sbpanels7.png" width="350" height="28"></td>
+                </tr>
+                <tr>
+                    <td dir="ltr">
+                        <code>none</code></td>
+                    <td dir="ltr">
+                    </td>
+                </tr>
+            </table>
+        </center>
+    </div>
+    <hr dir="ltr">
+    <h3 dir="ltr"><a name="STYATT_STARTMENU">StartMenu Style Attributes</a></h3>
+    <p dir="ltr">
+        The following Window style attributes modify how the window will manage StartMenus.</p>
+    <table border="0" cellpadding="0" width="90%" dir="ltr">
+        <tr>
+            <td bgcolor="#c0c0c0" dir="ltr" width="205">
+                <b>Attribute</b></td>
+            <td bgcolor="#c0c0c0" width="77" valign="top" dir="ltr" align="center">
+                <b><a href="#STYLE_INHER">Inheritance</a></b></td>
+            <td bgcolor="#c0c0c0" dir="ltr" width="1137">
+                <b>Description</b></td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr" width="205">
+                <code>startMenuPosition</code></td>
+            <td width="77" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr" width="1137">
+                Indicates the position of the <a href="StartMenus.html">startmenu</a>, when one
+                is defined. Values can be <code>&quot;none&quot;</code>, <code>&quot;tree&quot;</code>,
+                <code>&quot;menu&quot;</code> or <code>&quot;poptree&quot;</code>. 
+				<br>
+&nbsp;<code>&quot;tree&quot;</code> -&nbsp; the startmenu is displayed as a treeview, always visible
+                on the right side of the window. <br>
+				<code>&quot;menu&quot;</code> -&nbsp; the startmenu
+                is displayed as a pull-down menu, always visible at the top of the window. 
+				<br>
+&nbsp;<code>&quot;poptree&quot;</code> -&nbsp; the startmenu is displayed as a treeview
+                in a popup window that can be opened with a short-cut (see <code>startMenuShortcut</code>).&nbsp;&nbsp;<br>
+                Default is <code>&quot;none&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr" width="205">
+                <code>startMenuSize</code></td>
+            <td width="77" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr" width="1137">
+                Defines the size of the <a href="StartMenus.html">startmenu</a>, when one is defined
+                and the position is defined as <code>&quot;tree&quot;</code> or <code>&quot;poptree&quot;</code>.
+                The values can be <code>&quot;tiny&quot;</code>, <code>&quot;small&quot;</code>,
+                <code>&quot;medium&quot;</code>, <code>&quot;large&quot;</code> or <code>&quot;huge&quot;</code>.<br>
+                Default is <code>&quot;medium&quot;</code>.<br>
+                Note: the size will also depend on the font used for the startmenu.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr" width="205">
+                <code>startMenuShortcut</code></td>
+            <td width="77" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr" width="1137">
+                Defines the shortcut key to open a <a href="StartMenus.html">startmenu</a>, when
+                the position is defined as <code>&quot;poptree&quot;</code>.<br>
+                Default is <code>&quot;control-shift-F12&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr" width="205">
+                <code>startMenuAccelerator<br>
+                    startMenuExecShortcut2</code></td>
+            <td width="77" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr" width="1137">
+                Defines the shortcut keys to execute the select <a href="StartMenus.html">startmenu</a>
+                item, when the position is defined as <code>&quot;tree&quot;</code> or <code>&quot;poptree&quot;</code>.<br>
+                By default, <code>&quot;space&quot;</code>, <code>&quot;enter&quot;</code> and <code>
+                    &quot;return&quot;</code> start the application linked to the current item.</td>
+        </tr>
+    </table>
+    <hr dir="ltr">
+    <h3 dir="ltr">
+        <a name="STYATT_MDI">MDI Container Style Attributes</a></h3>
+    <p dir="ltr">
+        The following table shows the presentation attributes for the <a href="MDIWindows.html">
+            MDI container</a>:</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0" width="30%">
+                <b>Attribute</b></td>
+            <td bgcolor="#c0c0c0" width="5%" align="center">
+                <b><a href="#STYLE_INHER">Inheritance</a></b></td>
+            <td bgcolor="#c0c0c0">
+                <b>Description</b></td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>windowMenu</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                <p dir="ltr">
+                    Defines if the MDI Container should display an automatic &quot;Window&quot; menu,
+                    which holds the<i> Cascade</i> and <i>Tile</i>
+                features, and list of open Windows.<br>
+ Values can be <code>&quot;yes&quot;</code>,
+                <code>&quot;no&quot;</code> (default).</td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>tabbedContainer</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                <p dir="ltr">
+                    Defines if the MDI Container must display the child
+                    application windows in a folder tab.<br>
+ Values can be <code>&quot;no&quot;</code> (default),
+                <code>&quot;yes&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>tabbedContainerCloseMethod</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                <p dir="ltr">
+                    Defines the folder tab method of the MDI Container when <code>tabbedContainer</code>
+                    is set to <code>&quot;yes&quot;</code>.<br>
+ Values can be <code>&quot;container&quot;</code> (default),
+                <code>&quot;page&quot;</code>,
+                <code>&quot;both&quot;</code>,
+                <code>&quot;none&quot;</code>.<br>
+                    - <code>&quot;container&quot;</code> (default) container
+                    gets a close button in the tab.<br>
+                    - <code>&quot;page&quot;</code> each page has its own close
+                    button<br>
+                    - <code>&quot;both&quot;</code> each page and the container
+                    has its close button.<br>
+                    - <code>&quot;none&quot;</code> no close button is shown.</td>
+        </tr>
+    </table>
+    <hr dir="ltr">
+    <h3 dir="ltr">
+        <a name="STYATT_FOLDER">Folder Style Attributes</a></h3>
+    <p dir="ltr">
+        The following table shows the presentation attributes for the <a href="FormSpecFiles.html#FF_CONTAINER_FOLDER">Folder
+        container</a>:</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0" width="30%">
+                <b>Attribute</b></td>
+            <td bgcolor="#c0c0c0" width="5%" align="center">
+                <b><a href="#STYLE_INHER">Inheritance</a></b></td>
+            <td bgcolor="#c0c0c0">
+                <b>Description</b></td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>position</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                <p>
+                    Defines the position of the folder tabs.<br>
+                    Values can be <code>&quot;top&quot;</code>
+                (default), <code>&quot;left&quot;</code>, <code>&quot;right&quot;</code>,
+                <code>&quot;bottom&quot;</code>.</td>
+        </tr>
+    </table>
+    <hr dir="ltr">
+    <h3 dir="ltr">
+        <a name="STYATT_ACTION">Action Style Attributes</a></h3>
+    <p dir="ltr">
+        The following table shows the presentation attributes for <a href="FormSpecFiles.html#SECTION_ACTDEFS">Action</a>:</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0" width="30%">
+                <b>Attribute</b></td>
+            <td bgcolor="#c0c0c0" width="5%" align="center">
+                <b><a href="#STYLE_INHER">Inheritance</a></b></td>
+            <td bgcolor="#c0c0c0">
+                <b>Description</b></td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>scaleIcon</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines if the scaling behaviors of the associated icon.<br>
+                Independently of the style value, if an icon must be scaled, the source image will never be upscaled to avoid 
+                as much as possible pixellization or blurring the image. The notable exception is when the image come from an SVG
+                file which can be upscaled or downscaled without any penalty. If the icon must anyway be made bigger, the
+                image will be centered and a transparent border will be added around to "fill" the empty space. It will allow
+                user to mix big icon with smaller one but also to keep widget alignment<br>
+                If a scaling take place, the aspect ratio of the original image will be kept, keeping non square source as non square scaled icon.<br>
+                Values can be <code>&quot;not set&quot;</code> (default), <code>&quot;yes&quot;</code>, <code>&quot;no&quot;</code> and
+                <code>&quot;&lt;XXX&gt;px&quot;</code><br>
+                -<code>&quot;not set&quot;</code>: Image are scaled down to match a fixed value of 16*16 pixels.<br>
+                -<code>&quot;yes&quot;</code>: Image are scaled down according to the height of the button. Setting a &quot;big&quot; font, may result with a &quot;big&quot; icon.<br>
+                -<code>&quot;no&quot;</code>: No scalling occurs at all, the image are taken &quot;as is&quot;. It's up to the user to resize the source image to avoid misalignment.<br>
+                -<code>&quot;&lt;XX&gt;px&quot;</code>: Image are scaled down according to the (&quot;XX&quot;) pixels size. Thus, specifying scaleIcon="128px"
+will make every icon to have no more than 128*128 pixels, but at least one side equal to 128 pixels, depending if the source image is square or not.<br>
+            </td>
+        </tr>
+    </table>
+    <hr>
+    <h3 dir="ltr">
+        <a name="STYATT_BUTTON">Button Style Attributes</a></h3>
+    <p dir="ltr">
+        The following table shows the presentation attributes for <a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTON">Button</a>:</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0" width="30%">
+                <b>Attribute</b></td>
+            <td bgcolor="#c0c0c0" width="5%" align="center">
+                <b><a href="#STYLE_INHER">Inheritance</a></b></td>
+            <td bgcolor="#c0c0c0">
+                <b>Description</b></td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>buttonType</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines the rendering of a button.<br>
+                Values can be <code>&quot;normal&quot;</code> (default), <code>&quot;link&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>scaleIcon</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines if the scaling behaviors of the associated icon.<br>
+                Independently of the style value, if an icon must be scaled, the source image will never be upscaled to avoid 
+                as much as possible pixellization or blurring the image. The notable exception is when the image come from an SVG
+                file which can be upscaled or downscaled without any penalty. If the icon must anyway be made bigger, the
+                image will be centered and a transparent border will be added around to "fill" the empty space. It will allow
+                user to mix big icon with smaller one but also to keep widget alignment<br>
+                If a scaling take place, the aspect ratio of the original image will be kept, keeping non square source as non square scaled icon.<br>
+                Values can be <code>&quot;not set&quot;</code> (default), <code>&quot;yes&quot;</code>, <code>&quot;no&quot;</code> and
+                <code>&quot;&lt;XXX&gt;px&quot;</code><br>
+                -<code>&quot;not set&quot;</code>, <code>&quot;no&quot;</code>: No scalling occurs at all, the image are taken &quot;as is&quot;.
+                It's up to the user to resize the source image to avoid button misalignment.<br>
+                -<code>&quot;yes&quot;</code>: Image are scaled down according to the height of the button. Setting a &quot;big&quot; font may result with a &quot;big&quot; icon.<br>
+                -<code>&quot;&lt;XX&gt;px&quot;</code>: Image are scaled down according to the (&quot;XX&quot;) pixels size. Thus, specifying scaleIcon="128px"
+                will make every icon to have no more than 128*128 pixels, but at least one side equal to 128 pixels, depending if the source image is square or not.<br>
+            </td>
+        </tr>
+    </table>
+    <hr>
+    <h3 dir="ltr">
+        <a name="STYATT_BUTTONEDIT">ButtonEdit Style Attributes</a></h3>
+    <p dir="ltr">
+        The following table shows the presentation attributes for <a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTONEDIT">ButtonEdit</a>:</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0" width="30%">
+                <b>Attribute</b></td>
+            <td bgcolor="#c0c0c0" width="5%" align="center">
+                <b><a href="#STYLE_INHER">Inheritance</a></b></td>
+            <td bgcolor="#c0c0c0">
+                <b>Description</b></td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>scaleIcon</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines if the scaling behaviors of the associated icon.<br>
+                Independently of the style value, if an icon must be scaled, the source image will never be upscaled to avoid 
+                as much as possible pixellization or blurring the image. The notable exception is when the image come from an SVG
+                file which can be upscaled or downscaled without any penalty. If the icon must anyway be made bigger, the
+                image will be centered and a transparent border will be added around to "fill" the empty space. It will allow
+                user to mix big icon with smaller one but also to keep widget alignment<br>
+                If a scaling take place, the aspect ratio of the original image will be kept, keeping non square source as non square scaled icon.<br>
+                Values can be <code>&quot;not set&quot;</code> (default), <code>&quot;yes&quot;</code>, <code>&quot;no&quot;</code> and
+                <code>&quot;&lt;XXX&gt;px&quot;</code><br>
+                -<code>&quot;not set&quot;</code>, <code>&quot;no&quot;</code>: No scalling occurs at all, the image are taken &quot;as is&quot;.
+                It's up to the user to resize the source image to avoid misalignment.<br>
+                -<code>&quot;yes&quot;</code>: Image are scaled down according to the height of the Edit field and will match the scaling behaviors of
+                a DateEdit field when style <code>&quot;buttonIcon;</code> is used. Setting a &quot;big&quot; font may result with a &quot;big&quot; icon.<br>
+                -<code>&quot;&lt;XX&gt;px&quot;</code>: Image are scaled down according to the (&quot;XX&quot;) pixels size. Thus, specifying scaleIcon="128px"
+                will make every icon to have no more than 128*128 pixels, but at least one side equal to 128 pixels, depending if the source image is square or not.<br>
+            </td>
+        </tr>
+    </table>
+    <hr>
+    <h3>
+        <a name="STYATT_TABLE">Table Style Attributes</a></h3>
+    <p>
+        The following table shows the presentation attributes for <a href="FormSpecFiles.html#FF_ITEMTYPE_TABLE">
+            Table</a>:</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0" width="30%">
+                <b>Attribute</b></td>
+            <td bgcolor="#c0c0c0" width="5%" align="center">
+                <b><a href="#STYLE_INHER">Inheritance</a></b></td>
+            <td bgcolor="#c0c0c0">
+                <b>Description</b></td>
+        </tr>
+        <tr>
+            <td valign="top" dir="ltr">
+                <code>forceDefaultSettings</code></td>
+            <td width="5%" valign="top" dir="ltr" align="center">
+                No</td>
+            <td dir="ltr">
+                Indicates if the table must be initialized with the saved
+                columns positions and
+                sizes. By default, tables are re-opened with column positions and sizes they
+                had when the window was closed. You can force the use of the initial settings with this
+                attribute.<br>
+ Values can be <code>&quot;yes&quot;</code>,
+                <code>&quot;no&quot;</code> (default).</td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>highlightColor</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines the highlight color of rows for the table, used for
+                selected rows.<br>
+                For possible values, see <a href="#COLORS">Colors</a>.</td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>highlightTextColor</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines the highlighted text color of rows for the table, used
+                for selected rows.<br>
+                For possible values, see <a href="#COLORS">Colors</a>.</td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>highlightCurrentRow</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Indicates if the current row must be highlighted in a table
+                during an INPUT ARRAY.<br>
+ Values can be <code>&quot;yes&quot;</code>,
+                <code>&quot;no&quot;</code> (default). (1 or 0 on older
+                front-ends).<br>
+                By default, when a Table is in read-only mode (DISPLAY ARRAY), the front-end automatically
+                highlights the current row. But in editable mode (INPUT ARRAY), no row highlighting
+                is done by default. You can change this behavior by setting this attribute to
+                <code>&quot;yes&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>highlightCurrentCell</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Indicates if the current cell must be highlighted in a table.<br>
+ Values can be <code>&quot;yes&quot;</code>,
+                <code>&quot;no&quot;</code> (default). (1 or 0 on older
+                front-ends).<br>
+                By default the current edit cell in table has a white background. You can change
+                this behavior by setting this attribute to <code>&quot;yes&quot;</code>, to use the same color as when highlightCurrentRow
+                is used. Only some type of cells, checkboxes for example, can be highlighted. Normal editor
+                cells stay in white, because this is the editor background color.</td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>showGrid</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Indicates if the grid lines must be visible in a table.<br>
+                Values can be <code>&quot;yes&quot;</code> (default),
+                <code>&quot;no&quot;</code>. (1 or 0 on older front-ends).<br>
+                By default, when a Table is in editable mode (INPUT ARRAY), the front-end displays
+                grid lines in the table. You can change this behavior by setting this attribute
+                to <code>&quot;no&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>headerAlignment</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines the column's header alignment in a table.<br>
+Values can be <code>&quot;default&quot;</code> (default), <code>&quot;left&quot;</code>, <code>&quot;center&quot;</code>, <code>&quot;right&quot;</code>, <code>&quot;auto&quot;</code>.
+<br><code>&quot;default&quot;</code> will use the sytem default. In most case it is left aligned.
+<br><code>&quot;left&quot;</code> will force all column's header to be left aligned
+<br><code>&quot;center&quot;</code> will force all column's header to be centered
+<br><code>&quot;right&quot;</code> will force all column's header to be right aligned
+<br><code>&quot;auto&quot;</code> will first try to align each columns's header according to the <code>&quot;justify&quot;</code> attribute of the column's widget. If no <code>&quot;justify&quot;</code> attribute is set, the column's header will be aligned according to the type of data: right for numeric data, left for text data.</td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>headerHidden</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines if the horizontal header must be visible in a table.<br>
+ Values can be <code>&quot;yes&quot;</code>,
+                <code>&quot;no&quot;</code> (default). (1 or 0 on older
+                front-ends).</td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>resizeFillsEmptySpace</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines if the resize of the table adapts the size of the last
+                column to avoid unused space.<br>
+ Values can be <code>&quot;yes&quot;</code>,
+                <code>&quot;no&quot;</code> (default). (1 or 0 on older
+                front-ends).</td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>tableType</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines the rendering type of the table.<br>
+ Values can be <code>&quot;normal&quot;</code> (default),
+                <code>&quot;pictureFlow&quot;</code>.<br>
+                When using <code>&quot;pictureFlow&quot;</code>, the first
+                column of the table will be used to define the list of images to
+                be used in the picture flow. Other columns will not be used.</td>
+        </tr>
+    </table>
+    <hr>
+    <h3>
+        <a name="STYATT_COMBOBOX">ComboBox Style Attributes</a></h3>
+    <p>
+        The following table shows the presentation attributes for <a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">
+            ComboBox</a>:</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0" width="30%">
+                <b>Attribute</b></td>
+            <td bgcolor="#c0c0c0" width="5%" align="center">
+                <b><a href="#STYLE_INHER">Inheritance</a></b></td>
+            <td bgcolor="#c0c0c0">
+                <b>Description</b></td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>autoSelectionStart</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines the item from which the auto-selection will start, when pressing keys.<br>
+                Possible values are <code> &quot;first&quot;</code>, <code> &quot;current&quot;</code>.
+                With <code>&quot;first&quot;</code>, the auto-selection
+                will look for the first corresponding item after the first item of the object.
+                With <code>&quot;current&quot;</code>, it will look for the first corresponding item after the current item
+                of the object.<br>
+                Default is <code> &quot;current&quot;</code>.</td>
+        </tr>
+    </table>
+    <hr>
+    <h3>
+        <a name="STYATT_DATEEDIT">DateEdit Style Attributes</a></h3>
+    <p>
+        The following table shows the presentation attributes for <a href="FormSpecFiles.html#FF_ITEMTYPE_DATEEDIT">
+            DateEdit</a>:</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0" width="30%">
+                <b>Attribute</b></td>
+            <td bgcolor="#c0c0c0" width="5%" align="center">
+                <b><a href="#STYLE_INHER">Inheritance</a></b></td>
+            <td bgcolor="#c0c0c0">
+                <b>Description</b></td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>firstDayOfWeek</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines the first day of the week to be displayed in the calendar.<br>
+                Possible values are <code> &quot;monday&quot;</code>, <code> &quot;tuesday&quot;</code>,
+                <code> &quot;wednesday&quot;</code>, <code>
+                &quot;thursday&quot;</code>, <code> &quot;friday&quot;</code>, <code> &quot;saturday&quot;</code>,
+                <code> &quot;sunday&quot;</code>.<br>
+                Default is <code> &quot;saturday&quot;</code>.</td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>daysOff</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines the days of the week that are grayed out.<br>
+                Possible values are <code> &quot;monday&quot;</code>, <code> &quot;tuesday&quot;</code>,
+                <code> &quot;wednesday&quot;</code>, <code>
+                &quot;thursday&quot;</code>, <code> &quot;friday&quot;</code>, <code> &quot;saturday&quot;</code>,
+                <code> &quot;sunday&quot;</code>.<br>
+                Default is <code> &quot;saturday sunday&quot;</code>. The days of week can be combined, as shown.</td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>buttonIcon</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines the icon name to use for the button.</td>
+        </tr>
+    </table>
+    <hr>
+    <h3>
+        <a name="STYATT_LABEL">Label Style Attributes</a></h3>
+    <p>
+        The following table shows the presentation attributes for <a href="FormSpecFiles.html#FF_ITEMTYPE_LABEL">
+            Label</a>:</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0" width="30%">
+                <b>Attribute</b></td>
+            <td bgcolor="#c0c0c0" width="5%" align="center">
+                <b><a href="#STYLE_INHER">Inheritance</a></b></td>
+            <td bgcolor="#c0c0c0">
+                <b>Description</b></td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>textFormat</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines the rendering of the content of the widget.<br>
+                Possible values are <code> &quot;plain&quot;</code>, <code> &quot;html&quot;</code>.
+                With <code> &quot;plain&quot;</code>, the value assigned
+                to this widget is interpreted as plain text. With <code>&quot;html&quot;</code>, it is interpreted as
+                HTML (with hyperlinks).</td>
+        </tr>
+    </table>
+    <hr>
+    <h3>
+        <a name="STYATT_IMAGE">Image Style Attributes</a></h3>
+    <p>
+        The following table shows the presentation attributes for <a href="FormSpecFiles.html#FF_ITEMTYPE_IMAGE">
+            Image</a>:</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0" width="30%">
+                <b>Attribute</b></td>
+            <td bgcolor="#c0c0c0" width="5%" align="center">
+                <b><a href="#STYLE_INHER">Inheritance</a></b></td>
+            <td bgcolor="#c0c0c0">
+                <b>Description</b></td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>alignment</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines the image alignment when the container is bigger than the image itself.<br>
+                Possible values are a pair of horizontal (<code>&quot;left&quot;</code>, <code>&quot;horizontalCenter&quot;</code>, <code>&quot;right&quot;</code>) 
+		and vertical alignments (<code> &quot;top&quot;</code>, <code>&quot;verticalCenter&quot;</code>, <code>&quot;bottom&quot;</code>).
+		It can also be the single <code> &quot;center&quot;</code>, which is equivalent to <code>&quot;horizontalCenter, verticalCenter&quot;</code>.
+		The default value is <code>&quot;top, left&quot;</code>.</td>
+        </tr>
+    </table>
+    <hr>
+    <h3>
+        <a name="STYATT_MENU">Menu Style Attributes</a></h3>
+    <p>
+        The following table shows the presentation attributes for <a href="Menus.html">Menu</a>:</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0" width="30%">
+                <b>Attribute</b></td>
+            <td bgcolor="#c0c0c0" width="5%" align="center">
+                <b><a href="#STYLE_INHER">Inheritance</a></b></td>
+            <td bgcolor="#c0c0c0">
+                <b>Description</b></td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>position</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines the position of the automatic menu for &quot;popup&quot;
+                menus.<br>
+                Values can be <code>&quot;cursor&quot;</code> (default), <code>&quot;field&quot;</code>, <code> &quot;center&quot;</code>,
+                <code> &quot;center2&quot;</code>.<br>
+                With <code>&quot;cursor&quot;</code>, the popup menu appears at
+                the cursor position. With <code>&quot;field&quot;</code>, the
+                popup menu appears below the current field. With <code>&quot;center&quot;</code>,
+                the popup menu appears at the center of the screen. With <code>&quot;center2&quot;</code>,
+                the popup menu appears at the center of the current window.</td>
+        </tr>
+    </table>
+    <hr>
+    <h3>
+        <a name="STYATT_MESSAGE">Message Style Attributes</a></h3>
+    <p>
+        Pseudo selectors &quot;:message&quot; or &quot;:error&quot; can be used to specify a different style for
+    text displayed with the <a href="MessageDisplay.html">ERROR and MESSAGE instructions</a>.
+    These pseudo selectors have to be used with the <i>Message</i> class: &quot;Message:error&quot;
+    corresponds to the <a href="MessageDisplay.html#ERROR">ERROR</a>
+    instruction, and &quot;Message:message&quot; corresponds to the <a href="MessageDisplay.html#MESSAGE">MESSAGE</a>
+    instruction.</p>
+
+    <p>The <tt>ERROR</tt> and <tt>MESSAGE</tt> instructions have been extended
+    to let you specify a <tt>STYLE</tt> attribute in the <tt>ATTRIBUTES</tt>
+    clause:</p>
+
+    <pre><code class="linenumber">01</code> <tt>MESSAGE </tt>&quot;No rows have been found.&quot; <tt>ATTRIBUTES</tt>(<tt>STYLE </tt>= &quot;info&quot;)</pre>
+    <p>A limited set of common style attributes are supported for error/message
+    display. In addition to the attributes described in the section, you can
+    only define <a href="#STYATT_COMMON">font style attributes</a> for messages.</p>
+    <p>Note that, like simple form fields, <a href="#TTY_VS_STYLE_ATT">TTY attributes</a> have
+    a higher priority than style attributes. By default, <tt> ERROR</tt> has the TTY
+    attribute <tt>REVERSE</tt>, which explains why <tt> ERROR</tt> messages have a reverse
+    background even when you use a <a href="#STYATT_COMMON">backgroundColor</a>
+    style attribute.</p>
+
+    <p>
+        The following table shows the presentation attributes for <a href="MessageDisplay.html">ERROR
+        and MESSAGE instructions</a>:</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0" width="30%">
+                <b>Attribute</b></td>
+            <td bgcolor="#c0c0c0" width="5%" align="center">
+                <b><a href="#STYLE_INHER">Inheritance</a></b></td>
+            <td bgcolor="#c0c0c0">
+                <b>Description</b></td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>position</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines the output type of the status bar message field.<br>
+                Values can be <code> &quot;statusbar&quot;</code>, <code> &quot;popup&quot;</code>,
+                <code> &quot;statustip&quot;</code>, <code> &quot;both&quot;</code>. Default is
+                <code> &quot;statusbar&quot;</code>.<br>
+                <code>
+				&quot;popup&quot;</code> will bring a window popup to the front; it should be used with care, since it can annoy the user.
+                <code>&quot;statustip&quot;</code> will add a small "down" arrow button that will show the popup once the user clicks on it; 
+				this can be useful to display very long text. <code>
+				&quot;both&quot;</code> will display the text in a popup window
+                and then in the status bar.<br>
+                Default is <code>&quot;statusbar&quot;.</code>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>textFormat</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines the rendering of the content of the widget.<br>
+                Possible values are <code> &quot;plain&quot;</code> or <code>&quot;html&quot;</code>.
+                With <code> &quot;plain&quot;</code>, the value assigned
+                to this widget is interpreted as plain text. With <code> &quot;html&quot;</code>, it is interpreted as
+                HTML (with hyperlinks).<br>
+                Default is <code> &quot;plain&quot;.</code></td>
+        </tr>
+    </table>
+    <hr>
+    <h3>
+        <a name="STYATT_PROGRESSBAR">ProgressBar Style Attributes</a></h3>
+    <p>
+        The following table shows the presentation attributes for <a href="FormSpecFiles.html#FF_ITEMTYPE_PROGRESSBAR">
+            ProgressBar</a>:</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0" width="30%">
+                <b>Attribute</b></td>
+            <td bgcolor="#c0c0c0" width="5%" align="center">
+                <b><a href="#STYLE_INHER">Inheritance</a></b></td>
+            <td bgcolor="#c0c0c0">
+                <b>Description</b></td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>percentageVisible</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines whether the current progress value is displayed.<br>
+                Possible values are <code> &quot;center&quot;</code>, <code> &quot;system&quot;</code> and
+                <code> &quot;no&quot;</code>. With <code>&quot;center&quot;</code>, the progress will be displayed in the middle of the
+                progressbar. With <code> &quot;system&quot;</code>, it will follow the system theme.
+                With <code>&quot;no&quot;</code>, no progress
+                is displayed.<br>
+                Default is <code> &quot;no&quot;</code>.</td>
+        </tr>
+    </table>
+    <hr>
+    <h3>
+        <a name="STYATT_RADIOGROUP">RadioGroup Style Attributes</a></h3>
+    <p>
+        The following table shows the presentation attributes for <a href="FormSpecFiles.html#FF_ITEMTYPE_RADIOGROUP">
+            Radiogroup</a>:</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0" width="30%">
+                <b>Attribute</b></td>
+            <td bgcolor="#c0c0c0" width="5%" align="center">
+                <b><a href="#STYLE_INHER">Inheritance</a></b></td>
+            <td bgcolor="#c0c0c0">
+                <b>Description</b></td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>autoSelectionStart</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines the item from which the auto-selection will start, when pressing keys.<br>
+                Possible values are <code> &quot;first&quot;</code>, <code> &quot;current&quot;</code>.
+                With <code> &quot;first&quot;</code>, the auto-selection
+                will look for the first corresponding item after the first item of the object.
+                With <code> &quot;current&quot;</code>, it will look for the first corresponding item after the current item
+                of the object.<br>
+                Default is <code> &quot;current&quot;</code>.</td>
+        </tr>
+    </table>
+    <hr>
+    <h3>
+        <a name="STYATT_TEXTEDIT">TextEdit Style Attributes</a></h3>
+    <p>
+        The following table shows the presentation attributes for <a href="FormSpecFiles.html#FF_ITEMTYPE_TEXTEDIT">
+            TextEdit</a>:</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0" width="30%">
+                <b>Attribute</b></td>
+            <td bgcolor="#c0c0c0" width="5%" align="center">
+                <b><a href="#STYLE_INHER">Inheritance</a></b></td>
+            <td bgcolor="#c0c0c0">
+                <b>Description</b></td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>integratedSearch</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines if the textedit field allows search facility
+                (Control-F).<br>
+                Values can be <code>&quot;yes&quot;</code>, <code> &quot;no&quot;</code>
+                (default).</td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>textFormat</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines the rendering of the content of the widget.<br>
+                Possible values are <code> &quot;plain&quot;</code>, <code> &quot;html&quot;</code>.
+                With <code> &quot;plain&quot;</code>, the value assigned
+                to this widget is interpreted as plain text. With <code> &quot;html&quot;</code>, it is interpreted as
+                HTML (with hyperlinks).</td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>showEditToolBox</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines if the toolbox for the rich text editing should be shown.<br>
+                Possible values are <code> &quot;auto&quot;</code>(default), <code> &quot;yes&quot;</code>, <code> &quot;no&quot;</code>.<br>
+                Only available if textFormat style attribute is set to <code> &quot;html&quot;</code>.
+            </td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>textSyntaxHighlight</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines syntax highlighting for the widget.<br />
+                The value is currently limited to <code> "per"</code> for .per files syntax highlighting.</td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>wrapPolicy</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines where the text can be wrapped in word wrap mode.<br>
+                Possible values are <code> &quot;atWordBoundary&quot;</code> - the text will 
+				wrap at word boundaries, and <code> &quot;anywhere&quot;</code>. - the text breaks anywhere, including within words.<br>
+				Default is <code> &quot;atWordBoundary&quot;</code></td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>spellCheck</code></td>
+            <td width="5%" valign="top" align="center">
+                No</td>
+            <td>
+                Defines if the textedit field includes a spelling checker.<br>
+                Values are the two dictionary files needed for each language (one .aff and one .dic). These files can be downloaded <a href="http://wiki.services.openoffice.org/wiki/Dictionaries">here</a>.
+                Specify in the style the two files for the "spellCheck" StyleAttribute, using the following format:
+                <code> &quot; my_affix_file.aff|my_dictionnary_file.dic&quot;</code></td>
+        </tr>
+    </table>
+    <h3>
+        <a name="STYATT_TOOLBAR">Toolbar Style Attributes</a></h3>
+    <p>
+        The following table shows the presentation attributes for <a href="FormSpecFiles.html#SECTION_TOOLBAR">
+            Toolbar</a>:</p>
+    <table border="0" cellpadding="0" width="90%">
+        <tr>
+            <td bgcolor="#c0c0c0" width="30%">
+                <b>Attribute</b></td>
+            <td bgcolor="#c0c0c0" width="5%" align="center">
+                <b><a href="#STYLE_INHER">Inheritance</a></b></td>
+            <td bgcolor="#c0c0c0">
+                <b>Description</b></td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>toolBarTextPosition</code></td>
+            <td width="5%" valign="top" align="center">
+                Yes</td>
+            <td>
+                Defines the text position of a ToolbarItem.<br>
+                Values can be <code>&quot;textBesideIcon&quot;</code>, <code> &quot;textUnderIcon&quot;</code> (default).
+            </td>
+        </tr>
+        <tr>
+            <td width="30%" valign="top">
+                <code>scaleIcon</code></td>
+            <td width="5%" valign="top" align="center">
+                Yes</td>
+            <td>
+                Defines if the scaling behaviors of the associated icon.<br>
+                Independently of the style value, if an icon must be scaled, the source image will never be upscaled to avoid 
+                as much as possible pixellization or blurring the image. The notable exception is when the image come from an SVG
+                file which can be upscaled or downscaled without any penalty. If the icon must anyway be made bigger, the
+                image will be centered and a transparent border will be added around to "fill" the empty space. It will allow
+                user to mix big icon with smaller one but also to keep widget alignment<br>
+                If a scaling take place, the aspect ratio of the original image will be kept, keeping non square source as non square scaled icon.<br>
+                Values can be <code>&quot;not set&quot;</code> (default), <code>&quot;yes&quot;</code>, <code>&quot;no&quot;</code> and
+                <code>&quot;&lt;XXX&gt;px&quot;</code><br>
+                -<code>&quot;not set&quot;</code>: Image are scaled down to match a fixed value of 16*16 pixels.<br>
+                -<code>&quot;yes&quot;</code>: Image are scaled down according to the height of the button. Setting a &quot;big&quot; font with text beside icon, may result with a &quot;big&quot; icon.<br>
+                -<code>&quot;no&quot;</code>: No scalling occurs at all, the image are taken &quot;as is&quot;. It's up to the user to resize the source image to avoid toolbutton text misalignment.<br>
+                -<code>&quot;&lt;XX&gt;px&quot;</code>: Image are scaled down according to the (&quot;XX&quot;) pixels size. Thus, specifying scaleIcon="128px"
+will make every icon to have no more than 128*128 pixels, but at least one side equal to 128 pixels, depending if the source image is square or not.<br>
+            </td>
+        </tr>
+    </table>
+    </body>
+</html>

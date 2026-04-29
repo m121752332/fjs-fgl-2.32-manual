@@ -1,0 +1,2210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>FESQLC Compiler</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1>Genero FESQLC </H1>
+
+<ul>
+  <li><a href="#introduction">Overview </a></li>
+  <li><a href="#prerequisites">Prerequisites</a></li>
+  <li><a href="#sqlstatement">Embedding SQL Statements</a></li>
+  <li><a href="#hostvar">Using Host Variables</a>
+  <ul>
+    <li><a href="#chars">Character variables</a></li>
+    <li><a href="#decimals">Decimal variables</a></li>
+    <li><a href="#intervals">Interval and datetime variables</a></li>
+  </ul></li>
+  <li><a href="#datastructures">Using Data structures</a>
+  <ul>
+    <li><a href="#arrays">Arrays</a></li>
+    <li><a href="#struct">Structures (struct)</a></li>
+    <li><a href="#typedef">Type definitions (typedef)</a></li>
+    <li><a href="#parameters">Function parameters</a></li>
+    <li><a href="#pointers">Pointers</a></li>
+  </ul></li>
+  <li><a href="#indicator">Using Indicator Variables</a></li>
+  <li><a href="#cursors">Using Database Cursors</a></li>
+  <li><a href="#dynamicsql">Using Dynamic SQL</a>
+  <ul>
+    <li><a href="#prepexec">Preparing and Executing SQL Statements</a></li>
+    <li><a href="#inputparams">Using Input parameters in Dynamic SQL</a></li>
+    <li><a href="#cursor">Using database cursors with Prepared statements</a></li>
+    <li><a href="#free">Freeing Prepared statements</a></li>
+    <li><a href="#optomize">Optimizing Prepared statements</a></li>
+  </ul></li>
+  <li><a href="#datatypes">Supported Data Types</a></li>
+  <li><a href="#compiling">Compiling with fesqlc</a>
+  <ul>
+    <li><a href="#CEXT">Creating a C Extension written in ESQL/C</a>
+    <ul>
+       <li><a href="#CEXT_EXAMPLE">Example</a></li>
+    </ul></li>
+  </ul></li>
+  <li><a href="#preprocessor">Using Preprocessor Directives</a>
+  <ul>
+    <li><a href="#include">Including files</a> - <b>include </b></li>
+    <li><a href="#define">Creating FESQLC macros</a> - <b>define, undefine</b></li>
+    <li><a href="#conditional">Compiling conditionally</a> - <b>ifdef, ifndef, endif, else, elif</b></li>
+  </ul></li>
+  <li><a href="#exceptions">Handling Exceptions</a>
+  <ul>
+    <li><a href="#sqlstate">Using SQLSTATE</a></li>
+    <li><a href="#sqlcode">Using SQLCODE</a></li>
+    <li><a href="#whenever">Using WHENEVER</a></li>
+    <li><a href="#diagnostics">Using GET DIAGNOSTICS</a></li>
+    <li><a href="#Exampleprogram">Example program</a></li>
+  </ul></li>
+  <li><a href="#migration">Migration Notes </a></li>
+</ul>
+
+<p><i>See also</i>: <a href="CExtensions.html">Implementing C Extensions</a></p>
+
+<hr>
+
+<h2><a name="introduction">Overview </a> </h2>
+
+<p>Genero FESQLC allows you to <a href="#sqlstatement">embed SQL statements</a> in your C-language programs in order 
+to communicate with a relational database.
+
+The keywords &quot;<b>EXEC SQL</b>&quot; (preferred ANSI standard) or the <b> $</b> symbol precede SQL 
+statements and FESQLC pre-processor directives. </p><a href="#hostvar">Host variables</a> can substitute for literal values in your programs. The host variable stores the values 
+retrieved from a database table or serves as a parameter for SQL statements.
+
+<p>You can create <a href="#dynamicsql">dynamic SQL</a></a> statements that are constructed at runtime, based on some program 
+conditions or the user's interaction.
+</p>
+<p>FESQLC supports the common SQL data types,&nbsp;but some, such as DECIMAL, do not have corresponding C data
+types. FESQLC provides additional <a href="#datatypes">data types</a> that you can use in your programs.</p>
+<p>The<b> <a href="#compiling">fesqlc</a></b><a href="#compiling"> tool </a>compiles and links C programs that contain <b>FESQLC</b> source code files, 
+creating an executable C program.</p>
+<p><a href="#exceptions">Exception handling</a> in FESQLC allows you to obtain information about the execution of an SQL statement 
+and to handle program errors.</p>
+<p>The FESQLC <a href="#preprocessor">preprocessor directives</a></a> allow you to: </p>
+<ul>
+  <li>include additional files in your FESQLC program</li>
+  <li>create compile-time definitions</li>
+  <li>specify conditional compilation</li>
+</ul>
+<hr>
+<h2><a name="prerequisites">Prerequisites</a></h2>
+
+<p>Before you begin using Genero FESQLC, make sure the following has been done:</p>
+<ul>
+  <li>FESQLC and a C compiler are installed on your system.</li>
+  <li>The database client software is installed.</li>
+  <li>The environment variables required by the database client software are set.</li>
+  <li>The PATH environment variable includes <b>$FGLDIR/bin</b>, the bin directory of the software 
+installation directory.</li>
+</ul>
+
+<hr>
+
+<h2><a name="sqlstatement">Embedding SQL statements</a> </h2>
+
+<p>SQL statements that communicate with a relational database can be embedded in
+your program. </p>
+
+<p>Statements must be preceded with the keywords &quot;EXEC SQL&quot; 
+(preferred ANSI standard) or the $ symbol: </p>
+
+<pre>EXEC SQL CONNECT TO &quot;testdb&quot;;
+
+EXEC SQL CREATE TABLE t1 (
+  k2 integer NOT NULL PRIMARY KEY,
+  t1 date DEFAULT TODAY NOT NULL,
+  c char(10)
+);</pre>
+
+<pre>EXEC SQL DELETE FROM customer WHERE store_num = '101';</pre>
+<h3><a name="case">Case sensitivity</a></h3>
+<p>The following components of an embedded SQL statement are case-sensitive:</p>
+<ul>
+  <li><b><a href="#naming">Names </a>of host variables</b>. The variable <b>ordernum</b> is not the same as <b>Ordernum</b>. 
+FESQLC considers these to be two different variables.</li>
+	<li><b><a href="#datatypes">Data types</a></b>. If you use the data type <b>INT</b> in a variable declaration it would not be
+recognized - <b>int</b> is the correct name. See Supported data types for the names of the FESQLC 
+data types. </li>
+	<li><b>Cursor names and statement names</b> </li>
+</ul>
+<p>Usually, the values in variables are case-sensitive. All other components are not case-sensitive.&nbsp;</p>
+<h3><a name="quotes">Escape characters</a> and quotation marks</h3>
+<p>Both C and FESQLC use the backslash character \ as the escape character, to specify that the 
+following character is to be considered literal and not interpreted. FESQLC allows you to enclose 
+strings in either single or double quotes. Special care must be taken when the WHERE clause of
+your embedded SQL statement contains a backslash or quotation mark.</p>
+<ul>
+	<li>To search for a backslash character, escape the special significance of the backslash with 
+the \ escape character: For example, to search for the company name <b>The \\ Store:</b></li>
+</ul>
+<blockquote>
+	<pre>EXEC SQL DECLARE c1 CURSOR FOR SELECT * FROM customer WHERE store_name = 'The \\\\ Store';</pre>
+	<p>The first backslash causes the second backslash to be interpreted literally,
+and the third backslash causes the fourth backslash to be interpreted literally,
+resulting in the desired &quot;The \\ Store&quot;.</p>
+</blockquote>
+<ul>
+<li>ANSI standards do not allow you to use the same quotation character in an
+expression as the string delimiter and as a literal. Therefore, to search for a 
+value containing an embedded single quote, enclose the value with double quotes, and use the \ escape
+character to cause the single quote to be interpreted literally.&nbsp;
+For example, to search for the company name<b> The ' Store</b>:</li>
+</ul>
+<blockquote>
+	<pre>EXEC SQL DECLARE c1 CURSOR FOR SELECT * FROM customer WHERE store_name = &quot;The \' Store&quot;;</pre>
+</blockquote>
+<h3><a name="comments">Comments</a></h3>
+<p>You can use the standard C comment indicator in your FESQLC statements:</p>
+<pre>EXEC SQL DELETE FROM customer;  /* deletes all rows */</pre><hr>
+<h2>Using <a name="hostvar">Host Variables</a> </h2>
+
+<p>Host variables are C variables that you can use in SQL statements as if they 
+were literal values. Host variables can store:</p>
+
+<ul>
+  <li>Parameter values for SQL statements</li>
+  <li>Result set values fetched from the database</li>
+  <li>Cursor or statement identifiers</li>
+</ul>
+
+<h3><a name="naming">Variable name</a></h3>
+<p>As in C, the host variable name can consist of letters, digits, and underscores,
+consistent with the requirements of your C compiler. Begin the name with a
+letter rather than an underscore, to avoid potential conflicts with internal FESQLC
+names.</p>
+<blockquote>
+<pre>int x;
+char str1[11];</pre>
+</blockquote>
+<p> A variable name is case-sensitive; <b>firstname</b> is not the same as <b>FirstName</b>.</p>
+<h3><a name="declaring">Variable declaration</a></h3>
+<p>Choose a data type for the host variable compatible with the SQL data type of the database column, 
+if the variable is used to transfer data between the program and the database.&nbsp; </p>
+<p>See <a href="#datatypes">Supported Data Types</a> for a list of the SQL data types and the compatible 
+FESQLC or C data types.</p>
+<p>You can also use <a href="#datastructures">data structures</a> such as arrays, struct, and pointers 
+as host variables in your program.</p>
+<p>Declare the host variable in your program, using the same syntax that you use to declare a C variable. 
+Put the statements in an FESQLC<b> </b>declare<b> </b>section preceded with the keywords EXEC SQL 
+BEGIN DECLARE SECTION, and terminate it with EXEC SQL END DECLARE SECTION (preferred ANSI standard): </p>
+
+<blockquote>
+<pre>EXEC SQL BEGIN DECLARE SECTION;
+    int x;
+    char str1[11];
+    char str4[11];
+EXEC SQL END DECLARE SECTION;</pre>
+</blockquote>
+
+<p>For backward compatibility with Informix ESQL/C, the FESQLC compiler also supports host variable 
+declaration with the $ symbol:</p>
+
+<blockquote>
+<pre>$int x;
+$char str1[11];</pre>
+</blockquote>
+
+<p>The variable can be declared only once within a C block.</p>
+<h3><a name="conversion">Data conversion</a></h3>
+<p>We recommend that you use the <a href="#datatypes">FESQLC data type</a></a> that corresponds to 
+the SQL data type of the database column being referenced in your statements. </p>
+<p>When necessary, FESQLC will try to convert the data type of a value if a discrepancy exists in 
+your program. </p>
+
+<h3><a name="scope">Scope</a></h3>
+
+<p>The <i>scope</i> of an FESQLC host variable is the same as that of a C variable, which is dependent 
+on the placement of the declaration within the file:</p>
+
+<ul>
+  <li>Host variables declared within a program block or declared by a function are <b>local</b>,
+    accessible only within that block or function.&nbsp;</li>
+  <li>Host variables declared outside a function are <b>modular</b>, accessible from all program 
+blocks that occur after that point, until the end of the file.&nbsp; </li>
+  <li>If a local host variable has the same identifier as an external variable, the local variable takes 
+precedence inside the program block in which it is declared. </li>
+</ul>
+<h3><a name="initialization">Initialization</a></h3>
+<p>FESQLC allows you to use normal C initializer expressions with host variables:</p>
+<blockquote>
+  <pre>EXEC SQL BEGIN DECLARE SECTION;
+  int var1 = 128;
+  string var2[21] = &quot;A test string&quot;;
+EXEC SQL END DECLARE SECTION;</pre>
+</blockquote>
+<p>Local datetime or interval variables are automatically initialized to set the datetime or interval 
+qualifier; local variables of any other data type have an undefined value and must always be initialized
+before use.</p>
+<blockquote>
+<pre>EXEC SQL BEGIN DECLARE SECTION;
+  datetime year to second dt;
+  interval hour to second t1_iv1;
+EXEC SQL END DECLARE SECTION;</pre>
+</blockquote>
+<p>The FESQLC preprocessor does not check the validity of initialization statements; the C compiler 
+handles this.</p>
+
+<h3><a name="Using_host_variables">Host variables in use</a></h3>
+
+<p>Precede the variable with an indicator (:) whenever it is used in an embedded SQL statement:</p>
+<blockquote>
+  <pre>EXEC SQL BEGIN DECLARE SECTION;
+   varchar firstname[31];
+   int stateid;
+   varchar statename[51];
+EXEC SQL END DECLARE SECTION;</pre>
+  <pre>EXEC SQL select fname into :firstname from custtab;
+EXEC SQL insert into statetab values (:stateid, :statename);</pre>
+</blockquote><hr>
+
+<h2><a name="chars">Character variables</a></h2>
+
+<p>Although you can use <b>char/varchar/string/fixchar</b> data types for host variables in your program, 
+we recommend that you match the data type of the host variable to the data type of the corresponding 
+database column.</p>
+<p><a href="CExtensions.html#CAPI">Genero C Extensions</a> provide character and string functions to 
+manipulate character data.</p>
+
+<h3>Declaring Size</h3>
+<p>The <b>char/varchar/string </b>host variables include the string terminator; you must allow for the 
+terminator when declaring one of these variables. For example, to correspond to a database CHAR data type, 
+declare the size of the <b>char </b>host variable as (dblength+1). </p>
+<pre>  EXEC SQL BEGIN DECLARE SECTION;
+  char p_state_code[3]  /* length of the column state.state_code is 2 */</pre>
+
+<p>Although <b>char</b>, <b>varchar</b>, and<b> string</b> host variables contain null terminators, 
+FESQLC never inserts these characters into a database column.</p>
+
+<h3>Using char/varchar Pointers</h3>
+<p>It is strongly recommended that you use fixed-size <b>char</b> and <b>varchar</b> variables 
+	instead of pointers.  The problem with <b>char/varchar</b> pointers is that the database interface 
+cannot determine the size of the <b>char/varchar</b> input parameter or fetch buffer, which is required 
+for binding host variables to SQL statements. </p>
+<p>Host variables defined as <b>char</b> or <b>varchar</b> pointers cannot be used to fetch
+  data. If you must use a <b>char/varchar</b> pointer to insert data, use an sqlda structure and 
+specify the exact size of the corresponding CHAR/VARCHAR SQL type in <code>sqlvar-&gt;sqllen</code>. </p>
+
+<h3>Fetching and inserting CHAR data</h3>
+<p>When a value from a CHAR database column is fetched into a <b>char</b> host variable, FESQLC pads the 
+value with trailing blanks up to the size of the host variable, leaving one space for the null terminator. 
+If the column data being fetched does not fit into the character host variable, FESQLC truncates the data, 
+setting the <a href="#sqlstate">SQLSTATE</a> variable to 01004, and setting the value of any 
+<a href="#indicator">indicator variable</a> to the size of the character data in the column.</p>
+<p>When inserting a value into a CHAR database column, FESQLC pads or truncates the value to the size of 
+that column, if necessary. </p>
+
+<h3>Fetching and inserting VARCHAR data</h3>
+<p>When a value from a VARCHAR database column is fetched into a <b>char</b> host variable, FESQLC truncates 
+and null terminates the value if the source is longer, and sets any indicator variable; if the destination 
+is longer, FESQLC pads the value with trailing spaces and null terminates it.</p>
+<p>When a character value is inserted into a VARCHAR database column, any trailing spaces are not counted.</p>
+
+<h3>Using the fixchar data type</h3>
+<p>The <b>fixchar</b> data type is a character string data type that does not have a null 
+terminator. When a value from a CHAR or VARCHAR column is fetched into a fixchar, FESQLC pads the value 
+with trailing blanks.&nbsp; </p>
+<p>Do not use <b>fixchar </b>to insert data into a VARCHAR column. Even if the length of the data is shorter 
+than the <b>fixchar</b>, trailing blanks will be stored by the database server. </p>
+<p>Do not copy a null-terminated C string into a <b>fixchar</b> variable. When the variable value is 
+inserted into the database column, the null character at the end of the string will also be inserted, 
+complicating subsequent searches for the data value.</p>
+
+<h3>Using the string data type</h3>
+<p>The FESQLC <b>string</b> data type holds character data terminated by a null character, and does not have 
+trailing blanks.</p>
+<p>When values from a CHAR/VARCHAR column are fetched into a <b>string</b> host variable, the value is 
+usually stripped of trailing blanks and null-terminated. However, if the value is a string of blanks 
+(&quot;&nbsp;&nbsp;&nbsp;&nbsp; &quot;), a single blank and the null-terminator are stored in the 
+<b>string</b> host variable, to distinguish an empty string from a null string.</p>
+<hr>
+<h2><a name="decimals">Decimal Variables</a></h2>
+<p>FESQLC supports the <b>dec_t</b> and <b>decimal</b> data types to handle DECIMALs. Although you can use 
+the <b>dec_t</b> data type to fetch decimal data, it cannot be used to insert data as there is no precision 
+or scale; we recommend the use of the FESQLC <b>decimal</b> data type, which supports the DECIMAL and 
+MONEY SQL data types, for inserting and fetching data. </p>
+<p>A <b>decimal</b> host variable must be defined with a precision and scale:</p>
+<blockquote>
+
+<pre>EXEC SQL BEGIN DECLARE SECTION;
+   decimal(6,2) dec4;</pre>
+
+</blockquote>
+
+<p><a href="CExtensions.html#CAPI">Genero C Extensions</a> provide decimal functions to manipulate 
+decimal values. Use only decimal functions on decimal data types; otherwise, you may get unpredictable 
+results.</p><hr>
+<h2><a name="intervals">Interval and Datetime Variables</a></h2>
+<p>The <b>interval</b> FESQLC <a href="#datatypes">data type</a> encodes a span of time. The <b>datetime</b>
+ FESQLC data type encodes a specific point in time. The accuracy of the data types is specified by a 
+qualifier (year to second, etc.) Declare host variables for INTERVAL or DATETIME database columns using 
+these FESQLC data types:</p>
+<blockquote>
+	<pre>EXEC SQL BEGIN DECLARE SECTION;
+  datetime year to second dtm2;
+  interval hour(5) to second inv2;
+EXEC SQL END DECLARE SECTION;</pre>
+</blockquote>
+<p>A <b>datetime</b> or <b>interval</b> data type is stored as a decimal number with a scale of zero and a 
+precision dependent on the qualifier used when defining the data type. </p>
+<p><b>Datetime</b> and <b>interval </b>host variables must have the qualifier initialized. This is done by 
+using datetime or <b>interval </b>data types as shown in the above example.&nbsp; If you use <b>dtime_t</b> 
+or <b>intrvl_t</b> data types, use macros to initialize their qualifiers:</p>
+<blockquote>
+	<pre>EXEC SQL BEGIN DECLARE SECTION;
+   dtime _t dtml;
+   intrvl_t inv1;
+EXEC SQL END DECLARE SECTION;
+
+dtml.dt_qual = TU_DTENCODE(TU_YEAR, TU_SECOND);
+invl.in_qual = TU_TENCODE(5, TU_HOUR, TU_SECOND);</pre>
+</blockquote>
+<p>Genero C Extensions provide <a href="CExtensions.html#MACROS">macros</a> for the qualifiers, 
+and <a href="CExtensions.html#CAPI">functions</a> to manipulate these data types.&nbsp; </p>
+<hr>
+<h2>Using <a name="datastructures">data structures</a></h2>
+<h3><a name="arrays">Arrays</a></h3>
+<p>You can declare an <i>array</i> of host variables in your program; provide the number of elements 
+in the array:</p>
+<blockquote>
+  <pre>EXEC SQL BEGIN DECLARE SECTION;
+  int ordid[20];
+ EXEC SQL END DECLARE SECTION;</pre>
+</blockquote>
+<p>An array can be one-dimensional or two-dimensional.</p>
+<p>Your program can reference an element of the array as follows:</p>
+<pre>EXEC SQL DELETE FROM ordertab WHERE order_num = :ordid[1];</pre>
+<h3><a name="struct">Structures (struct)</a></h3>
+<p>You can declare a C language structure <i>struct</i><b> </b>in your program, specifying the 
+members of the structure:</p>
+<blockquote>
+  <pre>EXEC SQL BEGIN DECLARE SECTION;
+  struct {
+    int ordid;
+    date orddate; 
+    char ordname[26];
+  } order_rec;
+EXEC SQL END DECLARE SECTION;</pre>
+</blockquote>
+<p>Here struct <b>order_rec</b> defines a host variable with three members: <b>ordid</b>, <b>orddate</b>,
+and <b>ordname</b>.</p>
+<p>The individual members of the structure are referenced in your program as <i>structname.membername</i>:</p>
+<blockquote>
+  <pre>EXEC SQL insert into ordertab (order_num, order_date)
+    values (:order_rec.ordid :order_rec.orddate);</pre>
+</blockquote>
+<p>If an SQL statement allows a list of host variables, you can specify the structure name and FESQLC 
+will expand it:</p>
+<blockquote>
+  <pre>EXEC SQL insert into ordertab values (:order_rec);</pre>
+</blockquote>
+<p>The values list in this SQL statement will expand to order_rec.ordid, order_rec.orddate, order_rec.ordname.</p>
+<h3><a name="typedef">Type definitions (typedef)</a></h3>
+<p>FESQLC supports C typedef statements and allows the use of typedef names in the declaration of the types 
+of host variables: </p>
+<blockquote>
+  <pre>EXEC SQL BEGIN DECLARE SECTION;</pre>
+  <pre>typedef struct {
+     int key;
+     varchar name[21];
+     datetime year to fraction(5) tstamp;
+} mytype;</pre>
+  <pre>mytype myrecord;</pre>
+  <pre>EXEC SQL END DECLARE SECTION;</pre>
+</blockquote>
+<p>You cannot use a typedef statement that names a multidimensional array, a union, or a function pointer 
+as the type of a host variable.</p>
+<h3><a name="parameters">Function parameters</a></h3>
+<p>You can declare host variables as function parameters; precede the variable name with the PARAMETER keyword.</p>
+<blockquote>
+  <pre>func1(ord_id, ord_date)
+EXEC SQL BEGIN DECLARE SECTION;
+  PARAMETER int ord_id;
+  PARAMETER date ord_date;
+EXEC SQL END DECLARE SECTION;
+{
+ <i> ...
+  </i>EXEC SQL INSERT INTO oldorders VALUES (:ord_id, :ord_date);<i>
+</i>  ...
+}</pre>
+</blockquote>
+<h4>
+Notes:</h4>
+<ul>
+  <li>Parameters declared for host variables must be part of a function header only.</li>
+  <li>You can have other function parameters that are not used as host variables inside the EXEC SQL declare section.</li>
+</ul>
+<h3><a name="pointers">Pointers</a></h3>
+<p>Host variables can be declared as pointers to SQL identifiers, prepared statements for example: </p>
+<blockquote>
+<pre>EXEC SQL BEGIN DECLARE SECTION;
+    char *stmt;
+    int ord_num;
+EXEC SQL END DECLARE SECTION;
+...
+stmt = &quot;SELECT order_num FROM orders&quot;;
+EXEC SQL PREPARE curs1 FROM :stmt;
+EXEC SQL OPEN curs1;
+EXEC SQL FETCH curs1 INTO :ord_num;</pre>
+</blockquote>
+<p>Host variables declared as pointers can also be used as input parameters in SQL insert statements. However, 
+we strongly recommend that you use fixed-size char and varchar host variables instead of&nbsp;char/varchar 
+pointers to hold SQL CHAR/VARCHAR data. </p>
+<pre>EXEC SQL BEGIN DECLARE SECTION;
+  int *v_id;
+  char v_name[26];
+EXEC SQL END DECLARE SECTION;
+...
+INSERT INTO vendors values (:v_id, :v_name);</pre>
+<hr>
+<h2><a name="indicator">Using Indicator variables</a></h2>
+<p>You can specify an indicator variable in your SQL statement to obtain information about a value returned 
+by the statement.</p>
+<ul>
+  <li>Declare the indicator variable using the normal FESQLC syntax, and specify an appropriate data type; 
+integer data types are used for indicators that detect <a href="#nullvars">null values</a> or 
+<a href="#truncate">truncated values</a>.</li>
+</ul>
+<blockquote>
+<pre>EXEC SQL BEGIN DECLARE SECTION;
+   char p_state_code[3];
+   int i_state_code;
+EXEC SQL END DECLARE SECTION;</pre>
+</blockquote>
+<ul>
+  <li>Use the indicator variable in the SELECT statement. Specify the indicator variable to be associated 
+with the host variable, preceding the indicator variable with the word INDICATOR:</li>
+</ul>
+<blockquote>
+  <pre>:p_state_code INDICATOR :i_state_code</pre>
+  <p>Or, separate the variables with a symbol (: or $). There can be one or more whitespaces between the 
+host variable name and the indicator name:</p>
+  <pre>:p_state_code :i_state_code
+$p_state_code$i_state_code
+$p_state_code:i_state_code</pre>
+  <p>Example:</p>
+</blockquote>
+<blockquote>
+  <pre>EXEC SQL SELECT state_code INTO :p_state_code INDICATOR :i_state_code
+     FROM state WHERE state_name = 'Illinois'; </pre>
+</blockquote>
+<p> When FESQLC returns the value into the host variable, it will also set the corresponding indicator 
+variable. Your program can check the values of any indicator variables before continuing.</p>
+<h3> <a name="nullvars">To detect null values</a></h3>
+<p>If a database table column permits nulls, you may have a null value returned to the corresponding 
+host variable specified in your SQL SELECT statement. If one of the values in a database column referenced 
+for an aggregate function is null, you may also have a null value returned. Null (unknown) values can cause
+problems for your program. Use indicator variables to determine whether any values returned to the host 
+variables are null: </p>
+<ul>
+  <li>FESQLC will set the value of an indicator variable to <b>zero</b> if the value returned for the 
+associated host variable is not null.</li>
+  <li>If the value returned is null, FESQLC will set the indicator variable to <b>-1</b>.
+  </li>
+</ul>
+<p>Checking whether the variable is null before printing it:</p>
+<pre>  printf(&quot;%s\n&quot;, i_state_code == 0 ? p_state_code : &quot;&lt;no code&gt;&quot;);
+ </pre>
+<p><b>Tip:</b>&nbsp; The NULL keyword of an INSERT statement allows you to
+insert a null value into a table row. As an alternative, you can use a negative
+indicator variable with the host variable. Set the value of the indicator
+variable to <b>-1</b> when it is declared.</p>
+<h3><a name="truncate">To detect truncated values</a></h3>
+<p>If the host variable referenced by an SQL SELECT statement is a character
+array, the value returned from the database may be truncated (the value returned
+is too large to fit into the array). Use indicator variables to determine
+whether any values returned are truncated. </p>
+<ul>
+  <li>FESQLC will set the value of an indicator variable to <b>zero</b> if 
+	the value returned for the associated host variable is not truncated.</li>
+  <li>If the value returned was truncated, FESQLC will set the value of the
+    indicator variable to the original size in bytes of the host variable.</li>
+</ul>
+<h4>Example program using indicator variables:</h4>
+<pre><code class="linenumber">01</code> #include &lt;stdio.h&gt;
+<code class="linenumber">02</code>
+<code class="linenumber">03</code> int main()
+<code class="linenumber">04</code> {
+<code class="linenumber">05</code>  EXEC SQL BEGIN DECLARE SECTION;
+<code class="linenumber">06</code>  char p_state_code[3];
+<code class="linenumber">07</code>  int i_state_code;
+<code class="linenumber">08</code>  EXEC SQL END DECLARE SECTION;
+<code class="linenumber">09</code>
+<code class="linenumber">10</code>  EXEC SQL CONNECT TO &quot;custdemo&quot;;
+<code class="linenumber">11 </code> EXEC SQL SELECT state_code INTO :p_state_code INDICATOR :i_state_code 
+<code class="linenumber">12</code>    FROM state 
+<code class="linenumber">13</code>    WHERE state_name = 'Illinois'; 
+<code class="linenumber">14</code>
+<code class="linenumber">15</code>  printf(&quot;%-20s\n &quot;,
+<code class="linenumber">16</code>         i_state_code == 0 ? p_state_code : &quot;&lt;no name&gt;&quot;
+<code class="linenumber">17</code>  );
+<code class="linenumber">18</code>  EXEC SQL DISCONNECT ALL;
+<code class="linenumber">19</code> }</pre>
+<hr>
+
+
+
+<h2><a name="cursors">Using database cursor statements</a></h2>
+<p>You can use sequential, scroll, hold, update, or insert cursors in FESQLC programs. For example, if a 
+SELECT statement will retrieve more than one row:</p>
+<ul>
+	<li><b>Declare</b> the cursor for the select statement. This allocates storage to hold the cursor.</li>
+	<li><b>Open</b> the cursor. The active set associated with the cursor is identified, and the cursor 
+is positioned before the first row of the set.</li>
+	<li><b>Fetch</b> the data into the <a href="#hostvar">host variable(s),</a> until the last desired 
+	row is fetched.</li>
+	<li><b>Close</b> the cursor when the fetch is complete. This releases the active result set associated 
+with the cursor.&nbsp; A closed cursor can be re-opened.</li>
+	<li><b>Free</b> the cursor when it is no longer needed by the program. A freed cursor must be declared 
+again before it can be re-opened and used.</li>
+</ul>
+<p>The cursor program statements must appear physically within the module in the order listed.</p>
+<h4>Example program using a database cursor:</h4>
+<pre><code class="linenumber">01</code> #include &lt;stdio.h&gt;
+<code class="linenumber">02</code>
+<code class="linenumber">03</code> EXEC SQL define NAME_LEN 20;  /* customer.store_name is a CHAR(20)  */
+<code class="linenumber">04</code> EXEC SQL define ADDR_LEN 20;  /* customer.addr is a CHAR(20)        */
+<code class="linenumber">05 </code>EXEC SQL define STATE_LEN 2;  /* customer.state_code is a CHAR(2)   */
+<code class="linenumber">06</code>
+<code class="linenumber">07</code> int main()
+<code class="linenumber">08 </code>{
+<code class="linenumber">09</code>
+<code class="linenumber">10</code>  EXEC SQL BEGIN DECLARE SECTION;
+<code class="linenumber">11</code>    int p_num;
+<code class="linenumber">12</code>    varchar p_name[ NAME_LEN + 1 ];
+<code class="linenumber">13</code>    int2 i_name;
+<code class="linenumber">14</code>    varchar p_addr[ ADDR_LEN + 1 ];
+<code class="linenumber">15</code>    int2 i_addr;
+<code class="linenumber">16</code>    varchar p_addr2[ ADDR_LEN + 1 ];
+<code class="linenumber">17</code>    int2 i_addr2;
+<code class="linenumber">18</code>    char p_state_code[STATE_LEN + 1];
+<code class="linenumber">19</code>  EXEC SQL END DECLARE SECTION;
+<code class="linenumber">20</code>
+<code class="linenumber">21</code>  printf( &quot;Connecting...\n\n&quot;);
+<code class="linenumber">22</code>  EXEC SQL CONNECT TO 'custdemo';
+<code class="linenumber">23</code>
+<code class="linenumber">24</code>  EXEC SQL DECLARE c1 CURSOR FOR        /* Declaring the cursor */
+<code class="linenumber">25</code>    SELECT store_num, store_name, addr, addr2
+<code class="linenumber">26</code>     FROM customer
+<code class="linenumber">27</code>     WHERE state = :p_state;
+<code class="linenumber">28</code>
+<code class="linenumber">29</code>  strcpy(p_state, &quot;IL&quot;);
+<code class="linenumber">30</code>  EXEC SQL OPEN c1;                  /* Opening the cursor */
+<code class="linenumber">31</code>
+<code class="linenumber">32</code>  for (;;)                           /* loop to fetch the rows */
+<code class="linenumber">33</code>  {
+<code class="linenumber">34</code>   EXEC SQL FETCH c1 INTO :p_num,   
+<code class="linenumber">35</code>    :p_name INDICATOR :i_name,
+<code class="linenumber">36</code>    :p_addr INDICATOR :i_addr,
+<code class="linenumber">37</code>    :p_addr2 INDICATOR :i_addr2;
+<code class="linenumber">38</code>
+<code class="linenumber">39</code>   if (strncmp(SQLSTATE, &quot;02&quot;, 2) == 0) {
+<code class="linenumber">40</code>     /* No more rows */
+<code class="linenumber">41</code>     break;
+<code class="linenumber">42</code>   }
+<code class="linenumber">43</code>
+<code class="linenumber">44</code>   printf(&quot;%6d %-20s\n %s %s\n&quot;,
+<code class="linenumber">45 </code>    p_num,
+<code class="linenumber">46 </code>    i_name == 0 ? p_name : &quot;&lt;no name&gt;&quot;,
+<code class="linenumber">47</code>     i_addr == 0 ? p_addr : &quot;&lt;no address&gt;&quot;,
+<code class="linenumber">48</code>     i_addr2 == 0 ? p_addr2 : &quot;&quot;
+<code class="linenumber">49</code>   );
+<code class="linenumber">50</code>  }
+<code class="linenumber">51</code>
+<code class="linenumber">52</code>  EXEC SQL CLOSE c1;     /* close the cursor */
+<code class="linenumber">53 </code> EXEC SQL FREE c1       /* free the cursor  */
+<code class="linenumber">54</code>
+<code class="linenumber">55</code>  printf(&quot;\nDisconnecting...\n\n&quot;);
+<code class="linenumber">56 </code> EXEC SQL DISCONNECT CURRENT;
+<code class="linenumber">57</code>
+<code class="linenumber">58</code>  return 0;
+<code class="linenumber">59</code> }</pre>
+<p>The code in lines 39-41 checks the SQLSTATE global variable to determine 
+whether there are any more rows to retrieve. See
+<a href="#exceptions">Handling Exceptions</a></p>
+<p>See <a href="#dynamicsql">Dynamic SQL</a> for additional examples using cursors and the PREPARE statement.</p>
+<p><b>Note:</b> The FETCH ... INTO ... syntax is supported by all databases. Declaring a cursor for 
+SELECT ... INTO ... is Informix-specific syntax, and not recommended for portability.</p>
+<hr>
+
+<h2><a name="dynamicsql">Using Dynamic SQL</a></h2>
+
+<p>Dynamic SQL statements allow you to construct an SQL statement at runtime,
+based on some program conditions or the user's interaction.</p>
+
+<ol>
+  <li>Your program assembles the SQL statement in a character
+    string, and assigns it to a character string host variable.&nbsp;</li>
+</ol>
+<blockquote>
+  <p>The SQL statement string cannot contain the names of any host variables.
+   <a href="#inputparams">Input parameters</a> (indicated by question mark placeholders in the
+  statement string) can be used in the statement string, for example in a WHERE
+  clause, to indicate that the value needed will be provided at a given position
+  in the SQL statement.</p>
+</blockquote>
+<ol start="2">
+  <li>Your program uses the <a href="#prepare">prepare</a> statement to assign
+    a statement id and send the SQL statement string     contained in the host variable to the 
+database server for parsing. You can check the global variables <a href="#sqlstate">SQLSTATE</a> 
+or <a href="#sqlcode">SQLCODE</a> to find out whether errors occurred in the parsing. </li>
+ </ol>
+<ol start = "3">  <li>Your program <a href="#execute">executes</a> the prepared statement one or more times.</li> 
+</ol>
+<blockquote>
+	<ul>
+		<li>If <a href="#inputparams">input parameters</a> are used, the USING clause of the EXECUTE or 
+OPEN instruction provides the values.</li>
+		<li>If the SQL statement produces a result set (like SELECT), or inserts multiple rows with an 
+INSERT CURSOR, you must declare a <a href="#cursor">cursor</a> with the prepared statement handle in order 
+to execute it.</li>
+	</ul>
+</blockquote>
+<ol start="4">
+  <li>When the prepared statement is no longer needed, your program <a href="#free"> frees</a> the
+    statement to release the allocated resources.</li>
+</ol>
+<p>You can use Dynamic SQL for any SQL statement except SQL management instructions (such as PREPARE, 
+DECLARE, OPEN, EXECUTE, FETCH, CLOSE, FREE), SQL connection instructions (such as CONNECT, DATABASE, 
+DISCONNECT) and transaction control instructions (BEGIN WORK, COMMIT WORK, ROLLBACK WORK, SET ISOLATION, 
+SET LOCK MODE).</p>
+<hr>
+<h2><a name="prepexec">Preparing and Executing SQL statements</a></h2>
+<h3><a name="prepare">Preparing</a> statements</h3>
+In order to prepare an SQL statement, you must do the following:
+<ol>
+	<li>Declare a char <a href="#hostvar">host variable</a> to hold the entire SQL string:</li>
+</ol>
+<blockquote>
+	<pre>EXEC SQL BEGIN DECLARE SECTION;
+  char sqlstring[128];    /* SQL statement */
+EXEC SQL END DECLARE SECTION;</pre>
+</blockquote>
+<ol start="2">
+	<li>Assign the SQL string to the host variable:&nbsp;&nbsp;</li>
+</ol>
+<blockquote>
+	<pre>strcpy(sqlstring, &quot;DELETE FROM orders WHERE store_num IS NULL&quot;);</pre>
+</blockquote>
+<ol start="3">
+	<li>Use the PREPARE statement to create a valid SQL statement from the 
+	string contained in the host variable: </li>
+</ol>
+<blockquote>
+	<pre>EXEC SQL PREPARE stid FROM :sqlstring;</pre>
+</blockquote>
+<p>
+Once an SQL statement is prepared, use EXECUTE to execute the statement; the 
+statement can be executed often as needed.
+</p>
+<h3><a name="execute">Executing</a> prepared statements that do not return values (INSERT, UPDATE,
+DELETE)</h3>
+<p>
+Follow the steps described at the beginning of this section to prepare the
+statement. Then, use the EXECUTE instruction to perform the execution of the
+statement:
+</p>
+<blockquote>
+  <pre><font SIZE="2">strcpy(sqlstring, &quot;DELETE FROM orders WHERE store_num IS NULL&quot;);
+EXEC SQL PREPARE stid FROM :sqlstring;
+EXEC SQL EXECUTE stid;</font></pre>
+</blockquote>
+<h3>Executing prepared statement that return values (SELECT)</h3>
+If the prepared SQL statement returns a <u> single row</u>, you can use the INTO
+  clause with EXECUTE to specify the host variables to receive the database
+  column values:
+<blockquote>
+  <pre>sprintf(sqlstring, &quot;SELECT COUNT(*) FROM orders&quot;);
+EXEC SQL PREPARE stid FROM :sqlstring;
+EXEC SQL EXECUTE stid INTO :p_order_count;</pre>
+</blockquote>
+	<p>You can use <a href="#indicator">indicator variables </a>with 
+	the EXECUTE statement, to determine if a value returned from the database is 
+	null:</p>
+<blockquote>
+  <pre>EXEC SQL EXECUTE stid INTO :p_custname INDICATOR :i_custname;</pre>
+</blockquote>
+If the prepared statement returns more than one row, you must declare a database
+  cursor and use cursor management statements instead of the EXECUTE
+  statement. See <a href="#cursor">Using cursors with prepared statements</a>.
+<h3>Executing dynamic SQL statements without parameters</h3>
+If there are no <a href="#inputparams">input parameters</a>, and the statement will not be executed 
+	multiple times, you can reduce the number of statements to be executed by 
+	using the EXECUTE IMMEDIATE statement&nbsp;to prepare and execute the 
+	statement string at once:
+<blockquote>
+  <pre>sprintf(sqlstring, &quot;DELETE FROM orders WHERE store_num IS NULL&quot;);
+EXEC SQL EXECUTE IMMEDIATE :sqlstring;</pre>
+</blockquote>
+<h4>Example program using EXECUTE IMMEDIATE and also returning a single row:</h4>
+<pre><code class="linenumber">01</code> #include &lt;stdio.h&gt;
+<code class="linenumber">02</code>
+<code class="linenumber">03</code> int main()
+<code class="linenumber">04</code>
+<code class="linenumber">05</code> {
+<code class="linenumber">06</code>  EXEC SQL BEGIN DECLARE SECTION;
+<code class="linenumber">07</code>    char sqlstring[128];   /* string to hold sql statement */ 
+<code class="linenumber">08</code>    int p_store_num;       /* values for store_num column */
+<code class="linenumber">09</code>    char p_store_name[21]; /* values for store_name, column length 20 */
+<code class="linenumber">10</code>    int2 i_store_name;      /* indicator variable for p_store_name */
+<code class="linenumber">11</code>  EXEC SQL END DECLARE SECTION;
+<code class="linenumber">12</code>
+<code class="linenumber">13 </code> char whereinput[64];   /* variable for string containing where clause */
+<code class="linenumber">14</code>  strcpy(whereinput, &quot;store_num &gt; 200&quot;); /* setting value of whereinput */
+<code class="linenumber">15</code>  
+<code class="linenumber">16</code>  EXEC SQL CONNECT TO 'custdemo';
+<code class="linenumber">17</code>
+<code class="linenumber">18</code>  /* Using EXECUTE IMMEDIATE  */
+<code class="linenumber">19</code>  sprintf(sqlstring, &quot;DELETE FROM orders WHERE %s&quot;, whereinput);
+<code class="linenumber">20</code>  EXEC SQL EXECUTE IMMEDIATE :sqlstring;
+<code class="linenumber">21</code>
+<code class="linenumber">22</code>  /* Returning a single row - USING PREPARE and EXECUTE */
+<code class="linenumber">23</code>  strcpy(whereinput, &quot;store_num = 101&quot;);  /* setting value of whereinput */
+<code class="linenumber">24</code>  sprintf(sqlstring, &quot;SELECT store_name FROM customer WHERE %s&quot;, whereinput);
+<code class="linenumber">25</code>  EXEC SQL PREPARE stid FROM :sqlstring;
+<code class="linenumber">26</code>  EXEC SQL EXECUTE stid INTO :p_store_name INDICATOR :i_store_name;
+<code class="linenumber">27</code>  /* Displaying store name */
+<code class="linenumber">28</code>  printf(&quot;%-20s\n&quot;, i_store_name == 0 ? p_store_name : &quot;&lt;no name&gt;&quot;);
+<code class="linenumber">29</code>
+<code class="linenumber">30</code>  EXEC SQL DISCONNECT CURRENT;
+<code class="linenumber">31</code>
+<code class="linenumber">32</code>  return 0;
+<code class="linenumber">33</code> }</pre>
+<hr>
+<h2><a name="inputparams">Using Input Parameters in dynamic SQL</a></h2>
+<p>Input parameters are placeholders in an SQL statement string for host variables that contain the values 
+for expressions. The actual values are provided at runtime. Placeholders are used since the database 
+server cannot parse a dynamic SQL statement that contains host variable names.</p>
+<p>Placeholders can be used anywhere within the SQL statement where an expression is valid. You cannot use 
+an input parameter to represent an identifier such as a database name, a table name, or a column name.</p>
+<h3>Steps to use input parameters</h3>
+<ol>
+  <li>Declare a <a href="#hostvar">host variable</a> for each input parameter. The data type of the
+    host variable must be compatible with the data type of the database column referenced in the SQL 
+statement string.</li>
+  <li>Assemble the SQL statement string using ? as a placeholder for each input parameter.</li>
+  <li> PREPARE the statement string to create a valid SQL statement.</li>
+	<li>Provide the host variables corresponding to the input parameters with the USING clause of the 
+EXECUTE instruction. The order in which the variables are listed must match the order in which the
+    variables appear in the prepared statement.</li>
+</ol>
+<p>Example using input parameters with a prepared DELETE statement:</p>
+<blockquote>
+	<pre>EXEC SQL PREPARE stid FROM &quot;DELETE FROM orders WHERE store_num = ? AND order_num &lt; ?&quot;;
+EXEC SQL EXECUTE stid USING :p_store_num, :p_order_num;</pre>
+</blockquote>
+<p>Example using input parameters with a prepared SELECT statement that returns a single row:</p>
+<blockquote>
+    <pre>EXEC SQL PREPARE stid FROM &quot;SELECT COUNT(*) FROM orders WHERE order_num &lt; ?&quot;;
+EXEC SQL EXECUTE stid USING :p_order_num INTO :p_count;</pre>
+</blockquote>
+<p>If the SELECT statement returns more than one row, a <a href="#cursor">
+database cursor</a> must be used.</p>
+<h4>Example program using input parameters:</h4>
+<pre><code class="linenumber">01</code> #include &lt;stdio.h&gt;
+<code class="linenumber">02</code>
+<code class="linenumber">03</code> int main()
+<code class="linenumber">04</code> {
+<code class="linenumber">05</code>  EXEC SQL BEGIN DECLARE SECTION;
+<code class="linenumber">06</code>    char sqlstring[128]; 
+<code class="linenumber">07</code>    char p_state_code[3];       /* column length is 2  */
+<code class="linenumber">08</code>    char p_state_name[16];      /* column length is 15 */
+<code class="linenumber">09</code>  EXEC SQL END DECLARE SECTION;
+<code class="linenumber">10</code>
+<code class="linenumber">11</code>  EXEC SQL CONNECT TO 'custdemo';
+<code class="linenumber">12</code>
+<code class="linenumber">13</code>  /* Using placeholders for values to be inserted  */
+<code class="linenumber">14</code>  strcpy(sqlstring, &quot;INSERT INTO state VALUES ( ?, ? )&quot;);
+<code class="linenumber">15</code>  EXEC SQL PREPARE stid2 FROM :sqlstring;
+<code class="linenumber">16</code>  printf(&quot; SQLSTATE = [%s]\n\n&quot;, SQLSTATE); /* checking SQL success */
+<code class="linenumber">17</code>
+<code class="linenumber">18</code>  strcpy(p_state_code, &quot;AZ&quot;);
+<code class="linenumber">19</code>  strcpy(p_state_name, &quot;Arizona&quot;);
+<code class="linenumber">20</code>
+<code class="linenumber">21</code>  /* Executing the prepared statement */
+<code class="linenumber">22</code>  EXEC SQL EXECUTE stid2 USING :p_state_code, :p_state_name;
+<code class="linenumber">23</code>  printf(&quot; SQLSTATE = [%s]\n\n&quot;, SQLSTATE);
+<code class="linenumber">24</code>  
+<code class="linenumber">25</code>  EXEC SQL DISCONNECT CURRENT;
+<code class="linenumber">26</code>
+<code class="linenumber">27</code>  return 0;
+<code class="linenumber">28</code> }</pre>
+<hr>
+<h2><a name="cursor">Using a Database Cursor with Prepared statements</a></h2>
+<p>If an SQL SELECT statement generates a set of rows, you must handle the result set 
+with a Database Cursor.</p>
+First, the cursor is declared for the prepared statement:<blockquote>
+	<pre>EXEC SQL PREPARE stid FROM &quot;SELECT order_num FROM orders WHERE store_num = ?&quot;;
+EXEC SQL DECLARE c1 CURSOR FOR stid;</pre>
+</blockquote>
+If input parameters are used in the WHERE clause, the USING clause of the OPEN cursor instruction provides 
+the host variables containing the values needed:
+<blockquote>
+	<pre>EXEC SQL OPEN c1 USING :p_store_num;</pre>
+</blockquote>
+The FETCH statement uses the INTO clause to retrieve the database values into host variables. This statement 
+can be executed multiple times until there are no more values to be retrieved:
+<blockquote>
+	<pre><span style="background-color: #FFFFFF">EXEC SQL FETCH c1 INTO :p_order_num;</span></pre>
+</blockquote>
+<p>The order in which the <a href="#hostvar">host variables</a> are listed must match the order of the 
+select list.</p>
+<p>CLOSE the cursor when the fetch is complete.&nbsp; A closed cursor can be re-opened.</p>
+<blockquote>
+	<pre>EXEC SQL CLOSE c1;</pre>
+</blockquote>
+<p>When the cursor is no longer needed, it is FREEd, releasing the memory associated with it. Once freed, 
+a cursor must be re-declared before it can be used again.</p>
+<blockquote>
+	<pre>EXEC SQL FREE c1;</pre>
+</blockquote>
+<h4>Example program using a database cursor and prepared statement:</h4>
+<pre><code class="linenumber">01</code> #include &lt;stdio.h&gt;
+<code class="linenumber">02</code> 
+<code class="linenumber">03</code> /* To check for SQL errors */
+<code class="linenumber">04</code> void errlog(void)
+<code class="linenumber">05</code> {
+<code class="linenumber">06</code>  fprintf(stderr, &quot;Error occurred:\n&quot;);
+<code class="linenumber">07</code>  fprintf(stderr, &quot; SQLSTATE = [%s] SQLCODE = %d\n\n&quot;,
+<code class="linenumber">08</code>                  SQLSTATE, SQLCODE);
+<code class="linenumber">09</code>  EXEC SQL DISCONNECT ALL;
+<code class="linenumber">10</code>  exit(1);
+<code class="linenumber">11</code> }
+<code class="linenumber">12</code>
+<code class="linenumber">13</code> int main()
+<code class="linenumber">14</code> {
+<code class="linenumber">15</code>  EXEC SQL BEGIN DECLARE SECTION;
+<code class="linenumber">16</code>    int p_store_num;        /* store_num column */
+<code class="linenumber">17</code>    int p_order_num;        /* order_num column */
+<code class="linenumber">18</code>    int2 i_order_num;       /* indicator for p_order_num */
+<code class="linenumber">19</code>  EXEC SQL END DECLARE SECTION;
+<code class="linenumber">20</code> 
+<code class="linenumber">21</code>  EXEC SQL WHENEVER ERROR CALL errlog; /* Set the error-handling */
+<code class="linenumber">22</code>
+<code class="linenumber">23</code>  EXEC SQL CONNECT TO 'custdemo';
+<code class="linenumber">24</code> 
+<code class="linenumber">25</code>  EXEC SQL PREPARE stid FROM &quot;SELECT order_num FROM orders WHERE store_num = ?&quot;;
+<code class="linenumber">26</code>  EXEC SQL DECLARE c1 cursor for stid;
+<code class="linenumber">27</code>  p_store_num = 12;  /* Assign a value to store number */
+<code class="linenumber">28</code>  EXEC SQL OPEN c1 USING :p_store_num;
+<code class="linenumber">29</code>
+<code class="linenumber">30</code>  for (;;)
+<code class="linenumber">31</code>  {
+<code class="linenumber">32</code>   <span style="background-color: #FFFFFF">EXEC SQL FETCH c1 INTO :p_order_num INDICATOR :i_order_num;</span>
+<code class="linenumber">33</code>   if (strncmp(SQLSTATE, &quot;02&quot;, 2) == 0) break;
+<code class="linenumber">34</code>   printf(&quot;%6d \n&quot;,
+<code class="linenumber">35</code>          i_order_num == 0 ? p_order_num : &quot;&lt;no order number&gt;&quot;
+<code class="linenumber">36</code>   );
+<code class="linenumber">37</code>  }
+<code class="linenumber">38</code>
+<code class="linenumber">39</code>  EXEC SQL CLOSE c1;
+<code class="linenumber">40</code>  EXEC SQL FREE c1;
+<code class="linenumber">41</code>
+<code class="linenumber">42</code>  EXEC SQL DISCONNECT CURRENT;
+<code class="linenumber">43</code>
+<code class="linenumber">44</code>  return 0;
+<code class="linenumber">45</code> }</pre>
+
+<h3><a name="inscurs">Inserting multiple rows</a></h3>
+<p>Use an <i>insert cursor</i> to perform buffered row insertion in database tables. 
+The insert cursor simply inserts rows of data; it cannot be used to fetch data.</p>
+A cursor is declared for the prepared statement,&nbsp;using input parameters for the values to be inserted:
+<blockquote>
+    <pre>EXEC SQL PREPARE s1 FROM &quot;INSERT INTO manufact VALUES (?,?)&quot;
+EXEC SQL DECLARE c1 CURSOR FOR s1;</pre>
+</blockquote>
+The insert cursor is opened:
+<blockquote>
+	<pre>EXEC SQL OPEN c1;</pre>
+</blockquote>
+The PUT cursor instruction uses the USING clause to insert values from the <a href="#hostvar">host variables</a> 
+into the database columns. This statement is executed multiple times until there are no more values to be 
+inserted.
+<blockquote>
+	<pre><span style="background-color: #FFFFFF">EXEC SQL PUT c1 FROM :faccode, :facname;</span></pre>
+</blockquote>
+Flush data rows, if required:
+<blockquote>
+	<pre>EXEC SQL FLUSH c1;</pre>
+</blockquote>
+Close the cursor:
+<blockquote>
+	<pre>EXEC SQL CLOSE c1;</pre>
+</blockquote>
+Free the statement handle and the cursor:
+<blockquote>
+	<pre>EXEC SQL FREE s1;
+EXEC SQL FREE c1;</pre>
+</blockquote>
+<hr>
+<h2><a name="free">Freeing Prepared Statements</a></h2>
+<p>When the prepared statement is no longer needed, your program can free the statement to release the 
+resources allocated:</p>
+<blockquote>
+	<pre>EXEC SQL PREPARE stid FROM &quot;SELECT order_num FROM orders WHERE store_num = ?&quot;;
+...
+EXEC SQL FREE stid;</pre>
+</blockquote>
+<p>If a database cursor is used for the prepared statement, both the cursor and the statement can be freed:</p>
+<blockquote>
+	<pre>EXEC SQL FREE c1;
+EXEC SQL FREE stid;</pre>
+</blockquote>
+<hr>
+<h2><a name="optomize">Optimizing Prepared Statements
+</a>
+</h2>
+<p>If an SQL statement is to be executed multiple times, you can reduce thetraffic between the client 
+application and the database server if the statement is not also parsed and optimized each time. Use the 
+PREPARE statement to parse the statement outside of the program loop, so the parsing only occurs once:</p>
+<blockquote>
+<pre>EXEC SQL PREPARE stid FROM &quot;DELETE FROM orders WHERE store_num = ?&quot;</pre>
+</blockquote>
+<p>Then, use the EXECUTE ... USING statement inside the program loop.</p>
+<blockquote>
+<pre>EXEC SQL EXECUTE stid USING :p_store_num;</pre>
+</blockquote>
+<hr>
+
+<h2><a name="datatypes">Supported Data Types</a></h2>
+<p>When your program accesses a database column you must <a href="#declaring">declare a host
+variable </a>of the appropriate FESQLC or C data type to hold the data.</p>
+
+<h3><a name="rectypes">Recommended Data Types for Host Variables</a></h3>
+<p>The table below lists the relationship between supported SQL data types, and the recommended FESQLC 
+host variable data types that correspond to the SQL types. Also included are the corresponding data 
+type constants, required by some FESQLC functions:</p>
+<table border="0" cellpadding="0" width="90%" id="table7">
+  <tr>
+    <td bgcolor="#C0C0C0"><b>SQL Data Type</b></td>
+    <td bgcolor="#C0C0C0"><b>C Data Type</b></td>
+    <td bgcolor="#C0C0C0"><b> Description</b></td>
+    <td bgcolor="#C0C0C0" valign="top"><b> Type Constant</b></td>
+    </tr>
+	<tr>
+    <td valign="top">char(<i>n</i>), <br>
+	character(<i>n</i>)</td>
+    <td valign="top">
+	char(<i>n+1</i>)
+	<p><br>
+    string(<i>n+1</i>)</p>
+    </td>
+    <td valign="top">character data, padded with blanks; null-terminated, specify 
+	database column length plus 1<p>character data, no trailing blanks; null-terminated, specify 
+	database column length plus 1</td>
+    <td valign="top">
+      CCHARTYPE<p><br>
+      CSTRINGTYPE</td>
+    	</tr>
+		<tr>
+    <td valign="top">date</td>
+    <td valign="top">date</td>
+    <td>4-byte integer representing the date</td>
+    <td valign="top">CDATETYPE</td>
+    	</tr>
+		<tr>
+    <td valign="top">datetime</td>
+    <td valign="top">datetime (<i>qualifiers</i>)</td>
+    <td>calendar date and time of day; must specify accuracy as a 
+	qualifier such as <i>year to day</i></td>
+    <td valign="top">CDTIMETYPE</td>
+    	</tr>
+		<tr>
+    <td valign="top">decimal, dec, numeric
+      </td>
+    <td valign="top">decimal(<i>p,s</i>)</td>
+    <td>fixed point number;<i> p </i>(precision) and <i>s </i>
+	(scale) must be defined</td>
+    <td valign="top">CDECIMALTYPE
+      </td>
+    	</tr>
+		<tr>
+    <td valign="top">money</td>
+    <td valign="top">decimal(<i>p,s</i>)</td>
+    <td>fixed point number;<i> p </i>(precision) and <i>s </i>
+	(scale) must be defined</td>
+    <td valign="top">CMONEYTYPE</td>
+    	</tr>
+		<tr>
+    <td valign="top">float, double precision</td>
+    <td valign="top">double </td>
+    <td>double-precision value with up to 17 significant digits</td>
+    <td valign="top">CDOUBLETYPE</td>
+    	</tr>
+		<tr>
+    <td valign="top">integer, int</td>
+    <td valign="top">int, long</td>
+    <td>4-byte integer</td>
+    <td valign="top">CINTTYPE</td>
+    	</tr>
+		<tr>
+    <td valign="top">interval</td>
+    <td valign="top">interval(<i>qualifiers</i>) </td>
+    <td>a span of time; must specify accuracy as a qualifier such as
+	<i>day to second</i></td>
+    <td valign="top">CINVTYPE</td>
+    	</tr>
+		<tr>
+    <td valign="top">serial</td>
+    <td valign="top">int, long</td>
+    <td>4-byte integer</td>
+    <td valign="top">CINTTYPE</td>
+    	</tr>
+		<tr>
+    <td valign="top">smallfloat, real</td>
+    <td valign="top">float </td>
+    <td>single-precision value with up to 9 significant digits</td>
+    <td valign="top">CFLOATTYPE</td>
+    	</tr>
+		<tr>
+    <td valign="top">smallint</td>
+    <td valign="top">short</td>
+    <td>2-byte integer</td>
+    <td valign="top">CSHORTTYPE</td>
+    	</tr>
+		<tr>
+    <td valign="top">varchar(m,x)</td>
+    <td valign="top">varchar(<i>m+1</i>)<br>
+	<p>string(<i>n+1</i>)</td>
+    <td>variable length character data; null-terminated, specify 
+	maximum length plus 1<p>character data, no trailing blanks; null-terminated, specify 
+	database column length plus 1</td>
+    <td valign="top">CVARCHARTYPE<br>
+      <br>
+      <br>
+      CSTRINGTYPE
+      </td>
+    	</tr>
+</table>
+
+<p>See <a href="#hostvar">Using Host Variables</a> for additional information about the use of these 
+data types.</p>
+
+<h3><a name="addnltypes">Additional FESQLC data types</a></h3>
+<p>These data types are not recommended for use in database operations, but may be used in FESQLC functions.</p>
+
+  <table border="0" cellpadding="0" width="80%" id="table8">
+  <tr>
+    <td bgcolor="#C0C0C0"><b>FESQLC <br>
+	Data Type</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+    <td bgcolor="#C0C0C0"><b>Data Type Constant</b></td>
+    </tr>
+	<tr>
+    <td valign="top">fixchar(n)</td>
+    <td>character data, padded with blanks, no null terminator</td>
+    <td>CFIXCHARTYPE</td>
+    </tr>
+	<tr>
+    <td valign="top">dec_t</td>
+    <td>decimal value; cannot have precision or scale</td>
+    <td>CDECIMALTYPE</td>
+    </tr>
+	<tr>
+    <td valign="top">dtime_t</td>
+    <td>datetime value; cannot have qualifiers</td>
+    <td>CDTIMETYPE</td>
+    </tr>
+	<tr>
+    <td valign="top">intrvl_t</td>
+    <td>interval value; cannot have qualifiers</td>
+    <td>CINVTYPE</td>
+    </tr>
+</table>
+
+<h3><a name="machtypes">Specific-Length Data Types</a></h3>
+<p>The following data types automatically map correctly for 32-bit and 64-bit platforms. Some FESQLC 
+functions use these data types instead of int, short, and long.</p>
+
+  <table border="0" cellpadding="0" width="70%" id="table9">
+  <tr>
+    <td bgcolor="#C0C0C0"><b>FESQLC<br>
+      Data Type</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+	<tr>
+    <td valign="top">int1</td>
+    <td>one-byte integer</td>
+    </tr>
+	<tr>
+    <td valign="top">int2</td>
+    <td>two-byte integer</td>
+    </tr>
+	<tr>
+    <td valign="top">int4</td>
+    <td>four-byte integer</td>
+    </tr>
+	<tr>
+    <td valign="top">mint</td>
+    <td>native integer data type for machine</td>
+    </tr>
+	<tr>
+    <td valign="top">mlong</td>
+    <td>native long integer data type for the machine</td>
+    </tr>
+	<tr>
+    <td valign="top">MSHORT</td>
+    <td>native short integer data type for the machine</td>
+    </tr>
+	<tr>
+    <td valign="top">MCHAR</td>
+    <td>native char data type for the machine</td>
+    </tr>
+</table>
+
+<h3><a name="unsupported">SQL Data Types not supported</a></h3>
+	<table border="0" cellpadding="0" width="70%" id="table10">
+  <tr>
+    <td bgcolor="#C0C0C0"><b>SQL <br>
+	Data Type</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+	<tr>
+    <td valign="top">blob</td>
+    <td>binary large object; binary data in an undifferentiated byte stream</td>
+    </tr>
+	<tr>
+    <td valign="top">boolean</td>
+    <td>data type with values limited to TRUE, FALSE, and NULL</td>
+    </tr>
+	<tr>
+    <td valign="top">byte</td>
+    <td>binary data in an undifferentiated byte stream</td>
+    </tr>
+	<tr>
+    <td valign="top">clob</td>
+    <td>character large object; text data</td>
+    </tr>
+	<tr>
+    <td valign="top">int8</td>
+    <td>8-byte integer</td>
+    </tr>
+	<tr>
+    <td valign="top">lvarchar</td>
+    <td>character data of varying length, no larger than 2 kilobytes</td>
+    </tr>
+	<tr>
+    <td valign="top">list</td>
+    <td>a collection of elements that can be duplicate values and have ordered positions</td>
+    </tr>
+	<tr>
+    <td valign="top">multiset</td>
+    <td>a collection of elements that can be duplicate values and have no ordered positions</td>
+    </tr>
+	<tr>
+    <td valign="top">opaque</td>
+    <td>user-defined data type</td>
+    </tr>
+	<tr>
+    <td valign="top">row</td>
+    <td>complex data type with one or more members called fields</td>
+    </tr>
+	<tr>
+    <td valign="top">serial8</td>
+    <td>8-byte serial data type</td>
+    </tr>
+	<tr>
+    <td valign="top">set</td>
+    <td><font FACE="Palatino-Roman" SIZE="2">
+	<p ALIGN="LEFT">a</font> collection of elements that are unique values and have no ordered positions</td>
+    </tr>
+	<tr>
+    <td valign="top">text</td>
+    <td>any kind of text data</td>
+    </tr>
+	</table>
+
+<hr>
+
+<h2><a name="compiling">Compiling with fesqlc</a></h2>
+
+<p>The<b>  <a href="Tools.html#TL_FESQLC"> fesqlc</a></b> <a href="Tools.html#TL_FESQLC"> tool</a> compiles and links C programs that contain <b>Genero FESQLC</b> source code files, 
+creating an executable C program. An <b>FESQLC</b> source file must be preprocessed before a C compiler can 
+compile it. By default, your<b> FESQLC </b>source files are passed to the <b>FESQLC</b> 
+<a href="#preprocessor">preprocessor</a>, and then to the C compiler. You can choose to preprocess only.</p>
+
+<h3>Usage:
+</h3>
+
+<p><a name="options">Options</a> can be used for preprocessing only, or for
+preprocessing/compiling/linking. Options are global 
+and affect all files.</p>
+
+<p>The <b>-V </b>(display version information) and <b>-h </b>(display help) options do not require source file names:
+</p>
+<blockquote>
+
+<pre>fesqlc -V
+fesqlc -h</pre>
+</blockquote>
+
+The <b>-e </b>option suppresses compiling and linking of the source file. The file will be preprocessed by 
+FESQLC and output as a C source code file (<i>filename</i>.c).
+<blockquote>
+  <pre>fesqlc -e mysource.ec</pre>
+</blockquote>
+<p>The <b>-c</b> option preprocesses the source file, and then compiles it to object code (<i>filename</i>.o). 
+By default the '<b>cc</b>'compiler is used on Unix. You can modify the C compiler by setting the FGLCC
+environment variable. On Windows, the default is '<b>cl.exe</b>'.
+<blockquote>
+<pre>fesqlc -c mysource.ec</pre>
+</blockquote>
+<p>Use the <b>-o </b>option to specify the output file name for the executable file that is the result of 
+preprocessing, compiling and linking.
+<blockquote>
+<pre>fesqlc -o myprog file1.ec</pre>
+</blockquote>
+<p>Use the option <b>-ED <i>name</i> </b>to define a global FESQLC macro. This 
+has the same effect as an FESQLC <a href="#define">define<b>
+</b>preprocessor directive</a> at the top of your program.
+<blockquote>
+  <pre>fesqlc -ED<i> </i>CHECKED<i> </i>file2.ec</pre>
+</blockquote>
+  <p>Use the option <b>-EU <i>name</i></b> to un-define an FESQLC macro, removing it globally from the entire
+  program.        </p>
+<blockquote>
+  <pre>fesqlc -EU CHECKED file2.ec</pre>
+</blockquote>
+
+<p>Use the <b>-D</b> and <b>-U</b> options only to define and un-define C macros 
+for your program.</p>
+
+<h3>Example:</h3>
+<pre>fesqlc -o prog1 -ED DEBUG -I ./include file1.ec file2.ec file3.ec</pre>
+
+
+
+<p>In this example the executable output file will be named <b>prog1</b>, a
+global macro named <b>DEBUG</b> is defined, the include path is specified as <b>./include</b>.&nbsp; Files to be processed include
+<b>file1.ec</b>, <b>file2.ec</b> and <b>file3.ec</b>.&nbsp; </p>
+
+
+
+<h3><a name="CEXT">Creating a C Extensions written in ESQL/C</a></h3>
+<p>In Genero V 2, runtime system C extensions must be created as shared
+libraries. For more details, see <a href="CExtensions.html">C Extensions</a>.</p>
+
+<p>Steps:</p>
+
+<ol>
+  <li>Include the <b>
+    fglExt.h</b> file to the <b> .ec</b> files implementing&nbsp;C
+    functions called from Genero BDL.<br>
+    &nbsp;&nbsp; <tt>#include &lt;f2c/fglExt.h&gt;</tt> </li>
+  <li>Create the extension interface as described in <a href="CExtensions.html#CEXTFILE">
+    C Extensions: C interface file</a>.</li>
+  <li>Compile the extension interface to object files with you C compiler.</li>
+  <li>Compile all the <b>
+    .ec</b> sources to object files with <b>fesqlc</b>, by
+    using the <b>-c</b> option.</li>
+  <li>Create the shared library (OS specific command) from all the object files.<br>
+    <font color="#FF0000">Warning:</font> You must link with the <b>libfesqlc</b>
+    and <b>libfgl</b> libraries provided in FGLDIR/lib.</li>
+  <li>Declare the extension module in the 4gl source code by using the <a href="Programs.html#IMPORT">IMPORT</a>
+    instruction:<br>
+    &nbsp;&nbsp; <tt>IMPORT<i> extension</i><br>
+    </tt>&nbsp;&nbsp; <tt>MAIN<br>
+    </tt>&nbsp;&nbsp;&nbsp;<tt>&nbsp; ...</tt></li>
+</ol>
+
+<h4><a name="CEXT_EXAMPLE">Example:</a></h4>
+<p>This example uses three sources:</p>
+<ul>
+  <li>The ESQL/C module doing some SQL.</li>
+  <li>The extension interface file defining the list of C extension functions.</li>
+  <li>The Genero program connecting to the database and calling the C Extension
+    function of the ESQL/C module.</li>
+</ul>
+<pre>-- The module.ec source ------------------------------------
+#include &lt;f2c/fglExt.h&gt;
+exec sql include sqlca;
+
+int insert_row(int c)
+{
+   exec sql insert into dbit2 values (1, 'aaaa', 'bbbbb');
+   return 0;
+}
+
+-- The myext.c source --------------------------------------
+
+#include &quot;f2c/fglExt.h&quot;
+
+int insert_row(int);
+
+UsrFunction usrFunctions[]={
+  { &quot;insert_row&quot;, insert_row, 0, 0 },
+  { 0, 0, 0, 0 }
+};
+
+-- The prog.4gl source -------------------------------------
+
+IMPORT myext
+MAIN
+   DATABASE stores
+   CALL insert_row()
+END MAIN</pre>
+
+
+
+<p>First, we link the extension module. This creates the object file 
+(<b>module.o</b>):</p>
+<pre>fesqlc -c module.ec</pre>
+
+
+
+<p>Then, create the shared library from the compiled object file, by using the <b>libfesqlc</b>
+library:</p>
+
+
+
+<p>Linux example:</p>
+<pre>gcc -static-libgcc -Xlinker --no-undefined -shared \
+   -o myext.so \
+   module.o \
+   -L$FGLDIR/lib -lfesqlc -lfgl</pre>
+
+
+
+<p>MS Visual C 7.1 example (you must create a manifest file starting from VC
+8.0):</p>
+<pre>link /DLL /O:myext.dll \
+   %FGLDIR%\lib\libfesqlc.lib %FGLDIR%\lib\libfgl.lib</pre>
+<p>You could also create the shared library directly from <b>fesqlc</b>, by
+using the <b>-l</b> option:</p>
+<pre>fesqlc -o myext.so \
+   -l &quot;gcc -static-libgcc -Xlinker --no-undefined -shared&quot; \
+   source1.ec source2.ec source3.ec source4.ec \
+   extinterface.c</pre><hr>
+
+<h2><a name="preprocessor">Preprocessor Directives</a></h2>
+
+<p>The <b>fesqlc</b> compiler supports FESQLC preprocessor directives. This allows you
+to <i>include</i> other FESQLC files, <i>define macros</i> that can be used
+later in the code and use <i>ifdef</i> conditional directives to compile only
+some part of the code, as you can do with the C preprocessor (cpp):</p>
+<blockquote>
+  <pre>EXEC SQL include &quot;myheader.h&quot;;
+EXEC SQL define LEN 15;
+EXEC SQL ifdef DEBUG;
+    ...
+EXEC SQL endif;</pre>
+</blockquote>
+<h4><font color="#FF0000">Warning: </font>FESQLC macros must end with a
+semi-colon, like all FESQLC statements.</h4>
+<h3>Standard C preprocessing</h3>
+<p>Standard C preprocessing takes effect <u>after</u> FESQLC preprocessing,
+during the C compilation step. In order to include system header files such as <b>stdio.h</b>,
+you must use the standard C <b>#include</b> directive. If C macros are defined,
+you must use standard C <b>#ifdef</b> directives. FESQLC will ignore any C macro
+definitions during the FESQLC preprocessing step.
+</p>
+
+
+
+<h3><a name="include">Including files</a> - the include directive</h3>
+<p>The <b>include </b>directive allows you to
+include other files into your FESQLC programs. You must use the FESQLC include directive if the file 
+contains embedded SQL statements or other FESQLC statements. </p>
+<p>The file will be read into the program at the location of the include
+directive. Use the keywords&nbsp; <b>EXEC SQL</b> (preferred ANSI standard) or
+the <b> $</b>  symbol to precede the directive. Specify the exact name,
+including any extension, of the file:</p>
+<blockquote>
+  <pre>EXEC SQL include &quot;def_constants.h&quot;;
+EXEC SQL include &quot;/prog/def_constants.h&quot;; </pre>
+</blockquote>
+<p>If the filename includes the path, you must enclose the filename in quotationmarks. Otherwise, you may 
+omit the quotation marks, but FESQLC will convert the filename to lowercase. If you omit the path, FESQLC 
+will search the preprocessor path for the file. </p>
+<p>To avoid the need for recompilation if a file location changes, omit the path from the filename and use 
+the <b>-I</b> <a href="#options">FESQLC compiler option </a>to specify the path:</p>
+<blockquote>
+  <pre>fesqlc -I ./myincludes prog1.ec</pre>
+</blockquote>
+<p><b>Note:</b> Genero FESQLC automatically includes any header files that it requires in order to preprocess 
+your program. Use the standard C #include directive to include C header files. The #include of C includes a 
+file after FESQLC preprocessing.</p>
+<h4><font color="#FF0000">Warning:</font>&nbsp;</h4>
+<blockquote>
+  <p>For migration purposes, <b>include</b> statements for Informix ESQL/C header files are permitted, 
+although they are not required and the FESQLC compiler will ignore them. However, if your program has 
+such statements, you must use the EXEC SQL syntax. The following C syntax is not supported:</p>
+  <blockquote>
+  <pre>#include &quot;sqlca.h&quot;</pre>
+  </blockquote>
+  <p>FESQLC will consider this a normal C header file to be included. The statement must be replaced by:</p>
+  <blockquote>
+  <pre>EXEC SQL include sqlca;</pre>
+  </blockquote>
+</blockquote>
+
+<h3><a name="define">Creating FESQLC macros</a> - the define, undef directives</h3>
+<p>The<b> </b>FESQLC <b>define</b> directive allows you to create simple macros that are available only to 
+the FESQLC preprocessor. The FESQLC preprocessor, rather than the C preprocessor, processes this directive.</p>
+<p>Use the keywords <b>EXEC SQL</b> (preferred ANSI standard) or the <b>$</b> symbol to precede the directive:</p>
+<blockquote>
+  <pre>EXEC SQL define CHECKED;       <font face="Courier New">-- macro without a value </font>
+EXEC SQL define LEN 15;        -- macro with an integer value of 15
+EXEC SQL define NAME &quot;scott&quot;;  -- macro with a string value</pre>
+</blockquote>
+<p>The scope of the macro is from the location of the <b>define</b> directive until the end of the file, or 
+until the macro is removed. The FESQLC <b>undef</b> directive allows you to remove the macro: </p>
+<blockquote>
+  <pre>EXEC SQL undef LEN;</pre>
+</blockquote>
+<p>You can use the FESQLC <a href="#options">compiler options</a> <b>-ED </b>and <b>-EU</b> to override these FESQLC macro
+definitions.</p>
+<p><b>Note:</b> C macros are defined and undefined using the #define and #undef C preprocessor directives in 
+your source code, or the -D and -U FESQLC preprocessor options.</p>
+<p>Macros can be used in conjunction with other <b>FESQLC</b> preprocessor directives to control conditional
+processing of a file.</p>
+<h3><a name="conditional">Compiling conditionally</a> - the&nbsp; <b>ifdef,ifndef, endif, else, elif 
+directives</b></h3>
+<p>FESQLC<b> </b>provides directives to conditionally compile a program. The directives test whether a 
+macro has been created with an FESQLC <a href="#define">define directive</a> or the <b>-ED</b> FESQLC 
+<a href="#options">compiler option</a>, and then process the file accordingly.</p>
+<ul>
+  <li><b>ifdef </b>- instructs<b> </b>FESQLC to compile the statements that
+    follow, if the specified macro is defined.</li>
+  <li><b>ifndef </b>- instructs FESQLC to compile the statements that
+    follow, if the specified macro is <u>not</u> defined.</li>
+  <li><b>endif</b> - indicates the close of an <b>ifdef</b> or <b>ifndef </b>condition.</li>
+  <li><b>else </b>- provides alternative processing instructions for an <b>ifdef</b>
+    or <b>ifndef</b> condition.</li>
+  <li><b>elif </b>- is the same as &quot;else if define&quot;, used to
+    provide alternative processing instructions; instructs FESQLC to
+    compile the statements that follow, if the specified macro has been defined.
+  </li>
+</ul>
+  <p> Use the keywords&nbsp; <b>EXEC SQL</b> (preferred ANSI standard) or the <b>$</b> symbol to 
+precede the directive:</p>
+<blockquote>
+  <pre>EXEC SQL ifdef CHECKED;
+EXEC SQL DELETE FROM cust_temp;  /* executed when CHECKED is defined */
+EXEC SQL endif;</pre>
+  <pre>EXEC SQL ifdef CHECKED;
+EXEC SQL DELETE FROM cust_temp;  
+EXEC SQL else;  /* if CHECKED is not defined */
+printf(&quot;no delete, CHECKED is not defined&quot;);
+EXEC SQL endif;</pre>
+  <pre>EXEC SQL ifdef CHECKED;
+EXEC SQL DELETE FROM cust_temp; 
+EXEC SQL elif PROBLEMS;  /* if CHECKED not defined and PROBLEMS defined */
+printf(&quot;no delete, PROBLEMS is defined&quot;);
+EXEC SQL endif; </pre>
+</blockquote>
+<p><b>Note:</b> There is no equivalent to the &quot;if&quot; C directive in FESQLC; the
+preprocessor supports only
+the <b>ifdef </b>and <b>ifndef </b>statements that test for the existence of a
+macro.</p>
+<h4>Example:</h4>
+<p>If your program uses both FESQLC macros and C macros, you can combine the -D and -ED preprocessor 
+options in the same command line. The following lines in the FESQLC program <b>prog.ec</b> has two blocks 
+of preprocessing directives. The first block uses FESQLC syntax and the second block uses the standard C 
+syntax:</p>
+<blockquote>
+  <pre>EXEC SQL ifdef CHECKED;
+printf(&quot;CHECKED is defined&quot;);
+EXEC SQL else; 
+printf(&quot;CHECKED is not defined&quot;); 
+EXEC SQL endif;
+
+#ifdef MAXLEN
+printf(&quot;MAXLEN is defined&quot;); 
+#else
+printf(&quot;MAXLEN is not defined&quot;); 
+#endif</pre>
+</blockquote>
+<p>If you combine FESQLC <b>-ED</b> and <b>-D</b> command line options like this:</p>
+<pre>fesqlc -ED CHECKED -D MAXLEN prog.ec</pre>
+<p>FESQLC will create the FESQLC macro CHECKED, and will create the C macro MAXLEN.</p>
+<p>When the program is run, the following lines would be executed:</p>
+<blockquote>
+  <pre>printf(&quot;CHECKED is defined&quot;);
+printf(&quot;MAXLEN is defined&quot;);</pre>
+</blockquote>
+
+<hr>
+
+<h2><a name="exceptions">Handling Exceptions</a></h2>
+
+<p>Unless you explicitly include exception-handling code in your FESQLC application, the program 
+continues when an SQL error occurs. Uncontrolled SQL errors may cause your program to have unexpected 
+behavior.</p>
+
+<p>Suggested exception-handling strategies are:</p>
+<ul>
+	<li>Check after each SQL statement by testing the value of 	<a href="#sqlstate">SQLSTATE</a> 
+(or <a href="#sqlcode">SQLCODE</a>). </li>
+	<li>Use the <a href="#whenever">WHENEVER</a> statement to specify the action to be taken when an 
+SQL statement is not successful.</li>
+	<li>Use <a href="#diagnostics">GET DIAGNOSTICS</a> to obtain additional information about any exceptions.</li>
+</ul>
+
+<h3><a name="sqlstate">Using SQLSTATE</a></h3>
+
+<h4><font color="#FF0000">Warning:</font> Using SQLSTATE is the preferred ANSI method of checking for 
+	exceptions. However, not all database servers do support SQLSTATE. You must check the database server 
+documentation to verify if SQLSTATE is supported.</h4>
+
+<p>This global variable defined by FESQLC&nbsp;returns the status of the SQL statement most recently executed.&nbsp; The status can be:</p>
+<ul>
+	<li>Success </li>
+	<li>Success, but no rows found </li>
+	<li>Success, but warnings generated </li>
+	<li>Failure, runtime error generated</li>
+</ul>
+<p>FESQLC automatically copies the status information from the <a href="#diagnostics">diagnostics area</a> 
+into the SQLSTATE global variable; you do not have to define the variable, and it is accessible anywhere in 
+your program. </p>
+
+<p>SQLSTATE can contain only digits and capital letters. The first two characters of the five-character 
+SQLSTATE string indicate the class of the execution code; the remaining characters provide additional 
+information. Check the first two characters to determine whether the most recently executed SQL statement 
+was successful:</p>
+<div align="left">
+
+<table border="0" cellpadding="0" width="62%" id="table12">
+  <tr>
+    <td bgcolor="#C0C0C0" width="179"><b>Class (first 2 chars)</b></td>
+    <td bgcolor="#C0C0C0" width="582"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="179" align="center">00</td>
+    <td width="582">SQL statement was successful</td>
+  </tr>
+  <tr>
+    <td width="179" align="center">01</td>
+    <td width="582">SQL statement was successful, with warnings</td>
+  </tr>
+  <tr>
+    <td width="179" align="center">02</td>
+    <td width="582">SELECT or FETCH statement resulted in NOT FOUND condition</td>
+  </tr>
+  <tr>
+    <td width="179" align="center">&gt;02</td>
+    <td width="582">SQL statement resulted in a runtime error</td>
+  </tr>
+</table>
+  </div>
+<p>The following code checks SQLSTATE for the NOT FOUND case:</p>
+<blockquote>
+<pre>if (strncmp(SQLSTATE, &quot;02&quot;, 2) == 0) {
+  break;
+}</pre>
+
+</blockquote>
+<p>If an SQL error occurred, you can get specific information from the other three characters of SQLSTATE. 
+The characters 0 to 4 and A to H are used for the SQLSTATE class codes in ANSI and X/OPEN standard 
+implementations:</p>
+
+<table border="0" cellpadding="0" width="61%" id="table13">
+  <tr>
+    <td bgcolor="#C0C0C0" width="76"><b>First two <br>
+      characters</b></td>
+    <td bgcolor="#C0C0C0" width="98"><b>Remaining<br>
+      characters</b></td>
+    <td bgcolor="#C0C0C0" width="568"><b>&nbsp;&nbsp; Description</b></td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#CCFFFF">00</td>
+    <td width="98" align="center" bgcolor="#CCFFFF">000</td>
+    <td width="568" bgcolor="#CCFFFF">SQL statement was successful</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#CCFFCC">01</td>
+    <td width="98" align="center" bgcolor="#CCFFCC">000</td>
+    <td width="568" bgcolor="#CCFFCC">SQL statement was successful, with warnings:</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#CCFFCC">01</td>
+    <td width="98" align="center" bgcolor="#CCFFCC">002</td>
+    <td width="568" bgcolor="#CCFFCC">Warning: Disconnect error, transaction rolled back</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#CCFFCC">01</td>
+    <td width="98" align="center" bgcolor="#CCFFCC">003</td>
+    <td width="568" bgcolor="#CCFFCC">Warning: Null value eliminated in set function</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#CCFFCC">01</td>
+    <td width="98" align="center" bgcolor="#CCFFCC">004</td>
+    <td width="568" bgcolor="#CCFFCC">Warning: String data right truncated</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#CCFFCC">01</td>
+    <td width="98" align="center" bgcolor="#CCFFCC">005</td>
+    <td width="568" bgcolor="#CCFFCC">Insufficient item descriptor areas</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#CCFFCC">01</td>
+    <td width="98" align="center" bgcolor="#CCFFCC">006</td>
+    <td width="568" bgcolor="#CCFFCC">Privilege not revoked</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFEEFF">02</td>
+    <td width="98" align="center" bgcolor="#FFEEFF">000</td>
+    <td width="568" bgcolor="#FFEEFF">SELECT or FETCH statement resulted in NOT FOUND condition</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">&gt;02</td>
+    <td width="98" align="center" bgcolor="#FFFFCC"></td>
+    <td width="568" bgcolor="#FFFFCC">SQL statement resulted in a runtime error</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">0A</td>
+    <td width="98" align="center" bgcolor="#FFFFCC">000</td>
+    <td width="568" bgcolor="#FFFFCC">Feature not supported.</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">0A</td>
+    <td width="98" align="center" bgcolor="#FFFFCC">001</td>
+    <td width="568" bgcolor="#FFFFCC">Multiple database server transactions</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">21</td>
+    <td width="98" align="center" bgcolor="#FFFFCC">000</td>
+    <td width="568" bgcolor="#FFFFCC">Cardinality violation</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">22</td>
+    <td width="98" align="center" bgcolor="#FFFFCC">000</td>
+    <td width="568" bgcolor="#FFFFCC">Data exception</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">22</td>
+    <td width="98" align="center" bgcolor="#FFFFCC">001</td>
+    <td width="568" bgcolor="#FFFFCC">String data, right truncation</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">22</td>
+    <td width="98" align="center" bgcolor="#FFFFCC">002</td>
+    <td width="568" bgcolor="#FFFFCC">Null value, no indicator parameter</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">22</td>
+    <td width="98" align="center" bgcolor="#FFFFCC">003</td>
+    <td width="568" bgcolor="#FFFFCC">Numeric value out of range</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">22</td>
+    <td width="98" align="center" bgcolor="#FFFFCC">012</td>
+    <td width="568" bgcolor="#FFFFCC">Division by zero</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">22</td>
+    <td width="98" align="center" bgcolor="#FFFFCC">024</td>
+    <td width="568" bgcolor="#FFFFCC">Un-terminated string</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">23</td>
+    <td width="98" align="center" bgcolor="#FFFFCC">000</td>
+    <td width="568" bgcolor="#FFFFCC">Integrity-constraint violation</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">24</td>
+    <td width="98" align="center" bgcolor="#FFFFCC">000</td>
+    <td width="568" bgcolor="#FFFFCC">Invalid cursor state</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">2B</td>
+    <td width="98" align="center" bgcolor="#FFFFCC">000</td>
+    <td width="568" bgcolor="#FFFFCC">Dependent privilege descriptors still exist</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">2D</td>
+    <td width="98" align="center" bgcolor="#FFFFCC">000</td>
+    <td width="568" bgcolor="#FFFFCC">Invalid transaction termination</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">2E</td>
+    <td width="98" align="center" bgcolor="#FFFFCC">000</td>
+    <td width="568" bgcolor="#FFFFCC">Invalid connection name</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">33</td>
+    <td width="98" align="center" bgcolor="#FFFFCC">000</td>
+    <td width="568" bgcolor="#FFFFCC">Invalid SQL descriptor name</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">34</td>
+    <td width="98" align="center" bgcolor="#FFFFCC">000</td>
+    <td width="568" bgcolor="#FFFFCC">Invalid cursor name</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">3C</td>
+    <td width="98" align="center" bgcolor="#FFFFCC">000</td>
+    <td width="568" bgcolor="#FFFFCC">Duplicate cursor name</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">40</td>
+    <td width="98" align="center" bgcolor="#FFFFCC">000</td>
+    <td width="568" bgcolor="#FFFFCC">Transaction rollback</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">40</td>
+    <td width="98" align="center" bgcolor="#FFFFCC">003</td>
+    <td width="568" bgcolor="#FFFFCC">Statement completion unknown</td>
+  </tr>
+  <tr>
+    <td width="76" align="center" bgcolor="#FFFFCC">42</td>
+    <td width="98" align="center" bgcolor="#FFFFCC">000</td>
+    <td width="568" bgcolor="#FFFFCC">Syntax error or access violation</td>
+  </tr>
+</table>
+<p>Check your database server documentation for additional server-specific implementations of SQLSTATE codes.</span></p>
+
+<h3><a name="sqlcode">Using SQLCODE</a></h3>
+<p>SQLCODE is a global variable defined by FESQLC to determine the success of the most recently executed 
+SQL statement.</p>
+<p>SQLCODE holds the Informix SQL error code. Using <a href="#sqlstate">SQLSTATE</a> is the preferred
+method; SQLCODE is provided for backwards compatibility.</p>
+<p>The database server returns information about the execution of an SQL statement to the SQL Communications 
+Area (sqlca) C structure. FESQLC copies the value of the sqlca.sqlcode field to the SQLCODE global variable.
+ Your program can check the value in the SQLCODE variable for the following information:</p>
+
+<table border="0" cellpadding="0" width="62%" id="table14">
+  <tr>
+    <td bgcolor="#C0C0C0" width="93"><b>&nbsp;&nbsp; Value</b></td>
+    <td bgcolor="#C0C0C0" width="682"><b>&nbsp;Description</b></td>
+  </tr>
+  <tr>
+    <td width="93" align="center">0</td>
+    <td width="682">SQL statement was successful</td>
+  </tr>
+  <tr>
+    <td width="93" align="center">100</td>
+    <td width="682">SELECT or FETCH statement resulted in NOT FOUND condition</td>
+  </tr>
+  <tr>
+    <td width="93" align="center">&lt;0</td>
+    <td width="682">SQL statement resulted in a runtime error. The number
+      specifies the particular Informix error number.</td>
+  </tr>
+</table>
+<h4>Native SQL error codes</h4>
+<p>If an SQL error occurs, the database server specific error code is available
+in <b>sqlca.sqlerrd[1]</b>.</p>
+<h4>Warnings</h4>
+<p>If a warning was generated by the SQL statement, sqlca.sqlwarn.sqlwarn0 is set to &quot;W&quot;. 
+To test for warnings, check the first warning field. If this indicates the database server has generated 
+a warning, you can check the values of the other fields in <b>sqlca.sqlwarn</b> to identify the specific 
+condition.</p>
+<p>See your database server documentation for additional information about specific errors reported in
+SQLCODE, and the sqlca structure.</p>
+<h3><a name="whenever">Using WHENEVER</a></h3>
+<p>Your program can use the WHENEVER statement to trap exceptions that occur
+during the execution of SQL statements, and to specify the action to be taken
+when a specific class of error occurs:</p>
+<pre>WHENEVER <i>&lt;exception class&gt; &lt;exception action&gt;</i></pre>
+<p>Exception classes:</p>
+<ul>
+  <li>SQLERROR - exception occurs when an SQL statement has failed.</li>
+  <li>SQLWARNING -&nbsp; exception occurs when an SQL statement has generated a
+    warning.</li>
+  <li>NOT FOUND - exception occurs when the NOTFOUND condition is returned by an 
+	SQL statement.</li>
+</ul>
+<p>Using WHENEVER SQLERROR statements allows your program to react to errors and
+warnings, in the same way as checking the SQLSTATE or SQLCODE variables.&nbsp; </p>
+<p>Actions to be taken:</p>
+<ul>
+  <li>CONTINUE - the program ignores the exception and continues with the next
+    instruction in the program. <b>This is the default</b>.</li>
+  <li>STOP - the program stops executing immediately when an exception occurs.</li>
+  <li>CALL <i>&lt;function name&gt;</i>- the specified function in the
+    program&nbsp; is called if an exception occurs. </li>
+  <li>GOTO <i>&lt;label&gt;</i> - control is transferred to the program code
+    identified by the specified label. The program code specified by GOTO <i>&lt;label&gt;</i> 
+must be included in every program block that contains SQL statements, or another WHENEVER statement
+in that program block must re-set the condition.</li>
+</ul>
+<p>Examples:</p>
+<pre>WHENEVER SQLERROR STOP;
+EXEC SQL CONNECT TO mydb;
+...</pre>
+<pre>WHENEVER SQLERROR GOTO error_handling_code;
+EXEC SQL DELETE FROM orderstab WHERE cust_num = &quot;101&quot;;
+...</pre>
+<p>The default action is CONTINUE if no WHENEVER condition is set. The actions
+for the exception classes can be set independently.</p>
+<h3><a name="diagnostics">The GET DIAGNOSTICS statement</a></h3>
+
+<p>The diagnostics area is an internal structure that the database server
+updates after the execution of each SQL statement.&nbsp; The GET DIAGNOSTICS
+statement can provide additional information about the most recently executed
+SQL statement.</p>
+
+<p>Statement fields return overall information about the most recently executed SQL 
+statement. For example, you can determine the number of exceptions generated by 
+an SQL statement, indicating whether you need to seek additional information. </p>
+<h3>Syntax:</h3>
+<blockquote>
+    <pre>EXEC SQL GET DIAGNOSTICS<i> :host-variable = field-name</i> <u>[</u>,...<u>]</u> ;</pre>
+</blockquote>
+<p>The keywords for the statement fields of the diagnostic area, and the data types of the
+returned information, are:</p>
+
+<div align="left">
+<table border="0" cellpadding="0" width="71%" id="table15">
+  <tr>
+    <td bgcolor="#C0C0C0" width="137" valign="top"><b>Field name</b></td>
+    <td bgcolor="#C0C0C0" width="101" valign="top"><b>Data type</b></td>
+    <td bgcolor="#C0C0C0" width="106" valign="top"><b>Information<br>
+&nbsp;type</b></td>
+    <td bgcolor="#C0C0C0" width="525" valign="top"><b>&nbsp;&nbsp; Description</b></td>
+  </tr>
+  <tr>
+    <td width="137" align="left" valign="top">NUMBER</td>
+    <td width="101" align="left" valign="top"><span style="background-color: #FFFFFF">mint</span></td>
+    <td width="106" valign="top">Statement</td>
+    <td width="525">Number of exceptions generated.&nbsp; Even a successful
+      execution will generate one exception.</td>
+  </tr>
+  <tr>
+    <td width="137" align="left" valign="top">MORE</td>
+    <td width="101" align="left" valign="top">char[2]</td>
+    <td width="106" valign="top">Statement </td>
+    <td width="525">Contains Y or N plus a null terminator; Y indicates that the diagnostics area contains 
+all the exceptions information. N indicates that there is more information than the database server can 
+store in the diagnostics area. </td>
+  </tr>
+  <tr>
+    <td width="137" align="left" valign="top">ROWCOUNT</td>
+    <td width="101" align="left" valign="top">mint</td>
+    <td width="106" valign="top">Statement </td>
+    <td width="525">Number of rows that a successful SELECT, UPDATE, or DELETE
+      statement has affected. ROWCOUNT for a SELECT statement is undefined.</td>
+  </tr>
+  </table>
+</div>
+
+&nbsp;<p>GET DIAGNOSTICS can return multiple exceptions; each exception that is 
+generated has a number.&nbsp; Exception number 1 is the exception generated by the last SQL statement 
+executed in your program.  No set order exists for any additional exceptions that are generated. To 
+get information about a particular exception, use the following syntax:</p>
+<blockquote>
+    <pre>EXEC SQL GET DIAGNOSTICS EXCEPTION <i>exception-number
+              :host-variable = field-name</i> <u>[</u>,...<u>]</u> ;</pre>
+</blockquote>
+<p>Some of the keywords for the exception fields associated with a specific 
+exception, and the data types of the information, 
+are: </p>
+
+<table border="0" cellpadding="0" width="66%" id="table16">
+  <tr>
+    <td bgcolor="#C0C0C0" width="220" valign="top"><b>Field name</b></td>
+    <td bgcolor="#C0C0C0" width="99" valign="top"><b>Data type</b></td>
+    <td bgcolor="#C0C0C0" width="108" valign="top"><b>Information<br>
+&nbsp;type</b></td>
+    <td bgcolor="#C0C0C0" width="393" valign="top"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="220" align="left" valign="top">RETURNED_SQLSTATE</td>
+    <td width="99" align="left" valign="top">char[6]</td>
+    <td width="108" valign="top">Exception</td>
+    <td width="393">Status of the exception. FESQLC automatically copies the 
+	information from this field for exception 1 to the SQLSTATE global variable.</td>
+  </tr>
+  <tr>
+    <td width="220" align="left" valign="top">INFORMIX_SQLCODE</td>
+    <td width="99" align="left" valign="top">int4</td>
+    <td width="108" valign="top">Exception</td>
+    <td width="393">Contents of sqlca.sqlcode; FESQLC automatically copies the 
+	information from this field to the SQLCODE global variable.</td>
+  </tr>
+  <tr>
+    <td width="220" align="left" valign="top">MESSAGE_TEXT</td>
+    <td width="99" align="left" valign="top"><span style="background-color: #FFFFFF">char[8191]</span></td>
+    <td width="108" valign="top">Exception</td>
+    <td width="393">Variable length character string that describes the
+      exception.</td>
+  </tr>
+	<tr>
+    <td width="220" align="left" valign="top">MESSAGE_LENGTH</td>
+    <td width="99" align="left" valign="top">mint</td>
+    <td width="108" valign="top">Exception</td>
+    <td width="393">Number of characters that are in the message stored in
+      MESSAGE_TEXT.</td>
+  </tr>
+	<tr>
+    <td width="220" align="left" valign="top">SERVER_NAME</td>
+    <td width="99" align="left" valign="top">char[255]</td>
+    <td width="108" valign="top">Exception</td>
+    <td width="393">Variable length character string holding the name of the
+      database server used in the most recent connection statement; will be
+      blank if there is no server connected.</td>
+  </tr>
+	<tr>
+    <td width="220" align="left">CONNECTION_NAME </td>
+    <td width="99" align="left">char[255]</td>
+    <td width="108">Exception</td>
+    <td width="393">Variable length character string holding the name of the
+      connection associated with the most recent connection statement; will be
+      blank if there is no current connection.</td>
+  </tr>
+  </table>
+<p>See the SQL documentation for your database server for additional information about exception fields 
+in the diagnostics area. 
+</p>
+<p>To return information about your SQL statement and any exceptions to your
+program:</p>
+First, declare a host variable in your program to contain the name of the field in
+the diagnostics area that you want to access:
+<blockquote>
+  <pre>EXEC SQL BEGIN DECLARE SECTION;
+  mint numrows;
+  mint numerr;
+  char messagetext[8191];
+  mint messagelength; 
+EXEC SQL END DECLARE SECTION;</pre>
+</blockquote>
+To get statement information after the SQL statement has executed, specify
+    the diagnostics area field name. For example, to get the number of rows
+    updated, inserted, or deleted by the SQL statement, and the number of 
+	exceptions generated:
+<blockquote>
+  <pre>EXEC SQL DELETE FROM orders WHERE store_num = 111;
+EXEC SQL GET DIAGNOSTICS :numrows = ROWCOUNT, :numerr = NUMBER;</pre>
+</blockquote>
+  
+  <p>Use the exception clause to get information about a specific exception generated by
+    your SQL statement. Exception 1 is the exception associated with the last 
+	SQL statement executed.
+<blockquote>
+  <pre>EXEC SQL GET DIAGNOSTICS EXCEPTION 1 :messagetext = MESSAGE_TEXT;</pre>
+</blockquote>
+	<p>You do not have to use GET DIAGNOSTICS to check the RETURNED_SQLSTATE and 
+	INFORMIX_SQLCODE fields for exception 1, since FESQLC copies the values from 
+	those fields to the <a href="#sqlstate">SQLSTATE</a> and <a href="#sqlcode">
+	SQLCODE</a> global variables.</p>
+
+<p><b>Note</b>: The GET DIAGNOSTICS statement does not change the contents
+of the diagnostics area.</p>
+
+<hr>
+
+<h2><a name="migration">Migration Notes</a></h2>
+<ul>
+	<li><a href="#headerfiles">Including Informix&nbsp; ESQL/C header files</a></li>
+	<li><a href="#Cmacros">Using C-style macros for ESQL/C host variables</a></li>
+	<li><a href="#charpointers">Using char and varchar pointers</a></li>
+	<li><a href="#dbnames">Database and database object names</a></li>
+	<li><a href="#decimals">Decimal host variables</a></li>
+	<li><a href="#literalconstants">Literal constants in USING clause</a></li>
+	<li><a href="#commentind">Comment indicator</a></li>
+	<li><a href="#notsuppfeatures">Features not supported</a></li>
+</ul>
+
+<h3><a name="headerfiles">Including Informix ESQL/C header files</a></h3>
+<p>For migration purposes, include statements for Informix ESQL/C header files are
+  permitted, although they are not required and the FESQLC compiler will ignore
+  them. However, if your program has such statements, you must use the EXEC SQL
+  syntax. The following C syntax is not supported:</p>
+<blockquote>
+  <pre>#include &quot;sqlca.h&quot;</pre>
+</blockquote>
+<p>FESQLC will consider this a normal C header file to be included. The
+  statement must be replaced by:</p>
+<blockquote>
+  <pre>EXEC SQL include sqlca;</pre>
+</blockquote>
+<h3><a name="Cmacros">Using C-style macros for ESQL/C host variables</a></h3>
+<p>Old Informix ESQL/C compilers allowed you to use C-style macros in the
+declaration of host variables:</p>
+<blockquote>
+  <pre>#define MAXLEN 15
+
+$char myvar[MAXLEN];</pre>
+</blockquote>
+<p>This is not standard ESQL/C programming. Recent Informix ESQL/C compilers raise a warning in such a case:<br>
+<br>
+<font face="Courier New" size="2">Warning -33208: Runtime error is possible because size of 'myvar' is unknown.</font></p>
+<p>FESQLC does not support the usage of C-style macros in SQL host variables declarations. You must use ESQL/C
+ macros instead:</p>
+<blockquote>
+  <pre>EXEC SQL define MAXLEN 15;
+
+$char myvar[MAXLEN];</pre>
+</blockquote>
+<p>Existing code using C-style macros may use the C macro in normal C variable declarations. Is such a case 
+you can define the macro twice: Once for the C variables and once for the ESQL/C host variables:</p>
+<blockquote>
+  <pre>#define MAXLEN 15
+EXEC SQL define MAXLEN 15;
+
+char myvar1[MAXLEN];
+$char myvar2[MAXLEN];</pre>
+</blockquote>
+<p>This solution is valid ESQL/C programming. It works with both Informix ESQL/C and Genero FESQLC compilers.</p>
+<h3><a name="charpointers">Using <b>char </b>and <b>varchar</b> pointers</a></h3>
+<p>Normally you use char/varchar arrays to hold SQL CHAR or VARCHAR data:</p>
+<blockquote>
+	<pre><font face="Courier New" size="2">$char cn[101];
+$SELECT cust_name INTO $cn FROM customer ... ;</font></pre>
+</blockquote>
+<p>Informix ESQL/C also supports char/varchar pointers, but the length of the C variable is unknown.</p>
+<blockquote>
+	<pre><font face="Courier New" size="2">$char *cn;
+$SELECT cust_name INTO $cn FROM customer ... ;</font></pre>
+</blockquote>
+<p>The char/varchar pointers are typically used for function parameters:</p>
+<blockquote>
+	<pre><font face="Courier New" size="2">int func(p1, p2)
+EXEC SQL BEGIN DECLARE SECTION;
+int p1;
+char *p2;
+EXEC SQL BEGIN DECLARE SECTION;
+{
+EXEC SQL INSERT INTO tab VALUES ( :p1, :p2 );
+}</font></pre>
+</blockquote>
+<p>or as constants:</p>
+<blockquote>
+	<pre><font face="Courier New" size="2">$const char *blank = &quot; &quot;;
+$const char *undef = &quot;Undefined value&quot;;</font></pre>
+</blockquote>
+<p>Database APIs must know the size of the SQL char/varchar type
+  corresponding to the host variable, to check for overflow. (For example, you
+  cannot insert a CHAR(100) value into a CHAR(9) in Oracle).</p>
+<p>Char and varchar pointers can be used as input parameters in SQL
+  statements, but the FESQLC API computes the size with an strlen() of the
+  current value pointed by sqlvar-&gt;sqldata.</p>
+<p>It is strongly recommended that you use a fixed size of char and varchars.
+  If you MUST use a char/varchar pointer, use an sqlda structure and specify the
+  exact size of the corresponding CHAR/VARCHAR SQL type in sqlvar-&gt;sqllen.<br>
+<br>Host variables defined as char or varchar pointers cannot be used to fetch
+  data:</p>
+<blockquote>
+	<pre><font face="Courier New" size="2">$char *c;
+$varchar *v;
+$select c1, c2 into :c, :v from t;</font></pre>
+</blockquote>
+<h3><b><a name="dbnames">Database and database object names</a></b></h3>
+<p><b>EXEC SQL DATABASE</b> supports only a simple database name; for portability the Informix database 
+specification <b><i>dbname</i>@<i>server</i></b> is not supported.</p>
+<p>The database prefix in a table name specification (<b><i>dbname</i>:<i>tabname</i></b>)
+    is not supported, for portability.</p>
+<p>Using SQL keywords as database object names is not supported.</p>
+<h3><a name="decimals0">Decimal host variables</a></h3>
+<p><b>Decimal host variables</b> must be declared with precision and scale if you want to use a database 
+ other than Informix: </p>
+<blockquote>
+	<pre><font face="Courier New" size="2">$decimal(6,2) mydec;</font></pre>
+</blockquote>
+<p>In an <b>sqlda</b> structure, <b>sqlvar</b> elements defining a DECIMAL value must have the 
+<b>sqllen</b> member initialized with the decimal dimension (i.e., PRECMAKE(precision,scale). This is
+ different from Informix ESQL/C, where <b>sqllen</b> has the size of the <b>dec_t</b> structure 
+ for input parameters.</p>
+<h3><a name="literalconstants">Literal constants in USING clause</a></h3>
+<p><b>Literal constants</b> are not allowed in a USING clause: </p>
+<blockquote>
+	<pre>OPEN cursor USING 123, &quot;abc&quot; </pre>
+</blockquote>
+<p>You must always use host variables.</p>
+<h3><a name="commentind">Comment Indicator</a></h3>
+<p>The double hyphen (--) comment identifier&nbsp;is permitted within an SQL statement
+    only.&nbsp;</p>
+<blockquote>
+<pre><font size="2"><font face="Courier New">$SELECT * -- all columns</font>        compiles successfully<font face="Courier New">
+    FROM tab;</font>
+<font face="Courier New"><font size="2">$SELECT * FROM tab;
+&nbsp;&nbsp;&nbsp;</font> <font size="2">-- all columns</font> </font>             will not compile</pre>
+</blockquote>
+<h3><a name="notsuppfeatures">Features Not Supported</a></h3>
+</font>
+<ul>
+	<li><b>DESCRIBE INTO sqlda </b>is not yet supported.</li>
+	<li>System descriptors (<b>ALLOCATE DESCRIPTOR</b>, etc) are not yet supported.</li>
+	<li><b>INT8</b> and <b>SERIAL8 </b>data types are not yet supported.</li>
+	<li><b>CLOB/BLOB</b> data types are not yet supported.</li>
+	<li><b>Multi-byte</b> character sets are not yet supported.</li>
+ 	<li><b>Opaque</b> and <b>LVARCHAR </b> data types will not be supported.</li>
+ 	<li>Server communication functions (<b>sqlbreak sqlexit)</b> are not supported.</li>
+	<li><b>GLS </b>library functions will not be supported.</li>
+ 	<li><b>Collections</b> will not be supported.</li>
+ </ul>
+<font size="2">
+<hr>
+	<h2><a name="Exampleprogram">Example program</a> </h2>
+<pre><code class="linenumber">01</code> #include &lt;stdio.h&gt;
+<code class="linenumber">02</code>
+<code class="linenumber">03</code> EXEC SQL define NAME_LEN 20;  /* customer.store_name is a CHAR(20) */
+<code class="linenumber">04</code> EXEC SQL define ADDR_LEN 20;  /* customer.addr is a CHAR(20)       */
+<code class="linenumber">05</code>
+<code class="linenumber">06</code> void errlog(void)
+<code class="linenumber">07</code> {
+<code class="linenumber">08</code>  fprintf(stderr, &quot;Error occurred:\n&quot;);
+<code class="linenumber">09</code>  fprintf(stderr, &quot;  SQLSTATE = [%s]  SQLCODE = %d\n\n&quot;,
+<code class="linenumber">10 </code>                 SQLSTATE, SQLCODE);
+<code class="linenumber">11</code>  EXEC SQL DISCONNECT ALL;
+<code class="linenumber">12</code>  exit(1);
+<code class="linenumber">13</code> }
+<code class="linenumber">14</code>
+<code class="linenumber">15</code> int main()
+<code class="linenumber">16</code> {
+<code class="linenumber">17</code>  EXEC SQL BEGIN DECLARE SECTION;
+<code class="linenumber">18 </code>   int  p_num;
+<code class="linenumber">19</code>    varchar p_name[ NAME_LEN + 1 ];
+<code class="linenumber">20</code>    int2 i_name;
+<code class="linenumber">21</code>    varchar p_addr[ ADDR_LEN + 1 ];
+<code class="linenumber">22</code>    int2 i_addr;
+<code class="linenumber">23</code>    varchar p_addr2[ ADDR_LEN + 1 ];
+<code class="linenumber">24</code>    int2 i_addr2;
+<code class="linenumber">25 </code>   char p_state[3]; 
+<code class="linenumber">26</code>  EXEC SQL END DECLARE SECTION;
+<code class="linenumber">27</code>
+<code class="linenumber">28</code>  EXEC SQL WHENEVER ERROR CALL errlog; /* set error handling */
+<code class="linenumber">29</code>
+<code class="linenumber">30</code>  printf( &quot;Connecting...\n\n&quot;);
+<code class="linenumber">31</code>  EXEC SQL CONNECT TO 'custdemo';
+<code class="linenumber">32</code>
+<code class="linenumber">33</code>  EXEC SQL DECLARE c1 CURSOR FOR
+<code class="linenumber">34</code>    SELECT store_num, store_name, addr, addr2
+<code class="linenumber">35</code>      FROM customer
+<code class="linenumber">36 </code>     WHERE state = :p_state;
+<code class="linenumber">37</code>
+<code class="linenumber">38 </code> strcpy(p_state, &quot;IL&quot;);
+<code class="linenumber">39 </code> EXEC SQL OPEN c1;
+<code class="linenumber">40</code>
+<code class="linenumber">41</code>  for (;;)
+<code class="linenumber">42</code>  {
+<code class="linenumber">43</code>
+<code class="linenumber">44</code>   EXEC SQL FETCH c1 INTO :p_num,
+<code class="linenumber">45</code>                           :p_name INDICATOR :i_name,
+<code class="linenumber">46</code>                           :p_addr INDICATOR :i_addr,
+<code class="linenumber">47</code>                           :p_addr2 INDICATOR :i_addr2;
+<code class="linenumber">48</code>
+<code class="linenumber">49 </code>  if (strncmp(SQLSTATE, &quot;02&quot;, 2) == 0) {
+<code class="linenumber">50</code>        /* No more rows */
+<code class="linenumber">51</code>        break;
+<code class="linenumber">52</code>   }
+<code class="linenumber">53</code>
+<code class="linenumber">54</code>   printf(&quot;%6d %-20s\n      %s %s\n&quot;,
+<code class="linenumber">55</code>            p_num,
+<code class="linenumber">56</code>            i_name == 0 ? p_name : &quot;&lt;no name&gt;&quot;,
+<code class="linenumber">57</code>            i_addr == 0 ? p_addr : &quot;&lt;no address&gt;&quot;,
+<code class="linenumber">58</code>            i_addr2 == 0 ? p_addr2 : &quot;&quot;
+<code class="linenumber">59</code>   );
+<code class="linenumber">60</code>  }
+<code class="linenumber">61</code>
+<code class="linenumber">62</code>  EXEC SQL CLOSE c1;
+<code class="linenumber">63</code>  EXEC SQL FREE c1;
+<code class="linenumber">64</code>
+<code class="linenumber">65</code>  printf(&quot;\nDisconnecting...\n\n&quot;);
+<code class="linenumber">66 </code> EXEC SQL DISCONNECT CURRENT;
+<code class="linenumber">67
+68</code>  return 0;
+<code class="linenumber">69</code> }</pre>
+<hr>
+
+
+
+</BODY>
+</HTML>

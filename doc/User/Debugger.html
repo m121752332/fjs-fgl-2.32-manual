@@ -1,0 +1,1612 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>The Debugger</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The Debugger</a></H1>
+
+<p>Summary:</p>
+
+<ul>
+  <li><a href="#DEFINITION">Basics</a></li>
+  <li><a href="#USAGE">Usage</a>
+    <ul>
+     <li><a href="#STARTING">Starting fglrun in debug mode</a></li>
+     <li><a href="#STACKFRAME">Stack Frames</a></li>
+     <li><a href="#USINGDDD">Using ddd as graphical interface</a></li>
+     <li><a href="#SIGTRAP">Invoking the debugger at runtime</a></li>
+     <li><a href="#BREAKPOINT">Setting a breakpoint programmatically</a></li>
+    </ul>
+  </li>
+  <li><a href="#COMMANDS">Commands</a></li>
+</ul>
+
+<p><i>See also:</i> <a href="Programs.html">Programs</a>, <a href="Tools.html">Tools</a>.</p>
+
+<HR>
+
+<h3><a name="DEFINITION">Basics</a></h3>
+
+<p>The debugger is a tool built in the runtime system that allows you to stop a program before it
+terminates, or before it encounters a problem, so that you
+can locate logical and runtime errors. </p>
+
+<h4>Syntax:</h4>
+<code>fglrun -d <i>program</i><u>[</u>.42r<u>]</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>program</i> is the name of the BDL program.</li>
+  <li>The command-line arguments for <i>program</i> (if any) have to be passed
+    to the &quot;run&quot; command later on.</li>
+</ol>
+
+
+<HR>
+
+
+<h3><a name="USAGE">Usage</a></h3>
+
+
+<HR>
+
+
+<h4><a name="STARTING">Starting fglrun in debug mode</a></h4>
+
+<p>In order to use the debugger, you must start the virtual machine with the <b>-d</b>
+option:</p>
+
+<code>fglrun -d myprog</code>
+
+<p>The debugger can be used alone in the command line mode or with a graphical
+shell compatible with gdb such as <b>ddd</b>:</p>
+
+<code>ddd --debugger &quot;fglrun -d myprog&quot;</code>
+
+<p>The debugger supports a subset of the standard GNU C/C++ debugger called <b>gdb</b>.</p>
+
+<p>In command line mode, the debugger shows the following prompt</p>
+
+<p><code>(fgldb)</code></p>
+
+<p>A command is a single line of input. It starts with a command name, which may be
+followed by arguments whose meaning depends on the command name. For example, the
+command <code>step</code> accepts as an argument the number of times to step:</p>
+
+<code>(fgldb) step 5</code>
+
+<p>You can use command abbreviations. For example, the 'step' command abbreviation is 's':</p>
+
+<code>(fgldb) s 5</code>
+
+<p>Possible command abbreviations are shown in the command's syntax.</p>
+
+<p>A blank line as input to the debugger (pressing just the RETURN or ENTER
+keys) usually causes the previous command to repeat. However, commands whose
+unintentional repetition might cause problems will not repeat in this way.</p>
+
+
+<HR>
+
+
+<h4><a name="STACKFRAME"><u>Stack Frames</u></a></h4>
+
+<p>Each time your program performs a function call, information about the call
+is saved in a block of data called a <i>stack frame</i>. Each frame contains the data
+associated with one call to one function.</p>
+
+<p>The stack frames are allocated in a region of memory called the <i>call stack</i>.
+When your program is started, the stack has only one frame, that of the function
+<b>main</b>. This is the initial frame, also known as the <i>outermost frame</i>. As the
+debugger executes your program, a new frame is made each time a function is
+called. When the function returns, the frame for that function call is
+eliminated.</p>
+
+<p>The debugger assigns numbers to all existing stack frames, starting with zero
+for the innermost frame, one for the frame that called it, and so on upward.
+These numbers do not really exist in your program; they are assigned by the
+debugger to allow you to designate stack frames in commands.</p>
+
+<p>Each time your program stops, the debugger automatically selects the
+currently executing frame and describes it briefly. You can use the <a href="#CMD_FRAME">frame</a>
+command to select a different frame from the current call stack.</p>
+
+
+<HR>
+
+
+<h4><a name="USINGDDD">Using ddd as graphical interface</a></h4>
+
+<p>To use <b>ddd</b> with the debugger:</p>
+
+<ol>
+  <li>Create a script &quot;<b>fglddd</b>&quot; containing the following
+    command; make the script executable.</li>
+</ol>
+<pre>	exec ddd --debugger &quot;fglrun -d&quot; &quot;$@&quot;</pre>
+<ol start="2">
+  <li>Start <b>fglddd</b> as a replacement for <b>fglrun</b> when you want to
+    debug a BDL program.</li>
+</ol>
+
+
+<HR>
+
+
+<h4><a name="SIGTRAP">Invoking the debugger in a running instance of fglrun</a></h4>
+
+<p>Even
+if fglrun has not been started with the -d option, it is possible to switch the
+running program to debug mode: On Unix platforms, you must send a <b>SIGTRAP</b>
+signal to the process. On Windows, you must use the <b>CTRL-BREAK</b> key in the
+console window which has started the program.</p>
+
+<p>Example (Unix):</p>
+
+<code>shell 1&gt; fglrun func</code>
+
+<p>From another session, send the SIGTRAP signal to this process.</p>
+
+<code>shell 2&gt; kill -TRAP pid_of_fglrun</code>
+
+<p>Then the instance running the program will receive this signal and enter in debugging mode.
+The (fgldb) prompt is displayed and waits for instructions.</p>
+
+<code>shell 1&gt; fglrun func<br>
+ func1() at func.4gl:15<br>
+ 15          for g_cpt=1 to 1000000<br>
+(fgldb)
+</code>
+
+<p>In production sites, you can avoid the runtime system to trap the debugger
+signal by setting the following <a href="FglProfile.html">FGLPROFILE</a> entry:</p>
+
+<p><code>fglrun.ignoreDebuggerEvent = true</code></p>
+
+
+<HR>
+
+
+<h4><a name="BREAKPOINT">Setting a breakpoint programmatically</a></h4>
+
+<p>You can set a breakpoint in the program source code with the <a href="Programs.html#BREAKPOINT">BREAKPOINT</a>
+instruction. If the program flow encounters this instruction, the program stops
+as if the break point was set by the <a href="#CMD_BREAK">break command</a>:</p>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>i <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <tt>LET </tt>i=123
+<CODE class=linenumber>04</CODE>   <tt>BREAKPOINT</tt>
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY</tt> i
+<CODE class=linenumber>06</CODE> <TT>END MAIN</TT></PRE>
+
+
+<p>The <a href="Programs.html#BREAKPOINT">BREAKPOINT</a> instruction is simply
+ignored when running in normal mode.</p>
+
+<HR>
+
+<h3><a name="COMMANDS">Commands</a></h3>
+
+<p>Summary of the debugger commands:</p>
+
+  <table border="0" width="95%">
+    <tr>
+      <td width="114" bgcolor="#C0C0C0"><b>Command</b></td>
+      <td bgcolor="#C0C0C0" ><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_BACKTRACE">backtrace</a>/<a href="#CMD_BACKTRACE">where</a></td>
+      <td >Print a summary of how your program reached the current
+        state (back trace of all stack frames).</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_BREAK">break</a></td>
+      <td >Set a break point at the specified line or function.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_CALL">call</a> </td>
+      <td >Call a function in the program.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_CLEAR">clear</a> </td>
+      <td >Clear breakpoint at some specified line or function.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_CONTINUE">continue</a></td>
+      <td >Continue program being debugged.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_DEFINE">define</a></td>
+      <td >Define a new command name.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_DELETE">delete</a></td>
+      <td >Delete some breakpoints or auto-display expressions.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_DISABLE">disable</a></td>
+      <td >Disable some breakpoints.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_DISPLAY">display</a></td>
+      <td >Print the values of expression <i>EXP </i>each time the program stops.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_DOWN">down</a> </td>
+      <td >Select and print the function called by the current
+        function.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_ECHO">echo</a></td>
+      <td ><p>Print the specified text.</p>
+      </td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_ENABLE">enable</a></td>
+      <td >Re-activate breakpoints that have previously been
+        disabled.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_FINISH">finish</a> </td>
+      <td >Execute until selected stack frame returns.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_FRAME">frame</a></td>
+      <td >Select and print a stack frame.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_HELP">help</a></td>
+      <td >Print list of debugger commands.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_IGNORE">ignore</a></td>
+      <td >Set ignore-count of a breakpoint number N to COUNT.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_INFO">info</a></td>
+      <td >Provide information about the status of the program.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_LIST">list</a></td>
+      <td >List specified function or line.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_NEXT">next</a></td>
+      <td >Step program; continue with the next source code line at the same level.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_OUTPUT">output</a></td>
+      <td >Print the current value of the specified expression; do
+        not include value history and do not print new-line.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_PRINT">print</a></td>
+      <td >Print the current value of the specified expression.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_PTYPE">ptype</a></td>
+      <td >Print the type of a variable</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_QUIT">quit</a></td>
+      <td >Exit the debugger.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_RUN">run</a></td>
+      <td >Start the debugged program.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_SET">set</a> </td>
+      <td >Evaluate an expression and assign the result to a 
+		variable.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_SOURCE">source</a></td>
+      <td >Execute a file of debugger commands.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_SIGNAL">signal</a></td>
+      <td >Continue program giving it the signal specified by the
+        argument.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_STEP">step</a></td>
+      <td >Step program until it reaches a different source line.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_TBREAK">tbreak</a> </td>
+      <td >Set a temporary breakpoint.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_TTY">tty</a></td>
+      <td >Set terminal for future runs of program being debugged.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_UNDISPLAY">undisplay</a></td>
+      <td >Cancel some expressions to be displayed when the program
+        stops.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_UNTIL">until</a></td>
+      <td >Continue running until a specified location is reached.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_UP">up</a> </td>
+      <td >Select and print the function that called the current
+        function.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_WATCH">watch</a> </td>
+      <td >Set a watchpoint for an expression. A watchpoint stops the
+          execution of your program whenever the value of an expression changes.</td>
+    </tr>
+    <tr>
+      <td width="114"><a href="#CMD_WHATIS">whatis</a> </td>
+      <td >Prints the data type of a variable.</td>
+    </tr>
+  </table>
+
+<HR>
+<h3><a name="CMD_BACKTRACE">backtrace / where</a></h3>
+
+<p>This commands prints a summary of how your program reached the current state.</p>
+
+<h4>Syntax:</h4>
+
+<code>backtrace</code>
+
+<h4>Usage:</h4>
+
+<p>The <code>backtrace</code> command prints a summary of your program's entire stack, one
+line per frame. Each line in the output shows the frame number and function
+name.</p>
+
+<h4>Example:</h4>
+
+<pre>(fgldb) backtrace
+#1 addcount() at mymodule.4gl:6
+#2 main() at mymodule.4gl:2
+(fgldb)</pre>
+
+<h4><font color="#008000">Tips:</font></h4>
+
+<ul>
+  <li> <code>bt</code> and <code>where</code> are aliases for the <code>backtrace</code> command.</li>
+</ul>
+
+<HR>
+<h3><a name="CMD_BREAK">break</a></h3>
+
+<p>This command defines a break point to stop the program execution at a given
+line or function. </p>
+
+<h4>Syntax:</h4>
+<code>break <u>[</u> <u>{</u> <u>[</u><i>module</i>.<u>]</u><i>function</i> <u>|</u> <u>[</u><i>module</i>:<u>]</u><i>line</i> <u>}</u> <u>]</u> <u>[</u> if <i>condition</i> <u>]</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>function</i> is a function name.</li>
+  <li><i>module</i> is the name of a specific source file, without extension.</li>
+  <li><i>line</i> is a source code line.</li>
+  <li><i>condition</i> is an expression evaluated dynamically.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <code>break </code>command sets a break point at a given position in the
+program.</p>
+<p>When the program is running, the debugger stops automatically at breakpoints
+defined by this command.</p>
+
+<p>If a <i>condition</i> is specified, the program stops at the breakpoint only
+if the <i>condition</i> evaluates to TRUE.</p>
+
+<p><b><font color="#FF0000">Warning:</font> If you do not specify any location
+(function or line number), the breakpoint is created for the current line. For
+example, if you write &quot;break if var = 1&quot;, the debugger adds a
+conditional breakpoint for the current line, and the program will only stop if
+the variable is equal to 1 when reaching the current line again.</font></b></p>
+
+<h4>Example:</h4>
+<pre>(fgldb) break mymodule:5
+Breakpoint 2 at 0x00000000: file mymodule.4gl, line 5.</pre>
+
+
+<hr>
+<h3><a name="CMD_CALL">call</a></h3>
+
+<p>This command calls a function in the program.</p>
+
+<h4>Syntax:</h4>
+
+<p><code>call <i>function-name</i> <u>(</u> <i>expression</i> <u>[</u> , expression <u>[...]</u> <u>]</u> <u>)</u></code></p>
+
+<h4>Notes:</h4>
+<ol>
+    <li><i>function-name</i> is the name of the function to call.</li>
+  <li><i>expression</i> is as simplified language <a href="Expressions.html">expression</a>.</li>
+    <li>The return values are printed when the function returns.</li>
+</ol>
+
+<h4>Example:</h4>
+
+<pre><code class=linenumber>01</code> <tt>MAIN</tt>
+<code class=linenumber>02</code>   <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<code class=linenumber>03</code>
+<code class=linenumber>04</code>   <tt>LET</tt> i = 1 
+<code class=linenumber>05</code>   <tt>DISPLAY</tt> i
+<code class=linenumber>06</code> 
+<code class=linenumber>07</code> <tt>END MAIN</tt>
+<code class=linenumber>08</code> 
+<code class=linenumber>09</code> <tt>FUNCTION</tt> hello ()
+<code class=linenumber>10</code>     <tt>RETURN</tt> &quot;hello&quot;, &quot;world&quot;
+<code class=linenumber>11</code> <tt>END FUNCTION</tt>
+</pre>
+
+<pre>(fgldb) br main
+Breakpoint 1 at 0x00000000: file t.4gl, line 4.
+(fgldb) run
+Breakpoint 1, main() at t.4gl:4
+4         LET i = 1
+(fgldb) call hello()
+$1 =  { &quot;hello&quot; , &quot;world&quot; }
+(fgldb)</pre>
+
+<HR>
+
+<h3><a name="CMD_CLEAR">clear</a></h3>
+
+<p>This command clears the breakpoint at a specified line or function.</p>
+
+<h4>Syntax:</h4>
+
+<p><code>clear <u>[</u> <u>{</u> <i>function</i> <u>|</u> <u>[</u> <i>module</i>
+ : <u>]</u> <i>line</i> <u>}</u> <u>]</u></code></p>
+
+<h4>Notes:</h4>
+
+<ol>
+  <li><i>function</i> is a function name.</li>
+  <li><i>module</i> is a specific source file.</li>
+  <li><i>line</i> is a source code line.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>With the <code>clear</code> command, you can delete
+breakpoints according to where they are in your program.</p>
+
+<p>Use the <code>clear</code> 
+command with no arguments to delete any breakpoints at the next instruction to
+be executed in the selected stack frame.&nbsp;</p>
+
+<p> See the <a href="#CMD_DELETE">delete</a>
+command to delete individual breakpoints by specifying their breakpoint numbers.</p>
+
+
+
+<h4> Example:</h4>
+
+
+
+<pre>(fgldb) clear mymodule:5
+Deleted breakpoint 2
+(fgldb)</pre>
+
+
+
+<hr>
+
+<h3><a name="CMD_CONTINUE">continue</a></h3>
+
+<p>This command continues the execution of the program after a breakpoint.</p>
+
+<h4>Syntax:</h4>
+<code>continue  <u>[</u><i>ignore-count</i><u>]</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>ignore-count</i> defines the number of times to ignore a breakpoint at this location.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <code>continue</code> command continues the execution of the program
+until the program completes normally, another breakpoint is reached, or a signal
+is received.&nbsp;&nbsp;</p>
+
+<h4>Example:</h4>
+
+<pre>(fgldb) continue
+&nbsp;&nbsp; &lt;..program output..&gt;
+Program exited normally.</pre>
+
+
+<h4><font color="#008000">Tips:</font></h4>
+
+<ul>
+  <li><code>c</code> is an alias for the <code>continue</code> command.</li>
+</ul>
+
+
+<HR>
+<h3><a name="CMD_DEFINE">define</a></h3>
+
+<p>This command allows you to specify a user-defined sequence of
+commands.&nbsp;&nbsp;</p>
+
+<h4>Syntax:</h4>
+<code>define <i>command-name<br>
+command<br>
+ </i> <u>[...]<br>
+</u>end</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>command-name</i> is the name assigned to the command
+    sequence.</li>
+  <li><i>command</i> is a valid debugger command.</li>
+  <li><b>end</b><code><i> </i></code>indicates the end of the command sequence.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <code>define</code> command allows you to create a user-defined command
+by assigning a command name to a sequence of debugger commands that you
+specify. You may then execute the command that you defined by
+entering the command name at the debugger prompt.&nbsp;&nbsp;</p>
+
+<p>User commands may accept up to ten arguments separated by white space.&nbsp;&nbsp;
+&nbsp;</p>
+
+<h4>Example:</h4>
+
+<pre>(fgldb) define myinfo
+&gt; info breakpoints
+&gt; info program
+&gt; end
+(fgldb)</pre>
+
+
+<hr>
+<h3><a name="CMD_DELETE">delete</a></h3>
+
+<p>This command allows you to remove breakpoints that you have specified in your
+debugger session.</p>
+
+<h4>Syntax:</h4>
+<code>delete  <i>breakpoint</i></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>breakpoint<code> </code> </i>is the number assigned to the breakpoint by the
+    debugger.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <code>delete</code> command allows you to remove breakpoints when they
+are no longer needed in your debugger session.</p>
+
+<p>If you prefer you may disable the breakpoint instead, see the <code>disable</code> command.</p>
+
+<h4>Example:</h4>
+
+<pre>(fgldb) delete 1
+(fgldb) run
+Program exited normally.
+(fgldb)</pre>
+
+
+<h4><font color="#008000">Tips:</font></h4>
+
+<ul>
+  <li><code>d</code> is an alias for the <code>delete</code> command.</li>
+</ul>
+
+
+<hr>
+<h3><a name="CMD_DISABLE">disable</a></h3>
+
+<p>This command disables the specified breakpoint.</p>
+
+<h4>Syntax:</h4>
+<code>disable <i>breakpoint</i></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>breakpoint</i> is the number assigned to the breakpoint by the
+    debugger.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <code>disable</code> command instructs the debugger to ignore the
+specified breakpoint when running the program.&nbsp;</p>
+
+<p>Use the <code>enable</code> command to re-activate the breakpoint for the
+current debugger session.&nbsp;&nbsp;</p>
+
+<h4>Example:</h4>
+
+<pre>(fgldb) disable 1
+(fgldb) run
+Program exited normally.
+(fgldb)</pre>
+
+
+<hr>
+<h3><a name="CMD_DISPLAY">display</a></h3>
+
+<p>This command displays the specified expression's value each time
+your program stops.</p>
+
+<h4>Syntax:</h4>
+<code>display <i>expression</i></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>expression</i> is your program's expression that you wish to examine.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <code>display</code> command allows you to add an expression to an
+automatic display list.&nbsp; The values of the expressions in the list are
+printed each time your program stops.&nbsp; Each expression in the list is
+assigned a number to identify it.</p>
+
+<p>This command is useful in tracking how the values of expressions change
+during the program's execution.</p>
+
+<h4>Example:</h4>
+
+<pre>(fgldb) display a
+1: a = 6
+(fgldb) display i
+2: i = 1
+(fgldb) step
+2: i = 1
+1: a = 6
+16&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for i = 1 to 10
+(fgldb) step
+2: i = 2
+1: a = 6
+17&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; let a = a+1
+(fgldb)</pre>
+
+
+<hr>
+
+
+<h3><a name="CMD_DOWN">down</a></h3>
+
+
+<p>This command selects and prints the function called by the current function,
+or the function specified by the frame number in the call stack.</p>
+
+
+<h4>Syntax:</h4>
+
+
+<p><code>down <u>[</u><i>frames</i><u>]</u></code> </p>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>frames</i> is the number of frames to move down the stack.&nbsp; The
+    default is 1.</li>
+</ol>
+
+
+<h4>Usage:&nbsp;</h4>
+<p>This command moves down the call stack, to the specified frame, and prints
+the function identified with that frame.&nbsp; To print the function called by
+the current function, use the <font face="Courier New" size="2">down</font>
+command without an argument.&nbsp; See <a href="#STACKFRAME">Stack Frames</a>
+for a brief description of frames.</p>
+
+<pre>(fgldb) down
+#0 query_cust() at custquery.4gl:22
+22    CALL cleanup()
+(fgldb)</pre>
+
+
+
+<hr>
+
+
+<h3><a name="CMD_ECHO">echo</a></h3>
+
+
+<p>This command prints the specified text as prompt.</p>
+
+
+<h4>Syntax:</h4>
+
+
+<p><code>echo <i>text</i></code></p>
+
+
+<h4>Notes:</h4>
+
+
+<ol>
+  <li><i>text </i>is the specific text to be output.</li>
+</ol>
+<h4>Usage:</h4>
+<p>The <code>echo</code> command allows you to
+generate exactly the output that you want. Nonprinting characters can be
+included in text using C escape sequences, such as ‘\n’ to print a new-line.
+No new-line is printed unless you specify one. In addition to the standard C
+escape sequences, a backslash followed by a space stands for a space. A
+backslash at the end of text can be used to continue the command onto subsequent
+lines.&nbsp;</p>
+
+
+<h4>Example:</h4>
+
+
+<pre>(fgldb) echo hello
+hello (fgldb)</pre>
+
+
+<hr>
+<h3><a name="CMD_ENABLE">enable</a></h3>
+
+<p>This command enables breakpoints that have previously been disabled.</p>
+
+<h4>Syntax:</h4>
+<code>enable <i>breakpoint</i></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>breakpoint</i> is the number assigned to the breakpoint by the
+    debugger.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <code>enable</code> command allows you to re-activate a breakpoint in the
+current debugger session.&nbsp; The breakpoint must have been disabled using the
+<code>disable</code> command.</p>
+
+<h4>Example:</h4>
+
+<pre>(fgldb) disable 1
+(fgldb) run
+Program exited normally.
+(fgldb) enable 1
+(fgldb) run
+Breakpoint 1, at mymodule.4gl:5</pre>
+
+
+
+<hr>
+<h3><a name="CMD_FINISH">finish</a></h3>
+
+<p>This command continues the execution of a program until the current function
+returns normally.</p>
+
+<h4>Syntax:</h4>
+<code>finish</code>
+
+<h4>Usage:</h4>
+<p>The <code>finish</code> command instructs the program to continue running
+until just after the function in the selected stack frame returns, and then
+stop.</p>
+
+<p> The returned value, if any, is printed.</p>
+
+<h4>Example:&nbsp;</h4>
+
+<pre>(fgldb) finish
+Run till exit myfunc() at module.4gl:10
+Value returned is $1 = 123
+(fgldb)</pre>
+
+
+
+<hr>
+
+
+<h3><a name="CMD_FRAME">frame</a></h3>
+
+
+<p>This command selects and prints a stack frame.</p>
+
+
+<h4>Syntax:</h4>
+
+
+<p><code>frame <u>[</u> <i>address </i><u>|</u> <i>number </i><u>]</u></code></p>
+
+
+<h4>Notes:</h4>
+
+
+<ol>
+  <li><i>address</i> is the address of the frame that you wish to select.</li>
+  <li><i>number</i> is the stack frame number of the frame that you wish to
+    select.</li>
+</ol>
+<h4>Usage:</h4>
+
+
+<p>The <code>frame</code> command allows you to move
+from one stack frame to another, and to print the stack frame that you select.
+Each stack frame is associated with one call to one function within the
+currently executing program.&nbsp; Without an argument, the current stack frame is printed.
+See <a href="#STACKFRAME">Stack Frames</a> for a brief discussion of frames.</p>
+
+
+<h4>Example:</h4>
+
+
+<pre>(fgldb) frame
+#0 query_cust() at testquery.4gl:42
+(fgldb)</pre>
+
+
+<hr>
+<h3><a name="CMD_HELP">help</a></h3>
+
+<p>This command provides information about debugger commands.</p>
+
+<h4>Syntax:</h4>
+<code>help  <u>[</u><i>command</i><u>]</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>command </i>is the name of the debugger command for which you wish
+    information.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <code>help</code> command displays a short explanation of&nbsp; a specified
+command.&nbsp;</p>
+
+<p>Enter the <code>help</code> command with no arguments to display a list
+of debugger commands.</p>
+
+<h4>Example:</h4>
+
+<pre>(fgldb) help delete
+Delete some breakpoints or auto-display expressions</pre>
+
+<hr>
+<h3><a name="CMD_IGNORE">ignore</a></h3>
+
+<p>Set the ignore-count of a breakpoint number N to COUNT.</p>
+
+<h4>Syntax:</h4>
+<code>ignore <i>breakpoint</i> <i>count</i></code>
+
+<h4>Notes:</h4>
+<ol>
+    <li><i>breakpoint</i> is the breakpoint number.</li>
+    <li><i>count</i> is the number of times the breakpoint will be ignored.
+</ol>
+
+<h4>Usage:</h4>
+<p>The <code>ignore</code> command defines the number of times a breakpoint is
+ignored when the program flow reaches that breakpoint.</p>
+
+<p>The next <i>count</i> times the breakpoint is reached, the program execution
+will continue, and no <a href="#CMD_BREAK">breakpoint condition</a> is checked.</p>
+
+<h4><font color="#008000">Tips:</font></h4>
+
+<ol>
+  <li>You can specify a <i>count</i> of zero to make the breakpoint stop the
+    next time it is reached.</li>
+  <li>When using the <a href="#CMD_CONTINUE">continue</a> command to resume the
+    execution of the program from a breakpoint, you can specify a an ignore
+    count directly as an argument.</li>
+</ol>
+
+<h4>Example:</h4>
+<pre>(fgldb) br main
+Breakpoint 1 at 0x00000000: file t.4gl, line 4.
+(fgldb) ignore 1 2
+Will ignore next 2 crossings of breakpoint 1.
+(fgldb) run
+          1
+Program exited normally.
+(fgldb) run
+          1
+Program exited normally.
+(fgldb) run
+Breakpoint 1, main() at t.4gl:4
+4         LET i = 1
+(fgldb)</pre>
+
+<hr>
+<h3><a name="CMD_INFO">info</a></h3>
+
+<p>This command describes the current state of your program.</p>
+
+<h4>Syntax:</h4>
+<code>info <u>{</u> breakpoints<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <u>|</u><i> </i>sources<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <u>|</u>
+program<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <u>|</u>  variables<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <u>|</u>  locals<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <u>|</u> files<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <u>|</u> line <u>{</u> <i>function</i> <u>|</u>
+<i>module:line</i> <u>}</u> <br>
+&nbsp;&nbsp;&nbsp;&nbsp; <u>}</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i> function</i><b>  </b>is a function name of the program.</li>
+  <li><i> module:line</i>&nbsp;defines a source code line in a module.&nbsp;</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <code>info</code> command describes the state of your program.</p>
+
+<ul>
+  <li> <code>info breakpoints</code> lists the breakpoints that you have set.</li>
+  <li><code>info sources</code><b> </b>prints the names of all the source files in your program<b>.</b></li>
+  <li><code>info program</code><b> </b>displays the status of your program.</li>
+  <li><code>info variables</code><b> </b>displays global variables.</li>
+  <li><code>info locals</code><b> </b>displays the local variables of the
+    current function.</li>
+  <li><code>info files</code><b> </b>lists the files from which symbols were loaded.</li>
+  <li><code>info line <i>function</i></code> prints the program addresses for the
+    first line of the function named <i>function</i>.&nbsp;&nbsp;</li>
+  <li> <code>info line<i>  module:line&nbsp;</i></code>prints the starting
+and ending addresses of the compiled code for the source line specified.&nbsp;
+See the <code>list</code><b> </b>command for all the ways that you can specify
+the source code line.&nbsp;&nbsp;</li>
+</ul>
+<h4>Example:&nbsp;</h4>
+
+<pre>(fgldb) info sources
+Source files for which symbols have been read in:</pre>
+
+<pre>mymodule.4gl, fglwinexec.4gl, fglutil.4gl, fgldialog.4gl, fgldummy4js.4gl
+(fgldb)</pre>
+
+
+<hr>
+<h3><a name="CMD_LIST">list</a> </h3>
+
+<p>This command prints source code lines of the program being executed.</p>
+
+<h4>Syntax:</h4>
+<code>list <u>[</u> <i>function</i> <u>|</u> <u>[</u><i>module</i>:<u>]</u><i>line</i>
+<u>]</u></code>
+
+<h4>Usage:</h4>
+<p>The <code>list</code> command prints source code lines of your program, by
+default it begins with the current line.</p>
+
+<h4>Example:</h4>
+
+<pre>(fgldb) run
+Breakpoint 1, at mymodule.4gl:5
+5&nbsp;&nbsp;&nbsp; call addlist()
+(fgldb) list
+5&nbsp;&nbsp;&nbsp; call addlist()
+6&nbsp;&nbsp;&nbsp; call addname()
+.
+14&nbsp; end function
+(fgldb)</pre>
+
+
+<hr>
+<h3><a name="CMD_NEXT">next</a></h3>
+
+<p>This command continues running the program by executing the next source line
+in the current stack frame, and then stops.</p>
+
+<h4>Syntax:</h4>
+<code>next</code>
+
+<h4>Usage:</h4>
+<p>The <code>next</code> command allows you to execute your program one line of
+source code at a time. The <code>next</code> command is similar to <code>step,</code>
+but function calls that appear within the line of code are executed without
+stopping.&nbsp; When the next line of code at the original stack level that was
+executing when you gave the <code>next</code> command is reached,&nbsp; 
+execution stops.</p>
+
+<p>After reaching a breakpoint, the <code>next</code> command can be used to
+examine a troublesome section of code more closely.</p>
+
+<h4>Example:</h4>
+
+<pre>(fgldb) next
+5 call addlist()
+(fgldb) next
+6 call addname()
+(fgldb)</pre>
+
+
+<h4><font color="#008000">Tips:</font></h4>
+
+<ul>
+  <li><code>n</code> is an alias for the <code>next</code> command.</li>
+</ul>
+
+
+<hr>
+<h3><a name="CMD_OUTPUT">output</a></h3>
+
+<p>This command prints only the value of the specified expression, suppressing 
+any other output.</p>
+
+<h4>Syntax:</h4>
+
+<code>output <i>expression</i></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>expression </i>is your program's expression that you wish to examine.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <code>output</code> command prints the current value of the expression
+and nothing else, no new-line character, no &quot;expr=&quot;, etc.</p>
+
+<p>The usual output from the debugger is suppressed, allowing you to print only 
+the value.</p>
+
+<h4>Example:</h4>
+
+<pre>(fgldb) output b
+123(fgldb)</pre>
+
+
+<hr>
+<h3><a name="CMD_PRINT">print</a></h3>
+
+<p>This command displays the current value of the specified expression.</p>
+
+<h4>Syntax:</h4>
+<code>print <i>expression</i></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>expression </i>is your program's expression that you wish to examine.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <code>print</code> command allows you to examine the data in your 
+program.</p>
+
+<p>It evaluates and prints the value of the specified expression from your 
+program, in a format appropriate to its data type.</p>
+
+<h4>Example:</h4>
+
+<pre>(fgldb) print b
+&nbsp;$1 = 5
+(fgldb)</pre>
+
+
+<h4><font color="#008000">Tips:</font></h4>
+
+<ul>
+  <li><code>p</code> is an alias for the <code>print</code> command.</li>
+</ul>
+
+
+<hr>
+<h3><a name="CMD_PTYPE">ptype</a></h3>
+
+<p>This command prints the data type or structure of a variable.</p>
+
+<h4>Syntax:</h4>
+
+<p><code>ptype <i>variable-name</i></code></p>
+
+<h4>Notes:</h4>
+<ol>
+    <li><i>variable-name</i> is the name of the variable.</li>
+</ol>
+
+<h4>Example:</h4>
+
+<pre>(fgldb) ptype cust_rec
+type = RECORD
+    cust_num INTEGER,
+    cust_name VARCHAR(10),
+    cust_address VARCHAR(200)
+END RECORD</pre>
+
+
+<hr>
+<h3><a name="CMD_QUIT">quit</a></h3>
+
+<p>This command terminates the debugger session.</p>
+
+<h4>Syntax:</h4>
+<code>quit</code>
+
+<h4>Usage:</h4>
+<p>The <code>quit</code> command allows you to exit the debugger.</p>
+
+<p>Example:</p>
+
+<pre>(fgldb) quit</pre>
+
+
+<h4><font color="#008000">Tips:</font></h4>
+
+<ul>
+  <li><code>q</code> is an alias for the <code>quit</code> command.</li>
+</ul>
+
+<hr>
+<h3><a name="CMD_RUN">run</a></h3>
+
+<p>This command starts the program.</p>
+
+<h4>Syntax:</h4>
+<code>run  <u>[</u><i>argument </i><u>[...]</u> <u>]</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>argument&nbsp;</i>is an argument to be passed to the program.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The run command causes your program to execute until a breakpoint is reached
+or the program terminates normally.</p>
+
+<h4>Example:</h4>
+
+<pre>(fgldb) run a b c
+Breakpoint 1, at mymodule.4gl:3
+3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; call addcount()
+(fgldb)</pre>
+
+
+<hr>
+<h3><a name="CMD_SET">set</a></h3>
+
+<p>This command allows you to configure your debugger session and change program
+variable values.</p>
+
+<h4>Syntax:</h4>
+<code>set&nbsp;<u>{</u> prompt <i>ptext<br>
+&nbsp;&nbsp;&nbsp; </i> <u>|</u> annotate <i><u>{</u></i>1<u>|</u>0<u><i>} </i> </u><br>
+&nbsp;&nbsp;&nbsp;
+<u>|</u> verbose <i><u>{</u></i>on<u>|</u>off<i><u>}</u><br>
+&nbsp;&nbsp;&nbsp; </i> <u>|</u> variable <i>varname</i>=<i>expression</i>
+<br>
+ <i>
+&nbsp;&nbsp;&nbsp;</i> <u>| </u> environment <i>envname</i><u>[</u>=<i>value</i><u>]</u>
+<br>
+&nbsp;&nbsp;&nbsp; <u>}</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>ptext&nbsp;</i>is the<i> </i>string to which the prompt should be set.</li>
+  <li><i>varname</i> is the program variable to be set to <i>expression</i>.</li>
+  <li><i>expression</i> is as simplified language <a href="Expressions.html">expression</a>.</li>
+  <li><i>envname</i> is the environment variable to be set to <i>value</i>.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p ALIGN="LEFT">The <code>set</code> command allows to change program variables 
+and/or the environment.</p>
+<p ALIGN="LEFT"><code>set&nbsp;variable</code> sets an program variable, to be
+taken into account when continuing program execution.&nbsp;The right operand can
+be an expression.</p>
+<p ALIGN="LEFT"><code>set&nbsp;prompt</code> changes the prompt text. The text 
+can be set to any string. A space is not automatically added after the prompt 
+string, allowing you to determine whether to add a space at the end of the 
+prompt string.</p>
+<p ALIGN="LEFT"><code>set&nbsp;environment</code> sets an environment variable,
+where <i>value</i> may be
+any string.&nbsp; If the <i>value</i> parameter is omitted, the variable is set
+to a null value. The variable is set for your program, not for the debugger
+itself.&nbsp;</p>
+<p ALIGN="LEFT"><code>set&nbsp;verbose on</code> forces the debugger to display 
+additional messages about its operations, allowing you to observe that it is 
+still working during lengthy internal operations.</p>
+<p ALIGN="LEFT"><code>set&nbsp;annotate 1&nbsp;</code> switches the output
+format of the debugger to be more machine readable (this command is used by GUI
+front-ends like <i>ddd</i> or <i>xxgdb</i>)</p>
+<h4 ALIGN="LEFT">Example:</h4>
+<pre>(fgldb) set prompt ($)
+($)</pre>
+<p><b><font color="#FF0000">Warning: </font>On Unix systems, if your SHELL variable names a shell
+that runs an initialization file, any variables you set in that file affect your
+program. You may wish to move setting of environment variables to files that are only run when you 
+sign on, such as .login or .profile.</b></p>
+
+
+<hr>
+<h3><a name="CMD_SOURCE">source</a></h3>
+
+<p>This command executes a file of debugger commands.</p>
+
+<h4>Syntax:</h4>
+<code>source <i>commandfile</i></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>commandfile</i> is the name of the file containing the debugger
+    commands.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <code> source</code> 
+command allows you to execute a command file of lines
+that are debugger commands.&nbsp; The lines in the file are executed
+sequentially.
+The commands are not printed as they are executed,
+and any messages are not displayed.&nbsp; Commands are executed without asking
+for confirmation. An error in any command terminates
+execution of the command file.</p>
+<h4>Example:</h4>
+<p>Using the text file <b>mycommands</b>, which contains the single line:&nbsp;
+break 10</p>
+<pre>(fgldb) source mycommands
+Breakpoint 2 @ 0x00000000: file mymod.4gl, line 10.
+(fgldb)</pre>
+
+
+<hr>
+<h3><a name="CMD_SIGNAL">signal</a></h3>
+
+<p>This command sends an INTERRUPT signal to your program.</p>
+
+<h4>Syntax:</h4>
+<code>signal <i>signal</i></code>
+
+<h4>Usage:</h4>
+<p>Resume execution where your program stopped, but immediately give it the
+signal <i>signal</i>. <i>signal</i> can be the name or the number of a signal.
+For example, on many systems signal 2 and signal SIGINT are both ways of sending
+an interrupt signal. The <code><font color="#000000">signal SIGINT</font></code> command resumes execution of your program
+where it has stopped, but immediately sends an INTERRUPT signal.&nbsp; The
+source line that was current when the signal was received is displayed.</p>
+
+<h4>Notes:</h4>
+<ol>
+  <li>The current version only allows then signal <code><font color="#000000">SIGINT</font></code>.</ol>
+<h4>Example:</h4>
+
+<pre>(fgldb) signal SIGINT
+Program exited normally.
+16&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for i = 1 to 10
+(fgldb)</pre>
+
+
+<hr>
+<h3><a name="CMD_STEP">step</a></h3>
+
+<p>This command continues running the program by executing the next line of
+source code, and then stops.&nbsp;&nbsp;&nbsp;</p>
+
+<h4>Syntax:</h4>
+<code>step <u>[</u><i>count</i><u>]</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>count </i>defines the number of lines to execute before stopping.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <code>step</code>
+command allows you to &quot;step&quot; through your
+program, executing one line of source code at a time. When a function call
+appears within the line of code, that function is also stepped through. 
+A common technique is to set a breakpoint prior to the section or function
+that is causing problems, run the program till it reaches the breakpoint, and
+then step through it line by line.</p>
+
+<h4>Example:</h4>
+
+
+<pre>(fgldb) step
+4 call addlist(a)
+(fgldb)</pre>
+
+
+<h4><font color="#008000">Tips:</font></h4>
+
+<ul>
+  <li><code>s</code> is an alias for the <code>step</code> command.</li>
+</ul>
+
+
+<hr>
+
+
+<h3><a name="CMD_TBREAK">tbreak</a></h3>
+
+
+<p>This command sets a temporary breakpoint.</p>
+
+
+<h4>Syntax:</h4>
+
+
+<code>tbreak <u>[</u> <u>{</u> <i>function</i> <u>|</u> <u>[</u> <i>module</i>
+ : <u>]</u> <i>line</i> <u>}</u> <u>]</u> <u>[</u> if <i>condition</i> <u>]</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>function</i> is a function name.</li>
+  <li><i>module</i> is a specific source file.</li>
+  <li><i>line</i> is a source code line.</li>
+  <li><i>condition</i> is an expression evaluated dynamically.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+
+
+<p>The <code>tbreak</code>
+command sets a breakpoint for one stop only. The breakpoint is set in the
+same way as with the <a href="#CMD_BREAK">break</a>
+command, but the breakpoint is automatically deleted after the first time your
+program stops there.</p>
+
+
+<p>If a <i>condition</i> is specified, the program stops at the breakpoint only
+if the <i>condition</i> evaluates to TRUE.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> If you do not specify any location
+(function or line number), the breakpoint is created for the current line. For
+example, if you write &quot;tbreak if var = 1&quot;, the debugger adds a
+conditional breakpoint for the current line, and the program will only stop if
+the variable is equal to 1 when reaching the current line again.</b></p>
+
+
+<h4> 
+Example:</h4>
+
+
+<pre>(fgldb) tbreak 12
+Breakpoint 2 at 0x00000000: file custmain.4gl, line 12.
+(fgldb)</pre>
+
+<hr>
+<h3><a name="CMD_TTY">tty</a></h3>
+
+<p>This command resets the default program input and
+output for future run commands.></p>
+
+<h4>Syntax:</h4>
+
+<code>tty <i> filename</i></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>filename</i> is the file which is to be the default for program input and
+    output.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>The tty command instructs the debugger to re-direct&nbsp; 
+program input and output to the specified file for future run commands.</p>
+
+<p>The re-direction is for your program only;&nbsp; your terminal
+is still used for debugger input and output.</font></p>
+
+<h4 ALIGN="LEFT">Example:</h4>
+
+
+<pre>(fgldb) tty /dev/ttyS0
+(fgldb)</pre>
+
+<hr>
+
+<h3><a name="CMD_UNDISPLAY">undisplay</a></h3>
+
+
+<p>This command cancels expressions to be displayed when the program stops.</p>
+
+
+<h4>Syntax:</h4>
+
+
+<p><code>undisplay <i>itemnum</i> <u>[...]</u></code></p>
+
+<h4>Notes:</h4>
+
+<ol>
+  <li>
+<p><i>itemnum </i>is the number of the expressions for which
+the display is cancelled.</p>
+</li>
+</ol>
+
+
+<h4>Usage:&nbsp;</h4>
+
+
+<p>When the <a href="#CMD_DISPLAY">display</a> command is used, each expression displayed is assigned an item
+number. The <code>undisplay</code> command
+allows you to remove expressions from the list to be displayed, using the item
+number to specific the expression to be removed.</p>
+
+
+<h4>Example:</h4>
+
+
+<pre>(fgldb) step
+2: i = 2
+1: a = 20
+9     FOR  i = 1 TO 10
+(fgldb) undisplay 2
+(fgldb) step
+1: a = 20
+10   Let cont = TRUE
+(fgldb)</pre>
+
+
+
+<hr>
+<h3><a name="CMD_UNTIL">until</a></h3>
+
+<p>This command continues running the program until the specified location is 
+reached.</p>
+
+<h4>Syntax:</h4>
+<code>until <u>[</u> <u>{</u> <i>function</i> <u>|</u> <u>[</u> <i>module</i>
+ : <u>]</u> <i>line</i> <u>}</u> <u>]</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>function</i> is a function name.</li>
+  <li><i>module</i> is a specific source file.</li>
+  <li><i>line</i> is a source code line.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+<p>The <code>until</code> command continues running
+your program until either the specified location is reached, or
+the current stack frame returns.&nbsp; This can be used to avoid stepping
+through a loop more than once.</p>
+
+<h4>Example:</h4>
+<pre>(fgldb) until addcount()</pre>
+
+
+<hr>
+<h3><a name="CMD_UP">up</a></h3>
+
+
+<p>This command selects and prints the function that called this one, or the 
+function specified by the frame number in the call stack.</p>
+
+
+<h4>Syntax:</h4>
+
+
+<p><code>up <u>[</u><i>frames</i><u>]</u></code> </p>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>frames</i>  says how many frames up to go in the stack.&nbsp; The
+    default is 1.</li>
+</ol>
+<h4>Usage:</h4>
+<p>The <code> 
+up</code> 
+ command moves towards the outermost frame, to frames that have existed
+longer. To print the function that called the current function, use the <font face="Courier New" size="2">up</font> 
+ command without an argument.&nbsp; See <a href="#STACKFRAME">Stack Frames</a>
+for a brief description of frames.</p>
+
+
+<h4>Example:</h4>
+
+
+<pre>(fgldb) up
+#1 main() at customain.4gl:14
+14    CALL query_cust()
+(fgldb)</pre>
+
+
+<hr>
+<h3><a name="CMD_WATCH">watch</a></h3>
+
+<p>This command sets a watchpoint for an expression. A watchpoint stops execution 
+of your program whenever the value of an expression changes.</p>
+
+<h4>Syntax:</h4>
+
+<p><code>watch <i>expression</i> <u>[</u>boolean-expression<u>]</u></code></p>
+
+<h4>Notes:</h4>
+<ol>
+    <li><i>expression</i> is the expression to watch.</li>
+    <li><i>boolean-expression</i> is an optional boolean expression.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The watchpoint stops the program execution when the value of the expression changes.</p>
+
+<p>If <i>boolean-expression</i> is provided, the watchpoint stops the execution of the program 
+if the expression value has changed and the <i>boolean-expression</i> evaluates to TRUE.</p>
+
+<p><b><font color="#FF0000">Warning:</font>  The watchpoint cannot be set if the
+program is not in the context where <i>expression</i> can be evaluated. Before
+using a watchpoint, you typically set a breakpoint in the function where the <i>expression</i>
+makes sense, then you run the program, and then you set the watchpoint. The
+example below illustrates this procedure.</b></p>
+
+<h4>Example:</h4>
+<pre><code class=linenumber>01</code> <tt>MAIN</tt>
+<code class=linenumber>02</code>   <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<code class=linenumber>03</code>
+<code class=linenumber>04</code>   <tt>LET</tt> i = 1 
+<code class=linenumber>05</code>   <tt>DISPLAY</tt> i
+<code class=linenumber>06</code>   <tt>LET</tt> i = 2 
+<code class=linenumber>07</code>   <tt>DISPLAY</tt> i
+<code class=linenumber>08</code>   <tt>LET</tt> i = 3 
+<code class=linenumber>09</code>   <tt>DISPLAY</tt> i
+<code class=linenumber>10</code>
+<code class=linenumber>11</code> <tt>END MAIN</tt></pre>
+
+<pre>(fgldb) break main
+breakpoint 1 at 0x00000000: file test.4gl, line 4
+(fgldb) run
+Breakpoint 1, main() at test.4gl:4
+4      LET i = 1
+(fgldb) watch i if i &gt;= 3
+Watchpoint 1:  i
+(fgldb) continue
+          1
+          2
+Watchpoint 1:  i
+
+Old value = 2
+New value = 3
+main() at t.4gl:9
+9         DISPLAY i
+(fgldb)</pre>
+
+<hr>
+<h3><a name="CMD_WHATIS">whatis</a></h3>
+
+<p>This command prints the data type of a variable.</p>
+
+<h4>Syntax:</h4>
+
+<p><code>whatis <i>variable-name</i></code></p>
+
+<h4>Notes:</h4>
+<ol>
+    <li><i>variable-name</i> is the name of the variable.</li>
+</ol>
+
+<h4>Example:</h4>
+
+<pre>(fgldb) run 
+Breakpoint 1, main() at t.4gl:4
+4         LET i = 1
+(fgldb) whatis i
+type = INTEGER
+(fgldb)</pre>
+
+</BODY>
+</HTML>

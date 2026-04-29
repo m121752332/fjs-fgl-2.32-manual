@@ -1,0 +1,268 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>2.3x Upgrade Guide</TITLE>
+<META http-equiv="Content-Type" content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+
+<HR>
+
+<H1>2.3x Upgrade Guide</H1>
+
+<p>This page describes product changes you must be aware of when upgrading from version <b>2.2x</b>
+to version <b>2.3x</b> of Genero BDL.</p>
+
+<p><b><font color="#FF0000">Warning:</font> This is an incremental upgrade guide that covers
+only topics related to a specific version of Genero. Also check prior upgrade guides if you
+migrate from an earlier version.</b></p>
+
+<p>Summary:</p>
+<ol>
+  <li><a href="#DesupportedPlatforms">De-supported platforms</a></li>
+  <li><a href="#FrontEndCompatibility">Front-end compatibility</a></li>
+  <li><a href="#pcode-compat">P-Code compatibility</a></li>
+  <li><a href="#gui-autostart">GUI server auto start</a></li>
+  <li><a href="#strict-form-compiler">Form compiler is more strict</a></li>
+  <li><a href="#oracle-interval">ORACLE and INTERVAL columns</a></li>
+  <li><a href="#DIALOG.setCurrentRow">DIALOG.setCurrentRow() changes row selection flags</a></li>
+  <li><a href="#fgldbsch-owner">Schema extractor needs table owner</a></li>
+  <li><a href="#windows-install-all-users">Windows installation for all users only</a></li>
+  <li><a href="#MenuAction-close">MenuAction close no longer created by default</a></li>
+  <li><a href="#emul_scroll_curs_dbtemp">Emulated scrollable cursor temp files in DBTEMP</a></li>
+  <li><a href="#modifying_treeview_data">Modifying treeview data during dialog execution</a></li>
+  <li><a href="#gui.chartable">Removal of single byte charset conversion for front-ends</a></li>
+  <li><a href="#gui.protocol.protocol.block">Front-end protocol compression
+    disabled</a></li>
+  <li><a href="#fpi-removal">FPI tool removal</a></li>
+  <li><a href="#sqlite-iconv">SQLite driver does no longer need libiconv on
+    Windows</a></li>
+  <li><a href="#CExtensions-CSDK">Need for Informix CSDK to compile C Extensions</a></li>
+  <li><a href="#fesqlc-removal">FESQLC tool removal</a></li>
+</ol>
+
+<HR>
+
+<h2><a name="DesupportedPlatforms">1. De-supported platforms</a></h2>
+<p>The following platforms are no longer supported by Genero BDL <b>2.3x</b>:</p>
+
+<ul>
+  <li>SCO Open Server (all versions)</li>
+  <li>SCO Unixware (all versions)</li>
+  <li>Dec OSF / Tru64 UNIX (all versions)</li>
+</ul>
+<p>Note that Genero
+2.30 is now available on Mac OS/X.</p>
+
+<p>For information about supported platforms, please refer to the <a href="Installation.html#INST_SUPPOS">Installation
+and Setup</a> section of this manual.</p>
+
+<HR>
+
+<h2><a name="FrontEndCompatibility">2. Front-end compatibility</a></h2>
+<p>Some <b>2.3x</b> bug fixes and new features needed modifications inside the runtime system (fglrun)
+and front-ends (gdc, gwc). Therefore, if you upgrade the runtime system to the
+latest <b>2.3x</b> version, we strongly recommend that you upgrade your workstations
+with the latest front-end version <b>2.3x</b> as well.</p>
+
+<HR>
+
+<h2><a name="pcode-compat">3. P-Code Compatibility</a></h2>
+<p>As a general rule, when upgrading to a major or minor version like 2.20 to
+2.30 or 2.33 to 2.34, you must recompile all your <b>.4gl</b> modules and <b>.per</b> form
+files. Re-compilation is not required when upgrading to a new maintenance
+release like 2.30.01 to 2.30.02.</p>
+
+<p>See also <a href="Installation.html#INST_UPGRADING">Installation and Setup</a>.</p>
+
+<HR>
+
+<h2><a name="gui-autostart">4. GUI server auto start</a></h2>
+<p>Before version <b>2.30</b>, the runtime system was trying to connect to
+localhost:0 when FGLSERVER was not set, even if gui.server.autostart FGLPROFILE
+entries are defined. This behavior has been identified as a bug (#17266) and has
+been fixed, changing the way fglrun proceeds with the GUI connection when autostart
+settings are defined; with 2.30, the wsmap workstation mappings are now taken
+into account, so that FGLSERVER defaults to locahost:<i>n</i>, where <i>n</i> is
+the GUI server number found from the wsmap settings.</p>
+
+<p>See <a href="DynamicUI.html#AUTOSTART">Automatic Front-End Startup</a> for
+more details.</p>
+
+<HR>
+
+<h2><a name="strict-form-compiler">5. Form compiler is more strict</a></h2>
+<p>In version <b>2.30</b>, the internals of <a href="Tools.html#TL_FGLFORM">fglform</a>
+have been reviewed to simplify the extension of the form syntax with new item
+types and attributes. This code review has removed some inconsistencies in the
+grammar parser; as a result, the form compiler is more strict regarding invalid 
+syntaxes. Thus, you may experience compilation errors with forms that compiled 
+with prior versions. Simply fix the invalid syntax in your forms and re-compile.</p>
+
+<HR>
+
+<h2><a name="oracle-interval">6. ORACLE and INTERVAL columns</a></h2>
+<p>     This migration note is related to the correction of bug <b>16341</b>,
+fixed in <b>2.30.00 build 1566</b>.</p>
+<p>Before this fix, negative (and only negative) INTERVAL values were inserted incorrectly.
+For example, it was not possible to compare an INTERVAL value inserted by a BDL program with an INTERVAL literal...<br>
+<br>
+<code> SELECT .. FROM table WHERE interval_col = INTERVAL '-55555-11' YEAR(9) TO MONTH</code><br>
+<br>
+     You must correct the values in your tables if you are using:<br>
+&nbsp;&nbsp;&nbsp; <code>INTERVAL YEAR(p) TO MONTH</code><br>
+     or<br>
+&nbsp;&nbsp;&nbsp; <code>INTERVAL DAY(p) TO FRACTION(n)</code></p>
+<p>(Other INTERVAL types are stored in a CHAR(50)...)<br>
+<br>
+     A simple interval =&gt; char =&gt; interval conversion will fix the values:<br>
+<br>
+&nbsp;&nbsp;&nbsp; <code>UPDATE table SET interval_col = TO_CHAR(interval_col)</code></p>
+
+<HR>
+
+<h2><a name="DIALOG.setCurrentRow">7. DIALOG.setCurrentRow() changes row
+selection flags</a></h2>
+<p><u>Before</u> version <b>2.30</b>, the <a href="ClassDialog.html#setCurrentRow">DIALOG.setCurrentRow</a>
+method was not modifying the row selection flags. Starting with <b>2.30</b>, the
+method resets row selection flags to false and marks the new current row as
+selected. See also <a href="MultipleDialogs.html#multi-row-selection">Multi-Range
+Selection usage</a>.</p>
+
+<HR>
+
+<h2><a name="fgldbsch-owner">8. Schema extractor needs table owner</a></h2>
+<p>     Starting with version <b>2.30</b>, the <a href="Tools.html#TL_FGLDBSCH"> fgldbsch</a> 
+schema extractor will always use
+a table owner / schema to select tables from databases where several schemas can hold tables with the same name (bug #16598).</p>
+<p>     The table owner can be specified with the <b> -ow</b> option, and defaults to the
+user name passed with the <b>-un</b> option, or to the current database user if no
+<b>-up</b> option was given. The last case can occur when the database connection
+information is taken from the <a href="FglProfile.html"> FGLPROFILE</a> configuration file, or when the
+OS user authentication is used.</p>
+
+<HR>
+
+<h2><a name="windows-install-all-users">9. Windows installation for all users only</a></h2>
+<p>     Starting with version <b>2.30</b>, the Windows installer forces you to install
+the product for all users.</p>
+
+<HR>
+
+<h2><a name="MenuAction-close">10. MenuAction close no longer created by default</a></h2>
+<p>     Before version <b>2.30</b>, a MenuAction close was created by default for
+<a href="Menus.html"> MENU</a> dialogs. This action node is no longer created, except if you have a
+COMMAND KEY(INTERRUPT) in the MENU, or if you have your own user action handler ON ACTION close, of course.
+You must take this change into account if you are manipulating the AUI tree with
+<a href="ClassDomNode.html"> om classes</a> in MENUs.</p>
+
+<HR>
+
+<h2><a name="emul_scroll_curs_dbtemp">11. Emulated scrollable cursor temp files
+in DBTEMP</a></h2>
+<p>On UNIX platforms, starting with <b>2.30</b>, the temporary files for
+emulated scrollable cursors will be created in the directory defined by the <a href="EnvironmentVariables.html#EV_DBTEMP">DBTEMP
+environment variable</a> when defined, otherwise TMPDIR, TEMP or TMP will be
+used. Using DBTEMP for database files conforms to DBTEMP usage for temporary
+files of <a href="DataTypes.html#DT_TEXT">TEXT</a> and <a href="DataTypes.html#DT_BYTE">BYTE</a>
+data storage.</p>
+
+<HR>
+
+<h2><a name="modifying_treeview_data">12. Modifying treeview data during dialog
+execution</a></h2>
+<p>Before version <b>2.30</b>, it was possible to use the insertRow() /
+appendRow() / deleteRow() / deleteAllRows() <a href="ClassDialog.html">dialog
+methods</a> to modify the tree array during the dialog execution. But these
+methods were not prepared to handle tree data properly. You could use program
+array methods instead, but when modifying the program array directly, secondary
+data such as multi-range selection flags or cell attributes were not
+synchronized. Starting with <b>2.30.02</b>, you can now use the <a href="ClassDialog.html#insertNode">insertNode()</a>,
+<a href="ClassDialog.html#appendNode">appendNode()</a> and <a href="ClassDialog.html#deleteNode">deleteNode()</a>
+methods of the ui.Dialog class. You can still directly fill the program array <u>before</u>
+the dialog execution, but you should use dialog methods <u>during</u> the dialog
+execution.</p>
+
+<HR>
+
+<h2><a name="gui.chartable">13. Removal of single byte charset conversion for front-ends</a></h2>
+<p>Starting with version <b>2.32.00</b>, the <a href="FglProfile.html">FGLPROFILE</a>
+entry <b>gui.chartable</b> is no longer supported. This entry could be used to
+make the runtime system convert GUI data to the character set of the front-end.
+Check that your FGLPROFILE file does not define this parameter.</p>
+
+<HR>
+
+<h2><a name="gui.protocol.protocol.block">14. Front-end Protocol compression
+disabled</a></h2>
+<p>Until version <b>2.32.00</b>, <a href="FEProtocol.html#COMPRESSION">front-end
+protocol compression</a> was enabled by default, to speed GUI communication on
+slow networks. However, on regular networks, compression is useless and can be
+disabled to save processing resources. With version <b>2.32.00</b>, the
+compression is now disabled by default. If needed, compression can be enabled
+with this <a href="FglProfile.html">FGLPROFILE</a>
+entry:</p>
+
+<p><code>gui.protocol.format = &quot;zlib&quot;</code></p>
+
+<p>Note also that compression needs the zlib library to be present on the
+computer where fglrun executes. Starting with 2.32.00, the product package does
+no longer include the fallback zlib library ($FGLDIR/lib/libzfgl.so or %FGLDIR%\bin\libzfgl.dll).
+Thus, if no standard zlib is installed on your system, compression will not be
+possible.</p>
+
+<HR>
+
+<h2><a name="fpi-removal">15. FPI tool removal</a></h2>
+<p>Up to version <b>2.30</b>, the <b>fpi</b> tool was provided to print version
+information of the different components of Genero BDL. Starting with <b>2.32.00</b>,
+this tool is no longer distributed. To print version information, you must use
+the -V option of <a href="Tools.html#TL_FGLRUN">fglrun</a>.</p>
+
+<HR>
+
+<h2><a name="sqlite-iconv">16. SQLite driver does no longer need libiconv on
+Windows</a></h2>
+<p>Starting with version <b>2.32</b>, the SQLite driver (dbmsqt3xx) does no
+longer need the LIBICONV.DLL library on Windows platforms to do charset
+conversion when the application locale is not UTF-8.</p>
+
+<HR>
+
+<h2><a name="CExtensions-CSDK">17. Need for Informix CSDK to compile C
+Extensions</a></h2>
+<p>This upgrade note is important when using C Extensions or ESQL/C Extensions. If your
+application does not use such extensions, you can ignore this note.</p>
+<p>To compile C or ESQL/C extensions manipulating data types like DECIMAL, you need IBM Informix data type structure
+definitions such as dec_t, dtime_t, intrvl_t, as well as macros like DECLEN() or
+TU_ENCODE(). Before version <b>2.32</b>, these C structure and macros where
+provided in the files of the FGLDIR/include/f2c directory.</p>
+<p>Genero BDL version <b>2.32</b> does no longer provide the IBM Informix ESQL/C
+structure definitions in FGLDIR/include/f2c files, because we have identified
+that some of the definitions are platform specific. However, to compile your C
+extensions, you need these definitions if your extensions use complex data types
+such as DECIMAL, DATETIME/INTERVAL, BYTE/TEXT. The definitions are not required
+if you use standard C types such as int or char[].</p>
+<p>Starting with version <b>2.32</b>, you need to install an IBM Informix CSDK
+on your development machine in order to get the structure and macro definitions
+to compile your C extensions. Understand that the IBM Informix CSDK is only
+required on the <u>development platform</u>. It is not required to install the
+CSDK on the production machines, except of course if you want to connect to an
+IBM Informix database server.</p>
+<p>For more details about C Extension creation, see the <a href="CExtensions.html#PREREQ">Implementing
+C Extensions</a> chapter in this documentation.</p>
+
+<HR>
+
+<h2><a name="fesqlc-removal">18. FESQLC tool removal</a></h2>
+<p>Starting with version <b>2.32</b>, the <b>fesqlc</b> compiler and linker is
+no longer part of the Genero BDL package. You must purchase the FESQLC compiler
+as a separate product. Contact you support channel for more details.</p>
+
+</BODY>
+
+</HTML>

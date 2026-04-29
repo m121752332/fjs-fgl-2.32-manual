@@ -1,0 +1,527 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>base.StringBuffer</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The StringBuffer class</a> </H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#METHODS">Methods</a></li>
+  <li><a href="#USAGE">Usage</a><ul>
+  <li><a href="#Difference_from_STRING">StringBuffer Objects vs. STRING variables</a></li>
+	<li><a href="#create">Create a StringBuffer object</a></li>
+	<li><a href="#append">Append a string</a></li>
+	<li><a href="#clear">Clear the string buffer</a></li>
+	<li><a href="#Compare_strings">Compare strings</a></li>
+	<li><a href="#getCharAt">Return the character at a specified position</a></li>
+	<li><a href="#getIndexOf">Return the position of a substring</a></li>
+	<li><a href="#getLength">Return the length of a string</a></li>
+	<li><a href="#subString">Return the substring at the specified position</a></li>
+	<li><a href="#Convert_case">Convert case of the string</a></li>
+	<li><a href="#Trim_the_string">Trim the string</a></li>
+	<li><a href="#replaceAt">Replace part of the current string with another string</a></li>
+	<li><a href="#replace">Replace one string with another</a></li>
+	<li><a href="#insertAt">Insert a string</a></li>
+	<li><a href="#toString">Convert buffer to a STRING value</a></li>
+</ul>
+
+	</li>
+  <li><a href="#EXAMPLES">Examples</a></li>
+</ul>
+
+<p>See also: <a href="BuiltInClasses.html">Built-in classes</a></p>
+
+<HR>
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+<p>The <b>StringBuffer</b> class is a <a href="BuiltInClasses.html">built-in
+class</a>  designed to manipulate character strings. The StringBuffer class is 
+optimized for string operations.</p>
+
+<h4>Syntax:</h4>
+<code>base.StringBuffer</code>
+
+
+<HR>
+
+
+<h3><a name="METHODS">Methods:</a></h3>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#3399FF" colspan="2"><b>Class Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%" valign="top"><b>Name</b></td>
+    <td bgcolor="#C0C0C0" valign="top"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#create">create</a>( )<br>
+      &nbsp; </code><tt>RETURNING </tt><code>base.StringBuffer</code></td>
+    <td valign="top">Creates a new empty StringBuffer object.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#00FFCC" colspan="2" valign="top"><b>Object Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%" valign="top"><b>Name</b></td>
+    <td bgcolor="#C0C0C0" valign="top"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#append">append</a>( str </code><tt>STRING</tt><code> ) </code></td>
+    <td valign="top">Appends a string to the string buffer.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#clear">clear</a>( )</code></td>
+    <td valign="top">Clears the string buffer.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#equals">equals</a>( src </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td valign="top">Returns <a href="Programs.html#PC_TRUE">TRUE</a> if the
+      string passed as parameter matches the current string. If one of the
+      strings is <a href="Programs.html#PC_NULL">NULL</a> the method
+      returns <a href="Programs.html#PC_FALSE">FALSE</a>.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#equalsIgnoreCase">equalsIgnoreCase</a>( src </code><tt>STRING</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td valign="top">Returns <a href="Programs.html#PC_NULL">TRUE</a> if the
+      string passed as parameter matches the current string, <u>ignoring
+      character case</u>. If one of the strings is <a href="Programs.html#PC_NULL">NULL</a>
+      the method returns <a href="Programs.html#PC_FALSE">FALSE</a>.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getCharAt">getCharAt(</a> pos </code><tt>INTEGER</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td valign="top">Returns the character at the byte position <i>pos</i>  (starts at 1).
+      Returns <a href="Programs.html#PC_NULL">NULL</a> if the position does not match a
+      valid character-byte position in the current string.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getIndexOf">getIndexOf</a>( str </code><tt>STRING</tt><code>, spos </code><tt>INTEGER</tt><code>
+      )<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td valign="top">Returns the position of the sub-string <i>str</i> in the current string,
+      starting from byte position <i>spos</i>. Returns zero if the sub-string was not
+      found.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getLength">getLength</a>( )<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td valign="top">Returns the number of <u>bytes</u> of the current string, including
+      trailing spaces.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#subString">subString</a>( spos </code><tt>INTEGER</tt><code>, epos </code><tt>INTEGER</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING STRING</tt></td>
+    <td valign="top">Returns the sub-string starting at the byte position <i>spos</i> and ending at <i>epos</i>.
+      Returns <a href="Programs.html#PC_NULL">NULL</a> if the
+      positions do not delimit a valid sub-string in the current string. First
+      character-byte starts at 1.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#toLowerCase">toLowerCase</a>( ) </code></td>
+    <td valign="top">Converts the current string to lowercase.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#toUpperCase">toUpperCase</a>( ) </code></td>
+    <td valign="top">Converts the current string to uppercase.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#trim">trim</a>( ) </code></td>
+    <td valign="top">Removes white space characters from the beginning and end of the current
+      string.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#trimLeft">trimLeft</a>( ) </code></td>
+    <td valign="top">Removes white space characters from the beginning of the current string.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#trimRight">trimRight</a>( ) </code></td>
+    <td valign="top">Removes white space characters from the end of the current string.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#replaceAt">replaceAt</a>( pos </code><tt>INTEGER</tt><code>, len </code><tt>INTEGER</tt><code>,
+      str </code><tt>STRING </tt><code>) </code></td>
+    <td valign="top">Replaces a part of the current string by another string, starting from
+      byte position <i>pos</i> for <i>len</i>   bytes.&nbsp; First
+      character-byte position is 1.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#replace">replace</a>( oldString </code><tt>STRING</tt><code>,
+      newString </code><tt>STRING</tt><code>, occ </code><tt>INTEGER </tt><code>)</code></td>
+    <td valign="top">Replaces in the current string the <a href="DataTypes.html#DT_STRING">STRING</a>
+      <i>oldString</i> by the <a href="DataTypes.html#DT_STRING">STRING</a> <i>newString</i>,
+      <i>occ</i> time(s) (all occurrences, if <i>occ</i> set to 0).&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#insertAt">insertAt</a>( pos </code><tt>INTEGER</tt><code>, str </code><tt>STRING</tt><code>
+      )</code></td>
+    <td valign="top">Inserts a string before the byte position <i>pos</i>. First character-byte
+      position is 1.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#toString">toString</a>( ) </code><tt>RETURNING STRING</tt></td>
+    <td valign="top">Creates a <a href="DataTypes.html#DT_STRING">STRING</a> value from the
+      current buffer.</td>
+  </tr>
+</table>
+
+
+<HR>
+
+
+<h3><a name="USAGE">Usage:</a></h3>
+
+<h4><a name="Difference_from_STRING">StringBuffer objects vs. STRING variables</a></h4>
+
+<p>Use the StringBuffer class instead of <a href="DataTypes.html#DT_STRING">STRING</a>
+variables to implement heavy string manipulations.
+When you use a StringBuffer object, you work directly on the internal
+string buffer. In contrast, when you use the<tt> STRING</tt> data type, the runtime system always
+creates a new buffer when you modify a string. This
+does not impact the performance of programs with a user interface or even batch
+programs doing SQL, but it can be an issue when you want to rapidly process large character
+strings. For example, if you need to process 500Kb of text (such as when 
+you are performing a global search-and-replace of specific words), you get much better performance with a StringBuffer
+object than you would using a basic <tt>STRING</tt> 
+variable.&nbsp; </p>
+<p>When you pass a StringBuffer object as a function parameter, the function 
+receives a variable that references the StringBuffer object. Passing the 
+StringBuffer object by reference is much more efficient than using a <tt>STRING</tt> 
+that is passed by value (i.e., data is copied on the stack), since the function 
+manipulates the original string, not a copy of the string.&nbsp; </p>
+<p><b><font color="#FF0000">Warning: </font> The StringBuffer methods are all based on
+byte-length-semantics. In a
+    multi-byte environment, the getLength() method returns the number of bytes,
+    which can be different from the number of characters.</b>
+
+</p>
+<p>A StringBuffer object has different uses than a <tt>STRING</tt>
+variable, as illustrated in the methods listed below:</p>
+<h4><a name="create">Create a StringBuffer object</a></h4>
+<p>Use the&nbsp; <code>base.StringBuffer.create()</code>
+class method to create a new StringBuffer object.&nbsp; </p>
+<pre><code class="linenumber">01</code> <tt>DEFINE</tt> buf base.StringBuffer
+<code class="linenumber">02</code> <tt>LET </tt>buf = base.StringBuffer.create()</pre>
+<h4><a name="append">Append a string</a></h4>
+<p>The <code> append()</code> method appends a string to the 
+internal string&nbsp;buffer. This differs from the&nbsp;<code>append()</code>
+ method of a <tt>STRING</tt>
+ variable, which uses a new buffer to hold the new string. The following example 
+adds a string to the end of the existing string buffer. Since this is a newly 
+created StringBuffer object, the length of its string buffer is zero.&nbsp;After appending the string &quot;abc&quot; in the example below, the length of the string buffer is 3. See the
+<a href="#getLength">getLength</a> method.</p>
+<pre><code class="linenumber">01</code> <tt>LET </tt>buf = base.StringBuffer.create()<code class="linenumber">
+02</code> <tt>CALL </tt>buf.append(&quot;abc&quot;)</pre>
+<h4><a name="clear">Clear the string buffer</a></h4>
+<p>Use the <code>clear() </code> method&nbsp; to clear the string buffer. When 
+the buffer is cleared, the buffer length is zero:</p>
+<pre><code class="linenumber">01</code> <tt>CALL</tt> buf.clear()</pre>
+<h4><a name="Compare_strings">Compare strings</a></h4>
+<p>Use the <code><a name="equals">equals()</a></code> method to determine whether 
+the value of a StringBuffer object is identical to a specified string, including case.&nbsp; Since the parameter for the method must be a string, you can use the
+<a href="#toString">toString()</a> method to convert a StringBuffer object in 
+order to compare it.&nbsp;This method returns <a href="Programs.html#PC_TRUE">TRUE</a> 
+if the strings are identical, otherwise it returns <a href="Programs.html#PC_FALSE">FALSE</a>.</p>
+<pre><code class="linenumber">01</code> <tt>DEFINE</tt> buf, buf2 base.StringBuffer,
+<code class="linenumber">02</code>        mystring <tt>STRING</tt>    
+<code class="linenumber">03</code> <tt>LET</tt> buf = base.StringBuffer.create()
+<code class="linenumber">04</code> <tt>CALL</tt> buf.append(&quot;there&quot;)
+<code class="linenumber">05</code> <tt>IF</tt> buf.equals(&quot;there&quot;) <tt>THEN</tt>
+<code class="linenumber">06</code>   <tt>DISPLAY </tt>&quot;buf matches there&quot;
+<code class="linenumber">07</code> <tt>END IF</tt>
+<code class="linenumber">08</code>
+<code class="linenumber">09</code> --comparing to a STRING variable 
+<code class="linenumber">10</code> <tt>LET</tt> mystring = &quot;there&quot;
+<code class="linenumber">11</code> <tt>IF</tt> buf.equals(mystring) <tt>THEN</tt>
+<code class="linenumber">12</code>    <tt>DISPLAY</tt> &quot;buf matches mystring&quot;
+<code class="linenumber">13</code> <tt>END IF</tt>
+<code class="linenumber">14</code>
+<code class="linenumber">15</code> --comparing to another StringBuffer object
+<code class="linenumber">16</code> <tt>LET</tt> buf2 = base.StringBuffer.create()
+<code class="linenumber">17</code> <tt>CALL</tt> buf2.append(&quot;there&quot;)
+<code class="linenumber">18</code> <tt>IF</tt> buf.equals(buf2.toString()) <tt>THEN</tt>
+<code class="linenumber">19</code>   <tt>DISPLAY</tt> &quot;buf matches buf2&quot;
+<code class="linenumber">20</code> <tt>END IF</tt></pre>
+<p>The output of the example is:</p>
+<p><font face="Courier New">buf matches there<br>
+buf matches mystring<br>
+buf matches buf2</font></p>
+<p><b>To ignore case</b> in the comparison of the value of a StringBuffer object 
+and a string, use the <code><a name="equalsIgnoreCase">equalsIgnoreCase()</a></code> 
+method. The parameter for the function must be a string. This method returns <a href="Programs.html#PC_TRUE">TRUE</a> if the 
+strings are identical, otherwise it returns <a href="Programs.html#PC_FALSE">FALSE</a>.</p>
+<pre><code class="linenumber">01</code> <tt>DEFINE</tt> buf3 base.StringBuffer
+<code class="linenumber">02</code> <tt>LET</tt> buf3 = base.StringBuffer.create()
+<code class="linenumber">03</code> <tt>CALL</tt> buf3.append(&quot;there&quot;)
+<code class="linenumber">04</code> <tt>IF</tt> buf3.equalsIgnoreCase(&quot;There&quot;) <tt>THEN</tt>
+<code class="linenumber">05</code>   <tt>DISPLAY</tt> &quot;buf matches There ignoring case&quot;
+<code class="linenumber">06</code> <tt>END IF</tt></pre>
+<p><font face="Arial">The output of the example is:</font></p>
+<p><font face="Courier New">buf matches There ignoring case</font></p>
+<h4><a name="getCharAt">Return the character at a specified position</a></h4>
+<p>The <code>getCharAt( )</code> method returns the character that is in the 
+string buffer at the position that you specify. The first position is 1. <a href="Programs.html#PC_NULL">NULL</a> 
+is returned if the position does not exist. The following example returns the 
+character in the third position in the string buffer:</p>
+<pre><code class="linenumber">01</code> <tt>DEFINE</tt> buf base.StringBuffer
+<code class="linenumber">03</code> <tt>LET</tt> buf = base.StringBuffer.create()
+<code class="linenumber">04</code><tt> CALL</tt> buf.append(&quot;abcdef&quot;)
+<code class="linenumber">05</code> <tt>DISPLAY</tt> buf.getCharAt(3)</pre>
+<p>The output of this code is the character at position 3 in the string:</p>
+<p><font face="Courier New">c</font></p>
+<p><b><font color="#FF0000">Warning: </font> The StringBuffer methods are all based on
+byte-length-semantics. In a
+    multi-byte environment, the getCharAt() method takes a byte position as
+parameter, not a character position. If you pass an invalid multi-byte position,
+the method returns a blank.</b>
+
+</p>
+
+<h4><a name="getIndexOf">Return the position of a substring</a></h4>
+
+<p>You can return the position of a substring in the string buffer, using the <code>getIndexOf()</code> method. 
+Specify the substring and an integer specifying the position at which the search 
+should begin.&nbsp; Use 1 if you want to start at the beginning of the string 
+buffer. This method returns zero if the substring does not exist.</p>
+
+<pre><code class="linenumber">01</code> <tt>DEFINE</tt> pos <tt>INTEGER</tt>
+<code class="linenumber">02</code> <tt>CALL</tt> buf.append(&quot;abcdefg&quot;)
+<code class="linenumber">03</code> <tt>LET</tt> pos = buf.getIndexof(&quot;def&quot;,1)
+<code class="linenumber">04</code> <tt>DISPLAY</tt> &quot;position of def&quot;, pos</pre>
+<p>The output of this example is an integer representing the position of the 
+substring. </p>
+
+<p><font face="Courier New">position of def&nbsp;&nbsp;&nbsp; 4</font></p>
+
+<p><b><font color="#FF0000">Warning: </font> The StringBuffer methods are all based on
+byte-length-semantics. In a
+    multi-byte environment, the getIndexOf() method returns the byte position,
+not the character position.</b></p>
+
+<p>The next example iterates through the whole string to display the position of
+multiple occurrences of the same sub-string:</p>
+
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>     <tt>DEFINE</tt> b base.StringBuffer
+<code class="linenumber">03</code>     <tt>DEFINE</tt> pos <tt>INT</tt>
+<code class="linenumber">04</code>     <tt>DEFINE</tt> s <tt>STRING</tt>
+<code class="linenumber">05</code>     <tt>LET</tt> b = base.StringBuffer.create()
+<code class="linenumber">06</code>     <tt>CALL</tt> b.append(&quot;---abc-----abc--abc----&quot;)
+<code class="linenumber">07</code>     <tt>LET</tt> pos = 1
+<code class="linenumber">08</code>     <tt>LET</tt> s = &quot;abc&quot;
+<code class="linenumber">09</code>     <tt>WHILE TRUE</tt>
+<code class="linenumber">10</code>         <tt>LET</tt> pos = b.getIndexOf(s,pos)
+<code class="linenumber">11</code>         <tt>IF</tt> pos == 0 THEN EXIT WHILE END IF
+<code class="linenumber">12</code>         <tt>DISPLAY</tt> &quot;Pos: &quot;, pos
+<code class="linenumber">13</code>         <tt>LET</tt> pos = pos + <tt>LENGTH</tt>(s)
+<code class="linenumber">14</code>     <tt>END WHILE</tt>
+<code class="linenumber">15</code> <tt>END MAIN</tt></pre>
+
+<h4><a name="getLength">Return the length of a string</a></h4>
+<p>Use the <code>getLength() </code>method to return the number of bytes in the 
+current string buffer, including trailing spaces. In a multi-byte environment, this can 
+be different than the number of characters. The length of an empty string buffer 
+is 0.</p>
+<pre><code class="linenumber">01</code> <tt>DEFINE</tt> len <tt>INTEGER</tt>
+<code class="linenumber">02</code> <tt>CALL</tt> buf.append(&quot;abcdefg&quot;)
+<code class="linenumber">03</code> <tt>LET</tt> len = buf.getLength()
+<code class="linenumber">04</code> <tt>DISPLAY</tt> &quot;length &quot;, len
+<code class="linenumber">05</code> -- append three spaces to the end of the string
+<code class="linenumber">06</code> <tt>CALL</tt> buf.append(&quot;   &quot;) 
+<code class="linenumber">07</code> <tt>DISPLAY</tt> &quot;new length &quot;, len</pre>
+<p>The output of this example is:</p>
+<p><font face="Courier New">length is&nbsp;&nbsp;&nbsp;&nbsp; 7<br>
+new length&nbsp;&nbsp;&nbsp;&nbsp; 10</font></p>
+<p><b><font color="#FF0000">Warning: </font> The StringBuffer methods are all based on
+byte-length-semantics. In a
+    multi-byte environment, the getLength() method returns the number of bytes,
+not the number of characters.</b>
+
+</p>
+<h4>   <a name="subString">Return the substring at the specified position</a></h4>
+
+<p>The <code>subString()</code> method returns the 
+substring that you specify with integers indicating the beginning and ending 
+position within the string buffer.&nbsp; NULL is returned if the positions are not valid. </p>
+<pre><code class="linenumber">01</code> <tt>DEFINE</tt> partstring <tt>STRING</tt>
+<code class="linenumber">02</code> <tt>CALL</tt> buf.append(&quot;abcdefg&quot;)
+<code class="linenumber">03</code> <tt>LET</tt> partstring = buf.subString(2,5)
+<code class="linenumber">04</code> <tt>DISPLAY</tt> partstring</pre>
+<p>The output of the example is the substring beginning at position 2 and ending 
+with position 5:</p>
+<p><font face="Courier New">bcde</font></p>
+<p><b><font color="#FF0000">Warning: </font> The StringBuffer methods are all based on
+byte-length-semantics. In a
+    multi-byte environment, the subString() method takes byte positions as
+parameter, not character positions. If you pass invalid multi-byte positions,
+the method returns blanks.</b>
+
+</p>
+<h4><a name="Convert_case">Convert case of&nbsp; the string</a></h4>
+<p>These methods convert the case of the current string in the internal string 
+buffer. The examples use the <a href="#toString">toString</a> method to display the contents of the string buffer.</p>
+<p>The <code><a name="toLowerCase">toLowerCase()</a></code> method converts the 
+current string to <b>lowercase</b>.</p>
+<pre><code class="linenumber">01 </code><tt>CALL</tt> buf.append(&quot;Test&quot;)
+<code class="linenumber">02</code> <tt>CALL</tt> buf.toLowerCase()
+<code class="linenumber">03</code> <tt>DISPLAY</tt> buf.toString()</pre>
+<p>The output of the example is:</p>
+<p><font face="Courier New">test</font></p>
+<p>The <code><a name="toUpperCase">toUpperCase()</a></code> method converts the 
+current string to <b>uppercase</b>. </p>
+<pre><code class="linenumber">01</code> <tt>CALL</tt> buf.append(&quot;Test&quot;)
+<code class="linenumber">02</code> <tt>CALL</tt> buf.toUpperCase()
+<code class="linenumber">03</code> <tt>DISPLAY</tt> buf.toString()</pre>
+<p>The output is:</p>
+<p><font face="Courier New">TEST</font></p>
+<h4><a name="Trim_the_string">Trim the string</a></h4>
+<p>These methods remove white space from the current string in the internal 
+string buffer. The examples use the <a href="#toString">toString</a> method to 
+display the current string.</p>
+<p>The <code><a name="trim">trim()</code></a> method removes white space from 
+the beginning and end of the current string.</p>
+<pre><code class="linenumber">01</code> <tt>CALL</tt> buf.append(&quot;   A likely story   &quot;)
+<code class="linenumber">02</code> <tt>CALL</tt> buf.trim()
+<code class="linenumber">03</code> <tt>DISPLAY</tt> buf.toString()</pre>
+<p>The output has no beginning or trailing spaces:</p>
+<p><font face="Courier New">A likely story</font></p>
+<p>The <code><a name="trimLeft">trimLeft()</a></code> method removes white space 
+from the beginning of the current string.</p>
+<pre><code class="linenumber">01</code> <tt>CALL</tt> buf.append(&quot;   A likely story   &quot;)
+<code class="linenumber">02</code> <tt>CALL</tt> buf.trimleft()
+<code class="linenumber">03</code> <tt>DISPLAY</tt> buf.toString()</pre>
+<p>The output has no beginning spaces:</p>
+<p><font face="Courier New">A likely story</font></p>
+<p>The <code><a name="trimRight">trimRight()</a></code> method 
+removes white space from the end of the current string.</p>
+<pre><code class="linenumber">01</code> <tt>CALL</tt> buf.append(&quot;   A likely story   &quot;)
+<code class="linenumber">02</code> <tt>CALL</tt> buf.trimright()
+<code class="linenumber">03</code> <tt>DISPLAY</tt> buf.toString()</pre>
+<p>The output has no trailing spaces:</p>
+<p>&nbsp;&nbsp; <font face="Courier New">&nbsp;A likely story</font></p>
+<h4><a name="replaceAt">Replace part of a string with another string</a></h4>
+<p>The <code>replaceAt()</code> method replaces part of 
+the current string in the internal string buffer with another string. The parameters are integers indicating 
+the&nbsp;position at which the replacement should start and the number of bytes 
+to be replaced,&nbsp; and the replacement string. The first position in the 
+string is 1.</p>
+<pre><code class="linenumber">01</code> <tt>CALL</tt> buf.append(&quot;abcdefg&quot;)
+<code class="linenumber">02</code> <tt>CALL</tt> buf.replaceAt(4, 3, &quot;12345&quot;)
+<code class="linenumber">03</code> <tt>DISPLAY</tt> buf.toString()</pre>
+<p>The output of the example shows that the replacement began at position four, 
+replacing three of 
+the bytes in the current string buffer with the new string.</p>
+<p>abc12345g</p>
+<p><b><font color="#FF0000">Warning: </font> The StringBuffer methods are all based on
+byte-length-semantics. In a
+    multi-byte environment, the replaceAt() method takes byte positions as
+parameter, not character positions. If you pass invalid multi-byte positions,
+the method does not change the original string.</b>
+
+</p>
+<h4><a name="replace">Replace one string with another</a></h4>
+<p>The <code>replace()</code>&nbsp; method replaces a string within the current 
+string buffer with a different string. Specify the original string, replacement 
+string, and the number of occurrences that should be replaced, using 0 to 
+replace all occurrences.</p>
+<pre><code class="linenumber">01</code> <tt>CALL</tt> buf.append(&quot;abcabcabcde&quot;)
+<code class="linenumber">02</code> <tt>CALL</tt> buf.replace(&quot;ab&quot;, &quot;xxx&quot;, 2)
+<code class="linenumber">03</code> <tt>DISPLAY</tt> buf.toString()</pre>
+<p>The output of this example shows that the string &quot;ab&quot; was replaced with &quot;xxx&quot; 
+two times.</p>
+<p><font face="Courier New">xxxcxxxcabcde</font></p>
+<p><b>Note</b>: To completely replace the contents of the string buffer, 
+whatever they might be,&nbsp; with a new string, first <a href="#clear">clear</a> 
+the buffer; then, <a href="#append">append</a> the new string.</p>
+<h4><a name="insertAt">Insert a string</a></h4>
+<p>The <code>insertAt()</code> method inserts a 
+string before the specified position in the string buffer.</p>
+<pre><code class="linenumber">01</code> <tt>CALL</tt> buf.append(&quot;abcabcabcde&quot;)
+<code class="linenumber">02</code> <tt>CALL</tt> buf.insertAt(4, &quot;xxxxx&quot;)
+<code class="linenumber">03</code> <tt>DISPLAY</tt> buf.toString()</pre>
+<p>The output of the example shows that the new string was inserted at position 
+4.</p>
+<p><font face="Courier New">abcxxxxxabcabcde</font></p>
+<p><b><font color="#FF0000">Warning: </font> The StringBuffer methods are all based on
+byte-length-semantics. In a
+    multi-byte environment, the insertAt() method takes a byte position as first
+parameter, not a character position. If you pass an invalid multi-byte position,
+the resulting string might be invalid in the current code set.</b>
+
+</p>
+<h4><a name="toString">Convert buffer to a STRING value</a></h4>
+<p>The <code>toString()</code> method creates a STRING 
+value from the current string buffer. This method is frequently used to display the contents 
+of the string buffer, or to store the contents as a STRING data type.</p>
+<pre><code class="linenumber">01</code> <tt>DEFINE</tt> mystring <tt>STRING</tt>
+<code class="linenumber">02</code> <tt>CALL</tt> buf.append(&quot;abcdefg&quot;)
+<code class="linenumber">03</code> <tt>LET</tt> mystring = buf.toString()
+<code class="linenumber">04</code> <tt>DISPLAY</tt> mystring</pre>
+<p>The output of the example is:</p>
+<p><font face="Courier New">abcdefg</font></p>
+
+
+<HR>
+
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+
+<h4><a name="EXAMPLE1">Example 1</a>: Adding strings to a StringBuffer</h4>
+
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> buf base.StringBuffer
+<CODE class=linenumber>03</CODE>   <tt>LET </tt>buf = base.StringBuffer.create()
+<CODE class=linenumber>04</CODE>   <tt>CALL </tt>buf.append(&quot;abc&quot;)
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY </tt>buf.toString()
+<CODE class=linenumber>06</CODE>   <tt>CALL </tt>buf.append(&quot;def&quot;)
+<CODE class=linenumber>07</CODE>   <tt>DISPLAY </tt>buf.toString()
+<CODE class=linenumber>08</CODE>   <tt>CALL </tt>buf.append(123456)
+<CODE class=linenumber>09</CODE>   <tt>DISPLAY </tt>buf.toString()
+<CODE class=linenumber>10</CODE> <tt>END MAIN</tt></pre>
+<p>Output:</p>
+<p><font face="Courier New">abc<br>
+abcdef<br>
+abcdef123456</font></p>
+
+
+<h4><a name="EXAMPLE2">Example 2</a>: Modifying a StringBuffer with a function</h4>
+<p>In the following example, <b>buf</b>, which is a reference to a StringBuffer 
+object, is passed to the function <b>modify </b>(StringBuffer objects are passed
+<i>by reference</i>.) In this function, the StringBuffer object, now having a 
+pointer of <b>sb</b>, has the string &quot;more&quot; appended to its internal string 
+buffer.&nbsp; Whether you use the reference <b>sb</b>, or the reference <b>buf</b>, 
+you are referring to the same StringBuffer object:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>buf base.StringBuffer
+<CODE class=linenumber>03</CODE>   <tt>LET </tt>buf = base.StringBuffer.create()
+<CODE class=linenumber>04  </CODE> <tt>CALL </tt>modify(buf)
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY </tt>&quot;buf is &quot;, buf.toString()
+<CODE class=linenumber>06</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>07</CODE>
+<CODE class=linenumber>08</CODE> <tt>FUNCTION </tt>modify(sb)
+<CODE class=linenumber>09 </CODE>  <tt>DEFINE </tt>sb base.StringBuffer
+<CODE class=linenumber>10</CODE>   <tt>CALL </tt>sb.append(&quot;more&quot;)
+<CODE class=linenumber>11</CODE>   <tt>DISPLAY</tt> &quot;sb is &quot;, sb.toString()
+<CODE class=linenumber>12</CODE> <tt>END FUNCTION</tt></pre>
+<p>Output:</p>
+<p><font face="Courier New">sb is more<br>
+buf is more<br>
+&nbsp;</font></p>
+
+
+</BODY>
+</HTML>

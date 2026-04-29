@@ -1,0 +1,1970 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<TITLE>ODI Adaptation Guide for Sybase ASA</TITLE>
+<meta http-equiv="Content-Type" content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p><a href="../index.html">Back to Contents</a></p>
+
+<HR>
+
+<H1>ODI Adaptation Guide For Sybase ASA 8.x</H1>
+
+<p><b><font color="#FF0000">Warning:</font>  Sybase ASA will be de-supported,
+see <a href="odiagase.html">Sybase ASE Adaptation
+Guide</a>.</b></p>
+
+<p><font color="#000080">Installation</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIASA_PREP01"><font >Install
+      Sybase and create a database</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA_PREP02"><font >Prepare
+      the runtime environment</font></a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font  color="#000080">Database concepts</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIASA007a"><font >Database
+      concepts</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA039"><font >Data storage concepts</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA008a"><font >Data consistency and
+    concurrency management</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA009"><font >Transactions handling</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA016a"><font >Defining database users</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA016b"><font >Setting privileges</font></a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font  color="#000080">Data dictionary </font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIASA010"><font>BOOLEAN data type</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA011"><font >CHARACTER data types</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA021"><font >NUMERIC data types</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA001"><font >DATE and DATETIME data
+    types</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA036"><font >INTERVAL data type</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA005"><font >SERIAL data types</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA004"><font >ROWIDs</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA047"><font >Case sensitivity</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA030"><font >Very large data types</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA053"><font >The ALTER TABLE
+    instruction</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA012"><font >Constraints</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA013"><font >Triggers</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA014"><font >Stored procedures</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA019"><font >Name resolution of SQL
+    objects</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA051"><font >Setup database statistics</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA100"><font >Data type
+      conversion table</font></a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font  color="#000080">Data manipulation</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIASA003"><font >Reserved words</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA006"><font >Outer joins</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA009"><font >Transactions handling</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA017"><font >Temporary tables</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA018"><font >Substrings in SQL</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA019"><font >Name resolution of SQL
+    objects</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA020"><font >String delimiters</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA022"><font >Getting one row with
+    SELECT</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA024"><font >MATCHES and LIKE
+    conditions</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA033"><font >Querying system catalog
+    tables</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA034"><font >Syntax of UPDATE
+    statements</font></a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font  color="#000080">BDL programming</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIASA005"><font >SERIAL data
+      type</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA025"><font >INFORMIX specific SQL
+    statements in BDL</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA028"><font >INSERT cursors</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA031"><font >Cursors WITH HOLD</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA008b"><font >SELECT FOR
+      UPDATE</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA046"><font >The LOAD and UNLOAD
+    instructions</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA054"><font>SQL Interruption</font></a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIASA055"><font>Scrollable Cursors</font></a></td>
+  </tr>
+</table>
+</center></div>
+
+<hr>
+
+<h2 align="left"><a name="ODIASA_PREP">Runtime configuration</a></h2>
+
+<blockquote>
+  <h3 align="left"><a name="ODIASA_PREP01">Install Sybase ASA and
+  create a database</a></h3>
+  <ol>
+    <li><p align="left"><font >Install Sybase ASA software on your
+      computer.</font></p>
+    </li>
+    <li><p align="left"><font >Create a Sybase <b>database</b> entity
+      with <b>dbinit</b> tool. Go to a directory where the database files must
+      be created and run the dbinit tool.<br>
+      <b><font color="#FF0000">Warning:</font></b>   Create the database with
+      case-sensitivity and blank padding for string comparisons:<br>
+      <br>
+      </font><font face="Courier New">&nbsp;&nbsp; $ cd <i>datadirectory</i><br>
+      &nbsp;&nbsp; $ dbinit -c -b <i>databasename</i></font></p>
+    </li>
+    <li><p align="left"><font >Make sure that the database option
+      ALLOW_NULLS_BY_DEFAULT option is set to ON.<br>
+      <b><font color="#FF0000">Warning:</font></b>    If this option is set to
+      OFF, columns created without NULL or NOT NULL are NOT NULL by
+      default.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></p>
+    </li>
+    <li><p align="left"><font >Try to connect to the new created
+      database with the <b>dbisql</b> tool. The default database user is <b>DBA/SQL</b>.<br>
+      <b><font color="#FF0000">Warning:</font></b>   User logins and passwords
+      are case sensitive!</font></p>
+    </li>
+    <li><p align="left"><font >Declare a database user dedicated to your
+      application: the <b>application administrator</b>.&nbsp;<br>
+      <br>
+      </font><font face="Courier New">&nbsp;&nbsp; grant connect to <i>appadmin</i>
+      identified by <i>password</i><br>
+      &nbsp;&nbsp; grant resource to <i>appadmin</i><br>
+      </font><font ><br>
+      See documentation for more details about database users and privileges.
+      You must create groups to make tables visible to all users.</font></p>
+    </li>
+    <li><p align="left"><font >If you plan to use SERIAL emulation based on triggers
+      using a registration table, create the SERIALREG table. Create the
+      triggers for each table using a SERIAL. See issue <a href="#ODIASA005">ODIASA005</a> for more details.</font></p>
+    </li>
+    <li><p align="left"><font >Create the <b>application tables</b>. Do
+      not forget to convert INFORMIX data types to Sybase ASA data types.
+      See&nbsp; issue <a href="#ODIASA100">ODIASA100</a> for more details.<br>
+      <b><font color="#FF0000">Warning:</font></b>  In order to make application
+      tables visible to all users, make sure that all users are members of the
+      group of the owner of the application tables. For more details, see ASA
+      documentation (&quot;Database object names and prefixes&quot;).</font></p>
+    </li>
+  </ol>
+  <h3 align="left"><a name="ODIASA_PREP02">Prepare the runtime environment</a></h3>
+  <ol>
+    <font >
+    <li><p align="left">In order to connect to Sybase ASA,
+      you must have a Sybase ASA database driver &quot;<b>dbmasa*</b>&quot; in
+      FGLDIR/dbdrivers.</p>
+    </li>
+    </font>
+
+    <li><p align="left"><font >If you want to connect to a remote
+      database server, you must have the <b>Sybase ASA Client Software</b>
+      installed on the computer running 4gl applications.<br>
+      </font>
+      <b><font color="#FF0000">Warning:</font></b>
+      <b>No ODBC client environment is required. The Sybase ASA database driver is designed to be linked with
+      native Sybase client libraries
+      (libdblib8+libdbtools8).</b></p>
+    </li>
+    <li><p align="left"><font>Make sure the Sybase ASA client environment
+      variables are properly set. Check for example <b>SYBASE</b> (the path to
+      the installation directory). See Sybase ASA documentation for more
+      details.</font></p>
+    </li>
+    <li><p>Verify the environment variable
+      defining the search path for database client shared libraries. On UNIX platforms, the variable is specific to the operating system. 
+	For example, on Solaris and Linux systems, it is <b>LD_LIBRARY_PATH</b>, on
+      AIX it is <b>LIBPATH</b>, or HP/UX it is <b>SHLIB_PATH</b>. On Windows,
+      you define the DLL search path in the <b>PATH</b> environment variable.</p>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0">
+      <p align="center"><font color="#0000FF"><b>Sybase ASA version</b></font></td>
+    <td bgcolor="#C0C0C0" width="70%">
+      <p align="center"><font color="#0000FF"><b>Shared library environment
+      setting</b></font></td>
+  </tr>
+  <tr>
+    <td><font color="#0000FF"><b>Sybase ASA 8.1 and higher</b></font></td>
+    <td align="center" width="70%">
+      <p align="left"><i>UNIX</i>: Add <b>$SYBASE/lib</b> to
+      LD_LIBRARY_PATH (or its equivalent).<br>
+      <i>Windows</i>: Add <b>%SYBASE%\bin</b> to PATH.</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td align="center" width="70%"></td>
+  </tr>
+</table>
+    </li>
+    <li><p align="left"><font >Test the Sybase ASA Client Software:
+      Make sure Sybase ASA is started on the database server and try to connect to a database by using the
+      <b>Interactive SQL</b> tool.</font></p>
+    </li>
+    <li><font >Set up the <b>fglprofile</b> entries for <a href="Connections.html#DS_ODI_DBVSPEC">
+      database connections</a>.<br>
+      <br>
+      </font>
+      <b><font color="#FF0000">Warning:</font></b>
+      <b>Make sure that you are using the ODI driver corresponding to the
+      database client and server version. Because Informix features emulation
+      are dependant from the database server version, it is mandatory to use the
+      same version of the database client and ODI driver as the server version.</b><font ><br>
+      </font>
+    </li>
+    <font >
+    <li><p align="left"><font >Define the connection timeout with the
+      following fglprofile entry:<br>
+      </font><font face="Courier New"><br>
+      &nbsp;&nbsp;&nbsp; dbi.database.<i>dbname</i>.asa.logintime&nbsp;= <i>integer</i></font><br>
+      <br>
+      This entry defines the number of seconds to wait for a
+      connection.<br>
+      Default is 5 seconds.</p>
+    </li>
+  </ol>
+</blockquote>
+
+<hr>
+
+<h2><a name="ODIASA001">ODIASA001 - DATE and DATETIME data types</a></h3>
+
+</h2>
+
+<p><font >INFORMIX provides two data types to store dates and time
+information:</font> 
+
+<ul>
+  <li><font ><b>DATE</b> = for year, month and day storage.</font></li>
+  <li><font ><b>DATETIME</b> = for year to fraction(1-5)
+    storage.</font></li>
+</ul>
+
+<p>Sybase ASA provides two data type to store dates : 
+
+<ul>
+  <li><font ><b>DATE</b> = for year, month, day storage.</font></li>
+  <li><b>TIME</b> = for hour, minutes, seconds, fraction(3)
+    storage.</li>
+  <li><b>TIMESTAMP</b> = for year, month, day, hour, minutes, seconds,
+    fraction(3) storage.</li>
+</ul>
+
+<p><b><font >String representing date time information :</font></b>
+
+<p><font >INFORMIX is able to convert quoted strings to DATE / DATETIME data if
+    the string contents  matches environment parameters (i.e. DBDATE, GL_DATETIME).
+As in INFORMIX, Sybase ASA can convert quoted strings representing datetime data
+in the ANSI format.</font> <font >The CONVERT( ) SQL function allows
+you to convert strings to dates.</font>
+
+<p><b><font >Date time arithmetic:</font></b> 
+
+<ul>
+  <li><font >INFORMIX supports date arithmetic on DATE and DATETIME values. The
+    result of an arithmetic expression involving dates/times is a number of days when only
+    DATEs are used and an INTERVAL value if a DATETIME is used in the expression.</font></li>
+  <li><font >INFORMIX automatically converts an integer to a date when the integer
+    is used to set a value of a date column. Sybase ASA does not support this
+    automatic conversion.</font></li>
+  <li><font >Complex DATETIME expressions ( involving INTERVAL values for example
+    ) are INFORMIX specific and have no equivalent in Sybase ASA.</font></li>
+  <li>Sybase ASA allows the following arithmetic on dates:<br>
+    &nbsp; - Date + integer =&gt; add n days to the date.<br>
+    &nbsp; - Date - integer =&gt; subtract n days from the date.<br>
+    &nbsp; - Timestamp + integer =&gt; add n days to the timestamp.<br>
+    &nbsp; - Timestamp - integer =&gt; subtract n days from the timestamp.<br>
+    &nbsp; - Date - Date =&gt; compute number of days between 2 dates.<br>
+    &nbsp; - Timestamp - Timestamp =&gt; compute number of days between 2
+    timestamps.<br>
+    &nbsp; - Date + Time =&gt; Create a Timestamp combining given date &amp; time.</li>
+  <li>INFORMIX converts automatically an integer to a date
+    when the integer is used to set a value of a date column. Sybase ASA does not support this automatic conversion.</li>
+</ul>
+
+<p><b><font ><u><em>Solution:</em></u></font></b></p>
+
+<p>Sybase ASA has the same <b> DATE</b> data type as INFORMIX ( year, month, day ).
+So you can use Sybase ASA DATE data type for INFORMIX DATE columns.</p>
+
+<p>Sybase ASA <b>TIME</b> data type can be used to store INFORMIX DATETIME HOUR
+TO FRAC(3) values. The database interface makes the conversion automatically.</p>
+
+<p>INFORMIX DATETIME values with any precision from YEAR to FRACTION(5) can
+be stored in Sybase ASA <b>TIMESTAMP</b> columns. The database interface makes the conversion
+automatically. Missing date or time parts default to 1900-01-01 00:00:00.0. For example,
+when using a DATETIME HOUR TO MINUTE with the value of &quot;11:45&quot;, the
+ASA TIMESTAMP value will be &quot;1900-01-01 11:45:00.0&quot;.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Literal
+DATETIME and INTERVAL expressions (i.e. DATETIME ( 1999-10-12) YEAR TO DAY) are not converted.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Using
+integers as a number of days in an expression with dates is not supported by Sybase ASA.
+Check your code to detect where you are using integers with DATE columns.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> It is
+strongly recommended to use BDL variables in dynamic SQL statements instead of quoted
+strings representing DATEs. For example :<br>
+<font face="Courier New">&nbsp;&nbsp; LET stmt = &quot;SELECT ... FROM customer
+WHERE creat_date &gt;'&quot;, adate,&quot;'&quot;<br>
+</font><font >is not portable;
+use a question mark place holder instead and
+OPEN the cursor USING adate :</font><font face="Courier New"><br>
+&nbsp;&nbsp; LET stmt = &quot;SELECT ... FROM customer WHERE creat_date &gt; ?&quot;</font></p>
+
+<hr>
+
+<h2><a name="ODIASA003">ODIASA003 - Reserved words</a></h3>
+</h2>
+<p>Even if ASA allows SQL reserved
+keywords as SQL object names if enclosed in double quotes ( &quot;<font face="Courier New"><small>create
+table &quot;table&quot; ( col1 int )</small></font>&quot;
+), you should take care of your existing database schema and check that you do
+not use Sybase ASA SQL words.</p>
+
+<p><font ><b><em><u>Solution:</u></em></b></font></p>
+
+<p><font >Database objects having a name which is a Sybase ASA SQL reserved word
+must be renamed.</font></p>
+
+<p><font >All BDL application sources must be verified. To check if a given
+keyword is used in a source, you can use UNIX 'grep' or 'awk' tools. Most modifications
+can be automatically done with UNIX tools like 'sed' or 'awk'.</font></p>
+
+<hr>
+
+<h2><a name="ODIASA004">ODIASA004 - ROWIDs</a></font>
+
+</h2>
+
+<p>When creating a table, INFORMIX automatically adds a
+&quot;ROWID&quot; integer column (applies to non-fragmented tables only). The
+ROWID column is auto-filled with a unique number and can be used
+like a primary key to access a given row.</p>
+
+<p>Sybase ASA tables have no ROWIDs.</p>
+
+<p><b><em><u><font >Solution:</font></u></em></b></p>
+
+<p><font >If the BDL application uses ROWIDs, the program logic should be
+reviewed in order to use the real primary keys (usually, serials which can be supported).</font></p>
+
+<p><font >All references to SQLCA.SQLERRD[6] must be removed because this
+variable will not hold the ROWID of the last
+INSERTed  or UPDATEd row when using the Sybase ASA interface.</font></p>
+
+<hr>
+
+<h2><a name="ODIASA005">ODIASA005 - SERIAL data type</a></font></h3>
+
+</h2>
+
+<p>INFORMIX supports the SERIAL, SERIAL8 and BIGSERIAL data types to produce automatic
+integer sequences. SERIAL is based on INTEGER (32 bit), while SERIAL8 and
+BIGSERIAL can store 64 bit integers: </p>
+<ul>
+	<li>The table column must be of type SERIAL, SERIAL8 or BIGSERIAL.</li>
+	<li>To generate a new serial, no value or a zero 
+	value is specified in the INSERT statement:<br>
+	<font size="2" face="Courier New">&nbsp;&nbsp; INSERT INTO tab1 ( c ) VALUES ( 'aa' )<br>
+	&nbsp;&nbsp; INSERT INTO tab1 ( k, c ) VALUES ( 0, 'aa' )</font></li>
+	<li>After INSERT, the new SERIAL value is provided in
+	<font face="Courier New" color="#FF0000">SQLCA.SQLERRD[2]</font>, while the
+      new SERIAL8 and BIGSERIAL value must be fetched with a <font face="Courier New" color="#FF0000">SELECT
+      dbinfo('bigserial')</font> query.</li>
+</ul>
+
+<p><font >INFORMIX allows you
+to insert rows with a value different from zero for
+a serial column. Using an explicit value will automatically increment the internal serial
+counter, to avoid conflicts with future INSERTs that are using a zero value : <br>
+</font><font face="Courier New">&nbsp;&nbsp;&nbsp; CREATE TABLE tab ( k SERIAL );&nbsp;
+--&gt; internal counter = 0<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 1<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 10 );&nbsp; --&gt; internal counter = 10<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 11<br>
+&nbsp;&nbsp;&nbsp; DELETE FROM tab;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; --&gt;
+internal counter = 11<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 12</font></p>
+
+<p>Sybase ASA <b>IDENTITY</b> columns : 
+
+<ul>
+  <li><font >When creating a table, the IDENTITY keyword must be specified after
+    the column data type:<br>
+    </font><font face="Courier New">&nbsp;&nbsp; CREATE TABLE tab1 ( k integer identity, c
+    char(10) )</font></li>
+  <li>You cannot specify a start value</li>
+  <li><font >A new number is automatically created when inserting a new row :</font><font
+    face="Courier New"><br>
+    &nbsp;&nbsp; INSERT INTO tab1 ( c ) VALUES ( 'aaa' )</font></li>
+  <li><font >To get the last generated number, Sybase ASA provides a
+    global variable :<br>
+    </font><font face="Courier New">&nbsp;&nbsp; SELECT <font color="#0000A0"><b>@@IDENTITY</b></font></font></li>
+  <li>When IDENTITY_INSERT is ON, you can set a specific value into a IDENTITY column, but zero does not
+    generate a new serial:<br>
+    <font face="Courier New">
+    &nbsp;&nbsp; INSERT INTO tab1 ( k, c ) VALUES ( 100, 'aaa' )</font></li>
+</ul>
+
+<p><font >INFORMIX SERIALs and MS Sybase ASA IDENTITY columns are quite
+similar; the main difference is that MS Sybase ASA does not generate a new
+serial when you specify a zero value
+for the identity column.</font></p>
+
+<p><b><u><em>Solution</em></u> :</b></p>
+
+<p><font >You are free to use <b>IDENTITY columns</b> (1)
+or <b>insert triggers based on the SERIALREG</b> table (2). The first
+solution is faster, but does not allow explicit serial value specification in
+insert statements; the second solution is slower but allows explicit serial
+value specification.&nbsp; You can
+initially use the second solution to have unmodified
+4gl programs working on Sybase ASA, but you should update your code to use native
+IDENTITY columns for performance.</font></p>
+<p><font >With the following fglprofile entry, you define the
+technique to be used for SERIAL emulation :</font></p>
+<p><font face="Courier New">&nbsp;&nbsp;
+dbi.database.&lt;dbname&gt;.ifxemul.datatype.serial.emulation = </font><font face="Courier New">{&quot;native&quot;|&quot;regtable&quot;}</font></p>
+    <font >
+<p><font >The '<b>native</b>' value defines the IDENTITY
+column technique and the '<b>regtable</b>' defines the trigger
+technique.</font></p>
+<p><font >This entry must be used with :</font></p>
+<p><font face="Courier New">&nbsp;&nbsp;
+dbi.database.&lt;dbname&gt;.ifxemul.dat</font></font><font face="Courier New">a</font><font ><font face="Courier New">type.serial =
+{true|false}</font></p>
+<p><font >If this entry is set to false, the emulation method
+specification entry is ignored.</font></p>
+<p><font ><b><font color="#ff0000">Warning</font></b> : When no entry is specified, the default is SERIAL
+emulation enabled with 'native' method (IDENTITY-based).<br>
+<br>
+1. Using IDENTITY columns</font></p>
+<p><font >In database creation scripts, all SERIAL data types
+must be converted by hand to INTEGER IDENTITY data types.</font></p>
+<p><b><font color="#ff0000">Warning</font></b> : Start values SERIAL(n)
+cannot be converted, there is no INTEGER IDENTITY(n) in Sybase ASA.</p>
+<p>Tables created from the BDL programs can use the SERIAL
+data type : When a BDL program executes a CREATE [TEMP] TABLE with a SERIAL
+column, the database interface automatically converts the
+&quot;SERIAL[(n)]&quot; data type to &quot;INTEGER IDENTITY[(n,1)]&quot;.</p>
+<p><font >In BDL, the new generated SERIAL value is available from
+the SQLCA.SQLERRD[2] variable. This is supported by
+the database interface which
+performs a &quot;SELECT @@IDENTITY&quot;. However, SQLCA.SQLERRD[2] is defined
+as an INTEGER, it cannot hold values from BIGINT identity columns. If you are
+using BIGINT IDENTITY columns, you must use @@IDENTITY.</font></p>
+<p><font ><b><font color="#ff0000">Warning</font></b> :
+When you insert a row with zero as serial value, the serial column gets the
+value zero. You must review all INSERT statements using zero for the serial
+column.<br>
+For example, the following statement:<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col1,</font></font></font><font face="Courier New">col2)
+</font><font ><font face="Courier New">VALUES (<b>0</b>, p_value)</font><br>
+must be converted to :<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab
+(col2) VALUES (p_value)<br>
+</font>
+</font>Static SQL INSERT using records defined from the schema file must also be
+reviewed:<br>
+<font face="Courier New">&nbsp;&nbsp; DEFINE rec LIKE tab.*</font><br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab VALUES ( rec.*
+)&nbsp;&nbsp; -- will use the serial column</font><br>
+can be converted to :<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab VALUES rec.* -- without
+braces, serial column is removed</font><font ></p>
+<p><font ><b><font color="#ff0000">Warning</font></b> :
+SELECT * FROM table INTO TEMP with original table having an IDENTITY column
+is not supported: The Sybase ASA database driver must convert the INFORMIX SELECT INTO TEMP
+statement into a SELECT INTO #tab + INSERT (see <a href="#ODIASA017">temporary
+tables</a>) because ODBC does not allow SQL parameters in DDL statements. As MS Sybase ASA
+does not allow you to
+insert a row by giving the identity column, the
+INSERT statement fails.</font></p>
+<p>2. Using triggers with the SERIALREG table</p>
+<p><font >First, you must prepare the database and create the
+SERIALREG table</font> as follows:<br>
+<br>
+</font><font face="Courier New">CREATE TABLE SERIALREG (<br>
+&nbsp;&nbsp;&nbsp;&nbsp; TABLENAME VARCHAR(50) NOT NULL,<br>
+&nbsp;&nbsp;&nbsp;&nbsp; LASTSERIAL DECIMAL(20,0) NOT NULL,<br>
+&nbsp;&nbsp;&nbsp;&nbsp; PRIMARY KEY ( TABLENAME )<br>
+)</font></p>
+<font ><p><font >In database creation scripts, all SERIAL[(n)] data types
+must be converted to INTEGER data types and you must create one trigger for each
+table</font>. To know how to write those triggers,&nbsp; you can create a small
+Genero program that creates a table with a SERIAL column. Set the FGLSQLDEBUG
+environment variable and run the program. The debug output will show you the
+native trigger creation command.</p>
+<p><font >Tables created from the BDL programs can use the SERIAL
+data type.&nbsp; When a BDL program executes a CREATE [TEMP] TABLE with a SERIAL
+column, the database interface automatically converts the
+&quot;SERIAL[(n)]&quot; data type to &quot;INTEGER&quot; and creates the insert
+triggers.</font></p>
+<p><font ><b><font color="#ff0000">Warning</font></b> : Sybase ASA
+does not allow you to create triggers on temporary tables. Therefore, you
+cannot create temp tables with a SERIAL column when using this solution.</font></p>
+<p><font ><b><font color="#ff0000">Warning</font></b> :
+SELECT ... INTO TEMP statements using a table created with a SERIAL column do
+not automatically create the SERIAL triggers in the temporary table. The type of
+the column in the new table is INTEGER.</font></p>
+<p><font ><b><font color="#ff0000">Warning</font></b> : Sybase ASA
+triggers are not automatically dropped when the corresponding table
+is dropped. Database administrators must
+be aware of this behavior when
+managing schemas.</font></p>
+    <p><font ><b><font color="#ff0000">Warning</font></b> :
+INSERT statements using NULL for the SERIAL column will produce a new serial
+    value:<br>
+</font><font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col</font></font><font face="Courier New">1,col2</font><font ><font face="Courier New">) VALUES (NULL,'data')</font><font ><br>
+This behavior is mandatory in order to support INSERT statements which do not
+use the serial column :<br>
+</font><font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col</font></font><font face="Courier New">2</font><font ><font face="Courier New">) VALUES
+('data')<br>
+</font><font >Check if your application uses tables with a SERIAL
+column that can contain a NULL value.</font></p>
+<p><font ><b><font color="#ff0000">Warning</font></b> :
+The serial production is based on the SERIALREG table which registers the last
+generated number for each table. If you delete rows of this table, sequences
+will restart at 1 and you will get unexpected data.</font></p>
+
+<hr>
+
+<h2><a name="ODIASA006">ODIASA006 - Outer joins</a></font></h2>
+
+<p><font >The syntax of OUTER joins is quite different in INFORMIX and
+Sybase ASA :</font></p>
+
+<p><font >In INFORMIX SQL, outer tables are defined in the FROM clause with
+the <b>OUTER</b> keyword :</font></p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM cust, <b><font color="#0000A0">OUTER(order)</font></b>
+ WHERE cust.key = order.custno</font></pre>
+  <pre><font face="Courier New">SELECT ... FROM cust, <b><font color="#0000A0">OUTER(order,OUTER(item))</font></b>
+ WHERE cust.key = order.custno
+   AND order.key = item.ordno
+   AND order.</font><font face="Courier New">accepted = 1</font></pre>
+</blockquote>
+
+    <font >
+
+<p>Sybase ASA Version 7 supports the ANSI outer join syntax :</p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM <b><font color="#0000A0">cust LEFT OUTER JOIN order
+                     ON cust.key = order.custno</font></b></font></pre>
+  <pre><font face="Courier New">SELECT ...
+  FROM <b><font color="#0000A0">cust</font></font><font
+face="Courier New" color="#0000A0"> LEFT OUTER JOIN order
+                 LEFT OUTER JOIN item
+                 ON order.key = item.ordno
+            ON cust.key = order.</font><font
+face="Courier New"><font color="#0000A0">custno</font></font></b><font
+face="Courier New">
+ WHERE order.</font><font face="Courier New">accepted = 1</font></pre>
+</blockquote>
+
+<p>The old way to define outer joins in Sybase ASA looks  like
+the following : </p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM a, b WHERE a.key <font color="#0000A0"><b>*=</b></font> b.key</font></pre>
+</blockquote>
+
+<p><font >See the Sybase ASA reference manual for a complete description of
+the syntax.</font></p>
+
+<p><b><em><u><font >Solution:</font></u></em></b></p>
+
+<p><font >The Sybase ASA interface can convert simple INFORMIX OUTER
+specifications to Sybase ASA ANSI outer joins.</font></p>
+
+<p><font >Prerequisites :</font> 
+
+<ol>
+  <li><font >The outer join in the WHERE part must use the table name as prefix.<br>
+    &nbsp;&nbsp; Example : &quot;<font face="Courier New" size="2">WHERE tab1.col1 = tab2.col2</font> &quot;.</font></li>
+  <li><font >Additional conditions on outer table columns cannot be detected and
+    therefore are not supported :<br>
+    &nbsp;&nbsp; Example : &quot;... <font face="Courier New" size="2">FROM tab1, OUTER(tab2) WHERE tab1.col1 = tab2.col2 AND
+    tab2.colx &gt; 10</font>&quot;.</font></li>
+  <li><font >Statements composed
+    of 2 or more SELECT instructions using OUTERs are
+    not supported.<br>
+    &nbsp; Example : &quot;<font face="Courier New" size="2">SELECT ... UNION SELECT&quot; or &quot;SELECT ... WHERE col IN
+    (SELECT...)</font>&quot;</font></li>
+</ol>
+
+<p>Notes : 
+
+<ol>
+  <li><font >Table aliases are detected in OUTER expressions.<br>
+    &nbsp;&nbsp; OUTER example with table alias : &quot;<font face="Courier New" size="2">OUTER( tab1 alias1)</font>&quot;.</font></li>
+  <li><font >In the outer join, &lt;outer table&gt;.&lt;col&gt; can be placed on
+    both right or left  sides of the equal sign.<br>
+    &nbsp;&nbsp; OUTER join example with table on the left : &quot;<font face="Courier New" size="2">WHERE outertab.col1 =
+    maintab.col2</font> &quot;.</font></li>
+  <li><font >Table names detection is not case-sensitive.<br>
+    &nbsp;&nbsp; Example : &quot;<font face="Courier New" size="2">SELECT ... FROM tab1, TAB2 WHERE tab1.col1 = tab2.col2</font>&quot;.</font></li>
+  <li><font ><a href="#ODIASA017">Temporary tables</a> are supported in OUTER
+    specifications.</font></li>
+</ol>
+
+<hr>
+
+<h2><a name="ODIASA007a">ODIASA007a -
+Database concepts</a></font></h3>
+
+</h2>
+
+<p><font >As in INFORMIX, an Sybase ASA engine can manage multiple
+database entities. When creating a database object such as a table, Sybase ASA allows you to use the same object name in different databases.</font></p>
+
+<hr>
+
+<h2><a name="ODIASA008a">ODIASA008a - Data consistency
+and concurrency management</a></h3>
+</h2>
+<p><font ><b>Data consistency</b> involves readers which want to access data
+currently modified by writers and <b>concurrency data access</b> involves several writers
+accessing the same data for modification. <b>Locking granularity</b> defines the amount of
+data concerned when a lock is set (row, page, table, ...).</font></p>
+
+<p><font ><b>INFORMIX</b></font></p>
+
+<p><font >INFORMIX uses a locking mechanism to manage data consistency and
+concurrency. When a process modifies data with UPDATE, INSERT or DELETE, an <u>exclusive
+lock</u> is set on the affected rows. The lock is held until the end of the transaction.
+Statements performed outside a transaction are treated as a transaction containing a
+single operation and therefore release the locks immediately after execution. SELECT
+statements can set <b>shared locks</b> according to the <b>isolation level</b>. In case
+of locking conflicts (for example, when two processes want to acquire an exclusive lock on
+the same row for modification or when a writer is trying to modify data protected by a
+shared lock), the behavior of a process can be changed by setting the <b>lock wait mode</b>.</font></p>
+
+<p><font >Control :</font> 
+
+<ul>
+  <li><font >Isolation level : SET ISOLATION TO ...</font></li>
+  <li><font >Lock wait mode : SET LOCK MODE TO ...</font></li>
+  <li><font >Locking granularity : CREATE TABLE ... LOCK MODE {PAGE|ROW}</font></li>
+  <li><font >Explicit locking : SELECT ... FOR UPDATE</font></li>
+</ul>
+
+<p><font >Defaults :</font> 
+
+<ul>
+  <li><font >The default isolation level is read committed.</font></li>
+  <li><font >The default lock wait mode is &quot;not wait&quot;.</font></li>
+  <li><font >The default locking granularity is
+    per page.</font></li>
+</ul>
+
+<p><b>Sybase ASA</b></p>
+
+<p><font >As in INFORMIX, Sybase ASA uses locks to manage data consistency and
+concurrency. The database manager sets <b>exclusive locks</b> on the modified rows and 
+<b>shared<u> </u> locks </b>when data is read, according to the <b>isolation level</b>. The locks are held
+until the end of the transaction. When multiple processes want to access the same data,
+the latest processes must wait until the first finishes its transaction or the lock
+timeout occurred. The <b>lock granularity</b> is at the row or table level. For more
+details, see Sybase ASA's Documentation, &quot;Accessing and Changing Data&quot;,
+&quot;Locking&quot;.</font></p>
+
+<p><font >Control :</font> 
+
+<ul>
+  <li>Lock wait mode : Can only be set to on or off, and a timeout can be specified, with:<br>
+    &nbsp;SET TEMPORARY OPTION BLOCKING = { ON | OFF }<br>
+    &nbsp;SET TEMPORARY OPTION BLOCKING_TIMEOUT = n</li>
+  <li>Isolation level : Can be set with:<br>
+    &nbsp;SET TEMPORARY OPTION
+    ISOLATION LEVEL = {1|2|3|4}</li>
+  <li>Locking granularity : Row level.</li>
+  <li>Explicit locking :&nbsp;SELECT ... FOR UPDATE</li>
+</ul>
+
+<p><font >Defaults :</font> 
+
+<ul>
+  <li><font >The default isolation level is Read Committed ( readers cannot see
+    uncommitted data; no shared lock is set when reading data ).</font></li>
+</ul>
+
+<p><b><u><em><font >Solution:</font></em></u></b></p>
+
+  <p>The <font size="2" face="Courier New">
+  SET ISOLATION TO ... </font>INFORMIX syntax is replaced by <font size="2" face="Courier New">
+  SET TEMPORARY OPTION ISOLATION_LEVEL ... </font>in Sybase ASA. The next table
+  shows the isolation level mappings done by the 
+    <font >
+    Sybase ASA database driver</font>:</p>
+
+<div align="center">
+  <center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><font color="#0000FF"><b>SET ISOLATION
+      instruction in program</b></font></td>
+    <td width="60%" bgcolor="#C0C0C0"><font color="#0000FF"><b>Native SQL
+      command</b></font></td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO DIRTY READ</td>
+    <td width="60%">SET TEMPORARY OPTION ISOLATION_LEVEL = 1</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO COMMITTED READ<br>
+      &nbsp; [READ COMMITTED] [RETAIN UPDATE LOCKS]</td>
+    <td width="60%">SET TEMPORARY OPTION ISOLATION_LEVEL = 2</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO CURSOR STABILITY</td>
+    <td width="60%">SET TEMPORARY OPTION ISOLATION_LEVEL = 3</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO REPEATABLE READ</td>
+    <td width="60%">SET TEMPORARY OPTION ISOLATION_LEVEL = 4</td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<p><font >For portability, it is recommended that
+you work with INFORMIX in the read
+committed isolation level, to make processes wait for each other (lock mode wait) and to
+create tables with the &quot;lock mode row&quot; option.</font></p>
+
+<p><font >See INFORMIX and Sybase ASA documentation for more details about
+data consistency, concurrency and locking mechanisms.</font></p>
+
+<hr>
+
+<h2><a name="ODIASA008b">ODIASA008b - SELECT
+FOR UPDATE</a></font></h3>
+
+</h2>
+
+<p><font >A lot of BDL programs use pessimistic locking in order to avoid
+several users editing the same rows at the same time. </font></p>
+
+<p><font face="Courier New">&nbsp; DECLARE cc CURSOR FOR<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SELECT ... FOR UPDATE<br>
+&nbsp; OPEN cc<br>
+&nbsp; FETCH cc &lt;-- lock is acquired<br>
+&nbsp; CLOSE cc &lt;-- lock is released</font> 
+
+<ul>
+  <li><font >A transaction must be started before opening cursors declared for
+    update.</font></li>
+  <li><font >The row must be fetched in order to set the lock.</font></li>
+  <li><font >The lock is released when the
+    transaction ends (if the cursor is not
+    declared &quot;WITH HOLD&quot;) or when the
+    cursor is closed. </font></li>
+</ul>
+
+  <p>Sybase ASA allows individual and exclusive row locking by
+using the FOR UPDATE clause, as INFORMIX.</p>
+
+<ul>
+  <li>Individual locks are acquired when fetching the rows.</li>
+  <li><font >When the cursor (WITH HOLD) is opened outside a transaction, locks
+    are released when the cursor  is closed.</font></li>
+  <li><font >When the cursor is opened inside a transaction, locks are released
+    when the transaction ends.</font></li>
+</ul>
+
+<p>Sybase ASA's locking granularity is at the row level, page level or
+table level (the level is automatically selected by the engine for optimization).</p>
+
+<p><font >To control the behavior of the program when locking rows, INFORMIX
+provides a specific instruction to set the wait mode:</font></p>
+
+<p><font face="Courier New">&nbsp;&nbsp; SET LOCK MODE TO { WAIT | NOT WAIT | WAIT <em>seconds</em>
+}</font></p>
+
+<p><font >The default mode is WAIT. This as an INFORMIX specific SQL
+statement.</font></p>
+
+<p><b><u><em><font >Solution:</font></em></u></b></p>
+
+<p><font >SELECT FOR UPDATE statements are well supported.</font></p>
+
+<p><font ><font color="#FF0000"><b>Warning :</b></font> Sybase ASA
+locks the rows when you open the cursor. You will have to test
+SQLCA.SQLCODE after doing an OPEN.</font></p>
+
+<p><font ><font color="#FF0000"><b>Warning :</b></font> The database
+interface is based on an emulation of an INFORMIX engine using transaction logging.
+Therefore, opening a SELECT ... FOR UPDATE cursor declared outside a transaction will
+raise an SQL error -255 (not in transaction).</font></p>
+
+<p><font ><font color="#FF0000"><b>Warning :</b></font> 
+The SELECT FOR UPDATE statement cannot contain an ORDER BY clause if you want
+to perform positioned updates/deletes with WHERE CURRENT OF.</font></p>
+
+<p>You must review the program logic if you use pessimistic locking; it is based on the NOT WAIT mode, which is not supported by Sybase ASA.</p>
+
+<hr>
+
+<h2><a name="ODIASA009">ODIASA009 - Transactions
+handling</a></h3>
+</h2>
+<p><font >INFORMIX and Sybase ASA handle transactions in
+a similar
+manner. </font></p>
+
+<p><font >INFORMIX native mode (non ANSI) :</font> 
+
+<ul>
+  <li><font >Transactions are started with &quot;BEGIN WORK&quot;.</font></li>
+  <li><font >Transactions are validated with &quot;COMMIT WORK&quot;.</font></li>
+  <li><font >Transactions are canceled with &quot;ROLLBACK WORK&quot;.</font></li>
+  <li><font >Statements executed outside of a transaction are automatically
+    committed.</font></li>
+  <li><font >DDL statements can be executed (and canceled) in transactions.</font></li>
+</ul>
+
+<p>Sybase ASA :
+
+<ul>
+  <li><font >Transactions are started with &quot;BEGIN TRANSACTION [name]&quot;. </font></li>
+  <li><font >Transactions are validated with &quot;COMMIT TRANSACTION
+    [name]&quot;.</font></li>
+  <li><font >Transactions are canceled with &quot;ROLLBACK TRANSACTION
+    [name]&quot;.</font></li>
+  <li><font >Transactions save points can be placed with &quot;SAVEPOINT
+    [name]&quot;.</font></li>
+  <li>Sybase ASA supports named and nested transactions.</li>
+  <li>By default transactions are started implicitly as in the ANSI
+    specification.<br>
+    This behavior can be changed with:<br>
+    &nbsp;&nbsp; SET TEMPORARY OPTION CHAINED = OFF&nbsp;</li>
+  <li>DDL statements are not supported in transactions blocks.</li>
+</ul>
+
+<p><font >Transactions in stored procedures :
+avoid  using transactions in
+stored procedures to allow the client applications to handle transactions, according to the
+transaction model.</font></p>
+
+<p><font ><b><u><em>Solution:</em></u></b> </font></p>
+
+<p><font >INFORMIX transaction handling commands are automatically converted
+to Sybase ASA instructions to start, validate or cancel transactions.</font></p>
+
+<p>The 
+    <font >
+    Sybase ASA database driver</font> sets the &quot;CHAINED&quot; option to OFF when
+connecting to the server.</p>
+
+<p><font >Regarding the transaction control instructions, the BDL applications
+do not have to be modified in order to work with Sybase ASA. </font></p>
+
+<hr>
+
+<h2><a name="ODIASA010">ODIASA010 - BOOLEAN data type</a>
+
+</h2>
+
+<p>INFORMIX supports the BOOLEAN data type, which can store 't' or 'f' values.
+Genero BDL implements the BOOLEAN data type in a different way: As in other
+programming languages, Genero BOOLEAN stores integer values 1 or 0 (for TRUE or
+FALSE). The type was designed this way to assign the result of a Boolean
+expression to a BOOLEAN variable.</p>
+
+<p>Sybase ASA provides the BIT data type to store Boolean values.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The Sybase ASA database interface converts BOOLEAN type to BIT columns and
+stores 1 or 0 values in the column.</p>
+
+<hr>
+
+<h2><a name="ODIASA011">ODIASA011 - CHARACTER data
+types</a></font></h3>
+
+</h2>
+
+<p><font >As in INFORMIX, Sybase ASA provides the CHAR and VARCHAR data
+types to store character data.</font></p>
+
+<p><font >INFORMIX CHAR type can store up to <b> 32767</b> characters
+and the VARCHAR data type is limited to <b>255</b> characters.</font></p>
+
+  <p>Sybase ASA CHAR and VARCHAR  both
+have a limit of&nbsp; <b>32767</b>  characters.</p>
+
+<p>Sybase ASA provides the LONG VARCHAR data type to store large
+character strings. Only the LIKE operator can be used for searches.&nbsp;LONG
+VARCHAR columns cannot be
+used in classic comparison expressions (as col = 'value').</p>
+
+<p><b><u><em><font >Solution:</font></em></u></b></p>
+
+<p><font >The database interface supports character
+string variables in SQL statements for input (BDL USING) and output (BDL INTO) for CHAR and
+VARCHAR data types.</font></p>
+
+<p><font ><font color="#FF0000"><b>Warning</b></font>  : Check
+that your database schema does not use CHAR or VARCHAR types with a length
+exceeding the Sybase ASA limit.</font></p>
+
+<p><font ><font color="#FF0000"><b>Warning:</b></font>
+TEXT values
+cannot be used as input or output parameters in SQL statements and therefore are not
+supported.</font></p>
+
+<hr>
+
+<h2><a name="ODIASA012">ODIASA012 - Constraints</a></font></h3>
+
+</h2>
+
+<p><b><font >Constraint naming syntax :</font></b></p>
+
+<p>Both INFORMIX and Sybase ASA support primary key, unique, foreign
+key, default and check constraints. But Sybase ASA does not support constraint naming syntax:</p>
+
+<p>UNIQUE constraint example :</p>
+<div align="left">
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><font  color="#0000FF"><b>INFORMIX</b></font></td>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>Sybase ASA</b></font></td>
+  </tr>
+  <tr>
+    <td width="50%"><font face="Courier New">CREATE TABLE scott.emp (<br>
+    ...<br>
+    empcode CHAR(10) UNIQUE<br>
+    &nbsp;&nbsp;&nbsp;<font color="#0000A0"><b>[CONSTRAINT pk_emp]</b></font>,<br>
+    ...</font></td>
+    <td width="50%"><font face="Courier New">CREATE TABLE scott.emp (<br>
+    ...<br>
+    empcode CHAR(10)UNIQUE,<br>
+    ...</font></td>
+  </tr>
+</table>
+</div>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><b><font >Constraint naming syntax :</font></b></p>
+
+<p><font >The database interface does not convert constraint naming
+expressions when creating tables from BDL programs. Review the database creation scripts
+to adapt the constraint naming clauses for Sybase ASA.</font></p>
+
+<hr>
+
+<h2><a name="ODIASA013">ODIASA013 - Triggers</a></h3>
+</h2>
+<p><font >INFORMIX and Sybase ASA provide triggers with similar
+features, but the programming languages are totally different.</font></p>
+
+<p><b><font color="#FF0000">Warning</font> : </b>Sybase ASA
+does not support triggers on temporary tables.</p>
+
+<p><b><u><em><font >Solution:</font></em></u></b></p>
+
+<p><font >INFORMIX triggers must be converted to Sybase ASA triggers
+&quot;by hand&quot;.</font></p>
+
+<hr>
+
+<h2><a name="ODIASA014">ODIASA014 - Stored procedures</a></h3>
+</h2>
+<p><font >Both INFORMIX and Sybase ASA support stored procedures,
+but the programming languages are totally different :</font> 
+
+<ul>
+  <li><font >INFORMIX stored procedures must be written in <b>SPL</b>.</font></li>
+  <li>Sybase ASA stored procedures must be written in <b>Sybase ASA SQL</b>.</li>
+</ul>
+
+<p><b><font ><u><em>Solution:</em></u></font></b></p>
+
+<p><font >INFORMIX stored procedures must be converted to Sybase ASA
+&quot;by hand&quot;.</font></p>
+
+<hr>
+
+<h2><a name="ODIASA016a">ODIASA016a - Defining database
+users</a></font></h3>
+
+</h2>
+
+<p><font >INFORMIX users are defined at the operating system level, they must
+be members of the 'informix' group, and the database administrator must grant CONNECT,
+RESOURCE or DBA privileges to those users.</font></p>
+
+  <p><font >Before a user can access an Sybase ASA database, the system
+administrator (DBA) must declare the application users in the database with the
+  GRANT statement. You may also need to define groups in order to make tables
+  visible to other users.</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>See Sybase ASA documentation for more details on database logins and
+users.</p>
+
+<hr>
+
+<h2><a name="ODIASA016b">ODIASA016b - Setting
+privileges</a></h3>
+</h2>
+<p><font >INFORMIX and Sybase ASA user privileges management are
+quite similar.</font></p>
+
+<p>Sybase ASA provides <b>user groups</b> to grant
+or revoke permissions to more than one user at the same time.</p>
+
+<hr>
+
+<h2><a name="ODIASA017">ODIASA017 - Temporary tables </a></h3>
+</h2>
+<p><font >INFORMIX temporary tables are created through
+ the</font><font
+face="Courier New" ><b> CREATE TEMP TABLE </b></font><font
+>DDL instruction or through a </font><b><font face="Courier New">SELECT ... INTO TEMP </font></b><font >statement.
+Temporary tables are automatically dropped when the SQL session ends, but they can
+also be dropped with the DROP TABLE command. There is no name conflict when several users create
+temporary tables with the same name.</font></p>
+
+<p><font color="#FF0000"><b>Warning</b></font> : The CREATE TEMP TABLE and
+SELECT INTO TEMP statements are not supported in Sybase ASA.</p>
+
+<p>Sybase ASA supports temporary tables by using the DECLARE LOCAL TEMPORARY TABLE statement.&nbsp;</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>The CREATE TEMP TABLE statements are converted by the database interface to DECLARE LOCAL TEMPORARY TABLE
+statements.</p>
+
+<p><b><font color="#FF0000">Warning</font></b> : SELECT INTO TEMP statements
+cannot be converted, because Sybase ASA does not provide a way to create a
+temporary table from a result set, such as CREATE TABLE xx AS (SELECT ... ).</p>
+
+<hr>
+
+<h2><a name="ODIASA018">ODIASA018 - Substrings in SQL</a></font></h3>
+
+</h2>
+
+<p><font >INFORMIX SQL statements can use subscripts on columns defined with
+the character data type : <br>
+</font><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 WHERE <font
+color="#0000A0"><b>col1[2,3]</b></font> = 'RO' <br>
+&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 WHERE <font color="#0000A0"><b>col1[10]</b></font>&nbsp;
+= 'R'&nbsp;&nbsp; -- Same as col1[10,10]<br>
+&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <font color="#0000A0"><b>col1[2,3]</b></font>
+= 'RO' WHERE ...<br>
+&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 ORDER BY <font color="#0000A0"><b>col1[1,3]</b></font></font></p>
+
+<p><font >.. while Sybase ASA provides the SUBSTR( ) function, to
+extract a substring from a string expression : <br>
+</font><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT .... FROM tab1 WHERE <font
+color="#0000A0"><b>SUBSTRING(col1,2,2)</b></font> = 'RO'<br>
+&nbsp;&nbsp;&nbsp; SELECT <font color="#0000A0"><b>SUBSTRING('Some text',6,3)</b></font>
+FROM DUAL &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- Gives 'tex'</font></p>
+
+<p><b><u><em><font >Solution:</font></em></u></b></p>
+
+    <p>You must replace all INFORMIX col[x,y] expressions by
+    SUBSTRING(col,x,y-x+1).</p>
+
+<p><font ><font color="#FF0000"><b>Warning:</b></font> In UPDATE
+instructions, setting column values through subscripts will produce an error with
+Sybase ASA :<br>
+</font><font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <font color="#0000A0"><b>col1[2,3]</b></font>
+= 'RO' WHERE ...<br>
+</font><font >is converted to :<br>
+</font><font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <font color="#0000A0"><b>SUBSTRING(col1,2,3-2+1)</b></font>
+= 'RO' WHERE ...</font></p>
+
+<p><font ><font color="#FF0000"><b>Warning:</b></font> Column
+subscripts in ORDER BY expressions are also converted and produce an error with Sybase ASA
+:<br>
+</font><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 ORDER BY <font
+color="#0000A0"><b>col1[1,3]</b></font><br>
+</font><font >is converted to :<br>
+</font><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 ORDER BY <font
+color="#0000A0"><b>SUBSTRING(col1,1,3-1+1)</b></font></font></p>
+
+<hr>
+
+<h2><a name="ODIASA019">ODIASA019 - Name resolution of
+SQL objects</a></h3>
+</h2>
+<p><font >INFORMIX uses the following form to identify an SQL object :<br>
+</font><font face="Courier New">&nbsp;
+[database[@dbservername]:][{owner|&quot;owner&quot;}.]identifier</font></p>
+
+  <p><font >With Sybase ASA, an object name takes the following form :<br>
+</font><font face="Courier New">&nbsp; [{owner|&quot;owner&quot;}.]{identifier|&quot;identifier&quot;</font><font face="Courier New">}</font></p>
+
+    <font >
+<p>Identifiers have a maximum length of 128 bytes and are
+composed of alphabetic characters ( _, @, #, $ are considered as alphabetic
+characters) or digits. The first character must be alphabetic.</p>
+<p>INFORMIX database object names are <b> not </b> <b>case
+sensitive</b> in non-ANSI databases.</font> <font >Sybase ASA</font><font >
+    database objects names are <b> case
+sensitive</b> by default, but this is related to the -c option of the <b>dbinit</b>
+    command. Databases must be created as case-sensitive, otherwise a string
+    comparison such as &quot;abc&quot;=&quot;ABC&quot; would evaluate to TRUE.</p>
+
+<hr>
+
+<h2><a name="ODIASA020">ODIASA020 - String delimiters</a></h3>
+</h2>
+<p><font >The ANSI string delimiter character is the single quote ( 'string'
+). Double quotes are used to delimit database object names (&quot;object-name&quot;).</font></p>
+
+<p><font ><u>Example</u> :</font><font face="Courier New"> WHERE
+&quot;tabname&quot;.&quot;colname&quot; = 'a string value'</font></p>
+
+    <p>As INFORMIX, Sql Server Anywhere allows to use double
+quotes as string delimiters, if the QUOTED_IDENTIFIER session option is OFF, the
+    default is ON:</p>
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; SET TEMPORARY OPTION QUOTED_IDENTIFIER
+= OFF</font></p>
+
+<p>Remark : This problem concerns only double quotes within SQL
+statements. Double quotes used in BDL string expressions are not subject of SQL
+compatibility problems.</p>
+
+<p><font ><b><em><u>Solution:</u></em></b> </font></p>
+
+    <p>When the <b>ifxemul.dblquotes</b> option is set, the Sybase ASA database 
+	interface converts all double quotes to single quotes in SQL statements. The 
+	Sybase ASA database driver <u>does not</u> set the <font face="Courier New"> QUOTED_IDENTIFIER</font>
+    option implicitly.</p>
+
+<hr>
+
+<h2><a name="ODIASA021">ODIASA021 - NUMERIC data types</a></font></h2>
+
+<p>Sybase ASA offers numeric data types which are quite
+similar to INFORMIX numeric data types. The table below shows general conversion rules for
+numeric data types :</p>
+<div align="center">
+
+<center>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><font  color="#0000FF"><b>INFORMIX</b></font></td>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>Sybase ASA</b></font></td>
+  </tr>
+  <tr>
+    <td width="50%"><b><font >SMALLINT</font></b></td>
+    <td width="50%"><b><font >SMALLINT</font></b></td>
+  </tr>
+  <tr>
+    <td width="50%"><font ><b>INTEGER</b> (synonym: INT)</font></td>
+    <td width="50%"><font ><b>INTEGER</b> (synonym: INT)</font></td>
+  </tr>
+  <tr>
+    <td width="50%"><font><b>BIGINT</b></font></td>
+    <td width="50%"><font><b>BIGINT</b></font></td>
+  </tr>
+  <tr>
+    <td width="50%"><font><b>INT8</b></font></td>
+    <td width="50%"><font><b>BIGINT</b></font></td>
+  </tr>
+  <tr>
+    <td width="50%"><font ><b>DECIMAL[(p[,s)]</b> (synonyms: DEC,
+    NUMERIC)<br>
+    DECIMAL(p,s) defines a <u>fixed point</u> decimal where <b>p</b> is the total
+    number of significant digits and <b>s</b> the number of digits that fall on the
+    right of the decimal point.<br>
+    DECIMAL(p) defines a <u>floating point</u> decimal where <b>p</b> is the total
+    number of significant digits.<br>
+    The precision <b>p</b> can be from 1 to 32.<br>
+    DECIMAL is treated as DECIMAL(16).</font></td>
+    <td width="50%"><font ><b>DECIMAL[(p[,s)]</b> (synonyms: DEC,
+    NUMERIC)<br>
+    DECIMAL[(p[,s])] defines a <u>fixed point</u> decimal where <b>p</b> is the
+    total number of significant digits and <b>s</b> the number of digits that fall
+    on the right of the decimal point.<br>
+    Without any decimal storage specification, <u>the precision defaults to 30</u>
+      and <u>the
+    scale defaults to 6</u> :<br>
+    - DECIMAL in Sybase ASA = DECIMAL(30,0) in INFORMIX<br>
+    - DECIMAL(p) in Sybase ASA = DECIMAL(p,6) in INFORMIX</font></td>
+  </tr>
+  <tr>
+    <td width="50%"><font ><b>MONEY[(p[,s])</b><br>
+    <br>
+    <br>
+    </font></td>
+    <td width="50%">Sybase ASA<font > provides the MONEY and SMALLMONEY data
+    types, but the currency symbol handling is quite different. Therefore, INFORMIX
+      MONEY
+    columns should be implemented as <b>DECIMAL</b> columns in Sybase ASA.</font></td>
+  </tr>
+  <tr>
+    <td width="50%"><font ><b>SMALLFLOAT</b>&nbsp; (synonyms: REAL)</font></td>
+    <td width="50%"><b><font >REAL</font></b></td>
+  </tr>
+  <tr>
+    <td width="50%"><font ><b>FLOAT[(n)]</b> (synonyms: DOUBLE
+    PRECISION)<br>
+    The precision (n) is ignored.</font></td>
+    <td width="50%"><font ><b>FLOAT(n) </b>(synonyms: DOUBLE PRECISION)<br>
+    Where n must be from 1 to 15.</font></td>
+  </tr>
+</table>
+</center>
+</div>
+
+<p><font ><b><em><u>Solution:</u></em></b> </font></p>
+
+<p><b><font >In BDL programs :</font></b></p>
+
+<p><font >When creating tables from BDL programs, the database interface
+automatically converts INFORMIX data types to corresponding Sybase ASA data
+types.</font></p>
+
+<p><b><font >Database creation scripts :</font> </b> 
+
+<ul>
+  <li><font >SMALLINT and INTEGER columns do not have to use another data type in
+    Sybase ASA.</font></li>
+  <li><font >For DECIMALs, check the precision limit. Always use a precision and a
+    scale.</font></li>
+  <li><font >Convert MONEY columns to DECIMAL(p,s) columns. Always use a precision
+    and a scale.</font></li>
+  <li><font >Convert SMALLFLOAT columns to REAL columns.</font></li>
+  <li><font >Since FLOAT precision is ignored in INFORMIX, convert this data type
+    to FLOAT(15).</font></li>
+</ul>
+
+<hr>
+
+<h2><a name="ODIASA022">ODIASA022 - Getting one row
+with SELECT</a></font></h3>
+
+</h2>
+
+<p><font >With INFORMIX, you
+must use the system table with a condition on the
+table id :</font></p>
+
+<p><font face="Courier New">&nbsp;&nbsp; SELECT user <font color="#0000A0"><b>FROM systables
+WHERE tabid=1</b></font></font></p>
+
+<p><font >With Sybase ASA, you can omit
+ the FROM clause to generate one row
+only:</font></p>
+
+<pre><font face="Courier New">   SELECT user</font></pre>
+
+<p><b><u><em><font >Solution:</font></em></u></b></p>
+
+<p><font >Check the BDL sources for &quot;FROM systables WHERE tabid=1&quot;
+and use dynamic SQL to resolve this problem.</font></p>
+
+<hr>
+
+<h2><a name="ODIASA024">ODIASA024 - MATCHES and LIKE in
+SQL conditions</a></font></h3>
+
+</h2>
+
+<p><font >INFORMIX supports MATCHES and LIKE in SQL statements, while
+Sybase ASA supports the LIKE statement only.</font></p>
+
+<p><font >The MATCHES operator of INFORMIX uses the star, question mark and
+square braces wildcard characters.<br>
+The LIKE operator of Sybase ASA offers the percent, underscore and square braces wildcard
+characters.</font></p>
+
+<p><font >The following substitutions must be
+made to convert a MATCHES
+condition to a LIKE condition :</font> 
+
+<ul>
+  <li><font >MATCHES keyword must be replaced by LIKE.</font></li>
+  <li><font >All '</font><font face="Courier">*</font><font >'
+    characters must be replaced by '</font><font face="Courier">%</font><font >'.</font></li>
+  <li><font >All '</font><font face="Courier">?</font><font >'
+    characters must be replaced by '</font><font face="Courier">_</font><font >'.</font></li>
+</ul>
+
+<p><b><em><u><font >Solution:</font></u></em></b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> SQL statements using
+MATCHES expressions must be reviewed in order to use LIKE expressions.</p>
+
+<p>See also: <a href="SqlProgramming.html#PORT_MATCHES">MATCHES operator in SQL
+Programming</a>.</p>
+
+<hr>
+
+<h2><a name="ODIASA025">ODIASA025 - INFORMIX specific
+SQL statements in BDL </a></font></h3>
+
+</h2>
+
+<p><font >The BDL&nbsp;compiler supports several INFORMIX specific SQL
+statements that have no meaning when using Sybase ASA.</font></p>
+
+<p><font >Examples :</font> 
+
+<ul>
+  <li><font >CREATE DATABASE dbname IN dbspace WITH BUFFERED LOG</font></li>
+  <li><font >START DATABASE (SE only)</font></li>
+  <li><font >ROLLFORWARD DATABASE</font></li>
+  <li><font >CREATE TABLE ... IN dbspace WITH LOCK MODE ROW</font></li>
+</ul>
+
+<p><b><em><u><font >Solution:</font></u></em></b></p>
+
+<p><font >Review your BDL source and remove all static SQL statements which
+are INFORMIX specific.</font></p>
+
+<hr>
+
+<h2><a name="ODIASA028">ODIASA028 - INSERT cursors</a></h3>
+</h2>
+<p><font >INFORMIX supports insert cursors. An &quot;insert cursor&quot; is a
+special BDL cursor declared with an INSERT statement instead of a SELECT statement. When
+this kind of cursor is open, you can use the PUT instruction to add rows and the FLUSH
+instruction to insert the records into the database.</font></p>
+
+<p><font >For INFORMIX database with transactions, OPEN, PUT and FLUSH
+instructions must be executed within a transaction.</font></p>
+
+<p>Sybase ASA does not support insert cursors.</p>
+
+<p><b><u><em><font >Solution:</font></em></u></b></p>
+
+<p><font >Insert cursors are emulated by the Sybase ASA database
+interface.</font></p>
+
+<hr>
+
+<h2><a name="ODIASA030">ODIASA030 - Very large data
+types</a></font></h3>
+
+</h2>
+
+<p><font >Both INFORMIX and Sybase ASA provide special data types to
+store very large texts or images.</font></p>
+
+<p>Sybase ASA recommends the following conversion rules :</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="33%"><font  color="#0000FF"><b>INFORMIX Data
+    Type</b></font></td>
+    <td bgcolor="#C0C0C0" width="33%"><font color="#0000FF"><b>Sybase ASA</b></font><font  color="#0000FF"><b>
+      Data Type</b></font></td>
+  </tr>
+  <tr>
+    <td width="33%"><font >TEXT</font></td>
+    <td width="33%"><font >TEXT / LONG VARCHAR</font></td>
+  </tr>
+  <tr>
+    <td width="33%"><font >BYTE</font></td>
+    <td width="33%"><font >BINARY / LONG BINARY / IMAGE / VARBINARY</font></td>
+  </tr>
+</table>
+</center></div>
+
+<p><b><u><em><font >Solution:</font></em></u></b></p>
+
+<p><font >Very large character data types are not supported yet by the
+Sybase ASA database interface.</font></p>
+
+<hr>
+
+<h2><a name="ODIASA031">ODIASA031 - Cursors WITH HOLD</a></h3>
+</h2>
+<p><font >INFORMIX automatically closes opened cursors when a transaction ends
+unless the WITH HOLD option is used in the DECLARE instruction.</font></p>
+
+<p>Sybase ASA does not close cursors when a transaction ends, as long as the
+global parameter close_on_endtrans is off.</p>
+
+<p><b><u><em><font >Solution:</font></em></u></b></p>
+
+<p>BDL cursors that are not declared &quot;WITH HOLD&quot; are
+automatically closed by the database interface when a COMMIT WORK or ROLLBACK WORK is
+performed by the BDL program.</p>
+
+<hr>
+
+<h2><a name="ODIASA033">ODIASA033 - Querying system
+catalog tables</a></h3>
+</h2>
+<p><font >As in INFORMIX, Sybase ASA provides system catalog
+tables (sysobjects,syscolumns,etc) in each database,
+but  the table names and their
+structure are quite different. </font></p>
+
+<p><b><u><em><font >Solution:</font></em></u></b></p>
+
+<p><font ><font color="#FF0000"><b>Warning:</b></font> No automatic
+conversion of INFORMIX system tables is provided by the database interface.</font></p>
+
+<hr>
+
+<h2><a name="ODIASA034">ODIASA034 - Syntax of UPDATE
+statements</a></h3>
+</h2>
+<p>INFORMIX allows a  specific syntax for UPDATE statements :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET ( &lt;col-list&gt; ) = (
+&lt;val-list&gt; )</font></p>
+
+<p>or</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET table.* =
+myrecord.*<br>
+&nbsp;&nbsp;&nbsp; UPDATE table SET * = myrecord.*</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Static UPDATE statements using the above syntax are converted <u>by the
+compiler</u> to the
+standard form :<br>
+<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET column=value [,...] </font></p>
+
+<hr>
+
+<h2><a name="ODIASA036">ODIASA036 - INTERVAL data type</a></font></h3>
+
+</h2>
+
+<p><font >INFORMIX's INTERVAL data type stores a value that represents a span
+of time. INTERVAL types are divided into two classes : <b>year-month
+intervals</b> and <b>day-time intervals.</b></font></p>
+
+<p>Sybase ASA does not provide a data type corresponding
+to the INFORMIX INTERVAL data type.</p>
+
+<p><b><u><font >Solution:</font></u></b></p>
+
+<p><font ><b><font color="#FF0000">Warning:</font></b> The INTERVAL
+data type is not well supported because the database server has no equivalent
+native data type. However, you can store into and retrieve from CHAR columns BDL
+INTERVAL values.</font></p>
+
+<hr>
+
+<h2><a name="ODIASA039">ODIASA039 -&nbsp;Data storage
+concepts </a>
+
+</h2>
+
+<p><font >An attempt should be made to preserve as much of the storage
+information as possible when converting from INFORMIX to Sybase ASA. Most
+important storage decisions made for INFORMIX database objects (like initial sizes and
+physical placement) can be reused in an Sybase ASA database.</font></p>
+
+<p><font >Storage concepts are quite similar in INFORMIX and in Sybase ASA, but the names are different.</font></p>
+
+<p><font >The following table compares INFORMIX storage concepts to Sybase ASA
+storage concepts :</font></p>
+<div align="center"><center>
+
+<table border="0" width="95%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="33%"><font  color="#0000FF"><b>INFORMIX</b></font></td>
+    <td bgcolor="#C0C0C0" width="33%"><font color="#0000FF"><b>Sybase ASA</b></font></td>
+  </tr>
+  <tr>
+    <td width="66%" colspan="2" bgcolor="#C0C0C0" valign="top"><font 
+    color="#0000FF">Physical units of storage</font></td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top"><font >The largest unit of physical disk space is
+    a &quot;<b>chunk</b>&quot;, which can be allocated either as a cooked file ( I/O
+    is controlled by the OS) or as raw device (=UNIX partition, I/O is controlled by the
+    database engine). A &quot;dbspace&quot; uses at least one &quot;chunk&quot; for storage.<br>
+    You must add &quot;chunks&quot; to &quot;dbspaces&quot; in order to increase the size of
+    the logical unit of storage.</font></td>
+    <td width="33%" valign="top"><font >A database
+        is composed of <b>tablespace</b>. Each tablespace is composed of a '.db'
+        file. In a database, there is one tablespace at the creation, but can
+        hold more than one tablespace. The size of a tablespace is increased
+        automatically.</font></td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top"><font >A &quot;<b>page</b>&quot; is the
+    smallest physical unit of disk storage that the engine uses to read from and write to
+    databases.<br>
+    A &quot;chunk&quot; contains a certain number of &quot;pages&quot;.<br>
+    The size of a &quot;page&quot; must be equal to the operating system's block size.</font></td>
+    <td width="33%" valign="top"><font >At the finest level of
+        granularity, Sql Server Anywhere stores data in &quot;<b>page</b>&quot;
+        which size can be defined at the creation time.
+        </font></td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top"><font >An &quot;<b>extent</b>&quot;
+    consists of a collection of continuous &quot;pages&quot; that the engine uses to allocate
+    both initial and subsequent storage space for database tables.<br>
+    When creating a table, you can specify the first extent size and the size of future
+    extents with the EXTENT SIZE and NEXT EXTENT options.<br>
+    For a single table, &quot;extents&quot; can be located in different &quot;chunks&quot; of
+    the same &quot;dbspace&quot;.</font></td>
+    <td width="33%" valign="top"><font >Database
+        files are extended by 32 pages at a time when the space is needed.</font></td>
+  </tr>
+  <tr>
+    <td width="66%" colspan="2" bgcolor="#C0C0C0" valign="top"><font 
+    color="#0000FF">Logical units of storage</font></td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top"><font >A &quot;<b>table</b>&quot; is a
+    logical unit of storage that contains rows of data values.</font></td>
+    <td width="33%" valign="top"><font >Same concept as INFORMIX.</font></td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top"><font >A &quot;<b>database</b>&quot; is
+    a logical unit of storage that contains table and index data. Each database also contains
+    a system catalog that tracks information about database elements like tables, indexes,
+    stored procedures, integrity constraints and user privileges.</font></td>
+    <td width="33%" valign="top"><font >Same concept as INFORMIX.</font></td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top"><font >Database tables are created in a specific
+    &quot;<b>dbspace</b>&quot;, which defines a logical place to store data.<br>
+    If no dbspace is given when creating the table, INFORMIX defaults to the current database
+    dbspace.</font></td>
+    <td width="33%" valign="top">?</td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top"><font >The total disk space allocated for a table
+    is the &quot;<b>tblspace</b>&quot;, which includes &quot;pages&quot; allocated
+    for data, indexes, blobs, tracking page usage within table extents.</font></td>
+    <td width="33%" valign="top">?</td>
+  </tr>
+  <tr>
+    <td width="66%" colspan="2" bgcolor="#C0C0C0" valign="top"><font 
+    color="#0000FF">Other concepts</font></td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top"><font >When initializing an INFORMIX engine, a
+    &quot;<b>root dbspace</b>&quot; is created to store information about all
+    databases, including storage  information (chunks used, other dbspaces, etc.).</font></td>
+    <td width="33%" valign="top">?</td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top"><font >The &quot;<b>physical log</b>&quot;
+    is a set of continuous disk pages where the engine stores &quot;before-images&quot; of
+    data that has been modified during processing.</font><p><font >The &quot;<b>logical
+    log</b>&quot; is a set of &quot;<b>logical-log files</b>&quot; used to
+    record logical operations during on-line processing. All transaction information
+      is stored in the logical log files if a database has been created with transaction log.</font></p>
+    <p><font >INFORMIX combines &quot;physical log&quot; and &quot;logical
+    log&quot; information  when doing fast recovery. Saved &quot;logical logs&quot; can be
+    used to restore a database from tape. </font></td>
+    <td width="33%" valign="top"><font >Sybase ASA uses &quot;<b>database
+        log files</b>&quot; to record SQL transactions.<br>
+        </font></td>
+  </tr>
+</table>
+</center></div>
+
+<hr>
+
+<h2><a name="ODIASA046">ODIASA046 -&nbsp;The LOAD and
+UNLOAD instructions </a>
+</h2>
+<p><font >INFORMIX provides two SQL instructions to export / import data from
+/ into a database table: The UNLOAD instruction copies rows from a database table into an
+text file and the LOAD instruction inserts rows from an text file into a database table.</font></p>
+
+<p><b><font  color="#FF0000">Warning : </font></b>Sybase ASA<font >
+has LOAD and UNLOAD instructions, but those commands are related to database
+backup and recovery. Do not confuse with INFORMIX commands.</font></p>
+
+<p><b><u><em><font >Solution:</font></em></u></b></p>
+
+<p><font >LOAD and UNLOAD instructions are supported.</font></p>
+
+<p><font  color="#FF0000"><b>Warning : </b></font><font >The
+LOAD instruction does not work with tables using emulated SERIAL columns because the
+generated INSERT statement holds the &quot;SERIAL&quot; column which is actually a
+IDENTITY column in Sybase ASA. See the limitations of INSERT statements when using <a
+href="#ODIASA005">SERIALs</a>. </font></p>
+
+<p><b><font  color="#FF0000">Warning :</font><font ><font
+color="#FF0000"> </font></b>In Sybase ASA, INFORMIX DATE data is stored in
+DATETIME columns, but  DATETIME columns are similar to INFORMIX DATETIME YEAR TO
+FRACTION(3) columns. Therefore, when using LOAD and UNLOAD, those columns are converted to text
+data with the format &quot;YYYY-MM-DD hh:mm:ss.fff&quot;.</font></p>
+
+<p><b><font  color="#FF0000">Warning :</font><font ><font
+color="#FF0000"> </font></b>In Sybase ASA, INFORMIX DATETIME data is stored
+in DATETIME columns, but  DATETIME columns are similar to INFORMIX DATETIME YEAR TO
+FRACTION(3) columns. Therefore, when using LOAD and UNLOAD, those columns are converted to
+text data with the format &quot;YYYY-MM-DD hh:mm:ss.fff&quot;.</font></p>
+
+<p><font  color="#FF0000"><b>Warning : </b></font><font >When
+using an INFORMIX database, simple dates are unloaded with the DBDATE format (ex:
+&quot;23/12/1998&quot;). Therefore, unloading from an INFORMIX database for loading into a
+Sybase ASA database is not supported.</font></p>
+
+<hr>
+
+<h2><a name="ODIASA047">ODIASA047 -&nbsp;Case
+sensitivity </a>
+
+</h2>
+
+<p><font >In INFORMIX, database object names like table and column names are
+not case sensitive :</font></p>
+
+<blockquote>
+  <p><font face="Courier New">CREATE TABLE Customer ( Custno INTEGER, ... )<br>
+  SELECT CustNo FROM cuSTomer ...</font></p>
+</blockquote>
+
+<p><font >In Sybase ASA, database object names <b>and
+character data</b> are case-insensitive
+ by default :</font></p>
+
+<blockquote>
+  <p><font face="Courier New">CREATE TABLE Customer ( Custno INTEGER, CustName CHAR(20) )<br>
+  INSERT INTO CUSTOMER VALUES ( 1, 'TECHNOSOFT' )<br>
+  SELECT CustNo FROM cuSTomer WHERE custname = 'techNOSoft'</font></p>
+</blockquote>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>When you create a Sybase ASA database with <b>dbinit</b>, you can use the -c
+option to make the database case-sensitive.</p>
+
+<hr>
+
+<h2><a name="ODIASA051">ODIASA051 -&nbsp;Setup database
+statistics </a>
+
+</h2>
+
+<p><font >INFORMIX provides a special instruction to compute database
+statistics in order to help the optimizer
+find the right query execution plan :</font></p>
+
+<blockquote>
+  <p><font face="Courier New">UPDATE STATISTICS ...</font></p>
+</blockquote>
+
+<p>Sybase ASA<font > offers a similar instruction,
+but it uses different
+clauses :</font></p>
+
+<blockquote>
+  <p><font face="Courier New">UPDATE STATISTICS ... </font></p>
+</blockquote>
+
+<p><font >See Sybase ASA documentation for more details.</font></p>
+
+<p><u><em><b><font >Solution:</font></b></em></u></p>
+
+<p><font >Centralize the optimization instruction in a function.</font></p>
+
+<hr>
+
+<h2><a name="ODIASA053">ODIASA053 -&nbsp;The ALTER
+TABLE instruction </a>
+
+</h2>
+
+<p><font >INFORMIX and MS Sybase ASA use different implementations of the
+ALTER TABLE instruction. For example, INFORMIX allows
+you to use multiple ADD clauses
+separated by comma. This is not supported by Sybase ASA :</font></p>
+
+<p><font >INFORMIX :<br>
+</font><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; ALTER TABLE customer <font
+color="#0000A0"><b>ADD(col1 INTEGER), ADD(col2 CHAR(20))</b></font></font></p>
+
+<p>Sybase ASA<font > :</font><br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; ALTER TABLE customer <font
+color="#0000A0"><b>ADD col1 INTEGER, col2 CHAR(20)</b></font></font></p>
+
+<p><font ><u><em><b>Solution:</b></em></u></font></p>
+
+<p><font ><font color="#FF0000"><b>Warning:</b></font> No automatic
+conversion is done by the database interface. There is even no real standard for this
+instruction ( that is, no common syntax for all database servers). Read the SQL
+documentation and review the SQL scripts or the BDL programs in order to use the database
+server specific syntax for ALTER TABLE.</font></p>
+
+<hr>
+
+<h2><a name="ODIASA054">ODIASA054 -&nbsp;SQL Interruption</a>
+
+</h2>
+
+<p>With INFORMIX, it is possible to interrupt a long running query if the SQL
+INTERRUPT ON option is set by the Genero program. The database server returns
+SQLCODE -213, which can be trapped to detect a user interruption.</p>
+
+<p>
+<font face="Courier New" size="2">&nbsp;&nbsp;&nbsp; MAIN<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DEFINE n INTEGER<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DEFER INTERRUPT<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OPTIONS SQL INTERRUPT ON<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DATABASE test1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHENEVER ERROR CONTINUE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- Start long query (self join takes time)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- From now on, user can hit CTRL-C in TUI mode
+to stop the query<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SELECT COUNT(*) INTO n FROM customers a,
+customers b<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHERE a.cust_id
+&lt;&gt; b.cust_id<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IF SQLCA.SQLCODE == -213 THEN<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DISPLAY &quot;Statement was
+interrupted by user...&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EXIT PROGRAM 1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END IF<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHENEVER ERROR STOP<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp;&nbsp; END MAIN</font></p>
+
+<p><u><em>Solution:</em></u></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> SQL Interruption is not
+supported with Sybase ASA.</p>
+
+<hr>
+
+<h2><a name="ODIASA055">ODIASA055 -&nbsp;Scrollable Cursors</a></h2>
+
+<p>The Genero programming language supports scrollable cursors with the <b>SCROLL</b>
+keyword, as shown in the following code example:&nbsp;</p>
+
+<p>
+<font face="Courier New" size="2">
+&nbsp;&nbsp;&nbsp;DECLARE c1 <b>SCROLL</b> CURSOR FOR SELECT * FROM customers
+ORDER BY cust_name<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH FIRST c1 INTO rec_cust.*<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH NEXT c1 INTO rec_cust.*<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH LAST c1 INTO rec_cust.*</font></p>
+
+<p>Sybase ASA supports native scrollable cursors.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>The Sybase ASA database driver uses the native Sybase ASA scrollable cursors
+by setting the 0x0080 flag for options of the dbpp_declare() API call.</p>
+
+<hr>
+
+<h2><a name="ODIASA100">ODIASA100 -&nbsp;Data
+type conversion table</a>
+
+</h2>
+
+<div align="center">
+  <center><table border="0" width="80%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="50%"><font  color="#0000FF"><b>INFORMIX Data Types</b></font></td>
+          <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>Sybase ASA Data Types</b></font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">CHAR(n)</font></td>
+          <td width="50%"><font face="Courier New">CHAR(n) 
+			<font color="#FF0000" size="2">(limit = 32767c!)</font></font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">VARCHAR(n)</font></td>
+          <td width="50%"><font face="Courier New">VARCHAR(n) 
+			<font color="#FF0000" size="2">(limit = 32767c!)</font></font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">BOOLEAN</font></td>
+          <td width="50%"><font face="Courier New">BIT</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">SMALLINT</font></td>
+          <td width="50%"><font face="Courier New">SMALLINT</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">INTEGER</font></td>
+          <td width="50%"><font face="Courier New">INTEGER</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">BIGINT</font></td>
+          <td width="50%"><font face="Courier New">BIGINT</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">INT8</font></td>
+          <td width="50%"><font face="Courier New">BIGINT</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">FLOAT[(n)]</font></td>
+          <td width="50%"><font face="Courier New">FLOAT(n)</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">SMALLFLOAT</font></td>
+          <td width="50%"><font face="Courier New">REAL</font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">DECIMAL(p,s)</font></td>
+          <td width="50%"><font face="Courier New">DECIMAL(p,s)<font color="#FF0000" size="2">! 
+			upper limit = 128 digits</font></font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">MONEY(p,s)</font></td>
+          <td width="50%"><font face="Courier New">DECIMAL(p,s)<font color="#FF0000" size="2">! 
+			upper limit = 128 digits</font></font></td>
+        </tr>
+        <tr>
+          <td width="50%"><font face="Courier New">DATE</font></td>
+          <td width="50%"><font face="Courier New">DATE</font></font><font face="Courier New">
+          <font size="2">(yyyy-mm-dd)</font></font></td>
+        </tr>
+  <font >
+  <tr>
+          <td width="50%"><font face="Courier New">DATETIME </font></font><font face="Courier New">HOUR
+    TO FRACTION</font></td>
+          <td width="50%"><font face="Courier New">TIME</font><font face="Courier New">
+            <font size="2">(hh:mm:ss.fff)</font></font></td>
+  </tr>
+  <font >
+        <tr>
+          <td width="50%"><font face="Courier New">DATETIME q1 TO q2 (q2&gt;FRACTION)</font></td>
+          <td width="50%"><font face="Courier New">TIME</font></font><font face="Courier New">STAMP</font><font face="Courier New">
+          <font size="2">(yyyy-mm-dd hh:mm:ss.fff)</font></font></td>
+        </tr>
+  <font >
+        <tr>
+          <td width="50%"><font face="Courier New">INTERVAL q1 TO q2</font></td>
+          <td width="50%"><font face="Courier New">CHAR(n)</font></td>
+        </tr>
+      </table>
+  </center>
+</div>
+    </font>
+</body>
+</html>

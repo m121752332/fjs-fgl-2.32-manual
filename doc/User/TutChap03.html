@@ -1,0 +1,820 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Tutorial: Displaying Data (Windows/Forms)</title>
+<meta http-equiv="Content-Type" content="text/html">
+<link href="../FglTechRef.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+
+<p><a href="TutIndex.html">Back to Summary</a></p>
+<hr>
+<h1>Tutorial Chapter 3: Displaying Data (Windows/Forms)</h1>
+<p>Summary:</p>
+<ul type="circle">
+  <li><a href="#ApplicationOverview">Application Overview</a></li>
+	<li><a href="#4glFile">The .4gl File- Program Logic</a><ul>
+  <li><a href="#windows">Opening Windows and Forms</a></li>
+	<li><a href="#definemenu">Interacting with the User</a><ul>
+		<li><a href="#definemenu">Defining Actions - the MENU statement</a></li>
+		<li><a href="#Displaymsg">Displaying Messages and Errors</a></li>
+		<li><a href="#Example1">Example: dispcust.4gl (MAIN)</a></li>
+	</ul></li>
+	<li><a href="#WorkingwithRecords">Retrieving and Displaying Data</a><ul type="disc">
+		<li><a href="#definerecord">Defining a Record</a></li>
+		<li><a href="#RetrievingData">Using SQL to Retrieve Data</a></li>
+		<li><a href="#displaybyname">Displaying a Record</a></li>
+		<li><a href="#Example2">Example: dispcust.4gl (query_cust
+function)</a></li>
+	</ul></li>
+</ul>
+  </li>
+  <li><a href="#FormSpec">The Form Specification File</a>
+    <ul type="circle">
+  <li>Overview</li>
+	<li><a href="#SCHEMASection">SCHEMA section (optional)</a></li>
+	<li><a href="#OtherSections">The ACTION DEFAULTS, TOPMENU, and TOOLBAR sections (optional)</a></li>
+	<li><a href="#LAYOUTSection">LAYOUT section</a></li>
+	<li><a href="#TABLESSection">TABLES section (optional)</a></li>
+	<li><a href="#ATTRIBUTES">ATTRIBUTES section</a></li>
+	<li><a href="#INSTRUCTIONSSection">INSTRUCTIONS section (optional)</a></li>
+	<li><a href="#Exampleform">Example: custform.per</a></li>
+</ul>
+  </li>
+  <li><a href="#Compiling">Compiling the program and form</a></li>
+</ul>
+<hr>
+<h2><a name="ApplicationOverview">Application Overview</a></h2>
+<p>This example program opens a <a href="WindowsAndForms.html#WHAT_IS">WINDOW</a>
+containing a <a href="WindowsAndForms.html">FORM</a> to display information to 
+the user. The appearance of the form is defined in a separate form definition 
+file. The program logic to display information on the form is written in the 
+.4gl program module. The same form file can be used with different applications. 
+This separation of user interface and business logic provides maximum 
+flexibility. </p>
+<p>The options to retrieve data or exit are defined as <i>actions</i> in
+a <a href="Menus.html">MENU</a> statement in the .4gl file.&nbsp; By default, 
+push buttons are displayed on the form corresponding to the actions listed in the 
+MENU statement.&nbsp;When the user presses the "query"
+button, the code listed for the action statement is executed - in 
+this case, an SQL SELECT statement retrieves a single row from
+the customer table and displays it on the form. </p>
+<p>A FORM can contain <a
+ href="FormSpecFiles.html#FF_FORM_FIELD"> form fields</a> for entering
+and displaying data; explanatory
+text (labels); and other form objects such as Buttons, Topmenus (dropdown menus), toolbar 
+icons, folders, tables, and CheckBoxes. Form objects that are associated with an 
+action are called <i>action views</i>. Messages providing information to the 
+user can be displayed on the form.</p>
+<p>&nbsp;&nbsp;&nbsp; <img border="0" src="../Images/TUT301.png" width="576" height="288"> </p>
+<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Display on Windows platforms </p>
+<hr>
+<h2><a name="4glFile">The .4gl File</a> - <a name="windows">Opening Windows and Forms</a></h2>
+<p>A program creates a window with the <a
+ href="WindowsAndForms.html#OPEN_WINDOW">OPEN WINDOW</a> instruction,
+and destroys a window with the <a href="WindowsAndForms.html#CLOSE_WINDOW">CLOSE WINDOW</a>
+instruction. The <a href="WindowsAndForms.html#OPEN_WINDOW">OPEN
+WINDOW ... WITH FORM</a>
+instruction can be used to automatically open a window containing a
+specified
+form: </p>
+<pre>     <tt>OPEN WINDOW</tt> custwin <tt>WITH FORM</tt> &quot;custform&quot;</pre>
+<p> When you are using a graphical front end,
+windows are created as independent
+resizable windows. By default windows are displayed as normal application
+windows, but you can specify a <a href="PresentationStyles.html">Presentation
+Style</a>.&nbsp; The standard window styles are defined in the default
+Presentation Style file (FGLDIR/lib/default.4st): </p>
+<p>If the WITH FORM option is used in opening a window, the CLOSE WINDOW statement
+closes both the window and the form.</p>
+<pre>     <tt>CLOSE WINDOW</tt> custwin</pre>
+<p> When the runtime system starts a program, it creates a default
+window
+named SCREEN. This default window can be used as another window, but it
+can be
+closed if not needed.</p>
+<pre><tt>     CLOSE WINDOW</tt> <tt>SCREEN</tt></pre>
+<p><b>Note</b>: The appropriate Genero Front-end Client must be running
+for the program to display the window and form.</p><hr>
+<h2>The .4gl File - <a name="Interacting">Interacting with the User</a></h2>
+<h3><a name="definemenu">Defining Actions - the MENU statement</a></h3>
+<p>Your form can display options&nbsp; to the user using <a
+ href="InteractionModel.html#CTRLGACTIONS"> action
+views</a> -&nbsp; buttons, dropdown
+menus (top menus),&nbsp; toolbars, and other items on the window. See
+<a href="FormSpecFiles.html">Form Specification Files</a> for a complete list of 
+form items.&nbsp; </p>
+<p>An <a
+ href="InteractionModel.html#CTRLGACTIONS">action</a> defined in the .4gl module, which identifies the program
+routine to be executed, can be associated with each action
+view shown on the form.. You define the program logic to be executed for 
+each action in&nbsp; the .4gl module. </p>
+<ul>
+	<li>In this BDL program, the <a href="Menus.html">MENU</a>
+statement supplies the
+list of actions and the
+	statements to be executed for each action.&nbsp;The actions are specified with ON ACTION 
+	clauses: </li>
+</ul>
+<blockquote>
+	<blockquote>
+		<pre><tt>   ON</tt> <tt>ACTION </tt>query
+      <tt>CALL</tt> query_cust()</pre>
+	</blockquote>
+</blockquote>
+<ul>
+	<li>The ON ACTION clause defines the action name and the
+statements to be executed for the action. The presentation attributes - title, font, comment,
+    etc. - for
+    the graphical object that serves as the action view are defined in a separate 
+	<a href="ActionDefaults.html">action defaults file</a>, or in the 
+	<a href="FormSpecFiles.html#SECTION_ACTDEFS">Action
+    Defaults section</a> of the form file.&nbsp; This allows you to standardize the
+    appearance of the views for common actions.&nbsp; Action Defaults are illustrated in <a href="TutChap05.html">chapter
+    5</a>.</li>
+</ul>
+<blockquote>
+	<p>You can also use ON ACTION clauses with some other interactive BDL 
+	statements, such as&nbsp;<a href="RecordInput.html">INPUT</a>, 
+	<a href="InputArray.html">INPUT ARRAY</a>, <a href="MultipleDialogs.html">
+	DIALOG</a>, and <a href="DisplayArray.html">DISPLAY ARRAY</a>. </p>
+</blockquote>
+<ul>
+	<li>When the <a href="Menus.html">MENU</a> statement in your program
+is executed, the
+<a href="InteractionModel.html#CTRLGACTIONS">action
+views</a> for the
+<a href="InteractionModel.html#CTRLGACTIONS">actions</a> (<b>query, </b>in the example)&nbsp; that are listed in the interactive
+	MENU
+statement are enabled.&nbsp;Only the action
+views for the actions in the specific MENU statement
+are enabled, so you must be sure to include a means of exiting the 
+	MENU statement.&nbsp;If there is no action
+view defined in your <a href="FormSpecFiles.html">form
+specification file</a>
+for
+	a listed action, a simple push button action view is automatically displayed in the window.&nbsp;Control is
+turned over to the user, and the program waits until the user responds by 
+	selecting one of enabled action
+views or exiting the form.&nbsp;Once an action view is selected, the 
+	corresponding program
+routine (action)
+is executed.&nbsp;</li>
+</ul>
+<p>
+.See <a href="Menus.html">MENUs</a> for a complete discussion of the statement 
+and all its options.</p>
+<h3><a name="Displaymsg">Displaying Messages and Errors</a></h3>
+<p>The <a href="MessageDisplay.html#MESSAGE">MESSAGE</a> and 
+<a href="MessageDisplay.html#ERROR">ERROR</a> statements are used to display
+text containing a message to the user. The text is displayed in a
+specific area, depending on the front end configuration and window
+style.&nbsp; The MESSAGE
+text is displayed until it is replaced by another 
+MESSAGE statement or field
+comment. You can specify any combination of <a
+ href="Variables.html">variables</a>
+and <a href="DataTypes.html#DT_STRING"> strings</a> for the
+text.&nbsp;BDL generates the message to display by replacing any
+variables with
+their values and concatenating the strings:</p>
+<pre><tt>     MESSAGE</tt> &quot;Customer &quot; || l_custrec.store_num , || &quot; retrieved.&quot;</pre>
+<p>The <a href="LocalizedStrings.html">Localized Strings</a> feature
+can be used to customize the messages
+for specific user communities. This is discussed in <a href="TutChap10.html">Chapter
+10</a>.</p>
+<h3><a name="Example1">Example: dispcust.4gl</a></h3>
+<p>This portion of the <b>dispcust.4gl</b> program connects to a
+database, opens
+a window and displays a form and a menu.</p>
+<table border="0" width="100%">
+  <tbody>
+    <tr>
+      <td bgcolor="#c0c0c0" valign="top" width="355">&nbsp;<b>Program</b>
+      <b>dispcust.4gl</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="100%">
+      <pre><code class="linenumber">01</code> -- dispcust.4gl
+<code
+ class="linenumber">02</code> <tt>SCHEMA</tt> custdemo
+<code
+ class="linenumber">03</code> 
+<code class="linenumber">04</code> <tt>MAIN</tt>
+<code class="linenumber">05</code> 
+<code class="linenumber">06</code>   <tt>CONNECT TO</tt> &quot;custdemo&quot;
+<code
+ class="linenumber">07</code> 
+<code class="linenumber">08   </code><tt>CLOSE WINDOW SCREEN</tt>
+<code class="linenumber">09</code><tt>   OPEN WINDOW</tt> custwin <tt>WITH FORM</tt> &quot;custform&quot;
+<code
+ class="linenumber">10</code>   <tt>MESSAGE</tt> &quot;Program retrieves customer 101&quot;
+<code
+ class="linenumber">11
+12   </code><tt>MENU</tt><code
+ class="linenumber"> </code>&quot;Customer&quot; <code class="linenumber">
+13</code>     <tt>ON ACTION</tt> query
+<code
+ class="linenumber">14</code>       <tt>CALL</tt> query_cust()
+<code
+ class="linenumber">15</code>     <tt>ON ACTION</tt> exit
+<code
+ class="linenumber">16 </code>      <tt>EXIT MENU</tt>
+<code class="linenumber">17</code>  <tt> END MENU</tt>
+<code class="linenumber">18</code>
+<code class="linenumber">19</code>   <tt>CLOSE WINDOW</tt> custwin
+<code
+ class="linenumber">20
+21</code>   <tt>DISCONNECT CURRENT
+</tt><code
+ class="linenumber">22</code>
+<code class="linenumber">23 </code><tt>END MAIN</tt></pre>
+      </td>
+    </tr>
+  </tbody>
+</table>
+      <p><b>Notes:</b></p>
+      <ul>
+        <li>Line <code class="linenumber">02</code> The <b>SCHEMA</b>
+statement is
+required since variables are defined as <span style="text-decoration: none">
+		<a href="Variables.html#VA_DEFINE">LIKE</a></span> a database table
+in the
+function query_cust.</li>
+        <li>Line <code class="linenumber">06 </code>opens the <a
+ href="Connections.html#DC_CONNECT_TO"> connection</a> to the <b>custdemo</b>
+database.</li>
+        <li>Line <code class="linenumber">08</code> closes the default
+window named <b>SCREEN,
+          </b>which<b> </b>is opened each time the runtime system
+starts a program
+containing interactive statements</li>
+        <li>Line <code class="linenumber">09</code> uses the <a
+ href="WindowsAndForms.html#OPEN_WINDOW">WITH FORM</a> syntax
+to open a <a href="WindowsAndForms.html#OPEN_WINDOW"> window</a>
+having the identifier <b>custwin </b>containing the <a
+ href="#FormSpec"> form</a>
+identified as<b> custform.&nbsp;&nbsp;</b> The window name must be
+unique among all windows defined in the program. Its scope is the
+entire program. You can use the window's name to reference any open
+window in other modules with other statements.&nbsp; Although there can
+be multiple open windows, only one window may be current at a given
+time. &nbsp;<br>
+          By default, the window that opens will be a normal application window.<br>
+The <a href="WindowsAndForms.html#OPEN_WINDOW"> form identifier</a> is
+the name of the compiled <b> .42f file </b>(<b>custform.42f</b>).&nbsp;
+The form identifier must be unique among form names in the program. Its
+scope of reference is the entire program.</li>
+        <li>Line <code class="linenumber">10</code> displays a string
+as a <a href="MessageDisplay.html#MESSAGE">MESSAGE</a> to the user.
+The message will be displayed until it is replaced by a different
+string.&nbsp;</li>
+        <li>Lines<code class="linenumber"> 12</code> through <code
+ class="linenumber">17</code>
+contain the interactive <a href="Menus.html">MENU</a>
+statement.&nbsp; By default,&nbsp; the menu options <b> query </b>
+and <b> exit</b> are displayed as buttons in the window, with C<b>ustomer</b>
+as the menu title.&nbsp; When the MENU
+statement is executed,&nbsp; the buttons are enabled, and control is
+turned over to the user.&nbsp;<br>
+If the user selects the <b>query</b> button, the function <b>query_cust</b>
+will be executed.&nbsp; Following execution of the function, the <a
+ href="InteractionModel.html#CTRLGACTIONS"> action
+views</a> (buttons in this case) are re-enabled and the program waits
+for the user to select an action again.&nbsp;<br>
+If the user selects the <b>exit</b> button, the <a
+ href="Menus.html">MENU</a> statement is terminated, and the
+program continues with line 19.&nbsp;</li>
+        <li>Line<b> </b><code class="linenumber">19 </code>The window <b>custwin</b> is <a href="WindowsAndForms.html#CLOSE_WINDOW"> closed</a><b>,</b>
+which
+automatically closes the <a href="#FormSpec"> form</a>, removing both
+objects from the application's
+memory.&nbsp;&nbsp;</li>
+        <li>Line <code class="linenumber">21</code>&nbsp; The program <a
+ href="Connections.html#DC_DISCONNECT"> disconnects</a> from the
+database; as there are no more statements in MAIN, the program
+terminates.</li>
+      </ul>
+<hr>
+<h2><a name="WorkingwithRecords">The .4gl File - Retrieving and Displaying Data</a></h2>
+<h3><a name="definerecord">Defining a Record</a></h3>
+<p>In addition to defining individual <a href="Variables.html">variables</a>,
+the
+<a href="Variables.html#DEFINITION">DEFINE</a> statement can define
+a <a href="Records.html">record</a><b>,</b> a collection of variables
+each
+having its own data type and
+name. You put the variables in a record
+so you can treat them as a group.
+Then, you can access any member of a record
+by writing the name of the record, a
+dot (known as dot notation), and the name of the member.&nbsp;</p>
+<pre>    <tt>DEFINE</tt> custrec <tt>RECORD</tt>
+            store_num  <tt>LIKE</tt> customer.store_num
+            store_name <tt>LIKE</tt> customer.store_name
+          <tt>END RECORD</tt></pre>
+<pre>    <tt>DISPLAY</tt> custrec.store_num</pre>
+<p>Your <a href="Records.html">record</a> can contain <a
+ href="Variables.html">variables</a>
+for the columns of a database table.&nbsp; At its simplest, you write <font
+ face="Courier New" size="2">RECORD
+LIKE <i>tablename.</i>*</font> to define a record
+that includes members that match in
+<a href="DataTypes.html"> data type</a> all the columns in
+a database table.&nbsp; However, if your database schema changes often, it's best to list each member
+individually, so
+that a change in the structure of the database table won't break your
+code.&nbsp; Your record can also contain
+members that are not defined in terms of a database table.&nbsp;&nbsp;</p>
+<h3><a name="RetrievingData">Using SQL to Retrieve the Data</a></h3>
+<p>A subset of SQL, known as <a href="StaticSql.html">Static SQL</a>,&nbsp; is 
+provided as part of the BDL language and can be embedded in the program. At 
+runtime, these SQL statements are automatically
+<a href="DynamicSql.html">prepared and executed</a> by the Runtime System.&nbsp;&nbsp;
+</p>
+<blockquote>
+	<pre><tt>SELECT</tt> store_num, store_name <tt>INTO</tt> custrec.* <tt>FROM</tt> customer</pre>
+</blockquote>
+<p>Only a limited number of SQL instructions are supported this way. However,
+<a href="DynamicSql.html">Dynamic SQL Management</a> allows you to execute any 
+kind of SQL statement.</p>
+<h3>Displaying a Record: <a name="displaybyname">DISPLAY BY NAME</a></h3>
+<p>A common technique is to use the names of database columns as the
+names of
+both the members of a <a href="Records.html"> program record</a> and
+the <a href="FormSpecFiles.html#FF_FORM_FIELD"> fields</a> in a
+form.&nbsp; Then,
+the&nbsp;<a href="RecordDisplay.html#DISPLAY_BY_NAME">DISPLAY BY NAME</a>
+statement can be used to display&nbsp; the
+program <a href="Variables.html">variables</a>.&nbsp; By default, a
+<a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen record</a>
+consisting of the <a href="FormSpecFiles.html#FF_FORM_FIELD">form
+fields</a> associated with each database table column&nbsp; is automatically
+created.&nbsp;BDL will match
+the <a href="Variables.html">variable</a> name to the name of the form
+field, ignoring any
+record name prefix:</p>
+<pre>    <tt> DISPLAY BY NAME</tt> custrec.*</pre>
+<p>The program <a href="Variables.html">variables</a> serve as the
+intermediary between the database and the
+<a href="#FormSpec">form</a> that is displayed to the user.&nbsp;
+Values from a row in the database
+table are retrieved into the program variables
+by an SQL SELECT statement, and are then displayed on the form.
+In <a href="TutChap06.html">Chapter 6</a> you will see how the
+user can change the values in the form,
+resulting in changes to the program
+variables, which could then be used in SQL statements to modify the
+data in the
+database.&nbsp;</p>
+<p><img border="0" src="../Images/TUT302.png" width="432" height="288"></p>
+<hr>
+<h3><a name="Example2">Example: dispcust.4gl (function query_cust)</a></h3>
+<p>This function retrieves a row from the customer table and displays
+it in a
+form.</p>
+<table border="0" width="100%">
+  <tbody>
+    <tr>
+      <td bgcolor="#c0c0c0" valign="top" width="389"><b> Function
+query_cust</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="100%">
+      <pre><code class="linenumber">01</code> <tt>FUNCTION</tt> query_cust()      -- displays one row
+<code
+ class="linenumber">02</code>   <tt>DEFINE</tt>  l_custrec <tt>RECORD</tt>
+<code class="linenumber">03</code>      store_num    <tt>LIKE</tt> customer.store_num,
+<code
+ class="linenumber">04</code>      store_name   <tt>LIKE</tt> customer.store_name,
+<code
+ class="linenumber">05</code>      addr         <tt>LIKE</tt> customer.addr,
+<code
+ class="linenumber">06</code>      addr2        <tt>LIKE</tt> customer.addr2,
+<code
+ class="linenumber">07</code>      city         <tt>LIKE</tt> customer.city,
+<code
+ class="linenumber">08</code>      state        <tt>LIKE</tt> customer.state,
+<code
+ class="linenumber">09</code>      zipcode      <tt>LIKE</tt> customer.zipcode,
+<code
+ class="linenumber">10</code>      contact_name <tt>LIKE</tt> customer.contact_name,
+<code
+ class="linenumber">11</code>      phone        <tt>LIKE</tt> customer.phone
+<code
+ class="linenumber">12</code>     <tt>END RECORD</tt>
+<code class="linenumber">13</code>
+<code class="linenumber">14</code>   <tt>SELECT</tt> store_num, 
+<code class="linenumber">15</code>          store_name, 
+<code class="linenumber">16</code>          addr,
+<code class="linenumber">17</code>          addr2, 
+<code class="linenumber">18</code>          city, 
+<code class="linenumber">19</code>          state, 
+<code class="linenumber">20</code>          zipcode,
+<code class="linenumber">21</code>          contact_name, 
+<code class="linenumber">22</code>          phone  
+<code class="linenumber">23</code>     <tt> INTO</tt> l_custrec.* 
+<code class="linenumber">24</code>     <tt> FROM</tt> customer 
+<code class="linenumber">25</code>     <tt> WHERE</tt> store_num = 101
+<code class="linenumber">26</code>     
+<code class="linenumber">27</code>   <tt>DISPLAY BY NAME</tt> l_custrec.* 
+<code class="linenumber">28</code>   <tt>MESSAGE</tt> &quot;Customer &quot; || l_custrec.store_num ||
+<code class="linenumber">29</code>          &quot; displayed.&quot;
+<code class="linenumber">30</code> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </tbody>
+</table>
+ <p><b>Notes:</b></p>
+  <ul>
+  <li>Line <code class="linenumber">01 </code> is the beginning of the function <b>query_cust</b>.&nbsp;
+  No <a href="Variables.html">variables</a> are passed to the function.</li>
+ <li>Lines <code class="linenumber">02 </code> thru <code class="linenumber">12 </code><a  href="Variables.html#DEFINITION">DEFINE</a> 
+  a <a href="Records.html">record</a> <b>l_custrec</b> as <a href="Variables.html#DATABASE_TYPES">LIKE</a> columns in the <b> customer</b> 
+  database table, listing each <a href="Variables.html">variable</a> separately.</li>
+  <li>Line <code class="linenumber">14 </code>thru <code class="linenumber">25</code>  SELECT<b> ..
+	</b>INTO can be used, since
+  the statement will retrieve only one row from the database. The SELECT statement lists each column name to be retrieved, rather than 
+  using <font face="Courier New"> SELECT *</font>. This allows for the possibility that additional columns might be added to a table at a
+ future date. Since the SELECT list retrieves values for all the <a href="Variables.html">variables</a> in the program <a href="Records.html">record</a>, 
+ in the order listed in the <a href="Variables.html#DEFINITION">DEFINE</a> statement, the shorthand <font face="Courier New" size="2">INTO l_custrec.*</font>&nbsp;
+ can be used.</li>
+  <li>Line <code class="linenumber">27</code>&nbsp; The names in the program <a href="Records.html">record</a> <b>l_custrec </b>match the names of 
+  screen fields on the <a href="#FormSpec"> form</a>, so <a href="RecordDisplay.html#DISPLAY_BY_NAME">DISPLAY BY NAME</a> can be used. 
+<font face="Courier New" size="2">l_custrec.*</font> indicates that all of the members of the program record are to be displayed.</li>
+ <li>Lines <code class="linenumber">28</code> and <code class="linenumber">29</code>&nbsp; A string for the <a href="MessageDisplay.html#MESSAGE">MESSAGE</a> 
+  statement is concatenated together using the double pipe ( || ) operator and displayed. The message consists of the string "<b>Customer </b>", the 
+  value of <b>l_custrec.store_num</b>, and the string "<b> displayed</b>".</li>
+  </ul>
+<p>There are no additional statements in the function, so the program returns to the <a href="Menus.html">MENU</a> statement,
+awaiting the user's next action.</p>
+<hr>
+<h2><a name="FormSpec">The Form Specification File</a></h2>
+<h3><a name="Overview">Overview</a></h3>
+<p>You can specify the layout of a form in a <a href="FormSpecFiles.html"> form specification file</a>, which is compiled separately from your program. 
+The form specification file defines the initial settings for the form, which can be changed programmatically at runtime. </p>
+<p>Form specification files have a file extension of <b> .per </b>. The structure of the form is independent of the use of the
+form. For example, one function can use a form to display a database row, another can let the user enter a new database row, and still another
+can let the user enter criteria for selecting database rows. </p>
+<p>A Form can contain the following types of items:</p>
+<ul>
+	<li><a href="FormSpecFiles.html#CONTAINERS">Container </a>- groups other 
+	form items. Every form item must be in a container. A
+	<a href="FormSpecFiles.html#FF_CONTAINER_GRID">GRID</a> is the basic 
+	container, frequently used to display a single row of database data.
+	<a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE</a> containers can 
+	provide record-list presentation in columns and rows. Other containers, such 
+	as a <a href="FormSpecFiles.html#FF_CONTAINER_PAGE">FOLDER</a> or
+	<a href="FormSpecFiles.html#FF_CONTAINER_GROUP">GROUP</a>, provide 
+	additional options for organizing the data that is displayed. </li>
+	<li><a href="FormSpecFiles.html#FF_FORM_FIELD">FormField</a> -&nbsp; 
+	defines an area where the user can view and edit data. The data is stored in 
+	variables defined in the .4gl source code file. The
+	<a href="FormSpecFiles.html#FF_ITEMTYPE_EDIT">EDIT</a> formfield provides a 
+	simple line-edit field. Other form items, such as a
+	<a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">COMBOBOX</a> or
+	<a href="FormSpecFiles.html#FF_ITEMTYPE_RADIOGROUP">RADIOGROUP</a>, provide 
+	a user-friendly interface to the data stored in the 
+	underlying formfield.&nbsp;The data type of a formfield can be
+	<a href="FormSpecFiles.html#FF_DATABASE_FIELDS">defined by a database table 
+	column</a>, or it can be <a href="FormSpecFiles.html#FF_FORMONLY_FIELD">
+	FORMONLY</a> - defined specifically in the form.&nbsp; </li>
+	<li><a href="InteractionModel.html#BINDING_ACTIONS">Action view</a> - allows the user 
+	to trigger <a href="InteractionModel.html#BINDING_ACTIONS">actions</a> specified in the .4gl file. 
+	An Action view can be a <a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTON">
+	BUTTON</a>,
+	<a href="FormSpecFiles.html#SECTION_TOOLBAR">Toolbar icon</a>, or
+	<a href="FormSpecFiles.html#SECTION_TOPMENU">Topmenu option</a>, for 
+	example. </li>
+	<li>Other - items that enhance the display or provide read-only information 
+	(an <a href="FormSpecFiles.html#FF_ITEMTYPE_IMAGE">IMAGE</a> or
+	<a href="FormSpecFiles.html#FF_ITEMTYPE_LABEL">LABEL</a>, for example). 
+	</li>
+</ul>
+<p>Each form and form item 
+has <a href="FSFAttributes.html">attributes</a> that control its appearance and behavior. 
+See <a href="FormSpecFiles.html">Form Specification Files</a>,
+<a href="FSFAttributes.html">Form Specification File Attributes</a>, and
+<a href="InteractionModel.html">The Interaction Model</a> for additional 
+information about form items.</p>
+<p>Styles from a <a href="PresentationStyles.html">Presentation Styles</a> file can 
+be applied to the form and form items.</p>
+<p>A basic form specification consists of the following sections: </p>
+<h3><a name="SCHEMASection">The SCHEMA section</a> (optional) </h3>
+<p>This specifies the <a href="IntroBDL.html#SchemaFiles">database schema file</a> to be used when the form is
+compiled.&nbsp; It is required if any form items are defined as data
+types based
+on a column of a database table.&nbsp;&nbsp; </p>
+<pre>     <tt>SCHEMA</tt> custdemo</pre>
+<h3><a name="OtherSections">The ACTION DEFAULTS, TOPMENU, and TOOLBAR sections</a> (optional)</h3>
+<p>     These sections are provided to allow you to define the decoration for
+action views (<a href="FormSpecFiles.html#SECTION_ACTDEFS">action defaults</a>), as well as
+to define <a href="FormSpecFiles.html#SECTION_TOPMENU">Topmenus</a> and <a href="FormSpecFiles.html#SECTION_TOOLBAR">Toolbars</a> for the form. In this
+case, the definitions are specific to the form.&nbsp; If your definitions are in
+external XML files instead, they can be applied to any form.</p>
+<p>     This is
+discussed in <a href="TutChap05.html"> chapter 5</a>.</p>
+<h3><a name="LAYOUTSection">The LAYOUT section</a> </h3>
+<p>This section defines the appearance of a form using a <a
+ href="FormSpecFiles.html#SECTION_LAYOUT">layout tree</a> of
+containers, which can hold other containers or can define a screen
+area. Some of
+the available containers are <a href="FormSpecFiles.html#FF_CONTAINER_GRID">GRID</a>,
+<a href="FormSpecFiles.html#FF_CONTAINER_VBOX">VBOX</a>, <a
+ href="FormSpecFiles.html#FF_CONTAINER_HBOX">HBOX</a>,
+<a href="FormSpecFiles.html#FF_CONTAINER_GROUP">GROUP</a>, <a
+ href="FormSpecFiles.html#FF_CONTAINER_FOLDER">FOLDER</a>, and
+<a href="FormSpecFiles.html#FF_CONTAINER_PAGE">PAGE</a>. </p>
+<p>The simplest layout tree
+could have only a <a href="FormSpecFiles.html#FF_CONTAINER_GRID">GRID</a>
+container defining the
+dimensions and the position of the logical elements of a screen: </p>
+<blockquote>
+  <pre><tt>LAYOUT
+&nbsp; GRID</tt>
+&nbsp;&nbsp;&nbsp; grid-area
+&nbsp; <tt>END
+END</tt></pre>
+</blockquote>
+<p> The END
+keyword is mandatory to define
+the end of a container block.</p>
+<p>The <i><a href="FormSpecFiles.html#FF_CONTAINER_GRID">grid-area</a></i>
+is
+delimited by curly braces.&nbsp;Within this
+area, you can specify the position of form items or
+interactive objects such as
+<a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTON">BUTTON</a>, <a
+ href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">COMBOBOX</a>,&nbsp;
+<a href="FormSpecFiles.html#FF_ITEMTYPE_CHECKBOX">CHECKBOX</a>,&nbsp;
+<a href="FormSpecFiles.html#FF_ITEMTYPE_RADIOGROUP">RADIOGROUP</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_PROGRESSBAR">PROGRESSBAR</a><b>,
+</b>etc.</p>
+<p>Simple <a href="FormSpecFiles.html#FF_FORM_FIELD">form fields</a>,
+delimited by square brackets ( [ ] ), are
+<a href="FormSpecFiles.html#FF_FORM_ITEM">form items</a> used to display data and take input. Generally, the number of
+characters
+in the space between the brackets defines the width of the region
+to be used by the item.&nbsp; For example, in the grid-area, the
+following field
+could be defined:</p>
+<pre>     [f01            ]</pre>
+<p>     This form field has an&nbsp;<a
+ href="FormSpecFiles.html#FF_ITEM_TAG">item
+tag</a> of <b>f01</b>, which will be used to link the
+field to its definition in the <a
+ href="FormSpecFiles.html#SECTION_ATTRIBUTES"> ATTRIBUTES</a>
+section of the form
+specification.</p>
+<p>     Interactive form items, such as
+<a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">COMBOBOX</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_CHECKBOX">CHECKBOX</a>,&nbsp; and
+<a href="FormSpecFiles.html#FF_ITEMTYPE_RADIOGROUP">RADIOGROUP</a>, can be used 
+instead of simple form fields to represent the values in the underlying 
+formfield.&nbsp;Special width calculations are done for some of these form items, such
+as <a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">COMBOBOX</a>, <a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTONEDIT">BUTTONEDIT</a>,
+and <a href="FormSpecFiles.html#FF_ITEMTYPE_DATEEDIT">DATEEDIT</a>. If the
+default width generated by the form compiler does not fit, the - dash symbol can
+be used to define the real width of the item.</p>
+<p>Text in the grid-area that is outside brackets is display-only text,
+as in the word
+<b> Company</b> below:&nbsp;</p>
+<pre>     Company [f01            ]</pre>
+<h3><a name="TABLESSection">The TABLES section (optional)</a></h3>
+<p>If a database table or database view is referenced elsewhere in
+the form specification file, in the <a
+ href="FormSpecFiles.html#SECTION_ATTRIBUTES"> ATTRIBUTES</a>
+<b> </b>section for example, the table or view must be listed in the
+TABLES section:</p>
+<pre>    <tt>TABLES </tt>
+      customer 
+    <tt>END</tt></pre>
+<p> A <i> <a href="#displaybyname"> default screen record</a></i> is
+automatically created for the <a
+ href="FormSpecFiles.html#FF_FORM_FIELD">form fields</a>
+associated with each table listed in this section.</p>
+<h3><a name="ATTRIBUTES">The ATTRIBUTES section</a></h3>
+<p>The <a href="FormSpecFiles.html#SECTION_ATTRIBUTES"> ATTRIBUTES</a>
+section
+defines properties of the items used in
+the form. </p>
+<h4>Form Fields</h4>
+<p>For form fields (items that can be used to display data or
+take input)
+the definition is:</p>
+<pre>    &lt;<i>item-type</i>&gt; &lt;<i>item-tag</i>&gt; = &lt;<i>item-name</i>&gt;, &lt;<i>attribute-list</i>&gt; ;</pre>
+<ul>
+	<li>The <i><a href="FormSpecFiles.html#SECTION_ATTRIBUTES">item-type</a></i>
+defines the kind of graphical object which must be used to display the form 
+element.</li>
+	<li>The <a href="FormSpecFiles.html#FF_ITEM_TAG"><i>item-tag</i></a> identifies 
+the form item in the display area.</li>
+	<li>The <a href="FormSpecFiles.html"><i>item-name</i></a> provides the name 
+of the form item. </li>
+	<li>The optional <i><a href="FormSpecFiles.html#FF_ATTRIBUTE_LIST">attribute-list</a></i> 
+defines the aspect and behavior of the form item. </li>
+</ul>
+<h4>    Examples:</h4>
+<pre>  <tt>  EDIT </tt>f01 = customer.cust_num,<tt> REQUIRED</tt>;
+    <tt>COMBOBOX</tt> f03 = customer.state;
+    <tt>CHECKBOX</tt> f04 = formonly.propcheck;</pre>
+<p>&nbsp;The most commonly
+used
+item-type, <a href="FormSpecFiles.html#FF_ITEMTYPE_EDIT">EDIT</a>, defines a 
+simple line edit box for data input or display. This example uses an EDIT 
+item-type for the form field f01.The
+<a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">COMBOBOX</a> and
+<a href="FormSpecFiles.html#FF_ITEMTYPE_CHECKBOX">CHECKBOX</a> item types 
+present the data contained in the form fields f03 and f04 in a 
+user-friendly way.&nbsp; </p>
+<p>The&nbsp;<i><a href="FormSpecFiles.html#FF_DATABASE_FIELDS">item-name</a></i>
+must specify a database column as the name of the display field, or
+must be FORMONLY (fields defined as FORMONLY are discussed in <a href="TutChap11.html">chapter
+11</a>.) Fields are associated with database columns only during the
+compilation of the form specification file, to identify the data type for the 
+form field based on the database schema.&nbsp; After the form compiler
+identifies the data types,&nbsp; the association between 
+fields and database columns is broken, and the item-name is associated with the 
+<a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen record</a>.</p>
+<p>Form field and form item definitions can optionally include an
+<i><a href="FSFAttributes.html">attribute-list</a></i> to specify
+the appearance and behavior of the item. For example, you can define
+acceptable input values, on-screen comments, and default values for fields; you 
+can insure that a value is entered in the field during the input of a new row 
+(<a href="FSFAttributes.html#FA_REQUIRED">REQUIRED</a>);
+columns in a table can be specified as sortable or non-sortable; numbers and 
+dates can be formatted for display; data entry patterns can be defined and input 
+data can be upshifted or downshifted.</p>
+<p>A form field can be an <a href="FormSpecFiles.html#FF_ITEMTYPE_EDIT">EDIT</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTONEDIT">BUTTONEDIT</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_CHECKBOX">CHECKBOX</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">COMBOBOX</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_DATEEDIT">DATEEDIT</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_IMAGE">IMAGE</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_LABEL">LABEL</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_PROGRESSBAR">PROGRESSBAR</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_RADIOGROUP">RADIOGROUP</a>,
+or
+<a href="FormSpecFiles.html#FF_ITEMTYPE_TEXTEDIT">TEXTEDIT</a>.</p>
+<h4>Other form items</h4>
+<p>For form items that are not form fields
+(<a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTON">BUTTON</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_CANVAS">CANVAS</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_GROUP">GROUP</a>, static
+<a href="FormSpecFiles.html#FF_ITEMTYPE_IMAGE">IMAGE</a>, static
+<a href="FormSpecFiles.html#FF_ITEMTYPE_LABEL">LABEL</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_SCROLLGRID">SCROLLGRID</a>, and
+<a href="FormSpecFiles.html#FF_ITEMTYPE_TABLE">TABLE</a>) the definition is:</p>
+<pre><i>    &lt;item-type&gt;</i> <i>&lt;item-tag&gt;</i> : <i>&lt;item-name&gt;</i> , <i>&lt;attribute-list&gt;</i> ;</pre>
+<p>Examples:</p>
+<pre> <tt>   BUTTON</tt> btn1: print, <tt>TEXT</tt> = &quot;Print Report&quot;;
+    <tt>LABEL</tt> lab1 : label1, <tt>TEXT</tt> =&quot;Customer&quot;;</pre>
+<h3><a name="INSTRUCTIONSSection">The INSTRUCTIONS </a> section
+(optional)</h3>
+<p>The<a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">
+INSTRUCTIONS</a> section is used to define explicit screen records or
+screen arrays.
+This is discussed in <a href="TutChap07.html">Chapter 7</a>.&nbsp;</p>
+<hr>
+<h3><a name="Exampleform">Example:&nbsp; Form Specification File
+custform.per</a></h3>
+<p>This form specification file is used with the <b>dispcust.4gl</b>
+program to
+display program variables to the user. This form uses a layout
+with a simple <a href="FormSpecFiles.html#FF_CONTAINER_GRID">GRID</a>
+to define the display area.</p>
+<table border="0" width="100%">
+  <tbody>
+    <tr>
+      <td bgcolor="#c0c0c0" valign="top" width="387"> <b>custform.per</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="387">
+      <pre><code class="linenumber">01</code> <tt>SCHEMA</tt> custdemo
+<code
+ class="linenumber">02</code>
+<code class="linenumber">03</code> <tt>LAYOUT</tt>
+<code class="linenumber">04</code>   <tt>GRID</tt>
+<code class="linenumber">05</code>   {
+<code class="linenumber">06</code>    Store #:[f01  ] Name:[f02                 ]
+<code
+ class="linenumber">07</code>    Address:[f03                 ]
+<code
+ class="linenumber">08</code>            [f04                 ]
+<code
+ class="linenumber">09 </code>      City:[f05             ]State:[f6]Zip:[f07   ] 
+<code
+ class="linenumber">10 </code>   Contact:[f08                           ]
+<code
+ class="linenumber">11</code>      Phone:[f09                ]       
+<code
+ class="linenumber">12</code>
+<code class="linenumber">13</code>   }   
+<code class="linenumber">14</code>   <tt>END</tt>   --grid
+<code
+ class="linenumber">15</code> <tt>END</tt>  -- layout
+<code
+ class="linenumber">16</code>
+<code class="linenumber">17</code> <tt>TABLES</tt> 
+<code
+ class="linenumber">18</code>     customer
+<code class="linenumber">19</code> <tt>END</tt>
+<code class="linenumber">20</code>
+<code class="linenumber">21</code> <tt>ATTRIBUTES</tt>
+<code class="linenumber">22</code> <tt>EDIT</tt> f01 = customer.store_num, <tt>REQUIRED</tt>;
+<code
+ class="linenumber">23</code> <tt>EDIT</tt> f02 = customer.store_name, <tt>COMMENT</tt>=&quot;Customer name&quot;;
+<code
+ class="linenumber">24</code> <tt>EDIT</tt> f03 = customer.addr;
+<code
+ class="linenumber">25</code> <tt>EDIT</tt> f04 = customer.addr2;
+<code
+ class="linenumber">26</code><tt> EDIT</tt> f05 = customer.city;
+<code
+ class="linenumber">27</code> <tt>EDIT</tt> f6  = customer.state;
+<code
+ class="linenumber">28</code> <tt>EDIT</tt> f07 = customer.zipcode;
+<code
+ class="linenumber">29</code> <tt>EDIT</tt> f08 = customer.contact_name;
+<code
+ class="linenumber">30</code> <tt>EDIT</tt> f09 = customer.phone;
+<code
+ class="linenumber">31</code> <tt>END</tt> </pre>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<h4>Notes:</h4>
+<ul>
+  <li>Line <code class="linenumber">01</code>
+lists the <a href="IntroBDL.html#SchemaFiles">database schema file</a>
+from which
+the <a href="FormSpecFiles.html#FF_FORM_FIELD">form field</a> data
+types will be obtained.</li>
+  <li>Lines <code class="linenumber">03</code> through <code
+ class="linenumber"> 15</code> delimit the <a href="#LAYOUTSection">
+LAYOUT</a> section of the form.</li>
+  <li>Lines <code class="linenumber">04</code> thru <code
+ class="linenumber">14</code> delimit the&nbsp; <a
+ href="FormSpecFiles.html#FF_CONTAINER_GRID">GRID</a> area, indicating
+what
+will be displayed to the user between the curly brackets on lines <code
+ class="linenumber">05</code> and <code class="linenumber">13</code>.</li>
+  <li>Line <code class="linenumber">17</code> The <a
+ href="#TABLESSection"> TABLES</a> statement is required since the
+field descriptions reference the columns of the database table <b>customer</b>.</li>
+  <li>
+ Within the grid area, the <a
+ href="FormSpecFiles.html#FF_FORM_FIELD">form fields</a> have <a
+ href="FormSpecFiles.html#FF_ITEM_TAG">item tags</a> linking them to
+descriptions in the <a href="FormSpecFiles.html#SECTION_ATTRIBUTES">
+ATTRIBUTES</a> section, in lines <code class="linenumber">20</code>
+thru <code class="linenumber">28</code>.&nbsp; As an example,<b> </b>
+	f01
+is the display area for a program variable having
+the same data type definition as the <b>store_num</b> column in the <b>customer
+      </b>table
+of the <b>custdemo</b> database.&nbsp;&nbsp;</li>
+  <li>Line <code class="linenumber">22</code> All of the item-tags
+in the form layout section are listed in the <a
+ href="FormSpecFiles.html#SECTION_ATTRIBUTES"> ATTRIBUTES</a>
+section.&nbsp;For example, the item-tag f01 is listed as
+having an item-type of <b>EDIT</b>.&nbsp; This field will be used for
+display only in this program, but the same form will be used for input
+in a
+later program.&nbsp;An additional attribute, <a
+ href="FSFAttributes.html#FA_REQUIRED">REQUIRED</a>, indicates
+that when this form is used for input, an entry in the field<b> </b>
+	f01
+must be
+made.&nbsp; This prevents the user from trying to add a row with a NULL
+      <b>
+store_num</b> to the <b> customer</b> table, which would result in an error message from the
+database. </li>
+  <li>Line <code class="linenumber">23</code> The second field is defined
+        with the attribute <a href="FSFAttributes.html#FA_COMMENT">COMMENT</a>,
+        which specifies text to be displayed when this field gets the focus, or
+        as a tooltip when the mouse goes over the field.</li>
+</ul>
+<hr>
+<h2><a name="Compiling">Compiling the Program and Form</a></h2>
+<p>When this form is compiled (translated) using the<b> <a
+ href="Tools.html#TL_FGLFORM"> fglform</a></b> tool,
+an XML file is
+generated that has a file extension of <b>.42f</b>.&nbsp; The runtime
+system
+uses this file along with your programs to define the Abstract User
+Interface<b>. </b></p>
+<p>Compile the form:</p>
+<pre>     fglform custform.per</pre>
+Compile the single module program:
+<blockquote>
+  <pre>fglcomp dispcust.4gl</pre>
+</blockquote>
+Execute the program:
+<blockquote>
+  <pre>fglrun dispcust.42m</pre>
+</blockquote>
+</body>
+</html>

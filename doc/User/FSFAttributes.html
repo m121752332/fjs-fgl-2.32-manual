@@ -1,0 +1,3600 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Form Attributes</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Form Specification File Attributes</a></H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#ATTRIBLIST">Attributes Summary</a></li>
+</ul>
+
+<p><i>See also:</i>  <a href="FormSpecFiles.html">Form Specification Files</a>.</p>
+
+<HR>
+
+<h2><a name="ATTRIBLIST">Attributes Summary</a></h2>
+  <table border="0" width="95%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="41%"><b> Attribute</b></td>
+      <td bgcolor="#C0C0C0" width="57%"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_ACCELERATOR">ACCELERATOR</a> </td>
+      <td valign="top" width="57%">First accelerator key for an action default</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_ACCELERATOR2">ACCELERATOR2</a> </td>
+      <td valign="top" width="57%">Second accelerator key for an action default</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_ACCELERATOR3">ACCELERATOR3</a> </td>
+      <td valign="top" width="57%">Third accelerator key for an action default</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_ACCELERATOR4">ACCELERATOR4</a> </td>
+      <td valign="top" width="57%">Fourth accelerator key for an action default</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_ACTION">ACTION</a> </td>
+      <td valign="top" width="57%">Action name to be sent to the program when
+        the item is activated</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_AUTOSCALE">AUTOSCALE</a> </td>
+      <td valign="top" width="57%">Forces the item's contents to be scaled according to the
+        available space</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_AUTONEXT">AUTONEXT</a></td>
+      <td valign="top" width="57%">Automatically gives the focus to the next field
+        when all data is entered</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_BUTTONTEXTHIDDEN">BUTTONTEXTHIDDEN</a> </td>
+      <td valign="top" width="57%">Indicates that the button labels of the element must be 
+		hidden</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_CENTURY">CENTURY</a></td>
+      <td valign="top" width="57%">Specifies expansion of 2-digit years in DATE and DATETIME fields</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_COLOR">COLOR</a></td>
+      <td valign="top" width="57%">Specifies the foreground color of the text displayed by a
+        form item</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_COLOR_WHERE">COLOR WHERE</a>   </td>
+      <td valign="top" width="57%">Defines a Boolean condition based on field values to set
+        the color attribute dynamically</td>
+    </tr>
+    <tr>
+      <td valign="top" height="19" width="41%"><a href="#FA_CONTEXTMENU">CONTEXTMENU</a></td>
+      <td valign="top" height="19" width="57%">Defines if the context menu option must be displayed for an
+        action</td>
+    </tr>
+    <tr>
+      <td valign="top" height="19" width="41%"><a href="#FA_COMMENT">COMMENT</a></td>
+      <td valign="top" height="19" width="57%">Specifies a message to display on the Comment line</td>
+    </tr>
+    <tr>
+      <td valign="top" height="19" width="41%"><a href="#FA_COMPONENTTYPE">COMPONENTTYPE</a></td>
+      <td valign="top" height="19" width="57%">Defines the type of the Web
+        Component</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_DEFAULT">DEFAULT</a></td>
+      <td valign="top" width="57%">Assigns a default value to a field during data entry</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_DEFAULTVIEW">DEFAULTVIEW</a></td>
+      <td valign="top" width="57%">Defines if the default view must be displayed for an
+        action</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_DISPLAY_LIKE">DISPLAY LIKE</a>   </td>
+      <td valign="top" width="57%">Assigns attributes from the <a href="DatabaseSchema.html">database
+        schema</a> files</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_DOUBLECLICK">DOUBLECLICK</a></td>
+      <td valign="top" width="57%">Defines the action to be sent when user double-clicks on
+        the item</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_DOWNSHIFT">DOWNSHIFT</a></td>
+      <td valign="top" width="57%">Converts to lowercase any uppercase character data</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_EXPANDEDCOLUMN">EXPANDEDCOLUMN</a></td>
+      <td valign="top" width="57%">Indicates the form field that specifies 
+		whether a tree node is expanded (opened)</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_HEIGHT">HEIGHT</a> </td>
+      <td valign="top" width="57%">Explicitly defines the height of a form element</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_HIDDEN">HIDDEN</a> </td>
+      <td valign="top" width="57%">Makes an element invisible</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_FONTPITCH">FONTPITCH</a>  </td>
+      <td valign="top" width="57%">Defines the character font type as fixed or variable</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_FORMAT">FORMAT</a></td>
+      <td valign="top" width="57%">Formats <a href="DataTypes.html#DT_DECIMAL">DECIMAL</a>, <a href="DataTypes.html#DT_MONEY">MONEY</a>,
+        <a href="DataTypes.html#DT_SMALLFLOAT">SMALLFLOAT</a>,
+        <a href="DataTypes.html#DT_FLOAT">FLOAT</a>, or <a href="DataTypes.html#DT_DATE"> DATE</a> 
+        field formatting</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_GRIDCHILDRENINPARENT">GRIDCHILDRENINPARENT</a></td>
+      <td valign="top" width="57%">Aligns children to the parent container</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_IDCOLUMN">IDCOLUMN</a></td>
+      <td valign="top" width="57%">Specifies the form field containing the 
+		identifier of a tree node</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_IMAGE">IMAGE</a> </td>
+      <td valign="top" width="57%">Defines the URL of the image resource associated to the
+        form item</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_IMAGECOLUMN">IMAGECOLUMN</a></td>
+      <td valign="top" width="57%">Defines the field that holds the image for
+        this field</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_IMAGECOLLAPSED">IMAGECOLLAPSED</a></td>
+      <td valign="top" width="57%">Specifies the icon to be used when a tree 
+		node is collapsed</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_IMAGEEXPANDED">IMAGEEXPANDED</a></td>
+      <td valign="top" width="57%">Specifies the icon to be used when a tree 
+		node is expanded</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_IMAGELEAF">IMAGELEAF</a></td>
+      <td valign="top" width="57%">Specifies the icon to be used for leaf nodes
+        in a tree</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_INCLUDE">INCLUDE</a></td>
+      <td valign="top" width="57%">Lists a set of acceptable values during data entry</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_INITIALIZER">INITIALIZER</a>  </td>
+      <td valign="top" width="57%">Specifies an initialization function for the ComboBox item</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_INVISIBLE">INVISIBLE</a></td>
+      <td valign="top" width="57%">Does not echo characters on the screen during data entry</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_ISNODECOLUMN">ISNODECOLUMN</a></td>
+      <td valign="top" width="57%">Specifies the form field that indicates a 
+		tree node has children</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_ITEMS">ITEMS</a> </td>
+      <td valign="top" width="57%">Defines a list of values to be used by the form item</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_JUSTIFY">JUSTIFY</a> </td>
+      <td valign="top" width="57%">Specifies the justification of the content of
+        a field</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_MINHEIGHT">MINHEIGHT</a></td>
+      <td valign="top" width="57%">Defines a minimum height for the form item</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_MINWIDTH">MINWIDTH</a></td>
+      <td valign="top" width="57%">Defines a minimum width for the form item</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_NOT_NULL">NOT NULL</a></td>
+      <td valign="top" width="57%">Indicates that the field does not accept NULL values</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_NOENTRY">NOENTRY</a></td>
+      <td valign="top" width="57%">Prevents the user from entering data in the field</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_ORIENTATION">ORIENTATION</a> </td>
+      <td valign="top" width="57%">Defines the orientation of an element as vertical or
+        horizontal</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_PARENTIDCOLUMN">PARENTIDCOLUMN</a></td>
+      <td valign="top" width="57%">Specifies the form field containing the 
+		identifier of a tree node's parent</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_PICTURE">PICTURE</a></td>
+      <td valign="top" width="57%">Imposes a data-entry format on CHAR or VARCHAR fields</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_PROGRAM">PROGRAM</a></td>
+      <td valign="top" width="57%">Invokes an external program to display TEXT or BYTE values</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_PROPERTIES">PROPERTIES</a></td>
+      <td valign="top" width="57%">Defines a free list of widget-specific
+        properties</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_QUERYEDITABLE">QUERYEDITABLE</a> </td>
+      <td valign="top" width="57%">Allows a combobox field to be editable during a CONSTRUCT</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_REQUIRED">REQUIRED</a></td>
+      <td valign="top" width="57%">Requires the user to supply a value during input
+        instructions</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_REVERSE">REVERSE</a>  </td>
+      <td valign="top" width="57%">Causes values in the field to be displayed in reverse video</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_SAMPLE">SAMPLE</a>    </td>
+      <td valign="top" width="57%">Provides the text to be used as a sample to compute the
+        width</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_SCROLL">SCROLL</a>  </td>
+      <td valign="top" width="57%">Allows scrolling within the field</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_SCROLLBARS">SCROLLBARS</a> </td>
+      <td valign="top" width="57%">Defines vertical and/or horizontal scrollbars for the
+        form item</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_SIZEPOLICY">SIZEPOLICY</a> </td>
+      <td valign="top" width="57%">Indicates sizing hint to display form elements.</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_SPACING">SPACING</a> </td>
+      <td valign="top" width="57%">Indicates spacing hint to display form elements</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_SPLITTER">SPLITTER</a> </td>
+      <td valign="top" width="57%">Indicates that the container must use a splitter</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_STEP">STEP</a> </td>
+      <td valign="top" width="57%">Defines how much the value increases or decreases 
+      with a single click</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_STRETCH">STRETCH</a> </td>
+      <td valign="top" width="57%">Defines how the widget must resize according to the
+        parent container</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_STYLE">STYLE</a> </td>
+      <td valign="top" width="57%">Defines a presentation style for the form element</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_TAG">TAG</a> </td>
+      <td valign="top" width="57%">Defines a string identifier for the form item</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_TABINDEX">TABINDEX</a> </td>
+      <td valign="top" width="57%">Defines the tab order for the form item</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_TEXT">TEXT</a> </td>
+      <td valign="top" width="57%">Defines the label to be associated with the form item</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_TITLE">TITLE</a> </td>
+      <td valign="top" width="57%">Defines the title to be associated with the form item</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_UPSHIFT">UPSHIFT</a></td>
+      <td valign="top" width="57%">Converts to uppercase any lowercase character data</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_UNHIDABLE">UNHIDABLE</a> </td>
+      <td valign="top" width="57%">Indicates that the column cannot be hidden</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_UNHIDABLECOLUMNS">UNHIDABLECOLUMNS</a> </td>
+      <td valign="top" width="57%">The table does not allow columns to be hidden</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_UNMOVABLE">UNMOVABLE</a> </td>
+      <td valign="top" width="57%">Indicates that the column cannot be moved</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_UNMOVABLECOLUMNS">UNMOVABLECOLUMNS</a> </td>
+      <td valign="top" width="57%">Prevents the user from changing the
+        order of the columns</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_UNSIZABLE">UNSIZABLE</a> </td>
+      <td valign="top" width="57%">Indicates that the column cannot be resized</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_UNSIZABLECOLUMNS">UNSIZABLECOLUMNS</a> </td>
+      <td valign="top" width="57%">The table does not allow columns to be resized</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_UNSORTABLE">UNSORTABLE</a> </td>
+      <td valign="top" width="57%">Indicates that the column cannot be used for sorting</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_UNSORTABLECOLUMNS">UNSORTABLECOLUMNS</a> </td>
+      <td valign="top" width="57%">The table does not allow rows to be sorted</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_VALIDATE">VALIDATE</a>   </td>
+      <td valign="top" width="57%">Defines the data validation mode for a given action</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_VALIDATE_LIKE">VALIDATE LIKE</a>   </td>
+      <td valign="top" width="57%">Validates data entry with definitions from the
+                       <a href="DatabaseSchema.html">database schema</a> files</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_VALUEMIN">VALUEMIN</a> </td>
+      <td valign="top" width="57%">Defines the lower limit for widgets (such as 
+		progressbars)</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_VALUEMAX">VALUEMAX</a> </td>
+      <td valign="top" width="57%">Defines the upper limit for widgets (such as 
+		progressbars)</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_VALUECHECKED">VALUECHECKED</a> </td>
+      <td valign="top" width="57%">Defines the value to be associated with a checked checkbox</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_VALUEUNCHECKED">VALUEUNCHECKED</a> </td>
+      <td valign="top" width="57%">Defines the value to be associated with an unchecked
+        checkbox</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_VERIFY">VERIFY</a></td>
+      <td valign="top" width="57%">Requires that data be entered twice when the database is modified</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_VERSION">VERSION</a> </td>
+      <td valign="top" width="57%">Defines a user version string for an element</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_WANTTABS">WANTTABS</a></td>
+      <td valign="top" width="57%">Forces the field to consume TAB keys</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_WANTNORETURNS">WANTNORETURNS</a></td>
+      <td valign="top" width="57%">Forces the field to reject RETURN keys</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_WANTFIXEDPAGESIZE">WANTFIXEDPAGESIZE</a></td>
+      <td valign="top" width="57%">Forces the table to have a
+        fixed height when the parent window is resized</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_WIDTH">WIDTH</a> </td>
+      <td valign="top" width="57%">Explicitly defines the width of a form element</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%">
+        <p align="left"><a href="#FA_WINDOWSTYLE">WINDOWSTYLE</a> </p>
+      </td>
+      <td valign="top" width="57%">Specifies the style to be used by the parent window</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_WORDWRAP">WORDWRAP</a>   </td>
+      <td valign="top" width="57%">Invokes a multiple-line editor in multiple-segment fields</td>
+    </tr>
+    <tr>
+      <td valign="top" colspan="2" bgcolor="#C0C0C0">Attributes supported for
+        backward compatibility with Four Js BDS  </td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_CLASS"><i>CLASS</i></a>  </td>
+      <td valign="top" width="57%">Specifies the behavior of a field defined with the WIDGET
+        attribute</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_CONFIG"><i>CONFIG</i></a>  </td>
+      <td valign="top" width="57%">Specifies the parameters for the definition of a widget
+        (only used with WIDGET attribute)</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_KEY"><i>KEY</i></a> </td>
+      <td valign="top" width="57%">Defines the label of a key when the field gets the focus</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_OPTIONS"><i>OPTIONS</i></a> </td>
+      <td valign="top" width="57%">Specifies widget definition options</td>
+    </tr>
+    <tr>
+      <td valign="top" width="41%"><a href="#FA_WIDGET"><i>WIDGET</i></a>  </td>
+      <td valign="top" width="57%">Defines the type of widget to be used for presentation</td>
+    </tr>
+  </table>
+
+<HR>
+
+<h3><a name="FA_ACCELERATOR">ACCELERATOR Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+
+<p>The <tt>ACCELERATOR</tt> attribute defines the <u> primary</u> accelerator key of an <a href="FormSpecFiles.html#SECTION_ACTDEFS">action
+default item</a>.</p>
+
+<h4>Syntax:</h4>
+
+<code>ACCELERATOR = <u>[</u>CONTROL-<u>][</u>SHIFT-<u>][</u>ALT-<u>]</u><i>key</i></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>key</i> defines the accelerator key as described in 
+	<a href="InteractionModel.html#ACCELNAMES">Accelerators</a></li>
+</ol>
+
+<HR>
+
+<h3><a name="FA_ACCELERATOR2">ACCELERATOR2 Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>ACCELERATOR2</tt> attribute defines the <u>secondary</u> accelerator key of an <a href="FormSpecFiles.html#SECTION_ACTDEFS">action
+default item</a>.</p>
+
+
+<h4>Syntax:</h4>
+
+<code>ACCELERATOR2 = <u>[</u>CONTROL-<u>][</u>SHIFT-<u>][</u>ALT-<u>]</u><i>key</i></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>key</i> defines the accelerator key as described in <a href="InteractionModel.html#ACCELNAMES">Accelerators</a></li>
+</ol>
+
+<HR>
+
+<h3><a name="FA_ACCELERATOR3">ACCELERATOR3 Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>ACCELERATOR3</tt> attribute defines the <u>third</u> accelerator key of an <a href="FormSpecFiles.html#SECTION_ACTDEFS">action
+default item</a>.</p>
+
+
+<h4>Syntax:</h4>
+
+<code>ACCELERATOR3 = <u>[</u>CONTROL-<u>][</u>SHIFT-<u>][</u>ALT-<u>]</u><i>key</i></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>key</i> defines the accelerator key as described in <a href="InteractionModel.html#ACCELNAMES">Accelerators</a></li>
+</ol>
+
+<HR>
+
+<h3><a name="FA_ACCELERATOR4">ACCELERATOR4 Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>ACCELERATOR4</tt> attribute defines the <u>fourth</u> accelerator key of an <a href="FormSpecFiles.html#SECTION_ACTDEFS">action
+default item</a>.</p>
+
+
+<h4>Syntax:</h4>
+
+<code>ACCELERATOR4 = <u>[</u>CONTROL-<u>][</u>SHIFT-<u>][</u>ALT-<u>]</u><i>key</i></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>key</i> defines the accelerator key as described in <a href="InteractionModel.html#ACCELNAMES">Accelerators</a></li>
+</ol>
+
+<HR>
+
+<h3><a name="FA_ACTION">ACTION Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>ACTION</tt> attribute defines the name of the action to be sent to the
+program when the user activates the form item.</p>
+
+<h4>Syntax:</h4>
+<code>ACTION = <i>action-name</i></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>action-name</i>  is an identifier that defines the name of the action to be sent.</li>
+</ol>
+
+<h4>Example:</h4>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>BUTTONEDIT </tt>f001 = customer.state, <tt>ACTION</tt> = print;</PRE>
+
+<HR>
+
+<h3><a name="FA_AUTOSCALE">AUTOSCALE Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> AUTOSCALE</tt> attribute causes the form element contents to
+automatically scale to the size given to the item.</p>
+
+<h4>Syntax:</h4>
+<code>AUTOSCALE</code>
+
+<h4>Usage:</h4>
+For <a href="FormSpecFiles.html#FF_ITEMTYPE_IMAGE">images</a>, this attribute forces the image to be stretched to fit in the
+    area reserved for the image.
+
+<HR>
+
+<h3><a name="FA_AUTONEXT">AUTONEXT Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> AUTONEXT</tt> attribute causes the cursor to automatically advance
+during input to the next field when the current field is full.</p>
+
+<h4>Syntax:</h4>
+<code>AUTONEXT</code>
+
+<h4>Usage:</h4>
+If data values entered in the field do not meet the
+    requirements of other
+    field attributes like <tt> INCLUDE</tt> or <tt>PICTURE</tt>, the cursor
+    does <i>not</i> automatically move to the next field but remains in the
+    current field, and an error message displays.
+<p><tt>AUTONEXT</tt> is particularly useful with character fields in which the input
+    data is of a standard length, such as numeric postal codes or the
+    abbreviations in the <b>state </b>table. It is also useful if a character
+    field has a length of 1 because only one keystroke is required to enter data
+    and move to the next field.
+
+<HR>
+
+<h3><a name="FA_CENTURY">CENTURY Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> CENTURY</tt> attribute specifies how to expand abbreviated one- and two-digit <i>year
+</i>specifications in a DATE and DATETIME field. Expansion is based on this
+setting (and on the year value from the system clock at runtime).</p>
+
+<h4>Syntax:</h4>
+<code>CENTURY = <u>{</u> &quot;R&quot; <u>|</u> &quot;C&quot; <u>|</u>
+&quot;F&quot; <u>|</u> &quot;P&quot; <u>}</u></code>
+
+<h4>Usage:</h4>
+The <tt> CENTURY</tt> attribute can specify any of four algorithms to expand
+    abbreviated years into four-digit year values that end with the same digits
+    (or digit) that the user has entered.
+<p><tt>CENTURY</tt> supports the same settings as the <a href="EnvironmentVariables.html#EV_DBCENTURY">DBCENTURY</a>
+    environment variable, but with a scope that is restricted to a single field.
+<p>If the <tt> CENTURY</tt> and <a href="EnvironmentVariables.html#EV_DBCENTURY">DBCENTURY</a>
+    settings are different, <tt> CENTURY</tt> takes precedence.
+<p>Unlike <a href="EnvironmentVariables.html#EV_DBCENTURY">DBCENTURY</a>, the
+    <tt> CENTURY</tt> attribute is not case sensitive. However, we recommend that
+    you use uppercase letters in the attribute.
+
+<HR>
+
+<h3><a name="FA_CLASS">CLASS Attribute</a>  </h3>
+
+<h4>Purpose:</h4>
+
+<p>The <tt> CLASS</tt> attribute is used to define the behavior of a field.</p>
+
+<h4>Syntax:</h4>
+<code>CLASS = &quot;<i>identifier</i>&quot;</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>identifier</i> is a predefined keyword defining the class of the field.</li>
+</ol>
+
+<h4>Supported field classes:</h4>
+<div align="center">
+  <center>
+  <table border="0" width="90%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Class</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="20%" valign="top"><tt>KEY</tt></td>
+      <td valign="top">Field is used to trigger a keystroke instead of being a
+        normal input field.<br>
+        <font color="#FF0000">Only supported with special <a href="#FA_WIDGET">widgets</a>
+        such as buttons, checkboxes and radiobuttons.</font></td>
+    </tr>
+    <tr>
+      <td width="20%" valign="top"><tt>PASSWORD</tt></td>
+      <td valign="top">Field input is masked by replacing normal character echo
+        by stars &quot;*&quot;.</td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<p><b><font color="#FF0000">Warning: </font>This attributes is supported for backward
+compatibility with Four Js BDS.</b></p>
+
+<HR>
+
+<h3><a name="FA_COLOR">COLOR Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> COLOR</tt> attribute defines the foreground color of the text
+displayed by a form element.</p>
+
+<h4>Syntax:</h4>
+<code>COLOR = <i>color-name</i> </code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>color-name</i> can be: <tt>BLACK</tt>, <tt>BLUE</tt>, <tt>CYAN</tt>, <tt>GREEN</tt>, <tt>MAGENTA</tt>, <tt>RED</tt>,
+    <tt>WHITE</tt>, and <tt>YELLOW</tt>.</li>
+</ol>
+
+<h4>Usage:</h4>
+The <tt>COLOR</tt> attribute defines the logical color of a value displayed in a
+field.
+<p>For backward compatibility, <i>color-name</i> can be combined with an intensity keyword: <tt>REVERSE</tt>, <tt>LEFT</tt>, <tt>BLINK</tt>, and <tt>UNDERLINE</tt>.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT </tt>f001 <tt>=</tt> customer.name<tt>, COLOR = RED;</tt></PRE>
+
+<HR>
+
+<h3><a name="FA_COLOR_WHERE">COLOR WHERE Attribute</a>   </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> COLOR WHERE</tt> attribute defines a condition to set the foreground
+color dynamically.</p>
+
+<h4>Syntax:</h4>
+<code>COLOR = <i>color-name</i> <u>[...]</u> WHERE <i> boolexpr</i> </code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>color-name</i> can be: <tt>BLACK</tt>, <tt>BLUE</tt>, <tt>CYAN</tt>, <tt>GREEN</tt>, <tt>MAGENTA</tt>, <tt>RED</tt>,
+    <tt>WHITE</tt>, and <tt>YELLOW</tt>.</li>
+  <li><i>color-name</i> can also be an intensity keyword: <tt>REVERSE</tt>, <tt>LEFT</tt>, <tt>BLINK</tt>, and <tt>UNDERLINE</tt>.</li>
+  <li><i>boolexpr</i> defines a <a href="FormSpecFiles.html#BOOLEXPR">Boolean expression</a>
+    with a restricted syntax.</li>
+</ol>
+
+<h4>Usage:</h4>
+The <tt>COLOR WHERE</tt> attribute defines the logical color of the text of a
+field when the value satisfies the conditional expression.
+<p>The condition in <tt>COLOR WHERE</tt> can only reference the field for
+    which the attribute is set. The Boolean expression is automatically evaluated at
+    runtime to check when the color attribute must be set.
+<p>The <tt>COLOR WHERE</tt> attribute may not be supported in all situations; it 
+	is not supported in <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE</a>
+    columns.
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT </tt>f001 <tt>=</tt> item.price<tt>, COLOR = RED WHERE</tt> f001&gt;100<tt>;</tt></PRE>
+
+<HR>
+
+<h3><a name="FA_CONFIG">CONFIG Attribute</a>  </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> CONFIG</tt> attribute is used with the <a href="#FA_WIDGET">WIDGET</a>
+attribute to define the behavior and decoration of the field.</p>
+
+<h4>Syntax:</h4>
+<code>CONFIG = &quot;<i>parameter</i> <u>[...]</u>&quot;</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li>The <tt> CONFIG</tt> attribute can only be used with the <a href="#FA_WIDGET">WIDGET</a>
+    attribute. It is ignored if <tt> WIDGET</tt> is not used.</li>
+  <li><i>parameter</i> is the value of a configuration parameter.</li>
+  <li>Configuration parameters are separated by blanks.</li>
+  <li>If a configuration parameter holds blank characters, you must use <tt>{}</tt>
+    curly braces to delimit the parameter value.</li>
+  <li>See the <a href="#FA_WIDGET">WIDGET</a> attribute for more details about
+    configuration.</li>
+</ol>
+
+<p><b><font color="#FF0000">Warning: </font>This attributes is supported for backward
+compatibility with Four Js BDS.</b></p>
+
+<HR>
+<h3><a name="FA_CONTEXTMENU">CONTEXTMENU Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p> Defines whether a context menu option must
+be displayed for an action.</p>
+
+<h4>Syntax:</h4>
+<code>CONTEXTMENU = <u>[</u> AUTO <u>|</u> YES <u>|</u> NO <u>]</u></code>
+
+<h4>Usage:</h4>
+<p> <tt>CONTEXTMENU</tt> is an Action Default attribute defining whether the
+context menu option must
+be displayed for an action.</p>
+
+<ol>
+  <li><tt>NO </tt>indicates that no context menu option must be displayed for 
+  this action.</li>
+  <li><tt>YES</tt>&nbsp; indicates that a context menu option must always be displayed
+    for this action, if the action is visible (<a href="ClassDialog.html#setActionHidden">setActionHidden</a>).</li>
+  <li><tt>AUTO</tt> means that the context menu option is displayed if no explicit action
+    view is used for that action and the action is visible (<a href="ClassDialog.html#setActionHidden">setActionHidden</a>).</li>
+</ol>
+
+<p>The default is <tt>YES</tt>.</p>
+
+Note that this attribute applies to the actions defined by the current dialog in the
+    current window.
+
+<HR>
+
+<h3><a name="FA_COMMENT">COMMENT Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>COMMENT</tt> attribute defines text that can be shown when the
+element becomes current.</p>
+
+<h4>Syntax:</h4>
+<code>COMMENT = <u>[</u>%<u>]</u>&quot;<i>string</i>&quot;</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>string</i> is the text to be displayed.</li>
+  <li><i>string</i>  can be a <a href="LocalizedStrings.html">localized string</a>.</li>
+</ol>
+
+<h4>Usage:</h4>
+The most common use of the <tt>COMMENT</tt> attribute is to give information or
+    instructions to the user. This is particularly appropriate when the field
+    accepts only a limited set of values.
+<p>The screen location where the message is displayed depends on external
+    configuration. It can be displayed in the COMMENT LINE, or in the STATUSBAR
+    when using a graphical user interface.</p>
+Note that if the <a href="WindowsAndForms.html#OPEN_WINDOW">OPEN WINDOW</a> statement
+    specifies <tt> COMMENT LINE OFF</tt>, any output to the comment area is hidden even if
+    the window displays a form that includes fields that include the <tt> COMMENT</tt>
+    attribute.
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT</tt> f001 = customer.name, <tt>COMMENT</tt> = &quot;The customer name&quot;;</PRE>
+
+<HR>
+
+<h3><a name="FA_COMPONENTTYPE">COMPONENTTYPE Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>COMPONENTTYPE</tt> attribute defines a name identifying the external widget.</p>
+
+<h4>Syntax:</h4>
+<code>COMPONENTTYPE = &quot;<i>name</i>&quot;</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>name</i> defines the type of the widget to be used.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <tt>COMPONENTTYPE</tt> attribute is used to define the type of a <a href="FormSpecFiles.html#FF_ITEMTYPE_WEBCOMPONENT">WEBCOMPONENT</a>
+form item.</p>
+
+<p>The value of this attribute will be mapped to a specific widget definition on
+the front-end side. See front-end specific documentation related to Web
+Components.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>WEBCOMPONENT </tt>f001 = <tt>FORMONLY</tt>.mycal, <tt>COMPONENTTYPE</tt>=&quot;Calendar&quot;;</PRE>
+
+<HR>
+<h3><a name="FA_DEFAULT">DEFAULT Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> DEFAULT</tt> attribute assigns a default value to a field during data entry.</p>
+
+<h4>Syntax:</h4>
+<code>DEFAULT = <i>value</i></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>value</i> can be any <a href="Literals.html">literal expression</a>
+    supported by the form compiler.</li>
+  <li><i>value</i> can be <tt> TODAY</tt> to specify the current system date as default.</li>
+  <li><i>value</i> can be <tt> CURRENT</tt> to specify the current system datetime as
+    default.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>The effect of the <tt>DEFAULT</tt> attribute depends on the <tt> WITHOUT DEFAULTS
+</tt>configuration option of the dialog using the form:</p>
+
+<p>With the <a href="RecordInput.html#WITHOUT_DEFAULTS_option">INPUT</a>
+    statement, form default values have are ignored when using the <tt> WITHOUT DEFAULTS</tt> option.
+With this option, the runtime
+    system displays the values in the program variables to the screen.
+Otherwise, the form default values will be displayed when the dialog starts.</p>
+<p>With the <a href="InputArray.html#WITHOUT_DEFAULTS_option">INPUT
+    ARRAY</a> statement, the form default values are always used for new rows
+inserted by the user. With <tt>INPUT ARRAY</tt>, the <tt> WITHOUT DEFAULTS</tt> 
+option indicates if the existing program array elements have to be used.</p>
+Note that defaults values can also be specified in the <a href="DatabaseSchema.html#VAL_FILE">Database
+Schema file</a>, for form fields defined with database column reference.
+<p>If the field is <a href="FormSpecFiles.html#FF_FORMONLY_FIELD">FORMONLY</a>, you must also
+    specify a data type when you assign the <tt> DEFAULT</tt> attribute to a field.</p>
+<p>If both the <tt> DEFAULT</tt> attribute and the <a href="#FA_REQUIRED">REQUIRED</a>
+    attribute are assigned to the same field, the <tt> REQUIRED</tt> attribute is ignored.</p>
+<p>If you do not use the <tt> WITHOUT NULL INPUT</tt> option in the <a href="FormSpecFiles.html#SECTION_SCHEMA">DATABASE</a>
+    section, all fields default to null values unless you
+    have specified a <tt>DEFAULT</tt>
+    attribute.</p>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li><a href="Literals.html#LT_DATETIME">DATETIME</a> and <a href="Literals.html#LT_INTERVAL">INTERVAL</a>
+    literals are not supported.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT</tt> f001 = order.orderdate, <tt>DEFAULT</tt> = TODAY;</PRE>
+
+<HR>
+<h3><a name="FA_DEFAULTVIEW">DEFAULTVIEW Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p> Defines if a default view (i.e. button) must be displayed for a given
+action.</p>
+
+<h4>Syntax:</h4>
+<code>DEFAULTVIEW = <u>[</u> AUTO <u>|</u> YES <u>|</u> NO <u>]</u></code>
+
+<h4>Usage:</h4>
+<p> <tt> DEFAULTVIEW</tt>  is an Action Default attribute defining whether the default
+action view (i.e. a button) must
+be displayed for an action.</p>
+
+<ul>
+  <li><tt>NO </tt>indicates that no default action view must be displayed for 
+  this action.</li>
+  <li><tt>YES</tt>&nbsp; indicates that a default action view must always be displayed
+    for this action, if the action is visible (<a href="ClassDialog.html#setActionHidden">setActionHidden</a>).</li>
+  <li><tt>AUTO</tt> means that a default action view is displayed if no explicit action
+    view is used for that action and the action is visible (<a href="ClassDialog.html#setActionHidden">setActionHidden</a>).</li>
+</ul>
+
+<p>The default is <tt>AUTO</tt>.</p>
+
+Note that this attribute applies to the actions defined by the current dialog in the
+    current window.
+
+<HR>
+<h3><a name="FA_DISPLAY_LIKE">DISPLAY LIKE Attribute</a>   </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> DISPLAY LIKE</tt> attribute takes column attributes defined in the <a href="DatabaseSchema.html">database
+schema files</a> and applies them to a field.</p>
+
+<h4>Syntax:</h4>
+<code>DISPLAY LIKE <u>[</u><i>table</i>.<u>]</u><i>column</i></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>table </i>is the optional table name to qualify the column.</li>
+  <li><i>column </i>is the name of the column to be used to retrieve display
+    attributes.</li>
+</ol>
+
+<h4>Usage:</h4>
+Specifying this attribute is equivalent to listing all the attributes that
+    are assigned to <i>table.column </i>in the <a href="DatabaseSchema.html">database
+    schema file</a> generated from the <b>syscolatt </b>table.
+<p>Display attributes are automatically taken from the schema file if the
+    field is linked to <i>table.column </i>in the field name specification.
+<p>Note that the <tt> DISPLAY LIKE</tt> clause is evaluated at compile time, not at runtime. If
+    the <a href="DatabaseSchema.html">database schema file</a> changes, you
+    might need to recompile a program that uses the <tt> LIKE</tt> clause. Even if all of
+    the fields in the form are <tt>FORMONLY</tt>, this attribute requires the form
+    compiler to access the database schema file that contains the description of
+    <i>tabl</i>e.
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT</tt> f001 = <tt>FORMONLY.</tt>fullname, <tt>DISPLAY LIKE</tt> customer.custname;</PRE>
+
+<HR>
+<h3><a name="FA_HIDDEN">HIDDEN Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> HIDDEN</tt> attribute indicates that the element should not be displayed.</p>
+
+<h4>Syntax:</h4>
+<code>HIDDEN <u>[</u> = USER <u>]</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><tt>HIDDEN</tt> sets the underlying item attribute to 1.</li>
+  <li><tt>HIDDEN=USER</tt> sets the underlying item attribute to 2.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>When you set a hidden attribute for a form field, the model node gets the
+    hidden attribute, not the view node.</li>
+  <li>Form fields hidden with the USER option (value 2) might be shown anyway if
+    the field is needed by a dialog for input.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>By default, all elements are visible. You can use the <tt>HIDDEN</tt> attribute to hide an
+element, such as a form field or a groupbox. The runtime system handles hidden form
+fields. If you write an <a href="RecordInput.html">INPUT</a> statement using a
+hidden field, the field is ignored (as if it was declared as <a href="#FA_NOENTRY">NOENTRY</a>).
+Programs may change the visibility of form fields dynamically with the <a href="ClassForm.html">ui.Form</a>
+built-in class.</p>
+
+<p>When you use the <tt>HIDDEN</tt> keyword only, the underlying item attribute is
+set to 1. The value 1 indicates that the element is hidden to the user without
+the possibility of showing the element, for example with the context menu of <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">table</a>
+headers. In this hidden mode, the <a href="#FA_UNHIDABLE">UNHIDABLE</a>
+attribute is ignored by the front end.</p>
+
+<p>When you use <tt>HIDDEN=USER</tt>, the underlying item attribute is set to 2.
+The value 2 indicates that the element is hidden by default, but the user can
+show/hide the element as needed. For example, the user can change a hidden 
+column back to visible. Form elements like table columns that are hidden by the
+user might be automatically re-shown (hidden=0) by the front-end if the program
+dialog gives the focus to that field for input. In such case the program dialog
+takes precedence over the hidden attribute.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT</tt> f001 = <tt>FORMONLY.</tt>field1, <tt>HIDDEN</tt>;
+<CODE class=linenumber>02</CODE> <tt>EDIT</tt> col1 = <tt>FORMONLY.</tt>column1, <tt>HIDDEN</tt>=<tt>USER</tt>;</PRE>
+
+<HR>
+<h3><a name="FA_HEIGHT">HEIGHT Attribute</a>     </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>HEIGHT</tt> attribute defines an explicit height for a form element.</p>
+
+<h4>Syntax:</h4>
+<code>HEIGHT = <i>integer</i> <u>[</u>CHARACTERS<u>|</u>LINES<u>|</u>POINTS<u>|</u>PIXELS<u>]</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>integer</i> defines the height of the element.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>By default, the size of an element is defined in characters and automatically
+computed by the form compiler according to the size of the form element in the
+layout.</p>
+
+<p>For items like images, the default height is defined by the number of lines
+of the <a href="FormSpecFiles.html#FF_ITEM_TAG">item tag</a> (as a vertical
+character height). You can overwrite this default by specifying the <tt>HEIGHT</tt>
+attribute.
+You typically give a number of pixels.&nbsp;</p>
+
+<p>For tables, the default height is defined by the number of lines used in the
+table layout.
+You can overwrite this default by specifying the <tt>HEIGHT</tt> attribute.</p>
+
+<p>If you don't specify any unit, the size unit defaults to <tt>CHARACTERS</tt>,
+which defines the number of grid cells.</p>
+
+<p>See also: <a href="#FA_WIDTH">WIDTH</a>.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>IMAGE </tt>img1 : image1, <tt>WIDTH</tt> = 200 <tt>PIXELS</tt>, <tt>HEIGHT</tt> = 120 <tt>PIXELS</tt>;</PRE>
+
+<HR>
+<h3><a name="FA_BUTTONTEXTHIDDEN">BUTTONTEXTHIDDEN Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>BUTTONTEXTHIDDEN</tt> attribute indicates that the labels of the
+buttons of this element should not be displayed.</p>
+
+<h4>Syntax:</h4>
+<code>BUTTONTEXTHIDDEN</code>
+
+<h4>Usage:</h4>
+<p>Use in a <a href="FormSpecFiles.html#SECTION_TOOLBAR">TOOLBAR</a> definition to hide the  labels of buttons.</p>
+
+<HR>
+<h3><a name="FA_DOUBLECLICK">DOUBLECLICK Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>DOUBLECLICK</tt> attribute defines the action to be sent when the
+user double-clicks on a TABLE row.</p>
+
+<h4>Syntax:</h4>
+<code>DOUBLECLICK = <i>action-name</i></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>action-name</i> defines the name of the action to be fired on
+    double-click.</li>
+</ol>
+
+<h4>Usage<font color="#008080">:</font></h4>
+<p>This attribute is typically used in a <a href="FormSpecFiles.html#FF_ITEMTYPE_TABLE">TABLE</a>
+ container, to define the action to be sent when the user double-clicks on a row.
+By default, if the TABLE is
+    driven by a <a href="DisplayArray.html">DISPLAY ARRAY</a>, a double-click
+fires the <i>accept</i> action. When using an <a href="InputArray.html">INPUT
+ARRAY</a>, double-click selects the whole text if the current widget is
+editable. If <tt>DOUBLECLICK</tt> is defined when using an <tt>INPUT ARRAY</tt>,
+the action can only be sent when the user double-clicks on a non-editable widget
+like a <a href="FormSpecFiles.html#FF_ITEMTYPE_LABEL">LABEL</a>.</p>
+
+<HR>
+<h3><a name="FA_DOWNSHIFT">DOWNSHIFT Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>DOWNSHIFT</tt> attribute forces character input to lowercase letters.</p>
+
+<h4>Syntax:</h4>
+<code>DOWNSHIFT</code>
+
+<h4>Usage:</h4>
+<p>Assign the <tt> DOWNSHIFT</tt> attribute to a character field when you want the runtime
+system to convert uppercase letters entered by the user to lowercase letters,
+both on the screen and in the corresponding program variable.</p>
+
+Because uppercase and lowercase letters have different values, storing
+    character strings in one or the other format can simplify sorting and
+    querying a database.
+<p>Characters entered by the user are converted in <a href="RecordInput.html">INPUT</a>,
+    <a href="InputArray.html">INPUT ARRAY</a> and <a href="Construct.html">CONSTRUCT</a>
+    instructions.
+<p>The results of conversions between uppercase and lowercase letters are
+    based on the locale settings (LANG). When using single byte runners, the conversion of ASCII characters &gt;127
+    is controlled by the LC_CTYPE environment variable.
+<p>See also: <a href="#FA_UPSHIFT">UPSHIFT</a>.</p>
+
+<HR>
+<h3><a name="FA_FORMAT">FORMAT Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>You can use the <tt> FORMAT</tt> attribute with numeric and date time fields to
+control the format of output displays.</p>
+
+<h4>Syntax:</h4>
+<code>FORMAT = &quot;<i>format-string</i>&quot;</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>format-string</i> is a string of characters that specifies a data
+    display format.</li>
+  <li>You must enclose <i>format-string</i><i> </i>within quotation marks ( &quot; ).</li>
+  <li>Use the <a href="#FA_PICTURE">PICTURE</a> attribute to format data entered
+    in the field by the user.</li>
+  <li>If <i>format-string</i><i> </i>is smaller than the field width, you get a
+    compile-time warning, but the form is usable.</li>
+  <li>When this attribute is not used, <a href="EnvironmentVariables.html">environment
+    variable</a> settings define the default format.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>To follow abstract user interface programming and support
+    internationalization, it is not recommended
+    that you use this attribute.</li>
+</ol>
+
+<h4>Usage:</h4>
+The <tt>FORMAT</tt> attribute can be used to define a specific display format
+for numeric and date fields. For <a href="DataTypes.html#DT_MONEY">MONEY</a>
+fields, a global format can be specified with the <a href="EnvironmentVariables.html#EV_DBMONEY"> DBMONEY</a> or <a href="EnvironmentVariables.html#EV_DBFORMAT">DBFORMAT</a>
+environment variables. For <a href="DataTypes.html#DT_DATE">DATE</a>  fields,
+the global format is defined by the <a href="EnvironmentVariables.html#EV_DBDATE">DBDATE</a>
+environment variable.
+<p>Use the <a href="#FA_PICTURE">PICTURE</a> attribute to format data entered
+    in the field by the user.</p>
+<p>If <i>format-string </i>is smaller than the field width, you get a
+    compile-time warning, but the form is usable.</p>
+When this attribute is not used, <a href="EnvironmentVariables.html">environment
+    variable</a> settings define the default format.
+
+<h4>Numeric formats:</h4>
+<p>For <a href="DataTypes.html#DT_DECIMAL">DECIMAL</a>, <a href="DataTypes.html#DT_MONEY">MONEY</a>,
+<a href="DataTypes.html#DT_SMALLFLOAT"> SMALLFLOAT</a>, and <a href="DataTypes.html#DT_FLOAT"> FLOAT</a> data types, <i>format-string</i> consists
+of a set of place holders that represent digits, currency symbols, thousands and
+decimal separators. For example, <tt>&quot;###.##@&quot;</tt> defines three places to the left of the decimal point and exactly two to the
+right, plus a currency symbol at the end of the string.</p>
+<p>When used with numeric values, the <i>format-string</i> must use normalized
+place holders described in the table below. The place holders will be replaced
+by the elements defined in the <a href="EnvironmentVariables.html#EV_DBMONEY"> DBMONEY</a> or <a href="EnvironmentVariables.html#EV_DBFORMAT">DBFORMAT</a>
+environment variables. Field input cannot be supported if the format is not
+defined with normalized place holders.</p>
+<p>If the numeric value is too large to fit in the number of characters defined
+by the format, an overflow text is displayed (****).</p>
+<p>If the actual number displayed requires fewer characters than <i>format-string</i> specifies,
+numbers are right-aligned and padded on the left with blanks.</p>
+<p>If necessary to satisfy the <i>format-string</i> specification, the number values are
+ rounded before display.</p>
+<div align="left">
+  <table border="0" width="90%">
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0">
+        <p align="center"><b>Character</b></p>
+      </td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>*</tt></td>
+      <td width="50%">Fills with asterisks any position that would otherwise be
+        blank.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&amp;</tt></td>
+      <td width="50%">Fills with zeros any position that would otherwise be
+        blank.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>#</tt></td>
+      <td width="50%">This does not change any blank positions in the display.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>&lt;</tt></td>
+      <td width="50%">Causes left alignment.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>-</tt> </td>
+      <td width="50%">Displays a minus sign for negative numbers.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>+</tt></td>
+      <td width="50%">Displays a plus sign for positive numbers.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>(</tt></td>
+      <td width="50%">Displayed as left parentheses for negative numbers
+        (accounting parentheses).</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>)</tt></td>
+      <td width="50%">Displayed as right parentheses for negative numbers
+        (accounting parentheses).</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>,</tt> (comma)</td>
+      <td width="50%">Placeholder for thousand separator defined in <a href="EnvironmentVariables.html#EV_DBFORMAT">DBFORMAT</a>.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>.</tt> (period)</td>
+      <td width="50%">Placeholder for decimal separator defined in <a href="EnvironmentVariables.html#EV_DBMONEY"> DBMONEY</a> or <a href="EnvironmentVariables.html#EV_DBFORMAT">DBFORMAT</a>.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>$</tt></td>
+      <td width="50%">Placeholder for the <i>front</i>  currency symbol defined
+        in <a href="EnvironmentVariables.html#EV_DBMONEY"> DBMONEY</a> or <a href="EnvironmentVariables.html#EV_DBFORMAT">DBFORMAT</a>.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>@</tt></td>
+      <td width="50%">Placeholder for the <i>back</i>  currency symbol defined
+        in <a href="EnvironmentVariables.html#EV_DBMONEY"> DBMONEY</a> or <a href="EnvironmentVariables.html#EV_DBFORMAT">DBFORMAT</a>.</td>
+    </tr>
+  </table>
+</div>
+
+<p>The following table illustrates the results of different combinations of <a href="EnvironmentVariables.html#EV_DBFORMAT">DBFORMAT</a>
+setting and format string on the same value.</p>
+  <table border="0" width="90%">
+    <tr>
+      <td align="left" width="25%" bgcolor="#C0C0C0"><b>Value</b></td>
+      <td align="left" width="25%" bgcolor="#C0C0C0"><b>FORMAT attribute</b></td>
+      <td align="left" width="25%" bgcolor="#C0C0C0"><b>DBFORMAT</b></td>
+      <td width="25%" bgcolor="#C0C0C0"><b>Result</b></td>
+    </tr>
+    <tr>
+      <td align="left" width="25%"><code><tt>1234.56</tt></code></td>
+      <td align="left" width="25%"><code><tt>$#,###.##</tt></code></td>
+      <td align="left" width="25%"><code><tt>$:,:.:</tt></code></td>
+      <td width="25%"><code><tt>$1,234.56</tt></code></td>
+    </tr>
+    <tr>
+      <td align="left" width="25%"><code><tt>1234.56</tt></code>
+      </td>
+      <td align="left" width="25%"><code><tt>$#,###.##</tt></code>
+      </td>
+      <td align="left" width="25%"><code><tt>:.:,:DM</tt></code>
+      </td><td width="25%"><code><tt>1.234,56</tt></code></td>
+    </tr>
+    <tr>
+      <td align="left" width="25%"><code><tt>1234.56</tt></code></td>
+      <td align="left" width="25%"><code><tt>#,###.##@</tt></code></td>
+      <td align="left" width="25%"><code><tt>$:,:.:</tt></code></td>
+      <td width="25%"><code><tt>1,234.56</tt></code></td>
+    </tr>
+    <tr>
+      <td align="left" width="25%"><code><tt>1234.56</tt></code></td>
+      <td align="left" width="25%"><code><tt>#,###.##@</tt></code></td>
+      <td align="left" width="25%"><code><tt>:.:,:DM</tt></code></td>
+      <td width="25%"><code><tt>1.234,56DM</tt></code></td>
+    </tr>
+  </table>
+<p>When the user enters numeric or currency values in fields, the runtime system
+behaves as follows:</p>
+<ul>
+  <li>If a symbol is entered that was defined as a decimal separator in <a href="EnvironmentVariables.html#EV_DBFORMAT">DBFORMAT</a>,
+    it is interpreted as the decimal separator.</li>
+  <li>For <a href="DataTypes.html#DT_MONEY">MONEY</a> fields, it disregards any <i>front </i>(leading)
+    or <i>back </i>(trailing) currency symbol and any thousands separators that
+    the user enters.</li>
+  <li>For <a href="DataTypes.html#DT_DECIMAL">DECIMAL</a> fields, the user must
+    enter values without currency symbols.</li>
+</ul>
+
+<h4>Date formats:</h4>
+
+<p>For <a href="DataTypes.html#DT_DATE">DATE</a> data types, the runtime system
+recognizes these symbols as special in <i>format-string</i>:</p>
+
+<div align="left">
+  <table border="0" width="90%">
+    <tr>
+      <td width="10%" bgcolor="#C0C0C0">
+        <p align="center"><b>Character</b></p>
+      </td>
+      <td width="50%" bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>dd</tt></td>
+      <td width="50%">Day of the month as a 2-digit integer.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>ddd</tt></td>
+      <td width="50%">Three-letter English-language abbreviation of the day of
+        the week, for example, Mon, Tue.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>mm</tt></td>
+      <td width="50%">Month as a 2-digit integer.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>mmm</tt></td>
+      <td width="50%">Three-letter English-language abbreviation of the month,
+        for example, Jan, Feb.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>yy</tt></td>
+      <td width="50%">Year, as a 2-digits integer representing the 2 trailing
+        digits.</td>
+    </tr>
+    <tr>
+      <td width="10%" align="center"><tt>yyyy</tt></td>
+      <td width="50%">Year as a 4-digit number.</td>
+    </tr>
+  </table>
+</div>
+
+<p>The form compiler interprets any other characters as literals and displays
+them wherever you place them within <i>format-string</i>.</p>
+
+<p>Below some <i>format-string</i><i> </i>examples and their corresponding display formats
+for a DATE field:</p>
+  <table border="0" width="90%">
+    <tr>
+      <td align="left" width="25%" bgcolor="#C0C0C0"><b>Value</b></td>
+      <td align="left" width="25%" bgcolor="#C0C0C0"><b>FORMAT attribute</b></td>
+      <td width="25%" bgcolor="#C0C0C0"><b>Result</b></td>
+    </tr>
+    <tr>
+      <td align="left" width="25%"><code><tt>1999-09-23</tt></code></td>
+      <td align="left" width="25%"><i>none</i>&nbsp;</td>
+      <td width="25%"><code><tt>09/23/1999</tt></code></td>
+    </tr>
+    <tr>
+      <td align="left" width="25%"><code><tt>1999-09-23</tt></code>
+      </td>
+      <td align="left" width="25%"><code><tt>mm/dd/yy</tt></code>
+      </td>
+      <td width="25%"><code><tt>09/23/99</tt></code></td>
+    </tr>
+    <tr>
+      <td align="left" width="25%"><code><tt>1999-09-23</tt></code></td>
+      <td align="left" width="25%"><code><tt>mmm dd, yyyy</tt></code></td>
+      <td width="25%"><code><tt>Sep 23, 1999</tt></code></td>
+    </tr>
+    <tr>
+      <td align="left" width="25%"><code><tt>1999-09-23</tt></code></td>
+      <td align="left" width="25%"><code><tt>yymmdd</tt></code></td>
+      <td width="25%"><code><tt>990923</tt></code></td>
+    </tr>
+    <tr>
+      <td align="left" width="25%"><code><tt>1999-09-23</tt></code></td>
+      <td align="left" width="25%"><code><tt>dd-mm-yy</tt></code></td>
+      <td width="25%"><code><tt>23-09-99</tt></code></td>
+    </tr>
+    <tr>
+      <td align="left" width="25%"><code><tt>1999-09-23</tt></code></td>
+      <td align="left" width="25%"><code><tt>(ddd.) mmm. dd, yyyy</tt></code></td>
+      <td width="25%"><code><tt>(Thu.) Sep. 23, 1999</tt></code></td>
+    </tr>
+  </table>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT</tt> f001 = order.thedate, <tt>FORMAT</tt> = &quot;mm/dd/yyyy&quot;;</PRE>
+
+<HR>
+<h3><a name="FA_FONTPITCH">FONTPITCH Attribute</a>  </h3>
+
+<h4>Purpose:</h4>
+<p>This attribute defines the character font type as fixed or variable when the
+default font is used.</p>
+
+<h4>Syntax:</h4>
+<code>FONTPITCH = <u>{</u>FIXED<u>|</u>VARIABLE<u>}</u></code>
+
+<h4>Usage:</h4>
+<p>By default, most front ends use variable width character fonts, but in some
+cases you might need to use a fixed font.</p>
+
+When using <code>FIXED</code>, you force the characters to
+    have a fixed size.
+<p>When using <code>VARIABLE</code>, you allow the characters to
+    have a variable size.
+
+<p>It is recommended that you use a <a href="#FA_STYLE">STYLE</a> defining a fixed
+font instead of this attribute.</p>
+
+<HR>
+<h3><a name="FA_GRIDCHILDRENINPARENT">GRIDCHILDRENINPARENT Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>This attribute is used for a container to align its children to the parent
+container.</p>
+
+<h4>Syntax:</h4>
+<code>GRIDCHILDRENINPARENT</code>
+
+<h4>Usage:</h4>
+<p>By default, child elements of a container are aligned locally inside the
+container layout cells. With this attribute, you can force children to be
+aligned according to the layout cells of the parent container of the container
+to which you assign this attribute.</p>
+
+<p>This is useful, for example, when you want to align fields across groups
+defined with <a href="FormSpecFiles.html#FF_LAYOUT_TAG">Layout Tags</a> inside a <a href="FormSpecFiles.html#FF_CONTAINER_GRID">GRID</a>:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>LAYOUT</tt>
+<CODE class=linenumber>02</CODE>   <tt>GRID</tt>
+<CODE class=linenumber>03</CODE>   {
+<CODE class=linenumber>04</CODE>    &lt;G g1                             &gt;
+<CODE class=linenumber>05</CODE>     Field1 [f1                      ]
+<CODE class=linenumber>06</CODE>     Field2 [f2                      ]
+<CODE class=linenumber>07</CODE>     Field3 [f3                      ]
+<CODE class=linenumber>08</CODE> 
+<CODE class=linenumber>09</CODE>    &lt;G g2                             &gt;
+<CODE class=linenumber>10</CODE>     F4     [f4                  ]
+<CODE class=linenumber>11</CODE>     F5     [f5                  ]
+<CODE class=linenumber>12</CODE> 
+<CODE class=linenumber>13</CODE>   }
+<CODE class=linenumber>14</CODE>   <tt>END
+</tt><CODE class=linenumber>15</CODE> <tt>END
+</tt><CODE class=linenumber>16</CODE> <tt>ATTRIBUTES
+</tt><CODE class=linenumber>17</CODE> <tt>GROUP</tt> g1 : <tt>GRIDCHILDRENINPARENT</tt>;<CODE class=linenumber>
+18</CODE> <tt>GROUP</tt> g2 : <tt>GRIDCHILDRENINPARENT</tt>;<CODE class=linenumber>
+19</CODE> <tt>EDIT</tt> f1 = <tt>FORMONLY</tt>.field1;<CODE class=linenumber>
+20</CODE> <tt>EDIT</tt> f2 = <tt>FORMONLY</tt>.field2;<CODE class=linenumber>
+21</CODE> <tt>EDIT</tt> f3 = <tt>FORMONLY</tt>.field3;<CODE class=linenumber>
+22</CODE> <tt>EDIT</tt> f4 = <tt>FORMONLY</tt>.field4;<CODE class=linenumber>
+23</CODE> <tt>EDIT</tt> f5 = <tt>FORMONLY</tt>.field5;<CODE class=linenumber>
+24</CODE> <tt>END</tt></PRE>
+
+<HR>
+<h3><a name="FA_INCLUDE">INCLUDE Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>Defines a list of possible values.</p>
+
+<h4>Syntax:</h4>
+<code>INCLUDE = ( <u>{</u> NULL <u>|</u> <i>literal</i> <u>[</u> TO <i>literal</i>
+<u>]</u> <u>}</u> <u>[</u>,<u>...]</u> )</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>literal</i> can be any <a href="Literals.html">literal expression</a>
+    supported by the form compiler.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <tt> INCLUDE</tt> attribute specifies acceptable values for a field and causes
+the runtime system to check the data before accepting an input value.</p>
+
+<p>If the field is <a href="FormSpecFiles.html#FF_FORMONLY_FIELD">FORMONLY</a>, you must also
+    specify a data type when you assign the <tt> INCLUDE</tt> attribute to a field.</p>
+<p><a href="Literals.html#LT_DATETIME">DATETIME</a> and <a href="Literals.html#LT_INTERVAL">INTERVAL</a>
+    literals are not supported.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT</tt> f001 = compute.rate, <tt>INCLUDE</tt> = ( 1 <tt>TO</tt> 100, 200, <tt>NULL</tt>);
+<CODE class=linenumber>02</CODE> <tt>EDIT</tt> f002 = customer.state, <tt>INCLUDE</tt> = ( &quot;AL&quot; <tt>TO</tt> &quot;GA&quot;, &quot;IA&quot; <tt>TO</tt> &quot;WY&quot; );</PRE>
+
+<HR>
+<h3><a name="FA_INVISIBLE">INVISIBLE Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>INVISIBLE</tt> attribute prevents user-entered data from being echoed on the
+screen during an interactive statement.</p>
+
+<h4>Syntax:</h4>
+<code>INVISIBLE</code>
+
+<h4>Usage:</h4>
+Characters that the user enters in a field with the <tt>INVISIBLE</tt> attribute are not
+    displayed during data entry. Depending on the front end type, the typed
+    characters are displayed using the blank, star, underscore or dot
+    characters.
+<p>Note that the <tt>INVISIBLE</tt> attribute does <i>not </i>prevent display instructions
+    like <a href="RecordDisplay.html#DISPLAY_TO">DISPLAY</a>,
+    <a href="DisplayArray.html">DISPLAY ARRAY</a> from explicitly
+    displaying data in the field.</p>
+
+<HR>
+<h3><a name="FA_IMAGE">IMAGE Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>IMAGE</tt> attribute defines the image resource to be displayed in the form item.</p>
+
+<h4>Syntax:</h4>
+<code>IMAGE = &quot;<i>resource</i>&quot;</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>resource</i> defines the picture resource (see below for possible sources
+    and formats).</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>This attribute is used  to define the image resource to be displayed form
+items such a <a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTON">button</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTON">buttonedit</a> or a <a href="FormSpecFiles.html#FF_STATIC_IMAGE">static
+image item</a>.</p>
+
+<p>The <i>resource</i> string can be one of the following:</p>
+
+<ol>
+  <li>A simple file name (with or without extension), using a relative or an
+    absolute path.</li>
+  <li>A path to an image on a server in the URL (Uniform Resource Locator) form.</li>
+</ol>
+
+<p>It is recommended that you use simple image file names without the file extension,
+and define the <a href="EnvironmentVariables.html#EV_FGLIMAGEPATH">FGLIMAGEPATH</a>
+environment variable to centralize image files on the application server in a
+directory created specifically for images. For portability reasons, use .png or
+.svg image file formats only.</p>
+
+<h5>Supported image formats</h5>
+
+<p>Here is the list of image file formats supported by the different front-ends:</p>
+
+  <table border="0" width="616">
+    <tr>
+      <td bgcolor="#C0C0C0" width="30%"><b>Suffix (case insensitive)&nbsp;</b></td>
+      <td bgcolor="#C0C0C0"><b>Front-ends supporting the file format</b></td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>.BMP</code></td>
+      <td valign="top">GDC, GWC</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>.GIF</code></td>
+      <td valign="top">GDC, GWC</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>.ICO</code></td>
+      <td valign="top">GDC, GWC</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>.JPG</code></td>
+      <td valign="top">GDC, GWC</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>.PNG</code></td>
+      <td valign="top">GDC, GWC</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>.SVG</code></td>
+      <td valign="top">GDC, GWC</td>
+    </tr>
+    <tr>
+      <td valign="top" width="30%"><code>.TIFF</code></td>
+      <td valign="top">GDC, GWC</td>
+    </tr>
+  </table>
+
+<p>According to the front-end type, some image file formats or image data
+    formats might not be supported.</p>
+
+<h5>Using file names or paths</h5>
+
+<p>If the image specification is a simple string without an URL or URI prefix,
+it is identified as a file path. The file is first sought
+in the picture directory on the client workstation. According to the front-end
+type, this local directory can actually be on a remote machine where the GAS
+middleware component is located. If the file is not
+found, the front-end automatically sends an image request to the runtime
+system, in order to search for an image on the server where the programs are
+executed. The runtime
+system searches for server-side images by using the <a href="EnvironmentVariables.html#EV_FGLIMAGEPATH">FGLIMAGEPATH</a>
+environment variable. If <a href="EnvironmentVariables.html#EV_FGLIMAGEPATH">FGLIMAGEPATH</a>
+ is not set, the image files are searched in the current working directory.</p>
+
+<p><b><font color="#FF0000">Warning:</font> By default, if <a href="EnvironmentVariables.html#EV_FGLIMAGEPATH">FGLIMAGEPATH</a>
+    is not set, the image files are searched in the current working directory.
+    Image file names can use absolute or relative paths and the whole
+    application server file system can be searched (according to the permissions
+    of the operating system user running the fglrun process).
+    This can be a security hole because fake front-ends could ask for critical
+    server files that are not images.<br>
+    When setting <a href="EnvironmentVariables.html#EV_FGLIMAGEPATH">FGLIMAGEPATH</a>,
+    the runtime system will only transfer files found in the directories listed
+    in that environment variable. You can still use absolute or relative paths
+    in the image file names, but the files must be located below one of the
+    directories listed in FGLIMAGEPATH. For maximum security, put the image files in directories that
+    contain only image files, and keep critical data or program file in separate
+    directories.<br>
+    Note however that images displayed by program to <a href="FormSpecFiles.html#FF_IMAGE_FIELD">image
+    fields</a> do not follow the FGLIMAGEPATH security restriction. Image field
+    do not use the <tt>IMAGE</tt> attribute: For fields, the image is specified
+    in the field value.</b></p>
+
+<h5>Using an image server with URL names</h5>
+
+<p>If the image specification starts with a URL prefix, the front-end will try
+to download the image from the location specified by the URL.</p>
+
+<p>Currently supported URLs are:</p>
+
+  <table border="0" width="616">
+    <tr>
+      <td bgcolor="#C0C0C0"><b>Image resource location (URL)</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td valign="top"><code>http://<i>location-specification</i></code></td>
+      <td valign="top">HTTP server</td>
+    </tr>
+    <tr>
+      <td valign="top"><code>https://<i>location-specification</i></code></td>
+      <td valign="top">HTTPS server (HTTP over SSL)</td>
+    </tr>
+    <tr>
+      <td valign="top"><code>ftp://<i>location-specification</i></code></td>
+      <td valign="top">FTP server</td>
+    </tr>
+  </table>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>BUTTONEDIT</tt> f001 = <tt>FORMONLY</tt>.field01, <tt>IMAGE</tt> = &quot;zoom&quot;;
+<CODE class=linenumber>02</CODE> <tt>BUTTON</tt> b01 : open_file, <tt>IMAGE</tt> = &quot;buttons/fileopen&quot;;
+<CODE class=linenumber>03</CODE> <tt>BUTTON</tt> b02 : accept, <tt>IMAGE</tt> = &quot;http://myserver/images/accept.png&quot;;</PRE>
+
+<HR>
+<h3><a name="FA_KEY">KEY Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>KEY</tt> attribute is used to define the labels of keys when the field is made
+current.</p>
+
+<h4>Syntax:</h4>
+<code>KEY <i>keyname</i> = <u>[</u>%<u>]</u>&quot;<i>label</i>&quot;</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>keyname</i> is the name of a key ( like <tt>F10</tt>, <tt>&quot;Control-z&quot;</tt> ).</li>
+  <li>Note that the <i>keyname</i>  has to be specified in quotes if you want to
+    use Control / Shift / Alt key modifiers.</li>
+  <li><i>label</i> is the text to be displayed in the button corresponding to
+    the key.</li>
+</ol>
+
+<p><b><font color="#FF0000">Warning: </font>This attributes is supported for backward
+compatibility with Four Js BDS.</b></p>
+
+<p>See also the <a href="FormSpecFiles.html#SECTION_KEYS">KEYS</a> section to define key labels
+    for the whole form.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT</tt> f001 = customer.city, <tt>KEY</tt> F10 = &quot;City list&quot;;<CODE class=linenumber>
+02</CODE> <tt>EDIT</tt> f002 = customer.state, <tt>KEY</tt> &quot;Control-z&quot; = &quot;Open Zoom&quot;;</PRE>
+
+<HR>
+<h3><a name="FA_MINHEIGHT">MINHEIGHT Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>MINHEIGHT</tt> attribute defines the minimum height of a form.</p>
+
+<h4>Syntax:</h4>
+<code>MINHEIGHT = <i>integer</i> </code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>integer</i> defines the minimum height of the element, as a number of <a href="Layout.html">grid
+    cells</a>.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>The <tt>MINHEIGHT</tt>
+ attribute is used to define a minimum height of the form/window. It
+must be specified in the attributes of the 
+<a href="FormSpecFiles.html#SECTION_LAYOUT">LAYOUT</a>
+section.</p>
+
+<p>The unit defaults to a number of <a href="Layout.html">grid cells</a>. This
+is the equivalent of the <tt>CHARACTERS</tt> in the <a href="#FA_HEIGHT">HEIGHT</a>
+attribute specification.</p>
+
+<p>See also: <a href="#FA_MINWIDTH">MINWIDTH</a>.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>LAYOUT </tt>( <tt>MINWIDTH</tt>=60, <tt>MINHEIGHT</tt>=50 )
+<CODE class=linenumber>02</CODE> <tt>GRID
+</tt><CODE class=linenumber>03</CODE> ...
+</PRE>
+
+<HR>
+<h3><a name="FA_MINWIDTH">MINWIDTH Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>MINWIDTH</tt> attribute defines the minimum width of a form.</p>
+
+<h4>Syntax:</h4>
+<code>MINWIDTH = <i>integer</i> </code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>integer</i> defines the minimum width of the element, as a number of <a href="Layout.html">grid
+    cells</a>.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <tt>MINWIDTH</tt> attribute is used to define a minimum width
+of the form/window. It must be specified in the attributes of the <a href="FormSpecFiles.html#SECTION_LAYOUT">LAYOUT</a>
+section.</p>
+
+<p>The unit defaults to a number of <a href="Layout.html">grid cells</a>. This
+is the equivalent of the <tt>CHARACTERS</tt> in the <a href="#FA_WIDTH">WIDTH</a>
+attribute specification.</p>
+
+<p>See also: <a href="#FA_MINHEIGHT">MINHEIGHT</a>.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>LAYOUT </tt>( <tt>MINWIDTH</tt>=60, <tt>MINHEIGHT</tt>=50 )
+<CODE class=linenumber>02</CODE> <tt>GRID
+</tt><CODE class=linenumber>03</CODE> ...
+</PRE>
+
+<HR>
+<h3><a name="FA_NOT_NULL">NOT NULL Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> NOT NULL</tt> attribute sets that the field does not accept NULL values.</p>
+
+<h4>Syntax:</h4>
+<code>NOT NULL</code>
+
+<h4>Usage:</h4>
+<p>This attribute requires that the field contains a value. If the field
+contains a default value, the <tt>NOT NULL</tt> attribute satisfied. To insist on
+data entry from the user, use <tt>NOT NULL</tt> in the field definition, or make sure the corresponding column is defined as
+NOT NULL in the <a href="DatabaseSchema.html">database schema file</a>.</p>
+
+<p>The <tt>NOT NULL</tt> keywords can also be used in the type definition of <a href="FormSpecFiles.html#FF_FORMONLY_FIELD">FORMONLY
+    fields</a>.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT</tt> f001 = customer.city, <tt>NOT NULL</tt>;</PRE>
+
+<HR>
+<h3><a name="FA_NOENTRY">NOENTRY Attribute</a></h3>
+
+<h4>Purpose:</h4>
+
+<p>The <tt> NOENTRY</tt> attribute prevents data entry in the field during an <a href="RecordInput.html">INPUT</a>
+or <a href="InputArray.html">INPUT ARRAY</a> statement.</p>
+
+<h4>Syntax:</h4>
+<code>NOENTRY</code>
+
+<h4>Usage:</h4>
+
+<p>Use the <tt> NOENTRY</tt> attribute to bypass field input during an <a href="RecordInput.html">INPUT</a>
+or <a href="InputArray.html">INPUT ARRAY</a> statement. When using a WITHOUT
+DEFAULTS dialog option, the content of the corresponding program variable is
+displayed in the field. A <tt>NOENTRY</tt> field is like a disabled field, it
+cannot get the focus.</p>
+
+Note that the <tt> NOENTRY</tt> attribute does <i>not </i>prevent data entry into a field
+    during a <a href="Construct.html">CONSTRUCT</a> statement.
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT</tt> f001 = order.totamount, <tt>NOENTRY</tt>;</PRE>
+
+<HR>
+<h3><a name="FA_ORIENTATION">ORIENTATION Attribute</a>    </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>ORIENTATION</tt> attribute defines whether an element displays
+vertically or horizontally.</p>
+
+<h4>Syntax:</h4>
+<code>ORIENTATION = <u>{</u> VERTICAL <u>|</u> HORIZONTAL <u>}</u></code>
+
+<h4>Usage:</h4>
+<p>The <tt>ORIENTATION</tt> attribute is typically used in the definition of a <a href="FormSpecFiles.html#FF_ITEMTYPE_RADIOGROUP">RADIOGROUP</a>
+form item, to specify how radio items have to be displayed.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>RADIOGROUP</tt> f001 = customer.status, <tt>ORIENTATION</tt>=<tt>HORIZONTAL</tt>;</PRE>
+
+<HR>
+<h3><a name="FA_PICTURE">PICTURE Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> PICTURE</tt> attribute specifies a character pattern for data entry in a text
+field, and prevents entry of values that conflict with the specified pattern.</p>
+
+<h4>Syntax:</h4>
+<code>PICTURE = &quot;<i>format-string</i>&quot;</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>format-string</i> defines the data input pattern of the field.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p><i>format-string</i> can be any combination of characters, where the
+    characters &quot;A&quot;, &quot;#&quot; and &quot;X&quot; have a special
+    meaning.</p>
+<ul>
+  <li>The character &quot;A&quot; specifies <b>any letter</b>  (alpha-numeric)
+    character at a given position.</li>
+  <li>The character &quot;#&quot; specifies <b>any digit</b> character at a given position.</li>
+  <li>The character &quot;X&quot; specifies <b>any character</b> at a given
+    position.</li>
+</ul>
+Any character different from &quot;A&quot;, &quot;X&quot; and &quot;#&quot; is
+treated as a literal. Such characters automatically appear in the field and do
+not have to be entered by the user.
+<p>The <tt> PICTURE</tt> attribute does not require data entry into the entire field.
+    It only requires that whatever characters are entered conform to <i>format-string</i>.
+<p>When <tt> PICTURE</tt> specifies input formats for <a href="DataTypes.html#DT_DATETIME"> DATETIME</a> or
+<a href="DataTypes.html#DT_INTERVAL"> INTERVAL</a> fields, the
+    form compiler does not check the syntax of <i>format-string</i>, but your
+    form will work if the syntax is correct. Any error in <i>format-string</i>,
+    however, such as an incorrect field separator, produces a runtime error.
+<p>The typical usage for the <tt>PICTURE</tt> attribute is for (fixed-length) <a href="DataTypes.html#DT_CHAR">CHAR</a>
+fields. It is not recommended to use <tt>PICTURE</tt> for other data types,
+especially numeric or date/time fields: The current value of the field must
+always match (i.e. be formatted according to) <tt>PICTURE</tt>.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT</tt> f001 = carinfo.ident, <tt>PICTURE</tt> = &quot;AA####-AA(X)&quot;;</PRE>
+
+<HR>
+<h3><a name="FA_PROGRAM">PROGRAM Attribute</a> <b><font color="#FF0000">TUI Only!</font></b></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> PROGRAM</tt> attribute can specify an external application program to work
+with screen fields of data type <a href="DataTypes.html#DT_TEXT">TEXT</a> or <a href="DataTypes.html#DT_BYTE">BYTE</a>.</p>
+
+<h4>Syntax:</h4>
+<code>PROGRAM = &quot;<i>editor</i>&quot;</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>editor</i> is the name of the program that must be used to edit the
+    special field data.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>You can assign the <tt> PROGRAM</tt> attribute to a <a href="DataTypes.html#DT_TEXT">TEXT</a>
+    or <a href="DataTypes.html#DT_BYTE">BYTE</a> field to call an external
+    program to work with the BYTE or TEXT values.</p>
+Users can invoke the external program by pressing the exclamation point (
+    ! ) key while the screen cursor is in the field.
+<p>The external program then takes over control of the screen. When the user
+    exits from the external program, the form is redisplayed with any display
+    attributes besides <tt> PROGRAM</tt> in effect.
+<p>When no <tt> PROGRAM</tt> attribute is used, the <a href="EnvironmentVariables.html#EV_DBEDIT">DBEDIT</a>
+    environment variable defines the default editor.
+
+<p><b><font color="#FF0000">Warning:</font> This attribute works in <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a>
+mode only.</b></p>
+
+<HR>
+<h3><a name="FA_PROPERTIES">PROPERTIES Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>PROPERTIES</tt> attribute is used to define a list of widget-specific
+characteristics.</p>
+
+<h4>Syntax:</h4>
+<code>PROPERTIES = ( <u>{</u> <i><a href="#single-property">single-property</a></i>
+<u>|</u> <i><a href="#array-property">array-property</a></i> <u>|</u> <i><a href="#map-property">map-property</a></i>
+<u>}</u> <u>[,...]</u> )</code><p>where <a name="single-property">single-property</a>
+is:</p>
+<code><i>identifier</i> = <i><a href="#property-value">property-value</a></i></code><p>and
+<a name="array-property">array-property</a> is:</p>
+<code><i>identifier</i> = ( <i><a href="#property-value">property-value</a></i> <u>[,...]</u>
+)</code><p>and <a name="map-property">map-property</a> is:</p>
+<code><i>identifier</i> = ( <i>item-identifier</i> = <i><a href="#property-value">property-value</a></i>
+<u>[,...]</u> )</code><p>and <i><a name="property-value">property-value</a></i>
+is:</p>
+<p><code><u>{</u> <i>numeric-value</i> <u>|</u> &quot;<i>string-value</i>&quot; <u>}</u></code></p>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>numeric-value</i> is an integer or decimal literal.</li>
+  <li><i>string-value</i> is a string literal delimited by single or double
+    quotes.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <tt>PROPERTIES</tt> attribute is typically used to define the
+widget-specific attributes of a <a href="FormSpecFiles.html#FF_ITEMTYPE_WEBCOMPONENT">WEBCOMPONENT</a>
+form item.</p>
+
+<p>Note that property names names and values are not checked, to let you freely
+set any characteristic of an external widget.<br>
+You must verify that the front-end side implementation supports the specified
+properties.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>WEBCOMPONENT</tt> f01 = <tt>FORMONLY</tt>.mycalendar,
+<CODE class=linenumber>02</CODE>    <tt>COMPONENTTYPE </tt>= calendar,
+<CODE class=linenumber>03</CODE>    <tt>PROPERTIES</tt> = ( type = &quot;gregorian&quot;,
+<CODE class=linenumber>04</CODE>                week_start = 2,
+<CODE class=linenumber>05</CODE>                days_off = ( 1, 7 ),
+<CODE class=linenumber>06</CODE>                dates_off = ( &quot;????-11-25&quot;, &quot;????-06-20&quot; ),
+<CODE class=linenumber>07</CODE>                day_titles = ( t1 = &quot;Sunday&quot;,
+<CODE class=linenumber>08</CODE>                               t2 = &quot;Monday&quot;,
+<CODE class=linenumber>09</CODE>                               t3 = &quot;Tuesday&quot;,
+<CODE class=linenumber>10</CODE>                               t4 = &quot;Wednesday&quot;,
+<CODE class=linenumber>11</CODE>                               t5 = &quot;Thursday&quot;,
+<CODE class=linenumber>12</CODE>                               t6 = &quot;Friday&quot;,
+<CODE class=linenumber>13</CODE>                               t7 = &quot;Saterday&quot; )
+<CODE class=linenumber>14</CODE>    ;</PRE>
+
+<HR>
+<h3><a name="FA_QUERYEDITABLE">QUERYEDITABLE Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>QUERYEDITABLE</tt> attribute makes a combobox field editable during a
+<a href="Construct.html">CONSTRUCT</a> statement.</p>
+
+<h4>Syntax:</h4>
+<code>QUERYEDITABLE</code>
+
+<h4>Usage:</h4>
+The <tt>QUERYEDITABLE</tt> attribute is effective only during a <a href="Construct.html">CONSTRUCT</a>
+    statement..
+<p>This attribute is useful when the display values match the real values in
+    the <a href="#FA_ITEMS">ITEMS</a> attribute.
+
+<HR>
+<h3><a name="FA_REQUIRED">REQUIRED Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> REQUIRED</tt> attribute forces the user to modify the content of a field during an <a href="RecordInput.html">INPUT</a>
+or <a href="InputArray.html">INPUT ARRAY</a> statement.</p>
+
+<h4>Syntax:</h4>
+<code>REQUIRED</code>
+
+<h4>Usage:</h4>
+<p>This attribute forces the user to modify the content of the field during the
+dialog execution. If the user subsequently erases the entry during the same input,
+the runtime system considers the <tt> REQUIRED</tt> attribute satisfied.</p>
+
+The <tt> REQUIRED</tt> attribute is effective only when the field name appears in
+    the list of screen fields of an <a href="RecordInput.html">INPUT</a>
+    or <a href="InputArray.html">INPUT ARRAY</a> statement.
+<p> If both the <tt>REQUIRED</tt> and <tt> DEFAULT</tt> attributes are assigned
+    to the same field, the runtime system assumes that the default value satisfies
+    the <tt> REQUIRED</tt> attribute.
+<p>If the dialog instruction uses the <tt>WITHOUT DEFAULTS</tt> clause, the
+    current value of the variable linked to the <tt>REQUIRED</tt> field is
+    considered as a default value; the runtime
+    system assumes that the field satisfies the <tt> REQUIRED</tt>  attribute,
+    even if the variable value is <a href="Programs.html#PC_NULL">NULL</a>.</p>
+<p>To insist on
+a non-null entry, use the <a href="#FA_NOT_NULL">NOT NULL</a>
+attribute instead. The <tt>NOT NULL</tt> attribute can be specified in the field definition or
+in the&nbsp; corresponding column in the <a href="DatabaseSchema.html">database schema file</a>.</p>
+
+<HR>
+<h3><a name="FA_REVERSE">REVERSE Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>On character terminals, the <tt> REVERSE</tt> attribute displays any value
+in the field in reverse video (dark characters in a bright field).</p>
+
+<h4>Syntax:</h4>
+<code>REVERSE</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li>With character based terminals, the REVERSE video escape sequences must be
+    defined in the TERMINFO or TERMCAP databases.</li>
+</ol>
+
+<HR>
+<h3><a name="FA_SAMPLE">SAMPLE Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>SAMPLE</tt> attribute defines the text to be used to
+compute the width of a form field.</p>
+
+<h4>Syntax:</h4>
+<code>SAMPLE = &quot;<i>text</i>&quot;</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>text</i> is the sample string that will be used to compute the width of
+    the field.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>By default, form fields are rendered by the client with a size determined by
+the current font and the number of characters used in the layout grid.
+The field width is computed so that the largest value can fit in the widget.</p>
+
+<p>Sometimes the default computed width is too wide for the typical values
+displayed in the field. For example, numeric fields usually need less space
+as alphanumeric fields. If the values are always smaller, you can use the <tt>SAMPLE</tt> attribute
+to provide a hint for the front end to compute the best width for that form field.</p>
+
+<p>By default the physical width of the fields is:</p>
+<ul>
+  <li>
+    if the width is smaller than 6 chars, the pixel width of the
+    character 'M', multiplied by the number of characters the field is designed
+    for,</li>
+  <li>
+    if the width is bigger than 6 chars, the pixel width of 6 characters 'M'
+    plus the pixel width of the character '0' , multiplied by the number of
+    characters the field is designed for minus 6.</li>
+</ul>
+<p>
+    The default sample looks like &quot;MMMMMM0000&quot;...</p>
+
+<p>You can define a default sample for all fields used in the form, by
+specifying a <tt>DEFAULT SAMPLE</tt> option in the <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">INSTRUCTIONS</a>
+section.</p>
+
+<p>See also: <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">DEFAULT SAMPLE</a>.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT</tt> cid = customer.custid, <tt>SAMPLE</tt>=&quot;0000&quot;;
+<CODE class=linenumber>02</CODE> <tt>EDIT</tt> ccode = customer.ucode, <tt>SAMPLE</tt>=&quot;MMMMMM&quot;;
+<CODE class=linenumber>03</CODE> <tt>DATEEDIT</tt> be01 = customer.created, <tt>SAMPLE</tt>=&quot;00-00-0000&quot;;</PRE>
+
+<HR>
+<h3><a name="FA_SCROLL">SCROLL Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>SCROLL</tt> attribute can be used to enable horizontal scrolling in a
+character field.</p>
+
+<h4>Syntax:</h4>
+<code>SCROLL</code>
+
+<h4>Usage:</h4>
+<p>By default, the maximum data input
+length is defined by the width of the <a href="FormSpecFiles.html#FF_ITEM_TAG">item-tag</a>
+of the field. For example, if you define
+an CHAR field in the form with a length of 3 characters, users can only
+enter a maximum of 3 characters, even if the program variable used for input is a
+CHAR(20).</p>
+
+<p>If you want to let the user input more characters than the width of the <a href="FormSpecFiles.html#FF_ITEM_TAG">item-tag</a>
+of the field, use the <tt>SCROLL</tt> attribute.</p>
+
+<p>Note that the <tt>SCROLL</tt> attribute applies only to fields with character data
+input.</p>
+
+<p>See also: <a href="FormSpecFiles.html#FF_FIELD_MAXLENGTH">Field Input Length</a>.</p>
+
+<HR>
+<h3><a name="FA_STRETCH">STRETCH Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>STRETCH</tt> attribute specifies how a widget must resize  when
+the parent container is resized.</p>
+
+<h4>Syntax:</h4>
+<p>
+<code>STRETCH = <u>{</u> NONE <u>|</u> X <u>|</u> Y <u>|</u> BOTH <u>}</u></code>
+</p>
+
+<h4>Usage:</h4>
+<p>This attribute is typically used with form items that can be resized
+like <a href="FormSpecFiles.html#FF_ITEMTYPE_IMAGE">IMAGE</a>
+or <a href="FormSpecFiles.html#FF_ITEMTYPE_TEXTEDIT">TEXTEDIT</a> fields. By default  such
+form items have a fixed width and height, but in some cases you may want to
+force the widget to resize vertically, horizontally, or in both directions.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>IMAGE</tt> i01 = <tt>FORMONLY</tt>.image01, <tt>STRETCH</tt>=<tt>BOTH</tt>;</PRE>
+
+<HR>
+<h3><a name="FA_STEP">STEP Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>STEP</tt> attribute specifies how a value is increased or decreased 
+in one step (by a mouse click or key up/down).</p>
+
+<h4>Syntax:</h4>
+<p>
+<code>STEP = <i>integer</i></code>
+</p>
+
+<h4>Usage:</h4>
+<p>This attribute is typically used with form items allowing the user to change 
+the current integer value by a mouse click like
+<a href="FormSpecFiles.html#FF_ITEMTYPE_SLIDER">SLIDER</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_SPINEDIT">SPINEDIT</a>. </p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>SLIDER</tt> s01 = <tt>FORMONLY</tt>.slider, <tt>STEP</tt>=<tt>10</tt>;</PRE>
+
+<HR>
+<h3><a name="FA_TEXT">TEXT Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>TEXT</tt> attribute defines the label associated with a form item,
+such as the text of a checkbox item.</p>
+
+<h4>Syntax:</h4>
+<code>TEXT = <u>[</u>%<u>]</u>"<i>string</i>"</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>string</i> defines the label to be associated with
+    the form item.</li>
+  <li><i>string</i>  can be a <a href="LocalizedStrings.html">localized string</a>.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>CHECKBOX</tt> cb01 = <tt>FORMONLY</tt>.checkbox01, <tt>TEXT</tt>=&quot;OK&quot;, <tt>VALUECHECKED</tt>='y', <tt>VALUEUNCHECKED</tt>='n';</PRE>
+
+<HR>
+<h3><a name="FA_TITLE">TITLE Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>TITLE</tt> attribute defines the title of a form item. Use may be 
+restricted to form fields that make up the columns of a table container; see the 
+documentation for the relevant form item.</p>
+
+<h4>Syntax:</h4>
+<code>TITLE = <u>[</u>%<u>]</u>"<i>string</i>"</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>string</i> defines the title to be associated with
+    the form item.</li>
+  <li><i>string</i>  can be a <a href="LocalizedStrings.html">localized string</a>.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT</tt> col1 = <tt>FORMONLY</tt>.column1, <tt>TITLE</tt>=&quot;Num&quot;;</PRE>
+
+<HR>
+<h3><a name="FA_VALUEMIN">VALUEMIN Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>VALUEMIN</tt> attribute defines a lower limit of values displayed in widgets 
+(such as
+progress bars).</p>
+
+<h4>Syntax:</h4>
+<code>VALUEMIN = <i>integer</i></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>integer</i> is a integer <a href="Literals.html">literal</a>.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>This attribute is typically used in <a href="FormSpecFiles.html#FF_ITEMTYPE_PROGRESSBAR">PROGRESSBAR</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_SPINEDIT">SPINEDIT</a> and <a href="FormSpecFiles.html#FF_ITEMTYPE_SLIDER">SLIDER</a>
+fields, to define the lower limit.</p>
+
+<p>See <a href="FormSpecFiles.html">form item type</a> definition for default
+value.</p>
+
+<p>Note that this attribute is not used by the runtime system to validate the
+field, you must use the <a href="#FA_INCLUDE">INCLUDE</a> attribute to control
+value boundaries.</p>
+
+<HR>
+<h3><a name="FA_VALUEMAX">VALUEMAX Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>VALUEMAX</tt> attribute defines a upper limit of values displayed in widgets 
+(such as
+progress bars).</p>
+
+<h4>Syntax:</h4>
+<code>VALUEMAX = <i>integer</i></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>integer</i>  is  an integer <a href="Literals.html">literal</a>.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>This attribute is typically used in <a href="FormSpecFiles.html#FF_ITEMTYPE_PROGRESSBAR">PROGRESSBAR</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_SPINEDIT">SPINEDIT</a> and <a href="FormSpecFiles.html#FF_ITEMTYPE_SLIDER">SLIDER</a>
+fields, to define the upper limit.</p>
+
+<p>See <a href="FormSpecFiles.html">form item type</a> definition for default
+value.</p>
+
+<p>Note that this attribute is not used by the runtime system to validate the
+field, you must use the <a href="#FA_INCLUDE">INCLUDE</a> attribute to control
+value boundaries.</p>
+
+<HR>
+<h3><a name="FA_VALUECHECKED">VALUECHECKED Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>VALUECHECKED</tt> attribute defines the value associated
+with a checkbox item when it is checked.</p>
+
+<h4>Syntax:</h4>
+<code>VALUECHECKED = <i>value</i> </code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>value</i> is a numeric or string <a href="Literals.html">literal</a>,
+    or one of the following keywords: <tt>NULL</tt>, <tt>TRUE</tt>, <tt>FALSE</tt>.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>This attribute is used in conjunction with the <tt>VALUEUNCHECKED</tt> attribute
+to define the values corresponding to the states of a <tt>CHECKBOX</tt>.</p>
+
+<p>Note that this attribute is not used by the runtime system to validate the
+field, you must use the <a href="#FA_INCLUDE">INCLUDE</a> attribute to control
+value boundaries.</p>
+
+<p> See <a href="FormSpecFiles.html#FF_ITEMTYPE_CHECKBOX">CHECKBOX
+definition</a> for more details.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>CHECKBOX</tt> cb01 = <tt>FORMONLY</tt>.checkbox01, <tt>TEXT</tt>=&quot;OK&quot;, <tt>VALUECHECKED</tt>=<tt>TRUE</tt>, <tt>VALUEUNCHECKED</tt>=<tt>FALSE</tt>;</PRE>
+
+<HR>
+<h3><a name="FA_VALUEUNCHECKED">VALUEUNCHECKED Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>VALUEUNCHECKED</tt> attribute defines the value associated with a
+checkbox item when it is <u>not</u> checked.</p>
+
+<h4>Syntax:</h4>
+<code>VALUEUNCHECKED = <i>value</i> </code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>value</i> is a numeric or string <a href="Literals.html">literal</a>,
+    or one of the following keywords: <tt>NULL</tt>, <tt>TRUE</tt>, <tt>FALSE</tt>.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>This attribute is used in conjunction with the <tt>VALUECHECKED</tt> attribute
+to define the values corresponding to the states of a <tt>CHECKBOX</tt>.</p>
+
+<p>Note that this attribute is not used by the runtime system to validate the
+field, you must use the <a href="#FA_INCLUDE">INCLUDE</a> attribute to control
+value boundaries.</p>
+
+<p> See <a href="FormSpecFiles.html#FF_ITEMTYPE_CHECKBOX">CHECKBOX
+definition</a> for more details.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>CHECKBOX</tt> cb01 = <tt>FORMONLY</tt>.checkbox01, <tt>TEXT</tt>=&quot;OK&quot;, <tt>VALUECHECKED</tt>=&quot;Y&quot;, <tt>VALUEUNCHECKED</tt>=&quot;N&quot;;</PRE>
+
+<HR>
+<h3><a name="FA_UNSORTABLE">UNSORTABLE Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>Indicates that the element cannot be selected by the user for sorting.</p>
+
+<h4>Syntax:</h4>
+<code>UNSORTABLE</code>
+
+<h4>Usage:</h4>
+<p>By default, a <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE</a> container allows the
+user to sort the columns by a left-click on the column header. Use this
+attribute to prevent a sort on a specific column.</p>
+
+<p>Makes sense only for a field that is used for the definition of a column
+    in a <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE</a> container.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT</tt> c01 = item.comment, <tt>UNSORTABLE</tt>;</PRE>
+
+<HR>
+<h3><a name="FA_UNSORTABLECOLUMNS">UNSORTABLECOLUMNS Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>Indicates that the columns of the table cannot be selected by the user for
+sorting.</p>
+
+<h4>Syntax:</h4>
+<code>UNSORTABLECOLUMNS</code>
+
+<h4>Usage</h4>
+<p>Same effect as <a href="#FA_UNSORTABLE">UNSORTABLE</a>, but at
+the <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE</a> level, so that
+none of the table columns can be used for sort.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>TABLE</tt> t1 ( <tt>UNSORTABLECOLUMNS</tt> )</PRE>
+
+<HR>
+<h3><a name="FA_UNSIZABLE">UNSIZABLE Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>Indicates that the element cannot be resized by the user.</p>
+
+<h4>Syntax:</h4>
+<code>UNSIZABLE</code>
+
+<h4>Usage:</h4>
+<p>By default, a <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE</a> container allows the
+user to resize the columns by a drag-click on the column header. Use this
+attribute to prevent a resize on a specific column.</p>
+
+<p>Makes  sense only for a field that is used for the definition of a column
+    in a <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE</a> container.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT</tt> c01 = item.comment, <tt>UNSIZABLE</tt>;</PRE>
+
+<HR>
+<h3><a name="FA_UNSIZABLECOLUMNS">UNSIZABLECOLUMNS Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>Indicates that the columns of the table cannot be resized by the user.</p>
+
+<h4>Syntax:</h4>
+<code>UNSIZABLECOLUMNS</code>
+
+<h4>Usage</h4>
+<p>Same effect as <a href="#FA_UNSIZABLE">UNSIZABLE</a>, but at the <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE</a>
+level, to make all columns not resizable.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>TABLE</tt> t1 ( <tt>UNSIZABLECOLUMNS</tt> )</PRE>
+
+<HR>
+<h3><a name="FA_UNHIDABLE">UNHIDABLE Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>Indicates that the element cannot be hidden or shown by the user with the
+context menu.</p>
+
+<h4>Syntax:</h4>
+<code>UNHIDABLE</code>
+
+<h4>Usage:</h4>
+<p>By default, a <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE</a> container allows the user to
+hide the columns by a right-click on the column header. Use this attribute to prevent
+the user from hiding a specific column.</p>
+
+<p>Makes sense only for a field that is used for the definition of a column
+    in a <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE</a> container.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT</tt> c01 = item.comment, <tt>UNHIDABLE</tt>;</PRE>
+
+<HR>
+<h3><a name="FA_UNHIDABLECOLUMNS">UNHIDABLECOLUMNS Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>Indicates that the columns of the table cannot be hidden or shown by the user
+with the context menu.</p>
+
+<h4>Syntax:</h4>
+<code>UNHIDABLECOLUMNS</code>
+
+<h4>Usage</h4>
+<p>Same effect as <a href="#FA_UNHIDABLE">UNHIDABLE</a>, but at the
+<a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE</a> level, to make all columns
+not hidable.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>TABLE</tt> t1 ( <tt>UNHIDABLECOLUMNS</tt> )</PRE>
+
+<HR>
+<h3><a name="FA_UNMOVABLE">UNMOVABLE Attribute</a>    </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>UNMOVABLE</tt> attribute prevents the user from moving a defined column of a table. </p>
+
+<h4>Syntax:</h4>
+<code>UNMOVABLE</code>
+
+<h4>Usage:</h4>
+<p>By default, a <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE</a> container allows the user
+to move the columns by dragging and dropping the column header.
+Use this attribute to prevent the user from changing the order of a specific
+column. Typically, <tt>UNMOVABLE</tt> is used on at least two columns to
+prevent the user from changing the order of the input on these columns.</p>
+
+<HR>
+<h3><a name="FA_UNMOVABLECOLUMNS">UNMOVABLECOLUMNS Attribute</a>    </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>UNMOVABLECOLUMNS </tt> attribute prevents the user from
+moving columns of a table.</p>
+
+<h4>Syntax:</h4>
+<code>UNMOVABLECOLUMNS </code>
+
+<h4>Usage:</h4>
+<p>By default, a <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE</a> container allows the user
+to move the columns by dragging and dropping the column header.
+Use this attribute to prevent the user from changing the order of columns.</p>
+
+<HR>
+<h3><a name="FA_UPSHIFT">UPSHIFT Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>UPSHIFT</tt> attribute forces character input to uppercase letters.</p>
+
+<h4>Syntax:</h4>
+<code>UPSHIFT</code>
+
+<h4>Usage:</h4>
+<p>Assign the <tt>UPSHIFT</tt> attribute to a character field when you want the runtime
+system to convert lowercase letters entered by the user to uppercase letters,
+both on the screen and in the corresponding program variable.</p>
+
+Because uppercase and lowercase letters have different values, storing
+    character strings in one or the other format can simplify sorting and
+    querying a database.
+<p>Characters entered by the user are converted in <a href="RecordInput.html">INPUT</a>,
+    <a href="InputArray.html">INPUT ARRAY</a> and <a href="Construct.html">CONSTRUCT</a>
+    instructions.
+<p>The results of conversions between uppercase and lowercase letters are based
+    on the locale settings (LANG). With single byte runners the conversion of ASCII characters &gt;127 is
+    controlled by the <a href="Localization.html">locale settings</a> (the LC_CTYPE
+    environment variable).
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT</tt> f001 = <tt>FORMONLY</tt>.thetitle, <tt>UPSHIFT</tt>;</PRE>
+
+<p>See also: <a href="#FA_DOWNSHIFT">DOWNSHIFT</a>.</p>
+
+<HR>
+<h3><a name="FA_VALIDATE">VALIDATE Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p> <tt>VALIDATE</tt>  is an Action Defaults attribute defining the data
+validation level for a given action.</p>
+
+<h4>Syntax:</h4>
+<code>VALIDATE = NO</code>
+
+<h4>Usage:</h4>
+The action default attribute <tt>VALIDATE = NO </tt>indicates that no data validation must occur for 
+  this action. However, current input buffer contains the text modified by the
+    user before triggering the action.
+
+<HR>
+<h3><a name="FA_VALIDATE_LIKE">VALIDATE LIKE Attribute</a>   </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>VALIDATE LIKE</tt> attribute instructs the form compiler to set the
+field attributes that are defined in the .val database schema file for the
+specified column.</p>
+
+<h4>Syntax:</h4>
+<code>VALIDATE LIKE <u>[</u><i>table</i>.<u>]</u><i>column</i></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>table </i>is the optional table name to qualify the column.</li>
+  <li><i>column </i>is the name of the column used to search for
+    validation rules.</li>
+</ol>
+
+<h4>Usage:</h4>
+Specifying the <tt>VALIDATE LIKE</tt> attribute is equivalent to writing in the
+field definition all the attributes that
+    are assigned to <i>table.column </i>in the <a href="DatabaseSchema.html#VAL_FILE">.val
+database
+    schema file</a> generated from the <b>syscolval </b>table.
+<p>Note that .val attributes are taken automatically from the schema file if the
+    field is linked to <i>table.column </i>in the field name specification. The <tt>VALIDATE
+LIKE</tt> attribute is usually specified for <tt>FORMONLY</tt> fields.
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The <tt>VALIDATE LIKE</tt>  attribute is evaluated at compile time, not at runtime.
+    If the database schema file changes, you should recompile all your forms.</li>
+  <li>Even if all of
+    the fields in the form are <tt>FORMONLY</tt>, the <tt>VALIDATE LIKE</tt>  attribute requires the form
+    compiler to access the database schema file that contains the description of
+    <i>tabl</i>e.</li>
+</ol>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT </tt>f001 = <tt>FORMONLY</tt>.fullname, <tt>VALIDATE LIKE</tt> customer.custname;</PRE>
+
+<HR>
+<h3><a name="FA_INITIALIZER">INITIALIZER Attribute</a>  </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>INITIALIZER</tt> attribute allows you to specify an initialization
+function that will be automatically called by the runtime system to set up
+the form item.</p>
+
+<h4>Syntax:</h4>
+<code>INITIALIZER = <i>function</i></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>function</i> is an identifier defining the program function to be called.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The initialization function must exist in the program using the form file
+and must be defined with a <a href="ClassComboBox.html">ui.ComboBox</a> parameter.</p>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The initialization function name is converted to lowercase by <a href="Tools.html#TL_FGLFORM">fglform</a>.
+    Always use lowercase letters to avoid mistakes.</li>
+</ol>
+
+<HR>
+<h3><a name="FA_ITEMS">ITEMS Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>ITEMS</tt> attribute defines a list of possible values that can
+be used by the form item.</p>
+
+<h4>Syntax:</h4>
+<code>ITEMS = <u>{</u>  <i>single-value-list</i> <u>|</u>  <i>double-value-list</i> <u>}</u> </code>
+<p>where <i>single-value-list</i> is:</p>
+<p>
+<code>( <i>value</i> <u>[</u>,<u>...]</u>
+)</code></p>
+
+<p>where <i>double-value-list</i> is:</p>
+<p>
+<code>( ( <i>value</i>, <i>label-value</i>
+) <u>[</u>,<u>...]</u>
+)</code></p>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>single-value-list</i> is a comma-separated
+    list of single values.</li>
+  <li><i>double-value-list</i> is a comma-separated
+    list of (a, b) values pairs within parentheses.</li>
+  <li><i>value</i> is a numeric or string <a href="Literals.html">literal</a>,
+    or one of the following keywords: <tt>NULL</tt>, <tt>TRUE</tt>, <tt>FALSE</tt>.</li>
+  <li><i>label-value</i> is a numeric literal, a string literal, or a <a href="LocalizedStrings.html">localized
+    string</a>.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings: </font></h4>
+<ol>
+	<li>It is only possible to use <a href="LocalizedStrings.html">localized
+strings</a>&nbsp; for item labels (i.e. not for key values).</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The list must be delimited by parentheses, and each element of the list can be
+a simple <a href="Literals.html">literal value</a> or a pair of literal values
+delimited by parentheses.</p>
+
+<p>Note that this attribute is not used by the runtime system to validate the
+field, you must use the <a href="#FA_INCLUDE">INCLUDE</a> attribute to force the
+possible values.</p>
+
+<p>The following example defines a list of simple values:</p>
+
+<PRE><tt>ITEMS</tt> = (&quot;Paris&quot;, &quot;London&quot;, &quot;New York&quot;)</PRE>
+
+<p>The next example defines a list of pairs:</p>
+
+<PRE><tt>ITEMS</tt> = ((1,&quot;Paris&quot;),(2,&quot;London&quot;),(3,&quot;New York&quot;))</PRE>
+
+<p>This attribute can be used, for example, to define the list of a <tt>COMBOBOX</tt>
+form item:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>COMBOBOX</tt> cb01 = <tt>FORMONLY</tt>.combobox01, <tt>ITEMS</tt> = ((1,&quot;Paris&quot;),(2,&quot;London&quot;),(3,&quot;New York&quot;));</PRE>
+
+<p>In this case, the first value of a pair (1,2,3) defines the data values of
+the form field and the second value of a pair (&quot;Paris&quot;,
+&quot;London&quot;, &quot;New York&quot;)  defines
+ the value to be displayed in the selection list.</p>
+
+<p>When used in a <tt>RADIOGROUP</tt> form item, this attribute defines the list
+of radio buttons:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>RADIOGROUP</tt> rg01 = <tt>FORMONLY</tt>.radiogroup01, <tt>ITEMS</tt> = ((1,&quot;Paris&quot;),(2,&quot;London&quot;),(3,&quot;New York&quot;));</PRE>
+
+<p>In this case, the first value of a pair (1,2,3) defines the data values of
+the form field and the second value of a pair (&quot;Paris&quot;,
+&quot;London&quot;, &quot;New York&quot;) defines the value to be displayed as the
+radio button label.</p>
+
+<p><u>Localization</u></p>
+
+<p>You can specify item labels with <a href="LocalizedStrings.html">Localized
+Strings</a>, but this is only possible when you specify a key and a label:</p>
+
+<PRE><tt>ITEMS</tt> = ((1,%&quot;item1&quot;),(2,%&quot;item2&quot;),(3,%&quot;item3&quot;))</PRE>
+
+<p><u>Using NULL items</u></p>
+
+<p>It is allowed to define a <tt>NULL</tt> value for an item (note that an empty
+string is equivalent to <tt>NULL</tt>):</p>
+
+<PRE><tt>ITEMS</tt> = ((NULL,&quot;Enter bug status&quot;),(1,&quot;Open&quot;),(2,&quot;Resolved&quot;))</PRE>
+
+<p>In this case, the behavior of the field depends from the item type used. For
+more details, see field type specific notes for 
+<a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">COMBOBOX</a>
+and <a href="FormSpecFiles.html#FF_ITEMTYPE_RADIOGROUP">RADIOGROUP</a>.</p>
+
+<HR>
+<h3><a name="FA_JUSTIFY">JUSTIFY Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>JUSTIFY</tt> attribute defines the justification of the content of a
+field and the alignment of table column headers.</p>
+
+<h4>Syntax:</h4>
+<code>JUSTIFY = <u> {</u> LEFT <u> |</u> CENTER <u>|</u> RIGHT <u> }</u></code>
+
+<h4>Usage:</h4>
+
+<p>With the <tt>JUSTIFY</tt> attribute, you specify the
+justification of the content of a field as <tt>LEFT</tt>, <tt>CENTER</tt> or <tt>RIGHT</tt>
+when the field is in display state. This attribute is ignored for input (i.e.
+when the field has the focus); only the default data justification rule
+applies when a field is in input state. The default data justification depends on the dialog type, the
+field <a href="DataTypes.html">data type</a> and the <a href="#FA_FORMAT">FORMAT</a>
+attribute. For example, a numeric field value is right aligned, while a string
+field is left aligned. The type of dialog also defines the default
+justification: In a <a href="Construct.html">CONSTRUCT</a>, all input fields are
+left aligned, for search criteria input.</p>
+
+<p>Note that the <tt>JUSTIFY</tt>  attribute can be used with all form item
+types: Additionally to the field content/data alignment, <tt>JUSTIFY</tt>
+defines the alignment of table column headers indirectly (i.e. table column
+header follows the alignment of field data). However, column header alignment in
+tables may not be enabled by default; Check the front-end <a href="PresentationStyles.html#STYATT_TABLE">headerAlignment</a>
+Presentation
+Style attribute.</p>
+
+<p>You can specify the text alignment of <a href="FormSpecFiles.html#FF_ITEMTYPE_LABEL">static
+labels</a> with the <tt>JUSTIFY</tt>  attribute.&nbsp;</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>LABEL</tt> t01 : <tt>TEXT</tt>=&quot;Hello!&quot;, <tt>JUSTIFY</tt>=<tt>RIGHT</tt>;
+<CODE class=linenumber>02</CODE> <tt>EDIT</tt> f01 = order.value, <tt>JUSTIFY</tt>=<tt>CENTER</tt>;</PRE>
+
+<HR>
+<h3><a name="FA_SCROLLBARS">SCROLLBARS Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>SCROLLBARS</tt> attribute can be used to specify scrollbars for a
+form item.</p>
+
+<h4>Syntax:</h4>
+<code>SCROLLBARS = <u>{</u> NONE <u>|</u> VERTICAL <u>|</u> HORIZONTAL <u>|</u>
+BOTH <u>}</u></code>
+
+<h4>Usage:</h4>
+<p>This attribute defines scrollbars for the form item, such
+as a <a href="FormSpecFiles.html#FF_ITEMTYPE_TEXTEDIT">TEXTEDIT</a>.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>TEXTEDIT </tt>f001 = customer.fname, <tt>SCROLLBARS</tt>=<tt>BOTH</tt>;</PRE>
+
+<HR>
+<h3><a name="FA_SIZEPOLICY">SIZEPOLICY</a> Attribute </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>SIZEPOLICY</tt>&nbsp;attribute is a sizing directive to display form elements.</p>
+
+<h4>Syntax:</h4>
+<code>SIZEPOLICY = <u>{</u>  INITIAL <u>|</u>  FIXED <u>|</u> DYNAMIC <u>}</u></code>
+
+<h4>Usage:</h4>
+<p>This attribute defines the initial size of some form elements in grids. The default
+value of <tt>SIZEPOLICY</tt> is <tt>INITIAL</tt>. When the <tt>SIZEPOLICY</tt> is <tt>FIXED</tt>, the form
+elements size is exactly the one defined in the Form Specification File.
+The width of the element is computed from the defined width and the font used. For some elements such as <a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">COMBOBOX</a>
+or <a href="FormSpecFiles.html#FF_ITEMTYPE_RADIOGROUP">RADIOGROUP</a>, you may want the size
+of the widget to fit exactly to its content: When <tt>SIZEPOLICY</tt> is <tt>DYNAMIC</tt>,
+the width of the element grows and shrinks according to the width of the wider <a href="#FA_ITEMS">item</a>.
+When a form element is created from a database (for instance populating a <a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">COMBOBOX</a>
+item list), the width of each element is not known when
+designing the form. When <tt>SIZEPOLICY</tt> is <tt>INITIAL</tt>, the width is
+computed to display the element correctly the first time it appears on the
+screen. Once it is displayed, its width is frozen. This behavior is also very
+useful when using Internationalization.</p>
+
+<p>When <tt>SIZEPOLICY</tt> is <tt>INITIAL</tt>, the behavior differs depending on the
+form element type:</p>
+
+<ul>
+  <li><a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTON">Buttons</a>: The width defined in the form
+    is a minimum width. If the text is bigger, the size grows.&nbsp;</li>
+  <li><a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">ComboBoxes</a>: The width defined in the
+    form is a minimum width. If one of the items in the value list is bigger,
+    the size grows in order for the combobox
+    to display the largest item fully .</li>
+  <li><a href="FormSpecFiles.html#FF_ITEMTYPE_LABEL">Labels</a>,
+    <a href="FormSpecFiles.html#FF_ITEMTYPE_CHECKBOX">Checkboxes</a>
+    and <a href="FormSpecFiles.html#FF_ITEMTYPE_RADIOGROUP">Radio Groups</a>: The width defined in
+    the form is ignored. The fields are sized according to their text.</li>
+  <li><a href="FormSpecFiles.html#FF_ITEMTYPE_IMAGE">Images</a>  and <a href="FormSpecFiles.html#FF_ITEMTYPE_TEXTEDIT">TextEdits</a>
+    can use the <a href="#FA_STRETCH">STRETCH</a>  attribute, so that the size
+    of the widget can be dependant from the parent container, overriding the <span style="color: #008000; font-family: Courier New">SIZEPOLICY</span>
+    attribute.</li>
+  <li>Other items (mostly <a href="FormSpecFiles.html#FF_ITEMTYPE_EDIT">Edits</a>, 
+  or widget without items like
+  <a href="FormSpecFiles.html#FF_ITEMTYPE_PROGRESSBAR">ProgressBar</a>) are not 
+  sensitive to this attribute</li>
+</ul>
+
+<p>The following table shows the effect of the <tt>SIZEPOLICY</tt> attribute
+according to the type of form item; <tt>INITIAL</tt> corresponds to the first content,
+while <tt>DYNAMIC</tt> corresponds to the content at anytime:</p>
+
+<center>
+<table border="0" width="90%">
+  <tr>
+    <td bordercolor="#C0C0C0" bgcolor="#C0C0C0" width="25%"><b>Item Type</b></td>
+    <td bordercolor="#C0C0C0" bgcolor="#C0C0C0" width="25%"><tt>INITIAL</tt></td>
+    <td bordercolor="#C0C0C0" bgcolor="#C0C0C0" width="25%"><tt>FIXED</tt></td>
+    <td bordercolor="#C0C0C0" bgcolor="#C0C0C0" width="25%"><tt>DYNAMIC</tt></td>
+  </tr>
+  <tr>
+    <td width="25%"><a href="FormSpecFiles.html#FF_ITEMTYPE_EDIT">EDIT</a></td>
+    <td width="25%">
+        fixed</td>
+    <td width="25%">fixed</td>
+    <td width="25%">no effect</td>
+  </tr>
+  <tr>
+    <td width="25%"><a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTONEDIT">BUTTONEDIT</a></td>
+    <td width="25%">
+        fixed</td>
+    <td width="25%">fixed</td>
+    <td width="25%">no effect</td>
+  </tr>
+  <tr>
+    <td width="25%"><a href="FormSpecFiles.html#FF_ITEMTYPE_TEXTEDIT">TEXTEDIT</a></td>
+    <td width="25%">
+        fixed</td>
+    <td width="25%">fixed</td>
+    <td width="25%">no effect</td>
+  </tr>
+  <tr>
+    <td width="25%"><a href="FormSpecFiles.html#FF_ITEMTYPE_DATEEDIT">DATEEDIT</a></td>
+    <td width="25%">can shrink</td>
+    <td width="25%">fixed</td>
+    <td width="25%">no effect</td>
+  </tr>
+  <tr>
+    <td width="25%"><a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">COMBOBOX</a></td>
+    <td width="25%">can grow</td>
+    <td width="25%">fixed</td>
+    <td width="25%">
+        can grow</td>
+  </tr>
+  <tr>
+    <td width="25%"><a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTON">BUTTON</a></td>
+    <td width="25%">can grow</td>
+    <td width="25%">fixed</td>
+    <td width="25%">can shrink and grow</td>
+  </tr>
+  <tr>
+    <td width="25%"><a href="FormSpecFiles.html#FF_ITEMTYPE_LABEL">LABEL</a></td>
+    <td width="25%">can shrink and grow</td>
+    <td width="25%">fixed</td>
+    <td width="25%">can shrink and grow</td>
+  </tr>
+  <tr>
+    <td width="25%"><a href="FormSpecFiles.html#FF_ITEMTYPE_RADIOGROUP">RADIOGROUP</a></td>
+    <td width="25%">can shrink and grow</td>
+    <td width="25%">fixed</td>
+    <td width="25%">can shrink and grow</td>
+  </tr>
+  <tr>
+    <td width="25%"><a href="FormSpecFiles.html#FF_ITEMTYPE_CHECKBOX">CHECKBOX</a></td>
+    <td width="25%">can shrink and grow</td>
+    <td width="25%">fixed</td>
+    <td width="25%">can shrink and grow</td>
+  </tr>
+  <tr>
+    <td width="25%"><a href="FormSpecFiles.html#FF_ITEMTYPE_IMAGE">IMAGE</a></td>
+    <td width="25%">
+        can shrink and grow</td>
+    <td width="25%">fixed</td>
+    <td width="25%">can shrink and grow</td>
+  </tr>
+  <tr>
+    <td width="25%"><a href="FormSpecFiles.html#FF_ITEMTYPE_PROGRESSBAR">
+    PROGRESSBAR</a></td>
+    <td width="25%">
+        fixed</td>
+    <td width="25%">fixed</td>
+    <td width="25%">no effect</td>
+  </tr>
+  <tr>
+    <td width="25%"><a href="FormSpecFiles.html#FF_ITEMTYPE_SLIDER">SLIDER</a></td>
+    <td width="25%">
+        fixed</td>
+    <td width="25%">fixed</td>
+    <td width="25%">no effect</td>
+  </tr>
+  <tr>
+    <td width="25%"><a href="FormSpecFiles.html#FF_ITEMTYPE_SPINEDIT">SPINEDIT</a></td>
+    <td width="25%">
+        fixed</td>
+    <td width="25%">fixed</td>
+    <td width="25%">no effect</td>
+  </tr>
+  <tr>
+    <td width="25%"><a href="FormSpecFiles.html#FF_ITEMTYPE_TIMEEDIT">TIMEEDIT</a></td>
+    <td width="25%">
+        fixed</td>
+    <td width="25%">fixed</td>
+    <td width="25%">no effect</td>
+  </tr>
+  <tr>
+    <td width="25%"><a href="FormSpecFiles.html#FF_ITEMTYPE_CANVAS">CANVAS</a></td>
+    <td width="25%">Non applicable</td>
+    <td width="25%">Non applicable</td>
+    <td width="25%">Non applicable</td>
+  </tr>
+</table>
+</center>
+
+<p>Note that the <tt>SIZEPOLICY</tt> attribute is ignored for the widgets used
+in <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE</a> columns, because in
+tables, the size policy is implicitly defined by the cell as fixed (i.e. the
+size of the column in the form layout).</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>COMBOBOX </tt>f001 = customer.city, <tt>ITEMS</tt>=((1,&quot;Paris&quot;),(2,&quot;Madrid&quot;),(3,&quot;London&quot;)), <tt>SIZEPOLICY</tt>=<tt>DYNAMIC</tt>;</PRE>
+
+<HR>
+<h3><a name="FA_SPACING">SPACING Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>SPACING</tt> attribute is a spacing directive to display form elements.</p>
+
+<h4>Syntax:</h4>
+<code>SPACING = <u>{</u> NORMAL <u>|</u> COMPACT <u>}</u></code>
+
+<h4>Usage:</h4>
+<p>This attribute defines the global distance between two neighboring form
+elements. In <tt>
+NORMAL</tt>
+mode, the front end displays form elements consistent with the desktop spacing,
+which is, for example, 6 and 10 pixels on Microsoft Windows platforms. Some
+overcrowded forms may need to be displayed with less space between elements, to
+let them fit to the screen. In this case you can use the <tt>COMPACT</tt> mode.</p>
+
+<p> By default, forms are displayed with <tt>COMPACT</tt> spacing.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>LAYOUT </tt>( <tt>SPACING</tt>=<tt>NORMAL</tt> )</PRE>
+
+<HR>
+<h3><a name="FA_SPLITTER">SPLITTER Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>SPLITTER</tt> attribute forces the container to use a splitter widget
+between each child element.</p>
+
+<h4>Syntax:</h4>
+<code>SPLITTER</code>
+
+<h4>Usage:</h4>
+<p>This attribute indicates that the container (typically, a <a href="FormSpecFiles.html#FF_CONTAINER_VBOX">VBOX</a>
+or <a href="FormSpecFiles.html#FF_CONTAINER_HBOX">HBOX</a>) must have a splitter
+between each child element held by the container. If a container is defined with
+a splitter and if the children are stretchable (like <a href="FormSpecFiles.html#FF_ITEMTYPE_TABLE">TABLE</a>
+or <a href="FormSpecFiles.html#FF_ITEMTYPE_TEXTEDIT">TEXTEDIT</a>), users can
+resize the child elements inside the container.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>VBOX </tt>( <tt>SPLITTER</tt> )</PRE>
+
+<HR>
+<h3><a name="FA_STYLE">STYLE Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>STYLE</tt> attribute specifies a <a href="PresentationStyles.html">presentation
+style</a> for a form element.</p>
+
+<h4>Syntax:</h4>
+<code>STYLE = "<i>string</i>" </code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>string</i> is a user-defined style.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>This attribute specifies a presentation style to be applied to a form
+element. The presentation style can define decoration attributes
+such as a background color, a font type, and so on.</p>
+
+<HR>
+<h3><a name="FA_TAG">TAG Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>TAG</tt> attribute can be used to identify the form item
+with a specific string.</p>
+
+<h4>Syntax:</h4>
+<code>TAG = "<i>tag-string</i>" </code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>tag-string</i> is free text.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>This attribute is used to identify form items with a specific string.
+It can be queried in the program to perform specific processing.</p>
+
+<p>You are free to use this attribute as you need. For example, you can
+define a numeric identifier for each field in the form in order to  show
+context  help, or group fields for specific input verification.</p>
+
+<p>If you need to handle multiple data, you can format the text, for
+example, by using a pipe separator.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT </tt>f001 = customer.fname, <tt>TAG</tt> = &quot;name&quot;;
+<CODE class=linenumber>02</CODE> <tt>EDIT </tt>f002 = customer.lname, <tt>TAG</tt> = &quot;name|optional&quot;;</PRE>
+
+<HR>
+<h3><a name="FA_TABINDEX">TABINDEX Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>TABINDEX</tt> attribute defines the tab order for a form item.</p>
+
+<h4>Syntax:</h4>
+<code>TABINDEX = <i>integer</i> </code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>integer</i> defines the order of the item in the tab sequence.</li>
+  <li>If <i>integer</i> is zero, the item will be excluded from the tagging
+    list.&nbsp;</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>This attribute can be used to define the order in which the form items are
+selected as the user &quot;tabs&quot; from field to field when the program is
+using the <a href="Programs.html#PROGRAM_OPTIONS">form field order
+option</a>.</p>
+
+<p>It can also be used to define which field must get the focus when
+a <a href="FormSpecFiles.html#FF_CONTAINER_PAGE">folder page</a> is selected.</p>
+
+<p>By default, form items get a tab index according to the order in which they
+appear in the <a href="FormSpecFiles.html#SECTION_LAYOUT">LAYOUT</a> section.</p>
+
+<p><b><font color="#008000">Tip:</font></b> <tt>TABINDEX</tt> can be set to zero
+in order to exclude the item from the tabbing list. The item can still get the
+focus with the mouse.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>EDIT </tt>f001 = customer.fname, <tt>TABINDEX</tt> = 1;
+<CODE class=linenumber>02</CODE> <tt>EDIT </tt>f002 = customer.lname, <tt>TABINDEX</tt> = 2;
+<CODE class=linenumber>03</CODE> <tt>EDIT </tt>f003 = customer.comment, <tt>TABINDEX</tt> = 0; -- Exclude from tabbing list</PRE>
+
+<HR>
+<h3><a name="FA_VERIFY">VERIFY Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> VERIFY</tt> attribute requires users to enter data in the field twice to
+reduce the probability of erroneous data entry.</p>
+
+<h4>Syntax:</h4>
+<code>VERIFY</code>
+
+<h4>Usage:</h4>
+This attribute supplies an additional step
+    in data entry to ensure the integrity of your data. After the user enters a
+    value into a <tt> VERIFY</tt> field and presses RETURN, the runtime system erases the
+    field and requests reentry of the value. The user must enter exactly the
+    same data each time, character for character: 15000 is not exactly the same
+    as 15000.00.
+<p>Note that the <tt> VERIFY</tt> attribute takes effect in <a href="RecordInput.html">INPUT</a>
+    or <a href="InputArray.html">INPUT ARRAY</a>  instructions only, it has no effect on <a href="Construct.html">CONSTRUCT</a>
+    statements.
+
+<HR>
+<h3><a name="FA_VERSION">VERSION Attribute</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>VERSION</tt> attribute is used to specify a user version string for
+an element.</p>
+
+<h4>Syntax:</h4>
+<code>VERSION = { "<i>string</i>" | TIMESTAMP } </code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>string</i> is a user-defined version string.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>Use the <tt>TIMESTAMP</tt> only during development.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>This attribute specifies a version string to distinguish different versions
+of a form element. You can specify an explicit version string or use the <tt>TIMESTAMP</tt>
+keyword to force the form compiler to write a timestamp string into the <b>42f</b>
+file.</p>
+
+<p>Typical usage is to specify a version of the form to indicate if the
+form content has changed. This attribute is used by the front-end to distinguish
+different form versions and to avoid reloading window/form settings into a new
+version of a form.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>LAYOUT </tt>( <tt>TEXT</tt>=&quot;Orders&quot;, <tt>VERSION</tt> = &quot;1.23&quot; )</PRE>
+
+<HR>
+<h3><a name="FA_OPTIONS">OPTIONS Attribute</a>  </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>OPTION</tt> attribute specifies widget options for
+the field.</p>
+
+<h4>Syntax:</h4>
+<code>OPTIONS = &quot;<i>option </i><u>[...]</u>&quot;</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>option</i> can be one of: <code>-nolist</code> (to indicate that the
+    column should appear as an independent field).</li>
+</ol>
+
+<p><b><font color="#FF0000">Warning: </font>This attributes is supported for backward
+compatibility with Four Js BDS.</b></p>
+
+<HR>
+<h3><a name="FA_WANTTABS">WANTTABS Attribute</a>  </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>WANTTABS</tt> attribute forces a text field to insert TAB characters
+in the text when the user presses the TAB key.</p>
+
+<h4>Syntax:</h4>
+<code>WANTTABS</code>
+
+<h4>Usage:</h4>
+<p>By default, text fields&nbsp; like <a href="FormSpecFiles.html#FF_ITEMTYPE_TEXTEDIT"> TEXTEDIT</a>&nbsp;do
+not insert a TAB character in the text when the user presses the TAB key, since
+the TAB key is used to move to the next field. You can force the field to
+consume TAB keys with this attribute.&nbsp;&nbsp;</p>
+
+<HR>
+<h3><a name="FA_WANTNORETURNS">WANTNORETURNS Attribute</a>  </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>WANTNORETURNS</tt> attribute forces a text field to reject NewLine characters
+when the user presses the RETURN key.</p>
+
+<h4>Syntax:</h4>
+<code>WANTNORETURNS</code>
+
+<h4>Usage:</h4>
+<p>By default, text fields like <a href="FormSpecFiles.html#FF_ITEMTYPE_TEXTEDIT">TEXTEDIT</a> insert
+a NewLine (ASCII 10) character in the text when the user presses the RETURN key.
+As the RETURN key is used to validate the dialog, you can force the field to reject
+RETURN keys with this attribute.</p>
+
+<HR>
+<h3><a name="FA_WANTFIXEDPAGESIZE">WANTFIXEDPAGESIZE Attribute</a>  </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>WANTFIXEDPAGESIZE</tt> attribute gives a fixed height to a TABLE
+container.</p>
+
+<h4>Syntax:</h4>
+<code>WANTFIXEDPAGESIZE</code>
+
+<h4>Usage:</h4>
+<p>By default, the height of a <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE</a> container is
+resizable. Use this attribute to freeze the number of rows to the number of screen lines
+defined by the form file.</p>
+
+<HR>
+<h3><a name="FA_WIDTH">WIDTH Attribute</a>     </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>WIDTH</tt> attribute defines an explicit width of a form element.</p>
+
+<h4>Syntax:</h4>
+<code>WIDTH = <i>integer</i> <u>[</u>CHARACTERS<u>|</u>COLUMNS<u>|</u>POINTS<u>|</u>PIXELS<u>]</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>integer</i> defines the width of the element.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>By default, the size of an element is defined in characters and automatically
+computed by the form compiler according to the size of the form element in the
+layout.</p>
+
+<p>For items like images, the default width is defined by the number of
+horizontal characters used in the <a href="FormSpecFiles.html#FF_ITEM_TAG">item
+tag</a>. You can overwrite this default by specifying the <tt>WIDTH</tt> attribute.
+You typically give a number of pixels.&nbsp;</p>
+
+<p>For tables, the default width is defined by the columns used in the table
+layout. You can overwrite this default by specifying the <tt>WIDTH</tt> attribute.
+You typically give a number of columns. This allows
+you to use tables with a large number of columns, but a small initial width.</p>
+
+<p>If you don't specify any unit, the size unit defaults to <tt>CHARACTERS</tt>,
+which defines the number of grid cells.</p>
+
+<p>See also: <a href="#FA_HEIGHT">HEIGHT</a>.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>TABLE </tt>t1 ( <tt>WIDTH</tt> = 5 <tt>COLUMNS</tt> )</PRE>
+
+<HR>
+<h3><a name="FA_WIDGET">WIDGET Attribute</a>  </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> WIDGET</tt> attribute specifies the type of graphical widget to be used for
+the field.</p>
+
+<h4>Syntax:</h4>
+<code>WIDGET = &quot;<i>identifier</i>&quot;</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>identifier</i> defines the type of widget, it can be one of the
+    keywords listed in the table below.</li>
+  <li>The <tt> WIDGET</tt> attribute is used with <a href="#FA_CONFIG">CONFIG</a> to
+    parameter the field widget.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>This attribute is supported for backward compatibility with Four Js BDS.
+    <ul>
+    <li>Instead of <tt>WIDGET=&quot;IMAGE&quot;</tt>, you should now use a <a href="FormSpecFiles.html#FF_ITEMTYPE_IMAGE">IMAGE
+    form item</a>.</li>
+    <li>Instead of <tt>WIDGET=&quot;CANVAS&quot;</tt>, you should now use a <a href="FormSpecFiles.html#FF_ITEMTYPE_CANVAS">CANVAS
+    form item</a>.</li>
+    <li>Instead of <tt>WIDGET=&quot;CHECK&quot;</tt>, you should now use a <a href="FormSpecFiles.html#FF_ITEMTYPE_CHECKBOX">CHECKBOX
+    form item</a>.</li>
+    <li>Instead of <tt>WIDGET=&quot;COMBO&quot;</tt>, you should now use a <a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">COMBOBOX
+    form item</a>.</li>
+    <li>Instead of <tt>WIDGET=&quot;BMP&quot;</tt>, you should now use a <a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTON">BUTTON
+    form item</a>.</li>
+    <li>Instead of <tt>WIDGET=&quot;FIELD_BMP&quot;</tt>, you should now use a <a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTONEDIT">BUTTONEDIT
+    form item</a>.</li>
+    <li>Instead of <tt>WIDGET=&quot;RADIO&quot;</tt>, you should now use a <a href="FormSpecFiles.html#FF_ITEMTYPE_RADIOGROUP">RADIOGROUP
+    form item</a>.</li>
+    </ul>
+  </li>  
+  <li>The <i>identifier</i> widget type is case sensitive, only uppercase
+    letters are recognized.&nbsp;</li>
+  <li>When you use the <tt> WIDGET</tt> attribute, the form cannot be properly displayed on
+    character based terminals, it should only be displayed on graphical front
+    ends.</li>
+</ol>
+
+
+<h4>Supported widgets:</h4>
+<div align="center">
+  <center>
+  <table border="0" width="90%">
+    <tr>
+      <td width="12%" bgcolor="#C0C0C0"><b>Symbol&nbsp;&nbsp;&nbsp;</b></td>
+      <td width="30%" bgcolor="#C0C0C0"><b>Effect</b></td>
+      <td bgcolor="#C0C0C0"><b>Other attributes</b></td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top"><tt>Canvas</tt></td>
+      <td width="30%" valign="top">The field is used as a drawing area.<br>
+        Field must be declared as <a href="FormSpecFiles.html#FF_FORMONLY_FIELD">FORMONLY
+        field</a>.
+      </td>
+      <td valign="top">None.</td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top"><tt>BUTTON</tt></td>
+      <td width="30%" valign="top">The field is presented as a button widget
+        with a label.</td>
+      <td valign="top"><a href="#FA_CONFIG">CONFIG</a>: The unique parameter defines
+        the key to be sent when the user clicks on the button. Button text is
+        defined in configuration files or from the program with a <a href="RecordInput.html"> DISPLAY
+        TO</a> instruction.<br>
+        For example:<br>
+        <tt>&nbsp;CONFIG = &quot;Control-z&quot;</tt></td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top"><tt>BMP</tt></td>
+      <td width="30%" valign="top">The field is presented as a button with an
+        image.</td>
+      <td valign="top"><a href="#FA_CONFIG">CONFIG</a>: First parameter defines
+        the image file to be displayed, second parameter defines the key to be
+        sent when the user clicks on the button.<br>
+        For example:<br>
+        <tt>&nbsp;CONFIG = &quot;smiley.bmp F11&quot;</tt><br>
+        <font color="#FF0000"><b>Important warning: </b></font>Image files are
+        not centralized on the machine where the program is executed;
+        image files must be present on the Workstation. See front end specific
+        documentation for more details.&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top"><tt>CHECK</tt></td>
+      <td width="30%" valign="top">The field is presented as a checkbox widget.
+        <p>It can be used with the <a href="#FA_CLASS">CLASS</a> attribute to
+        change the behavior of the widget.</td>
+      <td valign="top"><a href="#FA_CONFIG">CONFIG</a>: First and second
+        parameters define the values corresponding respectively to the state
+        &quot;Checked&quot; / &quot;Unchecked&quot; of the check box, while the
+        third parameter defines the label of the checkbox.<br>
+        For example:<tt><br>
+        &nbsp;CONFIG = &quot;Y N Confirmation&quot;</tt><br>
+        If the text part must include spaces, add {} curly braces around the
+        text:<tt><br>
+        &nbsp;CONFIG = &quot;Y N {Order validated}&quot;</tt><br>
+        If the <a href="#FA_CLASS">CLASS</a> attribute is used with the <tt>&quot;KEY&quot;</tt>
+        value,
+        the first and second parameters defines the keys to be sent respectively
+        when the checkbox is &quot;Checked&quot; / &quot;Unchecked&quot;, and
+        the third
+        parameter defines the label of the checkbox as with normal checkbox
+        usage.<br>
+        For example:<tt><br>
+        &nbsp;CLASS=&quot;KEY&quot;,CONFIG=&quot;F11 F12 Confirmation&quot;</tt></td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top"><tt>COMBO</tt></td>
+      <td width="30%" valign="top">The field is presented as a combobox widget.
+        <p>It can be used with the <a href="#FA_CLASS">CLASS</a> attribute to
+        change the behavior of the widget.</td>
+      <td valign="top"><a href="#FA_INCLUDE">INCLUDE</a>: This attribute defines
+        the list of acceptable values that will be displayed in the combobox
+        list.<br>
+        For example:<tt><br>
+        &nbsp;INCLUDE = (&quot;Paris&quot;, &quot;London&quot;,
+        &quot;Madrid&quot;)<br>
+        </tt><font color="#FF0000"><b>Important warning: </b></font>The INCLUDE
+        attribute cannot hold value range definitions, because all items must
+        be explicitly listed to be added to the combobox list.<br>
+        The following example is not supported:<tt><br>
+        &nbsp;INCLUDE = ( 1 TO 10 )</tt>
+      </td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top"><tt>FIELD_BMP</tt></td>
+      <td width="30%" valign="top">The field is presented as a normal editbox,
+        plus a button on the right.</td>
+      <td valign="top"><a href="#FA_CONFIG">CONFIG</a>: The first parameter defines
+        the image file to be displayed in the button;
+        the second parameter defines the key to be sent when the user clicks
+        on the button.<br>
+        For example:<tt><br>
+        &nbsp;CONFIG = &quot;combo.bmp Control-z&quot;</tt></td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top"><tt>LABEL</tt></td>
+      <td width="30%" valign="top">The field is presented as a simple label, a
+        read-only text.</td>
+      <td valign="top">None.</td>
+    </tr>
+    <tr>
+      <td width="12%" valign="top"><tt>RADIO</tt></td>
+      <td width="30%" valign="top">The field is presented as a radiogroup
+        widget.</td>
+      <td valign="top"><a href="#FA_CONFIG">CONFIG</a>: Parameter pairs define
+        respectively the value and the label corresponding to one radio button.<br>
+        For example:<tt><br>
+        &nbsp;CONFIG = &quot;AA First BB Second CC Third&quot;<br>
+        </tt>If the radio texts must include spaces, add {} curly braces around
+        the texts:<tt><br>
+        &nbsp;CONFIG = &quot;AA {First option} BB {Second option} CC {Third
+        option}&quot;</tt><br>
+        If the <a href="#FA_CLASS">CLASS</a> attribute is used with the
+        value <tt>&quot;KEY&quot;</tt>, the first element of each pairs
+        represents the key to be sent when the user selects a radio button.<br>
+        For example:<tt><br>
+        &nbsp;CLASS=&quot;KEY&quot;,<br>
+        &nbsp;CONFIG=&quot;F11 First F12 Second F13 Third&quot;</tt></td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<h4>Controlling old style widgets activation:</h4>
+
+<p>The following list of widgets can be enabled or disabled from programs with a
+
+<a href="RecordInput.html"> DISPLAY TO</a> instruction:</p>
+<ul>
+  <li>Text buttons (<tt>WIDGET=&quot;BUTTON&quot;</tt>)&nbsp;</li>
+  <li>Image buttons (<tt>WIDGET=&quot;BMP&quot;</tt>)</li>
+  <li>Checkboxes of class &quot;KEY&quot; (<tt>WIDGET=&quot;CHECK&quot;,
+    CLASS=&quot;KEY&quot;</tt>)</li>
+  <li>Radio buttons of class &quot;KEY&quot; (<tt>WIDGET=&quot;RADIO&quot;,
+    CLASS=&quot;KEY&quot;</tt>)</li>
+</ul>
+
+<p>If you display an exclamation mark in such fields, the button is enabled,
+but if you display a star (*), it is disabled:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>DISPLAY</tt> &quot;*&quot; <tt>TO</tt> button1 # disables the button
+<CODE class=linenumber>02</CODE> <tt>DISPLAY</tt> &quot;!&quot; <tt>TO</tt> button1 # enables the button</PRE>
+
+<h4>Changing the text of WIDGET=&quot;BMP&quot; fields:</h4>
+
+<p>The text of button fields (<tt>WIDGET=&quot;BUTTON&quot;</tt>) can be changed from programs with the
+<a href="RecordInput.html"> DISPLAY TO</a> instruction:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>DISPLAY</tt> &quot;Click me&quot; <tt>TO</tt> button1 # Sets text and enables the button</PRE>
+
+<h4>Changing the image of WIDGET=&quot;BMP&quot; fields:</h4>
+
+<p>The image of button fields (<tt>WIDGET=&quot;BMP&quot;</tt>) can be changed from programs with the
+<a href="RecordInput.html"> DISPLAY TO</a> instruction:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>DISPLAY</tt> &quot;smiley.bmp&quot; <tt>TO</tt> button1 # Sets image and enables the button</PRE>
+
+<p><b><font color="#FF0000">Warning: </font>Image files are not centralized
+on the machine where the program is executed; image files must be present on the
+Workstation. See front end specific documentation for more details.&nbsp;</b></p>
+
+<h4>Changing the text of WIDGET=&quot;LABEL&quot; fields:</h4>
+
+<p>The text of label fields (<tt>WIDGET=&quot;LABEL&quot;</tt>) can be changed from programs with the
+<a href="RecordInput.html"> DISPLAY TO</a> instruction:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>DISPLAY</tt> &quot;Firstname&quot; <tt>TO</tt> l_firstname # Sets text of the label field</PRE>
+
+<h4>Using WIDGET=&quot;Canvas&quot; fields:</h4>
+
+<p>The fields declared with the <tt>WIDGET=&quot;Canvas&quot;</tt> attribute can
+be used by the program as drawing areas. Canvas fields must be defined in the <a href="FormSpecFiles.html#SECTION_LAYOUT">LAYOUT</a> section. A set of <a href="Canvas.html">drawing functions</a> are provided to fill
+Canvas fields with graphical elements.</p>
+
+<HR>
+<h3><a name="FA_WINDOWSTYLE">WINDOWSTYLE Attribute</a>   </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>WINDOWSTYLE</tt> attribute defines the style to be used by the parent
+window of a form.</p>
+
+<h4>Syntax:</h4>
+<code>WINDOWSTYLE = &quot;<i>string</i>&quot;</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>string</i> is a user defined style.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>The <tt>WINDOWSTYLE</tt> attribute can be used to specify the style of the
+parent window that will hold the form. This attribute is specific to the <a href="FormSpecFiles.html#SECTION_LAYOUT">LAYOUT</a>
+element. Do not confuse with the <tt>STYLE</tt> attribute, which is used to
+specify decoration style of the form elements.</p>
+
+<p>When a form is loaded by the <a href="WindowsAndForms.html#OPEN_WINDOW">OPEN
+WINDOW</a> or <a href="WindowsAndForms.html#DISPLAY_FORM">DISPLAY FORM</a>
+instructions, the runtime system automatically assigns the <tt>WINDOWSTYLE</tt>
+to the 'style' attribute of the parent window element.</p>
+
+<p>See also: <a href="#FA_STYLE">STYLE</a>, <a href="WindowsAndForms.html">Windows
+and Forms</a>.</p>
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>LAYOUT </tt>( <tt>STYLE</tt>=&quot;BigFont&quot;, <tt>WINDOWSTYLE</tt>=&quot;dialog&quot; )</PRE>
+
+<HR>
+<h3><a name="FA_WORDWRAP">WORDWRAP Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> WORDWRAP</tt> attribute enables a multiple-line editor in <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a>
+mode.</p>
+
+<h4>Syntax:</h4>
+<code>WORDWRAP <u>[</u> <u>{</u> COMPRESS <u>|</u> NONCOMPRESS <u>}</u> <u>]</u></code>
+
+<h4>Usage:</h4>
+<u>In </u><a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a><u> mode:</u>
+  <ul>
+  <li>During input and display, the runtime system treats all segments that have
+    that field tag as segments of a single field.</li>
+  <li>The multi-line editor can <i>wrap </i>long character strings to the next line of a
+    multiple-segment field for data entry, data editing, and data display.</li>
+  <li>The <tt> COMPRESS</tt> option prevents blanks produced by the editor from being
+    included in the program variable. <tt> COMPRESS</tt> is applied by default and can
+    cause truncation to occur if the sum of intentional characters exceeds the
+    field or column size. Because of editing blanks in the <tt> WORDWRAP</tt> field, the
+    stored value might not correspond exactly to its multiple-line display.</li>
+  <li>Specifying <tt> NONCOMPRESS</tt> after the <tt> WORDWRAP</tt> keyword causes any editor blanks
+    to be saved when the string value is saved in a database column, in a
+    variable, or in a file.</li>
+  </ul>
+<u>In </u><a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a><u> mode:</u>
+  <ul>
+  <li>The <tt>WORDWRAP</tt> attribute is ignored, because text input and display is
+    managed by the text editor widget.</li>
+  <li>The text data is NOT automatically modified by the editor by adding blanks
+    to put words on the next line.</li>
+  </ul>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>This attribute is provided for backward compatibility with character-based
+    forms;  you should use a <a href="FormSpecFiles.html#SECTION_ATTRIBUTES">TEXTEDIT</a>
+    form item instead in graphical forms.</li>
+  <li>Using <tt> WORDWRAP</tt> fields with character-based terminals results in quite
+    different behavior than with graphical front ends. With character-based
+    terminals, the text input and display is modified by the multi-line editor.
+    This editor can automatically modify the text data by adding blanks to put words
+    to the next line, in order to make the text fit into the form field.
+    In <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a>
+    mode, the text input and display is managed by a multi-line&nbsp;edit
+    control. </li>
+</ol>
+
+<p>The maximum number of bytes a user can enter is the width of the form-field multiplied
+by the height of the form-field.
+Blank characters may be intentional blanks or fill blanks.
+Intentional blanks are initially stored in the target variable where entered by the user.
+Fill blanks are inserted at the end of a line by the editor when a new-line or a&nbsp;
+word-alignment forces a line-break. It is not possible to set the cursor at a fill blank.
+Intentional blanks are always displayed (even on the beginning of a line; the
+word-wrapping method used in reports with PRINT WORDWRAP works differently).</p>
+
+<p>When entering characters with Japanese locales, special characters are prohibited
+from being the first or the last character on a line. If the last character is prohibited
+from ending a line, this character is wrapped down to the next line. If the first character
+is prohibited from beginning a line, the preceding character will also wrap down to the
+next line. This method is called kinsoku. The test for prohibited characters will be done
+only once for the first and the last character on each line.</p>
+
+<p>Word-wrapping is disabled on the last row of a WORDWRAP field. The last word on the last row may by truncated.
+The WORDWRAP COMPRESS attribute instructs the editor to remove fill blanks before
+assigning the field-buffer to the target variable. The WORDWRAP NONCOMPRESS attribute instructs the editor to store fill blanks to the
+target variable. The WORDWRAP and WORDWRAP NONCOMPRESS attributes are equivalent.</p>
+
+<hr>
+<h3><a name="FA_EXPANDEDCOLUMN">EXPANDEDCOLUMN&nbsp; Attribute</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> EXPANDEDCOLUMN</tt> attribute specifies the form field that 
+indicates whether a tree node is expanded. This attribute is optional.</p>
+
+<h4>Syntax:</h4>
+<pre>EXPANDEDCOLUMN=<i>column-name</i></pre>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>column-name</i> is the name of the form field holding the flag indicating 
+	whether a tree node is expanded (opened.)</li>
+</ol>
+
+<h4>Usage:</h4>
+<p><b><font color="#FF0000">Warning:</font> You must specify form field column names, not item tag identifiers.</b></p>
+<p>This attribute is used in the definition of a <a href="FormSpecFiles.html#FF_CONTAINER_TREE">TREE
+container</a>, see the <a href="TreeViews.html">Tree Views page</a> for more
+details.</p>
+<hr>
+<h3><a name="FA_IDCOLUMN">IDCOLUMN</a> Attribute</h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> IDCOLUMN</tt> attribute specifies the form field that contains the 
+identifier of a tree node.&nbsp; This attribute is mandatory.</p>
+
+<h4>Syntax:</h4>
+<pre>IDCOLUMN=<i>column-name</i></pre>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>column-name</i> is the name of the form field containing the identifler of 
+	a node in a tree view.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p><b><font color="#FF0000">Warning:</font> You must specify form field column names, not item tag identifiers.</b></p>
+<p>This attribute is used in the definition of a <a href="FormSpecFiles.html#FF_CONTAINER_TREE">TREE
+container</a>, see the <a href="TreeViews.html">Tree Views page</a> for more
+details.</p>
+
+<hr>
+<h3><a name="FA_IMAGECOLUMN">IMAGECOLUMN</a> Attribute</h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> IMAGECOLUMN</tt> attribute defines the form field containing the
+image of a field.</p>
+
+<h4>Syntax:</h4>
+<pre>IMAGECOLUMN=<i>column-name</i></pre>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>column-name</i> is the name of the form field that contains the image that Genero is instructed to set 
+	for a tree node.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p><b><font color="#FF0000">Warning:</font> You must specify form field column
+names, not item tag identifiers.</b></p>
+<p>This attribute is used in the definition of a <a href="FormSpecFiles.html#FF_CONTAINER_TREE">TREE
+container</a>, see the <a href="TreeViews.html">Tree Views page</a> for more
+details.</p>
+<p>The images defined by the <a href="#FA_IMAGECOLLAPSED">IMAGECOLLAPSED</a>, <a href="#FA_IMAGEEXPANDED">IMAGEEXPANDED</a>
+and <a href="#FA_IMAGELEAF">IMAGELEAF</a> attributes take precedence over the
+images defined by the <tt>IMAGECOLUMN</tt> cell.</p>
+<hr>
+<h3><a name="FA_IMAGECOLLAPSED">IMAGECOLLAPSED</a> Attribute</h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> IMAGECOLLAPSED</tt> attribute sets the global icon to be used when a tree 
+node is collapsed. This attribute is optional.</p>
+
+<h4>Syntax:</h4>
+<pre>IMAGECOLLAPSED=&quot;<i>image-name</i>&quot;</pre>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>image-name</i> is the name of the icon that Genero is instructed to set 
+	when a tree node is collapsed (closed).</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>This attribute defines the icon to be used for nodes that are collapsed. It
+overwrites the program array image defined by <a href="#FA_IMAGECOLUMN">IMAGECOLUMN</a>,
+if both are used.</p>
+<p>This attribute is used in the definition of a <a href="FormSpecFiles.html#FF_CONTAINER_TREE">TREE
+container</a>, see the <a href="TreeViews.html">Tree Views page</a> for more
+details.</p>
+<hr>
+<h3><a name="FA_IMAGEEXPANDED">IMAGEEXPANDED</a> Attribute</h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> IMAGEEXPANDED</tt> attribute sets the global icon to be used when a tree 
+node is expanded. This attribute is optional.</p>
+
+<h4>Syntax:</h4>
+<pre>IMAGEEXPANDED=&quot;<i>image-name</i>&quot;</pre>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>image-name</i> is the name of the icon that Genero is instructed to set 
+	when a tree node is expanded (opened).</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>This attribute defines the icon to be used for nodes that are expanded. It
+overwrites the program array image defined by <a href="#FA_IMAGECOLUMN">IMAGECOLUMN</a>, if both are used.</p>
+
+<p>This attribute is used in the definition of a <a href="FormSpecFiles.html#FF_CONTAINER_TREE">TREE
+container</a>, see the <a href="TreeViews.html">Tree Views page</a> for more
+details.</p>
+
+<hr>
+<h3><a name="FA_IMAGELEAF">IMAGELEAF</a> Attribute</h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> IMAGELEAF</tt> attribute defines the global icon for leaf nodes of
+a TREE container. This attribute is optional.</p>
+
+<h4>Syntax:</h4>
+<pre>IMAGELEAF=&quot;<i>image-name</i>&quot;</pre>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>image-name</i> is the name of the icon that Genero is instructed to set
+    for leaf nodes.</li>
+</ol>
+
+<h4>Usage:</h4>
+
+<p>This attribute defines the icon to be used for all leaf nodes of the tree. It
+overwrites the program array image defined by <a href="#FA_IMAGECOLUMN">IMAGECOLUMN</a>, if both are used.</p>
+
+<p>This attribute is used in the definition of a <a href="FormSpecFiles.html#FF_CONTAINER_TREE">TREE
+container</a>, see the <a href="TreeViews.html">Tree Views page</a> for more
+details.</p>
+<hr>
+<h3><a name="FA_ISNODECOLUMN">ISNODECOLUMN</a> Attribute</h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> ISNODECOLUMN</tt> attribute specifies the form field that indicates 
+whether a tree node has children. This attribute is optional.</p>
+
+<h4>Syntax:</h4>
+<pre>ISNODECOLUMN=<i>column-name</i></pre>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>column-name</i> is the name of the form field indicating whether a tree node 
+	has children.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>Even if the program node does not contain child nodes for this tree node, 
+this attribute may be used, to implement dynamic filling of tree views.</p>
+<p><b><font color="#FF0000">Warning:</font> You must specify form field column
+names, not item tag identifiers.</b></p>
+<p>This attribute is used in the definition of a <a href="FormSpecFiles.html#FF_CONTAINER_TREE">TREE
+container</a>, see the <a href="TreeViews.html">Tree Views page</a> for more
+details.</p>
+<hr>
+<h3><a name="FA_PARENTIDCOLUMN">PARENTIDCOLUMN</a>&nbsp; Attribute</h3>
+
+<h4>Purpose:</h4>
+<p>The <tt> PARENTIDCOLUMN</tt> attribute specifies the form field that 
+contains the identifier of the parent node of a 
+tree node.&nbsp; This attribute is mandatory.</p>
+
+<h4>Syntax:</h4>
+<pre>PARENTIDCOLUMN=<i>column-name</i></pre>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>column-name</i> is the name of the form field containing the identifler of the 
+	tree node that is the parent of the current node in a tree view.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p><b><font color="#FF0000">Warning:</font> You must specify form field column
+names, not item tag identifiers.</b></p>
+<p>This attribute is used in the definition of a <a href="FormSpecFiles.html#FF_CONTAINER_TREE">TREE
+container</a>, see the <a href="TreeViews.html">Tree Views page</a> for more
+details.</p>
+
+</BODY>
+
+</HTML>

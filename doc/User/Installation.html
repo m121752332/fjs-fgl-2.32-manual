@@ -1,0 +1,424 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Installation and Setup</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Installation and Setup</a></H1>
+
+<p>This chapter includes instructions to install and setup Genero BDL.</p>
+
+<p>Summary:</p>
+<ul>
+  <li><a href="#INST_RES">1. Resources</a></li>
+  <li><a href="#INST_REQ">2. Requirements</a>
+    <ul>
+  <li><a href="#INST_SUPPOS">2.1 Supported Operating Systems</a></li>
+       <li><a href="#INST_SR_DBCLIENT">2.2 Database Client Software and Genero Drivers</a>
+       </li>
+       <li><a href="#INST_SR_COMPILER">2.3 C Compiler for C Extensions</a></li>
+       <li><a href="#INST_SR_JRE">2.4 Java Runtime Environment for Java Interface</a></li>
+    </ul>
+  </li>
+  <li><a href="#INST_INSTALLING">3. Installing the Product</a>
+  </li>
+  <li><a href="#INST_UPGRADING">4. Upgrading the Product</a>
+  </li>
+  <li><a href="#INST_OS_SPECNOTES">5. Operating System Specific Notes</a>
+    <ul>
+       <li><a href="#INST_OS_SN_HPX">5.1 HP/UX</a></li>
+       <li><a href="#INST_OS_SN_AIX">5.2 IBM AIX</a></li>
+       <li><a href="#INST_OS_SN_WNT">5.3 Microsoft Windows</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p><i>See also:</i> <a href="Tools.html">Tools and Components</a>, <a href="Localization.html">Localization
+Support</a>, <a href="EnvironmentVariables.html">Environment Variables</a>.</p>
+
+
+<HR>
+
+<h2><a name="INST_RES">1. Resources</a></h2>
+<p>Before starting your development with a new version of Genero BDL, we strongly recommend you to read the Upgrade Guide corresponding
+    to the newly installed version. For example, see the <a href="Mig0005.html">2.3x
+    Upgrade Guide</a>.</p>
+The Genero BDL improvements can be found in the <a href="NewFeatures.html">New
+    Features</a> section of this documentation.
+<p>Contact you support channel to get the list of corrected defects in the new
+Genero BDL version.</p>
+
+
+<HR>
+
+<h2>2. <a name="INST_REQ"> Requirements</a></h2>
+
+
+<HR size="1">
+
+
+<h3>2.1 <a name="INST_SUPPOS">Supported Operating Systems</a></h3>
+
+<p>Genero BDL is supported on a large brand of operating systems, such as Linux,
+IBM AIX, HP-UX, SUN Solaris, Mac OS/X and Microsoft Windows.</p>
+
+
+<p> You must install the Genero BDL software package corresponding to the operating system that you use.
+For the detailed list of supported operating systems, refer to the relevant 
+Installation Guide or contact your support
+center.</p>
+
+
+<HR size="1">
+
+
+<h3>2.2 <a name="INST_SR_DBCLIENT">Database Client Software and Genero Drivers</a></h3>
+
+<p>To connect to a database server, you need the database client software to be
+installed on the system where you run the Genero BDL programs.</p>
+
+<p>Below is a list of
+database client software examples:</p>
+
+<ul>
+  <li>Informix Client SDK (with ESQL/C)</li>
+  <li>DB2 Connect (with CLI)</li>
+  <li>Oracle Client (with OCI)</li>
+  <li>Microsoft SQL Server Client (with ODBC driver)</li>
+  <li>PostgreSQL client (libpq)</li>
+  <li>MySQL client (libmysqlclient)</li>
+  <li>FreeTDS ODBC client (libtdsodbc)</li>
+  <li>EasySoft ODBC client for SQL Server (libessqlsrv)</li>
+  <li>SQLite 3.x (libsqlite3.so)</li>
+  <li>Genero db client (ODBC driver)</li>
+</ul>
+
+
+<p>Database drivers are provided as pre-linked shared
+libraries. There is no need to link a runner or driver on site, but the database
+client software must provide a shared library corresponding to the one used to
+link the driver. The table in the next section lists supported database client
+software versions and the corresponding shared libraries that must exist on the
+system.</p>
+
+
+<p>The database driver to be selected must correspond to the database client
+type and version. For the list of supported database drivers, see the driver table in the
+<a href="Connections.html">Database Connections</a> section. See also <a href="#INST_OS_SPECNOTES">Operating System Specific Notes</a>.</p>
+
+
+<HR size="1">
+
+
+<h3>2.3 <a name="INST_SR_COMPILER">C Compiler for C extensions</a></h3>
+
+
+<p>If your Genero application requires runtime system <a href="CExtensions.html">C
+Extensions</a> to execute, you need a C compiler and linker to build the
+extension library.</p>
+
+
+<h4><u>2.3.1 C compiler On UNIX platforms:</u></h4>
+
+
+<h4><font color="#FF0000">Warning:</font> On UNIX platforms, you need a cc
+compiler on the system where you create the C extension libraries. Some systems may not have a C
+compiler by default. Make sure you have a C compiler on the system.</h4>
+
+
+<h4><u>2.3.2 C compiler On Microsoft Windows platforms:</u></h4>
+
+<h4><font color="#FF0000">Warning:</font> On Windows platforms, it is mandatory
+to install Microsoft Visual C++ version 7.1 or higher on the system where you create the
+C extension libraries. You must install the appropriate Genero BDL package according to the version of
+Visual C++ you have installed. For example, when using Visual C++ 8, you must
+install the package marked by the <code>w32vc80</code> operating system 
+identifier.</h4>
+
+
+<HR size="1">
+
+
+<h3>2.4 <a name="INST_SR_JRE">Java Runtime Environment for Java Interface</a></h3>
+
+
+<p>If you are using the <a href="JavaBridge.html"> Java Interface</a> in your
+application programs, you need to install the latest Java Runtime Environment (JRE).</p>
+
+
+<p>Search the internet for latest JRE packages available for your
+platform.</p>
+
+
+<p>The minimum required JRE version is <b>Java 6.10</b>.</p>
+
+
+<HR>
+
+<h2>3. <a name="INST_INSTALLING">Installing the Product</a></h2>
+
+
+<p>The Genero BDL product is provided in different forms of installation
+programs, and can also be shipped in a bundle package with other Genero
+products. Refer to the appropriate Installation Guide for a detailed description 
+of the installation procedure. Do not hesitate to contact your support
+if you need help.</p>
+<p>After installing Genero BDL, you should:</p>
+
+
+<ol>
+  <li> Set FGLDIR to the installation directory of Genero BDL. While <a href="EnvironmentVariables.html#EV_FGLDIR">FGLDIR</a>
+    is not mandatory to execute <a href="Tools.html">Genero BDL tools</a>, some 
+	components of the product may need this environment variable to be set.</li>
+  <li>If you want to run <a href="Tools.html">Genero BDL tools</a> from the
+    command line without specifying the path the the installation directory,
+    set the <a href="EnvironmentVariables.html#EV_PATH">PATH</a> environment
+    variable to the bin directory where Genero BDL has been installed.</li>
+  <li>Environment variables for the database client
+    software (INFORMIXDIR/INFORMIXC, ORACLE_HOME, DB2DIR, SYBASE, PGDIR,
+    LD_LIBRARY_PATH, etc) have to be set properly.</li>
+  <li>Check that you have access to all needed DLLs (PATH) or shared
+    libraries (LD_LIBRARY_PATH, LD_LIBRARY_PATH_64, SHLIB_PATH, LIBPATH or
+    DYLD_LIBRARY_PATH).</li>
+  <li>According to the database server you want to connect to, you will need to
+    set up the correct database driver in FGLPROFILE.
+    The default database driver is Informix. For more details about database driver
+    configuration, see <a href="Connections.html">Database Connections</a>.</li>
+  <li>Depending what rendering mode you want to use (text mode or graphical mode),
+    you may have to set environment variables such as <a href="EnvironmentVariables.html#EV_FGLGUI">FGLGUI</a>,
+    <a href="EnvironmentVariables.html#EV_FGLSERVER"> FGLSERVER</a>, <a href="EnvironmentVariables.html#EV_TERM"> TERM</a> and
+    <a href="EnvironmentVariables.html#EV_TERMCAP">TERMCAP</a>.
+    See <a href="DynamicUI.html"> Dynamic User Interface</a> for more details.</li>
+    <li>If you need to create C Extensions, the system must have a <a href="#INST_SR_COMPILER">C compiler</a>
+      installed.</li>
+</ol>
+
+
+<hr>
+<h2>4. <a name="INST_UPGRADING">Upgrading the Product</a> </h2>
+
+
+<p>After upgrading Genero BDL to a newer version, follow the next steps:</p>
+
+<ol>
+  <li>If the new version version is a major upgrade (for exemple, from 2.20 to
+    2.21), recompile the sources and form files. While recompilation is
+    not needed when migrating to maintenance release versions (for example, from
+    2.21.01 to 2.21.02), it is recommended to benefit from potential p-code
+    optimizations in the new version.</li>
+  <li>If required, you may need to re-create the C Extension libraries. C extension libraries must be provided as dynamically
+    loadable modules and thus should not required a rebuild. However, if Genero
+    C API header files have changed, consider recompiling you C extensions.
+    Check FGLDIR/include/f2c for C API header file changes.</li>
+</ol>
+
+
+<HR>
+
+
+<h2>5. <a name="INST_OS_SPECNOTES">Operating System Specific Notes</a> </h2>
+
+
+<HR size="1">
+
+
+<h3>5.1 <a name="INST_OS_SN_HPX">HP/UX</a></h3>
+
+
+<h4><u>Thread Local Storage in shared libraries</u></h4>
+
+<p>On HP/UX, the shared library loader cannot load libraries using <b>Thread
+Local Storage (TLS)</b>, like Oracle <i>libclntsh</i>. In order to use shared
+libraries with TLS, you must use the <b>LD_PRELOAD_ONCE</b> environment variable. For more details, search for &quot;shl_load + Thread Local
+Storage&quot; on the HP support site.</p>
+
+
+<h4><u>PostgreSQL on HP/UX LP64</u></h4>
+
+<p align="left">On HP/UX LP64, the PostgreSQL database driver should be linked
+with the <b>libxnet</b> library if you want to use networking. You can force the
+usage of libxnet by setting the <b>LD_PRELOAD_ONCE</b> environment variable to <b>/lib/pa20_64/libxnet.sl</b>.</p>
+
+
+<h4><u>Java Interface</u></h4>
+
+<p>When using the Java Interface with the SUN
+Hotspot JVM:</p>
+
+<p>If you get an error when fglcomp or fglrun try to load the libjvm library,
+use the <b>LD_PRELOAD</b> environment variable:</p>
+
+<code>$ LD_PRELOAD=libjvm.sl<br>
+$ export LD_PRELOAD</code><p>Note that using <b>LD_PREPLOAD</b> can make other
+application fail. <b>LD_PRELOAD</b> should only be set for Genero BDL tools. If you
+need to run other applications in the same environment as Genero BDL programs, you
+can set the <b>LD_PRELOAD_ONCE</b> or <b>JAVA_PRELOAD_ONCE</b> variable in the
+shell scripts found in FGLDIR/bin.</p>
+
+
+<HR size="1">
+
+
+<h3>5.2 <a name="INST_OS_SN_AIX">IBM AIX</a></h3>
+
+<h4><u>LIBPATH environment variable</u></h4>
+
+<p>The <b>LIBPATH</b> environment variable defines the search path for shared
+libraries. Make sure <b>LIBPATH</b>
+contains all required library directories, including the system library
+path <b>/lib</b> and <b>/usr/lib</b>.</p>
+
+<h4><u>Shared libraries archives</u></h4>
+
+<p>On AIX, shared libraries are usually provided in .a archives containing the
+shared object(s). For example, the DB2 client library libdb2.a contains both the
+32 bit (shr.o) and the 64 bit (shr_64.o) versions of the shared library. Not all
+products follow this rule: for example Oracle 9.2 provides libclntsh.a with
+shr.o on 64 bit platforms, and Informix provides both .a archives with static
+objects and .so shared libraries as on other platforms...</p>
+
+<p>The Genero database drivers are created with the library archives or with the
+.so shared objects, according to the database type and version. No particular
+manipulation is needed to use any supported database client libraries on this
+platform.&nbsp;</p>
+
+<p>IBM provides a document describing linking on AIX systems. It is recommended 
+that you read this document.</p>
+
+<p>http://www.ibm.com/servers/esdd/pdfs/<b>aix_ll</b>.<b>pdf</b></p>
+
+<h4><u>The dump command</u></h4>
+
+<p>On IBM AIX, you can check the library dependencies with the <b> dump</b> 
+command:</p>
+
+<code>$ dump -Hv -X64 dbmora92x.so</code>
+
+<h4><u>Unloading shared libraries from memory</u></h4>
+
+<p>In production environments, AIX loads shared libraries into the system shared library
+segment in order to improve program load time. Once a shared library is loaded,
+other programs using the same library are just attached to that memory segment.
+This works fine as long as you don't need to change the shared library (to
+replace it with a new version for example).</p>
+
+<p>Once a shared library is loaded by
+the system, you cannot copy the executable file unless you unload the
+library from the system memory. Thus, you will probably need to unload the
+Genero shared libraries before installing a new version of the software. This
+problem occurs when installing in the same directory, but can also happen when
+installing in a different directory. As shared libraries will have the same
+name, AIX will not allow to load multiple versions of the same library.
+Therefore, before installing a new version of Genero, make sure all shared
+libraries are unloaded from the system memory.</p>
+
+<p>To get the list of shared libraries currently loaded into memory, use the <b>genkld</b>
+command. The <b>genld</b> command collects the list of all processes and reports
+the list of loaded objects corresponding to each process. Then, use the <b> slibclean</b> command to unload a shared library
+from the system shared library segment.</p>
+
+<h4><u>POSIX Threads and shared libraries</u></h4>
+
+<p>When using a thread-enabled shared library like Oracle's <b>libclntsh</b>,
+the program using the shared object must be linked with thread support,
+otherwise you can experience problems (like segmentation fault when the runner
+program ends). IBM recommends using the xlc_r compiler to link a program with
+pthread support.</p>
+
+<p>By default, the runtime system provided for AIX platforms is linked with
+pthread support.</p>
+
+
+<HR size="1">
+
+
+<h3>5.3 <a name="INST_OS_SN_WNT">Microsoft Windows</a></h3>
+
+<h4><u>Microsoft Visual C version</u></h4>
+
+<p>You need Microsoft Visual C++ compiler to create C Extensions. Make sure you have installed the correct Genero package, according to the
+MSVC version you have installed on your system. MSVC
+runtime libraries of different VC++ versions are not compatible. Refer to the
+name of the Genero package to check the VC++ version compatibility.</p>
+
+
+<h4><u>Searching binary </u><u>dependencies</u></h4>
+
+<p>Microsoft Visual C provides the <b>dumpbin</b> utility.</p>
+<p>To check for DLL dependency, you can use the <b>/dependents</b> option:</p>
+
+<code>C:\ dumpbin /dependents mylib.dll<br>
+Microsoft (R) COFF/PE Dumper Version 7.10.3077<br>
+Copyright (C) Microsoft Corporation.  All rights reserved.<br>
+<br>
+Dump of file mylib.dll<br>
+<br>
+File Type: EXECUTABLE IMAGE<br>
+<br>
+  Image has the following dependencies:<br>
+<br>
+    isqlt09a.dll<br>
+    MSVCR71.dll<br>
+    KERNEL32.dll<br>
+<br>
+  Summary<br>
+<br>
+        1000 .data<br>
+        1000 .rdata<br>
+        1000 .text</code>
+
+
+<h4><u>Changing the stack size of fglrun</u></h4>
+
+<p>On Windows platforms, the fglrun.exe binary has a predefined C stack size. In
+some rare cases (for example, if your programs do deep recursion), you may need to change the stack size of fglrun.exe binary to avoid
+stack overflow.
+You can change this permanently by patching the EXE file with a Microsoft Visual
+C++ utility called <b>editbin</b>. By default, the C stack size of fglrun.exe is 1MB.</p>
+
+<p>You
+can check the stack size by running the <b>dumpbin</b> VC++ utility on
+fglrun.exe:</p>
+<p>
+
+<code>C:\ dumpbin /headers %FGLDIR%\bin\fglrun.exe</code>
+
+
+</p>
+
+<p>Search for the line containing &quot;stack reserve&quot; words in the
+OPTIONAL HEADER VALUES section:</p>
+<p>
+
+<code>OPTIONAL HEADER VALUES<br>
+&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp; 100000 size of stack reserve</code>
+
+
+</p>
+
+<p>Note that the stack size is displayed in hexadecimal value, so 100,000 =
+1,048,567 bytes = 1MB.</p>
+<p>In order to modify the stack size of fglrun.exe, run the the <b>editbin</b> 
+ VC++ utility on fglrun.exe:</p>
+<p>
+
+<code>C:\ editbin /stack:1000000 %FGLDIR%\bin\fglrun.exe</code>
+
+
+</p>
+
+<p>See Microsoft Visual C++ documentation for more details about these tools.</p>
+
+
+<HR size="1">
+
+
+</BODY>
+</HTML>

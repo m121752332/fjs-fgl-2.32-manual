@@ -1,0 +1,880 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Flow Control</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Flow Control</a></H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#FC_CALL">Invoking a function</a> (<tt>CALL</tt>)</li>
+  <li><a href="#FC_RETURN">Returning from a function</a> (<tt>RETURN</tt>)</li>
+  <li><a href="#FC_CASE">Conditional cases</a> (<tt>CASE</tt>)</li>
+  <li><a href="#FC_CONTINUE">Continuing a block</a> (<tt>CONTINUE <i> instruction</i></tt>)</li>
+  <li><a href="#FC_EXIT">Leaving a block</a> (<tt>EXIT <i> instruction</i></tt>)</li>
+  <li><a href="#FC_FOR">Iterative loop</a> (<tt>FOR</tt>)</li>
+  <li><a href="#FC_GOTO">Labeled transfer</a>  (<tt>GOTO</tt>)</li>
+  <li><a href="#FC_IF">Conditional block</a> (<tt>IF</tt>)</li>
+  <li><a href="#FC_LABEL">Statement label</a> (<tt>LABEL</tt>)</li>
+  <li><a href="#FC_SLEEP">Suspending execution</a> (<tt>SLEEP</tt>)</li>
+  <li><a href="#FC_WHILE">Conditional loop</a> (<tt>WHILE</tt>)</li>
+</ul>
+
+
+<p><i>See also:</i>   <a href="Exceptions.html">Exceptions</a>, <a href="Programs.html">Programs</a>, <a href="Functions.html">Functions</a>,
+<a href="Reports.html">Reports</a>, <a href="Expressions.html">Expressions</a></p>
+
+
+<HR>
+
+<h3><a name="FC_CALL">CALL</a></h3>
+
+<h4>Purpose:</h4><p>The <tt>CALL</tt> instruction invokes a specified <a href="Functions.html">function</a>. </p>
+
+
+<h4>Syntax:</h4><code>CALL <i>function</i> ( <u> [</u> <i>parameter</i>  <u> [,...]</u>
+<u> ]</u> ) <u> [</u>
+RETURNING <i>variable</i>  <u> [,...]</u> <u> ]</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> 
+    <p align="left"><i>function</i> can be one of:
+    <ul>
+      <li>
+        <p align="left">a <a href="Functions.html">function</a>
+    defined in one of the modules of the program. If the <a href="Programs.html#IMPORT">IMPORT</a>
+        instruction was used to import a module, <i>function</i> can be prefixed
+        with the name of the module followed by a dot (i.e. <i>module.function)</i>.</li>
+      <li>
+        <p align="left">a <a href="BuiltInFunctions.html">built-in function</a>
+        of the language.</li>
+      <li>
+        <p align="left">a <a href="BuiltInClasses.html">built-in class</a>
+        method of the language.</li>
+      <li>
+        <p align="left">a <a href="JavaBridge.html">Java class</a> method.</li>
+    </ul>
+  </li>
+  <li> <i>parameter</i> can be a <a href="Variables.html">variable</a>, a <a href="Literals.html">literal</a>,
+    a <a href="Constants.html">constant</a> or any valid <a href="Expressions.html">expression</a>,
+    including object references of built-in or Java classes.</li>
+  <li> 
+    <i>parameters</i>  are separated by a comma ' , '.</li>
+  <li> The <tt>RETURNING</tt> clause assigns values returned by the function to variables
+    in the calling routine.</li>
+  <li> <i>variable</i>  is a  <a href="Variables.html">variable</a> receiving a
+    value returned by the function.</li>
+  <li> The <tt>RETURNING</tt> clause is only needed when the function returns
+    parameters.</li>
+  <li> A <a href="Functions.html">function</a>
+    returning a single parameter can be used in <a href="Expressions.html">expressions</a>.</li>
+</ol>
+
+
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li> You can use a <a href="Operators.html#OP_CONCATENATE">double-pipe
+    operator ' || '</a> to pass the concatenation of <a href="Expressions.html#EX_STRING">character
+    expressions</a>
+    as a parameter.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The value of a receiving <a href="Variables.html"><i>variable</i></a> may be different
+    from the value returned by the function,
+     following the <a href="DataConversions.html">data conversion
+    rules</a>.</li>
+</ol>
+
+
+<h4>Example 1: Function returning a single value</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> var1 <tt>CHAR</tt>(10)
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> var2 <tt>CHAR</tt>(2)
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> var1 = foo()
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY</tt> &quot;var1 = &quot; || var1
+<CODE class=linenumber>06</CODE>   <tt>CALL</tt> foo() <tt>RETURNING</tt> var2
+<CODE class=linenumber>07</CODE>   <tt>DISPLAY</tt> &quot;var2 = &quot; || var2
+<CODE class=linenumber>08</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>09</CODE> 
+<CODE class=linenumber>10</CODE> <tt>FUNCTION</tt> foo() 
+<CODE class=linenumber>11</CODE>   <tt>RETURN</tt> &quot;Hello&quot;
+<CODE class=linenumber>12</CODE> <tt>END FUNCTION</tt></PRE>
+
+
+<h4>Example 2: Function returning several values</h4>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> var1 <tt>CHAR</tt>(15)
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> var2 <tt>CHAR</tt>(15)
+<CODE class=linenumber>04</CODE>   <tt>CALL</tt> foo() <tt>RETURNING</tt> var1, var2
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY</tt> var1, var2
+<CODE class=linenumber>06</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>07</CODE> 
+<CODE class=linenumber>08</CODE> <tt>FUNCTION</tt> foo() 
+<CODE class=linenumber>09</CODE>   <tt>DEFINE</tt> r1 <tt>CHAR</tt>(15)
+<CODE class=linenumber>10</CODE>   <tt>DEFINE</tt> r2 <tt>CHAR</tt>(15)
+<CODE class=linenumber>11</CODE>   <tt>LET</tt> r1 = &quot;return value 1&quot;
+<CODE class=linenumber>12</CODE>   <tt>LET</tt> r2 = &quot;return value 2&quot;
+<CODE class=linenumber>13</CODE>   <tt>RETURN</tt> r1, r2
+<CODE class=linenumber>14</CODE> <tt>END FUNCTION</tt></PRE>
+
+
+<h4>Example 3: Function and records</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> r1 <tt>RECORD</tt>
+<CODE class=linenumber>03</CODE>              id1     <tt>INTEGER</tt>,
+<CODE class=linenumber>04</CODE>              id2     <tt>INTEGER</tt>,
+<CODE class=linenumber>05</CODE>              name    <tt>CHAR</tt>(30)
+<CODE class=linenumber>06</CODE>            <tt>END RECORD</tt>
+<CODE class=linenumber>07</CODE>   <tt>CALL</tt> get_name( NULL, NULL, NULL ) <tt>RETURNING</tt> r1.*
+<CODE class=linenumber>08</CODE>   <tt>CALL</tt> get_name( NULL, r1.id2, r1.name ) <tt>RETURNING</tt> r1.*
+<CODE class=linenumber>09</CODE>   <tt>CALL</tt> get_name( r1.* ) <tt>RETURNING</tt> r1.*
+<CODE class=linenumber>10</CODE>   <tt>DISPLAY</tt> r1.name
+<CODE class=linenumber>11</CODE>   <tt>CALL</tt> get_name( 1, 2, &quot;John&quot; ) <tt>RETURNING</tt> r1.id2, r1.id1, r1.name<CODE class=linenumber>
+12</CODE>   <tt>DISPLAY</tt> r1.name
+<CODE class=linenumber>13</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>14</CODE>
+<CODE class=linenumber>15</CODE> <tt>FUNCTION</tt> get_name( code1, code2, name )
+<CODE class=linenumber>16   </CODE><tt>DEFINE</tt> code1   <tt>INTEGER</tt>
+<CODE class=linenumber>17   </CODE><tt>DEFINE</tt> code2   <tt>INTEGER</tt>
+<CODE class=linenumber>18   </CODE><tt>DEFINE</tt> name    <tt>CHAR</tt>(30)
+<CODE class=linenumber>19   </CODE><tt>IF</tt> code1 <tt>IS NULL THEN</tt>
+<CODE class=linenumber>20   </CODE>   <tt>LET</tt> name = &quot;ERROR:code1 is NULL&quot;<tt>
+</tt><CODE class=linenumber>21   </CODE>   <tt>LET</tt> code2 = <tt>NULL</tt> 
+<CODE class=linenumber>22   </CODE><tt>ELSE</tt>
+<CODE class=linenumber>23      </CODE><tt>IF</tt> code2 <tt>IS NULL THEN</tt>
+<CODE class=linenumber>24   </CODE>     <tt>LET</tt> name = &quot;ERROR:code2 is NULL&quot;
+<CODE class=linenumber>25   </CODE>     <tt>LET</tt> code1 = <tt>NULL</tt> 
+<CODE class=linenumber>26      </CODE><tt>ELSE</tt>
+<CODE class=linenumber>27         </CODE><tt>IF</tt> name <tt>IS NULL THEN</tt>
+<CODE class=linenumber>28            </CODE><tt>LET</tt> name = &quot;SMITH&quot;
+<CODE class=linenumber>29         </CODE><tt>END IF</tt>
+<CODE class=linenumber>30      </CODE><tt>END IF</tt>
+<CODE class=linenumber>31   </CODE><tt>END IF</tt>
+<CODE class=linenumber>32   </CODE><tt>RETURN</tt> code1, code2, name
+<CODE class=linenumber>33</CODE> <tt>END FUNCTION</tt></PRE>
+
+
+<HR>
+
+<h3><a name="FC_RETURN">RETURN</a></h3>
+
+
+<h4>Purpose:</h4><p>The <tt>RETURN</tt> instruction transfers the control back from a <a href="Functions.html"> function</a>
+with optional return values. </p>
+
+
+<h4>Syntax:</h4><code>RETURN <u>[</u> <i>value</i> <u>[,...]</u>  <u> ]</u> </code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> 
+    <p align="left"><i>value</i> can be a <a href="Variables.html">variable</a>, a <a href="Literals.html">literal</a>,
+    a <a href="Constants.html">constant</a> or any valid <a href="Expressions.html">expression</a>.</li>
+  <li> 
+    <p align="left"><a href="Records.html">Record</a> members can be returned
+    with the <tt>.*</tt> or <tt>THRU</tt> notation. Each member is returned as an independent
+    variable.</li>
+  <li>A <a href="Functions.html">function</a> may have several <tt>RETURN</tt>
+    points (not recommended in structured programming) but they must all return
+    the same number of values.</li>
+  <li>The number of returned <i> values</i> must correspond to the
+    number of variables listed in the <tt>RETURNING</tt> clause of the <tt><a href="#FC_CALL">CALL</a></tt>
+    statement invoking this function.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>A function cannot return an <a href="Arrays.html">array</a>.</li>
+</ol>
+
+
+<h4>Example:</h4>
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> forname, surname <tt>CHAR</tt>(10)
+<CODE class=linenumber>03</CODE>   <tt>CALL</tt> foo(NULL) <tt>RETURNING</tt> forname, surname
+<CODE class=linenumber>04</CODE>   <tt>DISPLAY</tt> forname <tt>CLIPPED</tt>, &quot; &quot;, upshift(surname) <tt>CLIPPED</tt>
+<CODE class=linenumber>05</CODE>   <tt>CALL</tt> foo(1) <tt>RETURNING</tt> forname, surname
+<CODE class=linenumber>06</CODE>   <tt>DISPLAY</tt> forname <tt>CLIPPED</tt>, &quot; &quot;, upshift(surname) <tt>CLIPPED</tt>
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>08</CODE>
+<CODE class=linenumber>09</CODE> <tt>FUNCTION</tt> foo(code)
+<CODE class=linenumber>10</CODE>   <tt>DEFINE</tt> code   <tt>INTEGER</tt>
+<CODE class=linenumber>11</CODE>   <tt>DEFINE</tt> person <tt>RECORD</tt>
+<CODE class=linenumber>12</CODE>                  name1   <tt>CHAR</tt>(10),
+<CODE class=linenumber>13</CODE>                  name2   <tt>CHAR</tt>(20)
+<CODE class=linenumber>14</CODE>                <tt>END</tt> <tt>RECORD</tt>
+<CODE class=linenumber>15</CODE>  <tt>IF</tt> code <tt>IS NULL THEN</tt>
+<CODE class=linenumber>16</CODE>     <tt>RETURN</tt> NULL, NULL
+<CODE class=linenumber>17</CODE>  <tt>ELSE</tt>
+<CODE class=linenumber>18</CODE>     <tt>LET</tt> person.name1 = &quot;John&quot;
+<CODE class=linenumber>19</CODE>     <tt>LET</tt> person.name2 = &quot;Smith&quot;
+<CODE class=linenumber>20</CODE>     <tt>RETURN</tt> person.*
+<CODE class=linenumber>21</CODE>  <tt>END</tt> <tt>IF</tt>
+<CODE class=linenumber>22</CODE> <tt>END FUNCTION</tt></pre>
+
+
+<HR>
+
+<h3><a name="FC_CASE">CASE</a></h3>
+
+<h4>Purpose:</h4><p>The <tt>CASE</tt> instruction specifies statement blocks
+that must be executed conditionally. </p>
+
+
+<h4>Syntax 1:</h4><code>CASE <i>expression-1</i><br>
+&nbsp; WHEN <i>expression-2<br>
+&nbsp;&nbsp;&nbsp; </i><u>{</u> <i>statement</i> <u>|</u> EXIT CASE <u>}</u><br>
+&nbsp;&nbsp;&nbsp; <u>[...]</u><br>
+&nbsp; <u>[</u> OTHERWISE&nbsp;<br>
+<i>&nbsp;&nbsp;&nbsp; </i><u>{</u> <i>statement</i> <u>|</u> EXIT CASE <u>}</u><br>
+&nbsp;&nbsp;&nbsp; <u>[...]</u><br>
+&nbsp; <u>]</u><br>
+END CASE</code>
+
+
+<h4>Syntax 2:</h4><code>CASE<br>
+&nbsp; WHEN <i>boolean-expression<br>&nbsp;&nbsp;&nbsp; </i><u>{</u> <i>statement</i> <u>|</u> EXIT CASE <u>}</u><br>
+&nbsp;&nbsp;&nbsp; <u>[...]</u><br>
+&nbsp; <u>[</u> OTHERWISE&nbsp;<br>
+<i>&nbsp;&nbsp;&nbsp; </i><u>{</u> <i>statement</i> <u>|</u> EXIT CASE <u>}</u><br>
+&nbsp;&nbsp;&nbsp; <u>[...]</u><br>
+&nbsp; <u>]</u><br>
+END CASE</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>expression-1</i> is any <a href="Expressions.html">expression</a>
+    supported by the language.</li>
+  <li> <i>expression-2 </i> is an expression that is tested against <i>expression-1.
+    expression-1 </i>and<i> expression-2 </i>should have the same <a href="DataTypes.html">data
+    type</a>.</li>
+  <li> <i>boolean-expression </i>is any <a href="Expressions.html#EX_BOOLEAN"> <u>boolean
+    expression</u></a> supported by the language.
+
+
+  </li>
+  <li> <i>statement</i> is any instruction supported by the language.
+
+
+  </li>
+  <li> 
+    In a <tt>CASE</tt> flow control block, the first matching <tt>WHEN</tt>&nbsp;block
+    is executed. If there is no matching <tt>WHEN</tt>&nbsp;block, then the <tt>OTHERWISE</tt>
+block is executed.
+
+
+  </li>
+  <li> If there is no matching <tt>WHEN</tt>&nbsp;block and
+    no <tt>OTHERWISE</tt> block, then the program control jumps to the statement
+    following the <tt>END CASE</tt>  keyword.
+
+
+  </li>
+  <li> The <tt>EXIT CASE</tt>  statement transfers the
+    program control to the statement following the <tt>END CASE</tt>  keyword.
+
+
+  </li>
+  <li> 
+    There is an implicit <tt>EXIT CASE</tt>  statement at the end of each <tt>WHEN</tt>&nbsp;block
+    and at the end of the <tt>OTHERWISE</tt> block.
+
+
+  </li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>A <tt>NULL</tt> expression is considered as <tt>FALSE</tt>: When doing a <tt>CASE
+    <i>expr ...</i> WHEN [NOT] NULL</tt> using the syntax 1, it always evaluates
+    to <tt>FALSE</tt>. Use syntax 2 as <tt>CASE ... WHEN <i>expr</i> IS NULL</tt>
+    to test if an <a href="Expressions.html">expression</a> is null.</li>
+  <li>Make sure that <i> expression-2</i> is not a <a href="Expressions.html#EX_BOOLEAN"> <u>boolean
+    expression</u></a> when using the
+    first syntax. The compiler will not raise an error in this case, but you
+    might get unexpected results at runtime.</li>
+  <li>If&nbsp; there is more than one <i>expression-2 </i>matching <i>expression-1 </i>(syntax
+    1), or
+    if<i> </i>two <a href="Expressions.html#EX_BOOLEAN"><u>boolean expressions</u></a>
+    (syntax 2) are true, only the first matching <tt>WHEN</tt>&nbsp;block will
+    be executed.</li>
+  <li>The <tt>OTHERWISE</tt> block must be the last block of the <tt> CASE</tt>  
+    instruction.</li>
+</ol>
+
+
+<h4>Example 1: First syntax</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE</tt> v <tt>CHAR</tt>(10)
+<CODE class=linenumber>03</CODE>    <tt>LET</tt> v = &quot;C1&quot;
+<CODE class=linenumber>04</CODE>    <tt>CASE</tt> v
+<CODE class=linenumber>05</CODE>      <tt>WHEN</tt> &quot;C1&quot;
+<CODE class=linenumber>06</CODE>        <tt>DISPLAY</tt> &quot;Value is C1&quot;
+<CODE class=linenumber>07</CODE>      <tt>WHEN</tt> &quot;C2&quot;
+<CODE class=linenumber>08</CODE>        <tt>DISPLAY</tt> &quot;Value is C2&quot;
+<CODE class=linenumber>09</CODE>      <tt>WHEN</tt> &quot;C3&quot;
+<CODE class=linenumber>10</CODE>        <tt>DISPLAY</tt> &quot;Value is C3&quot;
+<CODE class=linenumber>11</CODE>      <tt>OTHERWISE</tt>
+<CODE class=linenumber>12</CODE>        <tt>DISPLAY</tt> &quot;Unexpected value&quot;
+<CODE class=linenumber>13</CODE>    <tt>END CASE</tt>
+<CODE class=linenumber>14</CODE> <tt>END MAIN</tt></PRE>
+
+<h4>Example 2: Second syntax</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE</tt> v <tt>CHAR</tt>(10)
+<CODE class=linenumber>03</CODE>    <tt>LET</tt> v = &quot;C1&quot;
+<CODE class=linenumber>04</CODE>    <tt>CASE</tt>
+<CODE class=linenumber>05</CODE>      <tt>WHEN</tt> ( v=&quot;C1&quot; OR v=&quot;C2&quot; )
+<CODE class=linenumber>06</CODE>        <tt>DISPLAY</tt> &quot;Value is either C1 or C2&quot;
+<CODE class=linenumber>06</CODE>      <tt>WHEN</tt> ( v=&quot;C3&quot; OR v=&quot;C4&quot; )
+<CODE class=linenumber>07</CODE>        <tt>DISPLAY</tt> &quot;Value is either C3 or C4&quot;
+<CODE class=linenumber>08</CODE>      <tt>OTHERWISE</tt>
+<CODE class=linenumber>09</CODE>        <tt>DISPLAY</tt> &quot;Unexpected value&quot;
+<CODE class=linenumber>10</CODE>    <tt>END CASE</tt>
+<CODE class=linenumber>11</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="FC_CONTINUE">CONTINUE</a></h3>
+
+
+<h4>Purpose:</h4><p>The <tt>CONTINUE</tt> instruction transfers the program execution from a statement block to another location in the
+compound statement that is currently being executed.</p>
+
+
+<h4>Syntax:</h4><code>CONTINUE <u>{</u> FOR <u>|</u> FOREACH <u>|</u> MENU <u>|</u>
+CONSTRUCT <u>|</u> INPUT <u>|</u> WHILE <u>}</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> 
+    <p align="left"><tt>CONTINUE <i>instruction</i> </tt>can only be used within
+    the
+    statement block specified by <tt><i>instruction</i></tt>. For example, <tt>CONTINUE FOR </tt>can only be used within a <tt>FOR ...
+    END FOR </tt>statement block.</li>
+  <li>
+    <p align="left">The <tt>CONTINUE FOR</tt>, <tt>CONTINUE FOREACH</tt>, or <tt>CONTINUE
+    WHILE</tt> keywords cause the current <tt>FOR</tt>, <tt>FOREACH</tt>, or <tt>WHILE</tt>
+    loop (respectively) to begin a new cycle immediately. If conditions do not permit a new cycle, however, the looping statement terminates.</li>
+  <li> 
+    <p align="left">The <tt>CONTINUE CONSTRUCT</tt> and <tt>CONTINUE INPUT</tt> statements cause
+    the program to
+    skip all subsequent statements in the current control block. The screen cursor
+    returns to the most recently occupied field in the current form, giving the user another chance to enter data in that field.</li>
+  <li> 
+    <p align="left">The <tt>CONTINUE MENU</tt> statement causes the program to ignore the
+    remaining statements in the current <tt>MENU</tt> control block and redisplay the menu.
+    The user can then choose another menu option.</li>
+</ol>
+
+
+<h4><font color="#008000">Tips:</font></h4>
+
+
+<ol>
+  <li><tt>CONTINUE INPUT</tt> is valid in <tt>INPUT</tt> and <tt>INPUT ARRAY</tt>
+    statements.</li>
+</ol>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN
+</tt><CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>i <tt>INTEGER
+</tt><CODE class=linenumber>03</CODE>   <tt>LET </tt>i = 0
+<CODE class=linenumber>04</CODE>   <tt>WHILE </tt>i &lt; 5
+<CODE class=linenumber>05</CODE>     <tt>LET </tt>i = i + 1
+<CODE class=linenumber>06</CODE>     <tt>DISPLAY </tt>&quot;i=&quot; <tt>||</tt> i
+<CODE class=linenumber>07</CODE>     <tt>CONTINUE WHILE
+</tt><CODE class=linenumber>08</CODE>     <tt>DISPLAY </tt>&quot;This will never be displayed !&quot;
+<CODE class=linenumber>09</CODE>   <tt>END WHILE
+</tt><CODE class=linenumber>10</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="FC_FOR">FOR</a></h3>
+
+
+<h4>Purpose:</h4><p>The <tt>FOR</tt> instruction executes a statement block a specified number of times. </p>
+
+
+<h4>Syntax:</h4><code>FOR <i>counter</i> = <i>start </i>TO <i>finish </i><u>[</u>
+STEP <i>value </i><u>]<br>
+</u><i>&nbsp;&nbsp; <u>{</u> statement <u>|</u> </i>EXIT FOR<i> <u>|</u> </i>CONTINUE
+FOR <u>}</u><br>
+&nbsp;&nbsp; <u>[...]</u><br>
+END FOR</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> 
+    <p align="left"><i>counter</i> is a <a href="Variables.html"> variable</a> of type
+    <a href="DataTypes.html#DT_INTEGER">INTEGER</a> or <a href="DataTypes.html#DT_SMALLINT">SMALLINT</a> that serves as an index for the
+    <tt>FOR</tt>  statement block.</li>
+  <li> 
+    <p align="left"><i>start</i> is an <a href="Expressions.html#EX_INTEGER">integer
+    expression</a>  used to set an initial counter value.</li>
+  <li> 
+    <p align="left"><i>finish</i> is any valid <a href="Expressions.html#EX_INTEGER">integer
+    expression</a>  used to specify an upper limit for <i>counter</i>.</li>
+  <li> 
+    <p align="left"><i>value</i> is any valid <a href="Expressions.html#EX_INTEGER">integer
+    expression</a> whose value is added to
+    <i> counter </i> after each iteration of the statement block.</li>
+  <li> 
+    <p align="left">When the <tt>STEP</tt> keyword is not given, <i>counter</i>
+    is incremented by 1.</li>
+  <li> <i>statement</i> is any instruction supported by the language.
+
+
+  </li>
+  <li> If <i>value </i>is less than 0, <i>counter</i> is decreased. In this case,
+    <i>start </i>should be higher
+    than <i>finish</i>.
+
+
+  </li>
+</ol>
+
+
+<h4>Usage:</h4>
+<p align="left">The <tt>FOR</tt>  instruction block executes the statements up to the <tt>END
+FOR</tt> keyword a specified number of times, or until <tt>EXIT FOR</tt> terminates the
+<tt>FOR</tt> statement. You can use the <tt>CONTINUE FOR</tt> instruction to
+skip the following statements and continue with the loop.</p>
+<p align="left">The runtime system maintains the counter, whose value changes on each pass through the statement block. On the first iteration through the loop, this counter is set to the initial expression at the left of the
+<tt>TO</tt> keyword. For all further iterations, the value of the increment expression in the <tt>STEP</tt>
+clause specification (1 by default) is added to
+the counter in each pass through the block of statements.
+When the sign of the difference between the values of counter and the finish expression at the right of the
+<tt>TO</tt> keyword changes, the runtime system exits from the <tt>FOR</tt> loop.</p>
+<p align="left">The <tt>FOR</tt> loop terminates after the iteration for which the left- and right-hand
+expressions are equal. Execution resumes at the statement following the <tt>END
+FOR</tt> keywords. If either expression
+returns <tt>NULL</tt>, the loop cannot terminate,  because the Boolean expression "left = right" cannot become
+<tt>TRUE</tt>.</p>
+
+
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li>If the <tt>FOR</tt> loop includes one or more <a href="StaticSql.html"> SQL statements</a> that modify the database, then it is advisable that the
+    entire <tt>FOR</tt> loop be within a transaction. You may also <a href="DynamicSql.html">PREPARE</a>
+    the SQL statements before the loop to increase performance.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li><i>counter</i> MUST be of type <a href="DataTypes.html#DT_INTEGER">INTEGER</a>
+    or
+    <a href="DataTypes.html#DT_SMALLINT">SMALLINT</a>.</li>
+  <li> <i>value</i>  = 0 causes an unending loop unless there is an adequate <tt>EXIT
+    FOR </tt>statement.</li>
+  <li><tt>NULL </tt>for <i>start</i>, <i>finish</i> or <i>value</i> is treated
+    as 0. There is no way to catch this as an error.</li>
+  <li>If <i>statement</i> modifies the value of <i>counter</i>, you might get
+    unexpected results at runtime. In this case, it is recommended that
+    you use a <tt><a href="#FC_WHILE">WHILE</a></tt>
+    loop instead.
+  </li>
+  <li>It is highly recommended that you ensure that <i>statement </i>does not modify
+    the values of <i>start</i>, <i>finish </i>and/or <i>value</i>.<br>
+  </li>
+</ol>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN
+</tt><CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>i, i_min, i_max <tt>INTEGER
+</tt><CODE class=linenumber>03</CODE>   <tt>LET </tt>i_min = 1<tt>
+</tt><CODE class=linenumber>04</CODE>   <tt>LET </tt>i_max = 10
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY </tt>&quot;Look how well I can count from &quot; || i_min || &quot; to &quot; || i_max
+<CODE class=linenumber>06</CODE>   <tt>DISPLAY </tt>&quot;I can count forwards...&quot;
+<CODE class=linenumber>07</CODE>   <tt>FOR </tt>i = i_min <tt>TO</tt> i_max
+<CODE class=linenumber>08</CODE>       <tt>DISPLAY </tt>i
+<CODE class=linenumber>09</CODE>   <tt>END FOR
+</tt><CODE class=linenumber>10</CODE>   <tt>DISPLAY </tt>&quot;... and backwards!&quot;
+<CODE class=linenumber>11</CODE>   <tt>FOR </tt>i = i_max <tt>TO</tt> i_min <tt>STEP </tt>-1
+<CODE class=linenumber>12</CODE>       <tt>DISPLAY </tt>i
+<CODE class=linenumber>13</CODE>   <tt>END FOR
+</tt><CODE class=linenumber>14</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="FC_GOTO">GOTO</a></h3>
+
+
+<h4>Purpose:</h4><p>The <tt>GOTO</tt> instruction transfers program control to a
+labeled line within the same program block. </p>
+
+
+<h4>Syntax:</h4>
+<p><code>GOTO <u>[</u> : <u>]</u> <i>label-id</i></code></p>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>label-id</i>  is the name of the <a href="#FC_LABEL">LABEL</a>
+    statement to  jump to.</li>
+  <li> The label can be defined before or after the <tt>GOTO</tt>
+    statement.</li>
+</ol>
+
+
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li><tt>GOTO</tt> statements can reduce the readability of your program source
+    and result in infinite loops. It is recommended that
+    you use <a href="#FC_FOR">FOR</a>,
+    <a href="#FC_WHILE">WHILE</a>, <a href="#FC_IF">IF</a>, <a href="#FC_CASE">CASE</a>,
+    <a href="#FC_CALL">CALL</a> statements instead.</li>
+  <li> The <tt>GOTO </tt>statement can be used in a <a href="Exceptions.html#DEFINITION">WHENEVER</a>
+    statement to handle <a href="Exceptions.html">exceptions</a>.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The <tt>LABEL</tt> and <tt>GOTO</tt> statements must use
+    the <i>label-id</i> within a single <a href="Programs.html">MAIN</a>, <a href="Functions.html"> FUNCTION</a>, or
+    <a href="Reports.html"> REPORT</a> program block.</li>
+</ol>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE </tt>exit_code<tt> INTEGER
+</tt><CODE class=linenumber>03</CODE>   <tt>DEFINE </tt>l_status<tt>  INTEGER
+</tt><CODE class=linenumber>04</CODE>   <tt>WHENEVER ANY ERROR GOTO </tt>_error
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY </tt>1/0
+<CODE class=linenumber>06</CODE>   <tt>GOTO </tt>_noerror
+<CODE class=linenumber>07</CODE>   <tt>LABEL </tt>_error:
+<CODE class=linenumber>08</CODE>   <tt>  LET </tt>l_status = <tt>STATUS
+</tt><CODE class=linenumber>09</CODE>     <tt>DISPLAY </tt>&quot;The error number &quot;, l_status, &quot; has occurred.&quot;
+<CODE class=linenumber>10</CODE>   <tt>  DISPLAY </tt>&quot;Description : &quot;, err_get(l_status)
+<CODE class=linenumber>11</CODE>   <tt>  LET </tt>exit_code = -1
+<CODE class=linenumber>12</CODE>   <tt>GOTO </tt>:_exit
+<CODE class=linenumber>13</CODE>   <tt>LABEL </tt>_noerror:
+<CODE class=linenumber>14</CODE>   <tt>  LET </tt>exit_code = 0
+<CODE class=linenumber>15</CODE>   <tt>GOTO </tt>_exit<tt>
+</tt><CODE class=linenumber>16</CODE>   <tt>LABEL </tt>_exit:
+<CODE class=linenumber>17</CODE>   <tt>EXIT PROGRAM </tt>(exit_code)
+<CODE class=linenumber>18</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="FC_EXIT">EXIT</a></h3>
+
+
+<h4>Purpose:</h4><p>The <tt>EXIT</tt> instruction&nbsp;transfers control out of a control structure (a block, a loop, a
+<tt>CASE</tt> statement, or an interface instruction).</p>
+
+
+<h4>Syntax:</h4><code>EXIT <u>{</u> CASE <u> |</u> FOR <u> |</u> MENU <u> |</u> CONSTRUCT
+<u> |</u> FOREACH <u> |</u> REPORT <u>|</u> DISPLAY <u>|</u> INPUT <u> |</u> WHILE
+<u> }</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> 
+    <p align="left">The <tt>EXIT <i>instruction</i></tt> instruction must be used inside
+    the control structure specified by <tt><i>instruction</i></tt>. For example,
+    <tt>EXIT FOR </tt>  can only appear inside a <tt>FOR ... END FOR </tt>program
+    structure.</li>
+  <li> 
+    <p align="left"><tt>EXIT DISPLAY</tt> exits the <tt>DISPLAY ARRAY</tt>
+    instruction and
+    <tt>EXIT INPUT</tt> exits both <tt>INPUT</tt> and <tt>INPUT ARRAY</tt>
+    blocks.</li>
+</ol>
+
+
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li>To exit a function, use the <tt><a href="#FC_RETURN">RETURN</a> </tt> instruction.</li>
+	<li>To exit a program, use the <tt><a href="Programs.html#EXIT_PROGRAM">EXIT 
+	PROGRAM</a></tt> instruction.</li>
+</ol>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN
+</tt><CODE class=linenumber>02</CODE> <tt>  DEFINE </tt>i <tt>INTEGER
+</tt><CODE class=linenumber>03</CODE> <tt>  LET </tt>i = 0
+<CODE class=linenumber>04</CODE>   <tt>WHILE TRUE
+</tt><CODE class=linenumber>05</CODE> <tt>    DISPLAY </tt>&quot;This is an infinite loop. How would you get out of here ?&quot;
+<CODE class=linenumber>06</CODE> <tt>    LET </tt>i = i + 1
+<CODE class=linenumber>07</CODE> <tt>    IF </tt>i = 100 <tt>THEN
+</tt><CODE class=linenumber>08</CODE>       <tt>EXIT WHILE
+</tt><CODE class=linenumber>09</CODE> <tt>    END IF
+</tt><CODE class=linenumber>10</CODE>   <tt>END WHILE
+</tt><CODE class=linenumber>11</CODE> <tt>  DISPLAY </tt>&quot;Well done.&quot;
+<CODE class=linenumber>12</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="FC_IF">IF</a></h3>
+
+
+<h4>Purpose:</h4><p>The <tt>IF</tt>  instruction executes a group of statements conditionally. </p>
+
+
+<h4>Syntax:</h4><code>IF <i>condition </i>THEN<br>
+&nbsp;&nbsp; <i>statement<br>
+</i>&nbsp;&nbsp; <u>[...]</u><br>
+<u>[</u> ELSE<br>
+&nbsp;&nbsp; <i>statement<br>
+ </i>&nbsp;&nbsp; <u>[...]</u><br>
+<u>]<i><br>
+</i></u>END IF</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> 
+    <p align="left"><i>condition</i> is any <a href="Expressions.html#EX_BOOLEAN"> <u>boolean
+    expression</u></a> supported by the language.</li>
+  <li> <i>statement</i> is any instruction supported by the language.
+
+
+  </li>
+</ol>
+
+
+<h4>Usage:</h4>
+<p align="left">If <i>condition</i> is <tt>TRUE</tt>, the runtime system executes the block of
+statements following the <tt>THEN</tt> keyword, until it reaches either the
+<tt>ELSE</tt> keyword or the <tt>END IF</tt>  keywords and resumes execution after the <tt>END IF</tt> keywords.<p align="left">If <i>condition</i> 
+is <tt>FALSE</tt>, the runtime system executes the block of statements
+between the <tt>ELSE</tt> keyword and the <tt>END IF</tt> keywords. If <tt>ELSE</tt> is absent,
+it resumes execution after the <tt>END IF</tt> keywords.
+
+
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li>To test the equality of <a href="Expressions.html#EX_BOOLEAN"><u>integer
+    expressions</u></a>, both &quot; = &quot; and &quot; == &quot; operators may
+    be used. <tt>IF 5 = 5 THEN ... </tt>can be written <tt>IF 5 == 5 THEN ...</tt></li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>A <tt>NULL</tt> expression is considered as <tt>FALSE</tt>. Use the <tt>IS NULL</tt>
+    keyword
+    to test if an <a href="Expressions.html">expression</a> is null.</li>
+</ol>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN
+</tt><CODE class=linenumber>02</CODE>  <tt> DEFINE</tt> name <tt>CHAR</tt>(20)
+<CODE class=linenumber>03</CODE>  <tt> LET </tt>name = &quot;John Smith&quot;
+<CODE class=linenumber>04</CODE> <tt>  IF </tt>name <tt>MATCHES </tt>&quot;John*&quot; <tt>THEN 
+</tt><CODE class=linenumber>05</CODE> <tt>     DISPLAY </tt>&quot;The first name is too common to be displayed.&quot;
+<CODE class=linenumber>06</CODE> <tt>     IF </tt>name <tt>MATCHES </tt>&quot;*Smith&quot; <tt>THEN
+</tt><CODE class=linenumber>07</CODE> <tt>        DISPLAY </tt>&quot;Even the last name is too common to be displayed.&quot;
+<CODE class=linenumber>08</CODE> <tt>     END IF
+</tt><CODE class=linenumber>09</CODE> <tt>  ELSE
+</tt><CODE class=linenumber>10</CODE> <tt>     DISPLAY </tt>&quot;The name is &quot; || name || &quot;.&quot;
+<CODE class=linenumber>11</CODE> <tt>  END IF
+</tt><CODE class=linenumber>12</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="FC_LABEL">LABEL</a></h3>
+
+
+<h4>Purpose:</h4><p>The <tt>LABEL</tt> instruction declares a statement label,
+making the next statement one to which a <a href="#FC_GOTO">GOTO</a> statement
+can transfer program  control. </p>
+
+
+<h4>Syntax:</h4><code>LABEL&nbsp;<i>label-id</i>:</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> 
+    <p align="left"><i>label-id </i>is a unique identifier in a <a href="Programs.html">MAIN</a>,
+    <a href="Reports.html"> REPORT</a>, or <a href="Functions.html">
+    FUNCTION</a> program block.</li>
+  <li> 
+    <p align="left">The <i>label-id </i> must be followed by a colon (<tt>:</tt>).</li>
+</ol>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY</tt> &quot;Line 2&quot;
+<CODE class=linenumber>03</CODE>   <tt>GOTO</tt> line5
+<CODE class=linenumber>04</CODE>   <tt>DISPLAY</tt> &quot;Line 4&quot;
+<CODE class=linenumber>05</CODE>   <tt>LABEL </tt>line5:<CODE class=linenumber>
+06</CODE>   <tt>DISPLAY</tt> &quot;Line 6&quot;
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="FC_SLEEP">SLEEP</a></h3>
+
+
+<h4>Purpose:</h4><p>The <tt>SLEEP</tt>  instruction&nbsp;causes the program to pause for the specified number
+of seconds. </p>
+
+
+<h4>Syntax:</h4><code>SLEEP <i>seconds</i></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> 
+    <p align="left"><i>seconds </i>is a valid <a href="Expressions.html#EX_INTEGER">integer
+    expression</a>.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>If <i>seconds</i> &lt; 0 or <i>second</i> <tt>IS NULL</tt>, the program
+    does not stop.</li>
+</ol>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DISPLAY </tt>&quot;Please wait 5 seconds...&quot;
+<CODE class=linenumber>03</CODE>   <tt>SLEEP </tt>5
+<CODE class=linenumber>04</CODE>   <tt>DISPLAY </tt>&quot;Thank you.&quot;<tt>
+</tt><CODE class=linenumber>05</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="FC_WHILE">WHILE</a></h3>
+
+
+<h4>Purpose:</h4><p>The <tt>WHILE</tt>  statement&nbsp;executes a block of statements while a condition that you specify
+in a
+<a href="Expressions.html#EX_BOOLEAN">boolean expression</a> is true. </p>
+
+
+<h4>Syntax:</h4><code>WHILE <i>b-expression</i><br>
+<i>&nbsp;&nbsp; <u>{</u> statement <u>|</u> </i>EXIT WHILE<i> <u>|</u> </i>CONTINUE
+WHILE <u>}</u><br>
+&nbsp;&nbsp; <u>[...]</u><i><br>
+</i>END WHILE</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> 
+    <p align="left"> <i>b-expression</i> is any valid <a href="Expressions.html#EX_BOOLEAN">boolean expression</a>.</li>
+  <li> <i>statement</i> is any instruction supported by the language.
+
+
+  </li>
+</ol>
+
+
+<h4>Usage:</h4>
+<p>If <i>b-expression</i> is <tt>TRUE</tt>, the runtime system executes the statements that follow it,
+down to the <tt>END WHILE</tt> keyword.&nbsp; The runtime system again evaluates the <i>b-expression</i>,
+ and if it is still <tt>TRUE</tt>, the runtime system executes the same statement block.
+The runtime system usually stops when <i>b-expression</i> becomes <tt>FALSE</tt>
+or <i>statement</i> is <tt>EXIT WHILE</tt>. You can use the <tt>CONTINUE WHILE</tt>
+instruction to skip the following statements and continue with the loop.</p>
+
+
+<p>If <i>b-expression</i> is <tt>FALSE</tt>, the runtime system passes control to the statement that follows <tt>END WHILE</tt>.</p>
+
+
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li>If <i>b-expression </i> is complex, it is much better to define a boolean
+    [ <a href="DataTypes.html#DT_INTEGER">INTEGER</a> or <a href="DataTypes.html#DT_CHAR">CHAR(1)</a>
+    ] <a href="Variables.html">variable</a> that takes the result of <i>b-expression</i>
+    and use this variable for <i>b-expression</i>.</li>
+  <li><p>A <tt>WHILE </tt>loop can replace a&nbsp; <tt>FOR </tt>loop : <tt>FOR i
+    = 1 TO 5 ; ... ; END FOR </tt>is equivalent to <tt>LET i = 1 ; WHILE i &lt;=
+    5 ; ... ; LET i = i + 1 ; END WHILE</tt>
+
+
+  </li>
+  <li><p>In order to avoid unending loops, make sure that either <i>statement </i>will
+    cause <i>b-expression </i>to be <tt>FALSE</tt>,<tt>
+    </tt>or that the <tt>EXIT WHILE </tt>statement<i>
+    </i>will be executed.</p>
+
+
+  </li>
+</ol>
+
+
+<h4>Example:</h4>
+
+
+<PRE><CODE class=linenumber>01</CODE>&nbsp;<tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> lval <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> lmin <tt>INTEGER</tt>
+<CODE class=linenumber>04</CODE>   <tt>DEFINE</tt> lmax <tt>INTEGER</tt>
+<CODE class=linenumber>05</CODE>   <tt>DEFINE</tt> lnb  <tt>INTEGER</tt>
+<CODE class=linenumber>06</CODE>   <tt>DEFINE</tt> lcnt <tt>INTEGER</tt>
+<CODE class=linenumber>07</CODE>   <tt>DEFINE</tt> lguess <tt>INTEGER</tt>
+<CODE class=linenumber>08</CODE>   <tt>DISPLAY</tt> &quot;NumberGuess program&quot;
+<CODE class=linenumber>09</CODE>   <tt>LET</tt> lnb  = 20
+<CODE class=linenumber>10</CODE>   <tt>LET</tt> lmin = 0
+<CODE class=linenumber>11</CODE>   <tt>LET</tt> lmax = 1000
+<CODE class=linenumber>12</CODE>   <tt>LET</tt> lval = 753 <font color="#808080">--random value between lmin and lmax</font>
+<CODE class=linenumber>13</CODE>   <tt>DISPLAY</tt> &quot;Guess a number between &quot; || lmin || &quot; and &quot; || lmax
+<CODE class=linenumber>14</CODE>   <tt>LET</tt> lguess = (lmax - lmin) / 2
+<CODE class=linenumber>15</CODE>   <tt>LET</tt> lcnt = 1
+<CODE class=linenumber>16</CODE>   <tt>WHILE</tt> lguess &lt;&gt; lval <tt>AND</tt> lcnt &lt; lnb
+<CODE class=linenumber>17</CODE>     <tt>DISPLAY</tt> &quot;\n  Attempt number &quot; || lcnt
+<CODE class=linenumber>18</CODE>     <tt>DISPLAY</tt> &quot;  Your guess is &quot; || lguess || &quot;, hopefully between &quot; || lmin || &quot; and &quot; || lmax
+<CODE class=linenumber>19</CODE>     <tt>IF</tt> lval &gt; lguess <tt>THEN</tt>
+<CODE class=linenumber>20</CODE>        <tt>DISPLAY</tt> &quot;  Try higher.&quot;
+<CODE class=linenumber>21</CODE>        <tt>LET</tt> lmin = lguess
+<CODE class=linenumber>22</CODE>     <tt>ELSE</tt>
+<CODE class=linenumber>23</CODE>        <tt>DISPLAY</tt> &quot;  Try lower.&quot;
+<CODE class=linenumber>24</CODE>        <tt>LET</tt> lmax = lguess
+<CODE class=linenumber>25</CODE>     <tt>END IF</tt>
+<CODE class=linenumber>26</CODE>     <tt>LET</tt> lguess = lmin + (lmax - lmin) / 2
+<CODE class=linenumber>27</CODE>     <tt>LET</tt> lcnt = lcnt + 1
+<CODE class=linenumber>28</CODE>   <tt>END WHILE</tt>
+<CODE class=linenumber>29</CODE>   <tt>IF</tt> lcnt &gt;= lnb <tt>THEN</tt>
+<CODE class=linenumber>30</CODE>      <tt>DISPLAY</tt> &quot;Sorry, the maximum number of attempts has been reached. The number was &quot; || lval
+<CODE class=linenumber>31</CODE>   <tt>ELSE</tt>
+<CODE class=linenumber>32</CODE>      <tt>DISPLAY</tt> &quot;Well done. You have found the number &quot; || lval || &quot; in &quot; || lcnt || &quot; attempts.&quot;
+<CODE class=linenumber>33</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>34</CODE> <tt>END MAIN</tt></PRE>
+
+<HR>
+
+</BODY>
+</HTML>

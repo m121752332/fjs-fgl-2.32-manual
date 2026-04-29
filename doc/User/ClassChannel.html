@@ -1,0 +1,751 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>base.Channel</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The Channel class</a> </H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#METHODS">Methods</a></li>
+  <li><a href="#USAGE">Usage</a>
+     <ul>
+         <li><a href="#create-channel">Creating a Channel object</a></li>
+         <li><a href="#setDelimiter">Setting the value delimiter</a></li>
+         <li><a href="#OPEN_CHANNEL">Opening a Channel </a>
+          <ul>
+            <li><a href="#open-file">Opening a file Channel</a></li>
+            <li><a href="#open-pipe">Opening a pipe Channel</a></li>
+            <li><a href="#open-client-socket">Opening a client socket Channel</a></li>
+          </ul>
+         </li>
+         <li><a href="#close">Closing a Channel</a></li>
+         <li><a href="#EXCEPTIONS">Exception handling</a></li>
+         <li><a href="#isEof">Detecting end of file</a></li>
+         <li><a href="#read-write-lines">Reading and writing complete lines</a></li>
+         <li><a href="#read-write-channel">Reading and writing formatted data</a></li>
+         <li><a href="#LINETERM_RW">Managing line terminators with read() / write()</a></li>
+         <li><a href="#LINETERM_RWLINE">Managing line terminators with readLine() / writeLine()</a></li>
+         <li><a href="#LINETERM_WINDOWS">Line terminators on Windows platforms</a></li>
+     </ul>
+  </li>
+  <li><a href="#EXAMPLES">Examples</a>
+    <ul>
+      <li><a href="#example-1">Example 1: Reading formatted data from a file</a></li>
+      <li><a href="#example-2">Example 2: Executing the ls UNIX command</a></li>
+      <li><a href="#example-3">Example 3: Reading lines from a file</a></li>
+      <li><a href="#example-4">Example 4: Communicating with an HTTP server</a></li>
+    </ul>
+  </li>
+</ul>
+
+
+<p>See also: <a href="BuiltInClasses.html">Built-in classes</a></p>
+
+
+<HR>
+
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+<p>The <b>Channel</b> class provides basic read/write functionality
+for access to files or communication with sub-processes.</p>
+
+
+<h4>Syntax:</h4><p><code>base.Channel</code></p>
+
+
+<HR>
+
+
+<h3><a name="METHODS">Methods:</a></h3>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#3399FF" colspan="2"><b>Class Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><b>Name</b></td>
+    <td bgcolor="#C0C0C0" width="50%"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#create-channel">create</a>()</code><tt> RETURNING</tt><code>   base.Channel</code></td>
+    <td valign="top" width="50%">Creates a new Channel object.</td>
+  </tr>
+  <tr>
+    <td bgcolor="#00FFCC" colspan="2"><b>Object Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><b>Name</b></td>
+    <td bgcolor="#C0C0C0" width="50%"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#isEof">isEof</a>() </code><tt>RETURNING INTEGER</tt></td>
+    <td valign="top" width="50%">Returns TRUE if end of file is reached.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#open-file">openFile</a>( path </code><tt>STRING</tt><code>,
+      flags </code><tt>STRING</tt><code> )</code></td>
+    <td valign="top" width="50%">Opens a <a name="openFile">Channel to a file</a> identified by <i>path</i>, with options.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#open-pipe">openPipe</a>( scmd </code><tt>STRING</tt><code>,
+      flags </code><tt>STRING</tt><code> )</code></td>
+    <td valign="top" width="50%">Opens a <a name="openPipe">Channel to a process 
+	</a>by executing the command <i>scmd</i>, with
+      options.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#open-client-socket">openClientSocket</a>( host </code><tt>STRING</tt><code>,
+      port </code><tt>INTEGER</tt><code>,
+      flags </code><tt>STRING</tt><code>, timeout </code><tt>INTEGER</tt><code> )</code></td>
+    <td valign="top" width="50%">Opens a <a name="openClientSocket">Channel to a socke</a>t server identified by <i>host</i>
+      and <i>port</i>, with options.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#setDelimiter">setDelimiter</a>( d </code><tt>STRING</tt><code>
+      )</code></td>
+    <td valign="top" width="50%">Sets the field delimiter of the Channel.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#read-write-channel">read</a>(&nbsp;<i>buffer-list</i> ) </code><tt>RETURNING
+      INTEGER</tt></td>
+    <td valign="top" width="50%"><a name="read">Reads</a> data from the input.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#read-write-channel">write</a>(&nbsp;<i>buffer-list</i>
+      )</code></td>
+    <td valign="top" width="50%"><a name="write">Writes</a> data to the output.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#read-write-lines">readLine</a>() </code><tt>RETURNING STRING</tt></td>
+    <td valign="top" width="50%"><a name="readLine">Reads a complete line</a> of data from the Channel and returns the string.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#read-write-lines">writeLine</a>(&nbsp;<i>buffer</i>
+      </code><tt>STRING</tt><code>
+      )</code></td>
+    <td valign="top" width="50%"><a name="writeLine">Writes a complete line</a> of data to the Channel.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top" height="22"><code><a href="#close">close</a>()</code></td>
+    <td valign="top" height="22" width="50%">Closes the Channel.</td>
+  </tr>
+</table>
+
+
+<HR>
+
+
+<h3><a name="USAGE">Usage:</a></h3>
+<p>The Channel class is a
+<a href="BuiltInClasses.html">built-in class</a> that provides basic read/write functionality
+for accessing files or communicating with sub-processes. </p>
+
+
+<p><b><font color="#FF0000">Warning:</font> As with other BDL instructions, when 
+you are reading or writing strings the escape
+character is the backslash &quot;\&quot;.</b> </p>
+
+
+<p><b><font color="#FF0000">Warning:</font>  No character set conversion is done
+when reading or writing data with channel objects: The code-set used in the
+data file must correspond to the <a href="Localization.html">locale</a> of the
+runtime system, for both input and output.</b> </p>
+
+
+<HR>
+
+
+<h4><a name="create-channel">Creating a Channel object</a> </h4>
+
+
+<p>First you must declare a <code>base.Channel</code> variable; then, create a 
+Channel object and optionally set the field delimiter: </p>
+
+
+<pre><code class="linenumber">01</code> <tt>DEFINE</tt> ch base.Channel<code class="linenumber">
+02</code> <tt>LET</tt> ch = base.Channel.create()</pre>
+
+
+<HR>
+
+
+<h4><a name="setDelimiter">Setting the value delimiter</a></h4>
+<p>After creating the Channel object, you typically set the field value delimiter
+with:</p>
+<pre><code class="linenumber">01</code> <tt>CALL</tt> ch.setDelimiter(&quot;^&quot;)</pre>
+
+
+<p>The default is <a href="EnvironmentVariables.html#EV_DBDELIMITER">DBDELIMITER</a>,
+      or <code> &quot;|&quot;</code> if DBDELIMITER is not defined. If you pass <a href="Programs.html#PC_NULL">NULL</a>,
+      no delimiter is used.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font>   If the delimiter is set to NULL, the read() and write()
+methods do not use the backslash \ escape character. See <a href="#read-write-channel">read()/write()</a>
+methods for more details.</b></p>
+
+
+<p>You can specify &quot;CSV&quot; as
+the delimiter to read/write in Comma Separated Value format. This format is similar
+to the standard Channel format described in this page, with the following
+differences:</p>
+
+
+<ul>
+  <li>Values in the file might be surrounded with &quot; double quotes.</li>
+  <li>If a value contains a comma or a NEWLINE, it is not escaped; the
+    value must be quoted in the file.</li>
+  <li>Double-quote characters in values are doubled in the output file and the
+    output value must be quoted.</li>
+  <li>Backslash characters are not escaped and are read as is;
+    the value must be quoted.</li>
+  <li>Leading and trailing blanks are kept (no truncation).</li>
+  <li>No ending delimiter is expected at the end of the record line.</li>
+</ul>
+
+
+<p>Example:</p>
+<pre><code class="linenumber">01</code> <tt>CALL</tt> ch.setDelimiter(&quot;CSV&quot;)</pre>
+
+
+<HR>
+
+
+<h4><a name="OPEN_CHANNEL">Opening a Channel </a> </h4>
+
+
+<h5><a name="open-file">Opening a file Channel</a> </h5>
+
+
+<p>You can open a file for reading, writing, or both, by using the <code>openFile()</code>
+method: </p>
+
+
+<pre><code class="linenumber">01</code> <tt>CALL</tt> ch.openFile( &quot;file.txt&quot;, &quot;w&quot; )</pre>
+
+
+<p>The parameters for this method are:</p>
+
+
+<ol>
+  <li>The path to the file</li>
+  <li>The opening flags</li>
+</ol>
+      <p>The opening <i>flags</i> can be one of:</p>
+      <ul>
+        <li><tt>r</tt> : For Read mode: reads from a file (standard input if <i>path</i>
+          is NULL).</li>
+        <li><tt>w</tt> : For Write mode: starts with an empty file (standard output if the
+          <i>path </i>is NULL).&nbsp;</li>
+        <li><tt>a</tt> : For Append mode: writes at the end of a file
+          (standard output if the <i>path</i> is NULL).</li>
+        <li><tt>u</tt> : For Read from standard input and Write to standard
+          output (<i>path </i>must be NULL).</li>
+      </ul>
+      <p>Any of the above options can be followed by:</p>
+      <ul>
+        <li><tt>b</tt> : Open in binary mode, to avoid CR/LF&nbsp; (carriage 
+		return/line feed) translation.</li>
+      </ul>
+
+
+<p>When you use the <code>&quot;w&quot;</code> or <code>&quot;a&quot;</code> modes, 
+the file is created if it does not exist. </p>
+
+
+<h5><a name="open-pipe">Opening a pipe Channel</a></h5>
+
+
+<p>With the <code>openPipe()</code> method, you can read from the standard
+output of a sub-process, write to the standard input, or both.</p>
+
+
+<pre><code class="linenumber">01</code> <tt>CALL</tt> ch.openPipe( &quot;ls&quot;, &quot;r&quot; )</pre>
+
+
+<p>The parameters for this method are:</p>
+
+
+<ol>
+  <li>The command to be executed</li>
+  <li>The opening flags</li>
+</ol>
+      <p>The opening <i>flags</i> can be one of:</p>
+      <ul>
+        <li><tt>r</tt>&nbsp;: For Read Only from standard output of the command</li>
+        <li><tt>w</tt>&nbsp;: For Write Only to standard input of the command</li>
+        <li><tt>a</tt>&nbsp;: For Write Only to standard input of the command</li>
+        <li><tt>u</tt>&nbsp;: For Read from standard output and Write to standard 
+		input of the command</li>
+      </ul>
+
+
+<h5><a name="open-client-socket">Opening a client socket Channel</a></h5>
+
+
+<p>Use the <code>openClientSocket()</code>  method to establish a TCP connection
+to a server.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> The network protocol must be based
+on ASCII, or must use the same character set as the application.</b></p>
+
+
+<p>Example:</p>
+
+
+<pre><code class="linenumber">01</code> <tt>CALL</tt> ch.openClientSocket( &quot;localhost&quot;, 80, &quot;ub&quot;, 5 )</pre>
+
+
+<p>The parameters for this method are:</p>
+
+
+<ol>
+  <li>The name of the host machine you want to connect to</li>
+  <li>The port number of the service</li>
+  <li>The opening flags</li>
+  <li>The timeout in seconds. -1 indicates no timeout (wait forever)</li>
+</ol>
+The <i>timeout</i> is specified in seconds, -1 waits forever.
+      <p>The opening <i>flags</i> can be one of:</p>
+      <ul>
+        <li><tt>r</tt> : For Read mode: only to read from the socket</li>
+        <li><tt>w</tt> : For Write mode: only to write to the socket</li>
+        <li><tt>u</tt> : For Read and Write mode: To read and write from/to the 
+		socket</li>
+      </ul>
+      <p>Any of the above options can be followed by:</p>
+      <ul>
+        <li><tt>b</tt> : Open in binary mode, to avoid CR/LF&nbsp;(carriage
+          return / line feed) translation.</li>
+      </ul>
+
+
+<HR>
+
+
+<h4><a name="close">Closing a Channel</a></h4>
+
+
+<p>When you have finished with the Channel, close it with the <code>close()</code> 
+method:</p>
+
+
+<pre><code class="linenumber">01</code> <tt>CALL</tt> ch.close()</pre>
+
+
+<p>A Channel is automatically closed when the last reference to the Channel
+object is deleted. </p>
+
+
+<HR>
+
+
+<h4><a name="EXCEPTIONS">Exception handling</a> </h4>
+
+
+<p>You can trap <a href="Exceptions.html">exceptions</a> with the standard <tt>WHENEVER ERROR</tt> exception handler:</p>
+<pre><code class="linenumber">01</code> <tt>WHENEVER ERROR CONTINUE</tt><code class="linenumber">
+02</code> <tt>CALL</tt> ch.write([num,label])
+<code class="linenumber">03</code> <tt>IF STATUS THEN</tt>
+<code class="linenumber">04</code>    <tt>ERROR</tt> &quot;An error occurred while reading from Channel&quot;
+<code class="linenumber">05</code>    <tt>CALL</tt> ch.close()
+<code class="linenumber">06</code>    <tt>RETURN</tt> -1
+<code class="linenumber">07</code> <tt>END IF</tt>
+<code class="linenumber">08</code> <tt>WHENEVER ERROR STOP</tt></pre>
+
+
+<HR>
+
+
+<h4><a name="isEof">Detecting end of file</a> </h4>
+
+
+<p>To detect the end of a file while reading from a Channel, you can use the <code>isEof()</code>
+method:</p>
+<pre><code class="linenumber">01</code> <tt>DEFINE</tt> s<tt> STRING</tt>
+<code class="linenumber">02</code> <tt>WHILE TRUE</tt>
+<code class="linenumber">03</code>    <tt>LET</tt> s = ch.readLine()
+<code class="linenumber">04</code>    <tt>IF</tt> ch.isEof()<tt> THEN EXIT WHILE END IF</tt>
+<code class="linenumber">05</code>    <tt>DISPLAY</tt> s
+<code class="linenumber">06</code> <tt>END WHILE</tt></pre>
+
+
+<p><b><font color="#FF0000">Warning:</font> The End Of File can only be detected
+after the last read (first read, then check EOF and process if not EOF).</b></p>
+
+
+<HR>
+
+
+<h4><a name="read-write-lines">Reading and writing complete lines</a> </h4>
+
+
+<p>When the Channel is open, you can use the <code>readLine()</code>
+and <code>writeLine()</code>  method to read/write a complete line
+from/to the Channel, by ignoring the delimiter defined by <code>setDelimiter()</code>: </p>
+
+
+<pre><code class="linenumber">01</code> <tt>DEFINE</tt> buff <tt>STRING</tt>
+<code class="linenumber">02</code> <tt>CALL</tt> ch.writeLine(&quot;this is a complete line&quot;)
+<code class="linenumber">03</code> <tt>LET</tt> buff = ch.readLine()</pre>
+
+
+<p>The <code>readLine()</code> method must be used if the source stream does not contain lines with
+      field separators. </p>
+
+
+<p>The <code>readLine()</code> method returns an empty string if the line is
+empty. </p>
+
+
+<p><b><font color="#FF0000">Warning:</font> The readLine() function returns NULL
+if end of file is reached. To distinguish empty lines from NULL, you must use
+the STRING data type. If you use a CHAR or VARCHAR, you will get NULL for empty
+lines. To properly detect end of file, you can use the isEof() method.&nbsp;</b> </p>
+
+
+<HR>
+
+
+<h4><a name="read-write-channel">Reading and writing formatted data</a></h4>
+
+
+<p>When the Channel is open, you can use the the <code>read()/write()</code>
+methods to read/write data records where field values are separated by a
+delimiter. If you want to read simple lines, use the <a href="#read-write-lines">readLine()/writeLine()</a>
+methods instead.</p>
+<p>You must provide a variable list by using the square brace
+notation (<code>[param1,param2,...]</code>):</p>
+<pre><code class="linenumber">01</code> <tt>DEFINE</tt> a,b <tt>INTEGER</tt><code class="linenumber">
+02</code> <tt>DEFINE</tt> c,d <tt>CHAR</tt>(20)<code class="linenumber">
+03</code> ...
+<code class="linenumber">04</code> <tt>WHILE</tt> ch1.read([a,b,c,d])
+<code class="linenumber">05</code>   <tt>CALL</tt> ch2.write([a,b,c,d])<code class="linenumber">
+06</code> <tt>END WHILE</tt></pre>
+
+
+<p>You can also pass all members of a <a href="Variables.html">record variable</a>
+with the dot-star notation:</p>
+
+
+<pre><code class="linenumber">01</code> <tt>DEFINE</tt> rec <tt>RECORD</tt><code class="linenumber">
+02</code>        a,b <tt>INTEGER</tt>,<code class="linenumber">
+03</code>        c,d <tt>CHAR</tt>(20)<code class="linenumber">
+04</code>      <tt>END RECORD</tt><code class="linenumber">
+05</code> ...
+<code class="linenumber">06</code> <tt>WHILE</tt> ch1.read([rec.*])
+<code class="linenumber">07</code>   <tt>CALL</tt> ch2.write([rec.*])<code class="linenumber">
+08</code> <tt>END WHILE</tt></pre>
+
+
+<p> The <code> read()</code> function returns <a href="Programs.html#PC_TRUE">TRUE</a>
+if data could be read. Otherwise, it returns <a href="Programs.html#PC_FALSE">FALSE</a>,
+which indicates the end of the file or stream.</p>
+<p>The input or output stream is text data where each line contains the string
+representation of a record. Field values are separated by the delimiter
+character defined with the <a href="#setDelimiter">setDelimiter()</a> method.</p>
+
+
+<p>For example, a formatted text file corresponding to the above code would look
+like this, when using a default pipe <code>|</code> delimiter:</p>
+
+
+<pre>1|22|aaaaa|bbbbbbbb|
+1234|456|xxxaa|bbbzzz|
+12|4111|xxxaa|bbbzzz|
+333||xxxaa||</pre>
+
+
+<p>Note that empty fields have a length of zero (<code>||</code>) and will be
+read as <a href="Programs.html#PC_NULL">NULL</a>.</p>
+
+
+<p>If and only if a delimiter is used, the backslash <code>\</code> becomes the implicit
+escape character: When writing data with <code>write()</code>, special
+characters like the backslash, line-feed or the delimiter character will be
+escaped. When reading data with <code>read()</code>, any escaped <code>\<i>char</i></code>
+character will be converted to <code><i>char</i></code>.</p>
+
+
+<p>For example, the next code writes a single field value where the character
+string contains a backslash, the pipe delimiter and a line-feed character. Note
+that the backslash is also the escape character for string literals in Genero
+BDL, therefore we need to double the backslash to get a backslash in the string,
+while the line-feed character (<code>&lt;lf&gt;)</code> is represented by
+backslash-n (<code>\n</code>) in BDL string literals:</p>
+
+
+<pre><code class="linenumber">01</code> <tt>CALL</tt> ch.setDelimiter(&quot;|&quot;)
+<code class="linenumber">02</code> <tt>CALL</tt> ch.write(&quot;aaa\\bbb|ccc\nddd&quot;)   -- [aaa&lt;bs&gt;bbb|ccc&lt;lf&gt;ddd]</pre>
+
+
+<p>The above code will produce the following text file:</p>
+
+
+<pre>aaa\\bbb\|ccc\
+ddd|</pre>
+
+
+<p>When reading such a line back into memory with the <code>read()</code>
+method, all escaped characters will be converted back to the single character.
+In this example, <code>\\</code> becomes <code>\</code>, <code>\|</code> becomes
+<code>|</code> and <code>\&lt;lf&gt;</code> becomes <code>&lt;lf&gt;</code>.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font>   If the delimiter is set to NULL, the read() and write()
+methods do not use the backslash \ escape character. As a result, data with
+special characters like backslash, delimiter or line-feed will be written as is,
+and reading data will ignore escaped characters in the source stream. If you
+need to read or write non-formatted data, you should use the <a href="#read-write-lines">readLine()/writeLine()</a>
+methods instead: These methods do not use a delimiter, nor do they use the
+backslash escape character.</b></p>
+
+
+<p>Note that the <a href="InOutSql.html#IO_LOAD">LOAD</a>/<a href="InOutSql.html#IO_UNLOAD">UNLOAD</a>
+SQL instructions follow the same formatting rules as the <code>read()/write()</code>
+channel methods, except that you can not define an NULL delimiter, because an
+empty <a href="EnvironmentVariables.html#EV_DBDELIMITER">DBDELIMITER</a>
+environment variable defaults to the <code>|</code> pipe.</p>
+
+
+<HR>
+
+
+<h4><a name="LINETERM_RW">Managing line terminators with read() and write()</a> </h4>
+
+
+<p>When using the <code>read()</code>/<code>write()</code>
+functions, the escaped line-feed (LF, \n) characters are written as BS + LF to the
+output. When reading data, BS + LF are detected and interpreted, to be
+restituted as if the value was assigned by a <a href="Variables.html#VA_LET">LET</a>
+instruction, with the same string used in the <code>write()</code> function. </p>
+
+
+<p>If you
+want to write a LF as part of a value, the string must contain the backslash and
+line-feed as two independent characters. You need to escape the
+backslash when you write the string constant in the BDL source file. </p>
+
+
+<p>In the following code example, an empty delimiter is used to simplify
+explanation: </p>
+
+
+<pre><code class="linenumber">01</code> <tt>CALL</tt> ch.setDelimiter(&quot;&quot;)
+<code class="linenumber">02</code> <tt>CALL</tt> ch.write(&quot;aaa\\\nbbb&quot;)  -- [aaa&lt;bs&gt;&lt;lf&gt;bbb]
+<code class="linenumber">03</code> <tt>CALL</tt> ch.write(&quot;ccc\nddd&quot;)    -- [aaa&lt;lf&gt;bbb]</pre>
+
+
+<p>... would generate the following output: </p>
+
+
+<pre><code class="linenumber">01</code> aaa\
+<code class="linenumber">02</code> bbb
+<code class="linenumber">03</code> ccc
+<code class="linenumber">04</code> ddd</pre>
+
+
+<p>where line 
+<code class="linenumber">01</code> and 
+<code class="linenumber">02</code> contain data for the same line, in the meaning of a Channel
+record. </p>
+
+
+<p>When you read these lines back with a <code>read()</code> call, you get the following strings
+in memory: </p>
+
+
+<pre><code class="linenumber">Read 1</code> aaa&lt;bs&gt;&lt;lf&gt;bbb
+<code class="linenumber">Read 2</code> ccc
+<code class="linenumber">Read 3</code> ddd</pre>
+
+
+<p>These reads would correspond to the following assignments when using string
+constants: </p>
+
+
+<pre><code class="linenumber">01</code> <tt>LET</tt> s = &quot;aaa\\\nbbb&quot;
+<code class="linenumber">02</code> <tt>LET</tt> s = &quot;ccc&quot;
+<code class="linenumber">03</code> <tt>LET</tt> s = &quot;ddd&quot;</pre>
+
+
+<HR>
+
+
+<h4><a name="LINETERM_RWLINE">Managing line terminators with readLine() and
+writeLine()</a> </h4>
+
+
+<p>When using the <code>readLine()</code> and <code>writeLine()</code>
+functions, a LF character represents the end of a line. </p>
+
+
+<p><b><font color="#FF0000">Warning:</font> LF characters escaped by a backslash <u>are
+not</u> interpreted as part of the line during a readLine() call.</b> </p>
+
+
+<p>When a line is written, any LF characters in the string will
+be written as is to the output. When a line is read, the LF escaped by a
+backslash <u>is not</u> interpreted as part of the line. </p>
+
+
+<p>For example, the following code: </p>
+
+
+<pre><code class="linenumber">01</code> <tt>CALL</tt> ch.writeLine(&quot;aaa\\\nbbb&quot;)  -- [aaa&lt;bs&gt;&lt;lf&gt;bbb]
+<code class="linenumber">02</code> <tt>CALL</tt> ch.writeLine(&quot;ccc\nddd&quot;)    -- [aaa&lt;lf&gt;bbb]</pre>
+
+
+<p>... would generate the following output: </p>
+
+
+<pre><code class="linenumber">01</code> aaa\
+<code class="linenumber">02</code> bbb
+<code class="linenumber">03</code> ccc
+<code class="linenumber">04</code> ddd</pre>
+
+
+<p>... and the subsequent <code>readLine()</code> will read four different lines,
+where the first line would be ended by a backslash: </p>
+
+
+<pre><code class="linenumber">Read 1</code> aaa&lt;bs&gt;
+<code class="linenumber">Read 2</code> bbb
+<code class="linenumber">Read 3</code> ccc
+<code class="linenumber">Read 4</code> ddd</pre>
+
+
+<HR>
+
+
+<h4><a name="LINETERM_WINDOWS">Line terminators on Windows platforms</a> </h4>
+
+
+<p>On Windows platforms, DOS formatted text files use CR/LF as line terminators.
+You can manage this type of files with the
+Channel class.</p>
+<p>By default, <u>on both Windows and Unix platforms</u>, when records are read
+from a DOS file with the Channel class, the CR/LF line terminator is removed.
+When a record is written to a file on Windows, the lines are terminated with CR/LF
+in the file; on UNIX, the lines are terminated with LF only.</p>
+<p>If you want to avoid the automatic translation of CR/LF <u>on Windows</u>, you can use 
+the <tt>b</tt>
+option of the <code>openFil</code><code>e()</code> and <code>openPipe()</code>
+methods. You typically combine the <tt>b</tt> option with <tt>r</tt> or <tt>w</tt>,
+based on&nbsp; the read or write operations that you want to do:</p>
+<pre><code class="linenumber">01</code> <tt>CALL</tt> ch.openFile( &quot;mytext.txt&quot;, &quot;rb&quot; )</pre>
+
+
+<p><u>On Windows</u>, when lines are read&nbsp; with the <tt>b</tt>  option, only LF is 
+removed from CR/LF line terminators;
+CR will be copied as a character part of the last field. In contrast, when lines 
+are written with the <tt>b</tt>  option, LF characters will not be converted to CR/LF.</p>
+
+
+<p><u>On UNIX</u>,
+writing lines with or without the binary mode option does not matter.</p>
+
+
+<HR>
+
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+
+<h4><a name="example-1">Example 1:</a> Reading formatted data from a file</h4>
+
+<p>This program reads data from the &quot;file.txt&quot;&nbsp; file that contains 
+two
+columns separated by a | (pipe) character, and re-writes this data at the end of
+the &quot;fileout.txt&quot; file, separated by &quot;%&quot;</p>
+
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>     <tt>DEFINE</tt> buff1, buff2 <tt>STRING</tt>
+<code class="linenumber">03</code>     <tt>DEFINE</tt> ch_in, ch_out base.Channel
+<code class="linenumber">04</code>     <tt>LET</tt> ch_in = base.Channel.create()
+<code class="linenumber">05</code>     <tt>CALL</tt> ch_in.setDelimiter(&quot;|&quot;)
+<code class="linenumber">06</code>     <tt>LET</tt> ch_out = base.Channel.create()
+<code class="linenumber">07</code>     <tt>CALL</tt> ch_out.setDelimiter(&quot;%&quot;)
+<code class="linenumber">08</code>     <tt>CALL</tt> ch_in.openFile(&quot;file.txt&quot;,&quot;r&quot;)
+<code class="linenumber">09</code>     <tt>CALL</tt> ch_out.openFile(&quot;fileout.txt&quot;,&quot;w&quot;)
+<code class="linenumber">10</code>     <tt>WHILE</tt> ch_in.read([buff1,buff2])
+<code class="linenumber">11</code>         <tt>CALL</tt> ch_out.write([buff1,buff2])
+<code class="linenumber">12</code>     <tt>END WHILE</tt>
+<code class="linenumber">13</code>     <tt>CALL</tt> ch_in.close()
+<code class="linenumber">14</code>     <tt>CALL</tt> ch_out.close()
+<code class="linenumber">15</code> <tt>END MAIN</tt></pre>
+
+
+<h4><a name="example-2">Example 2:</a> Executing the ls UNIX command</h4>
+
+<p>This program executes the &quot;ls&quot; command and displays the filenames
+and extensions separately:</p>
+
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>     <tt>DEFINE</tt> fn <tt>CHAR</tt>(40)
+<code class="linenumber">03</code>     <tt>DEFINE</tt> ex <tt>CHAR</tt>(10)
+<code class="linenumber">04</code>     <tt>DEFINE</tt> ch base.Channel
+<code class="linenumber">05</code>     <tt>LET</tt> ch = base.Channel.create()
+<code class="linenumber">06</code>     <tt>CALL</tt> ch.setDelimiter(&quot;.&quot;)
+<code class="linenumber">07</code>     <tt>CALL</tt> ch.openPipe(&quot;ls -l&quot;,&quot;r&quot;)
+<code class="linenumber">08</code>     <tt>WHILE</tt> ch.read([fn,ex])
+<code class="linenumber">09</code>         <tt>DISPLAY</tt> fn, &quot;   &quot;, ex
+<code class="linenumber">10</code>     <tt>END WHILE</tt>
+<code class="linenumber">11</code>     <tt>CALL</tt> ch.close()
+<code class="linenumber">12</code> <tt>END MAIN</tt></pre>
+
+
+<h4><a name="example-3">Example 3:</a> Reading lines from a file:</h4>
+
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>     <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<code class="linenumber">03</code>     <tt>DEFINE</tt> s <tt>STRING</tt>
+<code class="linenumber">04</code>     <tt>DEFINE</tt> ch base.Channel
+<code class="linenumber">05</code>     <tt>LET</tt> ch = base.Channel.create()
+<code class="linenumber">06</code>     <tt>CALL</tt> ch.openFile(&quot;file.txt&quot;,&quot;r&quot;)
+<code class="linenumber">07</code>     <tt>LET</tt> i = 1
+<code class="linenumber">08</code>     <tt>WHILE TRUE</tt>
+<code class="linenumber">09</code>         <tt>LET</tt> s = ch.readLine()
+<code class="linenumber">10</code>         <tt>IF</tt> ch.isEof() <tt>THEN EXIT WHILE END IF</tt>
+<code class="linenumber">11</code>         <tt>DISPLAY</tt> i, &quot; &quot;, s
+<code class="linenumber">12</code>         <tt>LET</tt> i = i + 1
+<code class="linenumber">13</code>     <tt>END WHILE</tt>
+<code class="linenumber">14</code>     <tt>CALL</tt> ch.close()
+<code class="linenumber">15</code> <tt>END MAIN</tt></pre>
+
+
+<h4><a name="example-4">Example 4:</a> Communicating with an HTTP server:</h4>
+
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>     <tt>DEFINE</tt> ch base.Channel, eof <tt>INTEGER</tt>
+<code class="linenumber">03</code>     <tt>LET</tt> ch = base.Channel.create()
+<code class="linenumber">04</code>     -- We open the Channel in binary mode to control CR+LF
+<code class="linenumber">05</code>     <tt>CALL</tt> ch.openClientSocket(&quot;localhost&quot;,80,&quot;ub&quot;, 30)
+<code class="linenumber">06</code>     -- HTTP expects CR+LF: Note that LF is added by writeLine()!
+<code class="linenumber">07</code>     <tt>CALL </tt>ch.writeLine(&quot;GET / HTTP/1.0\r&quot;)
+<code class="linenumber">08</code>     -- No HTTP headers...
+<code class="linenumber">09</code>     -- Empty line = end of headers
+<code class="linenumber">10</code>     <tt>CALL </tt>ch.writeLine(&quot;\r&quot;)
+<code class="linenumber">11</code>     <tt>WHILE NOT</tt> eof
+<code class="linenumber">12</code>         <tt>DISPLAY</tt> ch.readLine()
+<code class="linenumber">13</code>         <tt>LET</tt> eof = ch.isEof()
+<code class="linenumber">14</code>     <tt>END WHILE</tt>
+<code class="linenumber">15</code>     <tt>CALL</tt> ch.close()
+<code class="linenumber">16</code> <tt>END MAIN</tt></pre>
+
+
+</BODY>
+</HTML>

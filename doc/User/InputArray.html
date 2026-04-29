@@ -1,0 +1,2118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Array Input</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Array Input</a></H1>
+
+<p>Summary:</p>
+
+<ul>
+  <li><a href="#BASICS">Basics</a>
+    <ul>
+     <li><a href="#BUILT_IN_SORT">Built-in sort</a> </li>
+    </ul>
+  </li>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#USAGE">Usage</a>
+  <ul>
+     <li><a href="#PROG_STEPS">Programming Steps</a></li>
+     <li><a href="#VARIABLE_BINDING">Variable Binding</a></li>
+     <li><a href="#INSTRUCTION_CONFIG">Instruction Configuration</a>
+  	</li>
+     <li><a href="#DEFAULT_ACTIONS">Default Actions</a></li>
+     <li><a href="#CONTROL_BLOCKS">Control Blocks</a>
+     </li>
+     <li><a href="#CTRLBLOCK_EXECUTION">Control Blocks Execution Order</a></li>
+     <li><a href="#INTERACTION_BLOCKS">Interaction Blocks</a>
+     </li>
+     <li><a href="#CONTROL_INSTRUCTIONS">Control Instructions</a>
+		</li>
+     <li><a href="#CONTROL_CLASS">Control Class</a> </li>
+     <li><a href="#CONTROL_FUNCTIONS">Control Functions</a></li>
+  </ul>
+  </li>
+  <li><a href="#EXAMPLES">Examples</a>
+    <ul>
+      <li><a href="#EXAMPLE_1">Basic INPUT ARRAY</a></li>
+      <li><a href="#EXAMPLE_2">INPUT ARRAY using default values</a></li>
+      <li><a href="#EXAMPLE_3">INPUT ARRAY using dynamic array</a></li>
+      <li><a href="#EXAMPLE_4">INPUT ARRAY updating database table</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p><i>See also:</i> <a href="Arrays.html">Arrays</a>, <a href="Records.html">Records</a>,
+<a href="ResultSets.html">Result
+Sets</a>, <a href="Programs.html">Programs</a>, <a href="WindowsAndForms.html">Windows</a>,
+<a href="FormSpecFiles.html">Forms</a>, <a href="DisplayArray.html">Display Array</a></p>
+
+<HR>
+
+<h3><a name="BASICS">Basics</a></h3>
+<p>The <tt>INPUT ARRAY</tt> instruction associates a
+<a href="Arrays.html"> program array</a> of <a href="Records.html">records</a>
+with a <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen-array</a> defined in a
+<a href="FormSpecFiles.html">form</a> so that the user can update the list of records.
+The <tt>INPUT ARRAY</tt> statement activates the current form (the form that
+was most recently displayed or the form in the <a href="WindowsAndForms.html">current
+window</a>): </p>
+
+<p align="center"><img border="0" src="../Images/IARFig01.png" width="504" height="288"></p>
+<p> During the <tt>INPUT ARRAY</tt>  execution, the user can edit or delete
+existing rows, insert new rows, and move inside the list of records. The user can
+insert new rows with the insert key, which is by default <tt>F1</tt>, or delete
+existing rows with the delete key, which is by default <tt>F2</tt>. The program
+controls the behavior of the instruction with control blocks:</p>
+<p align="center"><img border="0" src="../Images/IARFig02.png" width="504" height="288"></p>
+
+<p> To terminate the <tt>INPUT ARRAY</tt>  execution, the user can validate (or cancel) the
+dialog to commit (or invalidate) the modifications made in the list of records:</p>
+<p align="center"><img border="0" src="../Images/IARFig03.png" width="504" height="288"></p>
+
+<p>When the statement completes execution, the form is de-activated.
+After the user terminates the input (for example, with the Accept key), the
+program must test the <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a>
+variable to check if the dialog was validated (or canceled) and then use
+<a href="StaticSql.html#SS_INSERT">INSERT</a>, <a href="StaticSql.html#SS_DELETE">DELETE</a>,
+or <a href="StaticSql.html#SS_UPDATE">UPDATE</a> SQL statements to modify
+the appropriate database tables. The database can also be updated during
+the execution of the <tt>INPUT ARRAY</tt> statement.</p>
+
+<h4 align="left"><a name="BUILT_IN_SORT">Built-in sort</a></h4>
+<p>The <tt>INPUT ARRAY</tt>    dialog
+implements built-in row sorting which can be used if the dialog is combined with
+a <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE</a> container. When the
+end user clicks on a column header of the table, the rows are automatically
+sorted in ascending or descending order. </p>
+
+
+<p>For more details about the built-in sort feature, see the <a href="MultipleDialogs.html#table-sort">Multiple
+Dialogs page</a>. </p>
+
+
+<HR>
+
+<h3><a name="INPUT_ARRAY">INPUT ARRAY</a></h3>
+
+<h4>Purpose:</h4>
+
+<p>The <tt>INPUT ARRAY</tt> supports data entry by users into a <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a> and stores the entered
+data in an <a href="Arrays.html"> array of records</a>.</p>
+
+<h4><a name="SYNTAX">Syntax</a>:</h4>
+
+<p><code>INPUT ARRAY <i><a href="#array">array</a></i> <br>
+&nbsp; <u>[</u> WITHOUT DEFAULTS <u>]</u>
+<br>
+&nbsp; FROM <i><a href="#screen-array">screen-array</a></i>.* <i>&nbsp;<br>
+</i>&nbsp; <u> [</u> ATTRIBUTES ( <u> {</u> <i><a href="#display-attributes">display-attribute</a></i>  <u> |</u>
+ <i><a href="#control-attributes">control-attribute</a></i>  <u> }</u> <u>[,...]</u> </code>
+<tt> </tt><code>) <u>]<br>
+</u> <i>&nbsp; </i><u>[</u> HELP <i><a href="#help-number">help-number</a> </i><u>]</u><br>
+<u>[</u> <i><a href="#dialog-control-block">dialog-control-block</a></i><br>
+&nbsp; <u>[...]<br>
+</u>
+END INPUT <u>]
+</u></code>
+</p>
+
+<p>where <i><a name="dialog-control-block">dialog-control-block</a></i> is one of:</p>
+
+<p><code> <u>{</u> BEFORE INPUT<br>
+ <u>|</u> AFTER INPUT<br>
+ <u>|</u> AFTER DELETE<br>
+ <u>|</u> BEFORE ROW<br>
+ <u>|</u> AFTER ROW<br>
+ <u>|</u> BEFORE FIELD <i><a href="#field-spec">field-spec</a></i> <u>[,...]</u> <br>
+ <u>|</u> AFTER FIELD <i><a href="#field-spec">field-spec</a></i> <u>[,...]</u> <br>
+ <u>|</u> ON ROW CHANGE<br>
+ <u>|</u> ON CHANGE <i><a href="#field-spec">field-spec</a></i> <u>[,...]</u> <br>
+ <u>|</u> ON IDLE <i><a href="#idle-seconds">idle-seconds</a></i> <br>
+ <u>|</u> ON ACTION <i><a href="#action-name">action-name</a> </i> <u>[</u>INFIELD
+<i><a href="#field-spec">field-spec</a></i><u>]</u> <br>
+ <u>|</u> ON KEY ( <i><a href="#key-name">key-name</a></i> <u>[,...]</u> )<br>
+ <u>|</u> BEFORE INSERT<br>
+ <u>|</u> AFTER INSERT<br>
+ <u>|</u> BEFORE DELETE<br>
+ <u>}<br>
+</u>&nbsp;&nbsp;&nbsp;&nbsp; <i><a href="#dialog-statement">dialog-statement</a></i><br>
+&nbsp;&nbsp; &nbsp; <u>[...]
+</u></code>
+</p>
+
+<p>where <i><a name="dialog-statement">dialog-statement</a></i> is one of:</p>
+
+<p><code><u>{</u>   <i><a href="#statement">statement</a><br>
+</i>
+<u>|</u> ACCEPT INPUT<br>
+ <u>|</u> CONTINUE INPUT<br>
+ <u>|</u> EXIT INPUT<br>
+ <u>|</u> NEXT FIELD <u>{</u>  CURRENT&nbsp;<u>|</u> NEXT&nbsp;<u>|</u> PREVIOUS <u>|</u>
+<i><a href="#field-spec">field-spec</a></i> <u>}</u>
+<br> 
+ <u>|</u> CANCEL DELETE
+<br> 
+ <u>|</u> CANCEL INSERT
+<br> 
+ <u>}</u></code>
+</p>
+
+<p>where <i><a name="field-spec">field-spec</a></i>  identifies a unique field
+with one of:
+</p>
+
+<p><code><u>{</u> <i><a href="#field-name">field-name</a></i><br>
+<u>|</u> <i><a href="#table-name">table-name</a></i>.<i><a href="#field-name">field-name</a></i><br>
+<u>|</u> <i><a href="#screen-array">screen-array</a></i>.<i><a href="#field-name">field-name</a></i><br>
+ <u>|</u>
+<i><a href="#screen-record">screen-record</a></i>.<i><a href="#field-name">field-name</a></i><br>
+ <u>}</u>
+</code></p>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i><a name="array">array</a></i> is the <a href="Arrays.html">array of records</a> that will
+    be filled by the <tt>INPUT ARRAY</tt> statement.</li>
+  <li><i><a name="help-number">help-number</a> </i>is an integer that allows you to associate a
+    <a href="MessageFiles.html">help message</a> number with the instruction.</li>
+  <li><i><a name="field-name">field-name</a></i> is the identifier of a <a href="FormSpecFiles.html#SECTION_ATTRIBUTES">field</a>
+    of the <a href="WindowsAndForms.html">current form</a>.</li>
+  <li><i><a name="table-name">table-name</a></i> is the identifier of a <a href="FormSpecFiles.html#SECTION_TABLES">database
+    table</a> of the <a href="WindowsAndForms.html">current form</a>.</li>
+  <li><i><a name="screen-record">screen-record</a></i> is the identifier of a <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen
+    record</a> of the <a href="WindowsAndForms.html">current form</a>.</li>
+  <li><i><a name="screen-array">screen-array</a></i> is the <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>
+    that will be used in the form.</li>
+  <li><i><a name="action-name">action-name</a></i> identifies an <a href="InteractionModel.html">action</a>
+    that can be executed by the user.</li>
+  <li><i><a name="idle-seconds">idle-seconds</a></i> is an <a href="Literals.html"> integer literal</a> or <a href="Variables.html">variable</a> that defines a number of
+    seconds.</li>
+  <li><i><a name="key-name">key-name</a></i> is a hot-key identifier (like <tt>F11</tt> or <tt>Control-z</tt>).</li>
+  <li><i><a name="statement">statement</a></i> is any instruction supported by the language.</li>
+</ol>
+
+<p> The following table shows the <i>options </i> supported by the
+<tt>INPUT ARRAY</tt> statement:</p>
+
+<div align="center">
+  <center>
+  <table border="0" cellpadding="0" width="90%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="40%"><b> Attribute</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>HELP <i>help-number</i></tt></td>
+      <td valign="top">Defines the help number when help is invoked by the user, where <i>help-number</i>
+        is an <a href="Literals.html#LT_INTEGER">integer literal</a> or a <a href="Variables.html">program
+        variable</a>.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>WITHOUT DEFAULTS</tt></td>
+      <td valign="top">Indicates that the <tt>INPUT ARRAY</tt> must use program
+        array data when the dialog starts.<br>
+        The <a href="FSFAttributes.html#FA_DEFAULT">DEFAULT</a> form attributes
+        will always be used for new created rows.</td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<p> The following table shows the <i><a name="display-attributes">display-attributes</a> </i> supported by the
+<tt>INPUT ARRAY</tt> statement.&nbsp; The <i>display-attributes</i> affect 
+console-based applications only, they do not affect GUI-based applications.</p>
+
+<div align="center">
+  <center>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="40%"><b> Attribute</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="40%"><tt>BLACK, BLUE, CYAN, GREEN, MAGENTA, RED, WHITE, YELLOW</tt></td>
+    <td>The TTY color of the displayed data.</td>
+  </tr>
+  <tr>
+    <td width="40%"><tt>BOLD, DIM, INVISIBLE, NORMAL</tt></td>
+    <td>The TTY font attribute of the displayed data.</td>
+  </tr>
+  <tr>
+    <td width="40%"><tt>REVERSE, BLINK, UNDERLINE</tt></td>
+    <td>The TTY video attribute of the displayed data.</td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<p> The following table shows the <i><a name="control-attributes">control-attributes</a> </i> supported by the
+<tt>INPUT ARRAY</tt> statement:</p>
+
+<div align="center">
+  <center>
+  <table border="0" cellpadding="0" width="90%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="40%"><b> Attribute</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>HELP = <i>help-number</i></tt></td>
+      <td valign="top">Defines the help number when help is invoked by the user, where <i>help-number</i>
+        is an <a href="Literals.html#LT_INTEGER">integer literal</a> or a <a href="Variables.html">program
+        variable</a>.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>WITHOUT DEFAULTS <u>[</u>=<i>bool</i><u>]</u></tt></td>
+      <td valign="top">Indicates that the <tt>INPUT ARRAY</tt> must use program
+        array data when the dialog starts.&nbsp;The <i>bool</i> parameter can be an <a href="Literals.html#LT_INTEGER">integer
+        literal</a> or a <a href="Variables.html">program variable</a> that
+        evaluates to <a href="Programs.html#PC_TRUE">TRUE</a> or <a href="Programs.html#PC_FALSE">FALSE</a>.<br>
+        The <a href="FSFAttributes.html#FA_DEFAULT">DEFAULT</a> form attributes
+        will always be used for new created rows.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>FIELD ORDER FORM</tt></td>
+      <td valign="top">Indicates that the tabbing order of fields is defined by the <a href="FSFAttributes.html#FA_TABINDEX">TABINDEX</a>
+        attribute of form fields. The default order in which the focus moves from field to field in the screen
+array is determined by the order of the members in the array variable used by the <tt>INPUT
+        ARRAY</tt> statement.
+The <a href="Programs.html#PROGRAM_OPTIONS">program options</a> instruction can also change
+        this behavior with <tt>FIELD ORDER FORM</tt> options.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>UNBUFFERED <u>[</u>  =<i>bool</i><u>]</u>
+        </tt></td>
+      <td valign="top">Indicates that the dialog must be sensitive to program variable
+        changes.&nbsp;The <i>bool</i> parameter can be an <a href="Literals.html#LT_INTEGER">integer
+        literal</a> or a <a href="Variables.html">program variable</a>.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>COUNT = <i>row-count</i></tt></td>
+      <td valign="top">Defines the number of data rows in the static array. The <i>row-count</i>
+        can be an <a href="Literals.html#LT_INTEGER">integer literal</a> or a <a href="Variables.html">program
+        variable</a>. This is the
+        equivalent of the <a href="BuiltInFunctions.html#BF_SET_COUNT">SET_COUNT()</a>
+        built-in function.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>MAXCOUNT = <i>row-count</i></tt></td>
+      <td valign="top">Defines the maximum number of data rows that can be entered in the program
+        array, where <i>row-count</i> can be an <a href="Literals.html#LT_INTEGER">integer
+        literal</a> or a <a href="Variables.html">program variable</a>.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>ACCEPT = <i>bool</i> </tt></td>
+      <td valign="top">Indicates if the default <i>accept</i> action should be added to the dialog. If not specified, the action is registered.
+        The <i>bool</i> parameter can be an <a href="Literals.html#LT_INTEGER">integer
+        literal</a> or a <a href="Variables.html">program variable</a>.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>CANCEL = <i>bool</i> </tt></td>
+      <td valign="top">Indicates if the default <i>cancel</i> action should be added to the dialog. If not specified, the action is registered.
+        The <i>bool</i> parameter can be an <a href="Literals.html#LT_INTEGER">integer
+        literal</a> or a <a href="Variables.html">program variable</a>.&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>APPEND ROW <u>[</u> =<i>bool</i><u>]</u> </tt></td>
+      <td valign="top">Defines if the user can append new rows at the end of the list.&nbsp;The <i>bool</i> parameter can be an <a href="Literals.html#LT_INTEGER">integer
+        literal</a> or a <a href="Variables.html">program variable</a> that
+        evaluates to <a href="Programs.html#PC_TRUE">TRUE</a> or <a href="Programs.html#PC_FALSE">FALSE</a>.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>INSERT ROW <u>[</u> =<i>bool</i><u>]</u></tt></td>
+      <td valign="top">Defines if the user can insert new rows inside the list. The <i>bool</i> parameter can be an <a href="Literals.html#LT_INTEGER">integer
+        literal</a> or a <a href="Variables.html">program variable</a> that
+        evaluates to <a href="Programs.html#PC_TRUE">TRUE</a> or <a href="Programs.html#PC_FALSE">FALSE</a>.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>DELETE ROW <u>[</u> =<i>bool</i><u>]</u></tt></td>
+      <td valign="top">Defines if the user can delete rows.&nbsp;The <i>bool</i> parameter can be an <a href="Literals.html#LT_INTEGER">integer
+        literal</a> or a <a href="Variables.html">program variable</a> that
+        evaluates to <a href="Programs.html#PC_TRUE">TRUE</a> or <a href="Programs.html#PC_FALSE">FALSE</a>.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>AUTO APPEND <u>[</u> =<i>bool</i><u>]</u></tt></td>
+      <td valign="top">Defines if a temporary row will be created automatically
+        when needed.&nbsp;The <i>bool</i> parameter can be an <a href="Literals.html#LT_INTEGER">integer
+        literal</a> or a <a href="Variables.html">program variable</a> that
+        evaluates to <a href="Programs.html#PC_TRUE">TRUE</a> or <a href="Programs.html#PC_FALSE">FALSE</a>.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>KEEP CURRENT ROW <u>[</u>=<i>bool</i><u>]</u> </tt></td>
+      <td valign="top">Keeps current row highlighted after execution of the instruction.</td>
+    </tr>
+    </table>
+  </center>
+</div>
+
+
+<HR>
+
+<h3><a name="USAGE">Usage</a></h3>
+
+
+<h4><a name="PROG_STEPS">Programming Steps</a>&nbsp;</h4>
+
+
+<p>The following steps describe how to use the <tt>INPUT ARRAY</tt> statement:</p>
+
+
+<ol>
+  <li>Create a <a href="FormSpecFiles.html">form specification file</a> containing a
+    <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>. The screen array
+    identifies the presentation elements to be used by the runtime system to
+    display the rows.</li>
+  <li>Make sure that the program controls interruption handling with
+    <a href="Programs.html#SIGNAL_HANDLING">DEFER INTERRUPT</a>, to manage the
+    validation/cancellation of the interactive dialog.</li>
+  <li>Define an <a href="Arrays.html">array of records</a> with the
+    <a href="Variables.html">DEFINE</a> instruction. The members of the program
+    array must correspond to the elements of the screen array, by number and
+    data types.&nbsp;If you want to input data from a reduced set of columns, you must define a
+    second <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>, containing the limited list of form
+    fields, in
+    the form file. You can then use
+    the second screen array in an <tt>INPUT ARRAY a FROM sa.*</tt> instruction.</li>
+  <li>Open and display the form, using a <a href="WindowsAndForms.html#OPEN_WINDOW">OPEN
+    WINDOW</a> with the <tt>WITH FORM</tt> clause or the <a href="WindowsAndForms.html#OPEN_FORM">OPEN
+    FORM / DISPLAY FORM</a> instructions.</li>
+  <li>If needed, fill the program array with data, for example with a
+    <a href="ResultSets.html">result set cursor</a>, counting the number of
+    program records being filled with retrieved data.</li>
+  <li>Set the <A href="Programs.html#PV_INT_FLAG">INT_FLAG</A> 
+    variable to <A href="Programs.html#PC_FALSE">FALSE</A>.</li>
+  <li>Write the <tt>INPUT ARRAY</tt> statement to handle data input. Inside the <tt>INPUT ARRAY</tt> statement, control the behavior of the
+    instruction with <a href="#CONTROL_BLOCKS">control blocks</a> such as <tt>BEFORE INPUT</tt>, 
+	<tt>BEFORE INSERT</tt>, <tt>BEFORE
+    DELETE</tt>, <tt>BEFORE ROW</tt>, <tt>BEFORE FIELD</tt>,
+    <tt>AFTER INSERT</tt>,
+    <tt>AFTER DELETE</tt>,
+    <tt>AFTER FIELD</tt>,
+    <tt>AFTER ROW</tt>, <tt>AFTER INPUT</tt> and <tt>ON ACTION</tt> blocks.</li>
+	<li>Get the new number of rows with the
+    <a href="BuiltInFunctions.html#BF_ARR_COUNT">ARR_COUNT()</a>  built-in
+      function or with <a href="ClassDialog.html#getArrayLength">DIALOG.getArrayLength()</a>.</li>
+	<li>After the interaction statement block, test the
+    <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a>  pre-defined
+    variable to check if the dialog was canceled
+    (<a href="Programs.html#PV_INT_FLAG">INT_FLAG</a> =
+    <a href="Programs.html#PC_TRUE">TRUE</a> )
+    or validated (<a href="Programs.html#PV_INT_FLAG">INT_FLAG</a>
+    = <a href="Programs.html#PC_FALSE">FALSE</a> ). If the <tt>INT_FLAG</tt>
+      variable is <tt>TRUE</tt>, you should reset it to <tt>FALSE</tt> to not
+      disturb code that relies on this variable to detect interruption events
+      from the GUI front-end or TUI console.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <LI>Make sure that the <A href="Programs.html#PV_INT_FLAG">INT_FLAG</A> 
+  variable is set to <A href="Programs.html#PC_FALSE">FALSE</A> before entering 
+  the <tt>INPUT ARRAY</tt> block.
+  <li>You can only use the <tt>CANCEL INSERT</tt> keyword in the <tt>BEFORE
+    INSERT</tt>   or <tt>AFTER INSERT</tt> blocks.</li>
+  <li>You can only use the <tt>CANCEL DELETE</tt> keyword in the <tt>BEFORE
+    DELETE</tt> block.</li>
+  <li>For the <tt>HELP</tt><b> </b>and <tt>WITHOUT DEFAULTS</tt> options, the order
+    of appearance is important : <b>the last option overrides the previous one!</b></li>
+</ol>
+
+
+<HR size="1">
+
+
+<h4><a name="VARIABLE_BINDING">Variable Binding</a></h4>
+
+<p>The <tt>INPUT ARRAY</tt> statement binds the members of the <a href="Arrays.html">array
+of record</a> to the
+<a href="FormSpecFiles.html#SECTION_ATTRIBUTES">screen array fields</a>
+specified with the <tt>FROM</tt>  keyword. Array members and screen array fields
+are bound <u>by position</u> (i.e. not by name). The number of variables in each record of the program array must be the same as
+the number of fields in each screen record (that is, in a single row of the screen
+array).</p>
+
+<p><b><font color="#FF0000">Warning:</font> Keep in mind that array members are
+bound to screen array fields by position, so you must make sure that the members
+of the array are defined in the same order as the screen array fields.</b></p>
+
+<p>When using a <a href="Arrays.html">static array</a>, the initial number of rows
+is defined by the <tt>COUNT</tt> attribute and the size of the array determines
+how many rows can be inserted. When using a <a href="Arrays.html">dynamic array</a>,
+the initial number of rows is defined by the number of elements in the dynamic
+array (the <tt>COUNT</tt> attribute is ignored), and the maximum rows is
+unlimited. For both static and dynamic arrays, the maximum number of rows the user can enter can be
+defined with the <tt>MAXCOUNT</tt>  attribute. However, <tt>MAXCOUNT</tt> will
+be ignored if it is greater that <tt>COUNT</tt> in case of static arrays, or
+greater then array.getLength() in case of dynamic arrays.</p>
+
+<p>The <tt>FROM</tt> clause binds the screen records in the
+<a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a> to the program records
+of the <a href="Arrays.html">program array</a>.
+The form can include other fields that are not part of the specified screen
+array, but the number of member <a href="Variables.html">variables</a> in each
+<a href="Records.html">record</a> of the program array must equal the number of
+fields in each row of the screen array. When the user enters
+data, the runtime system checks the entered value against the data type of the
+variable, not the data type of the screen field.</p>
+
+<p>  The variables of the record
+array are the interface to display data or to get the user input through the
+<tt>INPUT ARRAY</tt> instruction. Always use the variables if you want to change some field values
+programmatically. When using the <tt>UNBUFFERED</tt>  attribute, the instruction is
+sensitive to program variable changes. If you need to display new data during the
+<tt>INPUT ARRAY</tt>
+execution, use the <tt>UNBUFFERED</tt> attribute and assign the values to the program array row;
+the runtime system will automatically display the values to the screen:</p>
+
+<pre><code class="linenumber">01</code> <tt>INPUT ARRAY </tt>p_items <tt>FROM</tt> s_items.* <tt>ATTRIBUTES</tt>(<tt>UNBUFFERED</tt>)
+<code class="linenumber">02</code>    <tt>ON CHANGE </tt>code
+<code class="linenumber">03</code>       <tt>IF </tt>p_items[arr_curr()].code = &quot;A34&quot; <tt>THEN</tt>
+<code class="linenumber">04</code>          <tt>LET </tt>p_items[arr_curr()].desc = &quot;Item A34&quot;
+<code class="linenumber">05</code>       <tt>END IF</tt>
+<code class="linenumber">06</code> <tt>END INPUT</tt></pre>
+
+<p>The member variables of the records in a program array can be of any
+<a href="DataTypes.html">data type</a>: The runtime system will adapt input and
+display rules to the variable type. If a member is declared with the <a href="Variables.html">LIKE</a> 
+clause and uses a column defined as SERIAL/SERIAL8/BIGSERIAL, the runtime system will treat the
+field as if it was defined as <a href="FSFAttributes.html#FA_NOENTRY">NOENTRY</a>
+in the form file: Since values of serial columns
+are automatically generated by the database server, no user input is required
+for such fields. New generated serials are available in the <a href="Connections.html#SQLCA_RECORD">SQLCA.SQLERRD[2]
+register</a> for SERIAL columns, and with dbinfo('bigserial') for BIGSERIAL
+columns.</p>
+
+<p>The default order in which the focus moves from field to field in the screen
+array is determined by the declared order of the corresponding member variables,
+in the array of the record definition.
+The <a href="Programs.html#PROGRAM_OPTIONS">program options</a> instruction can also change the behavior of the
+<tt>INPUT ARRAY</tt>  instruction, with the <tt>INPUT WRAP</tt>
+or <tt>FIELD ORDER FORM</tt> options.</p>
+
+<p>When the <tt>INPUT ARRAY</tt> instruction executes, it displays the program
+array rows in the screen fields, unless you specify the <tt>WITHOUT DEFAULTS</tt>
+ keywords or option. Unlike the <a href="RecordInput.html">INPUT dialog</a>, the
+column default values defined in the <a href="FormSpecFiles.html">form
+specification file</a> with the <a href="FSFAttributes.html#FA_DEFAULT">DEFAULT</a>
+attribute or in the <a href="DatabaseSchema.html">database schema files</a> are
+always used when a new row is inserted in the list.</p>
+
+
+<p>If the program array has the same structure as a database table (this is the
+case when the array is defined with a <a href="Variables.html#VA_DEFINE">LIKE</a>
+clause), you may not want to display/use some of the columns. You can achieve
+this by used <a href="FormSpecFiles.html#FF_PHANTOM_FIELDS">PHANTOM fields</a>
+in the screen array definition. Phantom fields will only be used to bind program
+variables, and will not be transmitted to the front-end for display.</p>
+
+
+<HR size="1">
+
+
+<h4><a name="INSTRUCTION_CONFIG">Instruction Configuration</a></h4>
+
+<p>The <tt> ATTRIBUTES</tt> clause specifications override all default attributes
+and temporarily override any display attributes that the
+<a href="Programs.html#PROGRAM_OPTIONS"> OPTIONS</a> or the
+<a href="WindowsAndForms.html#OPEN_WINDOW"> OPEN WINDOW</a>
+statement specified for these fields. While the <tt>INPUT ARRAY</tt> statement
+is executing, the runtime system ignores the <tt>INVISIBLE</tt> attribute.</p>
+
+<ul>
+     <li><a href="#HELP_option">HELP option</a></li>
+		<li><a href="#WITHOUT_DEFAULTS_option">WITHOUT DEFAULTS option</a></li>
+		<li><a href="#FIELD_ORDER">FIELD ORDER FORM option</a></li>
+		<li><a href="#UNBUFFERED_option">UNBUFFERED option</a></li>
+		<li><a href="#COUNT_option">COUNT option</a></li>
+		<li><a href="#MAXCOUNT_option">MAXCOUNT option</a></li>
+		<li><a href="#ACCEPT_option">ACCEPT option</a></li>
+		<li><a href="#CANCEL_option">CANCEL option</a></li>
+		<li><a href="#APPEND_ROW_option">APPEND ROW option</a></li>
+		<li><a href="#INSERT_ROW_option">INSERT ROW option</a></li>
+		<li><a href="#DELETE_ROW_option">DELETE ROW option</a></li>
+		<li><a href="#AUTO_APPEND_option">AUTO APPEND option</a></li>
+		<li><a href="#KEEP_CURRENT_ROW_option">KEEP CURRENT ROW option</a></li>
+  </ul>
+
+<h5><a name="HELP_option">HELP option</a></h5>
+
+<p>The <tt>HELP</tt> clause specifies the number of a <a href="MessageFiles.html">help
+message</a> to display if the user invokes the help while the focus is in any
+field used by the instruction. The predefined <i>help</i> action is automatically
+created by the runtime system. You can bind <a href="InteractionModel.html"> action views</a>
+to the 'help' action.</p>
+
+<h4><b><font color="#FF0000">Warnings:</font> </b></h4>
+<ol>
+	<li>The <font size="2">HELP</font> <i>option</i> overrides 
+the <font size="2">HELP</font> <i>attribute</i>!</li>
+</ol>
+
+<h5><a name="WITHOUT_DEFAULTS_option">WITHOUT DEFAULTS option</a></h5>
+
+
+<p>The <tt>WITHOUT DEFAULT</tt> clause defines whether the program array
+elements are populated (and to be displayed) when the dialog begins. Once the dialog is started, existing rows are always
+handled as records to be updated in the database (i.e. <tt>WITHOUT DEFAULTS=TRUE</tt>), while
+newly created rows are handled as records to be inserted in the database (i.e. <tt>WITHOUT
+DEFAULTS=FALSE</tt>). In other words, column default values defined in the <a href="FormSpecFiles.html">form
+        specification file</a> or the <a href="DatabaseSchema.html">database
+        schema files</a> are only used for new created rows.</p>
+
+
+<p>It is unusual to implement an <tt>INPUT ARRAY</tt> with no <tt>WITHOUT DEFAULTS</tt> option, because the
+data of the program variables would be cleared and the list empty. So, you
+typically use the <tt>WITHOUT DEFAULT</tt> clause in <tt>INPUT ARRAY</tt>. In a
+singular <tt>INPUT ARRAY</tt>, the default is <tt>WITHOUT
+DEFAULTS=FALSE</tt>.</p>
+
+
+<p>The <i>bool</i> parameter can be an <a href="Literals.html#LT_INTEGER">integer
+        literal</a> or a <a href="Variables.html">program variable</a> that
+        evaluates to <a href="Programs.html#PC_TRUE">TRUE</a> or <a href="Programs.html#PC_FALSE">FALSE</a>.</p>
+
+
+<h5><a name="FIELD_ORDER">FIELD ORDER FORM option</a></h5>
+
+<p>By default, the form tabbing order
+is defined by the variable list in the <a href="#VARIABLE_BINDING">binding
+specification</a>. You can control the tabbing order by using the <tt>FIELD
+ORDER FORM</tt> attribute. When this attribute is used, the tabbing order is
+defined by the <a href="FSFAttributes.html#FA_TABINDEX">TABINDEX</a> attribute
+of the form items. With <tt>FIELD ORDER FORM</tt>, if you jump from one field to
+a another with the mouse, the <tt>BEFORE FIELD</tt> / <tt>AFTER FIELD</tt>
+triggers of intermediate fields are not executed (actually, the <a href="Programs.html#Dialog_fieldOrder">Dialog.fieldOrder</a>
+FGLPROFILE entry is ignored)</p>
+
+<p>If the form uses a <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE</a>
+container,
+the front-end resets the tab indexes when the user moves columns around. This
+way, the visual column order always corresponds to the input tabbing order. The
+order of the columns in an editable list can be important; you may want to freeze the table columns with the <a href="FSFAttributes.html#FA_UNMOVABLECOLUMNS">UNMOVABLECOLUMNS</a>
+attribute.</p>
+
+<h5><a name="UNBUFFERED_option">UNBUFFERED option</a></h5>
+
+<p>The <tt>UNBUFFERED</tt> attribute indicates that the dialog must be sensitive to program variable
+        changes.&nbsp;When using this option, you bypass the traditional
+&quot;buffered&quot; mode.</p>
+
+
+<p>When using the traditional &quot; buffered&quot; mode, program variable
+changes are not automatically displayed to form fields; You need to execute a <tt>DISPLAY
+TO</tt> or <tt>DISPLAY BY NAME</tt>. Additionally, if an action is triggered,
+the value of the current field is not validated and is not copied into the
+corresponding program variable. The only way to get the text of the current
+field is to use <a href="Operators.html#OP_GET_FLDBUF">GET_FLDBUF()</a>.</p>
+
+
+<p>If the &quot;unbuffered&quot; mode is used, program variables and form fields
+are automatically synchronized. You don't need to display explicitly values with
+a <tt>DISPLAY TO</tt> or <tt>DISPLAY BY NAME</tt>. When an action is triggered,
+the value of the current field is validated and is copied into the corresponding
+program variable.</p>
+
+
+<h5><a name="COUNT_option">COUNT option</a></h5>
+
+<p>The <tt>COUNT</tt> attribute defines the number of valid rows in the <a href="Arrays.html"> static array</a>
+to be&nbsp; displayed as default rows. If you
+do not use the <tt>COUNT</tt> attribute, the runtime system cannot determine how
+much data to display, so the screen array remains empty. You can also use the
+<a href="BuiltInFunctions.html#BF_SET_COUNT">SET_COUNT()</a> built-in function,
+but it is supported for backward compatibility only. The <tt>COUNT</tt> option
+is ignored when using a <a href="Arrays.html"> dynamic array</a>. If you specify the <tt>COUNT</tt> 
+attribute, the <tt>WITHOUT DEFAULTS</tt> option is not required because it is
+implicit. If the <tt>COUNT</tt>  attribute is greater as <tt>MAXCOUNT</tt>, the
+runtime system will take <tt>MAXCOUNT</tt> as the actual number of rows. If the
+value of <tt>COUNT</tt> is negative or zero, it defines an empty list.</p>
+
+<h5><a name="MAXCOUNT_option">MAXCOUNT option</a></h5>
+
+<p>The <tt>MAXCOUNT</tt> attribute defines the <u>maximum</u> number of rows
+that can be inserted in the program array. This attribute allows you to give an
+upper limit of the total number of rows the user can enter, when using both <a href="Arrays.html">static
+or dynamic arrays</a>.&nbsp;</p>
+
+
+<p> When binding a <u> static</u> array, <tt>MAXCOUNT</tt> is used as upper
+limit if it is lower or equal to the actual declared static array size. If <tt>MAXCOUNT</tt> is greater than the
+array size, the size of the static array is used as 
+the upper
+limit. If <tt>MAXCOUNT</tt> is lower than the <tt>COUNT</tt> attribute (or to
+the <a href="BuiltInFunctions.html#BF_SET_COUNT">SET_COUNT()</a>  parameter),
+the actual number of rows in the array will be reduced to <tt>MAXCOUNT</tt>.</p>
+
+
+<p>When binding a <u> dynamic</u> array, the user can enter an infinite number of
+rows unless the <tt>MAXCOUNT</tt> attribute is used. If <tt>MAXCOUNT</tt> is
+lower than the actual size of the dynamic array, the number of rows in the array
+will be reduced to <tt>MAXCOUNT</tt>.</p>
+
+
+<p> If <tt>MAXCOUNT</tt> is negative or equal to zero, the user cannot insert
+rows.</p>
+
+
+<h5><a name="ACCEPT_option">ACCEPT option</a></h5>
+
+<p>The <tt>ACCEPT</tt> attribute can be set to <a href="Programs.html#PC_FALSE">FALSE</a>
+to avoid the automatic creation of the <i>accept</i> default action. This
+option can be used for example when you want to write a specific validation
+procedure, by using <a href="#ACCEPT_INPUT">ACCEPT INPUT</a>.</p>
+
+<h5><a name="CANCEL_option">CANCEL option</a></h5>
+
+<p>The <tt>CANCEL</tt> attribute can be set to <a href="Programs.html#PC_FALSE">FALSE</a>
+to avoid the automatic creation of the <i>cancel</i> default action. This is
+useful for example when you only need a validation action (accept), or when you want to write a specific
+cancellation
+procedure, by using <a href="#EXIT_INPUT">EXIT INPUT</a>.</p>
+
+
+<p>Note that if the <tt>CANCEL=FALSE</tt> option is set, no <i><a href="InteractionModel.html#XCROSS_CLOSE">close
+action</a></i> will be created, and you must write an <tt>ON
+ACTION close</tt> control block to create an explicit action.</p>
+
+
+<h5><a name="APPEND_ROW_option">APPEND ROW option</a></h5>
+
+<p>The <tt>APPEND ROW</tt> attribute can be set to <a href="Programs.html#PC_FALSE">FALSE</a>
+to avoid the <i>append</i> default action, and deny
+the user to add rows at the end of the list. If <tt>APPEND ROW =
+FALSE</tt>, the user can still insert rows in the middle of the list. Use the <tt>INSERT
+ROW</tt> attribute to disallow the user
+from inserting rows. Additionally, even with <tt>APPEND ROW =
+FALSE</tt>, you can still get <a href="MultipleDialogs.html#temporary-rows">automatic
+temporary row creation</a> if <tt>AUTO APPEND</tt> is not set to <a href="Programs.html#PC_FALSE">FALSE</a>.</p>
+
+<h5><a name="INSERT_ROW_option">INSERT ROW option</a></h5>
+
+<p>Using the <tt>INSERT ROW</tt> attribute, you can define with a Boolean value
+whether the
+user is allowed to insert new rows in the middle of the list. However, even if <tt>INSERT ROW</tt> 
+is <a href="Programs.html#PC_FALSE">FALSE</a>, the user can still append rows at
+the end of the list. Use the <tt>APPEND ROW</tt> attribute to disallow the user
+from appending rows. Additionally, even with <tt>APPEND ROW =
+FALSE</tt>, you can still get <a href="MultipleDialogs.html#temporary-rows">automatic
+temporary row creation</a> if <tt>AUTO APPEND</tt> is not set to <a href="Programs.html#PC_FALSE">FALSE</a>.</p>
+
+<h5><a name="DELETE_ROW_option">DELETE ROW option</a></h5>
+
+<p>Using the <tt>DELETE ROW</tt> attribute, you can define with a Boolean value
+whether the
+user is allowed to delete rows (<a href="Programs.html#PC_TRUE">TRUE</a>)
+or not allowed to delete rows (<a href="Programs.html#PC_FALSE">FALSE</a>).</p>
+
+
+<h5><a name="AUTO_APPEND_option">AUTO APPEND option</a></h5>
+
+
+<p>By default, an <tt>INPUT ARRAY</tt> controller creates a temporary row when
+needed (for example, when the user deletes the last row of the list, an new row
+will be automatically created). You can prevent this default behavior by setting
+the <tt>AUTO APPEND</tt> attribute to <a href="Programs.html#PC_FALSE">FALSE</a>.
+When this attribute is set to <tt>FALSE</tt>, the only
+way to create a <a href="MultipleDialogs.html#temporary-rows"> new temporary row</a> is to execute the <i>append</i> action.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> If both the <tt>APPEND ROW</tt>  and
+<tt>INSERT ROW</tt> attributes are set to <tt>FALSE</tt>, the dialog
+automatically behaves as if <tt>AUTO APPEND</tt> equals <tt>FALSE</tt>.</b></p>
+
+
+<h5><a name="KEEP_CURRENT_ROW_option">KEEP CURRENT ROW option</a></h5>
+
+<p>Depending on the list container used in the form, the current row may be
+highlighted during the execution of the dialog, and cleared when the instruction
+ends. You can change this default behavior by using the <tt>KEEP CURRENT ROW</tt> attribute,
+to force the runtime system to keep the current row highlighted.&nbsp;</p>
+
+
+<HR size="1">
+
+
+<h4><a name="DEFAULT_ACTIONS">Default Actions</a></h4>
+
+<p>When an <tt>INPUT ARRAY</tt> instruction executes, the runtime system creates
+a set of <a href="InteractionModel.html">default actions</a>. See the
+<a href="#CTRLBLOCK_EXECUTION">control block execution order</a> to understand
+what control blocks are executed when a specific action is fired.</p>
+
+<p>The following table lists the default actions created for this dialog:</p>
+
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="20%"><b>Default action</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="20%"><tt>accept</tt></td>
+    <td>Validates the <tt>INPUT ARRAY</tt> dialog (validates fields)<br>
+      <i>Creation can be avoided with </i><tt>ACCEPT</tt> <i>attribute.</i></td>
+  </tr>
+  <tr>
+    <td width="20%"><tt>cancel</tt></td>
+    <td>Cancels the <tt>INPUT ARRAY</tt> dialog (no validation, INT_FLAG is set)<br>
+      <i>Creation can be avoided with </i><tt>CANCEL</tt> <i>attribute.</i></td>
+  </tr>
+  <tr>
+    <td width="20%"><tt>close </tt> </td>
+    <td>By default, cancels the <tt>INPUT ARRAY</tt> dialog (no validation, 
+	INT_FLAG is set)<br>
+      Default action view is hidden. See <a href="InteractionModel.html#XCROSS_CLOSE">Windows
+      closed by the user</a>.</td>
+  </tr>
+  <tr>
+    <td width="20%"><tt>insert</tt></td>
+    <td>Inserts a new row before current row.<br>
+      <i>Creation can be avoided with </i><tt> INSERT ROW = FALSE</tt> <i>attribute.</i></td>
+  </tr>
+  <tr>
+    <td width="20%"><tt>append </tt> </td>
+    <td>Appends a new row at the end of the list.<br>
+      <i>Creation can be avoided with </i><tt> APPEND ROW = FALSE</tt>
+      <i> attribute.</i></td>
+  </tr>
+  <tr>
+    <td width="20%"><tt>delete</tt></td>
+    <td>Deletes the current row.<br>
+      <i>Creation can be avoided with </i><tt> DELETE ROW = FALSE</tt>
+      <i> attribute.</i></td>
+  </tr>
+  <tr>
+    <td width="20%"><tt>help</tt></td>
+    <td>Shows the help topic defined by the <tt>HELP</tt> clause.<br>
+      <i>Only created when a </i><tt> HELP</tt>
+      <i> clause is defined.</i></td>
+  </tr>
+  <tr>
+    <td width="20%"><tt>nextrow</tt></td>
+    <td>Moves to the next row in a list displayed in one row of fields.<br>
+      <i>Only created if </i><tt>DISPLAY ARRAY</tt>
+      <i> used with a screen record having only one
+      row.</i></td>
+  </tr>
+  <tr>
+    <td width="20%"><tt>prevrow</tt></td>
+    <td>Moves to the previous row in a list displayed in one row of fields.<br>
+      <i>Only created if </i><tt>DISPLAY ARRAY</tt>
+      <i> used with a screen record having only one
+      row.</i></td>
+  </tr>
+  <tr>
+    <td width="20%"><tt>firstrow</tt></td>
+    <td>Moves to the first row in a list displayed in one row of fields.<br>
+      <i>Only created if </i><tt>DISPLAY ARRAY</tt>
+      <i> used with a screen record having only one
+      row.</i></td>
+  </tr>
+  <tr>
+    <td width="20%"><tt>lastrow</tt></td>
+    <td>Moves to the last row in a list displayed in one row of fields.<br>
+      <i>Only created if </i><tt>DISPLAY ARRAY</tt>
+      <i> used with a screen record having only one
+      row.</i></td>
+  </tr>
+</table>
+
+<p> The <tt>insert</tt>, <tt>append</tt>, <tt>delete</tt>, <tt>accept</tt> and <tt>cancel</tt>
+default actions can be avoided with
+dialog control attributes:</p>
+
+<pre><CODE class=linenumber>01</CODE>  <tt>INPUT ARRAY</tt> arr<tt> TO</tt> sr.*<tt> ATTRIBUTES</tt>(<tt> INSERT ROW</tt>=<tt>FALSE</tt>, <tt>CANCEL</tt>=<tt>FALSE</tt>, ...<tt> </tt>)
+<CODE class=linenumber>02</CODE>       <tt>...</tt></pre>
+
+
+<HR size="1">
+
+
+<h4><a name="CONTROL_BLOCKS">Control Blocks</a></h4>
+
+      <ul>
+        <li><a href="#before-input-block">BEFORE INPUT block</a></li>
+        <li><a href="#after-input-block">AFTER INPUT block</a></li>
+        <li><a href="#before-field-block">BEFORE FIELD block</a></li>
+        <li><a href="#after-field-block">AFTER FIELD block</a></li>
+        <li><a href="#on-change-block">ON CHANGE block</a></li>
+        <li><a href="#before-row-block">BEFORE ROW block</a></li>
+        <li><a href="#on-row-change-block">ON ROW CHANGE block</a></li>
+        <li><a href="#after-row-block">AFTER ROW block</a></li>
+        <li><a href="#before-insert-block">BEFORE INSERT block</a></li>
+        <li><a href="#after-insert-block">AFTER INSERT block</a></li>
+        <li><a href="#before-delete-block">BEFORE DELETE block</a></li>
+        <li><a href="#after-delete-block">AFTER DELETE block</a></li>
+      </ul>
+
+<h5><a name="before-input-block">BEFORE INPUT block</a></h5>
+
+<p>The <tt>BEFORE INPUT</tt> block is executed one time, before the runtime
+system gives control to the user. You can implement initialization in this
+block.</p>
+
+<h5><a name="after-input-block">AFTER INPUT block</a></h5>
+
+<p>The <tt>AFTER INPUT</tt> block is executed one time, after the user has
+validated or canceled the dialog, and before the runtime system executes the
+instruction that appears just after the <tt>INPUT ARRAY</tt>
+ block. You typically implement dialog finalization in this block. The <tt>AFTER INPUT</tt>
+block is not executed if <tt>EXIT INPUT</tt> executes.</p>
+
+<h5><a name="before-row-block">BEFORE ROW block</a></h5>
+
+<p>The <tt>BEFORE ROW</tt> block is executed each time the user moves to another
+row.
+This trigger can also be executed in other situations, such as when you
+delete a row, or when the user tries to insert a row but the maximum number of
+rows in the list is reached (see <a href="#CTRLBLOCK_EXECUTION">Control Blocks Execution Order</a>
+for more details).</p>
+
+<p>You typically do some dialog setup / message display in the <tt>BEFORE ROW</tt>
+block, because it indicates that the user selected a new row or entered in the
+list.</p>
+
+<p>When the dialog starts, <tt>BEFORE
+ROW</tt> will be executed for the current row, but only if there are data rows
+in the array.</p>
+
+<p>When called in this
+block, the
+    <a href="BuiltInFunctions.html#BF_ARR_CURR">ARR_CURR()</a>&nbsp; function
+returns
+the index of the current row.</p>
+
+<p>In the following example, the <tt>BEFORE ROW</tt> block gets the new row number and displays it in
+a message:</p>
+
+<pre><code class="linenumber">01</code> <tt>INPUT ARRAY </tt>...
+<code class="linenumber">02</code>    ...
+<code class="linenumber">03</code>    <tt>BEFORE ROW</tt>
+<code class="linenumber">04</code>      <tt>MESSAGE </tt>&quot;We are on row # &quot;, arr_curr()
+<code class="linenumber">05</code>    ...
+<code class="linenumber">06</code> <tt>END INPUT</tt></pre>
+
+
+<h5><a name="on-row-change-block">ON ROW CHANGE block</a></h5>
+
+<p>An <tt>ON ROW CHANGE</tt> block is executed when the user moves to another row
+after modifications have been done in the current row. It is triggered if the value of
+a
+field has changed since the row was entered <u>and</u> if the
+&quot;touched&quot; flag of
+the corresponding
+field is set. The field might not be the current field, and several field values
+can be changed.</p>
+
+<p>The &quot;touched&quot; flag is set on user input or by program, when doing a <a href="RecordDisplay.html#DISPLAY_TO">DISPLAY
+TO</a> / <a href="RecordDisplay.html#DISPLAY_BY_NAME">DISPLAY BY NAME</a> or
+when setting explicitly the flag with the <a href="ClassDialog.html#setFieldTouched">ui.Dialog.setFieldTouched()</a>
+method. Note that the "touched" flag is reset for all fields when entering another row,
+or when leaving the dialog instruction.</p>
+
+<p>You can, for example, code
+database modifications (<tt>UPDATE</tt>) in this block. This block is executed
+before the <tt>AFTER ROW</tt> block if defined. When called in this
+block, the
+    <a href="BuiltInFunctions.html#BF_ARR_CURR">ARR_CURR()</a>  function returns
+the index of the current row where values have been changed.</p>
+
+<pre><code class="linenumber">01</code> <tt>INPUT ARRAY </tt>p_items <tt>FROM</tt> s_items.*
+<code class="linenumber">02</code>    <tt>ON ROW CHANGE</tt>
+<code class="linenumber">03</code>       <tt>UPDATE </tt>items <tt>SET</tt>
+<code class="linenumber">04</code>             <tt>  </tt>items.code        = p_items[arr_curr()].code,
+<code class="linenumber">05</code>             <tt>  </tt>items.description = p_items[arr_curr()].description,
+<code class="linenumber">06</code>             <tt>  </tt>items.price       = p_items[arr_curr()].price,
+<code class="linenumber">07</code>             <tt>  </tt>items.updatedate  = <tt>TODAY</tt>
+<code class="linenumber">08</code>       <tt>       WHERE </tt>items.num = p_items[arr_curr()].num
+<code class="linenumber">09</code> <tt>...</tt></pre>
+
+<h5><a name="after-row-block">AFTER ROW block</a></h5>
+
+<p>The <tt>AFTER ROW</tt> block is executed each time the user moves to another 
+row,&nbsp; before the current row is left. This trigger can also be executed in 
+other situations, such as when you
+delete a row, or when the user inserts a new row. see 
+<a href="#CTRLBLOCK_EXECUTION">Control Blocks Execution Order</a>
+for more details.</p>
+
+<p>A <a href="#NEXT_FIELD">NEXT FIELD</a> instruction executed in the <tt>AFTER ROW</tt> control block will keep the user entry in the
+current row. Thus you can use this to implement row input validation and prevent
+the user from leaving the list or moving to another row. However, <tt>NEXT FIELD</tt>
+will be ignored in some situations, see warning below.</p>
+
+<p>When called in this
+block, the
+    <a href="BuiltInFunctions.html#BF_ARR_CURR">ARR_CURR()</a>&nbsp;
+function return
+the index of the row that you are leaving.</p>
+
+<p><b><font color="#FF0000">Warning: </font> After creating a temporary row at
+the end of the list, if you leave that row to a previous row without data input
+or when the <i>cancel</i> action is fired, the temporary row
+will be automatically removed. The <tt>AFTER ROW</tt>  block will be
+executed for the temporary row, but <a href="ClassDialog.html#getCurrentRow">ui.Dialog.getCurrentRow()</a> /
+<a href="BuiltInFunctions.html#BF_ARR_CURR">ARR_CURR()</a> will be one row greater as
+<a href="ClassDialog.html#getArrayLength"> ui.Dialog.getArrayLength()</a> / <a href="BuiltInFunctions.html#BF_ARR_COUNT">ARR_COUNT()</a>.
+In this case, you should ignore the <tt>AFTER ROW</tt> event. For example, you
+should not try to execute a <a href="#NEXT_FIELD">NEXT FIELD</a> or <a href="#CONTINUE_INPUT">CONTINUE
+INPUT</a> instruction, nor should you try to access the dynamic array with a row index that is greater
+as the total number of rows, otherwise the runtime system will adapt the total
+number of rows to the actual number of rows in the program array.</b></p>
+
+<p>In the following example, the <tt>AFTER ROW</tt> block checks a variable
+value and forces the user to stay in the current row if the value is wrong:</p>
+
+<pre><code class="linenumber">01</code> <tt>INPUT ARRAY </tt>p_items <tt>FROM</tt> s_items.*
+<code class="linenumber">02</code>       ...
+<code class="linenumber">03</code>    <tt>AFTER ROW</tt>
+<code class="linenumber">04</code>       <tt>IF </tt>arr_curr()&gt;0 <tt>AND</tt> arr_curr() &lt;= arr_count() <tt>THEN</tt>
+<code class="linenumber">05</code>         <tt>IF NOT </tt>item_is_valid_quantity(p_item[arr_curr()].item_quantity) <tt>THEN</tt>
+<code class="linenumber">06   </code>         <tt>ERROR</tt> &quot;Item quentity is not valid&quot;
+<code class="linenumber">07   </code>         <tt>NEXT FIELD</tt> item_quantity
+<code class="linenumber">08</code>         <tt>END IF</tt>
+<code class="linenumber">09</code>      <tt>END IF</tt>
+<code class="linenumber">10</code> ...</pre>
+
+
+<p>Another way to handle the case of temporary rows in <tt>AFTER ROW</tt> is to
+use a flag to know if the <a href="#after-insert-block">AFTER INSERT</a> block
+was executed: The <tt>AFTER INSERT</tt> block is not executed if the temporary
+row is automatically removed. By setting a first value in <tt>BEFORE INSERT</tt>
+and changing the flag in <tt>AFTER INSERT</tt>, you can detect if the row was
+permanently added to the list:&nbsp;</p>
+
+<pre><code class="linenumber">01</code> <tt>INPUT ARRAY </tt>p_items <tt>FROM</tt> s_items.*
+<code class="linenumber">02</code>    ...
+<code class="linenumber">03</code>    <tt>BEFORE INSERT</tt>
+<code class="linenumber">04</code>       <tt>LET </tt>op = &quot;T&quot;
+<code class="linenumber">05</code>       ...
+<code class="linenumber">06</code>    <tt>AFTER INSERT</tt>
+<code class="linenumber">07</code>       <tt>LET </tt>op = &quot;I&quot;
+<code class="linenumber">08</code>       ...
+<code class="linenumber">09</code>    <tt>AFTER ROW</tt>
+<code class="linenumber">10</code>       <tt>IF </tt>op == &quot;I&quot; <tt>THEN</tt>
+<code class="linenumber">11</code>         <tt>IF NOT </tt>item_is_valid_quantity(p_item[arr_curr()].item_quantity) <tt>THEN</tt>
+<code class="linenumber">12   </code>         <tt>ERROR</tt> &quot;Item quentity is not valid&quot;
+<code class="linenumber">13   </code>         <tt>NEXT FIELD</tt> item_quantity
+<code class="linenumber">14</code>         <tt>END IF</tt>
+<CODE class=linenumber>15</CODE>         <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>16</CODE>         <tt>INSERT INTO</tt> items (item_num, item_name, item_quantity) <tt>VALUES</tt> ( p_item[arr_curr()].* )
+<CODE class=linenumber>17</CODE>         <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>18</CODE>         <tt>IF</tt> SQLCA.SQLCODE&lt;0 <tt>THEN</tt>
+<CODE class=linenumber>19</CODE>            <tt>ERROR</tt> &quot;Could not insert the record into database!&quot;
+<CODE class=linenumber>20</CODE>            <tt>NEXT FIELD CURRENT</tt>
+<CODE class=linenumber>21</CODE>         <tt>ELSE</tt>
+<CODE class=linenumber>22</CODE>            <tt>MESSAGE</tt> &quot;Record has been inserted successfully&quot;
+<CODE class=linenumber>23</CODE>         <tt>END IF</tt>
+<code class="linenumber">24</code>      <tt>END IF</tt>
+<code class="linenumber">25</code> ...</pre>
+
+
+<h5><a name="before-field-block">BEFORE FIELD block</a></h5>
+
+<p>A <tt>BEFORE FIELD</tt> block is executed each time the cursor enters into the
+specified field, when moving the focus from field to field in the same row, or
+when moving to another row. The <tt>BEFORE</tt> <tt>FIELD</tt> block is also executed when using <a href="#NEXT_FIELD">NEXT FIELD</a>.</p>
+
+<p><b><font color="#FF0000">Warning:</font> When using the default <tt>FIELD
+ORDER CONSTRAINT</tt> mode, the dialog executes the <tt>BEFORE FIELD</tt> block
+of the
+field corresponding to the first variable of the <tt>INPUT ARRAY</tt>, even if
+that field is not editable (<a href="FSFAttributes.html#FA_NOENTRY">NOENTRY</a>,
+hidden
+or disabled). The block is executed when you enter the dialog and every time you
+create a new row in the case of <tt>INPUT ARRAY</tt>. This behavior is supported for backward compatibility. The block
+is <u> not</u> executed when using the <tt>FIELD ORDER FORM</tt>.</b></p>
+
+<p><b><font color="#FF0000">Warning:</font> With the <tt>FIELD ORDER FORM</tt>
+mode, for each dialog executing the first time with a specific form, the <tt>BEFORE FIELD</tt> block
+might be fired for the first field of the initial tabbing list defined by the
+form, even if that field was hidden or moved around in a table. The dialog then
+behaves as if a <tt>NEXT FIELD first-visible-column</tt> would have been done in
+the <tt>BEFORE FIELD</tt> of that field.</b></p>
+
+<h5><a name="on-change-block">ON CHANGE block</a></h5>
+
+<p>The <tt>ON CHANGE</tt> block is executed when another field is selected, if the value of the specified
+field has changed since the field got the focus <u>and</u> if the
+&quot;touched&quot;
+field flag is set. The "touched" flag is set when a user modification is done or
+when doing a <a href="RecordDisplay.html#DISPLAY_TO">DISPLAY
+TO</a> or a <a href="RecordDisplay.html#DISPLAY_BY_NAME">DISPLAY BY NAME</a>.
+Once set, the "touched" flag is not reset until the end of the dialog.</p>
+
+<p align="left"> For fields defined as <a href="FormSpecFiles.html#FF_ITEMTYPE_RADIOGROUP">RadioGroup</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX"> ComboBox</a>, <a href="FormSpecFiles.html#FF_ITEMTYPE_SPINEDIT">SpinEdit</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_SLIDER">Slider</a>, and <a href="FormSpecFiles.html#FF_ITEMTYPE_CHECKBOX"> CheckBox</a>
+views, the <tt>ON CHANGE</tt> block is fired immediately when the user changes
+the value. For other type of fields (like <a href="FormSpecFiles.html#FF_ITEMTYPE_EDIT">Edits</a>),
+the <tt>ON CHANGE</tt> block is fired when leaving the field. You leave the
+field when you validate the dialog, when you move to another field, or when you
+move to another row in an <a href="InputArray.html">INPUT ARRAY</a>. Note that
+the <a href="InteractionModel.html#DIRTY">dialogtouched predefined action</a>
+can also be used to detect field changes immediately, but with this action you
+can't get the data in the target variables (and it should only be used to detect that
+the user has started to modify data)</p>
+
+<p> 
+ If both an <tt>ON CHANGE</tt> block and <tt>AFTER FIELD</tt> block are
+defined for a field, the <tt>ON CHANGE</tt> block is executed before the <tt>AFTER
+FIELD</tt> block.</p>
+
+<p> 
+ When changing the value of the current field by program in an <tt>ON ACTION</tt>
+ block, the <tt>ON CHANGE</tt>  block will be executed when leaving the field if
+ the value is different from the reference value <u>and</u> if the "touched" flag is set (after previous user input or <a href="RecordDisplay.html#DISPLAY_TO">DISPLAY
+TO</a> / <a href="RecordDisplay.html#DISPLAY_BY_NAME">DISPLAY BY NAME</a>).</p>
+
+<p>
+ When using the <a href="#CONTROL_INSTRUCTIONS">NEXT FIELD</a> instruction,
+the comparison value is re-assigned as if the user had left and re-entered the
+ field. Therefore, when using <tt>NEXT FIELD</tt> in an <tt>ON CHANGE</tt>  block <u>or</u>
+ in an <tt>ON ACTION</tt> block, the <tt>ON CHANGE</tt> block will only be fired
+again if the value is different from the reference value. Therefore, it is 
+	recommended not to attempt field validation&nbsp; in <tt>ON CHANGE</tt> 
+ blocks:
+you would do better to perform validations in <tt>AFTER FIELD</tt>  blocks and/or <tt>AFTER INPUT</tt>
+ blocks.</p>
+
+<h5><a name="after-field-block">AFTER FIELD block</a></h5>
+
+<p>An <tt>AFTER FIELD</tt> block is executed each time the cursor leaves the
+specified field, when moving the focus from field to field in the same row, or
+when moving to another row.</p>
+
+<h5><a name="before-insert-block">BEFORE INSERT block</a></h5>
+
+<p>The <tt>BEFORE INSERT</tt> block is executed each time the user inserts a new
+row, before the new row is created and made the current one.</p>
+
+<p>You typically assign default values to the array variables of the newly created
+row, before the user gets control to enter more values and validates the row
+creation.</p>
+
+<p>When called in this
+block, the
+    <a href="BuiltInFunctions.html#BF_ARR_CURR">ARR_CURR()</a> function returns
+the index of the newly created row. The row in the program array can be referenced
+with this index, since the new element is already created in the array. Note
+that the <tt>BEFORE ROW</tt> block is also executed (just before <tt>BEFORE
+INSERT</tt>) when inserting a new row, but the current row index returned by
+    <a href="BuiltInFunctions.html#BF_ARR_CURR">ARR_CURR()</a>
+ is one higher than the actual number of rows in the list (<a href="BuiltInFunctions.html#BF_ARR_COUNT">arr_count()</a>).&nbsp;</p>
+
+<p>If needed, you can cancel the insert
+operation with the <tt><a href="#CANCEL_INSERT">CANCEL INSERT</a> </tt>instruction.
+Note that this control instruction can only be used in a <tt>BEFORE INSERT</tt>   or <tt>AFTER INSERT</tt> 
+block. When a <tt>CANCEL INSERT</tt> is performed in <tt>BEFORE INSERT</tt>, the
+dialog will execute some control blocks such as <tt>AFTER ROW</tt> / <tt>BEFORE
+ROW</tt> / <tt>BEFORE FIELD</tt> for the current row, even if no new row was
+inserted.</p>
+
+<p>In the following example, the <tt>BEFORE INSERT</tt> block sets some default values
+and displays a message:</p>
+
+<pre><code class="linenumber">01 </code><tt>INPUT ARRAY </tt>p_items <tt>FROM</tt> s_items.*
+<code class="linenumber">02</code>    <tt>BEFORE INSERT</tt>
+<code class="linenumber">03</code>       <tt>LET </tt>r = DIALOG.getCurrentRow(&quot;s_items&quot;)
+<code class="linenumber">04</code>       <tt>LET </tt>p_items[r].item_num = getNewSerial(&quot;items&quot;)
+<code class="linenumber">05</code>       <tt>LET </tt>p_items[r].item_code = &quot;C&quot; || p_items[r].item_num
+<code class="linenumber">06</code>       <tt>LET </tt>p_items[r].item_price = 100.00
+<code class="linenumber">07</code>       <tt>MESSAGE </tt>&quot;You are creating a new record...&quot;
+<code class="linenumber">08</code> <tt>...</tt></pre>
+
+<h5><a name="after-insert-block">AFTER INSERT block</a></h5>
+
+<p>The <tt>AFTER INSERT</tt> block is executed each time the user leaves a new
+created row. This block is typically used to implement SQL command that inserts
+a new row in the database. You can cancel the
+operation with the <tt>CANCEL INSERT </tt>instruction.</p>
+
+<p><b><font color="#FF0000">Warning:</font> When the the user appends a new row at the
+end of the list, then moves UP to another row or validates the dialog, the <tt>AFTER INSERT</tt> block
+is only executed if at least one field was edited. If no data entry is
+detected, the dialog automatically removes the new appended row and thus does
+not trigger the <tt>AFTER INSERT</tt> block.</b></p>
+
+<p>In the following example, the <tt>AFTER INSERT</tt> block inserts a new row
+in the database and cancels the operation if the SQL command fails:</p>
+
+<pre><code class="linenumber">01</code> <tt>INPUT ARRAY</tt>
+<code class="linenumber">02</code>    ...
+<code class="linenumber">03</code>    <tt>AFTER INSERT </tt>s_items
+<code class="linenumber">04</code>       <tt>LET </tt>r = DIALOG.getCurrentRow(&quot;s_items&quot;)
+<code class="linenumber">05</code>       <tt>INSERT INTO </tt>items <tt>VALUES </tt>( p_items[r]. * )
+<code class="linenumber">06</code>       <tt>IF </tt>SQLCA.SQLCODE &lt; 0 <tt>THEN</tt>
+<code class="linenumber">07   </code>      <tt>ERROR</tt> &quot;Could not insert row into database&quot;
+<code class="linenumber">08   </code>      <tt>CANCEL INSERT</tt>
+<code class="linenumber">09</code>       <tt>END IF</tt>
+<code class="linenumber">10</code>    ...
+<code class="linenumber">11</code> <tt>END INPUT</tt></pre>
+
+
+<p>When executing a <a href="#NEXT_FIELD">NEXT FIELD</a> in the <tt>AFTER INSERT</tt> block,
+the dialog will stay in the
+current row. You can use this to implement row input validation and prevent
+the user from leaving the list or moving to another row. However, this will not
+cancel the row insertion and will not fire the <tt>BEFORE INSERT</tt> / <tt>AFTER
+INSERT</tt> triggers again. The only way to keep the focus in the current row
+after this is to execute a <tt>NEXT FIELD</tt> in the <a href="#after-row-block">AFTER
+ROW</a> block.</p>
+
+
+<h5><a name="before-delete-block">BEFORE DELETE block</a></h5>
+
+<p>The <tt>BEFORE DELETE</tt> block is executed each time the user deletes a
+row, before the row is removed from the list.</p>
+
+<p>You typically code the database table synchronization in the <tt>BEFORE DELETE</tt> block,
+by executing a DELETE SQL statement using the primary key of the current row. In
+the <tt>BEFORE DELETE</tt>  block, the row to be deleted still exists in the
+program array, so you can access its data to identify what record needs to be
+removed.</p>
+
+<p>If needed, the deletion can be canceled with
+the <tt><a href="#CANCEL_DELETE">CANCEL DELETE</a></tt> instruction.</p>
+
+<p>When called in this
+block, the
+    <a href="BuiltInFunctions.html#BF_ARR_CURR">ARR_CURR()</a> function returns
+the index of the row that will be deleted.</p>
+
+<p>In the following example, the <tt>BEFORE DELETE</tt> block removes the row from
+the database table and cancels the deletion operation if an SQL error occurs:</p>
+
+<pre><code class="linenumber">01 </code><tt>INPUT ARRAY </tt>p_items <tt>FROM</tt> s_items.*
+<CODE class=linenumber>02</CODE>    <tt>BEFORE DELETE</tt>
+<CODE class=linenumber>03</CODE>       <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>04</CODE>       <tt>DELETE FROM </tt>items <tt>WHERE </tt>item_num = p_items[arr_curr()].item_num
+<CODE class=linenumber>05</CODE>       <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>06</CODE>       <tt>IF </tt>SQLCA.SQLCODE&lt;&gt;0 <tt>VALUES</tt>
+<CODE class=linenumber>07</CODE>          <tt>ERROR </tt>SQLERRMESSAGE
+<CODE class=linenumber>08</CODE>          <tt>CANCEL DELETE</tt>
+<CODE class=linenumber>09</CODE>       <tt>END IF</tt>
+<CODE class=linenumber>10</CODE> <tt>...</tt></pre>
+
+<h5><a name="after-delete-block">AFTER DELETE block</a></h5>
+
+<p>The <tt>AFTER DELETE</tt> block is executed each time the user deletes a row,
+after the row has been deleted from the list.</p>
+
+<p>When an <tt>AFTER DELETE</tt> block executes, the program array has already been
+modified; the deleted row no longer exists in the array (except in the special
+case when deleting the last row, see warning below). Note that the
+    <a href="BuiltInFunctions.html#BF_ARR_CURR">ARR_CURR()</a> function returns
+the same index as in <tt>BEFORE ROW</tt>, but it is the index of the new current row.
+Note that the <tt>AFTER ROW</tt> block is also executed just after the <tt>AFTER
+DELETE</tt> block.</p>
+
+<p><b><font color="#FF0000">Warning: </font> When deleting the last row of the
+list, <tt>AFTER DELETE</tt> is executed for the delete row, and <a href="BuiltInFunctions.html#BF_ARR_CURR">ARR_CURR()</a>
+ will be one higher as <a href="BuiltInFunctions.html#BF_ARR_COUNT">ARR_COUNT()</a>.
+You should not access a dynamic array with a row index that is greater as the
+total number of rows, otherwise the runtime system will adapt the total number
+of rows to the actual number of rows in the program array. When using a static
+array, you must ignore the values in the rows after ARR_COUNT().</b></p>
+
+<p>In the following example, the <tt>AFTER DELETE</tt> block is used to re-number the rows with a new
+item line number (note <a href="BuiltInFunctions.html#BF_ARR_COUNT">ARR_COUNT()</a>
+may return zero):</p>
+
+<pre><code class="linenumber">01</code> <tt>INPUT ARRAY </tt>p_items <tt>FROM</tt> s_items.*
+<code class="linenumber">02</code>    <tt>AFTER DELETE</tt>
+<code class="linenumber">03</code>       <tt>LET </tt>r = arr_curr()
+<CODE class=linenumber>04</CODE>       <tt>FOR </tt>i=r <tt>TO </tt>arr_count()
+<CODE class=linenumber>05</CODE>           <tt>LET </tt>p_items[i].item_lineno = i
+<CODE class=linenumber>06</CODE>       <tt>END FOR</tt>
+<code class="linenumber">07</code> <tt>...</tt></pre>
+
+
+<h4><a name="CTRLBLOCK_EXECUTION">Control Block Execution Order</a></h4>
+
+<p>The following table shows the order in which the runtime system executes the
+control blocks in the <tt>INPUT ARRAY</tt>
+ instruction, according to the user action:</p>
+<div align="center">
+  <center>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="30%"><b>Context / User action</b></td>
+    <td bgcolor="#C0C0C0"><b>Control Block execution order</b></td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">Entering the dialog</td>
+    <td bgcolor="#CCFFFF">
+      <ol>
+        <li><tt>BEFORE INPUT</tt></li>
+        <li><tt>BEFORE ROW</tt></li>
+        <li><tt>BEFORE FIELD</tt></li>
+      </ol>
+    </td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" bgcolor="#FFFFCC">Moving to a different row
+      from field A to field B</td>
+    <td bgcolor="#FFFFCC">
+      <ol>
+        <li><tt>ON CHANGE </tt>(if value has changed for field A)</li>
+        <li><tt>AFTER FIELD </tt>(for field A in the row you leave)</li>
+        <li><tt>AFTER INSERT </tt>(if the row you leave was inserted or
+          appended)<br>
+          or<br>
+          <tt>ON ROW CHANGE </tt>(if values have changed in the row you leave)</li>
+        <li><tt>AFTER ROW </tt>(for the row you leave)</li>
+        <li><tt>BEFORE ROW </tt>(the new current row)</li>
+        <li><tt>BEFORE FIELD </tt>(for field B in the new current row)</li>
+      </ol>
+    </td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">Moving from field A to field B in the same row</td>
+    <td bgcolor="#CCFFFF">
+      <ol>
+        <li><tt>ON CHANGE </tt>(if value has changed for field A)</li>
+        <li><tt>AFTER FIELD </tt>(for field A)</li>
+        <li><tt>BEFORE FIELD </tt>(for field B)</li>
+      </ol>
+    </td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" bgcolor="#FFFFCC">Deleting a row</td>
+    <td bgcolor="#FFFFCC">
+      <ol>
+        <li><tt>BEFORE DELETE </tt>(for the row to be deleted)</li>
+        <li><tt>AFTER DELETE </tt>(for the deleted row)</li>
+        <li><tt>AFTER ROW </tt>(for the deleted row)</li>
+        <li><tt>BEFORE ROW </tt>(for the new current row)</li>
+        <li><tt>BEFORE FIELD </tt>(field in the new current row)</li>
+      </ol>
+    </td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">Inserting a new row between rows</td>
+    <td bgcolor="#CCFFFF">
+      <ol>
+        <li><tt>ON CHANGE </tt>(if value has changed in the field you leave)</li>
+        <li><tt>AFTER FIELD </tt>(for the row you leave)</li>
+        <li><tt>AFTER INSERT </tt>(if the row you leave was inserted or
+          appended)<br>
+          or<br>
+          <tt>ON ROW CHANGE </tt>(if values have changed in the row you leave)</li>
+        <li><tt>AFTER ROW </tt>(for the row you leave)</li>
+        <li><tt>BEFORE INSERT </tt>(for the new created row)</li>
+        <li><tt>BEFORE FIELD </tt>(for the new created row)</li>
+      </ol>
+    </td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" bgcolor="#FFFFCC">Appending a new row at the end</td>
+    <td bgcolor="#FFFFCC">
+      <ol>
+        <li><tt>ON CHANGE </tt>(if value has changed in the current field)</li>
+        <li><tt>AFTER FIELD </tt>(for the row you leave)</li>
+        <li><tt>AFTER INSERT </tt>(if the row you leave was inserted or
+          appended)<br>
+          or<br>
+          <tt>ON ROW CHANGE </tt>(if values have changed in the row you leave)</li>
+        <li><tt>AFTER ROW </tt>(for the row you leave)</li>
+        <li><tt>BEFORE ROW </tt>(for the new created row)</li>
+        <li><tt>BEFORE INSERT </tt>(for the new created row)</li>
+        <li><tt>BEFORE FIELD </tt>(for the new created row)</li>
+      </ol>
+    </td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">Validating the dialog</td>
+    <td bgcolor="#CCFFFF">
+      <ol>
+        <li><tt>ON CHANGE</tt></li>
+        <li><tt>AFTER FIELD</tt></li>
+        <li><tt>AFTER INSERT </tt>(if the current row was inserted or
+          appended)<br>
+          or<br>
+          <tt>ON ROW CHANGE </tt>(if values have changed in the current row)</li>
+        <li><tt>AFTER ROW</tt></li>
+        <li><tt>AFTER INPUT</tt></li>
+      </ol>
+    </td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" bgcolor="#FFFFCC">Canceling the dialog</td>
+    <td bgcolor="#FFFFCC">
+      <ol>
+        <li><tt>AFTER ROW</tt></li>
+        <li><tt>AFTER INPUT</tt></li>
+      </ol>
+    </td>
+  </tr>
+</table>
+  </center>
+</div>
+
+
+<HR size="1">
+
+
+<h4><a name="INTERACTION_BLOCKS">Interaction Blocks</a></h4>
+
+
+      <ul>
+        <li><a href="#on-idle-block">ON IDLE block</a></li>
+        <li><a href="#on-action-block">ON ACTION block</a></li>
+        <li><a href="#on-key-block">ON KEY block</a></li>
+      </ul>
+
+
+<h5><a name="on-idle-block">ON IDLE block</a></h5>
+
+
+<p>The <tt>ON IDLE <i>idle-seconds</i></tt>   clause defines a set of
+instructions that must be executed after <i>idle-seconds</i>   of inactivity.
+For example, this can be used to quit the dialog after the user has not
+interacted with the program for a specified period of time. The parameter <i>idle-seconds</i>
+ must be an <a href="Literals.html">integer
+literal</a> or <a href="Variables.html">variable</a>. If it evaluates to zero, the timeout is
+disabled.</p>
+
+
+<p>You should not use the <tt>ON IDLE</tt> trigger with a short timeout period
+such as 1 or 2 seconds; The purpose of this trigger is to give the control back
+to the program after a relatively long period of inactivity (10, 30 or 60
+seconds). This is typically the case when the end user leaves the workstation,
+or got a phone call. The program can then execute some code before the user gets
+the control back.</p>
+
+
+<pre><CODE class=linenumber>01</CODE> <tt>...</tt>
+<CODE class=linenumber>02</CODE>    <tt>ON IDLE</tt> 30
+<CODE class=linenumber>03</CODE>       <tt>IF</tt> ask_question(&quot;Do you want to leave the dialog?&quot;) <tt>THEN</tt>
+<CODE class=linenumber>04</CODE>          <tt>EXIT INPUT</tt>
+<CODE class=linenumber>05</CODE>       <tt>END IF</tt>
+<CODE class=linenumber>06</CODE> <tt>...</tt></pre>
+
+<h5><a name="on-action-block">ON ACTION block</a></h5>
+
+<p>You can use <tt>ON ACTION</tt> blocks to execute a sequence of instructions when
+the user raises a specific action. This is the preferred solution compared to <tt>ON KEY</tt> blocks,
+because <tt>ON ACTION</tt> blocks use abstract names to control user
+interaction.</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>...</tt>
+<CODE class=linenumber>02</CODE>    <tt>ON ACTION</tt> zoom
+<CODE class=linenumber>03</CODE>       <tt>CALL</tt> zoom_customers() <tt>RETURNING</tt> st, cust_id, cust_name
+<CODE class=linenumber>04</CODE>       <tt>...</tt></pre>
+
+
+<p>You can add the <a href="InteractionModel.html#ON_ACTION_INFIELD">INFIELD
+<i>field-spec</i></a> clause to the <tt>ON ACTION <i>action-name</i></tt>
+statement to make the runtime system enable/disable the action automatically
+when the focus enters/leaves the specified field: </p>
+
+
+<pre><CODE class=linenumber>01</CODE>    <tt>ON ACTION</tt> zoom <tt>INFIELD</tt> customer_city
+<CODE class=linenumber>02</CODE>       <tt>LET</tt> rec.customer_city = zoom_city()</pre>
+
+
+<p>For more details about <tt>ON ACTION</tt> and binding action views, see <a href="InteractionModel.html#CTRLGACTIONS">Interaction
+Model</a>. </p>
+
+
+<h5><a name="on-key-block">ON KEY block</a></h5>
+
+
+<p>For backward
+compatibility, you can use <tt>ON KEY</tt>  blocks to execute a sequence of
+instructions when the user presses a specific key. The following key names are
+accepted by the compiler:</p>
+
+<div align="center">
+  <center>
+  <table border="0" cellpadding="0" width="90%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="30%"><b>Key Name</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="30%"><tt>ACCEPT</tt></td>
+      <td>The validation key.</td>
+    </tr>
+    <tr>
+      <td width="30%"><tt>INTERRUPT</tt></td>
+      <td>The interruption key.</td>
+    </tr>
+    <tr>
+      <td width="30%"><tt>ESC</tt> or <tt>ESCAPE</tt></td>
+      <td>The ESC key (not recommended, use <tt>ACCEPT</tt> instead).</td>
+    </tr>
+    <tr>
+      <td width="30%"><tt>TAB</tt> </td>
+      <td>The TAB key (not recommended).</td>
+    </tr>
+    <tr>
+      <td width="30%"><tt>Control-<i>char</i></tt></td>
+      <td>A control key where <i>char</i> can be any character except A, D, H,
+        I, J, K, L, M, R, or X.</td>
+    </tr>
+    <tr>
+      <td width="30%"><tt>F1</tt> through <tt>F255</tt></td>
+      <td>A function key.</td>
+    </tr>
+    <tr>
+      <td width="30%"><tt>DELETE</tt></td>
+      <td>The key used to delete a new row in an array.</td>
+    </tr>
+    <tr>
+      <td width="30%"><tt>INSERT</tt></td>
+      <td>The key used to insert a new row in an array.</td>
+    </tr>
+    <tr>
+      <td width="30%"><tt>HELP</tt></td>
+      <td>The help key.</td>
+    </tr>
+    <tr>
+      <td width="30%"><tt>LEFT</tt></td>
+      <td>The left arrow key.</td>
+    </tr>
+    <tr>
+      <td width="30%"><tt>RIGHT</tt></td>
+      <td>The right arrow key.</td>
+    </tr>
+    <tr>
+      <td width="30%"><tt>DOWN</tt></td>
+      <td>The down arrow key.</td>
+    </tr>
+    <tr>
+      <td width="30%"><tt>UP</tt></td>
+      <td>The up arrow key.</td>
+    </tr>
+    <tr>
+      <td width="30%"><tt>PREVIOUS</tt> or <tt>PREVPAGE</tt>&nbsp;</td>
+      <td>The previous page key.</td>
+    </tr>
+    <tr>
+      <td width="30%"><tt>NEXT</tt> or <tt>NEXTPAGE</tt>&nbsp;</td>
+      <td>The next page key.</td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+
+<p>An <tt>ON KEY</tt> block defines one to four different action objects that
+will be identified by the key name in lowercase (<tt>ON KEY(F5,F6) = creates
+Action f5 + Action f6</tt>). Each action object will get an <i>acceleratorName</i>
+assigned. In <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a> mode,
+Action Defaults are applied for <tt>ON KEY</tt> actions by using the name of the
+key. You can define secondary accelerator keys, as well as default decoration
+attributes like button text and image, by using the key name as action
+identifier. Note that the action name is always in lowercase letters. See <a href="ActionDefaults.html">Action
+Defaults</a> for more details.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> Check carefully the <tt>ON KEY
+CONTROL-?</tt> statements because they may result in having duplicate
+accelerators for multiple actions due to the accelerators defined by <a href="ActionDefaults.html">Action
+Defaults</a>. Additionally, <tt>ON KEY</tt> statements used with<tt> ESC</tt>,<tt>
+TAB</tt>,<tt> UP</tt>,<tt> DOWN</tt>,<tt> LEFT</tt>,<tt> RIGHT</tt>,<tt> HELP</tt>,<tt>
+NEXT</tt>,<tt> PREVIOUS</tt>,<tt> INSERT</tt>,<tt> CONTROL-M</tt>,<tt> CONTROL-X</tt>,<tt>
+CONTROL-V</tt>,<tt> CONTROL-C</tt> and <tt>CONTROL-A</tt> should be avoided for
+use in GUI programs, because it's very likely to clash with default accelerators
+defined in the Action Defaults.</b></p>
+
+
+<p>By default, <tt>ON KEY</tt> actions are not decorated with a default button
+in the action frame (i.e. <a href="InteractionModel.html#DEFAULT_ACTION_VIEWS">default
+action view</a>). You can show the default button by configuring a <tt>text</tt>
+attribute with the <a href="ActionDefaults.html#ACTDEFTEXT">Action Defaults</a>.</p>
+
+
+<HR size="1">
+
+
+<h4><a name="CONTROL_INSTRUCTIONS">Control Instructions</a></h4>
+
+<ul>
+     <li><a href="#CONTINUE_INPUT">CONTINUE INPUT instruction</a></li>
+		<li><a href="#EXIT_INPUT">EXIT INPUT instruction</a></li>
+		<li><a href="#ACCEPT_INPUT">ACCEPT INPUT instruction</a></li>
+		<li><a href="#CANCEL_INSERT">CANCEL INSERT instruction</a></li>
+		<li><a href="#CANCEL_DELETE">CANCEL DELETE instruction</a></li>
+		<li><a href="#NEXT_FIELD">NEXT FIELD instruction</a></li>
+		<li><a href="#CLEAR_FIELDLIST">CLEAR field-list instruction</a></li>
+  </ul>
+
+<h5><a name="CONTINUE_INPUT">Continuing the dialog</a>: CONTINUE INPUT</h5>
+
+<p><TT>CONTINUE INPUT</TT> skips all subsequent statements in the current 
+control block and gives the control back to the dialog. This instruction is
+useful when program control is nested within multiple conditional statements,
+and you want to return the control to the dialog. Note that if this instruction
+is called in a control block that is not <tt>AFTER INPUT</tt>, further control
+blocks might be executed according to the context. Actually, <tt>CONTINUE INPUT</tt>
+just instructs the dialog to continue as if the code in the control block was
+terminated (i.e. it's a kind of <tt>GOTO end_of_control_block</tt>). However,
+when executed in <tt>AFTER INPUT</tt>, the focus returns to the current row and
+current field in the list, giving the user another chance to enter data in that
+field. In this case the <tt>BEFORE ROW</tt> and <tt>BEFORE FIELD</tt> triggers
+will be fired.</p>
+
+<p>In the following example, an <tt>ON ACTION</tt> block gives control
+back to the dialog, skipping all instructions below line 04:</p>
+
+<pre><CODE class=linenumber>01</CODE>    <tt>ON ACTION</tt> zoom
+<CODE class=linenumber>02</CODE>       <tt>IF</tt> p_cust.cust_id <tt>IS NULL OR</tt> p_cust.cust_name <tt>IS NULL THEN</tt>
+<CODE class=linenumber>03</CODE>         <tt>ERROR</tt> &quot;Zoom window cannot be opened if there is no info to identify the customer&quot;
+<CODE class=linenumber>04</CODE>         <tt>CONTINUE INPUT</tt>
+<CODE class=linenumber>05</CODE>       <tt>END IF</tt>
+<CODE class=linenumber>06</CODE>       <tt>IF</tt> p_cust.cust_address <tt>IS NULL THEN</tt>
+<CODE class=linenumber>07</CODE>       <tt>...</tt></pre>
+
+
+<p> Note that you can also use the <tt>NEXT
+FIELD</tt> control instruction to give the focus to a specific field and force
+the dialog to continue. However, unlike <tt>CONTINUE INPUT</tt>, the <tt>NEXT
+FIELD</tt> instruction will also skip the further control blocks that are
+normally executed.</p>
+
+
+<h5><a name="EXIT_INPUT">Leaving the dialog</a>: EXIT INPUT</h5>
+
+<p>You can use the <tt>EXIT INPUT</tt>  to terminate the <tt>INPUT ARRAY</tt>
+instruction and resume the program execution at the instruction following the
+<tt>INPUT ARRAY</tt> block.</p>
+
+<pre><CODE class=linenumber>01</CODE>    <tt>ON ACTION</tt> quit
+<CODE class=linenumber>02</CODE>       <tt>EXIT DIALOG</tt></pre>
+
+
+<p>When leaving the <tt>INPUT ARRAY</tt> instruction, all form items used by the
+dialog will be disabled until another interactive statement takes control.</p>
+
+<h5><a name="ACCEPT_INPUT">Validating the dialog</a>: ACCEPT INPUT</h5>
+
+<p>The <tt>ACCEPT INPUT</tt> instruction validates the <tt>INPUT</tt> instruction and 
+exits the <tt>INPUT ARRAY</tt> instruction if no error is raised. The <tt>AFTER FIELD</tt>, <tt>ON CHANGE</tt>,
+etc. control blocks will be executed.
+Statements after the <tt>ACCEPT INPUT</tt> will not be executed.
+
+
+<p>Input field validation is a process that does several successive validation tasks, 
+as
+listed below:
+<ol>
+  <li>The current field value is checked, according to the program variable data
+    type (for example, the user must input a valid date in a DATE field).</li>
+  <li><a href="FSFAttributes.html#FA_NOT_NULL">NOT NULL</a> field attributes are
+    checked for all input fields. This attribute forces the field to have a
+    value set by program or entered by the user. If the field contains no value,
+    the constraint is not satisfied. Note that input values are right-trimmed,
+    so if the user inputs only spaces, this corresponds to a NULL value which
+    does not fulfill the NOT NULL constraint.</li>
+  <li><a href="FSFAttributes.html#FA_INCLUDE">INCLUDE</a> field attributes are
+    checked for all input fields. This attribute forces the field to contain a
+    value that is listed in the include list. If the field contains a value that
+    is not in the list, the constraint is not satisfied.</li>
+  <li><a href="FSFAttributes.html#FA_REQUIRED">REQUIRED</a> field attributes are
+    checked for all input fields. This attribute forces the field to have a
+    default value, or to be "touched" by the user
+    or programmatically. If the field was not edited during the dialog, the constraint
+    is not satisfied.</li>
+</ol>
+<p>If a field does not satisfy one of the above constraints, dialog termination
+is canceled, an error message is displayed, and the focus goes to the first
+field causing a problem.
+
+<h5><a name="CANCEL_INSERT">Canceling row insertion</a>: CANCEL INSERT</h5>
+
+<p>Insertion can be canceled, by using the <tt>CANCEL INSERT</tt> instruction, in the <tt>BEFORE INSERT</tt>  or <tt>AFTER INSERT</tt>
+ blocks.
+Using this instruction in a different place will generate a compilation error.</p>
+
+<p>The instructions that appear after <tt>CANCEL INSERT</tt>   will be skipped.</p>
+
+<p>A <tt>CANCEL INSERT</tt>  executed inside a <tt>BEFORE
+INSERT</tt> block prevents the new row creation. The following tasks are performed:</p>
+
+<ol>
+  <li>No new row will be created (the new row is not yet shown to the user).</li>
+  <li>The <tt>BEFORE INSERT</tt> block is terminated (further instructions are 
+	skipped).</li>
+  <li>The <tt>BEFORE
+ROW</tt> and <tt>BEFORE FIELD</tt> triggers are executed.</li>
+  <li>Control goes back to the user.</li>
+</ol>
+
+<p>For example, you can cancel a row insertion if&nbsp; the user is not allowed to
+create rows:</p>
+
+<pre><CODE class=linenumber>01</CODE>    <tt>BEFORE INSERT</tt>
+<CODE class=linenumber>02</CODE>       <tt>IF </tt>user_can_insert() == <tt>FALSE THEN</tt>
+<CODE class=linenumber>03</CODE>          <tt>ERROR </tt>&quot;You are not allowed to insert rows&quot;
+<CODE class=linenumber>04</CODE>          <tt>CANCEL INSERT</tt>
+<CODE class=linenumber>05</CODE>       <tt>END IF</tt></pre>
+
+<p>A <tt>CANCEL INSERT</tt>  executed inside an <tt>AFTER INSERT</tt> block
+removes the newly created row. The following tasks are performed:</p>
+
+<ol>
+  <li>The newly created row is removed from the list (the row exists now and 
+	user has entered data).</li>
+  <li>The <tt>AFTER INSERT</tt> block is terminated (further instructions are 
+	skipped).</li>
+  <li>The <tt>BEFORE
+ROW</tt> and <tt>BEFORE FIELD</tt> triggers are executed.</li>
+  <li>The control goes back to the user.</li>
+</ol>
+
+<p>For example, you can cancel a row insertion if a database error occurs when you
+try to insert the row into a database table:</p>
+
+<pre><CODE class=linenumber>01</CODE>    <tt>AFTER INSERT</tt>
+<CODE class=linenumber>02</CODE>       <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>03</CODE>       <tt>INSERT INTO </tt>customer <tt>VALUES </tt>( arr[arr_curr()].* )
+<CODE class=linenumber>04</CODE>       <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>05</CODE>       <tt>IF </tt>SQLCA.SQLCODE&lt;&gt;0 <tt>THEN</tt>
+<CODE class=linenumber>06</CODE>          <tt>ERROR </tt>SQLERRMESSAGE
+<CODE class=linenumber>07</CODE>          <tt>CANCEL INSERT</tt>
+<CODE class=linenumber>08</CODE>       <tt>END IF</tt></pre>
+
+<p>If the <tt>CANCEL INSERT</tt> is done while on a new row that was appended to
+the end of the list, the new row will be removed and the previous row will get the
+focus. If there are no more existing rows, the list loses the focus because no
+row can be edited. The next time the user clicks in a cell, <tt>DIALOG</tt> will
+automatically create a new row.</p>
+
+<p>You can also disable the <i>insert</i> and <i>append</i> actions to
+prevent the user from performing these actions with:</p>
+
+<pre><CODE class=linenumber>01</CODE>    <tt>CALL </tt>DIALOG.setActionActive(&quot;insert&quot;, <tt>FALSE</tt>)
+<CODE class=linenumber>02</CODE>    <tt>CALL </tt>DIALOG.setActionActive(&quot;append&quot;, <tt>FALSE</tt>)</pre>
+
+<h5><a name="CANCEL_DELETE">Canceling row deletion</a>: CANCEL DELETE</h5>
+
+<p>
+
+Deletion can be canceled, by using the <tt>CANCEL DELETE</tt>  instruction in the <tt>BEFORE DELETE</tt> block.
+Using this instruction in a different place will generate a compilation error.</p>
+
+
+<p>When the <tt>CANCEL DELETE</tt>  instruction is executed, the current <tt>BEFORE DELETE</tt> 
+block is terminated without any other trigger execution (no <tt>BEFORE ROW</tt>
+or <tt>BEFORE FIELD</tt> is executed), and the program execution continues in the
+user event loop.</p>
+
+
+<p>For example, you can prevent row deletion based on some condition:</p>
+
+<pre><CODE class=linenumber>01</CODE>    <tt>BEFORE DELETE</tt>
+<CODE class=linenumber>02</CODE>       <tt>IF </tt>user_can_delete() == <tt>FALSE THEN</tt>
+<CODE class=linenumber>03</CODE>          <tt>ERROR </tt>&quot;You are not allowed to delete rows&quot;
+<CODE class=linenumber>04</CODE>          <tt>CANCEL DELETE</tt>
+<CODE class=linenumber>05</CODE>       <tt>END IF</tt></pre>
+
+<p>The instructions that appear after <tt>CANCEL DELETE</tt> will be skipped.</p>
+
+
+<p>You can also disable the <i>delete</i> action to prevent the user 
+from
+performing a delete row action with:</p>
+
+<pre><CODE class=linenumber>01</CODE>    <tt>CALL </tt>DIALOG.setActionActive(&quot;delete&quot;, <tt>FALSE</tt>)</pre>
+
+
+<h5><a name="NEXT_FIELD">Moving to a field</a>: NEXT FIELD</h5>
+
+<p>The <tt>NEXT FIELD <i> field-name</i></tt> instruction gives the focus to the
+specified field. You typically use this instruction to control field input
+dynamically, in <tt>BEFORE FIELD</tt> or <tt>AFTER FIELD</tt>  blocks, or to
+control row validation in <tt>AFTER ROW</tt>.</p>
+
+<p>Abstract
+field identification is supported with the <tt>CURRENT</tt>, <tt>NEXT</tt> and <tt>PREVIOUS</tt>
+keywords. These keywords represent&nbsp; the current, next and previous fields
+respectively. When using <tt>FIELD ORDER FORM</tt>, the <tt>NEXT</tt> and <tt>PREVIOUS</tt> options
+follow the tabbing order defined by the form.
+Otherwise, they follow the order defined by the input binding list (with the <tt>FROM</tt>
+or <tt>BY NAME</tt> clause). Note that when selecting a non-editable field with <tt>NEXT
+FIELD NEXT</tt>, the runtime system will re-select the current field since it is
+the next editable field in the dialog. As a result the end user sees no change.</p>
+
+<p>Non-editable fields are fields defined with the <a href="FSFAttributes.html#FA_NOENTRY">NOENTRY</a>
+attribute, fields disabled with <a href="ClassDialog.html#setFieldActive">ui.Dialog.setFieldActive(&quot;<i>field-name</i>&quot;,
+FALSE)</a>,
+or fields using a widget that does not allow input, such as a <a href="FormSpecFiles.html#FF_ITEMTYPE_LABEL">LABEL</a>.
+If a <tt>NEXT FIELD</tt> instruction selects a non-editable field, the next
+editable field gets the focus (defined by the <a href="#FIELD_ORDER">FIELD ORDER</a>
+mode used by the dialog). However, the <tt>BEFORE FIELD</tt> and <tt>AFTER FIELD</tt> 
+blocks of non-editable fields are executed when a <tt>NEXT FIELD</tt>
+instruction selects such a field.</p>
+
+<p>When using <tt>NEXT FIELD</tt> in <tt>AFTER ROW</tt> or in <tt>ON ROW CHANGE</tt>,
+the dialog will stay in the current row and give the control back to the user.
+This behavior allows to implement data input rules:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>...</tt>
+<CODE class=linenumber>02</CODE>    <tt>AFTER ROW</tt>
+<CODE class=linenumber>03</CODE>       <tt>IF NOT </tt>int_flag <tt>AND </tt>arr_curr() &lt;= arr_count() <tt>THEN</tt>
+<CODE class=linenumber>04</CODE>         <tt>IF </tt>arr[arr_curr()].it_count * arr[arr_curr()].it_value &gt; maxval <tt>THEN</tt>
+<CODE class=linenumber>05</CODE>           <tt>ERROR </tt>&quot;Amount of line exceeds max value.&quot;
+<CODE class=linenumber>06</CODE>           <tt>NEXT FIELD </tt>item_count
+<CODE class=linenumber>07</CODE>       <tt>END IF</tt>
+<CODE class=linenumber>09</CODE> <tt>...</tt></pre>
+
+<h5><a name="CLEAR_FIELDLIST">Clearing the form fields</a>: CLEAR field-list</h5>
+
+<p>For backward
+compatibility, the <tt>CLEAR <i>field-list</i></tt> instruction is provided&nbsp;to clear a
+specific field or all fields in a line of the screen array. You can specify the screen
+array as described in the following table:</p>
+
+<div align="center">
+  <center>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="40%"><b>CLEAR instruction</b></td>
+    <td bgcolor="#C0C0C0"><b>Result</b></td>
+  </tr>
+  <tr>
+    <td width="40%" valign="top"><tt>CLEAR <i> field-name
+      </i></tt> </td>
+    <td>
+      Clears the specified field in the current line of the screen array.
+    </td>
+  </tr>
+  <tr>
+    <td width="40%" valign="top"><tt>CLEAR <i>screen-array</i>.*
+      </tt> </td>
+    <td>
+      Clears all fields in the current line of the screen array.
+    </td>
+  </tr>
+  <tr>
+    <td width="40%" valign="top"><tt>CLEAR <i>screen-array</i>[<i>n</i>].*</tt> 
+    </td>
+    <td>
+      Clears all fields in&nbsp; line <i>n</i> of the screen array.
+    </td>
+  </tr>
+  <tr>
+    <td width="40%" valign="top"><tt>CLEAR <i>screen-array</i>[<i>n</i>]<i>.field-name</i></tt>
+    </td>
+    <td>
+      Clears the specified field in line <i>n</i> of the screen array.
+    </td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<h4><b><font color="#FF0000">Warnings:</font>  </b></h4>
+<ol>
+	<li>When using the UNBUFFERED attribute, it is recommended that you do NOT use the CLEAR
+instruction; always use program variables to set field values to NULL.</li>
+</ol>
+
+
+<HR size="1">
+
+
+<h4><a name="CONTROL_CLASS">Control Class</a></h4>
+
+<p>Inside the dialog instruction, the predefined keyword <tt>DIALOG</tt>
+represents the current dialog object. It can be used to execute methods provided
+in the <a href="ClassDialog.html">dialog</a> built-in class.</p>
+
+<p>For example, you can enable or disable an action with the <a href="ClassDialog.html#setActionActive">ui.Dialog.setActionActive()</a>
+dialog method, and you can hide and show
+the default action view with <a href="ClassDialog.html#setActionHidden">ui.Dialog.setActionHidden()</a>:</p>
+<pre><code class="linenumber">01</code> <tt>...</tt>
+<code class="linenumber">02</code>    <tt>BEFORE INPUT</tt>
+<code class="linenumber">03</code>       <tt>CALL</tt> <tt>DIALOG</tt>.setActionActive(&quot;zoom&quot;,<tt>FALSE</tt>)
+<code class="linenumber">04</code>    <tt>AFTER FIELD</tt> field1
+<code class="linenumber">05</code>       <tt>CALL</tt> <tt>DIALOG</tt>.setActionHidden(&quot;zoom&quot;,1)
+<code class="linenumber">06</code> <tt>...</tt></pre>
+
+
+<p>The <a href="ClassDialog.html#setFieldActive">ui.Dialog.setFieldActive()</a> method can be used to enable or disable a field during
+the dialog. This instruction takes an integer expression as argument.</p>
+<pre><code class="linenumber">01</code> <tt>...</tt>
+<code class="linenumber">02</code>    <tt>ON CHANGE</tt> custname
+<code class="linenumber">03</code>       <tt>CALL</tt> <tt>DIALOG</tt>.setFieldActive( &quot;custaddr&quot;, (cust_arr[arr_curr()].custname <tt>IS NOT NULL</tt>) )
+<code class="linenumber">04</code> <tt>...</tt></pre>
+
+
+<HR size="1">
+
+
+<h4><a name="CONTROL_FUNCTIONS">Control Functions</a></h4>
+
+<p>The language provides several <a href="BuiltInFunctions.html">built-in functions</a>
+and <a href="Operators.html">operators</a> to use in an <tt>INPUT ARRAY</tt>
+statement. You can use the following built-in functions to keep track of the
+relative states of the current row, the program array, and the screen array, or
+to access the field buffers and keystroke buffers: </p>
+<ul>
+	<li><a href="BuiltInFunctions.html#BF_ARR_CURR">ARR_CURR()</a> </li>
+	<li><a href="BuiltInFunctions.html#BF_ARR_COUNT">ARR_COUNT()</a></li>
+	<li><a href="BuiltInFunctions.html#BF_FGL_SET_ARR_CURR">FGL_SET_ARR_CURR()</a></li>
+	<li><a href="BuiltInFunctions.html#BF_SET_COUNT">SET_COUNT()</a></li>
+	<li><a href="Operators.html#OP_FIELD_TOUCHED">FIELD_TOUCHED()</a></li>
+	<li><a href="Operators.html#OP_GET_FLDBUF">GET_FLDBUF()</a></li>
+	<li><a href="Operators.html#OP_INFIELD">INFIELD()</a></li>
+	<li><a href="BuiltInFunctions.html#BF_FGL_DIALOG_GETFIELDNAME">FGL_DIALOG_GETFIELDNAME()</a></li>
+	<li><a href="BuiltInFunctions.html#BF_FGL_DIALOG_GETBUFFER">FGL_DIALOG_GETBUFFER()</a></li>
+</ul>
+
+
+<HR>
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+<h4><a name="EXAMPLE_1">Example 1: Basic INPUT ARRAY</a></h4>
+
+<p>Form definition file (custlist.per):</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>SCHEMA</tt> stores
+<CODE class=linenumber>02</CODE> <tt>LAYOUT</tt>
+<CODE class=linenumber>03</CODE> <tt>TABLE</tt>
+<CODE class=linenumber>04</CODE> {
+<CODE class=linenumber>05</CODE>  Id       First name   Last name
+<CODE class=linenumber>06</CODE> [f001    |f002        |f003        ]
+<CODE class=linenumber>07</CODE> [f001    |f002        |f003        ]
+<CODE class=linenumber>08</CODE> [f001    |f002        |f003        ]
+<CODE class=linenumber>09</CODE> [f001    |f002        |f003        ]
+<CODE class=linenumber>10</CODE> [f001    |f002        |f003        ]
+<CODE class=linenumber>11</CODE> [f001    |f002        |f003        ]
+<CODE class=linenumber>12</CODE> } 
+<CODE class=linenumber>13</CODE> <tt>END</tt>
+<CODE class=linenumber>14</CODE> <tt>END</tt>
+<CODE class=linenumber>15</CODE> <tt>TABLES</tt>
+<CODE class=linenumber>16</CODE>   customer
+<CODE class=linenumber>17</CODE> <tt>END</tt>
+<CODE class=linenumber>18</CODE> <tt>ATTRIBUTES</tt>
+<CODE class=linenumber>19</CODE>   f001 = customer.customer_num ;
+<CODE class=linenumber>20</CODE>   f002 = customer.fname ;
+<CODE class=linenumber>21</CODE>   f003 = customer.lname, <tt>NOT NULL</tt>, <tt>REQUIRED</tt> ;
+<CODE class=linenumber>22</CODE> <tt>END</tt>
+<CODE class=linenumber>23</CODE> <tt>INSTRUCTIONS</tt>
+<CODE class=linenumber>24</CODE>   <tt>SCREEN RECORD</tt> sr_cust[6]( customer.* );
+<CODE class=linenumber>25</CODE> <tt>END</tt></pre>
+
+<p>Program source code:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>     <tt>DEFINE</tt> custarr <tt>ARRAY</tt>[500] <tt>OF RECORD</tt>
+<CODE class=linenumber>03</CODE>            id <tt>INTEGER</tt>,
+<CODE class=linenumber>04</CODE>            fname <tt>CHAR</tt>(30),
+<CODE class=linenumber>05</CODE>            lname <tt>CHAR</tt>(30)
+<CODE class=linenumber>06</CODE>   <tt>  END RECORD</tt>
+<CODE class=linenumber>07</CODE>     
+<CODE class=linenumber>08</CODE>   <tt>  OPEN FORM</tt> f <tt>FROM</tt> &quot;custlist&quot;
+<CODE class=linenumber>09</CODE>   <tt>  DISPLAY FORM</tt> f
+<CODE class=linenumber>10</CODE>     
+<CODE class=linenumber>11</CODE>   <tt>  INPUT ARRAY</tt> custarr <tt>WITHOUT DEFAULTS FROM</tt> sr_cust.*
+<CODE class=linenumber>12</CODE> <tt>END MAIN</tt></pre>
+
+<h4><a name="EXAMPLE_2">Example 2: INPUT ARRAY using default values</a></h4>
+
+<p>The form definition file is the same as in example 1.</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>     <tt>DEFINE</tt> allow_insert <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>     <tt>DEFINE</tt> size <tt>INTEGER</tt>
+<CODE class=linenumber>04</CODE>     <tt>DEFINE</tt> custarr <tt>ARRAY</tt>[500] <tt>OF RECORD</tt>
+<CODE class=linenumber>05</CODE>             id <tt>INTEGER</tt>,
+<CODE class=linenumber>06</CODE>             fname <tt>CHAR</tt>(30),
+<CODE class=linenumber>07</CODE>             lname <tt>CHAR</tt>(30)
+<CODE class=linenumber>08</CODE>     <tt>END RECORD</tt>
+<CODE class=linenumber>09</CODE>     <tt>LET</tt> custarr[1].id = 1
+<CODE class=linenumber>10</CODE>     <tt>LET </tt>custarr[1].fname = &quot;John&quot;
+<CODE class=linenumber>11</CODE>     <tt>LET</tt> custarr[1].lname = &quot;SMITH&quot;
+<CODE class=linenumber>12</CODE>     <tt>LET</tt> custarr[2].id = 2
+<CODE class=linenumber>13</CODE>     <tt>LET</tt> custarr[2].fname = &quot;Mike&quot;
+<CODE class=linenumber>14</CODE>     <tt>LET</tt> custarr[2].lname = &quot;STONE&quot;
+<CODE class=linenumber>15</CODE>     <tt>LET</tt> size = 2
+<CODE class=linenumber>16</CODE>     <tt>LET</tt> allow_insert = TRUE
+<CODE class=linenumber>17</CODE>     
+<CODE class=linenumber>18</CODE>     <tt>OPEN FORM</tt> f1 <tt>FROM</tt> &quot;custlist&quot;
+<CODE class=linenumber>19</CODE>     <tt>DISPLAY FORM</tt> f1
+<CODE class=linenumber>20</CODE>     <CODE class=linenumber>
+21</CODE>     <tt>INPUT ARRAY</tt> custarr <tt>WITHOUT DEFAULTS FROM</tt> sr_cust.*
+<CODE class=linenumber>22</CODE>         <tt>ATTRIBUTES</tt> (<tt>COUNT</tt>=size, <tt>MAXCOUNT</tt>=50, <tt>UNBUFFERED</tt>, <tt>INSERT ROW</tt>=allow_insert)
+<CODE class=linenumber>23</CODE>         <tt>BEFORE</tt> <tt>INPUT</tt>
+<CODE class=linenumber>24</CODE>           <tt>MESSAGE</tt> &quot;Editing the customer table&quot;
+<CODE class=linenumber>25</CODE>         <tt>BEFORE INSERT</tt>  
+<CODE class=linenumber>26</CODE>           <tt>IF</tt> arr_curr()=4 <tt>THEN</tt>
+<CODE class=linenumber>27</CODE>              <tt>CANCEL INSERT</tt>
+<CODE class=linenumber>28</CODE>           <tt>END IF</tt> 
+<CODE class=linenumber>29</CODE>         <tt>BEFORE FIELD</tt> fname
+<CODE class=linenumber>30</CODE>           <tt>MESSAGE</tt> &quot;Enter First Name&quot;
+<CODE class=linenumber>31</CODE>         <tt>BEFORE FIELD</tt> lname
+<CODE class=linenumber>32</CODE>           <tt>MESSAGE</tt> &quot;Enter Last Name&quot;
+<CODE class=linenumber>33</CODE>         <tt>AFTER FIELD</tt> lname
+<CODE class=linenumber>34</CODE>           <tt>IF</tt> custarr[arr_curr()].lname <tt>IS NULL THEN</tt>
+<CODE class=linenumber>35</CODE>              <tt>LET</tt> custarr[arr_curr()].fname = <tt>NULL</tt>
+<CODE class=linenumber>36</CODE>           <tt>END IF</tt>
+<CODE class=linenumber>37</CODE>     <tt>END INPUT</tt>
+<CODE class=linenumber>38</CODE> <tt>END MAIN</tt></pre>
+
+<h4><a name="EXAMPLE_3">Example 3: INPUT ARRAY using a dynamic array</a></h4>
+
+<p>The form definition file is the same as in example 1.</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>     <tt>DEFINE</tt> counter <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>     <tt>DEFINE</tt> custarr <tt>DYNAMIC ARRAY OF RECORD</tt>
+<CODE class=linenumber>04</CODE>             id <tt>INTEGER</tt>,
+<CODE class=linenumber>05</CODE>             fname <tt>CHAR</tt>(30),
+<CODE class=linenumber>06</CODE>             lname <tt>CHAR</tt>(30)
+<CODE class=linenumber>07</CODE>     <tt>END RECORD</tt>
+<CODE class=linenumber>10</CODE>     <tt>FOR</tt> counter = 1 <tt>TO</tt> 500 
+<CODE class=linenumber>11</CODE>       <tt>LET</tt> custarr[1].id = counter
+<CODE class=linenumber>12</CODE>       <tt>LET </tt>custarr[1].fname = &quot;ff&quot;||counter
+<CODE class=linenumber>13</CODE>       <tt>LET</tt> custarr[1].lname = &quot;NNN&quot;||counter
+<CODE class=linenumber>14</CODE>     <tt>END FOR
+</tt><CODE class=linenumber>15</CODE>     
+<CODE class=linenumber>16</CODE>     <tt>OPEN FORM</tt> f <tt>FROM</tt> &quot;custlist&quot;
+<CODE class=linenumber>17</CODE>     <tt>DISPLAY FORM</tt> f
+<CODE class=linenumber>18</CODE>     <CODE class=linenumber>
+19</CODE>     <tt>INPUT ARRAY</tt> custarr <tt>WITHOUT DEFAULTS FROM</tt> sr_cust.*
+<CODE class=linenumber>20</CODE>         <tt>ATTRIBUTES</tt> ( <tt>UNBUFFERED</tt> )
+<CODE class=linenumber>21</CODE>         <tt>ON ROW CHANGE</tt>
+<CODE class=linenumber>22</CODE>           <tt>MESSAGE</tt> &quot;Row #&quot;||arr_curr()||&quot; has been updated.&quot;
+<CODE class=linenumber>23</CODE>     <tt>END INPUT</tt>
+<CODE class=linenumber>24</CODE> <tt>END MAIN</tt></pre>
+
+<h4><a name="EXAMPLE_4">Example 4: INPUT ARRAY updating the database table</a></h4>
+
+<p>The form definition file is the same as in example 1.</p>
+
+<pre><CODE class=linenumber>001</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>002</CODE>
+<CODE class=linenumber>003</CODE>    <tt>DEFINE</tt> custarr <tt>DYNAMIC ARRAY OF RECORD</tt>
+<CODE class=linenumber>004</CODE>          id INTEGER,
+<CODE class=linenumber>005</CODE>          fname CHAR(30),
+<CODE class=linenumber>006</CODE>          lname CHAR(30)
+<CODE class=linenumber>007</CODE>    <tt>END RECORD</tt>
+<CODE class=linenumber>008</CODE>
+<CODE class=linenumber>009</CODE>    <tt>DEFINE</tt> op <tt>CHAR</tt>(1)
+<CODE class=linenumber>010</CODE>    <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<CODE class=linenumber>011</CODE> 
+<CODE class=linenumber>012</CODE>    <tt>DATABASE</tt> stores_demo
+<CODE class=linenumber>013</CODE> 
+<CODE class=linenumber>014</CODE>    <tt>OPEN FORM</tt> f1 <tt>FROM</tt> &quot;custlist&quot;
+<CODE class=linenumber>015</CODE>    <tt>DISPLAY FORM</tt> f1
+<CODE class=linenumber>016</CODE> 
+<CODE class=linenumber>017</CODE>    <tt>DECLARE</tt> c1 <tt>CURSOR FOR</tt>
+<CODE class=linenumber>018</CODE>       <tt>SELECT </tt>customer_num, fname, lname
+<CODE class=linenumber>019</CODE>        <tt>FROM</tt> customer <tt>ORDER BY </tt>customer_num
+<CODE class=linenumber>020</CODE>    <tt>LET </tt>i = 1
+<CODE class=linenumber>021</CODE>    <tt>FOREACH</tt> c1 <tt>INTO </tt>custarr[i].*
+<CODE class=linenumber>022</CODE>       <tt>LET </tt>i = i + 1
+<CODE class=linenumber>023</CODE>    <tt>END FOREACH</tt>
+<CODE class=linenumber>024</CODE>    <tt>CALL</tt> custarr.deleteElement(custarr.getLength())
+<CODE class=linenumber>025</CODE> 
+<CODE class=linenumber>026</CODE>    <tt>INPUT ARRAY</tt> custarr <tt>FROM</tt> sr_cust.* <tt>ATTRIBUTES</tt>(<tt>WITHOUT DEFAULTS</tt>, <tt>UNBUFFERED</tt>)
+<CODE class=linenumber>027</CODE> 
+<CODE class=linenumber>028</CODE>         <tt>BEFORE DELETE</tt>
+<CODE class=linenumber>029</CODE>           <tt>IF</tt> op == &quot;N&quot; <tt>THEN</tt> -- No real SQL delete for new inserted rows
+<CODE class=linenumber>030</CODE>              <tt>IF NOT</tt> mbox_yn(&quot;List&quot;, &quot;Are you sure you want to delete this record?&quot;, &quot;question&quot;) <tt>THEN</tt>
+<CODE class=linenumber>031</CODE>                <tt>CANCEL DELETE</tt> -- Keeps row in list
+<CODE class=linenumber>032</CODE>              <tt>END IF</tt>
+<CODE class=linenumber>033</CODE>              <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>034</CODE>              <tt>DELETE FROM</tt> customer <tt>WHERE</tt> customer_num = custarr[arr_curr()].id
+<CODE class=linenumber>035</CODE>              <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>036</CODE>              <tt>IF</tt> SQLCA.SQLCODE&lt;0 <tt>THEN</tt>
+<CODE class=linenumber>037</CODE>                <tt>ERROR</tt> &quot;Could not delete the record from database!&quot;
+<CODE class=linenumber>038</CODE>                <tt>CANCEL DELETE</tt> -- Keeps row in list
+<CODE class=linenumber>039</CODE>              <tt>END IF</tt>
+<CODE class=linenumber>040</CODE>           <tt>END IF</tt>
+<CODE class=linenumber>041</CODE> 
+<CODE class=linenumber>042</CODE>         <tt>AFTER DELETE</tt>
+<CODE class=linenumber>043</CODE>           <tt>IF</tt> op == &quot;N&quot; <tt>THEN</tt>
+<CODE class=linenumber>044</CODE>              <tt>MESSAGE</tt> &quot;Record has been deleted successfully&quot;
+<CODE class=linenumber>045</CODE>           <tt>ELSE</tt>
+<CODE class=linenumber>046</CODE>              <tt>LET</tt> op = &quot;N&quot;
+<CODE class=linenumber>047</CODE>           <tt>END IF</tt>
+<CODE class=linenumber>048</CODE> 
+<CODE class=linenumber>049</CODE>         <tt>AFTER FIELD</tt> fname
+<CODE class=linenumber>050</CODE>           <tt>IF</tt> custarr[arr_curr()].fname <tt>MATCHES</tt> &quot;*@#$%^&amp;()*&quot; <tt>THEN</tt>
+<CODE class=linenumber>051</CODE>              <tt>ERROR</tt> &quot;This field contains invalid characters&quot;
+<CODE class=linenumber>052</CODE>              <tt>NEXT FIELD CURRENT</tt>
+<CODE class=linenumber>053</CODE>           <tt>END IF</tt>
+<CODE class=linenumber>054</CODE> 
+<CODE class=linenumber>055</CODE>         <tt>ON ROW CHANGE</tt>
+<CODE class=linenumber>056</CODE>           -- Warning: ON ROW CHANGE can occur if the SQL INSERT failed...&nbsp;
+<CODE class=linenumber>057</CODE>           <tt>IF</tt> op != &quot;I&quot; <tt>THEN LET</tt> op = &quot;M&quot; <tt>END IF</tt>
+<CODE class=linenumber>058</CODE> 
+<CODE class=linenumber>059</CODE>         <tt>BEFORE INSERT</tt>
+<CODE class=linenumber>060</CODE>           <tt>LET</tt> op = &quot;T&quot;
+<CODE class=linenumber>061</CODE>           <tt>SELECT MAX</tt>(customer_num)+1 <tt>INTO </tt>custarr[arr_curr()].id <tt>FROM </tt>customer
+<CODE class=linenumber>062</CODE>           <tt>IF </tt>custarr[arr_curr()].id <tt>IS NULL THEN</tt>
+<CODE class=linenumber>063</CODE>           <tt>   LET </tt>custarr[arr_curr()].id = 1
+<CODE class=linenumber>064</CODE>           <tt>END IF</tt>
+<CODE class=linenumber>065</CODE> 
+<CODE class=linenumber>066</CODE>         <tt>AFTER INSERT</tt>
+<CODE class=linenumber>067</CODE>           <tt>LET</tt> op = &quot;I&quot;
+<CODE class=linenumber>068</CODE> 
+<CODE class=linenumber>069</CODE>         <tt>BEFORE ROW</tt>
+<CODE class=linenumber>070</CODE>           <tt>LET</tt> op = &quot;N&quot;
+<CODE class=linenumber>071</CODE> 
+<CODE class=linenumber>072</CODE>         <tt>AFTER ROW</tt>
+<CODE class=linenumber>073</CODE>           <tt>IF</tt> int_flag <tt>THEN EXIT INPUT END IF</tt>
+<CODE class=linenumber>074</CODE>           <tt>IF</tt> op == &quot;M&quot; <tt>OR</tt> op == &quot;I&quot; <tt>THEN</tt>
+<CODE class=linenumber>075</CODE>              <tt>IF</tt> custarr[arr_curr()].fname <tt>IS NULL OR</tt> custarr[arr_curr()].fname <tt>IS NULL</tt>
+<CODE class=linenumber>076</CODE>                 <tt>OR</tt> custarr[arr_curr()].fname == custarr[arr_curr()].lname <tt>THEN</tt>
+<CODE class=linenumber>077</CODE>                 <tt>ERROR</tt> &quot;First name and last name are equal...&quot;
+<CODE class=linenumber>078</CODE>                 <tt>NEXT FIELD</tt> fname
+<CODE class=linenumber>079</CODE>              <tt>END IF</tt>
+<CODE class=linenumber>080</CODE>           <tt>END IF</tt>
+<CODE class=linenumber>081</CODE>           <tt>IF</tt> op == &quot;I&quot; <tt>THEN</tt>
+<CODE class=linenumber>082</CODE>              <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>083</CODE>              <tt>INSERT INTO</tt> customer (customer_num, fname, lname) <tt>VALUES</tt> ( custarr[arr_curr()].* )
+<CODE class=linenumber>084</CODE>              <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>085</CODE>              <tt>IF</tt> SQLCA.SQLCODE&lt;0 <tt>THEN</tt>
+<CODE class=linenumber>086</CODE>                  <tt>ERROR</tt> &quot;Could not insert the record into database!&quot;
+<CODE class=linenumber>087</CODE>                  <tt>NEXT FIELD CURRENT</tt>
+<CODE class=linenumber>088</CODE>              <tt>ELSE</tt>
+<CODE class=linenumber>089</CODE>                  <tt>MESSAGE</tt> &quot;Record has been inserted successfully&quot;
+<CODE class=linenumber>090</CODE>              <tt>END IF</tt>
+<CODE class=linenumber>091</CODE>           <tt>END IF</tt>
+<CODE class=linenumber>092</CODE>           <tt>IF</tt> op == &quot;M&quot; <tt>THEN</tt>
+<CODE class=linenumber>093</CODE>              <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>094</CODE>              <tt>UPDATE</tt> customer <tt>SET</tt> fname = custarr[arr_curr()].fname, lname = custarr[arr_curr()].lname
+<CODE class=linenumber>095</CODE>                   <tt>WHERE</tt> customer_num = custarr[arr_curr()].id
+<CODE class=linenumber>096</CODE>              <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>097</CODE>              <tt>IF</tt> SQLCA.SQLCODE&lt;0 <tt>THEN</tt>
+<CODE class=linenumber>098</CODE>                 <tt>ERROR</tt> &quot;Could not update the record in database!&quot;
+<CODE class=linenumber>099</CODE>                 <tt>NEXT FIELD CURRENT</tt>
+<CODE class=linenumber>100</CODE>              <tt>ELSE</tt>
+<CODE class=linenumber>101</CODE>                  <tt>MESSAGE</tt> &quot;Record has been updated successfully&quot;
+<CODE class=linenumber>102</CODE>              <tt>END IF</tt>
+<CODE class=linenumber>103</CODE>           <tt>END IF</tt>
+<CODE class=linenumber>104</CODE> 
+<CODE class=linenumber>105</CODE>    <tt>END INPUT</tt>
+<CODE class=linenumber>106</CODE> 
+<CODE class=linenumber>107</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>108</CODE> 
+<CODE class=linenumber>109</CODE> <tt>FUNCTION</tt> mbox_yn(title,message,icon)
+<CODE class=linenumber>110</CODE>   <tt>DEFINE</tt> title, message, icon <tt>STRING</tt>
+<CODE class=linenumber>111</CODE>   <tt>DEFINE</tt> r <tt>SMALLINT</tt>
+<CODE class=linenumber>112</CODE>   <tt>MENU</tt> title <tt>ATTRIBUTES</tt>(<tt>STYLE</tt>='dialog',<tt>IMAGE</tt>=icon,<tt>COMMENT</tt>=message)
+<CODE class=linenumber>113</CODE>      <tt>COMMAND</tt> &quot;Yes&quot; <tt>LET</tt> r=<tt>TRUE</tt>
+<CODE class=linenumber>114</CODE>      <tt>COMMAND</tt> &quot;No&quot;  <tt>LET</tt> r=<tt>FALSE</tt>
+<CODE class=linenumber>115</CODE>   <tt>END MENU</tt>
+<CODE class=linenumber>116</CODE>   <tt>RETURN</tt> r
+<CODE class=linenumber>117</CODE> <tt>END FUNCTION</tt></pre>
+
+</BODY>
+</HTML>

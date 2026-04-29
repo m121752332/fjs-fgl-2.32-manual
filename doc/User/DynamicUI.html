@@ -1,0 +1,1250 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+
+  <title>The Dynamic User Interface</title>
+  <meta http-equiv="Content-Type" content="text/html">
+  <link href="../FglTechRef.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+  <p><a href="../index.html">Back to Contents</a></p>
+  <hr>
+
+  <h1><a name="PAGE_HEADER" id="PAGE_HEADER">The Dynamic User Interface</a></h1>
+
+  <p>Summary:</p>
+
+  <ul>
+    <li>
+      <a href="#RENDERING">Genero user interface modes</a>
+
+      <ul>
+        <li><a href="#TEXT_RENDERING">Text mode rendering</a></li>
+
+        <li>
+          <a href="#GRAPHICAL_RENDERING">Graphical mode rendering</a>
+
+          <ul>
+            <li>
+              <a href="#TRADITIONAL_MODE">Traditional GUI mode</a>
+
+              <ul>
+                <li><a href="#TTM_INTRO">What is the Traditional GUI mode designed for?</a></li>
+
+                <li><a href="#TTM_CONFIG">Enabling the Traditional GUI mode</a></li>
+
+                <li><a href="#TTM_WINDOWS_FORMS">Window rendering rules</a></li>
+
+                <li><a href="#TTM_FKEY_SHIFT">Function key shifting</a></li>
+
+                <li><a href="#TTM_PROMPT">PROMPT rendering</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li>
+      <a href="#DYNAMICUI">The Dynamic User Interface</a>
+
+      <ul>
+        <li><a href="#DUI_CONCEPT">The concept</a></li>
+
+        <li><a href="#FE_SYNC">When is the front-end synchronized?</a></li>
+      </ul>
+    </li>
+
+    <li>
+      <a href="#CONNECTION">Connecting to the front-end</a>
+
+      <ul>
+        <li><a href="#FETARGET">Defining the Target Front End</a></li>
+
+        <li><a href="#FEIDENT">Front End Identification</a></li>
+
+        <li><a href="#SECISSUE1">Warning: Security Issue</a></li>
+
+        <li><a href="#FECONN_TIMEOUT">Front End connection timeout</a></li>
+
+        <li><a href="#FECONN_LOST">Front End connection lost</a></li>
+
+        <li><a href="#FECONN_COMPRESSION">Disabling protocol compression</a></li>
+
+        <li><a href="#FEERRORS">Front End Errors</a></li>
+      </ul>
+    </li>
+
+    <li>
+      <a href="#ABSTRACTUI">The Abstract User Interface</a>
+
+      <ul>
+        <li><a href="#AUI_CONTENT">What does the Abstract User Interface tree contain?</a></li>
+
+        <li><a href="#AUI_MANIP">Manipulating the Abstract User Interface</a></li>
+
+        <li><a href="#AUI_NAMES">XML Node Type and Attribute Names</a></li>
+
+        <li><a href="#AUI_ACTIONS">Actions in the Abstract user Interface tree</a></li>
+
+        <li><a href="#FEPROTOCOL">The Front End Protocol</a></li>
+      </ul>
+    </li>
+
+    <li>
+      <a href="#SPECIAL_FEATURES">Special Features</a>
+
+      <ul>
+        <li><a href="#SETTING_KEY_LABELS">Setting Key Labels</a></li>
+
+        <li><a href="#AUTOSTART">Automatic front-end startup</a></li>
+
+        <li><a href="#SCREENDUMP">Text mode screen dump</a></li>
+      </ul>
+    </li>
+    <li><a href="#TERMINAL_CONFIGURATION">Configuring your text terminal</a>
+      <ul>
+        <li><a href="#TERMCONF_ENV">Environment variables</a></li>
+        <li><a href="#TERMCONF_TERMCAP">Terminal capabilities</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <p><i>See also:</i> <a href="FormSpecFiles.html">Form Files</a>, <a href="WindowsAndForms.html">Windows and Forms</a>, <a href=
+  "InteractionModel.html">Interaction Model</a>.</p>
+  <hr>
+
+  <h2 align="left"><a name="RENDERING" id="RENDERING">Genero user interface modes</a></h2>
+
+  <h3><a name="TEXT_RENDERING" id="TEXT_RENDERING">Text mode rendering</a></h3>
+
+  <p>Genero's <a href="FglTerms.html#TEXT_USER_INTERFACE">Text User Interface</a> has been designed for character-based terminals. This
+  mode can be used to run your application on a text terminal hardware or in a
+  terminal emulator.</p>
+
+  <p>In TUI mode, the application windows/forms will display within the current
+  console/terminal window as shown in the next screen-shot:</p>
+
+  <p align="center"><img border="0" src="../Images/TextMode1.png" width="572" height="337"></p>
+
+  <p>By default, applications forms are displayed in <a href="#GRAPHICAL_RENDERING">GUI mode</a> 
+  as described later in this section. In order to run your applications in text
+  mode, set the <a href="EnvironmentVariables.html#EV_FGLGUI">FGLGUI</a> 
+  environment variable to 0 (zero).</p>
+
+  <p>Note that you may need to configure you terminal capabilities with TERM and
+  TERMCAP environment variables, as described later in <a href="#TERMINAL_CONFIGURATION">Configuring
+  your text terminal</a>.</p>
+
+  <h3><a name="GRAPHICAL_RENDERING" id="GRAPHICAL_RENDERING">Graphical mode rendering</a></h3>
+
+  <p>Genero is designed to provide a real graphical look and feel. Compared to the text mode interface as with Informix 4GL applications,
+  this is a significant improvement for the end user. For example, with Genero, when using the GUI mode, you get real resizable windows
+  when executing an <a href="WindowsAndForms.html">OPEN WINDOW</a> instruction.</p>
+
+  <p>The <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">Graphical User Interface</a> mode is enabled by default in Genero. You can also
+  set the <a href="EnvironmentVariables.html#EV_FGLGUI">FGLGUI</a> environment variable to 1. In GUI mode, the application will display on
+  the <a href="#CONNECTION">front-end workstation</a> identified with the <a href="EnvironmentVariables.html#EV_FGLSERVER">FGLSERVER</a>
+  environment variable. Application windows/forms will be rendered with real GUI widgets providing a nice look-and-feel as shown in the
+  next screen-shot:</p>
+
+  <p align="center"><img border="0" src="../Images/Screen004.png" width="653" height="494"></p>
+
+  <h4><a name="TRADITIONAL_MODE" id="TRADITIONAL_MODE">Traditional GUI mode</a></h4>
+
+  <h5><a name="TTM_INTRO" id="TTM_INTRO">What is the Traditional GUI mode designed for?</a></h5>
+
+  <p>With the GUI mode of Genero, you immediately get the benefit of standard GUI widgets and windows. Forms are rendered as real movable
+  and resizable windows, form labels and fields become widgets using variable fonts, toolbars and pull-down menus are displayed, and error
+  messages are displayed in the status bar. This can, however, be annoying if you have to migrate from a project that was developed with
+  Informix 4GL or Four Js BDS products.</p>
+
+  <p> Genero supports the <b>Traditional GUI mode</b> to simplify migration from Informix 4GL or from
+  Four Js BDS. When using this mode, Genero windows will be displayed as simple boxes in a main front-end window, as shown in the next
+  screen-shot:</p>
+
+  <p align="center"><img border="0" src="../Images/TradiMod1.png" width="581" height="476"></p>
+
+  <h5><a name="TTM_CONFIG" id="TTM_CONFIG">Enabling the Traditional GUI mode</a></h5>
+
+  <p>The traditional GUI mode can be enabled with the following <a href="FglProfile.html#ENTRYLIST">FGLPROFILE</a> entry:</p>
+  <pre>
+   gui.uiMode = &quot;traditional&quot;  </pre>
+
+  <p>By default, the Traditional GUI mode is off.</p>
+
+  <h5><a name="TTM_WINDOWS_FORMS" id="TTM_WINDOWS_FORMS">Window rendering rules</a></h5>
+
+  <p>If the Traditional GUI mode is set, the <a href="WindowsAndForms.html#OPEN_WINDOW">OPEN WINDOW</a> statement works differently
+  according to the bound forms.</p>
+
+  <p>On the Front-End side, there is one unique main graphical window (a top-level widget called "Compatibility Window Container") created
+  to host all the Genero windows containing traditional forms. Traditional forms are form files which have a <a href=
+  "FormSpecFiles.html#SECTION_SCREEN">SCREEN</a> section instead of the Genero specific <a href=
+  "FormSpecFiles.html#SECTION_LAYOUT">LAYOUT</a> section. When migrating from an Informix 4GL or FourJ's BDS project, all forms initially
+  contain a <tt>SCREEN</tt> section; hence all windows opened in traditional mode will appear in the Compatibility Window Container.<br>
+  <br>
+  To renovate a form file with Genero graphical items such as group boxes, buttons and tables, a <tt>LAYOUT</tt> section must be created.
+  If the renovated form file is loaded via <tt>OPEN WINDOW ... WITH FORM form-file</tt> then, even in traditional mode, the freshly created
+  window will appear as a new top-level widget on the Front-End side. This opens a smooth migration path using the traditional mode; as a
+  first step, it is possible to migrate/enhance the most important forms, while keeping the rest of the application forms running in the
+  original rendering.<br>
+  <br>
+  Note, however, that the following combination does not work in Traditional GUI mode:</p>
+
+  <ol>
+    <li><tt>OPEN WINDOW <i>window_id</i> AT <i>line</i>, <i>column</i> WITH <i>height</i> ROWS, <i>width</i> COLUMNS</tt>&nbsp;</li>
+
+    <li><tt>OPEN FORM <i>form_id</i> FROM "<i>form_file</i>"</tt> (<i>form_file</i> is defined with a <tt>LAYOUT</tt> section)</li>
+
+    <li><tt>DISPLAY FORM <i>form_id</i></tt></li>
+  </ol>
+
+  <p>A runtime error results, because you cannot display a form with dynamic geometry in a fixed geometry container. Only forms with a
+  <tt>SCREEN</tt> section can be displayed at a later stage in a window that was initially opened inside the Compatibility Window
+  Container.</p>
+
+  <h5><a name="TTM_FKEY_SHIFT" id="TTM_FKEY_SHIFT">Function key shifting</a></h5>
+
+  <p>When the traditional mode is enabled, you can map Shift-Fx and Control-Fx key strokes to F(x+offset) actions. The offset is defined
+  with the gui.key.add_function entry:</p>
+  <pre>
+   gui.key.add_function = 12  </pre>
+
+  <p>This entry defines the number of function keys of the keyboard (default is 12). When defined as 12, a Shift-F1 will be received as an
+  F13 (12+1) action event by the program, and a Control-F1 will be F25 (12*2+1).</p>
+
+  <h5><a name="TTM_PROMPT" id="TTM_PROMPT">PROMPT rendering</a></h5>
+
+  <p>Unlike in TUI mode or with the BDS/WTK products, Genero renders the <a href="Prompt.html">PROMPT</a> instruction in a separate modal
+  window, even when the traditional GUI mode is enabled. The <tt>PROMPT</tt> window will appear on top of the Compatibility Window
+  Container.</p>
+  <hr>
+
+  <h2><a name="DYNAMICUI" id="DYNAMICUI">The Dynamic User Interface</a></h2>
+
+  <h3><a name="DUI_CONCEPT" id="DUI_CONCEPT">The concept</a></h3>
+
+  <p>The Dynamic User Interface (DUI) is a global concept for a new, open <a href="FglTerms.html#USER_INTERFACE">User Interface</a>
+  programming toolkit and deployment components, based on the usage of <a href="http://www.w3c.org/XML" target="new">XML</a> standards and
+  <a href="BuiltInClasses.html">built-in classes</a>.</p>
+
+  <p>The purpose of the DUI is to support different kinds of display devices by using the same source code, introducing an abstract
+  definition of the user interface that can be manipulated at runtime as a tree of user interface objects. This tree is called the <a href=
+  "#ABSTRACTUI">Abstract User Interface</a>.</p>
+
+  <p>The <a href="FglTerms.html#RUNTIME_SYSTEM">Runtime System</a> is in charge of the Abstract User Interface tree and the <a href=
+  "FglTerms.html#FRONT_END">Front End</a> is in charge of making this abstract tree visible on the screen. The <a href=
+  "FglTerms.html#FRONT_END">Front End</a> gets a copy of that tree which is automatically synchronized by the runtime by using the <a href=
+  "#FEPROTOCOL">Front End Protocol</a>.</p>
+
+  <p>In development, application screens are defined by <a href="FormSpecFiles.html">Form Specification Files</a>. These files are used by
+  the <a href="Tools.html#TL_FGLFORM">Form Compiler</a> to produce the Runtime Form Files that can be deployed in production
+  environments.</p>
+
+  <h3>Architectural schema</h3>
+
+  <p>The following schema describes the Dynamic User Interface concept, showing how the Abstract User Interface tree is shared by the
+  <a href="FglTerms.html#RUNTIME_SYSTEM">Runtime System</a> and the <a href="FglTerms.html#FRONT_END">Front End</a>:</p>
+
+  <p align="center"><img border="0" src="../Images/DUIFig01.png" width="504" height="288"></p>
+
+  <h3><a name="FE_SYNC" id="FE_SYNC">When is the front-end synchronized?</a></h3>
+
+  <p>The Abstract User Interface tree on the front-end is synchronized with the <a href="FglTerms.html#RUNTIME_SYSTEM">Runtime System</a>
+  AUI tree when a user interaction instruction takes the control. This means that the user will not see any display as long as the program
+  is doing batch processing, until an interactive statement is reached.</p>
+
+  <p>For example, the following program shows nothing:</p>
+  <pre>
+  <code class="linenumber">01</code> <tt>MAIN</tt>
+  <code class="linenumber">02</code>   <tt>DEFINE </tt>cnt <tt>INTEGER</tt>
+  <code class="linenumber">03</code>   <tt>OPEN WINDOW </tt>w <tt>WITH FORM </tt>&quot;myform&quot;
+  <code class="linenumber">04</code>   <tt>FOR </tt>cnt=1 <tt>TO</tt> 10
+  <code class="linenumber">05</code>     <tt>DISPLAY BY NAME </tt>cnt
+  <code class="linenumber">06</code>     <tt>SLEEP </tt>1
+  <code class="linenumber">07</code>   <tt>END FOR</tt>
+  <code class="linenumber">08</code> <tt>END MAIN</tt>  </pre>
+
+  <p>If you want to show something on the screen while the program is running in a batch procedure, you must force synchronization with the
+  front-end, by calling the <code>refresh()</code> method of the <a href="ClassInterface.html">Interface built-in class</a>:</p>
+  <pre>
+  <code class="linenumber">01</code> <tt>MAIN</tt>
+  <code class="linenumber">02</code>   <tt>DEFINE </tt>cnt <tt>INTEGER</tt>
+  <code class="linenumber">03</code>   <tt>OPEN WINDOW </tt>w <tt>WITH FORM </tt>&quot;myform&quot;
+  <code class="linenumber">04</code>   <tt>FOR </tt>cnt=1 <tt>TO</tt> 10
+  <code class="linenumber">05</code>     <tt>DISPLAY BY NAME </tt>cnt
+  <code class="linenumber">06</code>     <tt>CALL </tt>ui.Interface.refresh()   -- Sync the front-end!
+  <code class="linenumber">07</code>     <tt>SLEEP </tt>1
+  <code class="linenumber">08</code>   <tt>END FOR</tt>
+  <code class="linenumber">09</code> <tt>END MAIN</tt>  </pre>
+
+  <p><b><font color="#FF0000"><a name="SECISSUE2" id="SECISSUE2">Warning!</a></font></b> When the AUI trees are synchronized, only the
+  changes are sent to the front-end. If a modification has been made that does not result in a change in the values of the attributes of a
+  node of the tree (for example, you change the contents of an image file but keep the same name), that modification will not be sent to
+  the front-end.</p>
+  <hr>
+
+  <h2 align="left"><a name="CONNECTION" id="CONNECTION">Connecting to the front-end</a></h2>
+
+  <h3 align="left"><a name="FETARGET" id="FETARGET">Defining the Target Front-End</a></h3>
+
+  <p align="left">In <a href="#GRAPHICAL_RENDERING">GUI</a> mode, when the first interactive instruction like <a href="Menus.html">MENU</a>
+  or <a href="RecordInput.html">INPUT</a> is executed, the runtime system establishes a tcp connection to the front-end. The front-end acts
+  as a graphical server for the runtime system.</p>
+
+  <p align="left">On the runtime system side, the front-end is identified by the <a href=
+  "EnvironmentVariables.html#EV_FGLSERVER">FGLSERVER</a> environment variable. This variable defines the hostname of the machine where the
+  front-end resides, and the number of the front-end instance to be used.</p>
+
+  <p align="left">The syntax for FGLSERVER is <b>hostname[:servernum]</b>:</p>
+  <pre>
+  $ FGLSERVER=fox:1
+  $ fglrun myprog  </pre>
+
+  <p align="left">The <b>servernum</b> parameter is a whole number that defines the instance of the front-end. It is actually defining a
+  tcp port number, starting from 6400. For example, if <b>servernum</b> equals 2, the tcp port number used is 6402 (6400+2).&nbsp;</p>
+
+  <p align="left">This is the standard/basic connection technique, but you can set up different types of configurations. For example, you
+  can have the front-end connect to an application server via ssh, to pass through firewalls over the internet. Refer to the front-end
+  documentation for more details.</p>
+
+  <h3 align="left"><a name="FEIDENT" id="FEIDENT">Front-End Identification</a></h3>
+
+  <p align="left">The front-end can open a terminal session on the application server to start a program from the user workstation. This is
+  done by using a ssh, rlogin, or telnet terminal session. When the terminal session is open, the front-end sends a couple of shell
+  commands to set environment variables like <a href="EnvironmentVariables.html#EV_FGLSERVER">FGLSERVER</a> before starting the Genero
+  program to display the application on the front-end where the terminal session was initiated.</p>
+
+  <p align="left">In this configuration, front-end identification takes place. The front-end identification prevents the display of
+  application windows on a front-end that did not start the Genero application on the server. If the front-end was not identified, it would
+  result in an important security problem, as anyone could run a fake application that could display on any front-end and ask for a
+  password.</p>
+
+  <p align="left"><b><a name="SECISSUE1" id="SECISSUE1"><font color="#FF0000">Warning (Security Issue):</font></a> Front-end identification
+  is achieved by setting two environment variables in the terminal session, which identify the front-end. The runtime system sends the
+  first identifier back when connecting to the front-end, and the front-end sends the second id in the returning connection string. The
+  Front-end checks the first id, and refuses the connection if that id does not correspond to the original id set in the terminal session.
+  The runtime system checks the second id send by the front-end in the connection string, and refuses the connection if that id does not
+  correspond to the environment variable set in the terminal session. There can be a security hole if users can overwrite the program or
+  the shell script started by the front-end terminal session. It is then possible to change the front-end identification environment
+  variables and FGLSERVER, in order to display the application on another workstation to read confidential data. As long as basic
+  application users do not have read and write privileges on the program files, there is no risk. To make sure that program files on the
+  server side are protected from basic users, create a special user on the server to manage the application program files, and give other
+  users only read access to those files. As long as basic users cannot modify programs on the server side, there is no security
+  issue.</b></p>
+
+  <h3><a name="FECONN_TIMEOUT" id="FECONN_TIMEOUT">Front-End connection timeout</a></h3>
+
+  <p>When initiating the connection to the front-end, if the front-end program is stopped, the host machine is down, or a firewall drops
+  connections for the port used by Genero, the program will stop with an error after a given timeout. This timeout can be specified with
+  this <a href="FglProfile.html">FGLPROFILE</a> entry:</p>
+  <pre>
+  gui.connection.timeout = <i>seconds</i>  </pre>
+
+  <p>The default timeout is 30 seconds.</p>
+
+  <h3><a name="FECONN_LOST" id="FECONN_LOST">Front-End connection lost</a></h3>
+
+  <p>When a program has started and the runtime system waits for a user action, but the end user does not do anything, the front-end sends
+  a 'ping' event every 5 minutes to keep the tcp connection alive. This situation can happen if the user leaves the workstation for a while
+  without closing the application. The Front-End ping is a normal situation and part of the GUI client/server protocol. However, if the
+  front-end program is not stopped properly (when killed by a system reboot, for example), the tcp connection is lost and the runtime
+  system does not receive any more 'ping' events. In this case, the runtime system waits for a specified time before it stops with fatal
+  error <b><a href="FglErrors.html#-8062">-8062</a></b>. You can configure this timeout with an <a href="FglProfile.html">FGLPROFILE</a> entry:</p>
+  <pre>
+  gui.protocol.pingTimeout = 800  </pre>
+
+  <p>By default, the runtime system waits for 600 seconds (10 minutes).</p>
+
+  <p><b><font color="#FF0000">Warning:</font> If you set this timeout to a value lower than the ping delay of the front-end, the program
+  will stop with a fatal error after that timeout, even if the tcp connection is still alive. For example, with a front-end having a ping
+  delay of 5 minutes, the minimum value for this parameter should be about 330 seconds (5 minutes + 30 seconds to make sure the client ping
+  arrives).</b></p>
+
+  <h3><a name="FECONN_COMPRESSION" id="FECONN_COMPRESSION">Disabling protocol compression</a></h3>
+
+  <p>GUI protocol compression uses unnecessary processor resources if the communication with the front-end is fast (for example, on a 100
+  Mbps Ethernet network compression is not needed). To disable compression, set this <a href="FglProfile.html">FGLPROFILE</a>
+  entry:&nbsp;</p>
+  <pre>
+  gui.protocol.format = &quot;block&quot;  </pre>
+
+  <p>See also <a href="FEProtocol.html#COMPRESSION">Front-End Protocol</a>.</p>
+
+  <h3><a name="FEERRORS" id="FEERRORS">Front-End Errors</a></h3>
+
+  <p>When the <a href="FglTerms.html#FRONT_END">Front End</a> receives an invalid order, it stops the application. The <a href=
+  "FglTerms.html#RUNTIME_SYSTEM">Runtime System</a> then stops and displays the following message:</p>
+  <pre>
+  Program stopped at 'xxx.4gl', line number yy.
+  FORMS statement error number -6313.
+  The UserInterface has been destroyed: &lt;<i>message</i>&gt;.  </pre>
+
+  <p>The following error messages can occur:</p>
+
+  <table border="0" cellpadding="0" width="90%">
+    <tr>
+      <td bgcolor="#C0C0C0"><b>Message</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td>Application was terminated by user</td>
+      <td align="left">The front-end has been stopped or the user has clicked on the "Terminate application" button.</td>
+    </tr>
+    <tr>
+      <td>Unexpected interface version sent by the runtime system</td>
+      <td align="left">The runtime system and the front-end versions are not fully compatible.</td>
+    </tr>
+    <tr>
+      <td>
+        <p dir="ltr">The container '<i>container_name</i>' already exists</p>
+      </td>
+      <td align="left">
+        <p align="left">The same <a href="MDIWindows.html">WCI</a> container has been started twice.</p>
+      </td>
+    </tr>
+    <tr>
+      <td>The container&nbsp; '<i>container_name</i>' was destroyed</td>
+      <td align="left">The parent <a href="MDIWindows.html">WCI</a> container has been stopped while some children are still running</td>
+    </tr>
+    <tr>
+      <td height="21">The container '<i>container_name</i>' doesn't exist</td>
+      <td align="left" height="21">The <a href="MDIWindows.html">WCI</a> parent of the current child doesn't exist.</td>
+    </tr>
+    <tr>
+      <td>Invalid AUI Tree: Multiple Start Menu nodes</td>
+      <td align="left">The AUI Tree contains two Start Menu Nodes - <i>should not happen</i>.</td>
+    </tr>
+  </table>
+  <hr>
+
+  <h2><a name="ABSTRACTUI" id="ABSTRACTUI">The Abstract User Interface</a></h2>The Abstract User Interface (AUI) is a <a href=
+  "http://www.w3c.org/DOM" target="new">DOM</a> tree describing the objects of the <a href="FglTerms.html#USER_INTERFACE">User
+  Interface</a> of a <a href="FglTerms.html#PROGRAM">Program</a> at a given time. A copy of the AUI tree is held by both the Front End and
+  the <a href="FglTerms.html#RUNTIME_SYSTEM">Runtime System</a>. AUI Tree synchronization is automatically done by the Runtime System using
+  the <a href="#FEPROTOCOL">Front End Protocol</a>. The programs can manipulate the AUI tree by using <a href=
+  "ClassInterface.html">built-in classes</a> and <a href="XmlUtils.html">XML utilities</a>.
+  <hr>
+
+  <h3><a name="AUI_CONTENT" id="AUI_CONTENT">What does the Abstract User Interface tree contain?</a></h3>
+
+  <p>The Abstract User Interface defines a tree of objects organized by parent/child relationship. The different kinds of user interface
+  objects are defined by attributes. The AUI tree can be serialized as text according to the <a href="http://www.w3c.org/XML" target=
+  "new">XML</a> standard notation.</p>
+
+  <p>The following example shows a part of an AUI tree defining a <a href="Toolbars.html">Toolbar</a> serialized with the XML notation:</p>
+  <pre>
+  &lt;ToolBar&gt;
+    &lt;ToolBarItem name=&quot;f5&quot; text=&quot;List&quot; image=&quot;list&quot; /&gt;
+    &lt;ToolBarSeparator/&gt;
+    &lt;ToolBarItem name=&quot;Query&quot; text=&quot;Query&quot; image=&quot;search&quot; /&gt;
+    &lt;ToolBarItem name=&quot;Add&quot; text=&quot;Append&quot; image=&quot;add&quot; /&gt;
+    ...
+  &lt;/ToolBar&gt;  </pre>
+  <hr>
+
+  <h3><a name="AUI_MANIP" id="AUI_MANIP">Manipulating the Abstract User Interface tree</a></h3>
+
+  <h4>Modifying the AUI tree with built-in classes</h4>
+
+  <p>The objects of the Abstract User Interface tree can be queried and modified at runtime with
+  specific built-in classes like <a href=
+  "ClassForm.html">ui.Form</a>, provided to manipulate form elements.</p>
+
+  <p>The next code example gets the current window object, then gets the current
+  form in that window, and hides a group-box form element identified by the name
+  &quot;gb1&quot;:</p>
+  <pre>
+  <code class="linenumber">01</code> <tt>DEFINE</tt> w ui.Window
+  <code class="linenumber">02</code> <tt>DEFINE</tt> f ui.Form
+  <code class="linenumber">03</code> <tt>LET</tt> w = ui.Window.getCurrent()
+  <code class="linenumber">04</code> <tt>LET</tt> f = w.getForm()
+  <code class="linenumber">05</code> <tt>CALL</tt> f.setElementHidden(&quot;gb1&quot;,1)
+</pre>
+
+  <h4>Using low-level APIs to modifying the AUI tree</h4>
+
+  <p>In very special cases, you can also directly access the nodes of the AUI tree by using DOM API classes like <a href=
+  "ClassDomDocument.html">DomDocument</a> and <a href="ClassDomNode.html">DomNode</a>.&nbsp;</p>
+
+  <p><b><font color="#FF0000">Warning:</font>  As we continue to add new features to the product we encounter
+  situations that  may force us to modify the AUI Tree in order to add new elements/attributes.
+  If you are using the low level API's to directly modify the tree, your code may be slightly impacted when we release a change in the
+  AUI Tree structure.  In order to minimize the impact of any such Abstract User
+  Interface changes we would like to suggest the following course of action with regards to use of the DOM/SAX
+  API's:<br>
+  1.      Modify the tree at your own discretion understanding that in the future, changes to the AUI tree may be implemented.<br>
+  2.      Place all custom calls to the DOM/SAX API within centralized Library functions that are accessible to all modules, as opposed to
+  scattering function calls throughout your code base.<br>
+  3. Do not create nodes or change attributes that are not explicitly documented as modifiable.
+  For example, TopMenu or ToolBar nodes can be created and configured dynamically, but you should not add FormField nodes to existing
+  forms, or modify yourself the 'active' attribute of fields or actions.</b></p>
+
+  <p> To get the user interface nodes at runtime, the
+  language provides different kinds of API functions or methods, according to the context. For example, to get the root of the Abstract
+  User Interface tree, call the <a href="ClassInterface.html">ui.Interface.getRootNode()</a> method. You can also get the current form node
+  with <a href="ClassForm.html">ui.Form.getNode()</a> or search for an element by name with the <a href=
+  "ClassForm.html">ui.Form.findNode()</a> method.</p>
+
+  <hr>
+
+  <h3><a name="AUI_NAMES" id="AUI_NAMES">XML Node Types and Attribute Names</a></h3>
+
+  <p>By tradition BDL uses uppercase keywords, such as LABEL in form files, and the examples in this documentation reflect that convention.
+  The BDL language itself is not case-sensitive. However, XML is case-sensitive, and by convention node types use uppercase/lowercase
+  combinations to indicate word boundaries. In BDL, therefore, the&nbsp;nodes and attributes of an Abstract User Interface tree are handled
+  as follows:</p>
+
+  <ul>
+    <li><b>Node</b> <b>types</b> - the first letter of the node type is always capitalized. Subsequent letters are lower-case, unless the
+    type consists of multiple words joined together. In that case, the first letter of each of the multiple words is capitalized (the
+    CamelCase convention). Examples: Label, FormField, DateEdit, Edit</li>
+    <li><b>Attribute</b> <b>names</b> - the first letter of the name is always lower-case; subsequent letters are also lower-case, unless
+    the name consists of multiple words joined together. In that case, the first letter of each subsequent word is capitalized (the Lower
+    CamelCase convention). Examples: text, colName, width, tabIndex</li>
+    <li><b>Attribute values</b> - the values are enclosed in quotes, and BDL does not convert them.</li>
+  </ul>
+
+  <p><b><font color="#FF0000">Warning:</font></b> <b>If you reference Nodes or Attributes in your BDL code, you must always respect the
+  naming conventions.</b></p>
+  <hr>
+
+  <h3><a name="AUI_ACTIONS" id="AUI_ACTIONS">Actions in the Abstract User Interface tree</a></h3>
+
+  <p>The Abstract User Interface identifies all possible actions that can be received by the current interactive instruction with a list of
+  <i>Action</i> nodes. The list of possible actions are held by a <i>Dialog</i> node. An <i>Action</i> node is identified by the 'name'
+  attribute and defines common properties such as the accelerator key, default image, and default text.</p>
+
+  <p>Interactive elements are bound to <i>Action</i> nodes by the 'name' attribute. For example, a Toolbar item (button) with the name
+  'cancel' is bound to the <i>Action</i> node having the name 'cancel', which in turn defines the accelerator key, the default text, and
+  the default image for the button.</p>
+
+  <p align="center"><img border="0" src="../Images/AUIFig01.png" width="504" height="288"></p>
+
+  <p>When an interactive element is used (such as a form field input, toolbar button click, or menu option selection), an
+  <i>ActionEvent</i> node is sent to the runtime system. The name of the <i>ActionEvent</i> node identifies what <i>Action</i> occurred and
+  the 'idRef' attribute indicates the source element of the action.</p>
+
+  <p>See also <a href="FEProtocol.html#FEEVENTS"><font color="#FF0000">Front End Events</font></a> for more details.</p>
+  <hr>
+
+  <h3><a name="FEPROTOCOL" id="FEPROTOCOL">The Front End Protocol</a></h3>
+
+  <p>The Front End Protocol (FEP) is an internal protocol used by the <a href="FglTerms.html#RUNTIME_SYSTEM">Runtime System</a> to
+  synchronize the <a href="#ABSTRACTUI">Abstract User Interface</a> representation on the <a href="FglTerms.html#FRONT_END">Front End</a>
+  side. This protocol defines a simple set of operations to edit the Abstract User Interface tree. This protocol is based on a command
+  processing principle (send command, receive answer) and can be serialized to be transported over any network protocol, like HTTP for
+  example.</p>
+
+  <p>Both the Abstract User Interface and the Front End Protocol are public to allow third parties to develop their own Front Ends. This
+  enables applications to be deployed on very specific <a href="FglTerms.html#WORKSTATION">Workstations</a>.</p>
+
+  <p>Refer to <a href="FEProtocol.html"><font color="#FF0000">Front End Protocol</font></a> for more details about the operations supported
+  by this communication protocol.</p>
+  <hr>
+
+  <h2><a name="SPECIAL_FEATURES" id="SPECIAL_FEATURES">Special Features</a></h2>
+
+  <p>This section describes special features regarding the user interface domain:</p>
+
+  <ul>
+    <li><a href="#SETTING_KEY_LABELS">Setting Key Labels</a></li>
+    <li><a href="#AUTOSTART">Automatic Front-End Startup</a></li>
+  </ul>
+
+  <h3><a name="SETTING_KEY_LABELS" id="SETTING_KEY_LABELS">Setting Key Labels</a></h3>
+
+  <h4>Definition</h4>
+
+  <p>This feature allows you to define the labels of keys, to show a specific text in the default action button created for the key.</p>
+
+  <p><b><font color="#FF0000">Warning:</font> Key label definition is provided for backward
+  compatibility, to set action/key labels you should use <a href="ActionDefaults.html">Action
+  Defaults</a> instead.</b></p>
+
+  <h4>Syntax:</h4>
+
+  <ul>
+    <li>FGLPROFILE definitions<br>
+    <code><br>
+    key.<i>key-name</i>.text = "<i>label</i>"<br>
+	<br></code></li>
+
+    <li>Program-level key labels<br>
+    <code><br>
+    CALL FGL_SETKEYLABEL( "<i>key-name"</i>, "<i>label</i>" )<br>
+	<br></code></li>
+
+    <li>Form level key labels<br>
+    <br>
+    <code>KEYS<br>
+    <i>key-name</i> = <u>[</u>%<u>]</u>"<i>label</i>"<br>
+    <u>[...]</u><br>
+    [END]<br>
+&nbsp;</code></li>
+	<li>Dialog level key labels<br><br><code>CALL FGL_DIALOG_SETKEYLABEL( "<i>key-name"</i>, "<i>label</i>" )<br>
+	</code><br></li>
+	<li>Field level key labels<br><br><code>KEY <i>key-name</i> = <u>[</u>%<u>]</u>"<i>label</i>"&nbsp;&nbsp;&nbsp;</code> (as field 
+	<a href=
+    "FSFAttributes.html#FA_KEY">attribute</a>)</li>
+  </ul>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>key-name</i> is the name of the key as described below.</li>
+    <li><i>label</i> is the text to be displayed in the default action view
+      (button).</li>
+  </ol>
+
+  <h4>Usage:</h4>
+
+  <p>Traditional 4GL applications use a lot of function keys and/or control keys to manage user actions. For example, in the following
+  interactive dialog, the function key <tt>F10</tt> is used to show a detail window:</p>
+  <pre>
+  <code class="linenumber">01</code> <tt>INPUT BY NAME </tt>myrecord.*
+  <code class="linenumber">02</code>    <tt>ON KEY </tt>(F10)
+  <code class="linenumber">03</code>       <tt>CALL</tt> ShowDetail()
+  <code class="linenumber">04</code> <tt>END INPUT</tt>
+</pre>
+
+  <p>For backward compatibility, the language allows you to specify a label to be displayed in a default action button created specifically
+  for the key.</p>
+
+  <p>By default, if you do not specify a label, no action button is displayed for a function key or control key.</p>
+
+  <p>If the text provided for the key label is empty or NULL, the default action
+  button will not be displayed.</p>
+
+  <p>The following table shows the key names recognized by the runtime system:</p>
+
+  <div align="center">
+    <center>
+      <table border="0" cellpadding="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="30%"><b>Key Name</b></td>
+          <td bgcolor="#C0C0C0"><b>Description</b></td>
+        </tr>
+        <tr>
+          <td width="30%"><tt>f1</tt> to <tt>f255</tt></td>
+          <td>Function keys.</td>
+        </tr>
+        <tr>
+          <td width="30%"><tt>control-a</tt> to <tt>control-z</tt></td>
+          <td>Control keys.</td>
+        </tr>
+        <tr>
+          <td width="30%"><tt>accept</tt></td>
+          <td>Predefined dialog validation action.</td>
+        </tr>
+        <tr>
+          <td width="30%"><tt>interrupt</tt></td>
+          <td>Predefined dialog cancellation action (note action name is <i>cancel</i>, not <i>interrupt</i>).</td>
+        </tr>
+        <tr>
+          <td width="30%"><tt>insert</tt></td>
+          <td>Predefined <a href="InputArray.html">INPUT ARRAY</a> dialog row insertion action.</td>
+        </tr>
+        <tr>
+          <td width="30%"><tt>append</tt></td>
+          <td>Predefined <a href="InputArray.html">INPUT ARRAY</a> dialog row addition action.</td>
+        </tr>
+        <tr>
+          <td width="30%"><tt>delete</tt></td>
+          <td>Predefined <a href="InputArray.html">INPUT ARRAY</a> dialog row deletion action.</td>
+        </tr>
+        <tr>
+          <td width="30%"><tt>help</tt></td>
+          <td>Predefined help action.</td>
+        </tr>
+      </table>
+    </center>
+  </div>
+
+  <p>You can define key labels at different levels, from the default settings to a specific field, to show a specific label for the key
+  when the focus is in that field. The order of precedence for key label definition is the following:</p>
+
+  <ol>
+    <li>The label defined with the <a href="FSFAttributes.html#FA_KEY">KEY</a> attribute of the form field.</li>
+    <li>The label defined for the current dialog, using the <a href=
+    "BuiltInFunctions.html#BF_FGL_DIALOG_SETKEYLABEL">FGL_DIALOG_SETKEYLABEL</a> function.</li>
+    <li>The label defined in the <a href="FormSpecFiles.html#SECTION_KEYS">KEYS</a> section of the <a href="FormSpecFiles.html">form
+    specification file</a>.</li>
+    <li>The label defined as default for a program, using the <a href="BuiltInFunctions.html#BF_FGL_SETKEYLABEL">FGL_SETKEYLABEL</a>
+    function.</li>
+    <li>The label defined in the <a href="FglProfile.html">FGLPROFILE</a> configuration file (<tt>key.<i>key-name</i>.text</tt>
+    entries).</li>
+  </ol>
+
+  <p><b><font color="#FF0000">Warning:</font> In Genero, you typically define action labels with <a href="ActionDefaults.html">Action
+  Defaults</a>. However, if key labels are defined, they will overwrite the text defined in Action Defaults for the corresponding key
+  action. Note that in BDS 3.xx versions, default key labels are defined in FGLDIR/etc/fglprofile. These defaults have been commented out
+  in Genero to have Action Defaults text applied (In Genero, by default, FGL_GETKEYLABEL() returns NULL for all keys). If you want to get
+  the same default key labels as in BDS 3.xx, uncomment the key.* lines in FGLDIR/etc/fglprofile.</b></p>
+
+  <p>You can query the label defined at the program level with the <a href="BuiltInFunctions.html#BF_FGL_GETKEYLABEL">FGL_GETKEYLABEL</a>
+  function and, for the current interactive instruction, with the <a href=
+  "BuiltInFunctions.html#BF_FGL_DIALOG_GETKEYLABEL">FGL_DIALOG_GETKEYLABEL</a> function.</p>
+
+  <h3><a name="AUTOSTART" id="AUTOSTART">Automatic front-end startup</a></h3>
+
+  <h4>Definition</h4>
+
+  <p>The runtime system tries to open a connection to the graphical front-end according to the <a href=
+  "EnvironmentVariables.html#EV_FGLSERVER">FGLSERVER</a> environment variable. This requires having the front-end already started and
+  listening to the TCP port defined according to FGLSERVER.</p>
+
+  <p>In some configurations, such as <i>X11 workstations</i> or <i>METAFRAME/Citrix Winframe</i> or <i>Microsoft Windows Terminal
+  Server</i>, each user may want to start his own front-end to have a dedicated process. This can be done by starting the front-end
+  automatically when the Genero program executes, according to the DISPLAY (X11) or SESSIONNAME/CLIENTNAME (WTSE) environment
+  variables.</p>
+
+  <h4>Usage:</h4>
+
+  <p>Automatic front-end startup settings are defined with <code>gui.server.autostart.*</code>
+  entries in <a href=
+  "FglProfile.html">FGLPROFILE</a>.</p>
+
+  <p>In a first time, the runtime system tries to establish the connection
+  without starting the GUI server (in a normal usage, it is already started). The
+  GUI server (i.e. front-end) is
+  identified by the <a href=
+  "EnvironmentVariables.html#EV_FGLSERVER">FGLSERVER</a> environment variable.
+  If FGLSERVER is not defined, it defaults to <b>localhost:0</b>, except if <code>gui.server.autostart.wsmap
+  </code>entries are defined in FGLPROFILE. When <code>wsmap</code> entries are
+  defined, workstation id to GUI server id mapping takes place and FGLSERVER
+  defaults to <b>localhost:n</b>, where <b>n</b> is the GUI server number found
+  from <code>wsmap</code> entries.</p>
+
+  <p>If this first connection fails and the <code>gui.server.autostart.cmd</code> 
+  entry is defined, the runtime system executes the command to start the GUI
+  server, then waits for n seconds as defined by <code>gui.server.autostart.wait</code>
+  entry, and after this delay tries to connect to the front-end. If the
+  connection fails, it tries again for a number of attempts defined by the <code>gui.server.autostart.repeat</code>
+  entry. Finally, it the last try failed, the runtime system stops with a GUI
+  connection error <b>-6300</b>.&nbsp;</p>
+
+  <p><b><font color="#FF0000">Warning:</font> If the <code>gui.server.autostart.cmd</code> entry is not defined,
+  neither workstation id to GUI id mapping, nor automatic front-end
+  startup is done.</b></p>
+
+  <p>Here is a detailed description of each <code>gui.server.autostart</code>
+  FGLPROFILE entry:</p>
+
+  <p>The '<b>cmd</b>' entry is used to define the command to be executed to start the front-end:</p>
+
+  <p><code>&nbsp;gui.server.autostart.cmd = &quot;/opt/app/gdc-2.30/bin/gdc -p %d -q -M"</code></p>
+
+  <p>Here, <b>%d</b> will be replaced by the TCP port the front-end must listen to.</p>
+
+  <p>By default the runtime system waits for two seconds before it tries to connect to the front-end. You can change this delay with the
+  '<b>wait</b>' entry:</p>
+
+  <p><code>&nbsp;gui.server.autostart.wait = 5&nbsp;&nbsp; -- wait five seconds</code></p>
+
+  <p>The runtime system tries to connect to the front-end ten times. You can change this with the '<b>repeat</b>' entry:</p>
+
+  <p><code>&nbsp;gui.server.autostart.repeat = 3 -- repeat three times</code></p>
+
+  <p>The following FGLPROFILE entries can be used to define workstation id to front-end id mapping:</p>
+
+  <p><code>&nbsp;gui.server.autostart.wsmap.max = 3<br>
+  &nbsp;gui.server.autostart.wsmap.0.names = "fox:1.0,fox.sxb.4js.com:1.0"<br>
+  &nbsp;gui.server.autostart.wsmap.1.names = "wolf:1.0,wolf.sxb.4js.com:1.0"<br>
+  &nbsp;gui.server.autostart.wsmap.2.names = "wolf:2.0,wolf.sxb.4js.com:2.0"</code></p>
+
+  <p>The first '<b>wsmap.max</b>' entry defines the maximum number of front-end identifiers to look for. The '<b>wsmap.N.names</b>' entries
+  define a mapping for each GUI server, where <b>N</b> is the front-end identifier. The value of those entries defines a comma-separated
+  list of workstation names to match. If no wsmap entries are defined, the GUI
+  server number will default to zero.</p>
+
+  <p><b><font color="#FF0000">Warning:</font> Note that for
+  gui.server.autostart.wsmap entries, the first GUI server number starts at
+  zero.</b></p>
+
+  <p>On X11 configurations, a workstation is identified by the <b>DISPLAY</b> environment variable. In the above example, "<b>fox:1.0</b>"
+  identifies a workstation that will make the runtime start a front-end with the number <b>1</b>.</p>
+
+  <p>On Windows Terminal Server, the <b>CLIENTNAME</b> environment variable identifies the workstation. If no corresponding front-end id
+  can be found in the '<b>wsmap</b>' entries, the front-end number defaults to the id of the session defined by the <b>SESSIONNAME</b>
+  environment variable, <u>plus one</u>. The value of this variable has the form "<b><i>protocol</i>#<i>id</i></b>"; for example,
+  "<b>RDP-Tcp#4</b>" would automatically define a front-end id of <b>5</b> (4+1).</p>
+
+  <h4><font color="#008000">Tips:</font></h4>
+
+  <ol>
+    <li>
+      <p>If the front-end processes are started on the same machine as the runtime system, you do not need to set the FGLSERVER environment
+      variable. This will then default to '<b>localhost:</b><i><b>id</b></i>', where <i>id</i> will be detected according to the 'wsmap'
+      workstation mapping entries.</p>
+    </li>
+    <li>
+      <p>If the front-end is executed on a middle-tier machine that is different from the application server, <b>MIDHOST</b> for example,
+      you can set FGLSERVER to "MIDHOST" without a GUI server id. The workstation mapping will automatically find the id according to
+      'wsmap' settings.</p>
+    </li>
+    <li>
+      <p>Some clients, such as the Genero Desktop Client (GDC), raise the control panel to the top of the window stack when you try to
+      restart it. In this case the program window might be hidden by the GDC control panel. To avoid this problem, you can use the -M
+      option to start the GDC in minimized mode.</p>
+    </li>
+  </ol>
+
+  <h3><a name="SCREENDUMP" id="SCREENDUMP0">Text mode screen dump</a></h3>
+
+  <p>For compatibility with IBM Informix 4gl, Genero supports the <a href="EnvironmentVariables.html#EV_DBSCREENDUMP">DBSCREENDUMP</a>
+  and <a href="EnvironmentVariables.html#EV_DBSCREENOUT">DBSCREENOUT</a>
+  environment variables for debugging purpose, to let you do a screen shot when
+  running in TUI mode and write the result into a file.</p>
+
+  <p>To enable TUI screen shot, set either DBSCREENDUMP or DBSCREENOUT to the
+  name of the output file, then run your Genero program with FGLGUI=0 set and
+  press the CONTROL-P key to dump the current screen. Each time you press
+  CONTROL-P the output file will be overwritten.</p>
+
+  <p>The DBSCREENDUMP variable writes the screen with escape sequences of TTY
+  attributes, while DBSCREENOUT writes only the characters displayed on the
+  screen, which makes the output more readable.</p>
+
+  <p>If both variables are set, the runtime will generate both output files. You
+  should however use different file names, otherwise the output is undefined.</p>
+
+  <hr>
+
+  <h2><a name="TERMINAL_CONFIGURATION" id="SPECIAL_FEATURES0">Configuring your text terminal</a></h2>
+
+  <p>This section covers topics about text terminal configuration when using the
+  <a href="#TEXT_RENDERING">TUI mode</a>.</p>
+
+  <h3><a name="TERMCONF_ENV">Environment variables</a></h3>
+  <p>To run a Genero application in text mode, you must define the <a href="EnvironmentVariables.html#EV_FGLGUI">FGLGUI</a>
+  environment variable to 0.</p>
+  <p>On UNIX platforms, the <a href="EnvironmentVariables.html#EV_TERM">TERM</a>
+  environment variable must be set and define the terminal type/name. For
+  example, if you execute the application in an xterm window, set TERM=xtermix.
+  The Genero runtime system will search for the terminal capabilities in the
+  file defined by the <a href="EnvironmentVariables.html#EV_TERMCAP">TERMCAP</a>
+  environment variable.</p>
+  <p>On Windows platforms, you can run applications in text mode inside a CMD
+  Console Window. You must not set the TERM environment variable in this case.</p>
+  <h3><a name="TERMCONF_TERMCAP">Terminal capabilities</a></h3>
+  <p>Genero provides a default file defining terminal capabilities in FGLDIR/etc/termcap,
+  but you can modify this file or add new terminal definitions. If you plan to
+  modify the default termcap file, we strongly recommend that you make a copy of the
+  original termcap file and point to the new file with the TERMCAP environment
+  variable.</p>
+  <p>Note that terminal type and terminal capabilities definition is not a
+  Genero-specific configuration: TERM and TERMCAP (or TERMINFO) are also used by
+  other UNIX applications and commands. However, Genero only supports TERMCAP
+  databases (TERMINFO will be supported in a future version).</p>
+  <p>In this section we will briefly describe the syntax of the termcap file. For a complete definition please refer to your operating system documentation
+  (see man pages describing the termcap file syntax).</p>
+  <h4><a name="TERMCAP_SYNTAX_BASICS">Termcap syntax</a></h4>
+  <p>All termcap entries contain a list of terminal names, followed by a list of
+  terminal capabilities, in the following format:</p>
+  <ul>
+    <li>Each capability, including the last one in the entry, is followed by a colon ( : ).</li>
+	<li>ESCAPE is specified as a backslash ( \ ) followed by the letter E. CTRL
+      is specified as a caret (^). Do not use the ESCAPE or CTRL keys to indicate
+      escape sequences or control characters in a termcap entry.</li>
+    <li>Entries must be defined on a single logical line; a backslash ( \ ) appears
+      at the end of each line that wraps to the next line.</li>
+    <li>Comment lines begin with a sharp sign (#).</li>
+  </ul>
+  <p>Example: xterm terminal definition:</p>
+  <pre>xterm|xterm terminal emulator:\
+:km:mi:ms:xn:pt:\
+:co#80:li#24:\
+:is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l:\
+...</pre>
+  <h5><a name="TERMCAP_TERM_NAMES">Terminal Names</a></h5>
+  <p>Termcap entries begin with one or more names for the terminal, each separated
+  by a vertical ( | ) bar. Any one of these names can be used for access to the termcap entry.</p>
+  <h5><a name="TERMCAP_BOOL_CAPS">Boolean Capabilities</a></h5>
+  <p>Boolean capabilities are two-character codes indicating whether a
+  terminal has a specific feature. If the Boolean capability exists in the termcap
+  entry, the terminal has that particular feature. For example:</p>
+  <pre>:bs:am:
+# bs backspace with CTRL-H
+# am automatic margins</pre>
+  <h5><a name="TERMCAP_NUM_CAPS">Numeric Capabilities</a></h5>
+  <p>Numeric capabilities are two-character codes followed by a sharp symbol ( # ) and a value. For example: </p>
+  <pre>:co#80:li#24:
+# co number of columns in a line
+# li number of lines on the screen</pre>
+  <p>Genero BDL assumes that the value is zero for any numeric capabilities that are not listed, </p>
+  <h5><a name="TERMCAP_STRING_CAPS">String Capabilities</a></h5>
+  <p>String capabilities specify a sequence that can be used to perform a terminal operation. </p>
+  <p>A string capability is a two-character code, followed by an equal sign ( = ) and a string ending at the next delimiter ( : ). </p>
+  <p>Most termcap entries include string capabilities for clearing the screen, 
+     arrow keys, cursor movement, underscore, function keys, etc. For example, some string capabilities for a Wyse 50 terminal 
+     are shown below:</p>
+  <pre>:ce=\Et:cl=\E*:\
+:nd=^L:up=^K:\
+:so=\EG4:se=\EG0:
+# ce=\Et clear to end of line
+# cl=\E* clear the screen
+# nd=^L non-destructive cursor right
+# up=^K up one line
+# so=\EG4 start stand-out
+# se=\EG0 end stand-out</pre>
+  <h4><a name="TERMCAP_GENERO_SPECIFIC">Genero-specific termcap definitions</a></h4>
+  <h5><a name="TERMCAP_FUNC_KEYS">Extending Function Key Definitions</a></h5>
+  <p>In TUI mode, Genero BDL recognizes function keys F1 through F36. These keys
+  correspond to the termcap capabilities k0 through k9, followed by kA through kZ.</p>
+  <p>The termcap entry for these capabilities is the sequence of ASCII characters
+  your terminal sends when you press the function keys (or any other keys you choose to use as function keys).</p>
+  <p>The next example shows some function key definitions for the xterm terminal:</p>
+  <pre>k0=\E[11~:k1=\E[12~:k2=\E[13~:k3=\E[14~:\
+...
+k9=\E[21~:kA=\E[23~:kB=\E[24~:\</pre>
+  <h5><a name="TERMCAP_ACTION_KEYS">Defining dialog action keys</a></h5>
+  <p>Dialog action keys for insert, delete and list navigation can be defined
+  with the following capabilities:</p>
+  <ul>
+    <li><b>ki</b>: Insert line (default is CTRL-J)</li>
+    <li><b>kj</b>: Delete line (default is CTRL-K)</li>
+    <li><b>kf</b>: Next page (default is CTRL-M)</li>
+    <li><b>kg</b>: Previous page (default is CTRL-N)</li>
+  </ul>
+  <p>Note: You can also use the <a href="Programs.html#PROGRAM_OPTIONS"> OPTIONS</a> statement to name other function keys or
+  CTRL keys for these operations.</p>
+  <h5><a name="TERMCAP_WINDOWS_BORDERS">Specifying Characters for Window Borders</a></h5>
+  <p>Genero BDL uses the graphics characters in the termcap file when you
+  specify a window border in an <a href="WindowsAndForms.html#OPEN_WINDOW"> OPEN WINDOW</a> statement.</p>
+  <p>Genero BDL uses characters defined in the termcap file to draw the border of a window. If no characters are defined in this file,
+  the runtime system uses the hyphen ( - ) for horizontal lines, the vertical bar ( | ) for vertical lines, and
+  the plus sign ( + ) for corners.</p>
+  <p>Steps to define the graphical characters for window borders for your 
+	terminal type:</p>
+  <ol>
+    <li>Determine the escape sequences for turning the terminal graphics mode ON and
+      OFF (Refer to the manual of your terminal). For example, on Wyse 50 terminals, the escape sequence for entering
+      graphics mode is ESC H^B, and the escape sequence for leaving graphics mode is ESC H^C.</li>
+    <li>Identify the ASCII equivalents for the six graphics characters that
+      Genero requires to draw the window borders. The ASCII equivalent of a graphics
+      character is the key you would press in graphics mode to obtain the indicated
+      character. The six graphical characters needed by Genero are:
+      <ol>
+        <li>The upper left corner</li>
+        <li>The lower left corner</li>
+        <li>The upper right corner</li>
+        <li>The lower right corner</li>
+        <li>The horizontal line</li>
+        <li>The vertical line</li>
+      </ol>
+    </li>
+    <li> Edit the termcap entry for your terminal, and define the following
+      string capabilities:
+      <ul>
+        <li><b>gs</b>: The escape sequence for entering graphics mode. In the
+          termcap file, ESCAPE is represented as a backslash ( \ ) followed by
+          the letter E; CTRL is represented as a caret ( ^ ). For example, the Wyse
+          50 escape sequence ESC-H CTRL-B is represented as \EH^B.</li>
+        <li><b>ge</b>: The escape sequence for leaving graphics mode. For example, the
+          Wyse 50 escape sequence ESC-H CTRL-C is represented as \EH^C.</li>
+        <li><b>gb</b>: The concatenated, ordered list of ASCII equivalents for the six
+          graphics characters used to draw the border. Using the order as listed
+          in (2).<br>
+          For example, if you are using a Wyse 50 terminal, you would add the following,
+          in a linear sequence:<br>
+          <tt>:gs=\EH^B:ge=\EH^C:gb=2135z6:\</tt></li>
+      </ul>
+    </li>
+  </ol>
+  <p>
+  For terminals without graphics capabilities, you must enter a blank value for the 
+	<b>gs</b> and <b>ge</b> capabilities. For <b>gb</b>, enter the characters you want
+  Genero to use for the window border. The following example shows possible values for
+	<b>gs</b>, <b>ge</b>, and <b>gb</b> in an entry for a terminal without 
+	graphics capabilities:</p>
+	<pre>:gs=:ge=:gb=.|.|_|:</pre>
+	<p>With these settings, window borders would be drawn using underscores ( _ 
+	) for horizontal lines, vertical bars ( | ) for vertical lines, periods ( . 
+	) for the top corners, and vertical bars ( | ) for the lower corners.</p>
+  <h5><a name="TERMCAP_COLOR_INTENSITY">Adding Color and Intensity</a></h5>
+  <p>In TUI mode, a Genero program can be written either for a monochrome or a color terminal, and then 
+	you can run the program on either type of terminal. If you set
+  up the termcap files as described here, the color attributes and the intensity
+  attributes are related, as shown in the next table:</p>
+      <table border="0" cellpadding="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="5%" align="center"><b>Number</b></td>
+          <td bgcolor="#C0C0C0" width="10%"><b>Color</b></td>
+          <td bgcolor="#C0C0C0" width="10%"><b>Intensity</b></td>
+          <td bgcolor="#C0C0C0"><b>Note</b></td>
+        </tr>
+        <tr>
+          <td width="5%" align="center">0</td>
+          <td width="10%">WHITE</td>
+          <td width="10%">NORMAL</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td width="5%" align="center">1</td>
+          <td width="10%">YELLOW</td>
+          <td width="10%">BOLD</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td width="5%" align="center">2</td>
+          <td width="10%">MAGENTA</td>
+          <td width="10%">BOLD</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td width="5%" align="center">3</td>
+          <td width="10%">RED</td>
+          <td width="10%">BOLD (*)</td>
+          <td>If the keyword BOLD is indicated as the attribute, the field will be
+  RED on a color terminal</td>
+        </tr>
+        <tr>
+          <td width="5%" align="center">4</td>
+          <td width="10%">CYAN</td>
+          <td width="10%">DIM</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td width="5%" align="center">5</td>
+          <td width="10%">GREEN</td>
+          <td width="10%">DIM</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td width="5%" align="center">6</td>
+          <td width="10%">BLUE</td>
+          <td width="10%">DIM (*)</td>
+          <td>If the keyword DIM is indicated as the attribute,
+  the field will be BLUE on a color terminal</td>
+        </tr>
+        <tr>
+          <td width="5%" align="center">7</td>
+          <td width="10%">BLACK</td>
+          <td width="10%">INVISIBLE</td>
+          <td></td>
+        </tr>
+      </table>
+  <p>
+  The background for colors is BLACK in all cases. In either color or monochrome mode, you can add the REVERSE, BLINK, or
+  UNDERLINE attributes if your terminal supports them.</p>
+  <h5><a name="TERMCAP_ZA">
+  The ZA String Capability</a></h5>
+  <p>Genero uses a parameterized string capability named <b>ZA</b> in the termcap file
+  to determine color assignments. Unlike other termcap string capabilities that 
+	you set to a literal sequence of ASCII characters, ZA is a function string
+  that depends on the following four parameters:</p>
+      <table border="0" cellpadding="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="5%" align="center"><b>Parameter</b></td>
+          <td bgcolor="#C0C0C0" width="10%" align="center"><b>Name</b></td>
+          <td bgcolor="#C0C0C0"><b>Description</b></td>
+        </tr>
+        <tr>
+          <td width="5%" align="center">1</td>
+          <td width="10%" align="center">p1</td>
+          <td>Color number between 0 and 7 (see above table).</td>
+        </tr>
+        <tr>
+          <td width="5%" align="center">2</td>
+          <td width="10%" align="center">p2</td>
+          <td>0 = Normal; 1 = Reverse.</td>
+        </tr>
+        <tr>
+          <td width="5%" align="center">3</td>
+          <td width="10%" align="center">p3</td>
+          <td>0 = No-Blink; 1 = Blink.</td>
+        </tr>
+        <tr>
+          <td width="5%" align="center">4</td>
+          <td width="10%" align="center">p3</td>
+          <td>0 = No-underscore; 1 = Underscore.</td>
+        </tr>
+      </table>
+  <p>
+  ZA uses the values of these four parameters and a stack machine to determine which characters to send to the terminal. The ZA function is called, and
+  these parameters are evaluated, when a color or intensity attribute is encountered
+  in a Genero program. Use the information in your terminal manual to set the ZA parameters to the correct values for your terminal.</p>
+  <p>
+  The ZA string uses stack operations to push values onto the stack or to pop values off the stack. Typically, the instructions in the ZA string push a
+  parameter onto the stack, compare it to one or more constants, and then send an appropriate sequence of characters to the terminal. More complex operations
+  are often necessary; by storing the display attributes in static stack machine registers (named a through z), you can 
+	have terminal-specific
+  optimizations.</p>
+  <p>
+  The different stack operators that you can use to write the descriptions are 
+	summarized below. For a complete discussion of stack operators, see your operating
+  system documentation.</p>
+  <h6><a name="TERMCAP_ZA_OP_SEND">
+  Operators That Send Characters to the Terminal</a></h6>
+  <ul>
+    <li><b>
+  %d</b> pops a numeric value from the stack and sends a maximum of three digits to the terminal. For example, if the value 145 is at the
+  top of the stack, %d pops the value off the stack and sends the ASCII representations of 1, 4, and 5 to the terminal. If the value
+      2005 is at the top of the stack, %d pops the value off the stack and sends the ASCII representation of 5 to the terminal.<br>
+    </li>
+    <li><b>
+  %2d</b> pops a numeric value from the stack and sends a maximum of two digits to the terminal, padding to two places. For example, if the
+      value 145 is at the top of the stack, %2d pops the value off the stack and sends the ASCII representations of 4 and 5 to the terminal.
+      If the value 5 is at the top of the stack, %2d pops the value off the stack and sends the ASCII representations of 0 and 5 to the
+      terminal.<br>
+    </li>
+    <li><b>
+  %3d</b> pops a numeric value from the stack and sends a maximum of three digits to the terminal, padding to three places. For example,
+      if the value 7 is at the top of the stack, %3d pops the value off the stack and sends the ASCII representations of 0, 0, and 7 to the
+      terminal.<br>
+    </li>
+    <li><b>
+  %c</b> pops a single character from the stack and sends it to the terminal.</li>
+  </ul>
+  <h6><a name="TERMCAP_ZA_OP_STACK">Operators That Manipulate the Stack</a></h6>
+  <ul>
+    <li><b>
+  %p[1-9]</b> pushes the value of the specified parameter on the stack. The notation for parameters is p1, p2, ... p9. For example, if the value
+      of p1 is 3, %p1 pushes 3 on the stack.</li>
+    <li><b>
+  %P[a-z]</b> pops a value from the stack and stores it in the specified variable.
+      The notation for variables is Pa, Pb, ... Pz. For example, if the value 45 is on the top of the stack, %Pb pops 45 from the
+      stack and stores it in the variable Pb.</li>
+    <li><b>
+  %g[a-z]</b> gets the value stored in the corresponding variable (P[a-z]) and pushes it on the stack. For example, if the value 45 is stored in
+      the variable Pb, %gb gets 45 from Pb and pushes it on the stack.</li>
+    <li><b>
+  %´c´</b> pushes a single character on the stack. For example, %´k´ pushes k on the stack.</li>
+    <li><b>
+  %{n}</b> pushes an integer constant on the stack. The integer can be any length and can be either positive or negative. For example,
+      %{0} pushes the value 0 on the stack.</li>
+    <li><b>
+  %S[a-z]</b> pops a value from the stack and stores it in the specified static variable. (Static storage is nonvolatile since the stored value
+  remains from one attribute evaluation to the next.) The notation for static variables is Sa, Sb, ... Sz. For example, if the value 45 is
+  on the top of the stack, %Sb pops 45 from the stack and stores it in the static variable Sb. This value is accessible for the duration
+  of the Genero program.</li>
+    <li><b>%G[a-z]</b> gets the value stored in the corresponding static variable (S[a-z])
+      and pushes it on the stack. For example, if the value 45 is stored in the variable Sb, %Gb gets 45 from Sb and pushes it on the
+      stack.</li>
+  </ul>
+  <h6><a name="TERMCAP_ZA_OP_ARITH">
+  Arithmetic Operators</a></h6>
+  <p>
+  Each arithmetic operator pops the top two values from the stack, performs an operation, and pushes the result on the stack.</p>
+  <ul>
+    <li><b>
+  %+</b> Addition.<br>
+      For example, %{2}%{3}%+ is equivalent to 2+3.</li>
+    <li><b>
+  %-</b> Subtraction.<br>
+      For example, %{7}%{3}%- is equivalent to 7-3.</li>
+    <li><b>
+  %*</b> Multiplication.<br>
+      For example, %{6}%{3}%* is equivalent to 6*3.</li>
+    <li><b>
+  %/</b> Integer division.<br>
+      For example, %{7}%{3}%/ is equivalent to 7/3 and produces a result of 2.</li>
+    <li><b>
+  %m</b> Modulus (or remainder).<br>
+      For example, %{7}%{3}%m is equivalent to (7 mod 3) and produces a result of 1.</li>
+  </ul>
+  <h6><a name="TERMCAP_ZA_OP_BIT">
+  Bit Operators</a></h6>
+  <p>
+  The following bit operators pop the top two values from the stack, perform an operation, and push the result on the stack:</p>
+  <ul>
+    <li><b>
+  %&amp;</b> Bit-and.<br>
+      For example, %{12}%{21}%&amp; is equivalent to (12 and 21) and produces a result of 4.</li>
+    <li><b>
+  %|</b> Bit-or.<br>
+      For example, %{12}%{21}%| is equivalent to (12 or 21) and produces a result of 29.</li>
+    <li><b>
+  %^</b> Exclusive-or.<br>
+      For example, %{12}%{21}%^ is equivalent to (12 exclusive-or 21) and produces a result of 25.</li>
+  </ul>
+  <p>
+  The following unary operator pops the top value from the stack, performs an operation, and pushes the result on the stack:</p>
+  <ul>
+    <li><b>
+  %~</b> Bitwise complement.<br>
+      For example, %{25}%~ results in a value of -26.</li>
+  </ul>
+  <h6><a name="TERMCAP_ZA_OP_LOGIC">
+  Logical Operators</a></h6>
+  <p>
+  The following logical operators pop the top two values from the stack, perform
+  an operation, and push the logical result (0 for false or 1 for true) on the stack:</p>
+  <ul>
+    <li><b>
+  %=</b> Equal to.<br>
+      For example, if the parameter p1 has the value 3, the expression %p1%{2}%= is equivalent to 3=2 and produces a result
+      of 0 (false).</li>
+    <li><b>
+  %></b> Greater than.<br>
+      For example, if the parameter p1 has the value 3, the expression %p1%{0}%> is equivalent to 3>0 and produces a result
+      of 1 (true).</li>
+    <li><b>
+  %&lt;</b> Less than.<br>
+      For example, if the parameter p1 has the value 3, the expression %p1%{4}%&lt; is equivalent to 3&lt;4 and produces a result
+      of 1 (true).</li>
+  </ul>
+  <p>
+  The following unary operator pops the top value from the stack, performs an operation, and pushes the logical result (0 or 1) on the stack.</p>
+  <ul>
+    <li><b>
+  %!</b> Logical negation.<br>
+      This operator produces a value of zero for all nonzero numbers and a value of 1 for zero. For example, %{2}%!
+      results in a value of 0, and %{0}%! results in a value of 1.</li>
+  </ul>
+  <h6><a name="TERMCAP_ZA_OP_COND">
+  Conditional Statements</a></h6>
+  <p>
+  The conditional statement has the following format:</p>
+  <pre> %? expr %t thenpart %e elsepart %;</pre>
+  <p>
+  The <i> %e elsepart</i> is optional. You can nest conditional statements in the
+  <i>thenpart</i> or the <i> elsepart</i>.</p>
+  <p>
+  When Genero evaluates a conditional statement, it pops the top value from the stack and evaluates it as either true or false. If the value is
+  true, the runtime performs the operations after the %t; otherwise it performs the operations after the %e (if any).</p>
+  <p>
+  For example, the expression:</p>
+  <pre>%?%p1%{3}%=%t;31%;</pre>
+  <p>
+  is equivalent to:</p>
+  <pre>if p1 = 3 then print &quot;;31&quot;</pre>
+  <p>
+  Assuming that p1 in the example has the value 3, Genero would perform the following steps:</p>
+  <ul>
+    <li><b>%?</b> does not perform an operation but is included to make the conditional
+      statement easier to read.</li>
+    <li><b>%p1</b> pushes the value of p1 on the stack.</li>
+    <li><b>%{3}</b> pushes the value 3 on the stack.</li>
+    <li><b>%=</b> pops the value of p1 and the value 3 from the stack, evaluates the
+      Boolean expression p1=3, and pushes the resulting value 1 (true) on the stack.</li>
+    <li><b>%t</b> pops the value from the stack, evaluates 1 as true, and executes the
+      operations after %t. (Since ‘‘;31’’ is not a stack machine operation,
+      Genero prints ‘‘;31’’ to the terminal.)</li>
+    <li><b>%;</b> terminates the conditional statement.</li>
+  </ul>
+  <h6><a name="TERMCAP_ZA_EXAMPLE">ZA example</a></h6>
+  <p>The ZA sequence for the ID Systems Corporation ID231 (color
+  terminal) is:</p>
+  <pre>ZA =
+\E[0;                # Print lead-in
+%?%p1%{0}%=%t%{7}    # Encode color number (translate color number to number for the ID231 term)
+%e%p1%{1}%=%t%{3}    # 
+%e%p1%{2}%=%t%{5}    # 
+%e%p1%{3}%=%t%{1}    #
+%e%p1%{4}%=%t%{6}    #
+%e%p1%{5}%=%t%{2}    #
+%e%p1%{6}%=%t%{4}    #
+%e%p1%{7}%=%t%{0}%;  #
+%?%p2%t30;%{40}%+%2d # if p2 is set, print ’30’ and ’40’ + color number (reverse)
+%e40;%{30}%+%2d%;    #  else print ’40’ and ’30’ + color number (normal)
+%?%p3%t;5%;          # if p3 is set, print 5 (blink)
+%?%p4%t;4%;          # if p4 is set, print 4 (underline)
+m                    # print ’m’ to end character sequence</pre>
+
+</body>
+</html>

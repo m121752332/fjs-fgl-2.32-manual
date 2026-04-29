@@ -1,0 +1,1257 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Record Input</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Record Input</a></H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#BASICS">Basics</a></li>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#USAGE">Usage</a>
+  <ul>
+     <li><a href="#PROG_STEPS">Programming Steps</a></li>
+     <li><a href="#VARIABLE_BINDING">Variable Binding</a></li>
+     <li><a href="#INSTRUCTION_CONFIG">Instruction Configuration</a></li>
+     <li><a href="#DEFAULT_ACTIONS">Default Actions</a></li>
+     <li><a href="#CONTROL_BLOCKS">Control Blocks</a></li>
+     <li><a href="#CTRLBLOCK_EXECUTION">Control Blocks Execution Order</a></li>
+     <li><a href="#INTERACTION_BLOCKS">Interaction Blocks</a></li>
+     <li><a href="#CONTROL_INSTRUCTIONS">Control Instructions</a></li>
+     <li><a href="#CONTROL_CLASS">Control Class</a> </li>
+     <li><a href="#CONTROL_FUNCTIONS">Control Functions</a></li>
+  </ul>
+  </li>
+
+  <li><a href="#EXAMPLES">Examples</a>
+    <ul>
+      <li><a href="#EXAMPLE_1">Example 1: Simple INPUT statement using screen record specification</a></li>
+      <li><a href="#EXAMPLE_2">Example 2: Complex INPUT statement using the BY NAME clause and control blocks</a></li>
+    </ul>
+  </li>
+</ul>
+
+
+<p><i>See also:</i>
+<a href="Variables.html">Variables</a>,
+<a href="Records.html">Records</a>,
+<a href="WindowsAndForms.html">Windows</a>,
+<a href="FormSpecFiles.html">Forms</a>, <a href="RecordDisplay.html">Record
+Display</a>,
+<a href="DisplayArray.html">Display Array</a></p>
+
+
+<HR>
+
+
+<h3><a name="BASICS">Basics</a></h3>
+<p>The programs maintain data in <a href="Variables.html">variables</a> and use
+the <tt>INPUT</tt> statement to bind variables to <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen-records</a>
+or <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen-arrays</a> of <a href="WindowsAndForms.html"> forms</a> for data
+entry into <a href="FormSpecFiles.html#SECTION_ATTRIBUTES">form fields</a>.
+The <tt>INPUT</tt> statement activates the current form (the form that
+was most recently displayed or the form in the <a href="WindowsAndForms.html">current
+window</a>):</p>
+<p align="center"><img border="0" src="../Images/IRCFig01.png" width="504" height="288"></p>
+<p> During the <tt>INPUT</tt>   statement execution, the user can edit the record fields,
+while the program
+controls the behavior of the instruction with control blocks:</p>
+<p align="center"><img border="0" src="../Images/IRCFig02.png" width="504" height="288"></p>
+
+<p> To terminate the <tt>INPUT</tt>  execution, the user can validate (or cancel) the
+dialog to commit (or invalidate) the modifications made in the record:</p>
+<p align="center"><img border="0" src="../Images/IRCFig03.png" width="504" height="288"></p>
+
+<p>When the statement completes execution, the form is de-activated.
+After the user terminates the input (for example, with the Accept key), the
+program must test the <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a>
+variable to check if the dialog was validated (or canceled), and then can
+use the <a href="StaticSql.html#SS_INSERT">INSERT</a>
+or <a href="StaticSql.html#SS_UPDATE">UPDATE</a> SQL statements to modify
+the appropriate database tables.</p>
+
+
+<HR>
+
+
+<h3><a name="SYNTAX">INPUT</a></h3>
+
+
+<h4>Purpose:</h4><p>The <tt>INPUT</tt> statement supports data entry into the fields
+of the <a href="WindowsAndForms.html">current form</a>. </p>
+
+
+<h4>Syntax 1: <a name="INPUT_BY_NAME">Implicit field-to-variable mapping</a></h4>
+
+<code>INPUT BY NAME <u>{</u> <i><a href="#variable">variable</a></i> <u>|</u> <i><a href="#record">record</a>.*</i> } [,...]<br>
+&nbsp; <u>[</u> WITHOUT DEFAULTS <u>]</u><br>
+&nbsp; <u> [</u> ATTRIBUTES ( <u> {</u> <i><a href="#display-attributes">display-attribute</a></i>  <u> |</u>
+ <i><a href="#control-attributes">control-attribute</a></i>  <u> }</u> <u>[,...]</u> 
+</code>
+
+<tt> </tt>
+
+<code>) <u>]<br>
+</u>
+&nbsp; <u>[</u> HELP <i><a href="#help-number">help-number</a></i>  <u> ]</u><br>
+<u> [</u>&nbsp;<i><a href="#dialog-control-block">dialog-control-block</a><br>
+&nbsp; </i><u>[...]</u><i><br>
+</i> END INPUT <u>]</u>
+</code>
+
+<h4>Syntax 2: <a name="INPUT">Explicit field-to-variable mapping</a></h4>
+
+<code>INPUT <u>{</u> <i><a href="#variable">variable</a></i> <u>|</u> <i><a href="#record">record</a>.*</i> } [,...]<br>
+&nbsp; <u>[</u> WITHOUT DEFAULTS <u>]</u><br>
+&nbsp; FROM
+<i><a href="#field-list">field-list</a></i><br>
+&nbsp; <u> [</u> ATTRIBUTES ( <u> {</u> <i><a href="#display-attributes">display-attribute</a></i>  <u> |</u>
+ <i><a href="#control-attributes">control-attribute</a></i> <u> }</u> <u>[,...]</u> 
+</code><tt> </tt>
+
+<code>) <u>]<br>
+</u>
+&nbsp; <u>[</u> HELP <i><a href="#help-number">help-number</a></i>  <u> ]</u><br>
+ <u> [</u>&nbsp;<i><a href="#dialog-control-block">dialog-control-block</a><br>
+&nbsp; </i><u>[...]</u><i><br>
+</i> END INPUT <u>]</u>
+</code><p>where <i><a name="dialog-control-block">dialog-control-block</a></i> is one of:</p>
+
+<p><code> <u>{</u> BEFORE INPUT<br>
+ <u>|</u> AFTER INPUT<br>
+ <u>|</u> BEFORE FIELD <i><a href="#field-spec">field-spec</a></i> <u>[,...]</u> <br>
+ <u>|</u> AFTER FIELD <i><a href="#field-spec">field-spec</a></i> <u>[,...]</u> <br>
+ <u>|</u> ON CHANGE <i><a href="#field-spec">field-spec</a></i> <u>[,...]</u> <br>
+ <u>|</u> ON IDLE <i><a href="#idle-seconds">idle-seconds</a></i> <br>
+ <u>|</u> ON ACTION <i><a href="#action-name">action-name</a></i> <u>[</u>INFIELD <i><a href="#field-spec">field-spec</a></i><u>]</u> <br>
+ <u>|</u> ON KEY ( <i><a href="#key-name">key-name</a></i> <u>[,...]</u> )<br>
+ <u> }<br>
+</u>
+&nbsp;&nbsp;&nbsp; <i><a href="#dialog-statement">dialog-statement</a></i><br>
+&nbsp;&nbsp;&nbsp; <u>[...]</u></code>
+</p>
+
+<p>where <i><a name="dialog-statement">dialog-statement</a></i> is one of:
+</p>
+
+<p><code> <u>{</u>   <i><a href="#statement">statement</a><br>
+</i>
+<u>|</u> ACCEPT INPUT<br>
+ <u>|</u> CONTINUE INPUT<br>
+ <u>|</u> EXIT INPUT<br>
+ <u>|</u> NEXT FIELD <u>{</u>  CURRENT&nbsp;<u>|</u> NEXT&nbsp;<u>|</u> PREVIOUS <u>|</u>
+<i><a href="#field-spec">field-spec</a></i> <u>}</u>
+<br> 
+ <u>}</u></code>
+</p>
+
+<p>where <i><a name="field-list">field-list</a></i>  defines a list of fields
+with one or more of:
+</p>
+
+<p><code><u>{</u> <i><a href="#field-name">field-name</a></i><br>
+<u>|</u> <i><a href="#table-name">table-name</a></i>.*<br>
+<u>|</u> <i><a href="#table-name">table-name</a></i>.<i><a href="#field-name">field-name</a></i><br>
+<u>|</u> <i><a href="#screen-array">screen-array</a></i>[<i><a href="#screen-array-line">line</a></i>].*<br>
+<u>|</u> <i><a href="#screen-array">screen-array</a></i>[<i><a href="#screen-array-line">line</a></i>].<i><a href="#field-name">field-name</a></i><br>
+ <u>|</u>
+<i><a href="#screen-record">screen-record</a></i>.*<br>
+ <u>|</u>
+<i><a href="#screen-record">screen-record</a></i>.<i><a href="#field-name">field-name</a></i><br>
+ <u>}</u>
+ <u>[,...]</u>
+</code></p>
+
+<p>where <i><a name="field-spec">field-spec</a></i>  identifies a unique field
+with one of:
+</p>
+
+<p><code><u>{</u> <i><a href="#field-name">field-name</a></i><br>
+<u>|</u> <i><a href="#table-name">table-name</a></i>.<i><a href="#field-name">field-name</a></i><br>
+<u>|</u> <i><a href="#screen-array">screen-array</a></i>.<i><a href="#field-name">field-name</a></i><br>
+ <u>|</u>
+<i><a href="#screen-record">screen-record</a></i>.<i><a href="#field-name">field-name</a></i><br>
+ <u>}</u>
+</code></p>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i><a name="variable">variable</a></i> is a <a href="Variables.html">program variable</a> that will
+    be filled by the <tt>INPUT</tt> statement.</li>
+  <li><i><a name="record">record</a>.*</i> is a <a href="Variables.html#STRUCTURED">record variable</a> that will
+    be filled by the <tt>INPUT</tt> statement.</li>
+  <li><i><a name="help-number">help-number</a> </i>is an integer that allows you to associate a
+    <a href="MessageFiles.html">help message</a> number with the instruction.</li>
+  <li><i><a name="field-name">field-name</a></i> is the identifier of a <a href="FormSpecFiles.html#SECTION_ATTRIBUTES">field</a>
+    of the <a href="WindowsAndForms.html">current form</a>.</li>
+  <li><i><a name="table-name">table-name</a></i> is the identifier of a <a href="FormSpecFiles.html#SECTION_TABLES">database
+    table</a> of the <a href="WindowsAndForms.html">current form</a>.</li>
+  <li><i><a name="screen-record">screen-record</a></i> is the identifier of a <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen
+    record</a> of the <a href="WindowsAndForms.html">current form</a>.</li>
+  <li><i><a name="screen-array">screen-array</a></i> is the <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>
+    that will be used in the form.</li>
+	<li><i><a name="screen-array-line">line</a></i> is a screen array line in 
+	the form.</li>
+  <li><i><a name="key-name">key-name</a></i> is a hot-key identifier (like <tt>F11</tt> or <tt>Control-z</tt>).</li>
+  <li><i><a name="idle-seconds">idle-seconds</a></i> is an <a href="Literals.html"> integer literal</a> or <a href="Variables.html">variable</a>
+    that defines a number of
+    seconds.</li>
+  <li><i><a name="action-name">action-name</a></i> identifies an <a href="InteractionModel.html">action</a>
+    that can be executed by the user.</li>
+  <li><i><a name="statement">statement</a></i> is any instruction supported by the language.</li>
+</ol>
+
+
+<p> The following table shows the <i><a name="options">options</a> </i>supported by the
+<tt>INPUT</tt> statement:</p>
+
+<div align="center">
+  <center>
+  <table border="0" cellpadding="0" width="90%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="40%"><b> Attribute</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>HELP <i>help-number</i></tt></td>
+      <td valign="top">Defines the help number when help is invoked by the user, where <i>help-number</i>
+        is an <a href="Literals.html#LT_INTEGER">integer literal</a> or a <a href="Variables.html">program
+        variable</a>. <b><font color="#FF0000">See Warning below!</font></b></td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>WITHOUT DEFAULTS</tt></td>
+      <td valign="top">Indicates that the data rows are not filled (<a href="Programs.html#PC_TRUE">TRUE</a>) with the
+        column default values defined in the <a href="FormSpecFiles.html">form
+        specification file</a> or the <a href="DatabaseSchema.html">database
+        schema files</a> (Default is <a href="Programs.html#PC_FALSE">FALSE</a>).&nbsp;<b><font color="#FF0000">See 
+      Warning below!</font></b></td>
+    </tr>
+    </table>
+  </center>
+</div>
+
+
+<p> The following table shows the <i><a name="display-attributes">display-attributes</a> </i> supported by the
+<tt>INPUT</tt> statement. The <i>display-attributes</i> affect console-based 
+applications only, they do not affect GUI-based applications.</p>
+
+<div align="center">
+  <center>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="40%"><b> Attribute</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="40%" valign="top"><tt>BLACK, BLUE, CYAN, GREEN, MAGENTA, RED, WHITE, YELLOW</tt></td>
+    <td valign="top">The TTY color of the displayed data.</td>
+  </tr>
+  <tr>
+    <td width="40%" valign="top"><tt>BOLD, DIM, INVISIBLE, NORMAL</tt></td>
+    <td valign="top">The TTY font attribute of the displayed data.</td>
+  </tr>
+  <tr>
+    <td width="40%" valign="top"><tt>REVERSE, BLINK, UNDERLINE</tt></td>
+    <td valign="top">The TTY video attribute of the displayed data.</td>
+  </tr>
+</table>
+  </center>
+</div>
+<p> The following table shows the <i><a name="control-attributes">control-attributes</a> </i> supported by the
+<tt>INPUT</tt> statement:</p>
+
+<div align="center">
+  <center>
+  <table border="0" cellpadding="0" width="90%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="40%"><b> Attribute</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>NAME = <i>string</i></tt></td>
+      <td valign="top">Identifies the dialog statement with a clear name.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>HELP = <i>help-number</i></tt></td>
+      <td valign="top">Defines the help number when help is invoked by the user, where <i>help-number</i>
+        is an <a href="Literals.html#LT_INTEGER">integer literal</a> or a <a href="Variables.html">program
+        variable</a>.<b> <font color="#FF0000">See Warning below!</font></b></td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>WITHOUT DEFAULTS <u>[</u>=<i>bool</i><u>]</u></tt></td>
+      <td valign="top">Indicates if the data rows must be filled (<a href="Programs.html#PC_FALSE">FALSE</a>)
+        or not (<a href="Programs.html#PC_TRUE">TRUE</a>) with the
+        column default values defined in the <a href="FormSpecFiles.html">form
+        specification file</a> or the <a href="DatabaseSchema.html">database
+        schema files</a>.&nbsp;The <i>bool</i> parameter can be an <a href="Literals.html#LT_INTEGER">integer
+        literal</a> or a <a href="Variables.html">program variable</a>. <b>
+      <font color="#FF0000">See Warning below!</font></b></td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>FIELD ORDER FORM</tt></td>
+      <td valign="top">Indicates that the tabbing order of fields is defined by the <a href="FSFAttributes.html#FA_TABINDEX">TABINDEX</a>
+        attribute of form fields. The default order in which the focus moves from field to field in the screen
+array is determined by the order of the variables used by the <tt>INPUT</tt>
+statement.
+The <a href="Programs.html#PROGRAM_OPTIONS">program options</a> instruction can also change
+        this behavior with <tt>FIELD ORDER FORM</tt> options.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>UNBUFFERED <u>[</u> =<i>bool</i><u>]</u> </tt></td>
+      <td valign="top">Indicates that the dialog must be sensitive to program variable
+        changes.&nbsp;The <i>bool</i> parameter can be an <a href="Literals.html#LT_INTEGER">integer
+        literal</a> or a <a href="Variables.html">program variable</a>.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>CANCEL = <i>bool</i> </tt></td>
+      <td valign="top">Indicates if the default <i>cancel</i> action should be added to the dialog. If not specified, the action is registered.&nbsp;The <i>bool</i> parameter can be an <a href="Literals.html#LT_INTEGER">integer
+        literal</a> or a <a href="Variables.html">program variable</a>.</td>
+    </tr>
+    <tr>
+      <td width="40%" valign="top"><tt>ACCEPT = <i>bool</i> </tt></td>
+      <td valign="top">Indicates if the default <i>accept</i> action should be added to the dialog. If not specified, the action is registered.&nbsp;The <i>bool</i> parameter can be an <a href="Literals.html#LT_INTEGER">integer
+        literal</a> or a <a href="Variables.html">program variable</a>.</td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+
+<HR>
+
+
+<h3><a name="USAGE">Usage</a></h3>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <LI>Make sure that the <A href="Programs.html#PV_INT_FLAG">INT_FLAG</A> 
+  variable is set to <A href="Programs.html#PC_FALSE">FALSE</A> before entering 
+  the <tt>INPUT</tt> block.
+  <li>Although the <tt>ON KEY</tt> block is supported for backward 
+	compatibility, it is recommended that you use <tt>ON ACTION</tt> instead.</li>
+  <li>For new programs, specify <tt>UNBUFFERED</tt> mode rather than using the default
+    buffered mode.</li>
+  <li>For the <tt>HELP </tt>and <tt>WITHOUT DEFAULTS</tt> <a href="#options">options</a>, the appearance 
+  order is important : <b>the last option overrides the previous one!</b></li>
+</ol>
+
+
+<h4><a name="PROG_STEPS">Programming Steps</a></h4>
+
+<p>The following steps describe how to use the <tt>INPUT</tt> statement:</p>
+
+
+<ol>
+  <li>Create a <a href="FormSpecFiles.html">form specification file</a>, with an
+    optional <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen record</a>. The screen
+    record identifies the presentation elements to be used by the runtime system to
+    display the records. if you omit the declaration of the screen record in the
+    form file, the runtime system will use the default screen records created by
+    the form compiler for each table listed in the <a href="FormSpecFiles.html#SECTION_TABLES">TABLES</a>
+    section and for the <tt>FORMONLY</tt> pseudo-table.</li>
+  <li>Make sure that the program controls interruption handling with
+    <a href="Programs.html#SIGNAL_HANDLING">DEFER INTERRUPT</a>, to manage the
+    validation/cancellation of the interactive dialog.</li>
+  <li>Define a <a href="Arrays.html">program record</a> with the
+    <a href="Variables.html">DEFINE</a> instruction. The members of the program
+    record must correspond to the elements of the screen record, by number and
+    data types.&nbsp;</li>
+  <li>Open and display the form, using an <a href="WindowsAndForms.html#OPEN_WINDOW">OPEN
+    WINDOW</a> with the <tt>WITH FORM</tt> clause or the <a href="WindowsAndForms.html#OPEN_FORM">OPEN
+    FORM / DISPLAY FORM</a> instructions.</li>
+  <li>If needed, fill the program record with data, for example with a
+    <a href="ResultSets.html">result set cursor</a>.</li>
+  <LI>Set the <A href="Programs.html#PV_INT_FLAG">INT_FLAG</A> 
+    variable to <A href="Programs.html#PC_FALSE">FALSE</A>.
+  <li>Write the <tt>INPUT</tt> statement to handle data input.</li>
+  <li>Inside the <tt>INPUT</tt> statement, control the behavior of the
+    instruction with <tt>BEFORE INPUT</tt>, <tt>BEFORE FIELD</tt>, <tt>AFTER
+    FIELD</tt>,
+    <tt>AFTER INPUT</tt> and <tt>ON KEY</tt> blocks.</li>
+  <li>After the interaction statement block, test the
+    <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a>  pre-defined
+    variable to check if the dialog was canceled
+    (<a href="Programs.html#PV_INT_FLAG">INT_FLAG</a> =
+    <a href="Programs.html#PC_TRUE">TRUE</a>)
+    or validated (<a href="Programs.html#PV_INT_FLAG">INT_FLAG</a>
+    = <a href="Programs.html#PC_FALSE">FALSE</a>). If the <tt>INT_FLAG</tt>
+    variable is <tt>TRUE</tt>, you should reset it to <tt>FALSE</tt> to not
+    disturb code that relies on this variable to detect interruption events from
+    the GUI front-end or TUI console.</li>
+</ol>
+
+
+<HR size="1">
+
+
+<h4><a name="VARIABLE_BINDING">Variable Binding</a></h4>
+
+<p>The program <a href="Records.html">record member variables</a> are bound to the fields
+of a <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen record</a>, so the
+<tt>INPUT</tt> instruction can manipulate the values that the user enters in
+the form fields.</p>
+
+<p>The <tt>BY NAME</tt> clause implicitly binds the fields to the <a href="Variables.html">variables</a>
+that have the same identifiers as the field names. You must first declare variables
+with the same names as the fields from which they accept input. The runtime
+system ignores any record name prefix when making the match. The unqualified
+names of the variables and of the fields must be unique and unambiguous within
+their respective domains. If they are not, the runtime system generates an <a href="Exceptions.html">exception</a>,
+and sets the <a href="Programs.html#PV_STATUS">STATUS</a> variable to
+a negative value.</p>
+
+<p>The <tt>FROM</tt> clause explicitly binds the fields in the
+<a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen record</a> to a list of program
+variables that can be simple <a href="Variables.html">variables</a> or <a href="Records.html">records</a>.
+The form can include other fields that are not part of the specified variable
+list, but the number of <a href="Variables.html">variables</a> or <a href="Records.html">record</a> 
+members must equal the number of
+fields listed in the <tt>FROM</tt> clause. Each variable must be of the same (or a
+compatible) <a href="DataTypes.html"> data type</a> as the corresponding screen field. When the user enters
+data, the runtime system checks the entered value against the data type of the
+variable, not the data type of the screen field.</p>
+
+<p><b><font color="#FF0000">Warning:</font> When using the <tt>FROM</tt> clause
+with a screen record followed by a .* (dot star), keep in mind that program
+variables are bound to screen record fields by position, so you must make sure
+that the program variables are defined (or listed) in the same order as the
+screen array fields.</b></p>
+
+<p>The program variables can be of any
+<a href="DataTypes.html">data type</a>: The runtime system will adapt input and
+display rules to the variable type. If a variable is declared with the <a href="Variables.html">LIKE</a> 
+clause and uses a column defined as SERIAL/SERIAL8/BIGSERIAL, the runtime system will treat the
+field as if it was defined as <a href="FSFAttributes.html#FA_NOENTRY">NOENTRY</a>
+in the form file: Since values of serial columns
+are automatically generated by the database server, no user input is required
+for such fields. New generated serials are available in the <a href="Connections.html#SQLCA_RECORD">SQLCA.SQLERRD[2]
+register</a> for SERIAL columns, and with dbinfo('bigserial') for BIGSERIAL
+columns.</p>
+
+<p>  The variables act as data model to display data or to get user input through the
+<tt>
+INPUT</tt> instruction. Always use the variables if you want to change some field values
+programmatically. When using the <tt>UNBUFFERED</tt>  attribute, the instruction is
+sensitive to program variable changes: If you need to display new data during the
+<tt>INPUT</tt>
+execution, just assign the values to the program
+variables; the runtime system will automatically display the values to the
+screen:</p>
+
+<pre><code class="linenumber">01</code> <tt>INPUT </tt>p_items.* <tt>FROM</tt> s_items.* <tt>ATTRIBUTES </tt>(<tt>UNBUFFERED</tt>)
+<code class="linenumber">02</code>    <tt>ON CHANGE </tt>code
+<code class="linenumber">03</code>       <tt>IF </tt>p_items.code = &quot;A34&quot; <tt>THEN</tt>
+<code class="linenumber">04</code>          <tt>LET </tt>p_items.desc = &quot;Item A34&quot;
+<code class="linenumber">05</code>       <tt>END IF</tt>
+<code class="linenumber">06</code> <tt>END INPUT</tt></pre>
+
+<p>When the <tt>INPUT</tt> instruction executes, any column
+default values are displayed in the screen fields, unless you specify the <tt>WITHOUT DEFAULTS</tt>
+keywords. The column default values are specified in the <a href="FormSpecFiles.html">form
+specification file</a> with the <a href="FSFAttributes.html#FA_DEFAULT">DEFAULT</a>
+attribute, or in the <a href="DatabaseSchema.html">database schema files</a>.</p>
+
+<p>If you specify the <tt>WITHOUT DEFAULTS</tt> option, however, the form fields
+display the current values of the variables when the <tt>INPUT</tt> statement
+begins. This option is available with both the <tt>BY NAME</tt> and the <tt>FROM</tt>
+binding clauses.</p>
+
+<pre><code class="linenumber">01</code> <tt>LET</tt> p_items.code = &quot;A34&quot;
+<code class="linenumber">02</code> <tt>INPUT</tt> p_items.* <tt>FROM</tt> s_items.* <tt>WITHOUT DEFAULTS</tt>
+<code class="linenumber">03</code>    <tt>BEFORE INPUT</tt>
+<code class="linenumber">04</code>       <tt>MESSAGE</tt> &quot;You should see A34 in field 'code'...&quot;
+<code class="linenumber">05</code> <tt>END INPUT</tt></pre>
+
+
+<p>If the program record has the same structure as a database table (this is the
+case when the record is defined with a <a href="Variables.html#VA_DEFINE">LIKE</a>
+clause), you may not want to display/use some of the columns. You can achieve
+this by used <a href="FormSpecFiles.html#FF_PHANTOM_FIELDS">PHANTOM fields</a>
+in the screen array definition. Phantom fields will only be used to bind program
+variables, and will not be transmitted to the front-end for display.</p>
+
+
+<HR size="1">
+
+
+<h4><a name="INSTRUCTION_CONFIG">Instruction Configuration</a></h4>
+
+<p>The <tt> ATTRIBUTES</tt> clause specifications override all default attributes
+and temporarily override any display attributes that the
+<a href="Programs.html#PROGRAM_OPTIONS"> OPTIONS</a> or the
+<a href="WindowsAndForms.html#OPEN_WINDOW"> OPEN WINDOW</a>
+statement specified for these fields. While the <tt>INPUT</tt> statement
+is executing, the runtime system ignores the <tt>INVISIBLE</tt> attribute.</p>
+
+<ul>
+     <li><a href="#HELP_option">HELP option</a></li>
+		<li><a href="#WITHOUT_DEFAULTS_option">WITHOUT DEFAULTS option</a></li>
+		<li><a href="#FIELD_ORDER">FIELD ORDER FORM option</a></li>
+		<li><a href="#Input_wrap_option">Input wrap option</a></li>
+		<li><a href="#UNBUFFERED_option">UNBUFFERED option</a></li>
+		<li><a href="#ACCEPT_option">ACCEPT option</a></li>
+		<li><a href="#CANCEL_option">CANCEL option</a></li>
+  </ul>
+
+<h5><a name="HELP_option">HELP option</a></h5>
+
+<p>The <tt>HELP</tt> clause specifies the number of a <a href="MessageFiles.html">help
+message</a> to display if the user invokes the help while the focus is in any
+field used by the instruction. The predefined 'help' action is automatically
+created by the runtime system. You can bind <a href="InteractionModel.html"> action views</a>
+to the 'help' action.</p>
+
+<p><b><font color="#FF0000">Warning:</font> The <font size="2">HELP</font> <i>option</i> overrides 
+the <font size="2">HELP</font> <i>attribute</i>!</b></p>
+
+<h5><a name="WITHOUT_DEFAULTS_option">WITHOUT DEFAULTS option</a></h5>
+
+<p>Indicates if the data rows must be filled (<a href="Programs.html#PC_FALSE">FALSE</a>)
+        or not (<a href="Programs.html#PC_TRUE">TRUE</a>) with the
+        column default values defined in the <a href="FormSpecFiles.html">form
+        specification file</a> or the <a href="DatabaseSchema.html">database
+        schema files</a>.</p>
+
+
+<h5><a name="FIELD_ORDER">FIELD ORDER FORM option</a></h5>
+
+<p>By default, the tabbing order
+is defined by the <a href="#VARIABLE_BINDING">variable binding list</a> in the
+instruction description. You can control the tabbing order by using the <tt>FIELD
+ORDER FORM</tt> attribute: When this attribute is used, the tabbing order is
+defined by the <a href="FSFAttributes.html#FA_TABINDEX">TABINDEX</a> attribute
+of the form fields. If this attribute is used, the <a href="Programs.html#Dialog_fieldOrder">Dialog.fieldOrder</a>
+FGLPROFILE entry is ignored.</p>
+
+<h5><a name="Input_wrap_option">Input wrap option</a></h5>
+
+<p>The default order in which the focus moves from field to field in the screen
+array is determined by the order of the variables used by the <tt>INPUT</tt>
+statement.
+The <a href="Programs.html#PROGRAM_OPTIONS">program options</a> instruction can also change the behavior of the
+<tt>INPUT</tt> instruction, with the <tt>INPUT WRAP</tt>
+or <tt>FIELD ORDER FORM</tt> options.</p>
+
+<h5><a name="UNBUFFERED_option">UNBUFFERED option</a></h5>
+
+<p>Indicates that the dialog must be sensitive to program variable
+        changes.&nbsp;When using this option, you bypass the traditional
+&quot;buffered&quot; mode.</p>
+
+
+<p>When using the traditional &quot;buffered&quot; mode, program variable
+changes are not automatically displayed to form fields; You need to execute a <tt>DISPLAY
+TO</tt> or <tt>DISPLAY BY NAME</tt>. Additionally, if an action is triggered,
+the value of the current field is not validated and is not copied into the
+corresponding program variable. The only way to get the text of the current
+field is to use <a href="Operators.html#OP_GET_FLDBUF">GET_FLDBUF()</a>.</p>
+
+
+<p>If the &quot;unbuffered&quot; mode is used, program variables and form fields
+are automatically synchronized. You don't need to display explicitly values with
+a <tt>DISPLAY TO</tt> or <tt>DISPLAY BY NAME</tt>. When an action is triggered,
+the value of the current field is validated and is copied into the corresponding
+program variable.</p>
+
+
+<h5><a name="ACCEPT_option">ACCEPT option</a></h5>
+
+<p>The <tt>ACCEPT</tt> attribute can be set to <a href="Programs.html#PC_FALSE">FALSE</a>
+to avoid the automatic creation of the <i>accept</i> default action. This
+option can be used for example when you want to write a specific validation
+procedure, by using <a href="#ACCEPT_INPUT">ACCEPT INPUT</a>.</p>
+
+<h5><a name="CANCEL_option">CANCEL option</a></h5>
+
+<p>The <tt>CANCEL</tt> attribute can be set to <a href="Programs.html#PC_FALSE">FALSE</a>
+to avoid the automatic creation of the <i>cancel</i> default action. This is
+useful for example when you only need a validation action (accept), or when you want to write a specific
+cancellation procedure, by using <a href="#EXIT_INPUT">EXIT INPUT</a>.</p>
+
+
+<p>Note that if the <tt>CANCEL=FALSE</tt> option is set, no <i><a href="InteractionModel.html#XCROSS_CLOSE">close
+action</a></i> will be created, and you must write an <tt>ON
+ACTION close</tt> control block to create an explicit action.</p>
+
+
+<HR size="1">
+
+
+<h4><a name="DEFAULT_ACTIONS">Default Actions</a></h4>
+
+<p>When an <tt>INPUT</tt> instruction executes, the runtime system creates
+a set of <a href="InteractionModel.html">default actions</a>. See the
+<a href="#CTRLBLOCK_EXECUTION">control block execution order</a> to understand
+what control blocks are executed when a specific action is fired.</p>
+
+<p>The following table lists the default actions created for this dialog:</p>
+
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="20%"><b>Default action</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>accept</tt></td>
+    <td valign="top">Validates the <tt>INPUT</tt> dialog (validates fields)<br>
+      <i>Creation can be avoided with </i><tt>ACCEPT</tt> <i>attribute.</i></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>cancel</tt></td>
+    <td valign="top">Cancels the <tt>INPUT</tt> dialog (no validation, int_flag is set)<br>
+      <i>Creation can be avoided with </i><tt>CANCEL</tt> <i> attribute.</i></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>close </tt> </td>
+    <td valign="top">By default, cancels the <tt>INPUT</tt> dialog (no validation, int_flag is set)<br>
+      Default action view is hidden. See <a href="InteractionModel.html#XCROSS_CLOSE">Windows
+      closed by the user</a>.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>help</tt></td>
+    <td valign="top">Shows the help topic defined by the <tt>HELP</tt> clause.<br>
+      <i>Only created when a </i><tt> HELP</tt>
+      <i> clause is defined.</i></td>
+  </tr>
+</table>
+
+<p> The <tt>accept</tt> and <tt>cancel</tt>
+default actions can be avoided with the <tt>ACCEPT</tt> and <tt>CANCEL</tt>
+dialog control attributes:</p>
+
+<pre><CODE class=linenumber>01</CODE>  <tt>INPUT BY NAME</tt> field1<tt> ATTRIBUTES </tt>(<tt> CANCEL</tt>=<tt>FALSE </tt>)
+<CODE class=linenumber>02</CODE>       <tt>...</tt></pre>
+
+
+<HR size="1">
+
+
+<h4><a name="CONTROL_BLOCKS">Control Blocks</a></h4>
+
+<ul>
+     <li><a href="#BEFORE_INPUT_block">BEFORE INPUT block</a></li>
+		<li><a href="#AFTER_INPUT_block">AFTER INPUT block</a></li>
+		<li><a href="#BEFORE_FIELD_block">BEFORE FIELD block</a></li>
+		<li><a href="#ON_CHANGE_block">ON CHANGE block</a></li>
+		<li><a href="#AFTER_FIELD_block">AFTER FIELD block</a></li>
+  </ul>
+
+<h5><a name="BEFORE_INPUT_block">BEFORE INPUT block</a></h5>
+
+<p>The <tt>BEFORE INPUT</tt> block is executed one time, before the runtime
+system gives control to the user. You can implement initialization in this
+block.</p>
+
+<h5><a name="AFTER_INPUT_block">AFTER INPUT block</a></h5>
+
+<p>The <tt>AFTER INPUT</tt> block is executed one time, after the user has
+validated or canceled the dialog, and before the runtime system executes the
+instruction that appears just after the <tt>INPUT</tt>
+ block. You typically implement dialog finalization in this block. The <tt>AFTER INPUT</tt>
+block is not executed if&nbsp; <tt>EXIT INPUT </tt>executes.<tt>&nbsp;</tt></p>
+
+<h5><a name="BEFORE_FIELD_block">BEFORE FIELD block</a></h5>
+
+<p>A <tt>BEFORE FIELD</tt> block is executed each time the cursor enters into the
+specified field, when moving the focus from field to field. The <tt>BEFORE</tt> <tt>FIELD</tt> block is also executed when using <a href="#NEXT_FIELD">NEXT FIELD</a>.</p>
+
+<p><b><font color="#FF0000">Warning:</font> When using the default <tt>FIELD
+ORDER CONSTRAINT</tt> mode, the dialog executes the <tt>BEFORE FIELD</tt> block
+of the
+field corresponding to the first variable of the <tt> INPUT</tt>, even if
+that field is not editable (<a href="FSFAttributes.html#FA_NOENTRY">NOENTRY</a>,
+hidden
+or disabled). The block is executed when you enter the dialog. This behavior is supported for backward compatibility. The block
+is <u> not</u> executed when using the <tt>FIELD ORDER FORM</tt>.</b></p>
+
+<p><b><font color="#FF0000">Warning:</font> With the <tt>FIELD ORDER FORM</tt>
+mode, for each dialog executing the first time with a specific form, the <tt>BEFORE FIELD</tt> block
+might be fired for the first field of the initial tabbing list defined by the
+form, even if that field was hidden or moved around in a table. The dialog then
+behaves as if a <tt>NEXT FIELD first-visible-column</tt> would have been done in
+the <tt>BEFORE FIELD</tt> of that field.</b></p>
+
+<h5><a name="ON_CHANGE_block">ON CHANGE block</a></h5>
+
+<p>The <tt>ON CHANGE</tt> block is executed when another field is selected, if the value of the specified
+field has changed since the field got the focus <u>and</u> if the "touched" field flag is set. The
+"touched" flag is set on user input or
+when doing a <a href="RecordDisplay.html#DISPLAY_TO">DISPLAY
+TO</a> or a <a href="RecordDisplay.html#DISPLAY_BY_NAME">DISPLAY BY NAME</a>.
+Once set, the "touched" flag is not reset until the end of the dialog.</p>
+
+<p align="left"> For fields defined as <a href="FormSpecFiles.html#FF_ITEMTYPE_RADIOGROUP">RadioGroup</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX"> ComboBox</a>, <a href="FormSpecFiles.html#FF_ITEMTYPE_SPINEDIT">SpinEdit</a>,
+<a href="FormSpecFiles.html#FF_ITEMTYPE_SLIDER">Slider</a>, and <a href="FormSpecFiles.html#FF_ITEMTYPE_CHECKBOX"> CheckBox</a>
+views, the <tt>ON CHANGE</tt> block is fired immediately when the user changes
+the value. For other type of fields (like <a href="FormSpecFiles.html#FF_ITEMTYPE_EDIT">Edits</a>),
+the <tt>ON CHANGE</tt> block is fired when leaving the field. You leave the
+field when you validate the dialog, when you move to another field, or when you
+move to another row in an <a href="InputArray.html">INPUT ARRAY</a>. Note that
+the <a href="InteractionModel.html#DIRTY">dialogtouched predefined action</a>
+can also be used to detect field changes immediately, but with this action you
+can't get the data in the target variables (should only be used to detect that
+the user has started to modify data)</p>
+
+<p> 
+ If both an <tt>ON CHANGE</tt> block and <tt>AFTER FIELD</tt> block are
+defined for a field, the <tt>ON CHANGE</tt> block is executed before the <tt>AFTER
+FIELD</tt> block.</p>
+
+<p> 
+ When changing the value of the current field by program in an <tt>ON ACTION</tt>
+ block, the <tt>ON CHANGE</tt>  block will be executed when leaving the field if
+ the value is different from the reference value <u>and</u> if the "touched" flag is set (after previous user input or <a href="RecordDisplay.html#DISPLAY_TO">DISPLAY
+TO</a> / <a href="RecordDisplay.html#DISPLAY_BY_NAME">DISPLAY BY NAME</a>).</p>
+
+<p>
+ When using the <a href="#CONTROL_INSTRUCTIONS">NEXT FIELD</a> instruction,
+the comparison value is re-assigned as if the user had leaved and re-entered the
+ field. Therefore, when using <tt>NEXT FIELD</tt> in <tt>ON CHANGE</tt>  block <u>or</u>
+ in an <tt>ON ACTION</tt> block, the <tt>ON CHANGE</tt> block will only be fired
+again if the value is different from the reference value. This denies to do field validation in <tt>ON CHANGE</tt> 
+ blocks:
+you better do validations in <tt>AFTER FIELD</tt>  blocks and/or <tt>AFTER INPUT</tt>
+ blocks.</p>
+
+<h5><a name="AFTER_FIELD_block">AFTER FIELD block</a></h5>
+
+<p>An <tt>AFTER FIELD</tt> block is executed each time the cursor leaves the
+specified field, when moving the focus from field to field.</p>
+
+<p>The <tt>AFTER FIELD</tt> block is also executed when you validate the dialog
+or when you move to another row in an <a href="InputArray.html">INPUT ARRAY</a>.</p>
+
+<hr>
+<h4><a name="CTRLBLOCK_EXECUTION">Control Block Execution Order</a></h4>
+
+<p>The following table shows the order in which the runtime system executes the
+control blocks in the <tt>INPUT</tt>
+ instruction, according to the user action:</p>
+<div align="center">
+  <center>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="30%"><b>Context / User action</b></td>
+    <td bgcolor="#C0C0C0"><b>Control Block execution order</b></td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">Entering the dialog</td>
+    <td valign="top" bgcolor="#CCFFFF">
+      <ol>
+        <li><tt>BEFORE INPUT</tt></li>
+        <li><tt>BEFORE FIELD </tt>(first field)</li>
+      </ol>
+    </td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" bgcolor="#FFFFCC">Moving from field A to field B</td>
+    <td valign="top" bgcolor="#FFFFCC">
+      <ol>
+        <li><tt>ON CHANGE </tt>(if value has changed for field A)</li>
+        <li><tt>AFTER FIELD </tt>(for field A)</li>
+        <li><tt>BEFORE FIELD </tt>(for field B)</li>
+      </ol>
+    </td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">Changing the value of a field with a specific
+      field like checkbox</td>
+    <td valign="top" bgcolor="#CCFFFF">
+      <ol>
+        <li><tt>ON CHANGE</tt></li>
+      </ol>
+    </td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" bgcolor="#FFFFCC">Validating the dialog</td>
+    <td valign="top" bgcolor="#FFFFCC">
+      <ol>
+        <li><tt>ON CHANGE </tt>(if value has changed in current field)</li>
+        <li><tt>AFTER FIELD</tt></li>
+        <li><tt>AFTER INPUT</tt></li>
+      </ol>
+    </td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">Canceling the dialog</td>
+    <td valign="top" bgcolor="#CCFFFF">
+      <ol>
+        <li><tt>AFTER INPUT</tt></li>
+      </ol>
+    </td>
+  </tr>
+</table>
+  </center>
+</div>
+
+
+<HR size="1">
+
+
+<h4><a name="INTERACTION_BLOCKS">Interaction Blocks</a></h4>
+
+
+<ul>
+     <li><a href="#ON_IDLE_block">ON IDLE block</a></li>
+		<li><a href="#ON_ACTION_block">ON ACTION block</a></li>
+		<li><a href="#ON_KEY_block">ON KEY block</a></li>
+  </ul>
+
+
+<h5><a name="ON_IDLE_block">ON IDLE block</a></h5>
+
+
+<p> The <tt>ON IDLE <i>idle-seconds</i></tt>  clause defines a set of
+instructions that must be executed after <i>idle-seconds</i>  of inactivity.
+This can be used, for example, to quit the dialog after the user has not
+interacted with the program for a specified period of time. The parameter <i>idle-seconds</i>
+must be an <a href="Literals.html">integer
+literal</a> or <a href="Variables.html">variable</a>. If it evaluates to zero, the timeout is
+disabled.</p>
+
+
+<p>You should not use the <tt>ON IDLE</tt> trigger with a short timeout period
+such as 1 or 2 seconds; The purpose of this trigger is to give the control back
+to the program after a relatively long period of inactivity (10, 30 or 60
+seconds). This is typically the case when the end user leaves the workstation,
+or got a phone call. The program can then execute some code before the user gets
+the control back.</p>
+
+
+<pre><CODE class=linenumber>01</CODE> <tt>...</tt>
+<CODE class=linenumber>02</CODE>    <tt>ON IDLE</tt> 30
+<CODE class=linenumber>03</CODE>       <tt>IF</tt> ask_question(&quot;Do you want to leave the dialog?&quot;) <tt>THEN</tt>
+<CODE class=linenumber>04</CODE>          <tt>EXIT INPUT</tt>
+<CODE class=linenumber>05</CODE>       <tt>END IF</tt>
+<CODE class=linenumber>06</CODE> <tt>...</tt></pre>
+
+<h5><a name="ON_ACTION_block">ON ACTION block</a></h5>
+
+<p> You can use <tt>ON ACTION</tt> blocks to execute a sequence of instructions when
+the user raises a specific action. This is the preferred solution compared to <tt>ON KEY</tt> blocks,
+because <tt>ON ACTION</tt> blocks use abstract names to control user
+interaction.</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>...</tt>
+<CODE class=linenumber>02</CODE>    <tt>ON ACTION</tt> zoom
+<CODE class=linenumber>03</CODE>       <tt>CALL</tt> zoom_customers() <tt>RETURNING</tt> st, cust_id, cust_name
+<CODE class=linenumber>04</CODE>       <tt>...</tt></pre>
+
+
+<p>You can add the <a href="InteractionModel.html#ON_ACTION_INFIELD">INFIELD
+<i>field-spec</i></a> clause to the <tt>ON ACTION <i>action-name</i></tt>
+statement to make the runtime system enable/disable the action automatically
+when the focus enters/leaves the specified field: </p>
+
+
+<pre><CODE class=linenumber>01</CODE>    <tt>ON ACTION</tt> zoom <tt>INFIELD</tt> customer_city
+<CODE class=linenumber>02</CODE>       <tt>LET</tt> rec.customer_city = zoom_city()</pre>
+
+
+<p>For more details about <tt>ON ACTION</tt> and binding action views, see <a href="InteractionModel.html#CTRLGACTIONS">Interaction
+Model</a>. </p>
+
+
+<h5><a name="ON_KEY_block">ON KEY block</a> </h5>
+
+
+<p>For backward compatibility, you can use <tt>ON KEY</tt> blocks to execute a sequence of instructions when
+the user presses a specific key. The following key names are accepted by the
+compiler:</p>
+
+<div align="center">
+  <center>
+  <table border="0" cellpadding="0" width="90%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="30%"><b>Key Name</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="30%" valign="top"><tt>ACCEPT</tt></td>
+      <td valign="top">The validation key.</td>
+    </tr>
+    <tr>
+      <td width="30%" valign="top"><tt>INTERRUPT</tt></td>
+      <td valign="top">The interruption key.</td>
+    </tr>
+    <tr>
+      <td width="30%" valign="top"><tt>ESC</tt> or <tt>ESCAPE</tt></td>
+      <td valign="top">The ESC key (not recommended, use <tt>ACCEPT</tt> instead).</td>
+    </tr>
+    <tr>
+      <td width="30%" valign="top"><tt>TAB</tt> </td>
+      <td valign="top">The TAB key (not recommended).</td>
+    </tr>
+    <tr>
+      <td width="30%" valign="top"><tt>Control-<i>char</i></tt></td>
+      <td valign="top">A control key where <i>char</i> can be any character except A, D, H,
+        I, J, K, L, M, R, or X.</td>
+    </tr>
+    <tr>
+      <td width="30%" valign="top"><tt>F1</tt> through <tt>F255</tt></td>
+      <td valign="top">A function key.</td>
+    </tr>
+    <tr>
+      <td width="30%" valign="top"><tt>DELETE</tt></td>
+      <td valign="top">The key used to delete a new row in an array.</td>
+    </tr>
+    <tr>
+      <td width="30%" valign="top"><tt>INSERT</tt></td>
+      <td valign="top">The key used to delete a new row in an array.</td>
+    </tr>
+    <tr>
+      <td width="30%" valign="top"><tt>HELP</tt></td>
+      <td valign="top">The help key.</td>
+    </tr>
+    <tr>
+      <td width="30%" valign="top"><tt>LEFT</tt></td>
+      <td valign="top">The left arrow key.</td>
+    </tr>
+    <tr>
+      <td width="30%" valign="top"><tt>RIGHT</tt></td>
+      <td valign="top">The right arrow key.</td>
+    </tr>
+    <tr>
+      <td width="30%" valign="top"><tt>DOWN</tt></td>
+      <td valign="top">The down arrow key.</td>
+    </tr>
+    <tr>
+      <td width="30%" valign="top"><tt>UP</tt></td>
+      <td valign="top">The up arrow key.</td>
+    </tr>
+    <tr>
+      <td width="30%" valign="top"><tt>PREVIOUS</tt> or <tt>PREVPAGE</tt>&nbsp;</td>
+      <td valign="top">The previous page key.</td>
+    </tr>
+    <tr>
+      <td width="30%" valign="top"><tt>NEXT</tt> or <tt>NEXTPAGE</tt>&nbsp;</td>
+      <td valign="top">The next page key.</td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+
+<p>An <tt>ON KEY</tt> block defines one to four different action objects that
+will be identified by the key name in lowercase (<tt>ON KEY(F5,F6) = creates
+Action f5 + Action f6</tt>). Each action object will get an <i>acceleratorName</i>
+assigned. In <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a> mode,
+Action Defaults are applied for <tt>ON KEY</tt> actions by using the name of the
+key. You can define secondary accelerator keys, as well as default decoration
+attributes like button text and image, by using the key name as action
+identifier. Note that the action name is always in lowercase letters. See <a href="ActionDefaults.html">Action
+Defaults</a> for more details.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> Check carefully the <tt>ON KEY
+CONTROL-?</tt> statements because they may result in having duplicate
+accelerators for multiple actions due to the accelerators defined by <a href="ActionDefaults.html">Action
+Defaults</a>. Additionally, <tt>ON KEY</tt> statements used with<tt> ESC</tt>,<tt>
+TAB</tt>,<tt> UP</tt>,<tt> DOWN</tt>,<tt> LEFT</tt>,<tt> RIGHT</tt>,<tt> HELP</tt>,<tt>
+NEXT</tt>,<tt> PREVIOUS</tt>,<tt> INSERT</tt>,<tt> CONTROL-M</tt>,<tt> CONTROL-X</tt>,<tt>
+CONTROL-V</tt>,<tt> CONTROL-C</tt> and <tt>CONTROL-A</tt> should be avoided for
+use in GUI programs, because it's very likely to clash with default accelerators
+defined in the Action Defaults.</b></p>
+
+
+<p>By default, <tt>ON KEY</tt> actions are not decorated with a default button
+in the action frame (i.e. <a href="InteractionModel.html#DEFAULT_ACTION_VIEWS">default
+action view</a>). You can show the default button by configuring a <tt>text</tt>
+attribute with the <a href="ActionDefaults.html#ACTDEFTEXT">Action Defaults</a>.</p>
+
+
+<HR size="1">
+
+
+<h4><a name="CONTROL_INSTRUCTIONS">Control Instructions</a> </h4>
+
+<ul>
+     <li><a href="#CONTINUE_INPUT">CONTINUE INPUT instruction</a></li>
+		<li><a href="#EXIT_INPUT">EXIT INPUT instruction</a></li>
+		<li><a href="#ACCEPT_INPUT">ACCEPT INPUT instruction</a></li>
+		<li><a href="#NEXT_FIELD">NEXT FIELD instruction</a></li>
+		<li><a href="#CLEAR_fieldlist">CLEAR field-list instruction</a></li>
+  </ul>
+
+<h5><a name="CONTINUE_INPUT">Continuing the dialog</a>: CONTINUE INPUT</h5>
+
+<P><TT>CONTINUE INPUT</TT> skips all subsequent statements in the current 
+control block and gives the control back to the dialog. This instruction is
+useful when program control is nested within multiple conditional statements,
+and you want to return the control to the dialog. Note that if this instruction
+is called in a control block that is not <tt>AFTER INPUT</tt>, further control
+blocks might be executed according to the context. Actually, <tt>CONTINUE INPUT</tt>
+just instructs the dialog to continue as if the code in the control block was
+terminated (i.e. it's a kind of <tt>GOTO end_of_control_block</tt>). However,
+when executed in <tt>AFTER INPUT</tt>, the focus returns to the most recently occupied field in the 
+current form, giving the user another chance to enter data in that field. In
+this case the <tt>BEFORE FIELD</tt> of the current field will be fired.
+
+<p> Note that you can also use the <tt>NEXT
+FIELD</tt> control instruction to give the focus to a specific field and force
+the dialog to continue. However, unlike <tt>CONTINUE INPUT</tt>, the <tt>NEXT
+FIELD</tt> instruction will also skip the further control blocks that are
+normally executed.</p>
+
+<h5><a name="EXIT_INPUT">Leaving the dialog</a>: EXIT INPUT</h5>
+
+<p>You can use the <tt>EXIT INPUT</tt>   statement to terminate the <tt>INPUT</tt>
+instruction and resume the program execution at the instruction following the
+<tt>INPUT</tt> block.</p>
+
+<h5><a name="ACCEPT_INPUT">Validating the dialog</a>: ACCEPT INPUT</h5>
+
+<p>The <tt>ACCEPT INPUT</tt> instruction validates the <tt>INPUT</tt> instruction and 
+exits the <tt>INPUT</tt> instruction if no error is raised. The <tt>AFTER FIELD</tt>, <tt>ON CHANGE</tt>,
+etc. control blocks will be executed.
+Statements after the <tt>ACCEPT INPUT</tt> will not be executed.
+
+<h5><a name="NEXT_FIELD">Moving to a field</a>: NEXT FIELD</h5>
+
+<p>The <tt>NEXT FIELD <i> field-name</i></tt> instruction gives the focus to the
+specified field. You typically use this instruction to control field input
+dynamically, in <tt>BEFORE FIELD</tt> or <tt>AFTER FIELD</tt> blocks.</p>
+
+<p>Abstract
+field identification is supported with the <tt>CURRENT</tt>, <tt>NEXT</tt> and <tt>PREVIOUS</tt>
+keywords. These keywords represent&nbsp; the current, next and previous fields
+respectively. When using <tt>FIELD ORDER FORM</tt>, the <tt>NEXT</tt> and <tt>PREVIOUS</tt> options
+follow the tabbing order defined by the form.
+Otherwise, they follow the order defined by the input binding list (with the <tt>FROM</tt>
+or <tt>BY NAME</tt> clause). Note that when selecting a non-editable field with <tt>NEXT
+FIELD NEXT</tt>, the runtime system will re-select the current field since it is
+the next editable field in the dialog. As a result the end user sees no change.</p>
+
+<p>Non-editable fields are fields defined with the <a href="FSFAttributes.html#FA_NOENTRY">NOENTRY</a>
+attribute, fields disabled with <a href="ClassDialog.html#setFieldActive">ui.Dialog.setFieldActive(&quot;<i>field-name</i>&quot;,
+FALSE)</a>,
+or fields using a widget that does not allow input, such as a <a href="FormSpecFiles.html#FF_ITEMTYPE_LABEL">LABEL</a>.
+If a <tt>NEXT FIELD</tt> instruction selects a non-editable field, the next
+editable field gets the focus (defined by the <a href="#FIELD_ORDER">FIELD ORDER</a>
+mode used by the dialog). However, the <tt>BEFORE FIELD</tt> and <tt>AFTER FIELD</tt> 
+blocks of non-editable fields are executed when a <tt>NEXT FIELD</tt>
+instruction selects such a field.</p>
+
+<h5><a name="CLEAR_fieldlist">Clearing the form fields</a>: 
+<a name="CLEAR field-list">CLEAR field-list</a></h5>
+
+<p> The <tt>CLEAR <i>field-list</i></tt> instruction can be used to clear a
+specific field or all fields in a line of the screen record. You can specify the screen
+record as described in the following table:</p>
+
+<div align="center">
+  <center>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="45%"><b>CLEAR instruction</b></td>
+    <td bgcolor="#C0C0C0"><b>Result</b></td>
+  </tr>
+  <tr>
+    <td width="45%" valign="top"><tt>CLEAR <i> field-name
+      </i></tt> </td>
+    <td>
+      Clears the specified field.
+    </td>
+  </tr>
+  <tr>
+    <td width="45%" valign="top"><tt>CLEAR <i>screen-record</i>.*
+      </tt> </td>
+    <td>
+      Clears all fields members of the screen record.
+    </td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<p><b><font color="#FF0000">Warning:</font> When using the UNBUFFERED attribute,
+it is not recommended that you use the CLEAR
+instruction; always use program variables to set field values to NULL.</b></p>
+
+
+<HR size="1">
+
+
+<h4><a name="CONTROL_CLASS">Control Class</a> </h4>
+
+<p>Inside the dialog instruction, the predefined keyword <tt>DIALOG</tt>
+represents the current dialog object. It can be used to execute methods provided
+in the <a href="ClassDialog.html">dialog</a> built-in class.</p>
+
+<p>For example, you can enable or disable an action with the <a href="ClassDialog.html#setActionActive">ui.Dialog.setActionActive()</a>
+dialog method, or you can hide or show
+the default action view with <a href="ClassDialog.html#setActionHidden">ui.Dialog.setActionHidden()</a>:</p>
+<pre><code class="linenumber">01</code> <tt>...</tt>
+<code class="linenumber">02</code>    <tt>BEFORE INPUT</tt>
+<code class="linenumber">03</code>       <tt>CALL</tt> <tt>DIALOG</tt>.setActionActive(&quot;zoom&quot;,<tt>FALSE</tt>)
+<code class="linenumber">04</code>    <tt>AFTER FIELD</tt> field1
+<code class="linenumber">05</code>       <tt>CALL</tt> <tt>DIALOG</tt>.setActionHidden(&quot;zoom&quot;,<tt>1</tt>)
+<code class="linenumber">06</code> <tt>...</tt></pre>
+
+
+<p>The <a href="ClassDialog.html#setFieldActive">ui.Dialog.setFieldActive()</a> method can be used to enable or disable a field during
+the dialog. This instruction takes an integer expression as argument.</p>
+<pre><code class="linenumber">01</code> <tt>...</tt>
+<code class="linenumber">02</code>    <tt>ON CHANGE</tt> custname
+<code class="linenumber">03</code>       <tt>CALL</tt> <tt>DIALOG</tt>.setFieldActive( &quot;custaddr&quot;, (rec.custname <tt>IS NOT NULL</tt>) )
+<code class="linenumber">04</code> <tt>...</tt></pre>
+
+
+<HR size="1">
+
+
+<h4><a name="CONTROL_FUNCTIONS">Control Functions</a> </h4>
+
+
+<p>The language provides several <a href="BuiltInFunctions.html">built-in functions</a>
+and <a href="Operators.html">operators</a>  to use in a <tt>INPUT</tt>
+statement. For example: <a href="Operators.html#OP_FIELD_TOUCHED">FIELD_TOUCHED()</a>,
+<a href="BuiltInFunctions.html#BF_FGL_DIALOG_GETFIELDNAME">FGL_DIALOG_GETFIELDNAME()</a>,
+<a href="BuiltInFunctions.html#BF_FGL_DIALOG_GETBUFFER">FGL_DIALOG_GETBUFFER()</a>.</p>
+
+
+<HR>
+
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+<h4><a name="EXAMPLE_1">Example 1</a>: Simple INPUT statement using screen record
+specification</h4>
+
+<p>Form definition file (FormFile.per):</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>DATABASE</tt> stores
+<CODE class=linenumber>02</CODE>
+<CODE class=linenumber>03</CODE> <tt>LAYOUT</tt>
+<CODE class=linenumber>04</CODE> <tt>GRID</tt>
+<CODE class=linenumber>05</CODE> {
+<CODE class=linenumber>06</CODE>   Customer : [f001    ]
+<CODE class=linenumber>07</CODE>   Name     : [f002                    ]
+<CODE class=linenumber>08</CODE>   Last Name: [f003                    ]
+<CODE class=linenumber>09</CODE> } 
+<CODE class=linenumber>10</CODE> <tt>END</tt>
+<CODE class=linenumber>11</CODE> <tt>END</tt>
+<CODE class=linenumber>12</CODE> 
+<CODE class=linenumber>13</CODE> <tt>TABLES</tt>
+<CODE class=linenumber>14</CODE>   customer
+<CODE class=linenumber>15</CODE> <tt>END</tt>
+<CODE class=linenumber>16</CODE> 
+<CODE class=linenumber>17</CODE> <tt>ATTRIBUTES</tt>
+<CODE class=linenumber>18</CODE>   f001 = customer.customer_num ;
+<CODE class=linenumber>19</CODE>   f002 = customer.fname, default = &quot;&lt;no name&gt;&quot;, upshift ;
+<CODE class=linenumber>20</CODE>   f003 = customer.lname ;
+<CODE class=linenumber>21</CODE> <tt>END</tt>
+<CODE class=linenumber>22</CODE> 
+<CODE class=linenumber>23</CODE> <tt>INSTRUCTIONS</tt>
+<CODE class=linenumber>24</CODE>   <tt>SCREEN RECORD</tt> sr_cust(
+<CODE class=linenumber>25</CODE>     customer.customer_num,
+<CODE class=linenumber>26</CODE>     customer.fname,
+<CODE class=linenumber>27</CODE>     customer.lname);
+<CODE class=linenumber>28</CODE> <tt>END</tt></pre>
+
+<p>Program source code:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE> 
+<CODE class=linenumber>03</CODE>     <tt>DEFINE</tt> custrec<tt> RECORD</tt>
+<CODE class=linenumber>04</CODE>             id <tt>INTEGER</tt>,
+<CODE class=linenumber>05</CODE>             first_name <tt>CHAR</tt>(30),
+<CODE class=linenumber>06</CODE>             last_name <tt>CHAR</tt>(30)
+<CODE class=linenumber>07</CODE>     <tt>END RECORD</tt>
+<CODE class=linenumber>09</CODE> 
+<CODE class=linenumber>10</CODE>     <tt>OPTIONS INPUT WRAP</tt>
+<CODE class=linenumber>11</CODE> 
+<CODE class=linenumber>12</CODE>     <tt>OPEN FORM</tt> f <tt>FROM</tt> &quot;FormFile&quot;
+<CODE class=linenumber>13</CODE>     <tt>DISPLAY FORM</tt> f
+<CODE class=linenumber>14</CODE> 
+<CODE class=linenumber>15</CODE>     <tt>LET</tt> INT_FLAG = <tt>FALSE</tt>
+<CODE class=linenumber>16</CODE>     <tt>INPUT</tt> custrec.*<tt> FROM</tt> sr_cust.*
+<CODE class=linenumber>17</CODE> 
+<CODE class=linenumber>18</CODE>     <tt>IF</tt> INT_FLAG = <tt>FALSE THEN</tt>
+<CODE class=linenumber>19</CODE>        <tt>DISPLAY</tt> custrec.*
+<CODE class=linenumber>20</CODE>        <tt>LET</tt> INT_FLAG = <tt>FALSE</tt>
+<CODE class=linenumber>21</CODE>     <tt>END IF</tt>
+<CODE class=linenumber>22</CODE>
+<CODE class=linenumber>23</CODE> <tt>END MAIN</tt></pre>
+
+<h4><a name="EXAMPLE_2">Example 2</a>: Complex INPUT statement using the BY NAME clause and control blocks</h4>
+
+<p>Form definition file (FormFile.per):</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>DATABASE</tt> stores
+<CODE class=linenumber>02</CODE>
+<CODE class=linenumber>03</CODE> <tt>LAYOUT</tt>
+<CODE class=linenumber>04</CODE> <tt>GRID</tt>
+<CODE class=linenumber>05</CODE> {
+<CODE class=linenumber>06</CODE>   Customer : [f001    ]
+<CODE class=linenumber>07</CODE>   Name     : [f002                    ]
+<CODE class=linenumber>08</CODE>   Last Name: [f003                    ]
+<CODE class=linenumber>09</CODE> } 
+<CODE class=linenumber>10</CODE> <tt>END</tt>
+<CODE class=linenumber>11</CODE> <tt>END</tt>
+<CODE class=linenumber>12</CODE> 
+<CODE class=linenumber>13</CODE> <tt>TABLES</tt>
+<CODE class=linenumber>14</CODE>   customer
+<CODE class=linenumber>15</CODE> <tt>END</tt>
+<CODE class=linenumber>16</CODE> 
+<CODE class=linenumber>17</CODE> <tt>ATTRIBUTES</tt>
+<CODE class=linenumber>18</CODE>   f001 = customer.customer_num ;
+<CODE class=linenumber>19</CODE>   f002 = customer.fname, upshift ;
+<CODE class=linenumber>20</CODE>   f003 = customer.lname ;
+<CODE class=linenumber>21</CODE> <tt>END</tt></pre>
+
+<p>Program source code:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE> 
+<CODE class=linenumber>03</CODE>     <tt>DEFINE</tt> custrec<tt> RECORD</tt>
+<CODE class=linenumber>04</CODE>             customer_num <tt>INTEGER</tt>,
+<CODE class=linenumber>05</CODE>             fname <tt>CHAR</tt>(30),
+<CODE class=linenumber>06</CODE>             lname <tt>CHAR</tt>(30)
+<CODE class=linenumber>07</CODE>     <tt>END RECORD</tt>
+<CODE class=linenumber>09</CODE> 
+<CODE class=linenumber>10</CODE>     <tt>OPTIONS INPUT WRAP</tt>
+<CODE class=linenumber>11</CODE> 
+<CODE class=linenumber>12</CODE>     <tt>OPEN FORM</tt> f <tt>FROM</tt> &quot;FormFile&quot;
+<CODE class=linenumber>13</CODE>     <tt>DISPLAY FORM</tt> f
+<CODE class=linenumber>14</CODE> 
+<CODE class=linenumber>15</CODE>     <tt>LET</tt> custrec.customer_num = 0
+<CODE class=linenumber>16</CODE>     <tt>LET</tt> custrec.fname = &quot;&lt;no name&gt;&quot;
+<CODE class=linenumber>17</CODE>     <tt>LET</tt> custrec.lname = <tt>NULL</tt>
+<CODE class=linenumber>18</CODE>     <tt>LET</tt> INT_FLAG = <tt>FALSE</tt>
+<CODE class=linenumber>19</CODE>     <tt>INPUT BY NAME</tt> custrec.*<tt> WITHOUT DEFAULTS</tt>
+<CODE class=linenumber>20</CODE>        <tt>BEFORE INPUT</tt>
+<CODE class=linenumber>21</CODE>          <tt>MESSAGE</tt> &quot;Enter customer details...&quot;
+<CODE class=linenumber>22</CODE>        <tt>AFTER FIELD</tt> fname
+<CODE class=linenumber>23</CODE>          <tt>IF</tt> FIELD_TOUCHED(custrec.fname)
+<CODE class=linenumber>24</CODE>             <tt>AND</tt> custrec.fname <tt>IS NULL THEN</tt>
+<CODE class=linenumber>25</CODE>             <tt>LET</tt> custrec.lname = <tt>NULL</tt>
+<CODE class=linenumber>26</CODE>             <tt>DISPLAY BY NAME</tt> custrec.lname
+<CODE class=linenumber>27</CODE>          <tt>END IF</tt>
+<CODE class=linenumber>28</CODE>        <tt>BEFORE FIELD</tt> lname
+<CODE class=linenumber>29</CODE>          <tt>IF NOT</tt> canEditLastName()<tt> THEN</tt>
+<CODE class=linenumber>30</CODE>            <tt>NEXT FIELD</tt> fname
+<CODE class=linenumber>31</CODE>          <tt>END IF</tt>
+<CODE class=linenumber>32</CODE>        <tt>AFTER INPUT</tt>
+<CODE class=linenumber>33</CODE>          <tt>MESSAGE</tt> &quot;Input terminated...&quot;
+<CODE class=linenumber>34</CODE>     <tt>END INPUT</tt>
+<CODE class=linenumber>35</CODE> 
+<CODE class=linenumber>36</CODE>     <tt>IF</tt> INT_FLAG = <tt>FALSE THEN</tt>
+<CODE class=linenumber>37</CODE>        <tt>DISPLAY</tt> custrec.*
+<CODE class=linenumber>38</CODE>        <tt>LET</tt> INT_FLAG = <tt>FALSE</tt>
+<CODE class=linenumber>39</CODE>     <tt>END IF</tt>
+<CODE class=linenumber>40</CODE>
+<CODE class=linenumber>41</CODE> <tt>END MAIN</tt></pre>
+
+
+</BODY>
+</HTML>

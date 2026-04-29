@@ -1,0 +1,420 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Action Defaults</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Action Defaults</a> </H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#BASICS">Basics</a></li>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#USAGE">Usage</a>
+      <ul>
+         <li><a href="#ACTDEFATTRIBUTES">Action Default attributes</a></li>
+         <li><a href="#GLOBALACTDEFS">Global Action Defaults</a></li>
+         <li><a href="#FORMACTDEFS">Form Action Defaults</a></li>
+         <li><a href="#ACTDEFACCEL">Defining keyboard accelerators</a></li>
+         <li><a href="#DEFACCPREDEFACTIONS">Default accelerators for predefined
+          actions</a></li>
+         <li><a href="#ACTDEFVALIDATE">Controlling data validation when an
+          action is fired</a></li>
+         <li><a href="#ACTDEFTEXT">Text attribute shows default action view</a></li>
+      </ul>
+  </li>
+  <li><a href="#EXAMPLES">Examples</a></li>
+</ul>
+
+
+<p><i>See also:</i> <a href="DynamicUI.html">Dynamic User Interface</a>, <a href="InteractionModel.html#PREDEFACTIONS">Predefined
+Actions</a>, <a href="Menus.html#DEFAULT_ACTIONS">Action Defaults and MENU</a>.</p>
+
+
+<HR>
+
+<h3><a name="BASICS">Basics</a></h3>
+
+<p>Action Defaults allow you to define default attributes
+for graphical objects (<a href="InteractionModel.html">action views</a>) associated with <a href="InteractionModel.html">actions</a>. </p>
+
+
+<p>For example, you can specify the default text, comment, and image to use on 
+graphical objects (buttons, toolbar items, and so on) bound to an action across 
+all forms in the application.</p>
+
+
+<p>You can centralize common action defaults in a global action defaults (.4ad) file. 
+You can also define
+action defaults at the form level. </p>
+
+
+<HR>
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+<p>Action defaults are defined in the .4ad file with the following syntax: </p>
+
+
+<p><code>&lt;ActionDefaultList&gt;<br>
+&nbsp; &lt;ActionDefault name=&quot;<i>action-name</i>&quot; <u>[</u> <i>attribute</i>=<i>value</i>
+<u>[...]</u> <u>]</u> /&gt;<br>
+&nbsp; [...]<br>
+&lt;/ActionDefaultList&gt;</code>
+
+
+</p>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>action-name</i> identifies the action.</li>
+  <li><i>attribute</i> is the name of an attribute.</li>
+  <li><i>value</i> defines the value to be assigned to <i>attribute</i>.</li>
+</ol>
+
+
+<HR>
+
+
+<h3><a name="USAGE">Usage</a></h3>
+<p>Action defaults are provided to centralize the decoration attributes and
+accelerator keys for <a href="InteractionModel.html">action views</a>  (graphical objects
+associated with actions). It is strongly recommended that you centralize these decoration
+attributes to avoid specifying them in all the source files that define the same action view.</p>
+
+
+<p>Each attribute of an <a href="FormSpecFiles.html">action view element</a>
+bound to an <a href="InteractionModel.html"> action handler in the program</a> will automatically be set to the value defined in the Action Defaults, if there
+is no value explicitly specified in the element definition for that attribute.</p>
+
+
+<p>Note that in some situations, the action view can be bound to an action by
+specifying a <a href="InteractionModel.html#BINDING_ACTIONS">sub-dialog and/or
+field name prefix</a>. For those views, the action defaults defined with the corresponding <u>action
+name</u> will be used to set the attributes with the default values. In other
+words, the prefix will be ignored. For example, if an action view is defined
+with the name &quot;<i>custlist.append</i>&quot;, it will get the action
+defaults defined for the &quot;<i>append</i>&quot; action.</p>
+
+
+<b><font color="#FF0000">Warning: </font>Action Defaults are applied only once,
+to newly created elements. Dynamic changes are not re-applied to action views. For
+example, if you first load a toolbar, then you load a global Action Defaults
+file, the attributes of the toolbar items will not be updated with the last
+loaded Action Defaults. If you dynamically create action views (like TopMenu or
+ToolBar), the action defaults are not applied, so you must set all decoration
+attributes by hand.</b>
+
+
+<p>Action Defaults can be defined globally for the whole program or at the form
+level. Global Action Defaults are loaded from a default 4ad file or by using the <a href="ClassInterface.html">ui.Interface.loadActionDefaults()</a> 
+method. Form Action Defaults can be specified in the <a href="FormSpecFiles.html#SECTION_ACTDEFS">form
+file</a> or can be loaded with the <a href="ClassForm.html">ui.Form.loadActionDefaults()</a>
+method.</p>
+
+
+<p>For example, in most cases a <i>print</i> action needs a text decoration
+&quot;Print&quot;, with a printer icon image and a CONTROL-P accelerator key.
+Those attributes can be centralized in the Action Defaults. Some action views of
+the <i>print</i> action may need specific attributes; for example, if the current form
+handles customer addresses, the comment attribute of a <i>print</i> button might be
+&quot;Print current customer information&quot;. In this case you can define
+Action Defaults at the form level, which have a higher priority than the global
+Action Defaults. Additionally, if some action views must have a different image
+in the same form, you can specify the image attribute in the definition of each
+element to overwrite the defaults. For example, the toolbar button bound to the <i>print</i>
+action might
+have a small image, while the <i>print</i> button in the form might have a large one.</p>
+
+
+<p>The final attribute values used for graphical elements are set based on
+the following priority:</p>
+
+
+<ol>
+  <li>Attribute defined in the action view element definition itself.</li>
+  <li>Attribute defined for the element action in the form Action Defaults.</li>
+  <li>Attribute defined for the element action in the global Action Defaults.</li>
+</ol>
+<p>The following code defines a <a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTON">BUTTON</a> 
+in the form specification file:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>ATTRIBUTES</tt>
+<CODE class=linenumber>02</CODE>  <tt>BUTTON </tt>b1: print, <tt>TEXT</tt>=&quot;Do Print&quot;;
+<CODE class=linenumber>03</CODE> <tt>END</tt></PRE>
+
+
+<p> if the form Action Defaults define:</p>
+
+
+<code>&lt;ActionDefaultList&gt;<br>
+&nbsp; &lt;ActionDefault name=&quot;print&quot;
+image=&quot;smiley&quot; comment=&quot;Print orders&quot; acceleratorName=&quot;control-p&quot;
+/&gt;<br>
+&lt;/ActionDefaultList&gt;</code>
+
+
+<p>and the global Action Defaults define:</p>
+
+
+<code>&lt;ActionDefaultList&gt;<br>
+&nbsp; &lt;ActionDefault name=&quot;print&quot; text=&quot;Print&quot;
+image=&quot;printer&quot; /&gt;<br>
+&lt;/ActionDefaultList&gt;</code>
+
+
+<p>the button object will get the following final attribute values:</p>
+
+
+<ul>
+  <li><code>text = &quot;Do Print&quot;</code></li>
+  <li><code>image = &quot;smiley&quot;</code></li>
+  <li><code>comment = &quot;Print orders&quot;</code></li>
+</ul>
+<p>and the accelerator will be CONTROL-P.</p>
+
+
+<h4><a name="ACTDEFATTRIBUTES">Action Default attributes</a></h4>
+
+
+<p>The following attributes can be defined with Action Defaults:</p>
+
+
+<table border="0" width="90%">
+  <tr>
+    <td width="30%" bgcolor="#C0C0C0"><b>Attribute</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top"><tt>name = <i>string</i></tt></td>
+    <td valign="top">This attribute identifies the action. See also <a href="InteractionModel.html#PREDEFACTIONS">predefined
+      action names</a>.</td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top"><tt>text = <i>string</i></tt></td>
+    <td valign="top">The default label to be displayed in action views
+      (typically, the text of buttons).</td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top"><tt>comment = <i>string</i></tt></td>
+    <td valign="top">The default help text for this action (typically, displayed
+      as bubble help).</td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top"><tt>image = <i>string</i></tt></td>
+    <td valign="top">The default image file to be displayed in the action view.</td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top"><tt>acceleratorName = <i>string</i></tt></td>
+    <td valign="top">The default accelerator key that can trigger the action, as
+      defined in <a href="InteractionModel.html#ACCELNAMES">Accelerators</a>.</td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top"><tt>acceleratorName2 = <i>string</i></tt></td>
+    <td valign="top">The second default accelerator key that can trigger the action, as
+      defined in <a href="InteractionModel.html#ACCELNAMES">Accelerators</a>.</td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top"><tt>acceleratorName3 = <i>string</i></tt></td>
+    <td valign="top">The third default accelerator key that can trigger the action, as
+      defined in <a href="InteractionModel.html#ACCELNAMES">Accelerators</a>.</td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top"><tt>acceleratorName4 = <i>string</i></tt></td>
+    <td valign="top">The fourth default accelerator key that can trigger the action, as
+      defined in <a href="InteractionModel.html#ACCELNAMES">Accelerators</a>.</td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top"><tt>defaultView = <i>string</i></tt></td>
+    <td valign="top">Indicates whether the front-end must show the default action
+      view (buttons in control frame).<br>
+      Values can be:<br>
+      - <code>&quot;no&quot;</code> the default action view is never visible.<br>
+      - <code>&quot;yes&quot;</code> the default action view is always visible,
+      if the action is visible (<a href="ClassDialog.html#setActionHidden">setActionHidden</a>).<br>
+      - <code>&quot;auto&quot;</code> the default action view is visible if no
+      other action view is explicitly defined and the action is visible (<a href="ClassDialog.html#setActionHidden">setActionHidden</a>).<br>
+      The default is <code>&quot;auto&quot;</code>.</td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top"><tt>contextMenu = <i>string</i></tt></td>
+    <td valign="top">Indicates whether the front-end must render the action in
+      the default context menu.<br>
+      Values can be:<br>
+      - <code>&quot;no&quot;</code> the context menu option is never visible.<br>
+      - <code>&quot;yes&quot;</code> the context menu option is always visible,
+      if the action is visible (<a href="ClassDialog.html#setActionHidden">setActionHidden</a>).<br>
+      - <code>&quot;auto&quot;</code> the context menu option is visible if no
+      other action view is explicitly defined and the action is visible (<a href="ClassDialog.html#setActionHidden">setActionHidden</a>).<br>
+      The default is <code>&quot;yes&quot;</code>.</td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top"><tt>validate = <i>string</i></tt></td>
+    <td valign="top">Defines the behavior of data validation when the action is
+      fired.<br>
+      Values can be:<br>
+      - <code>&quot;no&quot;</code>  no data validation is done (field text only
+      available in input buffer).<br>
+      By default, data validation is driven by the
+      dialog mode (<tt>UNBUFFERED</tt> or default mode).</td>
+  </tr>
+</table>
+
+
+<h4><a name="GLOBALACTDEFS">Global Action Defaults</a></h4>
+
+
+<p>Global Action Defaults are defined in an XML file with the &quot;<code>4ad</code>&quot;
+extension. By default, the runtime system searches for a file named &quot;<code>default.4ad</code>&quot;
+in the current directory. If this file does not exist, it searches in
+the directories defined in the <a href="EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href="EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a>
+environment variable. If no file was found using the environment variable(s), standard action default
+settings are loaded from the &quot;<code>FGLDIR/lib/default.4ad</code>&quot;
+file.</p>
+
+
+<p><b><font color="#FF0000">Warning: </font>Global Action Defaults must be defined in a unique file; you cannot 
+combine several &quot;<code>4ad</code>&quot; files.</b></p>
+
+
+<p>You can override the default search by loading a specific Action Defaults file
+with the <a href="ClassInterface.html">ui.Interface.loadActionDefaults()</a> method.
+This method accepts a filename <u>with</u> or <u>without</u> the &quot;<code>4ad</code>&quot;
+extension. If you omit the file extension (recommended), the runtime
+system adds the extension automatically. If the file does not exist in the current
+directory, the directories defined in the <a href="EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href="EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a> environment variable 
+are searched.</p>
+
+
+<h4><a name="FORMACTDEFS">Form Action Defaults</a></h4>
+
+
+<p>Action Defaults can be defined at the form level. When action defaults are
+defined in the form file, action views get the attributes defined locally.</p>
+
+
+<p>You can define form action defaults with the <a href="FormSpecFiles.html#SECTION_ACTDEFS">ACTION
+DEFAULTS</a> section in the form specification file.&nbsp; If you want to use
+common action defaults in several forms, you can use the <a href="Preprocessor.html">preprocessor</a>
+include directive to integrate an external file.</p>
+
+
+<p>You can also load Form Action Defaults dynamically
+with the <a href="ClassForm.html">ui.Form.loadActionDefaults()</a> method. This method accepts
+a filename <u>with</u> or <u>without</u> the &quot;<code>4ad</code>&quot;
+extension. If you omit the file extension (recommended), the runtime
+system adds the extension automatically. If the file does not exist in the current
+directory, the directories defined in the <a href="EnvironmentVariables.html#EV_DBPATH">DBPATH</a>/<a href="EnvironmentVariables.html#EV_FGLRESOURCEPATH">FGLRESOURCEPATH</a> environment variable 
+are searched.</p>
+
+
+<h4><a name="ACTDEFACCEL">Defining keyboard accelerators</a></h4>
+
+
+<p>When using the <tt>ON ACTION</tt> clause in a dialog instruction, action
+defaults accelerators are applied in both <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a>
+and <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a> mode. For
+backward compatibility, this is not done in TUI mode when using the <tt>ON KEY</tt> clause.</p>
+
+
+<p>The traditional <tt>ON KEY</tt> clause in a dialog like <a href="RecordInput.html">INPUT</a>
+implicitly defines the <i>acceleratorName</i>
+attribute for the action, and the corresponding action default accelerator will
+be ignored. For example, when you define an <tt>ON KEY(F10)</tt>  block, the first accelerator will be
+&quot;F10&quot;, even if an action default defines an accelerator &quot;F5&quot;
+for the action &quot;F10&quot;. However, you can set other accelerators
+with the <i>acceleratorName2,&nbsp;</i> <i>acceleratorName3</i> and <i>acceleratorName4</i>
+attributes in action defaults.</p>
+
+
+<b><font color="#FF0000">Warning:</font> In <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a>
+mode, actions created with ON KEY do not get accelerators of Action Defaults; Only actions defined
+with ON ACTION will get accelerators of Action Defaults.</b>
+
+
+<p>In menus, the behavior is a bit different, see <a href="Menus.html#COMMAND">the
+COMMAND and COMMAND KEY clause in MENU</a>.</p>
+
+
+<h4><a name="DEFACCPREDEFACTIONS">Default accelerators for predefined actions</a></h4>
+
+
+<p>If no accelerator is specified in action defaults for a <a href="InteractionModel.html#PREDEFACTIONS">Predefined
+Action</a>, the runtime system sets one or more default accelerators according
+to the user interface mode. For example, the <b>accept</b> action will get the <tt>Return</tt>
+and <tt>Enter</tt> keys in <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a>
+mode, but in <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a>
+mode, the <tt>Escape</tt>
+key would be used.</p>
+
+
+<p>If you want to force an action to have no accelerator, you can use &quot;<tt>none</tt>&quot;
+as accelerator name.</p>
+
+
+<h4><a name="ACTDEFVALIDATE">Controlling data validation when an action is fired</a></h4>
+
+
+<p>The <tt>validate</tt> attribute defines the behavior of the dialog for data
+validation when an action is fired. For more details, see <a href="InteractionModel.html#VALIDATE">Interaction
+Model</a>.</p>
+
+
+<h4><a name="ACTDEFTEXT">Text attribute shows default action view</a></h4>
+<p>When creating actions with <tt>ON KEY</tt> (or <tt>COMMAND KEY</tt> without a
+command name in a <a href="Menus.html">MENU</a>), the default action view (i.e.
+button in action frame) is invisible. However, if you define a <tt>text</tt>
+attribute for a function key or a control-x key, the default button is made
+visible. Remember you can control the visibility of the default action view with
+the <tt>defaultView</tt> Action Default attribute.</p>
+<p>See also <a href="DynamicUI.html#SETTING_KEY_LABELS">Setting Key Labels</a>,
+a feature supported for backward compatibility.&nbsp;</p>
+
+
+<HR>
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+
+<h4>Example 1: Loading a Action Defaults file:</h4>
+
+
+<p>Some Action Defaults in XML format (exit action has <a href="LocalizedStrings.html">Localized
+Strings</a>):</p>
+<pre><CODE class=linenumber>01</CODE> &lt;ActionDefaultList&gt;
+<CODE class=linenumber>02</CODE>    &lt;ActionDefault name=&quot;print&quot; text=&quot;Print&quot; image=&quot;printer&quot; comment=&quot;Print report&quot; /&gt;
+<CODE class=linenumber>03</CODE>    &lt;ActionDefault name=&quot;modify&quot; text=&quot;Update&quot; comment=&quot;Update the record&quot; /&gt;
+<CODE class=linenumber>04</CODE>    &lt;ActionDefault name=&quot;exit&quot; text=&quot;Quit&quot; image=&quot;byebye&quot; comment=&quot;Exit the program&quot; validate=&quot;no&quot; &gt;
+<CODE class=linenumber>05  </CODE>      &lt;LStr text=&quot;common.exit.text&quot; comment=&quot;common.exit.comment&quot; /&gt;
+<CODE class=linenumber>06</CODE>    &lt;/ActionDefault&gt;
+<CODE class=linenumber>07</CODE> &lt;/ActionDefaultList&gt;</pre>
+
+
+<p>The program loading the action defaults file:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>CALL </tt>ui.Interface.loadActionDefaults(&quot;mydefaults&quot;)
+<CODE class=linenumber>03</CODE> <tt>END MAIN</tt></PRE>
+
+
+<h4>Example 2: Actions defaults in a form file:</h4>
+
+
+<pre><CODE class=linenumber>01</CODE> <tt>ACTION DEFAULTS</tt>
+<CODE class=linenumber>02</CODE>   <tt>ACTION</tt> accept ( <tt>COMMENT</tt>=&quot;Commit order record changes&quot; )
+<CODE class=linenumber>03</CODE>   <tt>ACTION</tt> cancel ( <tt>TEXT</tt>=&quot;Stop&quot;, <tt>IMAGE</tt>=&quot;stop&quot;, <tt>ACCELERATOR</tt>=<tt>SHIFT-F2</tt>, <tt>VALIDATE</tt>=<tt>NO</tt> )
+<CODE class=linenumber>04</CODE>   <tt>ACTION</tt> print ( <tt>COMMENT</tt>=&quot;Print order information&quot;, <tt>ACCELERATOR</tt>=<tt>CONTROL-P</tt>, <tt>ACCELERATOR2</tt>=<tt>F5</tt> )
+<CODE class=linenumber>05</CODE>   <tt>ACTION</tt> zoom1 ( <tt>COMMENT</tt>=&quot;Open items list&quot;, <tt>CONTEXTMENU</tt>=<tt>NO</tt> )
+<CODE class=linenumber>06</CODE>   <tt>ACTION</tt> zoom2 ( <tt>COMMENT</tt>=&quot;Open customers list&quot; )
+<CODE class=linenumber>07</CODE> <tt>END</tt></pre>
+
+
+</BODY>
+</HTML>

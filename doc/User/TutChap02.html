@@ -1,0 +1,447 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Tutorial: Using BDL</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+<p><a href="TutIndex.html">Back to Summary</a></p>
+<hr>
+<h1>Tutorial Chapter 2: Using BDL</h1>
+<p>Summary:</p>
+<ul>
+  <li><a href="#simple">A simple BDL program</a></li>
+  <li><a href="#writing">Writing BDL programs</a></li>
+  <li><a href="#CompilingandExecuting">Compiling and Executing the program</a></li>
+  <li><a href="#debugging">Debugging BDL programs</a></li>
+  <li><a href="#connectdb">The &quot;Connect to database&quot; program</a>
+    <ul>
+      <li><a href="#Connecting">Connecting to a database</a></li>
+      <li><a href="#VariableDefinition">Variable Definition</a></li>
+      <li><a href="#VariableScope">Variable Scope</a></li>
+      <li><a href="#PassingVariables">Passing Variables</a></li>
+      <li><a href="#Retrievingdata">Retrieving data from a database table</a></li>
+      <li><a href="#examp_connectdb">Example: connectdb.4gl&nbsp;</a></li>
+    </ul>
+  </li>
+</ul>
+<hr>
+<h2><a name="simple">A simple BDL program</a> </h2>
+<p>This simple example displays a text message to the screen, illustrating the
+structure of a BDL program. </p>
+<p>Because Genero BDL is a structured programming language as well as a 4th
+generation language, executable
+statements can appear only within logical sections of the source code called
+program blocks. This can be the <a href="Programs.html#MAIN_BLOCK"> MAIN</a>
+statement, a <a href="Functions.html"> FUNCTION</a> statement, or a
+<a href="TutChap09.html">
+REPORT</a> statement. (Reports are discussed in <a href="TutChap09.html">Chapter
+9</a>.) </p>
+<p>Execution of any program begins with the special, required program block <a href="Programs.html#MAIN_BLOCK">MAIN</a><b>,
+</b> delimited by the keywords
+MAIN and END MAIN.&nbsp;The source module that contains MAIN is called the main module.&nbsp; </p>
+<p>The <a href="Functions.html">FUNCTION</a> statement is a unit of executable code, delimited by
+FUNCTION and END FUNCTION,&nbsp;that can be called by name. In
+a small program, you can write all the functions used in the program in a single
+file. As programs grow larger, you will usually want to group related functions
+into separate files, or source modules.&nbsp; Functions are available on a global basis.
+In other words, you can reference any function in any source module of your
+program.&nbsp; </p>
+<p>&nbsp;The
+following example is a small but complete Genero BDL program, <b>simple.4gl&nbsp;</b> </p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="363" bgcolor="#C0C0C0" valign="top"><b>
+        Program simple.4gl</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> -- simple.4gl<CODE class=linenumber>
+02</CODE> <tt> </tt><CODE class=linenumber>
+03</CODE> <tt>MAIN
+</tt><CODE class=linenumber>04</CODE>&nbsp;&nbsp;&nbsp;  <tt>CALL</tt> sayIt()<CODE class=linenumber>
+05</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>06</CODE>
+<CODE class=linenumber>07</CODE> <tt>FUNCTION</tt> sayIt()
+<CODE class=linenumber>08</CODE>&nbsp;&nbsp;  <tt>DISPLAY</tt> &quot;Hello, world!&quot;
+<CODE class=linenumber>09</CODE><tt> END FUNCTION  </tt>-- sayIt&nbsp;</pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line <CODE class=linenumber>01</CODE>  simply lists the filename as a <a href="LanguageFeatures.html#LF_COMMENTS">comment</a>,
+which will be ignored by BDL.&nbsp;&nbsp;</li>
+          <li>Line <CODE class=linenumber>03</CODE>   indicates the start of the <a href="Programs.html#MAIN_BLOCK">MAIN</a>
+program block.</li>
+          <li>Line <CODE class=linenumber>04</CODE>  Within the MAIN program block, the
+<a href="FlowControl.html#FC_CALL"> CALL</a> statement is used to invoke the function named sayIt.&nbsp;
+            Although no arguments are passed to the function sayIt, the empty
+parentheses are required.&nbsp; Nothing is returned by the function.</li>
+          <li>Line <CODE class=linenumber>05</CODE>&nbsp; defines the end of the <a href="Programs.html#MAIN_BLOCK">MAIN</a>
+program block.&nbsp;&nbsp;When all the statements within the program block have been executed the
+  program will terminate automatically.</li>
+          <li>Line <CODE class=linenumber>07</CODE>&nbsp; indicates the start of the
+<a href="Functions.html">FUNCTION</a> <b>sayIt</b>.</li>
+          <li>Line <CODE class=linenumber>08</CODE>  uses the <a href="MessageDisplay.html#DISPLAY">DISPLAY</a>
+statement to display a text message, enclosed within double quotes,&nbsp; to the user.&nbsp;
+            Because the program has
+not opened a window or form, the message is displayed on the command line.</li>
+          <li>Line <CODE class=linenumber>09</CODE> indicates the end of the <a href="Functions.html">FUNCTION</a>.&nbsp;
+The comment ( -- sayIt ) is optional.&nbsp;&nbsp;After the message is displayed, control in the program is returned to the <a href="Programs.html#MAIN_BLOCK">
+MAIN</a> function, to line <CODE class=linenumber> 05</CODE>, the line immediately
+  following the statement invoking the function.&nbsp; As there are no additional statements to be
+  executed (END MAIN has been reached), the
+program terminates.</li>
+        </ul>
+
+
+<hr>
+<h2><a name="writing">Writing BDL Programs</a></h2>
+<ul>
+  <li>Genero BDL source code is written as text in a source module (a file
+    with a filename extension of <b> .4gl </b> ).</li>
+  <li>BDL statements do not require a statement terminator.</li>
+  <li>You can begin a <b> <a href="LanguageFeatures.html#LF_COMMENTS"> comment</a></b> that terminates at the end of the current line
+    with a pair of minus signs ( -- ) or&nbsp; #.&nbsp; Curly braces { } can be used to delimit
+    comments that occupy multiple lines.</li>
+  <li>All white space in a source code module is treated as a single space, so
+    you are free to use indentations and white space for clarity.</li>
+  <li>Although the language keywords in this example and throughout the tutorial
+    are in all-capitals,&nbsp; this is just a convention used in these
+    documents. You may write keywords in lowercase, or any combination of
+    capitals and lowercase you prefer.</li>
+  <li>The line numbers shown in all the code examples are not a part of the
+    code; they simply link the notes for the programs with the correct program
+    lines.</li>
+	<li></li>
+</ul>
+<hr>
+<h2><a name="compexec">Compiling and Executing the Program</a>
+  </h2>
+<p>BDL programs are made up of a single module, or modules, containing the 
+program functions.&nbsp;
+  </p>
+<p>The following <a href="Tools.html"> tools</a> can be used to compile
+and execute the <b>simple</b>  program from the command
+line.&nbsp;
+  </p>
+<ol>
+  <li>Create the database schema files if they have not already been created:</li>
+</ol>
+<blockquote>
+  <pre>fgldbsch -db custdemo</pre>
+</blockquote>
+<ol start="2">
+  <li>Compile the single module program:</li>
+</ol>
+<blockquote>
+  <pre>fglcomp simple.4gl</pre>
+</blockquote>
+<ol start="3">
+  <li>Execute the program:</li>
+</ol>
+<blockquote>
+  <pre>fglrun simple.42m</pre>
+</blockquote>
+
+<p>Programs consisting of multiple modules must be compiled and linked; this can 
+be accomplished in one command using the following <a href="Tools.html#TL_FGL2P">
+tool</a>: </p>
+<blockquote>
+	<pre>fgl2p -o myprog.42r simple.4gl newmodule.4gl  </pre>
+</blockquote>
+<p>The resulting program is executed using the name of the output file that you 
+specified:</p>
+<blockquote>
+	<pre>fglrun myprog.42r</pre>
+</blockquote>
+<p><b><font color="#008000">Tip:</font></b></p>
+<ol>
+  <li>You can compile and run a program without specifying the file
+    extensions:
+    <pre>fglcomp simple
+fglrun simple</pre>You can do this in one command line, adding the -M option
+    for errors:
+    <pre>fglcomp -M simple &amp;&amp; fglrun simple</pre>
+  </li>
+</ol>
+
+<hr>
+<h2><a name="debugging">Debugging a BDL Program</a>
+  </h2>
+<p>You can use the command line debugger to search for programming errors. The
+command line debugger is integrated in the runtime system. You typically start a
+program in debug mode by passing the <b>-d</b> option to <b>fglrun</b>.
+  </p>
+<p>The following lines illustrate a debug session with the previous program
+sample:
+  </p>
+  <pre>fglrun -d simple
+
+(fgldb) break main
+Breakpoint 1 at 0x00000000: file simple.4gl, line 2.
+(fgldb) run
+Breakpoint 1, main() at simple.4gl:2
+2         CALL sayIt()
+(fgldb) step
+sayit() at simple.4gl:6
+6         DISPLAY &quot;Hello, world!&quot;
+(fgldb) next
+Hello, world!
+7     END FUNCTION -- sayIt
+(fgldb) continue
+Program existed normally.
+(fgldb) quit</pre>
+<p>For more details, see the <a href="Debugger.html">Debugger reference</a>.
+  </p>
+<hr>
+<h2><a name="connectdb">The &quot;Connect to database&quot; Program</a> </h2>
+<p>This program illustrates connecting to a database and retrieving data, defining variables, and
+passing variables between functions. A row from the <b> customer</b> table of the
+<b>
+custdemo</b> example database is retrieved by an SQL statement and displayed to the
+user.&nbsp; </p>
+<h3><a name="Connecting">Connecting to the Database</a> </h3>
+<p>A <a href="Connections.html">Database Connection</a> <b> </b>is a session of work, opened by the program to
+communicate with a specific database server, in order to execute SQL statements
+as a specific user. To connect to a database server, most database engines
+require a name to identify the server, a name to identify the database entity, a
+user name and a password.&nbsp;&nbsp; </p>
+<p>Connecting through the Open Database Interface, the database can be
+specified directly, and the specification will be used as the data source.&nbsp;
+Or, you can define the database connection parameters indirectly in
+the <a href="FglProfile.html">FGLPROFILE</a> configuration file, and the database specification will be
+used as a key to read the connection
+information from the file.&nbsp; This technique is flexible; for example,&nbsp;
+you can develop your application
+with the database name &quot;custdemo&quot; and connect to the real database
+&quot;custdemo1&quot; in a production environment. </p>
+<p>The <a href="Connections.html#DC_CONNECT_TO">CONNECT</a> instruction opens a session in multi-session mode,
+allowing you to open other connections with subsequent CONNECT instructions (to
+other databases, for example).&nbsp; If you have multiple connections open, you
+can use the <a href="Connections.html#DC_SET_CONNECTION">SET CONNECTION</a>
+ instruction to switch to a specific session;
+this suspends other opened connections.&nbsp; The <a href="Connections.html#DC_DISCONNECT">DISCONNECT</a> instruction
+can be used to disconnect from specific sessions, or from all sessions. The end
+of a program disconnects all sessions automatically. </p>
+<p>The <i>user name </i> and<i> password</i> can be specified in the <a href="Connections.html#DC_CONNECT_TO">CONNECT</a>
+instruction, or defaults can be defined in <a href="FglProfile.html">FGLPROFILE</a>. Otherwise,&nbsp;
+the user name and password provided to your operating system will generally be
+used for authentication. </p>
+<pre>	<tt>CONNECT TO</tt> &quot;custdemo&quot;</pre>
+<h3><a name="VariableDefinition">Variable Definition</a> </h3>
+<p>A <a href="Variables.html">Variable</a> contains volatile information of a specific
+BDL<b> </b><a href="DataTypes.html"> data type</a>.<b>&nbsp;</b>Variables must be declared before you use them in your program, using
+the <a href="Variables.html#DEFINITION">DEFINE</a> statement.&nbsp; After definition, variables
+have <a href="Variables.html#DEFAULT_VALUES">default
+values</a><b> </b>based on the data type.&nbsp; </p>
+<pre>      <tt>DEFINE</tt> cont_ok <tt>INTEGER</tt></pre>
+<p>You can use the <a href="Variables.html#DATABASE_TYPES">LIKE</a> keyword to declare a variable that has the same
+data type as a specified column in a database schema. The column data type
+defined by the database schema must be supported by the language.&nbsp; A <a href="Programs.html#DB_SCHEMA">SCHEMA</a>
+statement must define the database name, identifying the 
+<a href="IntroBDL.html#SchemaFiles">database schema
+files</a> to be used. The column data types are read from the schema
+file during compilation, not at runtime. Make sure that your schema files
+correspond exactly to the production database. </p>
+<pre>     <tt>DEFINE</tt> store_name <tt>LIKE</tt> customer.store_name</pre>
+<p>     Genero BDL allows you to define structured variables as <a href="Variables.html#STRUCTURED">records or
+arrays</a>.
+Examples of this are included in later chapters.</p>
+<h3><a name="VariableScope">Variable Scope</a></h3>
+<p><a href="Variables.html">Variables</a> defined in a <a href="Functions.html">FUNCTION</a>,
+<a href="Reports.html#RPT_DEFINITION"> REPORT</a> or
+<a href="Programs.html#MAIN_BLOCK">MAIN</a> program
+block have <i>local scope</i> (are known only within the program
+block).&nbsp; The <a href="Variables.html#DEFINITION">DEFINE</a> statement declares the variables and causes memory to
+be allocated for them. DEFINE must precede any executable statements within the 
+same program block.&nbsp;A <a href="Variables.html">variable</a> with <i>local</i> 
+scope can have its value set and can be used only within the function in which 
+it is defined.&nbsp; Memory for the
+variable is allocated when the function is called by a program, and is released
+when the function ends.&nbsp;&nbsp; &nbsp;&nbsp; </p>
+<p>A <a href="Variables.html">Variable</a>  defined with <i>module scope</i> can have its value set and can
+be used in any function within a single source-code module.&nbsp; The <a href="Variables.html#DEFINITION">DEFINE</a>
+statement must appear at the top of the module, before any program blocks.
+Memory for module variables is allocated when the program starts,
+and is released when the program ends. </p>
+<p>A <a href="Variables.html">Variable</a>  defined with <i>global scope </i>can 
+have its value set and can be used in any function within any modules of the 
+same program. Memory for global variables is allocated when the program starts, 
+and is released when the program ends.&nbsp; </p>
+<p>For a well-structured program and ease of maintenance, we recommend that you 
+use module variables instead of global when you need persistent data storage. 
+You can include get/set functions in the module to make the value of the 
+variable accessible to functions in other modules.</p>
+<p>A compile-time error occurs if you declare the same name for two variables 
+that have the same scope. You can, however, declare the same name for variables 
+that differ in their scope. </p>
+<h3><a name="PassingVariables">Passing Variables</a> </h3>
+<p>Functions can be invoked explicitly using the <a href="FlowControl.html#FC_CALL"> CALL</a>
+ statement.&nbsp;<a href="Variables.html">Variables</a> can be passed
+as arguments to a function when it is invoked.&nbsp; The parameters can be variables, literals, constants, or any
+valid expressions. Arguments are separated by a comma.&nbsp; If the function
+returns any values, the RETURNING clause of the <a href="FlowControl.html#FC_CALL"> CALL</a>
+statement assigns the
+returned values to variables in the calling routine. The number of
+input and output parameters is static. </p>
+<p>The function that is invoked must have a <a href="FlowControl.html#FC_RETURN">RETURN</a>
+instruction to
+transfer the control back to the calling function and pass the return values.
+The number of returned values must correspond<b> </b>to the number of variables
+listed in the RETURNING clause of the <a href="FlowControl.html#FC_CALL"> CALL</a>
+statement invoking this function. If the function returns only one unique value,
+it can be used as a scalar function in an expression. </p>
+<pre>     <tt>CALL</tt> myfunc()
+
+     <tt>CALL</tt> newfunc(var1) <tt>RETURNING</tt> var2, var3
+
+     <tt>LET</tt> var2 = anotherfunc(var1)
+
+     <tt>IF</tt> testfunc1(var1) == testfunc2(var1) <tt>THEN ...</tt></pre>
+<p>See the <a href="Functions.html#FGL_STACK">BDL stack</a> discussion in
+<a href="Functions.html">Functions</a> for additional information about passing 
+and returning variables.</p>
+<h3><font color="#000000"><a name="Retrievingdata">Retrieving data from a database</a></font> </h3>
+<p>Using <a href="StaticSql.html">Static SQL</a>, an embedded SQL SELECT
+statement can be used to retrieve data from a database table into program
+variables.&nbsp; If the SELECT statement returns only one row of data, you can
+write it directly as a procedural instruction, using the INTO clause to provide
+the list of variables where the column values will be fetched.&nbsp; If the SELECT
+statement returns more than one row of data, you must declare a database
+cursor to process the result set. </p>
+<hr>
+<h3><a name="examp_connectdb">Example:&nbsp; connectdb.4gl&nbsp;</a></h3>
+
+<p><b>Note:</b>&nbsp; The line numbers shown in the examples in this tutorial
+are not part of the BDL code; they are used here so specific lines can be easily
+referenced. The BDL keywords are shown in uppercase, as a convention only.&nbsp;
+The keywords also appear in green in this documentation.&nbsp;</p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="364" bgcolor="#C0C0C0" valign="top"><b>
+        Program connectdb.4gl&nbsp;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> -- connectdb.4gl
+<CODE class=linenumber>02</CODE> <tt>SCHEMA</tt> custdemo
+<CODE class=linenumber>03</CODE>
+<CODE class=linenumber>04</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>05</CODE>   <tt>DEFINE</tt> 
+<CODE class=linenumber>06</CODE>    m_store_name <tt>LIKE</tt> customer.store_name
+<CODE class=linenumber>07</CODE>
+<CODE class=linenumber>08</CODE>   <tt>CONNECT TO</tt> &quot;custdemo&quot;
+<CODE class=linenumber>09</CODE>
+<CODE class=linenumber>10   </CODE><tt>CALL</tt> select_name(101) <tt>
+</tt><CODE class=linenumber>11</CODE><tt>       RETURNING</tt> m_store_name<CODE class=linenumber>
+12</CODE>   <tt>DISPLAY</tt> m_store_name
+<CODE class=linenumber>13</CODE>  
+<CODE class=linenumber>14</CODE>   <tt>DISCONNECT CURRENT</tt>
+<CODE class=linenumber>15</CODE>
+<CODE class=linenumber>16</CODE><tt> END MAIN</tt><CODE class=linenumber>
+17</CODE>
+<CODE class=linenumber>18</CODE> <tt>FUNCTION</tt> select_name(f_store_num)
+<CODE class=linenumber>19</CODE>   <tt>DEFINE</tt> 
+<CODE class=linenumber>20</CODE>    f_store_num  <tt>LIKE</tt> customer.store_num,
+<CODE class=linenumber>21</CODE>    f_store_name <tt>LIKE</tt> customer.store_name
+<CODE class=linenumber>22</CODE>
+<CODE class=linenumber>23</CODE>   <tt>SELECT </tt>store_name <tt>INTO</tt> f_store_name
+<CODE class=linenumber>24</CODE>      <tt>FROM</tt> customer
+<CODE class=linenumber>25</CODE>     <tt>WHERE</tt> store_num = f_store_num
+<CODE class=linenumber>26</CODE>
+<CODE class=linenumber>27</CODE>   <tt>RETURN</tt> f_store_name
+<CODE class=linenumber>28</CODE>
+<CODE class=linenumber>29 </CODE><tt>END FUNCTION</tt>  -- select_name</pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Line
+<CODE class=linenumber>02</CODE> The <a href="Programs.html#DB_SCHEMA">SCHEMA</a>
+statement is used to define
+the database schema files to be used as <b>custdemo.</b>&nbsp; The <a href="Variables.html#DATABASE_TYPES">LIKE</a> syntax has been used to define variables in the
+  module.&nbsp;</li>
+          <li>Lines
+<CODE class=linenumber>05</CODE> and
+<CODE class=linenumber>06</CODE>  Using <a href="Variables.html#DEFINITION">DEFINE</a><b>
+</b>the local variable <b>m_store_name</b>&nbsp;
+is declared as being <a href="Variables.html#DATABASE_TYPES">LIKE</a> the store_name column; that is, it has the same data type definition as
+the column in the <b>customer</b> table of the <a href="../Tutorial/custdemo.sql">custdemo</a> database.</li>
+          <li>Line
+<CODE class=linenumber>08</CODE> A <a href="Connections.html#DC_CONNECT_TO">connection</a> in multi-session mode is
+opened to the custdemo database, with connection parameters defined in <a href="FglProfile.html">FGLPROFILE</a>.&nbsp;Once connected to the database server, a current database session is
+  started. Any subsequent SQL statement is executed in the context of the
+  current database session.</li>
+          <li>Line<b> </b>
+<CODE class=linenumber>10</CODE>  The <b> select_name</b> function is called, passing the
+literal value <b>101</b>  as an argument. The function returns a value to be stored in the local variable <b>m_store_name</b>.</li>
+          <li>Line
+<CODE class=linenumber>12</CODE> The value of <b>m_store_name</b> is displayed
+to the user on the standard output.</li>
+          <li>Line
+<CODE class=linenumber>14</CODE> The <a href="Connections.html#DC_DISCONNECT">DISCONNECT</a>
+instruction disconnects
+you from the current session.&nbsp; As there are no additional lines in the program block, the program
+            terminates.</li>
+          <li>Line <CODE class=linenumber>
+18</CODE>&nbsp; Beginning of the definition of the function <b>select_name</b>.&nbsp;
+            The value 101 that is passed to the&nbsp; function will be stored in the
+local variable <b>f_store_num</b>.</li>
+          <li>Lines <CODE class=linenumber>
+19</CODE>&nbsp; thru <CODE class=linenumber>21 </CODE><a href="Variables.html#DEFINITION">Defines</a> multiple local
+variables used in the function, separating the
+variables listed with a comma.&nbsp; Notice that a variable must be declared with the same name and data type as
+  the parameter listed within the parenthesis in the function statement, to accept
+  the passed value.</li>
+          <li>Lines <CODE class=linenumber>
+23</CODE> thru <CODE class=linenumber>25</CODE>
+ Contains the embedded SELECT ... INTO<b>&nbsp;</b> 
+SQL statement to retrieve the store name for
+store #101.&nbsp; The store name that is retrieved will be stored in the<b> f_store_name</b> 
+local variable.&nbsp; Since the store number is unique, the WHERE clause ensures
+that only a single row will be returned.&nbsp;&nbsp;</li>
+          <li>Line <CODE class=linenumber>
+27</CODE>
+ The <a href="FlowControl.html#FC_RETURN">RETURN</a> statement causes the function to terminate, returning the value
+of the local variable <b>f_store_name</b>.&nbsp;The number of variables returned matches the number declared in the
+  RETURNING clause of the <a href="FlowControl.html#FC_CALL"> CALL</a>
+  statement invoking the function. Execution of the program
+  continues with line <CODE class=linenumber>
+12</CODE>.</li>
+        </ul>
+
+
+<hr>
+<h2><a name="CompilingandExecuting">Compiling and Executing the Program</a>
+  </h2>
+<ol>
+  <li>Create the database schema files if they have not already been created:</li>
+</ol>
+<blockquote>
+  <pre>fgldbsch -db custdemo</pre>
+</blockquote>
+<ol start="2">
+  <li>Compile the single module program:</li>
+</ol>
+<blockquote>
+  <pre>fglcomp connectdb.4gl</pre>
+</blockquote>
+<ol start="3">
+  <li>Execute the program:</li>
+</ol>
+<blockquote>
+  <pre>fglrun connectdb.42m</pre>
+</blockquote>
+
+</body>
+</html>

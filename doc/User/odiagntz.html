@@ -1,0 +1,1789 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<TITLE>ODI Adaptation Guide for PostgreSQL</TITLE>
+<meta http-equiv="Content-Type" content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p><a href="../index.html">Back to Contents</a></p>
+
+<HR>
+
+<H1>ODI Adaptation Guide For Netezza 6.0.x</H1>
+
+<p><font color="#000080">Installation</font></p>
+<div align="center">
+  <center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODINTZ_PREP01">Install Netezza and create a database</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ_PREP02">Prepare the runtime environment</a></td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<p><font color="#000080">Database concepts</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODINTZ007a">Database concepts</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ008a">Data consistency and concurrency management</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ009">Transactions handling</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ016">Defining database users</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">Data dictionary </font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODINTZ041">BOOLEAN data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ011">CHARACTER data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ021">NUMERIC data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ001">DATE and DATETIME data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ036">INTERVAL data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ005">SERIAL data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ004">ROWIDs</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ037">Indexes</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ030">Very large data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ012">Constraints</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ013">Triggers</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ014">Stored procedures</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ019">Name resolution of SQL objects</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ100">Data type conversion table</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">Data manipulation</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODINTZ003">Reserved words</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ006">Outer joins</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ009">Transactions handling</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ017">Temporary tables</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ018">Substrings in SQL</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ011b">The LENGTH( ) function</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ019">Name resolution of SQL objects</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ020">String delimiters</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ024">MATCHES and LIKE conditions</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ033">Querying system catalog tables</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ034">Syntax of UPDATE statements</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ035">The LENGTH() function</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">BDL programming</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODINTZ010">UPDATE limitations</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ005">SERIAL data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ025">INFORMIX specific SQL statements in BDL</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ028">INSERT cursors</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ031">Cursors WITH HOLD</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ008b">SELECT FOR UPDATE</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ032">UPDATE/DELETE WHERE CURRENT OF &lt;cursor&gt;</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ046">The LOAD and UNLOAD instructions</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ047">SQL Interruption</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODINTZ048">Scrollable Cursors</a></td>
+  </tr>
+</table>
+</center></div>
+
+<hr>
+
+<h2><a name="ODINTZ_PREP">Runtime configuration</a></h2>
+
+<blockquote>
+  <h3><a name="ODINTZ_PREP01">Install Netezza and create a database</a></h3>
+  <ol>
+    <li><p>A Netezza appliance (the server) must be available. For proof of
+      concept, development or testing, you can register at Netezza Development
+      Partner Access to get access to the Netezza hosts provided for education
+      and development. Another option is to get a Netezza emulator to run it
+      in-house in a virtual machine environment.<br>
+      For more details, check <a href="http://www.netezza.com">http://partner.netezza.com</a>.</p>
+    </li>
+    <li><p>Install the Netezza client software with the Netezza ODBC driver on
+      the application server.</p>
+    </li>
+    <li><p>Create a Netezza database with the <b>nzsql</b> utility. You must
+      connect to the <b>system</b> database:<br><br>
+      <font face="Courier New">&nbsp;&nbsp; $ nzsql -h <i>hostname</i> system <i>username
+      password</i></font></p>
+    </li>
+    <li><p>Create the <b>application tables</b>. Do not forget to convert INFORMIX
+      data types to Netezza data types.
+      See issue <a href="#ODINTZ100">ODINTZ100</a> for more details.</p>
+    </li>
+    <li><p>If you plan to use the SERIAL emulation, you must prepare the database.
+      See issue <a href="#ODINTZ005">ODINTZ005</a> for more details.</p>
+    </li>
+  </ol>
+</blockquote>
+
+<blockquote>
+  <h3><a name="ODINTZ_PREP02">Prepare the runtime environment</a></h3>
+  <ol>
+    <li><p>In order to connect to Netezza, you must have a Netezza database driver &quot;<b>dbmntz*</b>&quot;
+      in FGLDIR/dbdrivers.</p>
+    </li>
+    <li><p>The <b>Netezza</b><b> client software with ODBC driver</b> is required to connect to a
+      Netezza appliance.
+      Check if the Netezza ODBC client library (<b>libnzodbc.*</b>) is installed on the machine
+      where the 4gl programs run.</p>
+    </li>
+    <li><p>Make sure that the Netezza client environment variables are properly
+      set. Check for example <b>NZ_DIR</b> (the path to the installation
+      directory), <b>NZ_ODBC_INI_PATH</b> (the path to the ODBC data source
+      file), etc. See
+      Netezza documentation for more details.</p>
+
+    </li>
+    <li><p>Verify the environment variable
+      defining the search path for database client shared libraries (libnzodbc.so on
+      UNIX, ODBC32.DLL on Windows). On UNIX platforms, the variable is specific to the operating system. 
+	For example, on Solaris and Linux systems, it is <b>LD_LIBRARY_PATH</b>, on
+      AIX it is <b>LIBPATH</b>, or HP/UX it is <b>SHLIB_PATH</b>. On Windows,
+      you define the DLL search path in the <b>PATH</b> environment variable.</p>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0">
+      <p align="center"><font color="#0000FF"><b>Netezza</b></font><font color="#0000FF"><b>
+      version</b></font></td>
+    <td bgcolor="#C0C0C0" width="70%">
+      <p align="center"><font color="#0000FF"><b>Shared library environment
+      setting</b></font></td>
+  </tr>
+  <tr>
+    <td><font color="#0000FF"><b>Netezza</b></font><font color="#0000FF"><b>  6.0 and higher</b></font></td>
+    <td align="center" width="70%">
+      <p align="left"><i>UNIX</i>: Add <b>$NZ_DIR/lib</b>  (for 32 bit) or <b>$NZ_DIR/lib64</b>
+      (for 64 bit) to LD_LIBRARY_PATH (or
+      its equivalent).<br>
+      <i>Windows</i>: Add <b>%NZ_DIR%\bin</b>  to PATH.</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td align="center" width="70%"></td>
+  </tr>
+</table>
+    </li>
+    <li><p>You can test the client environment by trying to connect to the
+      server with the SQL command line tool:<br>
+      <br>
+      <font face="Courier New">&nbsp;&nbsp; $ nzsql -h <i>hostname</i> system <i>username
+      password</i></font></p>
+    </li>
+    <li><p>Set up the <b>fglprofile</b> entries for <a href="Connections.html#DS_ODI_DBVSPEC">database
+      connections</a>.<br>
+      <br>
+      <b><font color="#FF0000">Warning:</font></b> <b>Make sure that you are
+      using the ODI driver corresponding to the database client and server
+      version. Because Informix features emulation are dependant from the
+      database server version, it is mandatory to use the same version of the
+      database client and ODI driver as the server version.</b></p>
+    </li>
+  </ol>
+</blockquote>
+
+<hr>
+
+<h2><a name="ODINTZ001">ODINTZ001 - DATE and DATETIME data types</a></h3>
+
+</h2>
+
+<p>INFORMIX provides two data types to store dates and time information: 
+
+<ul>
+  <li><b>DATE</b> = for year, month and day storage.</li>
+  <li><b>DATETIME</b> = for year to fraction(1-5) storage.</li>
+</ul>
+
+<p>Netezza provides the following data type to store date and time information:</p>
+
+<ul>
+  <li><b>DATE</b> = for year, month, day storage.</li>
+  <li><b>TIME </b>= for hour, minute, second, fraction with (6 decimal
+    positions).</li>
+  <li><b>TIME WITH TIME ZONE / TIMETZ </b> = same as TIME, with time zone
+    information.</li>
+  <li><b>TIMESTAMP</b> = for year, month, day, hour, minute, second, fraction
+    (with 6 decimal positions).</li>
+</ul>
+
+<p><b>String representing date time information:</b>
+
+<p>INFORMIX is able to convert quoted strings to DATE / DATETIME data if the string contents  matches environment parameters (i.e. DBDATE, GL_DATETIME).  As in INFORMIX,
+Netezza can convert quoted strings to date time data.
+Netezza accepts different date formats, including ISO date time strings, and you
+can specify the cast operator (::date, ::time, ::timestamp) after the string
+literal.</p>
+
+<p><b>Date arithmetic:</b> 
+
+<ul>
+  <li>INFORMIX supports date arithmetic on DATE and DATETIME values. The result of an arithmetic expression involving dates/times is a number of days when only DATEs are used and an INTERVAL value if a DATETIME is used in the expression.</li>
+  <li>In Netezza, the result of an arithmetic expression involving DATE values is an INTEGER representing a number of days.</li>
+  <li>INFORMIX automatically converts an integer to a date when the integer is used to set a value of a date column.
+    Netezza does not support this automatic conversion.</li>
+  <li>Complex DATETIME expressions ( involving INTERVAL values for example) are INFORMIX specific and have no equivalent in
+    Netezza.</li>
+</ul>
+
+<p><b>Using DATE/DATETIME variables in SQL statements</b>
+
+<p>INFORMIX supports implicit DATE/DATETIME conversions, for example you can use
+a DATE variable when the target column is a DATETIME. This is not possible with
+Netezza: The type of the SQL parameter must match the type of the column in the
+database table.&nbsp;</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Netezza has the same <b>DATE</b> data type as INFORMIX ( year, month, day ). So you can use
+Netezza DATE data type for
+INFORMIX DATE columns.</p>
+
+<p>Netezza <b>TIME</b> data type can be used to store INFORMIX DATETIME HOUR TO SECOND values. The database interface makes the conversion automatically.</p>
+
+<p>INFORMIX DATETIME values with any precision from YEAR to FRACTION(5) can
+be stored in Netezza <b>TIMESTAMP</b> columns. The database interface makes the conversion
+automatically. Missing date or time parts default to 1900-01-01 00:00:00.0. For example,
+when using a DATETIME HOUR TO MINUTE with the value of &quot;11:45&quot;, the Netezza
+TIMESTAMP value will be &quot;1900-01-01 11:45:00.0&quot;.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  Make sure that you are using
+the same type for the SQL parameter and the target column, DATE/DATETIME
+implicit conversion is not supported by Netezza.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> SQL Statements using expressions with TODAY / CURRENT /&nbsp; EXTEND must be reviewed and adapted to the native syntax.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Literal DATETIME and INTERVAL expressions (i.e. DATETIME ( 1999-10-12) YEAR TO DAY) are not converted.</p>
+
+<hr>
+
+<h2><a name="ODINTZ003">ODINTZ003 - Reserved words</a></h3>
+
+</h2>
+
+<p>INFORMIX allows to use SQL language keywords for database object names
+(tables, columns):</p>
+
+<p>
+    <font face="Courier New">
+&nbsp;&nbsp;&nbsp; CREATE TABLE table ( int INT, date DATE )</font></p>
+
+<p>In Netezza, SQL object names like table and column names cannot be SQL reserved
+keywords.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Table or column names which are Netezza reserved keywords must be renamed.</p>
+
+<p>See Netezza SQL Reference guide for a list of reserved keywords.</p>
+
+<hr>
+
+<h2><a name="ODINTZ004">ODINTZ004 - ROWIDs</a></h3>
+
+</h2>
+
+<p>When creating a table, INFORMIX automatically adds a
+&quot;ROWID&quot; integer column (applies to non-fragmented tables only). The
+ROWID column is auto-filled with a unique number and can be used
+like a primary key to access a given row.</p>
+
+<p> Netezza implements ROWIDs like Informix, except that in Netetzza, the rowids
+are stored in a 64 bit integer.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>ROWIDs can be used with Netezza like when connected to Informix, as long as
+you fetch rowid values into a BIGINT variable. But you should avoid ROWID-based
+code and use primary key constraints instead.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> The SQLCA.SQLERRD[6] register
+cannot be supported, because Netezza rowids as 64 bit integers (BIGINT) while
+SQLCA.SQLERRD[6] is an 32 bit integer (INTEGER). Therefore, all references to SQLCA.SQLERRD[6] must be removed because this variable will not contain the ROWID of the last INSERTed or UPDATEd row.</p>
+
+<hr>
+
+<h2><a name="ODINTZ005">ODINTZ005 - SERIAL data types</a>
+
+</h2>
+
+<p>INFORMIX supports the SERIAL, SERIAL8 and BIGSERIAL data types to produce automatic
+integer sequences. SERIAL is based on INTEGER (32 bit), while SERIAL8 and
+BIGSERIAL can store 64 bit integers: </p>
+<ul>
+	<li>The table column must be of type SERIAL, SERIAL8 or BIGSERIAL.</li>
+	<li>To generate a new serial, no value or a zero 
+	value is specified in the INSERT statement:<br>
+	<font size="2" face="Courier New">&nbsp;&nbsp; INSERT INTO tab1 ( c ) VALUES ( 'aa' )<br>
+	&nbsp;&nbsp; INSERT INTO tab1 ( k, c ) VALUES ( 0, 'aa' )</font></li>
+	<li>After INSERT, the new SERIAL value is provided in
+	<font face="Courier New" color="#FF0000">SQLCA.SQLERRD[2]</font>, while the
+      new SERIAL8 and BIGSERIAL value must be fetched with a <font face="Courier New" color="#FF0000">SELECT
+      dbinfo('bigserial')</font> query.</li>
+</ul>
+<p>INFORMIX allows you to insert rows with a value different from zero for
+    a serial column. Using an explicit value will automatically increment the internal serial
+    counter, to avoid conflicts with future INSERT statements that are using a zero value : <br>
+    <font face="Courier New">&nbsp;&nbsp;&nbsp; CREATE TABLE tab ( k SERIAL ); --&gt; internal counter = 0<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 1<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 10 );&nbsp; --&gt; internal counter = 10<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 11<br>
+&nbsp;&nbsp;&nbsp; DELETE FROM tab;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; --&gt;
+internal counter = 11<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 12</font></p>
+
+<p><b><font color="#FF0000">Warning:</font></b>   Netezza does not have a SERIAL data
+type. Version 6 of the database supports SEQUENCEs, but not triggers. The lack
+if triggers support makes it impossible to emulate Informix SERIALs.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>If you are using Informix SERIALs or BIGSERIALs, you must review the
+application logic and database schema to replace SERIAL/BIGSERIAL columns by
+INTEGER/BIGINT columns, and generate the new keys from a SEQUENCE as described
+in the <a href="SqlProgramming.html#AUTOINCR_NATIVE">SQL Programming page</a>.</p>
+
+<hr>
+
+<h2><a name="ODINTZ006">ODINTZ006 - Outer joins</a></h3>
+
+</h2>
+
+<p>In INFORMIX SQL, outer tables can be defined in the FROM clause with the <b>OUTER</b> keyword:</p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM a, <b><font color="#0000A0">OUTER(b)</font></b>
+ WHERE a.key = b.akey</font></pre>
+  <pre><font face="Courier New">SELECT ... FROM a, <b><font color="#0000A0">OUTER(b,OUTER(c))</font></b>
+ WHERE a.key = b.akey
+   AND b.key1 = c.bkey1
+   AND b.key2 = c.bkey2 </font></pre>
+</blockquote>
+
+<p>Netezza supports the ANSI outer join syntax:</p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM <b><font color="#0000A0">cust LEFT OUTER JOIN order
+                     ON cust.key = order.custno</font></b></font></pre>
+  <pre><font face="Courier New">SELECT ...
+  FROM <b><font color="#0000A0">cust</font></b></font><b><font
+face="Courier New" color="#0000A0"> LEFT OUTER JOIN order
+                 LEFT OUTER JOIN item
+                 ON order.key = item.ordno
+            ON cust.key = order.custno</font></b><font
+face="Courier New">
+ WHERE order.cdate &gt; current date</font></pre>
+</blockquote>
+
+<p>See the Netezza reference for a complete description of the syntax.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>For better SQL portability, you should use the ANSI outer join syntax instead
+of the old Informix OUTER syntax.</p>
+
+<p>The Netezza interface can convert most INFORMIX OUTER specifications to ANSI outer joins.</p>
+
+<p>Prerequisites:</p>
+
+<ol>
+  <li>In the FROM clause, the main table must be the first item and the
+    outer tables must figure from left to right in the order of outer levels.<br>
+    &nbsp;&nbsp; Example which does not work : &quot;<font face="Courier New">FROM OUTER(tab2), tab1</font>&quot;.</li>
+  <li>The outer join in the WHERE part must use the table name as prefix.<br>
+    &nbsp;&nbsp; Example : &quot;<font face="Courier New">WHERE tab1.col1 = tab2.col2</font>&quot;.</li>
+</ol>
+
+<p>Restrictions:</p>
+
+<ol>
+  <li>Additional conditions on outer table columns cannot be detected and therefore are not supported:<br>
+    &nbsp;&nbsp;Example : &quot;... <font face="Courier New">FROM tab1, OUTER(tab2) WHERE tab1.col1 = tab2.col2 AND
+    tab2.colx &gt; 10</font>&quot;.</li>
+  <li>Statements composed of 2 or more SELECT instructions using OUTERs are not supported.<br>
+    &nbsp; Example : &quot;<font face="Courier New">SELECT ... UNION SELECT&quot; or &quot;SELECT ... WHERE col IN (SELECT...)</font>&quot;</li>
+</ol>
+
+<p>Remarks:</p>
+
+<ol>
+  <li>Table aliases are detected in OUTER expressions.<br>
+    &nbsp;&nbsp; OUTER example with table alias : &quot;<font face="Courier New">OUTER( tab1 alias1)</font>&quot;.</li>
+  <li>In the outer join, &lt;outer table&gt;.&lt;col&gt; can be placed on
+    both right or left  sides  of the equal sign.<br>
+    &nbsp;&nbsp; OUTER join example with table on the left : &quot;<font face="Courier New">WHERE outertab.col1 =
+    maintab.col2</font> &quot;.</li>
+  <li>Table names detection is not case-sensitive.<br>
+    &nbsp;&nbsp; Example : &quot;<font face="Courier New">SELECT ... FROM tab1, TAB2 WHERE tab1.col1 = tab2.col2</font>&quot;.</li>
+  <li><a href="#ODINTZ017">Temporary tables</a> are supported in OUTER specifications.</li>
+</ol>
+
+<hr>
+
+<h2><a name="ODINTZ007a">ODINTZ007a - Database concepts</a></h3>
+
+</h2>
+
+<p>Most BDL applications use only one database entity (in the meaning of INFORMIX). But the same BDL application can connect to different occurrences of the same database schema, allowing several users to connect to those different databases.</p>
+
+<p>Like INFORMIX servers, Netezza can handle multiple database entities. Tables created by a user can be accessed without the owner prefix by other users as long as they have access privileges to these tables.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Create a Netezza database for each INFORMIX database.</p>
+
+<hr>
+
+<h2><a name="ODINTZ008a">ODINTZ008a - Data consistency and concurrency management</a></h3>
+
+</h2>
+
+<p><b>Data consistency</b> involves readers which want to access data
+currently modified by writers and <b>concurrency data access</b> involves several writers
+accessing the same data for modification. <b>Locking granularity</b> defines the amount of
+data concerned when a lock is set (row, page, table, ...).</p>
+
+<p><b>INFORMIX</b></p>
+
+<p>INFORMIX uses a locking mechanism to handle data consistency and concurrency.
+When a process changes database information with UPDATE, INSERT or DELETE,
+an <b>exclusive lock</b> is set on the touched rows. The lock remains active until the end
+of the transaction. Statements performed outside a transaction are treated as a
+transaction containing a single operation and therefore release the locks immediately
+after execution. SELECT statements can set <b>shared locks</b> according to the
+<b>isolation level</b>. In case of locking conflicts (for example, when two processes want to acquire
+an exclusive lock on the same row for modification or when a writer is trying to modify
+data protected by a shared lock), the behavior of a process can be changed by setting the 
+<b>lock
+wait mode</b>.</p>
+
+<p>Control:</p>
+
+<ul>
+  <li>Lock wait mode : SET LOCK MODE TO ...</li>
+  <li>Isolation level : SET ISOLATION TO ...</li>
+  <li>Locking granularity : CREATE TABLE ... LOCK MODE {PAGE|ROW}</li>
+  <li>Explicit exclusive lock : SELECT ... FOR UPDATE</li>
+</ul>
+
+<p>Defaults:</p>
+
+<ul>
+  <li>The default isolation level is read committed.</li>
+  <li>The default lock wait mode is &quot;not wait&quot;.</li>
+  <li>The default locking granularity is per page.</li>
+</ul>
+
+<p><u><b>Netezza</b></u></p>
+
+<p>Netezza servers are designed for Data Warehouse applications, not for OLTP
+applications: Concurrent data access is not the best thing that a Netezza server
+can do. There are a bunch of limitations that you must be aware of. You must not
+expect to be able to migrate an existing OLTP application running against
+Informix or Oracle on a Netezza database server. The purpose of a Netezza-based
+application is mostly to do queries, with few insert or updates. Typically a
+Netezza database is fed with data by using tools such as nzload, not by Genero
+BDL programs.</p>
+
+<p>Some limitations of Netezza:</p>
+
+<ul>
+  <li>An application can only execute one cursor (or statement handle) at a
+    time.</li>
+  <li>Singular data modification statements (INSERT, UPDATE, DELETE) are much
+    slower as with traditional OLTP database servers.<br>
+    Netezza is however very good when it comes to load a huge amount of data,
+    with special tools like the nzload utility.</li>
+  <li>SELECT ... FOR UPDATE is not supported. Regular SELECTs do never lock
+    rows.</li>
+  <li>Locks can only be set for a whole table with LOCK TABLE.</li>
+  <li>Only up to 31 concurrent INSERTs processes are allowed (Netezza V6), and
+    there must be only INSERTs in a transaction block.</li>
+  <li>UPDATE/DELETE statements lock the entire table, but don't prevent SELECTs.
+    Other processes doing UPDATEs/DELETEs will wait until the first session has
+    committed.</li>
+  <li>Netezza (V6) understands the SET TRANSACTION ISOLATION statement, but
+    currently implements only the SERIALIZABLE level.</li>
+  <li>There is no way to define the LOCK WAIT mode. With Netezza, processes
+    always wait for locks to be released.</li>
+</ul>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Understand that the main difference with INFORMIX is that Netezza is not good
+at concurrent data modification. Note also that readers do not have to wait for writers in
+Netezza.</p>
+
+  <p>Genero application should mainly do queries against a Netezza server. You
+  must review your program logic when modifying data, having in mind that only
+  one process can modify a table at the time. Note however that if you write
+  short transactions this is not visible to the end users, except that INSERT /
+  UPDATE / DELETE of a single row takes more time as with another database
+  server.</p>
+
+  <p><b><font color="#FF0000">Warning:</font></b> The <font size="2" face="Courier New">
+  SET ISOLATION TO ... </font>INFORMIX syntax is replaced by <font size="2" face="Courier New">SET TRANSACTION ISOLATION LEVEL ... </font>in
+  Netezza. However, only the REPEATABLE READ level is supported with Netezza.</p>
+
+  <p>The next table shows the isolation level mappings done by the
+  Netezza database driver:</p>
+
+<div align="center">
+  <center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><font color="#0000FF"><b>SET ISOLATION
+      instruction in program</b></font></td>
+    <td width="60%" bgcolor="#C0C0C0"><font color="#0000FF"><b>Native SQL
+      command</b></font></td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO DIRTY READ</td>
+    <td width="60%"><b><font color="#FF0000">Not supported (SQL Error)</font></b></td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO COMMITTED READ<br>
+      &nbsp; [READ COMMITTED] [RETAIN UPDATE LOCKS]</td>
+    <td width="60%"><b><font color="#FF0000">Not supported (SQL Error)</font></b></td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO CURSOR STABILITY</td>
+    <td width="60%"><b><font color="#FF0000">Not supported (SQL Error)</font></b></td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO REPEATABLE READ</td>
+    <td width="60%">SET TRANSACTION ISOLATION LEVEL SERIALIZABLE</td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<p><b><font color="#FF0000">Warning:</font></b> Since Netezza does not support
+the lock wait mode, you must check that your programs do not include a SET LOCK
+MODE instruction. This instruction will fail with error <a href="FglErrors.html#-6370">-6370</a>
+if it is executed when connected to Netezza.</p>
+
+<p>See INFORMIX and Netezza documentation for more details about data consistency, concurrency and locking mechanisms.</p>
+
+<hr>
+
+<h2><a name="ODINTZ008b">ODINTZ008b - SELECT FOR UPDATE</a></h3>
+
+</h2>
+
+<p>A lot of BDL programs use pessimistic locking in order to avoid several users editing the same rows at the same time. </p>
+
+<p><font face="Courier New">&nbsp;&nbsp; DECLARE cc CURSOR FOR<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SELECT ... FROM tab WHERE ... FOR UPDATE<br>
+&nbsp;&nbsp; OPEN cc<br>
+&nbsp;&nbsp; FETCH cc &lt;-- lock is acquired<br>
+&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp; CLOSE cc &lt;-- lock is released</font></p>
+
+<p>In both INFORMIX and Netezza, locks are released when closing the cursor or when the transaction ends.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Netezza does not support SELECT
+FOR UPDATE statements.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>You must review the program logic if you use SELECT FOR UPDATE statements.
+Actually Netezza systems are designed for data warehouse applications, not for
+OLTP applications. In a DW context, concurrent data access is not required or a
+priority.</p>
+
+<hr>
+
+<h2><a name="ODINTZ009">ODINTZ009 - Transactions handling</a></h3>
+
+</h2>
+
+<p>Compared to INFORMIX, Netezza has a couple of limitations regarding transactions
+and <a href="#ODINTZ008a">concurrent data access</a>. </p>
+
+<p>INFORMIX native mode (non ANSI):</p>
+
+<ul>
+  <li>Transactions are started with BEGIN WORK.</li>
+  <li>Transactions are validated with COMMIT WORK.</li>
+  <li>Transactions are canceled with ROLLBACK WORK.</li>
+  <li>Savepoints can be set with SAVEPOINT <i>name</i> [UNIQUE].</li>
+  <li>Transactions can be rolled back to a savepoint with ROLLBACK [WORK] TO
+    SAVEPOINT [<i>name</i>].</li>
+  <li>Savepoints can be released with RELEASE SAVEPOINT <i>name</i>.</li>
+  <li>Statements executed outside of a transaction are automatically committed.</li>
+  <li>DDL statements can be executed (and canceled) in transactions.</li>
+</ul>
+
+<p>Netezza:</p>
+
+<ul>
+  <li>Transactions are started with BEGIN WORK. </li>
+  <li>Transactions are validated with COMMIT WORK.</li>
+  <li>Transactions are canceled with ROLLBACK WORK.</li>
+  <li>Statements executed outside of a transaction are automatically committed.</li>
+  <li>DDL statements can be executed (and canceled) in transactions.</li>
+  <li>If an SQL error occurs in a transaction, the whole transaction is aborted.</li>
+  <li>Transaction must only contain INSERTs if you want concurrent processes to
+    insert rows at the same time (UPDATEs/DELETEs lock the whole table).</li>
+  <li>Only the SERIALIZABLE isolation level is implemented by Netezza.</li>
+</ul>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  Netezza cancels the whole
+transaction if an SQL error occurs in one of the statements executed inside the
+transaction. The following code example illustrates this difference:</p>
+
+<p><font face="Courier New">
+&nbsp;&nbsp; CREATE TABLE tab1 ( k INT PRIMARY KEY, c CHAR(10) )<br>
+&nbsp;&nbsp; WHENEVER ERROR CONTINUE<br>
+&nbsp;&nbsp; BEGIN WORK<br>
+&nbsp;&nbsp; INSERT INTO tab1 ( 1, 'abc' )<br>
+&nbsp;&nbsp; DELECT FROM unexisting WHERE key = 123&nbsp;&nbsp; -- un-existing
+table = sql error<br>
+&nbsp;&nbsp; COMMIT WORK</font></p>
+
+<p>With INFORMIX, this code will leave the table with one row inside, since the
+first INSERT statement succeeded. With Netezza, the table will remain empty
+after executing this piece of code, because the server will rollback the whole
+transaction.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Regarding the transaction control instructions, the BDL applications do not have to be modified in order to work with
+Netezza: INFORMIX transaction handling commands are automatically converted to Netezza
+instructions to start, validate or cancel transactions. However, since Netezza
+is not designed for OLTP applications, you must review the code doing complex
+data modifications. See the <a href="#ODINTZ008a">concurrency</a> topic for more
+details. </p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  You must review the SQL
+statements inside BEGIN WORK / COMMIT WORK instruction and check if these can
+raise and SQL error. To get the same behavior also when connected to a different
+database as Netezza, in case of error, you must issue a ROLLBACK to cancel all
+the SQL statements that succeeded in the transaction, for example with a <a href="Exceptions.html#TRYCATCH">TRY/CATCH</a>
+block.</p>
+
+<p><font face="Courier New">
+&nbsp;&nbsp; TRY<br>
+&nbsp;&nbsp; &nbsp;&nbsp; BEGIN WORK<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp; &nbsp;&nbsp; COMMIT WORK<br>
+&nbsp;&nbsp; CATCH<br>
+</font><font face="Courier New">&nbsp;&nbsp; &nbsp;&nbsp; ROLLBACK WORK<br>
+</font><font face="Courier New">&nbsp;&nbsp; END TRY</font></p>
+
+<hr>
+
+<h2><a name="ODINTZ010">ODINTZ010 - UPDATE limitations</a>
+
+</h2>
+
+<p>Netezza has some limitations regarding the UPDATE statement: </p>
+
+<ul>
+  <li>Like DELETE, an UPDATE statement locks the entire table.</li>
+  <li>It is not possible to UPDATE <i>distribution columns</i>:<br>
+    Netezza database tables get distributed across all of the nodes using the
+    distribution column.<br>
+    You can specify the distribution column(s) when you create the table. See
+    Netezza documentation for more details.<br>
+    If you try to update a distribution column, you get the error 46
+    &quot;Attempt to UPDATE a distribution column&quot;.&nbsp;</li>
+</ul>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Review the program logic if the UPDATE statements in your
+programs&nbsp;uses distribution columns, and keep in mind that an UPDATE will
+lock the entire table. </p>
+
+<hr>
+
+<h2><a name="ODINTZ041">ODINTZ041 - BOOLEAN data type</a>
+
+</h2>
+
+<p>INFORMIX supports the BOOLEAN data type, which can store 't' or 'f' values.
+Genero BDL implements the BOOLEAN data type in a different way: As in other
+programming languages, Genero BOOLEAN stores integer values 1 or 0 (for TRUE or
+FALSE). The type was designed this way to assign the result of a Boolean
+expression to a BOOLEAN variable.</p>
+
+<p>Netezza supports the BOOLEAN data type and stores 't' or 'f' values for
+TRUE and FALSE representation. It is not possible to insert the integer values 1
+or 0: Values must be true, false, 't', 'f', '1' or '0'.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The Netezza database interface supports the BOOLEAN data type, and
+converts the BDL BOOLEAN integer values to a CHAR(1) of '1' or '0'.</p>
+
+<hr>
+
+<h2><a name="ODINTZ011">ODINTZ011 - CHARACTER data types</a>
+
+</h2>
+
+<p>INFORMIX supports following character data types:</p>
+
+<ul>
+  <li>CHAR(N) with N&lt;= 32767 bytes</li>
+  <li>VARCHAR(N[,M]) with N&lt;=255 bytes</li>
+  <li>NCHAR(N) with N&lt;= 32767 bytes</li>
+  <li>NVARCHAR(N[,M]) with N&lt;=255 bytes</li>
+</ul>
+
+<p>In INFORMIX, both CHAR/VARCHAR and NCHAR/ NVARCHAR data types can be used to store
+single-byte or multi-byte encoded character strings.
+The only difference between CHAR/VARCHAR and NCHAR/NVARCHAR is for
+sorting: N[VAR]CHAR types use the collation order, while [VAR]CHAR types use the byte order.
+The character set used to store strings in CHAR/VARCHAR/NCHAR/NVARCHAR columns
+is defined by the DB_LOCALE environment variable. The character set used by
+applications is defined by the CLIENT_LOCALE environment variable. Note that
+INFORMIX uses Byte Length Semantics (the size N that you specify in [VAR]CHAR(N)
+is expressed in bytes, not characters as in some other databases)</p>
+
+<p>Netezza supports the following character data types:</p>
+
+<ul>
+  <li>CHAR(N) with N &lt;= 64000 characters</li>
+  <li>VARCHAR(N) with N &lt;= 64000 characters</li>
+  <li>NCHAR(N) with N &lt;= 16000 characters</li>
+  <li>NVARCHAR(N) with N &lt;= 16000 characters</li>
+</ul>
+
+<p> Netezza stores single-byte character data in CHAR/VARCHAR columns, and
+stores UNICODE (UTF-8 encoded) character strings in NCHAR/NVARCHAR columns.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> You cannot store UTF-8 strings
+in CHAR/VARCHAR columns.</p>
+
+<p>NCHAR/NVARCHAR data is always stored in UTF-8. The database character
+defines the encoding for CHAR and VARCHAR columns and is defined when creating
+the database with the CREATE DATABASE command, default is latin9. Note that
+while writing these lines, Netezza V6 does not support yet a different database
+character set as latin9.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  No automatic character set conversion is done by the Netezza software, this
+means that the application/client character set must match the database
+character set.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>If your application uses a single-byte character set (i.e. latin9), you can
+create tables with the CHAR and VARCHAR types. However, if you want to store
+UNICODE (UTF-8) strings, you must use the NCHAR/NVARCHAR types instead when creating
+tables. Note that in Genero sources you can use CHAR/VARCHAR, these types can
+hold single and multi-byte character sets, according to the C POSIX locale.</p>
+<p><font color="#FF0000"><b>Warning:</b></font> Netezza (V6 while writing these
+lines) supports only the latin9 database character set for CHAR / VARCHAR types.
+Since character set conversion is not supported, you can only implement either
+latin9 or UTF-8 based applications.</p>
+
+<p>See also the section about <a href="Localization.html">Localization</a>.</p>
+
+<hr>
+
+<h2><a name="ODINTZ011b">ODINTZ011b - The LENGTH( ) function </a></h3>
+
+</h2>
+
+<p>In INFORMIX, the LENGTH() function counts the number of bytes of a string
+expression, by ignoring the trailing blanks.</p>
+
+<p>Netezza supports a LENGTH() and CHARACTER_LENGTH() functions, but these count
+the number of characters (not bytes), and trailing blanks are significant.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b>  Netezza returns NULL if the
+LENGTH() parameter is NULL. INFORMIX returns zero instead.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>The Netezza database interface cannot simulate the behavior of the INFORMIX LENGTH() SQL function.</p>
+
+<p>Review the program logic and make sure you do not pass NULL values to the LENGTH() SQL function.</p>
+
+<hr>
+
+<h2><a name="ODINTZ012">ODINTZ012 - Constraints</a></h2>
+
+<p><b>Constraint naming syntax:</b></p>
+
+<p>Both INFORMIX and Netezza support primary key, unique, foreign key,
+default and check constraints, but the constraint naming syntax is different. Netezza
+expects the &quot;CONSTRAINT&quot; keyword <b>before</b> the
+constraint specification and INFORMIX expects it <b>after</b>.</p>
+
+<p><b>UNIQUE constraint example:</b></p>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>INFORMIX</b></font></td>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>Netezza</b></font></td>
+  </tr>
+  <tr>
+    <td width="50%"><font face="Courier New">CREATE TABLE scott.emp (<br>
+    ...<br>
+    empcode CHAR(10) UNIQUE<br>
+    &nbsp;&nbsp;&nbsp;<b>[CONSTRAINT pk_emp]</b>,<br>
+    ...</font></td>
+    <td width="50%"><font face="Courier New">CREATE TABLE scott.emp (<br>
+    ...<br>
+    empcode CHAR(10)<br>
+    &nbsp;&nbsp;&nbsp;<b>[CONSTRAINT pk_emp]</b>
+    UNIQUE,<br>
+    ...</font></td>
+  </tr>
+</table>
+
+<p><font color="#FF0000"><b>Warning:</b></font>   Netezza allows to create
+tables with the UNIQUE and PRIMARY KEY and FOREIGN KEY syntax, but the
+constraints are not enforced.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The database interface does not convert constraint naming expressions when creating tables from BDL programs. 
+Review the database creation scripts to adapt the constraint naming clauses for
+Netezza.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>    Since Netezza does not enforce constraints, you must test for unique
+values and foreign key references at the program level.</p>
+
+<hr>
+
+<h2><a name="ODINTZ013">ODINTZ013 - Triggers</a></h2>
+
+<p>INFORMIX supports triggers on database tables.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Netezza does not support
+triggers.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>INFORMIX triggers must be re-written in 4GL.</p>
+
+<hr>
+
+<h2><a name="ODINTZ014">ODINTZ014 - Stored procedures</a></h3>
+
+</h2>
+
+<p> INFORMIX supports stored procedures with the SPL language, and with the Java
+/ C as User Defined Routines.</p>
+
+<p>Netezza supports stored procedures with the NZPLSQL language.</p>
+
+<p>In Netezza (V6), a stored procedure must always return a value (see the
+RETURNS clause). The value returned from a stored procedure can be either a
+simple scalar value, or a result set (REFTABLE). Netezza has a limited support
+for stored procedures producing result sets (you must use dynamic SQL in the
+stored procedure). See Netezza documentation for more details.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Netezza does not support OUTPUT
+parameters for stored procedures, only one single value or a result set can be
+returned.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>INFORMIX stored procedures must be re-written in Netezza language, and the
+call from programs is slightly different from Informix.</p>
+
+<p>To call a stored procedure returning a simple scalar value, do following:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; PREPARE s1 FROM &quot;SELECT
+myproc(?,?,?)&quot;<br>
+&nbsp;&nbsp;&nbsp; EXECUTE s1 USING var1, var2, var3 INTO res</font></p>
+
+<p>To call a stored procedure returning a result set:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; PREPARE s1 FROM &quot;SELECT
+myproc(?,?,?)&quot;<br>
+&nbsp;&nbsp;&nbsp; OPEN s1 USING var1, var2, var3<br>
+&nbsp;&nbsp;&nbsp; FETCH s1 INTO record.* <br>
+&nbsp;&nbsp;&nbsp; FETCH s1 INTO record.*<br>
+&nbsp;&nbsp;&nbsp; ...</font></p>
+
+<hr>
+
+<h2><a name="ODINTZ016">ODINTZ016 - Defining database users</a>
+
+</h2>
+
+<p>INFORMIX users are defined at the operating system level, they must be members of the 'informix' group, and the database administrator must grant CONNECT, RESOURCE or DBA privileges to those users.</p>
+
+<p>Netezza users must be registered in the database with the CREATE USER
+command, for example:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; CREATE USER <i>name</i> WITH PASSWORD '<i>pswd</i>'
+IN GROUP ...</font></p>
+
+<p>See Netezza documentation for more details about user creation and database
+access/security.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>According to the application logic (is it a multi-user application ?), you have to create one or several
+Netezza users.</p>
+
+<hr>
+
+<h2><a name="ODINTZ017">ODINTZ017 - Temporary tables </a></h3>
+
+</h2>
+
+<p>INFORMIX temporary tables are created through the
+<font face="Courier New" ><b> CREATE TEMP TABLE </b></font>
+DDL instruction or through a
+<b><font face="Courier New" >SELECT ... INTO TEMP </font></b> statement.
+Temporary tables are automatically dropped when the SQL session ends, but they can be
+dropped with the DROP TABLE command. There is no name conflict when several users create
+temporary tables with the same name.</p>
+
+<p>INFORMIX allows you to create indexes on temporary tables. No name conflict occurs when several users create an index on a temporary table by using the same index identifier.</p>
+
+<p>Netezza support temporary tables as INFORMIX does, with a little syntax difference in the SELECT INTO TEMP instruction.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Temporary tables are well supported with native Netezza temp tables.</p>
+
+<hr>
+
+<h2><a name="ODINTZ018">ODINTZ018 - Substrings in SQL</a></h3>
+
+</h2>
+
+<p>INFORMIX SQL statements can use subscripts on columns defined with the character data type:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 WHERE <b>col1[2,3]</b> = 'RO' <br>
+&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 WHERE <b>col1[10]</b>&nbsp;
+= 'R'&nbsp;&nbsp; -- Same as col1[10,10]<br>
+&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <b>col1[2,3]</b>= 'RO' WHERE ...<br>
+&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 ORDER BY <b>col1[1,3]</b></font></p>
+
+<p>.. while Netezza provides the SUBSTR( ) function, to extract a substring from a string expression:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT .... FROM tab1 WHERE <b>SUBSTRING(col1
+from 2 for 2)</b> = 'RO'<br>
+&nbsp;&nbsp;&nbsp; SELECT <b>SUBSTRING('Some text' from 6 for 3)</b> ...&nbsp;&nbsp; -- Gives 'tex'</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>You must replace all INFORMIX col[x,y] expressions by SUBSTRING( col from x
+for (y-x+1) ).</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> In UPDATE
+instructions, setting column values through subscripts will produce an error with
+Netezza :<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <b>col1[2,3]</b> = 'RO' WHERE ...</font><br>
+converted to:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <b>SUBSTRING(col1
+from 2 for (3-2+1))</b> = 'RO' WHERE ...</font></p>
+
+<hr>
+
+<h2><a name="ODINTZ019">ODINTZ019 - Name resolution of SQL objects</a></h3>
+
+</h2>
+
+<p>INFORMIX uses the following form to identify an SQL object : </p>
+
+<p><font face="Courier New">&nbsp; [database[@dbservername]:][{owner|&quot;owner&quot;}.]identifier</font></p>
+
+<p>With Netezza, an object name takes the following form:</p>
+
+<p><font face="Courier New">&nbsp; [database.[schema].]identifier</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>For maximum SQL portability, we strongly recommend you to use only singular
+table names in your source code, without double quote delimiters.</p>
+
+<hr>
+
+<h2><a name="ODINTZ020">ODINTZ020 - String delimiters</a></h3>
+
+</h2>
+
+<p>The ANSI string delimiter character is the single quote ( 'string'). Double quotes are used to delimit database object names (&quot;object-name&quot;).</p>
+
+<p>Example:<font face="Courier New"> WHERE &quot;tabname&quot;.&quot;colname&quot; = 'a string value'</font></p>
+
+<p>INFORMIX allows double quotes as string delimiters, but Netezza doesn't. This is important since many BDL programs use that character to delimit the strings in SQL commands.</p>
+
+<p>Note: This problem concerns only double quotes within SQL statements. Double quotes used in pure BDL string expressions are not subject to SQL compatibility problems.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>The Netezza database interface can automatically replace all double quotes by single quotes.</p>
+
+<p>Escaped string delimiters can be used inside strings like following:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; 'This is a single quote: '''<br>
+&nbsp;&nbsp;&nbsp;&nbsp; 'This is a single quote : \''<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &quot;This is a double quote : &quot;&quot;&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &quot;This is a double quote : \&quot;&quot;</font></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Database
+object names cannot be delimited by double quotes because the database interface
+cannot determine the difference between a database object name and a quoted string!</p>
+
+<p>For example, if the program executes the SQL statement:<br>
+<font face="Courier New">&nbsp;&nbsp;WHERE &quot;tabname&quot;.&quot;colname&quot; = &quot;a string value&quot;</font><br>
+replacing all double quotes by single quotes would produce:<br>
+<font face="Courier New">&nbsp;WHERE 'tabname'.'colname' = 'a string value'</font><br>
+This would produce an error since
+<font face="Courier New">'tabname'.'colname'</font> is not allowed by Netezza.</p>
+
+<p>Although double quotes are replaced automatically in SQL statements, you should use only single quotes to enforce portability.</p>
+
+<hr>
+
+<h2><a name="ODINTZ021">ODINTZ021 - NUMERIC data types</a></h3>
+
+</h2>
+
+<p>INFORMIX supports several data types to store numbers:</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><font color="#0000FF"><b>INFORMIX Data Type</b></font></td>
+    <td width="60%" bgcolor="#C0C0C0"><font color="#0000FF"><b>Description</b></font></td>
+  </tr>
+  <tr>
+    <td width="40%">SMALLINT</td>
+    <td width="60%">16 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">INT/INTEGER</td>
+    <td width="60%">32 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">BIGINT</td>
+    <td width="60%">64 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">INT8</td>
+    <td width="60%">64 bit signed integer (replaced by BIGINT)</td>
+  </tr>
+  <tr>
+    <td width="40%">SMALLINT</td>
+    <td width="60%">16 bit integer&nbsp; ( -2^15 to 2^15 )</td>
+  </tr>
+  <tr>
+    <td width="40%">INT/INTEGER</td>
+    <td width="60%">32 bit integer&nbsp; ( -2^31 to 2^31 )</td>
+  </tr>
+  <tr>
+    <td width="40%">DEC/DECIMAL(p)</td>
+    <td width="60%">Floating-point exact decimal number, with p significant
+      digits</td>
+  </tr>
+  <tr>
+    <td width="40%">DEC/DECIMAL(p,s)</td>
+    <td width="60%">Fixed-point exact decimal number, with p significant digits
+      as s decimals</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY</td>
+    <td width="60%">Equivalent to DECIMAL(16,2)</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY(p)</td>
+    <td width="60%">Equivalent to DECIMAL(p,2)</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY(p,s)</td>
+    <td width="60%">Equivalent to DECIMAL(p,s)</td>
+  </tr>
+  <tr>
+    <td width="40%">REAL/SMALLFLOAT</td>
+    <td width="60%">approx floating point (C float)</td>
+  </tr>
+  <tr>
+    <td width="40%">DOUBLE PREC./FLOAT</td>
+    <td width="60%">approx floating point (C double) </td>
+  </tr>
+</table>
+</center></div>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Netezza supports the following data types to store numbers:</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><b><font color="#0000FF">Netezza</font></b><b><font color="#0000FF">
+      data type</font></b></td>
+    <td width="60%" bgcolor="#C0C0C0"><b><font color="#0000FF">Description</font></b></td>
+  </tr>
+  <tr>
+    <td width="40%">BYTEINT</td>
+    <td width="60%">8-bit value with the range -128 to 127</td>
+  </tr>
+  <tr>
+    <td width="40%">SMALLINT</td>
+    <td width="60%">16 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">INTEGER</td>
+    <td width="60%">32 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">BIGINT</td>
+    <td width="60%">64 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">NUMERIC(p,s) / DECIMAL(p,s)</td>
+    <td width="60%">Exact decimal number with p significant digits and s
+      decimals (1&lt;=p&lt;=38)&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="40%">NUMERIC(p) / DECIMAL(p)</td>
+    <td width="60%">Integer with precision p (1&lt;=p&lt;=38)&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="40%">NUMERIC / DECIMAL</td>
+    <td width="60%">Integer, same as NUMERIC(18,0)</td>
+  </tr>
+  <tr>
+    <td width="40%">FLOAT(p) with 1 &lt;= p &lt;= 6</td>
+    <td width="60%">16 bit approx floating point (C float)</td>
+  </tr>
+  <tr>
+    <td width="40%">FLOAT(p) with 7 &lt;= p &lt;= 15</td>
+    <td width="60%">32 bit approx floating point (C double)</td>
+  </tr>
+  <tr>
+    <td width="40%">REAL</td>
+    <td width="60%">same as FLOAT(6)</td>
+  </tr>
+  <tr>
+    <td width="40%">DOUBLE PRECISION</td>
+    <td width="60%">same as FLOAT(15)</td>
+  </tr>
+</table>
+</center></div>
+
+<p><b><font color="#FF0000">Warning:</font> There is no Netezza equivalent
+for the INFORMIX DECIMAL(p) floating point decimal (i.e. without a scale). If
+your application is using such data types, you must review the database schema
+in order to use Netezza compatible types. To workaround the Netezza limitation, the
+NTZ database drivers converts DECIMAL(p) types
+to a DECIMAL( 2*p, p ), to store all possible
+numbers an INFORMIX DECIMAL(p) can store. However, the original INFORMIX
+precision cannot exceed 19, since Netezza maximum DECIMAL precision is 38
+(2*19). If the original precision is bigger as 19, a CREATE TABLE statement
+executed from a Genero program
+will fail with an SQL error.</b></p>
+
+<hr>
+
+<h2><a name="ODINTZ024">ODINTZ024 - MATCHES and LIKE in SQL conditions</a></h3>
+
+</h2>
+
+<p>INFORMIX supports MATCHES and LIKE in SQL statements. Netezza supports the LIKE statement as in INFORMIX, plus the ~ operators that are similar but different from the INFORMIX MATCHES operator.</p>
+
+<p>MATCHES allows brackets to specify a set of matching characters at a given position :<br>
+<font face="Courier New">&nbsp;&nbsp; ( col MATCHES '[Pp]aris' )</font>.<br>
+<font face="Courier New">&nbsp;&nbsp; ( col MATCHES '[0-9][a-z]*' )</font>.<br>
+In this case, the LIKE statement has not equivalent feature.</p>
+
+<p>The following substitutions must be made to convert a MATCHES condition to a LIKE condition : 
+
+<ul>
+  <li>MATCHES keyword must be replaced by LIKE.</li>
+  <li>All '<font face="Courier">*</font>'
+    characters must be replaced by '</font><font face="Courier">%</font>'.</li>
+  <li>All '<font face="Courier">?</font>'
+    characters must be replaced by '</font><font face="Courier">_</font>'.</li>
+  <li>Remove all brackets expressions.</li>
+</ul>
+
+<p>Netezza ~ operator expects regular expressions as follows:<br>
+<font face="Courier New">&nbsp;&nbsp; ( col ~ 'a.*' )</font></p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> SQL statements using MATCHES expressions must be reviewed in order to use LIKE expressions.</p>
+
+<p>See also: <a href="SqlProgramming.html#PORT_MATCHES">MATCHES operator in SQL
+Programming</a>.</p>
+
+<hr>
+
+<h2><a name="ODINTZ025">ODINTZ025 - INFORMIX specific SQL statements in BDL </a></h3>
+
+</h2>
+
+<p>The BDL&nbsp;compiler supports several INFORMIX specific SQL statements that have no meaning when using
+Netezza.</p>
+
+<ul>
+  <li>CREATE DATABASE</li>
+  <li>DROP DATABASE</li>
+  <li>START DATABASE (SE only)</li>
+  <li>ROLLFORWARD DATABASE</li>
+  <li>SET [BUFFERED] LOG</li>
+  <li>CREATE TABLE with special options (storage, lock mode, etc.)</li>
+</ul>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Review your BDL source and review all SQL statements which are INFORMIX specific.</p>
+
+<hr>
+
+<h2><a name="ODINTZ028">ODINTZ028 - INSERT cursors</a></h3>
+
+</h2>
+
+<p>INFORMIX supports insert cursors. An &quot;insert cursor&quot; is a special BDL cursor declared with an INSERT statement instead of a SELECT statement. When this kind of cursor is open, you can use the PUT instruction to add rows and the FLUSH instruction to insert the records into the database.</p>
+
+<p>For INFORMIX database with transactions, OPEN, PUT and FLUSH instructions must be executed within a transaction.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Netezza does not support insert cursors.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Insert cursors are emulated by the Netezza database interface.</p>
+
+<hr>
+
+<h2><a name="ODINTZ030">ODINTZ030 - Very large data types</a></h3>
+
+</h2>
+
+<p>INFORMIX provides special data types to store very large texts or
+images: TEXT and BYTE.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> Netezza (V6) does not support large objects in the database.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>If your application need to store large objects with TEXT and BYTE data
+types, you cannot use a Netezza server.&nbsp;</p>
+
+<hr>
+
+<h2><a name="ODINTZ031">ODINTZ031 - Cursors WITH HOLD</a>
+
+</h2>
+
+<p>INFORMIX closes opened cursors automatically when a transaction ends unless the WITH HOLD option is used in the DECLARE instruction. </p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  With Netezza, cursors can be
+kept open when a transaction ends. However, cursors
+declared with a <a href="#ODINTZ008b">SELECT FOR UPDATE</a> are not supported with Netezza.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Since WITH HOLD cursors are usually declared with SELECT FOR UPDATE and
+because Netezza does support SELECT FOR UPDATE, you must review the program
+logic if you are using cursors declared WITH HOLD.</p>
+
+<hr>
+
+<h2><a name="ODINTZ032">ODINTZ032 - UPDATE/DELETE WHERE CURRENT OF &lt;cursor&gt;</a></h3>
+
+</h2>
+
+<p>INFORMIX allows positioned UPDATEs and DELETEs with the &quot;WHERE CURRENT OF &lt;cursor&gt;&quot; clause, if the cursor has been DECLARED with a SELECT ...  FOR UPDATE statement.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  Netezza servers do no support <a href="#ODINTZ008b">SELECT
+FOR UPDATE</a>, and does not set locks. Thus, positioned UPDATEs/DELETEs with WHERE CURRENT OF
+&lt;cursor&gt; clause cannot be supported with Netezza.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>You must review the program logic and rewrite all positioned UPDATEs/DELETEs
+with a WHERE condition based on primary keys or rowids.</p>
+
+<hr>
+
+<h2><a name="ODINTZ033">ODINTZ033 - Querying system catalog tables</a></h3>
+
+</h2>
+
+<p>As in INFORMIX, Netezza provides system catalog tables (actually, system views). But the table names and their structure are quite different. </p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> No automatic conversion of INFORMIX system tables is provided by the database interface.</p>
+
+<hr>
+
+<h2><a name="ODINTZ034">ODINTZ034 - Syntax of UPDATE statements</a></h3>
+
+</h2>
+
+<p>INFORMIX allows a  specific syntax for UPDATE statements:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET ( &lt;col-list&gt; ) = ( &lt;val-list&gt; )</font></p>
+
+<p>or</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET table.* = myrecord.*<br>
+&nbsp;&nbsp;&nbsp; UPDATE table SET * = myrecord.*</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Static UPDATE statements using the above syntax are converted <b>by the compiler</b> to the standard form:<br><br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET column=value [,...] </font></p>
+
+<hr>
+
+<h2><a name="ODINTZ035">ODINTZ035 - The LENGTH() function</a></h3>
+
+</h2>
+
+<p>INFORMIX provides the LENGTH() function:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT
+    LENGTH(&quot;aaa&quot;), LENGTH(col1) FROM table </font></p>
+
+<p>Netezza has a equivalent function with the same name, but there is some difference:</p>
+
+<p>INFORMIX does not count the trailing blanks neither for CHAR not for VARCHAR expressions, while
+Netezza counts the trailing blanks.</p>
+
+<p>With the Netezza LENGTH function, when using a CHAR column, values are always blank padded, so the function returns the size of the CHAR column. When using a VARCHAR column, trailing blanks are significant, and the function returns the number of characters, including trailing blanks.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>You must check if the trailing blanks are significant when using the LENGTH() function.</p>
+
+<p>If you want to count the number of character by ignoring the trailing blanks, you must use the RTRIM() function:</p>
+
+<hr>
+
+<h2><a name="ODINTZ036">ODINTZ036 - INTERVAL data type</a></h3>
+
+</h2>
+
+<p>INFORMIX INTERVAL data type stores a value that represents a span
+of time. INTERVAL types are divided into two classes : <b><i>year-month intervals</i></b> and 
+<i><b>day-time intervals</b></i>.</p>
+
+<p>Netezza implements the INTERVAL data type in a different way as INFORMIX.</p>
+
+<p>Netezza allows to specify interval qualifiers (YEAR, MONTH, DAY, ...) but
+internally it always uses the same base type, storing values of any combination
+of units. Thus, tere is no way do distinguish <b><i>year-month intervals</i></b> and
+<b> 
+<i>day-time intervals</i></b> with Netezza.</p>
+
+<p>The precision of Netezza intervals includes fraction of seconds with up to 6
+significant digits. However, it is not possible to specify the scale of a
+Netezza interval as with the INFORMIX FRACTION(N) qualifier.</p>
+
+<p>With Netezza, interval literals must be include the units, as &quot;-923 days
+11 hours 22 minutes&quot;, while INFORMIX interval literals have the form
+INTERVAL(999-99...) qualifier1 TO qualifier2.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> Netezza normalizes all INTERVAL
+values to units of seconds, and considers a month to be thirty days for the
+purpose of interval comparisons. This approximation can lead to inaccuracies.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The INFORMIX INTERVAL types of the <i><b>day-time</b></i> class can be mapped to
+the native Netezza INTERVAL type, for day to second time interval storage.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> Netezza (V6 while writing these
+lines) has several bugs regarding the INTERVAL type, we do not recommend to use
+this type until Netezza has fixed these problems.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b>  Since Netezza does not clearly
+distinguish <b>year-month</b> interval class, such types are converted to CHAR(50) by the Netezza
+driver.</p>
+
+<hr>
+
+<h2><a name="ODINTZ037">ODINTZ037 - Indexes</a>
+
+</h2>
+
+<p>Like most database servers, INFORMIX supports index creation on table
+columns. Indexes can be used to make the server find rows rapidely:</p>
+
+<p><font face="Courier New">CREATE INDEX cust_ix1 ON customer (cust_name)</font></p>
+
+<p><b><font color="#FF0000">Warning:</font></b>   Netezza does not support index
+creation on tables. There is no need for indexes in a Netezza database because
+performances are achieved by distributing data rows over several disks. Netezza
+tracks min/max values of each column per disk extent to ignore extents which do
+not contain the values the query is looking for. See Netezza documentation for
+more details.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Remove all CREATE INDEX instructions from your programs.</p>
+
+<hr>
+
+<h2><a name="ODINTZ046">ODINTZ046 -&nbsp;The LOAD and UNLOAD instructions </a>
+
+</h2>
+
+<p>INFORMIX provides two SQL instructions to export / import data from / into a database table: The UNLOAD instruction copies rows from a database table into a text file and the LOAD instructions insert rows from a text file into a database table.</p>
+
+<p>Netezza does not provide LOAD and UNLOAD instructions, but provides external tools like
+the nzload utility.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>LOAD and UNLOAD instructions are supported.</p>
+
+<hr>
+
+<h2><a name="ODINTZ047">ODINTZ047 -&nbsp;SQL Interruption</a></h3>
+
+</h2>
+
+<p>With INFORMIX, it is possible to interrupt a long running query if the SQL
+INTERRUPT ON option is set by the Genero program. The database server returns
+SQLCODE -213, which can be trapped to detect a user interruption.</p>
+
+<p>
+<font face="Courier New" size="2">&nbsp;&nbsp;&nbsp; MAIN<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DEFINE n INTEGER<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DEFER INTERRUPT<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OPTIONS SQL INTERRUPT ON<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DATABASE test1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHENEVER ERROR CONTINUE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- Start long query (self join takes time)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- From now on, user can hit CTRL-C in TUI mode
+to stop the query<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SELECT COUNT(*) INTO n FROM customers a,
+customers b<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHERE a.cust_id
+&lt;&gt; b.cust_id<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IF SQLCA.SQLCODE == -213 THEN<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DISPLAY &quot;Statement was
+interrupted by user...&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EXIT PROGRAM 1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END IF<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHENEVER ERROR STOP<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp;&nbsp; END MAIN</font></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> Netezza supports SQL Interruption in a similar way as INFORMIX. However, when
+the statement is interrupted, Netezza rolls the transaction back and returns a
+&quot;Transaction rolled back by user&quot;, SQL error number 46.</p>
+
+<p><u><em><b>Solution:</b></em></u></p>
+
+<p>The Netezza database driver supports SQL interruption and converts the native
+SQL error 46 to the INFORMIX error code -213.</p>
+
+<hr>
+
+<h2><a name="ODINTZ048">ODINTZ048 -&nbsp;Scrollable Cursors</a></h2>
+
+<p>The Genero programming language supports scrollable cursors with the <b>SCROLL</b>
+keyword, as shown in the following code example:&nbsp;</p>
+
+<p>
+<font face="Courier New" size="2">
+&nbsp;&nbsp;&nbsp;DECLARE c1 <b>SCROLL</b> CURSOR FOR SELECT * FROM customers
+ORDER BY cust_name<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH FIRST c1 INTO rec_cust.*<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH NEXT c1 INTO rec_cust.*<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH LAST c1 INTO rec_cust.*</font></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Netezza does support native scrollable cursors.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>The Netezza database driver emulates scrollable cursors by fetching rows in a
+temporary file. On UNIX, the temp files are created in the directory defined by the
+DBTEMP, TMPDIR, TEMP or TMP environment variables (the default is /tmp). On Windows, the
+temp files are created with the _tempnam() MSVCRT API call.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Native scrollable cursors are
+normally handled by the database server (only pieces of the result-set are sent
+to the client application). With emulated scrollable cursors, when scrolling to
+the last row, all rows will be fetched into the temporary file. This can
+generate a lot of network traffic and can produce a large temporary file if the
+result-set contains a lot of rows. Additionally, programs are dependent on the
+file system resource allocated to the OS user (ulimit).</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  In case of a runtime system
+crash, the temporary files created for scrollable cursors are not removed
+automatically. Therefore, is it possible that you will find some unexpected files in
+the temp directory. Before removing such files, you must make sure that these
+files are no longer used by running processes. Recent operating systems take care
+of that, by removing unused temp files periodically.&nbsp;</p>
+
+<hr>
+
+<h2><a name="ODINTZ100">ODINTZ100 - Data type conversion table</a></h3>
+
+</h2>
+
+<div align="center">
+  <center><table border="0" width="95%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="40%"><font color="#0000FF"><b>INFORMIX Data Types</b></font></td>
+          <td bgcolor="#C0C0C0"><font color="#0000FF"><b>Netezza</b></font><font color="#0000FF"><b>
+            Data Types</b></font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">CHAR(n)</font></td>
+          <td><font face="Courier New" size="2">CHAR(n) or NCHAR(n) if UTF-8</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">VARCHAR(n)</font></td>
+          <td><font face="Courier New" size="2">VARCHAR(n) or NVARCHAR if UTF-8</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">INTEGER</font></td>
+          <td><font face="Courier New" size="2">INTEGER</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">SMALLINT</font></td>
+          <td><font face="Courier New" size="2">SMALLINT</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">FLOAT[(n)]</font></td>
+          <td><font face="Courier New" size="2">DOUBLE</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">SMALLFLOAT</font></td>
+          <td><font face="Courier New" size="2">REAL</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">DECIMAL(p,s)</font></td>
+          <td><font face="Courier New" size="2">DECIMAL(p,s)</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">DECIMAL(p)</font></td>
+          <td><font face="Courier New" size="2">DECIMAL(p*2,p)</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">DECIMAL</font></td>
+          <td><font face="Courier New" size="2">DECIMAL(32,16)</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">MONEY(p,s)</font></td>
+          <td><font face="Courier New" size="2">DECIMAL(p,s)</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">DATE</font></td>
+          <td><font face="Courier New" size="2">DATE</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">DATETIME HOUR TO SECOND</font></td>
+          <td><font face="Courier New" size="2">TIME</font></td>
+        </tr>
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">DATETIME YEAR TO FRACTION(p)</font></td>
+          <td><font face="Courier New" size="2">TIMESTAMP</font></td>
+        </tr>
+      </table>
+  <table border="0" width="95%">
+    <tr>
+      <td width="40%"><font face="Courier New" size="2">INTERVAL YEAR[(p)] TO
+        MONTH</font></td>
+      <td><font face="Courier New" size="2">CHAR(50)</font></td>
+    </tr>
+    <tr>
+      <td width="40%"><font face="Courier New" size="2">INTERVAL YEAR[(p)] TO
+        YEAR</font></td>
+      <td><font face="Courier New" size="2">CHAR(50)</font></td>
+    </tr>
+    <tr>
+      <td width="40%"><font face="Courier New" size="2">INTERVAL MONTH[(p)] TO
+        MONTH</font></td>
+      <td><font face="Courier New" size="2">INTERVAL</font></td>
+    </tr>
+    <tr>
+      <td width="40%"><font face="Courier New" size="2">INTERVAL DAY[(p)] TO
+        FRACTION(n)</font></td>
+      <td><font face="Courier New" size="2">INTERVAL</font></td>
+    </tr>
+    <tr>
+      <td width="40%"><font face="Courier New" size="2">INTERVAL DAY[(p)] TO
+        SECOND</font></td>
+      <td><font face="Courier New" size="2">INTERVAL</font></td>
+    </tr>
+    <tr>
+      <td width="40%"><font face="Courier New" size="2">INTERVAL DAY[(p)] TO
+        MINUTE</font></td>
+      <td><font face="Courier New" size="2">INTERVAL</font></td>
+    </tr>
+    <tr>
+      <td width="40%"><font face="Courier New" size="2">INTERVAL DAY[(p)] TO
+        HOUR</font></td>
+      <td><font face="Courier New" size="2">INTERVAL</font></td>
+    </tr>
+    <tr>
+      <td width="40%"><font face="Courier New" size="2">INTERVAL DAY[(p)] TO DAY</font></td>
+      <td><font face="Courier New" size="2">INTERVAL</font></td>
+    </tr>
+    <tr>
+      <td width="40%"><font face="Courier New" size="2">INTERVAL HOUR[(p)] TO
+        FRACTION(n)</font></td>
+      <td><font face="Courier New" size="2">INTERVAL</font></td>
+    </tr>
+    <tr>
+      <td width="40%"><font face="Courier New" size="2">INTERVAL HOUR[(p)] TO
+        SECOND</font></td>
+      <td><font face="Courier New" size="2">INTERVAL</font></td>
+    </tr>
+    <tr>
+      <td width="40%"><font face="Courier New" size="2">INTERVAL HOUR[(p)] TO
+        MINUTE</font></td>
+      <td><font face="Courier New" size="2">INTERVAL</font></td>
+    </tr>
+    <tr>
+      <td width="40%"><font face="Courier New" size="2">INTERVAL HOUR[(p)] TO
+        HOUR</font></td>
+      <td><font face="Courier New" size="2">INTERVAL</font></td>
+    </tr>
+    <tr>
+      <td width="40%"><font face="Courier New" size="2">INTERVAL MINUTE[(p)] TO
+        FRACTION(n)</font></td>
+      <td><font face="Courier New" size="2">INTERVAL</font></td>
+    </tr>
+    <tr>
+      <td width="40%"><font face="Courier New" size="2">INTERVAL MINUTE[(p)] TO
+        SECOND</font></td>
+      <td><font face="Courier New" size="2">INTERVAL</font></td>
+    </tr>
+    <tr>
+      <td width="40%"><font face="Courier New" size="2">INTERVAL MINUTE[(p)] TO
+        MINUTE</font></td>
+      <td><font face="Courier New" size="2">INTERVAL</font></td>
+    </tr>
+    <tr>
+      <td width="40%"><font face="Courier New" size="2">INTERVAL SECOND[(p)] TO
+        FRACTION(n)</font></td>
+      <td><font face="Courier New" size="2">INTERVAL</font></td>
+    </tr>
+    <tr>
+      <td width="40%"><font face="Courier New" size="2">INTERVAL SECOND[(p)] TO
+        SECOND</font></td>
+      <td><font face="Courier New" size="2">INTERVAL</font></td>
+    </tr>
+    <tr>
+      <td width="40%"><font face="Courier New" size="2">INTERVAL FRACTION[(p)]
+        TO FRACTION(n)</font></td>
+      <td><font face="Courier New" size="2">INTERVAL</font></td>
+    </tr>
+  </table>
+  <table border="0" width="95%">
+        <tr>
+          <td width="40%"><font face="Courier New" size="2">BYTE</font></td>
+          <td><font face="Courier New" size="2">N/A</font></td>
+        </tr>
+      </table>
+  </center>
+</div>
+
+</body>
+</html>

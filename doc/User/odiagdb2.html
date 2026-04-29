@@ -1,0 +1,2689 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<TITLE>ODI Adaptation Guide for IBM DB2</TITLE>
+<meta http-equiv="Content-Type" content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p><a href="../index.html">Back to Contents</a></p>
+
+<HR>
+
+<H1>ODI Adaptation Guide For DB2 UDB 8.x, 9x</H1>
+
+<p>Installation</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIDB2_PREP01">Install DB2 and create a database</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2_PREP02">Prepare the runtime environment</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p>Database concepts</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIDB2007a">Database concepts</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2039">Data storage concepts</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2008a">Data consistency and concurrency management</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2009a">Transactions handling</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2016a">Defining database users</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2016b">Setting privileges</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p>Data dictionary</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIDB2010">BOOLEAN data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2011a">CHARACTER data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2021a">NUMERIC data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2001">DATE and DATETIME data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2036">INTERVAL data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2005">SERIAL data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2004">ROWIDs</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2030">Very large data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2012">Constraints</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2013">Triggers</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2014">Stored procedures</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2019">Name resolution of SQL objects</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2051">Setup database statistics</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2053">The ALTER TABLE instruction</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2100">Data type conversion table</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p>Data manipulation</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIDB2003">Reserved words</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2006">Outer joins</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2009a">Transactions handling</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2017">Temporary tables</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2018">Substrings in SQL</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2019">Name resolution of SQL objects</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2020">String delimiters and object name delimiters</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2022">Getting one row with SELECT</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2024">MATCHES and LIKE conditions</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2029">SQL functions and constants</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2033">Querying system catalog tables</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2052">The GROUP BY clause</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2054">The star in SELECT statements</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2055">The LENGTH() function</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p>BDL programming</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIDB2005">SERIAL data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2025">INFORMIX specific SQL statements in BDL</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2028">INSERT cursors</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2031">Cursors WITH HOLD</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2008b">SELECT FOR UPDATE</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2043">SQL parameters limitation</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2046">The LOAD and UNLOAD instructions</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2056">SQL Interruption</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2057">Scrollable Cursors</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p>Connecting to DB2 OS/400</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIDB2_OS400_ARCHI">DB2 Architecture on OS/400</a></td>
+  </tr>
+</table>
+</center></div>
+
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIDB2_OS400_LOGIN">Log in to the AS/400 server</a></td>
+  </tr>
+</table>
+</center></div>
+
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIDB2_OS400_COLL">Collection (Schema) Creation</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2_OS400_PHYS">Source Physical File Creation</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2_OS400_TRIG">Trigger Creation</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2_OS400_PERM">Permission Definition</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2_OS400_EDIR">Relational DB Directory Entry Creation</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2_OS400_CLNT">DB2 Client Configuration on Windows</a></td>
+  </tr>
+</table>
+</center></div>
+
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIDB2_OS400_DIFF">Differences Between DB2 UNIX &amp; DB2 OS/400</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIDB2_OS400_NAME">Naming Conventions</a></td>
+  </tr>
+</table>
+</center></div>
+
+<hr>
+
+<h2><a name="ODIDB2_PREP">Runtime configuration</a></h2>
+
+<blockquote>
+  <h3><a name="ODIDB2_PREP01"><small> Install DB2 and create a database</small></a></h3>
+  <ol>
+    <li><p>Install the IBM DB2 Universal Server on your database server.</p>
+    </li>
+    <li><p>Create a DB2 database entity: <font face="Courier New"><i>dbname</i></font></p>
+    </li>
+    <li><p>Declare a database user dedicated to your application: the
+      <b>application administrator</b>. This user will manage the database schema of the application (all
+      tables will be owned by it).</p>
+    </li>
+    <li><p>Give all requested database administrator privileges to the <b>application administrator</b>.</p>
+    </li>
+    <li><p>If you plan to use temporary table emulation, you
+      must setup the database for DB2 global temporary tables (create a user
+      temporary tablespace and grant privileges to all users).<br><br>
+      See issue <a href="#ODIDB2017">ODIDB2017</a> for more details.</p>
+    </li>
+    <li><p>Connect as the application administrator:<br><br>
+      <font face="Courier New">&nbsp;&nbsp; $ db2 &quot;CONNECT TO <i>dbname</i> USER <i>appadmin</i> USING <i>password</i>&quot;</font></p>
+    </li>
+    <li><p>Create the <b>application tables</b>. Do
+      not forget to convert INFORMIX data types to DB2 data types. See issue <a href="#ODIDB2100">ODIDB2100</a> for more details.</p>
+    </li>
+    <li><p>If you plan to use SERIAL column
+      emulation, you must prepare the database. See issue <a href="#ODIDB2005">ODIDB2005</a> 
+      for more details.</p>
+    </li>
+  </ol>
+</blockquote>
+
+<blockquote>
+  <h3><a name="ODIDB2_PREP02">Prepare the runtime environment</a></h3>
+  <ol>
+    <li><p>In order to connect to IBM DB2, you must have a database driver &quot;<b>dbmdb2*</b>&quot;
+      in FGLDIR/dbdrivers.</p>
+    </li>
+    <li><p>If you want to connect to a remote DB2 server, the <b>IBM DB2 Client
+      Application Enabler</b> must be installed and configured on the computer running the
+      BDL applications. You must declare the data source set up as follows:<br>
+      <br>
+      1. Login as root.<br>
+      2. Create a user dedicated to the db2 client instance environment, for example,
+      &quot;db2cli1&quot;.<br>
+      3. Create a client instance environment with the <b>db2icrt</b> tool as in
+      following example:<br>
+      <small><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; # <i>db2dir</i>/instance/db2icrt -a server -s client <i>instance-user</i></font></small><br>
+      4. Login as the instance user (environment should be set automatically, verify DB2DIR).<br>
+      5. Catalog the remote server node:<br>
+      <small><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; # db2 &quot;catalog tcpip
+      node <i>db2node</i> remote <i>hostname</i> server <i>tcp-service</i>&quot;</font></small><br>
+      6. Catalog the remote database:<br>
+      <small><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; # db2 &quot;catalog database <i>datasource</i> at node <i>db2node</i> authentication server&quot;</font></small><br>
+      7. Test the connection to the remote database:<br>
+      <font face="Courier New"><small>&nbsp;&nbsp;&nbsp;&nbsp; # db2 &quot;connect to <i>datasource</i> user <i>dbuser</i> using <i>password</i>&quot;</small></font><br>
+      <small>&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ( where <i>dbuser</i> is a database user declared on
+      the remote database server ).<br>
+      </small><br>
+      See IBM DB2 documentation for more details.</p>
+    </li>
+    <li><p><b><font color="#FF0000">IMPORTANT WARNING</b>:
+      You may need to set the PATCH2=15 configuration parameter in the <b>DB2CLI.INI</b> file, if you have a non-English
+      environment; otherwise DECIMAL values will not be properly inserted or
+      fetched:<br>
+      <font face="Courier New">&nbsp;&nbsp; [<i>datasource</i>]<br> &nbsp;&nbsp; PATCH2=15</font></font><br>
+      For more details, see the DB2 README.TXT file in the SQLLIB  directory.</p>
+    </li>
+    <li><p>Make sure that the DB2 client environment variables are properly set. Check
+      variables such as <b>DB2DIR</b> (the path to the installation directory), <b>DB2INSTANCE</b>
+      (the name of the DB2 instance), <b>INSTHOME</b> (the path to the home
+      directory of the instance owner). On UNIX, you will find environment
+      settings in the file $INSTHOME/sqllib/db2proffile. See
+      IBM DB2 documentation for more details.</p>
+
+    </li>
+    <li><p>Verify the environment variable
+      defining the search path for database client shared libraries (libdb2.so
+      on UNIX, DB2CLI.DLL on Windows). On UNIX platforms, the variable is specific to the operating system. 
+	For example, on Solaris and Linux systems, it is <b>LD_LIBRARY_PATH</b>, on
+      AIX it is <b>LIBPATH</b>, or HP/UX it is <b>SHLIB_PATH</b>. On Windows,
+      you define the DLL search path in the <b>PATH</b> environment variable.</p>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0">
+      <p align="center"><font color="#0000FF"><b>DB2 UDB version</b></font></td>
+    <td bgcolor="#C0C0C0" width="70%">
+      <p align="center"><font color="#0000FF"><b>Shared library environment
+      setting</b></font></td>
+  </tr>
+  <tr>
+    <td><font color="#0000FF"><b>DB2 UDB 7.x and 8.x</b></font></td>
+    <td align="center" width="70%">
+      <p align="left"><i>UNIX</i>: Add <b>$DB2DIR/lib</b> (for 32 bit) or <b>$DB2DIR/lib64</b>
+      (for 64 bit) to
+      LD_LIBRARY_PATH (or its equivalent).<br>
+      <i>Windows</i>: Add <b>%DB2DIR%\bin</b> to PATH.</td>
+  </tr>
+  <tr>
+    <td><font color="#0000FF"><b>DB2 UDB 9.x</b></font></td>
+    <td align="center" width="70%">
+      <p align="left"><i>UNIX</i>: Add <b>$DB2DIR/lib32</b> (for 32 bit) or <b>$DB2DIR/lib64</b>
+      (for 64 bit) to
+      LD_LIBRARY_PATH (or its equivalent).<br>
+      <i>Windows</i>: Add <b>%DB2DIR%\bin</b> to PATH.</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td align="center" width="70%"></td>
+  </tr>
+</table>
+    </li>
+    <li><p>To verify if the DB2 client environment is correct, you can for example
+      start the db2 command interpreter and connect to the server:<br>
+      <br>
+      <font face="Courier New" size="2">&nbsp;&nbsp;&nbsp;&nbsp; $ db2<br>
+      &nbsp;&nbsp;&nbsp;&nbsp; db2 =&gt; CONNECT TO <i>dbname</i> USER <i>username</i>
+      USING <i>password</i></font></p>
+    </li>
+    <li><p>Check the database locale settings (<b>DB2CODEPAGE</b>,
+      etc). The DB locale must match the locale used by the runtime system (<b>LANG</b>).</p>
+    </li>
+    <li>Setup the <b>fglprofile</b> entries for <a href="Connections.html#DS_ODI_DBVSPEC"> database
+      connections</a>.<br>
+      <br>
+      <b><font color="#FF0000">Warning:</font></b>
+      <b>Make sure that you are using the ODI driver corresponding to the
+      database client and server version. Because Informix features emulation
+      are dependant from the database server version, it is mandatory to use the
+      same version of the database client and ODI driver as the server version.</b><br>
+    </li>
+    <li><p>Define the database schema selection if needed.
+      Use the following entry to define the database schema to be used by the application. The database interface will
+      automatically perform a &quot;SET SCHEMA &lt;name&gt;&quot; instruction to switch to a specific
+      schema:<br><br>
+      <font face="Courier New">&nbsp;&nbsp; dbi.database.<i>dbname</i>.db2.schema = '<i>name</i>'</font><br><br>
+      Here <i>dbname</i> identifies the
+      database name used in the BDL program ( DATABASE <i>dbname</i> ) and
+      <i>name</i> is the schema name to be used in the SET
+      SCHEMA instruction. If this entry is not defined, no &quot;SET SCHEMA&quot; instruction is
+      executed and the current schema defaults to the user's name.</p>
+    </li>
+  </ol>
+</blockquote>
+
+<hr>
+
+<h2><a name="ODIDB2001">ODIDB2001 - DATE and DATETIME data types</a></h3>
+
+</h2>
+
+<p>INFORMIX provides two data types to store date and time information: 
+
+<ul>
+  <li><b>DATE</b> = for year, month and day storage.</li>
+  <li><b>DATETIME</b> = for year to fraction(1-5) storage.</li>
+</ul>
+
+<p>IBM DB2 provides only one data type to store dates : 
+
+<ul>
+  <li><b>DATE</b> = for year, month, day storage.</li>
+  <li><b>TIME</b> = for hour, minute, second storage.</li>
+  <li><b>TIMESTAMP</b> = for year, month, day, hour, minute, second, fraction storage.</li>
+</ul>
+
+<p><b>String representing date time information:</b>
+
+<p>INFORMIX is able to convert quoted strings to DATE / DATETIME data if
+the string content matches environment parameters (i.e. DBDATE, GL_DATETIME).
+As INFORMIX, IBM DB2 can convert quoted strings to dates, times or timestamps.
+Only one format is possible: 'yyyy-mm-dd' for dates, 'hh:mm:ss' for times and
+'yyyy-mm-dd hh:mm:ss:f' for timestamps.</p>
+
+<p><b>Date time arithmetic:</b> 
+
+<ul>
+  <li>INFORMIX supports date arithmetic on DATE and DATETIME values. The
+    result of an arithmetic expression involving dates/times is a number of days when only
+    DATEs are used and an INTERVAL value if a DATETIME is used in the expression.</li>
+  <li>In IBM DB2, the result of an arithmetic expression involving DATE
+    values is a NUMBER of days, the decimal part is the fraction of the day ( 0.5 = 12H00,
+    2.00694444 = (2 + (10/1440)) = 2 days and 10 minutes ) ).</li>
+  <li>INFORMIX automatically converts an integer to a date when the integer
+    is used to set a value of a date column. IBM DB2 does not support this automatic
+    conversion.</li>
+  <li>Complex DATETIME expressions ( involving INTERVAL values for example) are INFORMIX
+    specific and have no equivalent in IBM DB2.</li>
+</ul>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>DB2 has the same <b> DATE</b> data type as INFORMIX ( year, month, day ).
+So you can use DB2 DATE data type for INFORMIX DATE columns.</p>
+
+<p>DB2 <b>TIME</b> data type can be used to store INFORMIX DATETIME HOUR
+TO SECOND values. The database interface makes the conversion automatically.</p>
+
+<p>INFORMIX DATETIME values with any precision from YEAR to FRACTION(5) can
+be stored in DB2 <b>TIMESTAMP</b> columns. The database interface makes the conversion
+automatically. Missing date or time parts default to 1900-01-01 00:00:00.0. For example,
+when using a DATETIME HOUR TO MINUTE with the value of &quot;11:45&quot;, the
+DB2 TIMESTAMP value will be &quot;1900-01-01 11:45:00.0&quot;.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Using
+integers as a number of days in an expression with dates is not supported by IBM DB2.
+Check your code to detect where you are using integers with DATE columns.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Literal
+DATETIME and INTERVAL expressions (i.e. DATETIME ( 1999-10-12) YEAR TO DAY) are not converted.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> It is
+strongly recommended that you use BDL variables in dynamic SQL statements instead of quoted
+strings representing DATEs. For example :<br>
+<font face="Courier New">&nbsp;&nbsp; LET stmt = &quot;SELECT ... FROM customer
+WHERE creat_date &gt;'&quot;, adate,&quot;'&quot;</font><br>
+is not portable, use a question mark place holder instead and OPEN the cursor USING adate:<br>
+<font face="Courier New">&nbsp;&nbsp; LET stmt = &quot;SELECT ... FROM customer WHERE creat_date &gt; ?&quot;</font></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> DATE
+arithmetic expressions using SQL parameters (USING variables) are not fully supported. For
+example: </font><small><font face="Courier New">&quot;SELECT ... WHERE datecol &lt; ? +
+1&quot;</font></small> generate an error at PREPARE time.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> SQL Statements
+using expressions with TODAY / CURRENT /&nbsp; EXTEND must be reviewed and
+adapted to the native syntax.</p>
+
+<hr>
+
+<h2><a name="ODIDB2003">ODIDB2003 - Reserved words</a></h3>
+
+</h2>
+
+<p>Even if IBM DB2 allows SQL reserved keywords as SQL object names (
+&quot;<small><font face="Courier New">create table table ( column int )</font></small><font
+>&quot; ), you should take care in your existing database schema and check
+that you do not use DB2 SQL words. An example of a common word which is part of DB2 SQL
+grammar is '<b>alias</b>'.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>See IBM DB2 documentation for reserved keywords.</p>
+
+<hr>
+
+<h2><a name="ODIDB2004">ODIDB2004 - ROWIDs</a></h3>
+
+</h2>
+
+<p>When creating a table, INFORMIX automatically adds a
+&quot;ROWID&quot; integer column (applies to non-fragmented tables only). The
+ROWID column is auto-filled with a unique number and can be used
+like a primary key to access a given row.</p>
+
+<p>IBM DB2 ROWID columns were introduced in version 9.7.&nbsp;Unlike Informix integer
+row ids, DB2 row ids are based on VARCHAR(16) FOR BIT DATA (128 bit integer) that are usually represented as a 32
+char hexadecimal representation of the value. The IBM DB2 ROWID
+is actually an alternative syntax for RID_BIT(), and a qualified reference to
+ROWID like <i>tablename</i>.ROWID is equivalent to RID_BIT(<i>tablename</i>).</p>
+
+<p>For example : <font face="Courier New"><b>x'0</b></font><b><font face="Courier New">70000000000000000000065CE770000'</font></b></p>
+
+<p>In DB2 SQL, to find a row with a rowid, you must specify the rowid value as
+an hexadecimal value:</p>
+
+<p><font face="Courier New">SELECT * FROM customer WHERE ROWID = x'070000000000000000000065CE770000'</font></p>
+
+<p>or convert the ROWID to an hexadecimal representation and then you can
+compare to a simple string:</p>
+
+<p><font face="Courier New">SELECT * FROM customer WHERE HEX(ROWID) =
+'070000000000000000000065CE770000'</font></p>
+
+<p>With INFORMIX, SQLCA.SQLERRD[6] contains the ROWID of the last  INSERTed or UPDATEd row. This is not supported with ORACLE because ORACLE ROWID are not INTEGERs.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>If the BDL application uses ROWIDs, the program logic should be reviewed in order to use the real primary keys (usually, serials which can be supported).</p>
+
+<p>The DB2 database driver will convert the ROWID keyword to HEX(ROWID), so it
+can be used as a VARCHAR(32) with the hexadecimal representation of the BIT
+DATA. You need however to replace all INTEGER variable definitions by
+VARCHAR(32) or CHAR(32).</p>
+
+<p>To emulate Informix integer ROWIDs, you can also use the DB2 GENERATE_UNIQUE built-in function, or the IDENTITY attribute 
+of the INTEGER or BIGINT data types.</p>
+
+<p>All references to SQLCA.SQLERRD[6] must be removed because this variable will not hold the ROWID of the last INSERTed or UPDATEd row when using the IBM DB2 interface.</p>
+
+<hr>
+
+<h2><a name="ODIDB2005">ODIDB2005 - SERIAL data types</a>
+
+</h2>
+
+<p>INFORMIX supports the SERIAL, SERIAL8 and BIGSERIAL data types to produce automatic
+integer sequences. SERIAL is based on INTEGER (32 bit), while SERIAL8 and
+BIGSERIAL can store 64 bit integers: </p>
+<ul>
+	<li>The table column must be of type SERIAL, SERIAL8 or BIGSERIAL.</li>
+	<li>To generate a new serial, no value or a zero 
+	value is specified in the INSERT statement:<br>
+	<font size="2" face="Courier New">&nbsp;&nbsp; INSERT INTO tab1 ( c ) VALUES ( 'aa' )<br>
+	&nbsp;&nbsp; INSERT INTO tab1 ( k, c ) VALUES ( 0, 'aa' )</font></li>
+	<li>After INSERT, the new SERIAL value is provided in
+	<font face="Courier New" color="#FF0000">SQLCA.SQLERRD[2]</font>, while the
+      new SERIAL8 and BIGSERIAL value must be fetched with a <font face="Courier New" color="#FF0000">SELECT
+      dbinfo('bigserial')</font> query.</li>
+</ul>
+    </font>
+
+<p>INFORMIX allows you to insert rows with a value different from zero for
+a serial column. Using an explicit value will automatically increment the internal serial
+counter, to avoid conflicts with future INSERTs that are using a zero value:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; CREATE TABLE tab ( k SERIAL
+);&nbsp;--&gt; internal counter = 0<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp;--&gt; internal counter = 1<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 10 );&nbsp;--&gt; internal counter = 10<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp;--&gt; internal counter = 11<br>
+&nbsp;&nbsp;&nbsp; DELETE FROM tab;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;--&gt;
+internal counter = 11<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp;--&gt; internal counter = 12</font></p>
+
+<p>IBM DB2 has no equivalent for INFORMIX SERIAL columns.</p>
+
+<p>DB2 version 7.1 supports IDENTITY columns:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; CREATE TABLE tab ( k INTEGER GENERATED ALWAYS AS IDENTITY);</font><br>
+To get the last generated IDENTITY value after an INSERT, DB2 provides the following function:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; IDENTITY_VAL_LOCAL( )</font></p>
+
+<p>DB2 version 8.1 supports SEQUENCES:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; CREATE SEQUENCE sq1 START WITH 100;</font><br>
+To create a new sequence number, you must use the &quot;NEXTVAL FOR&quot; operator:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; INSERT INTO table VALUES ( NEXTVAL FOR sq1, ... )</font><br>
+To get the last generated sequence number, you must use the &quot;PREVVAL FOR&quot; operator:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT PREVVAL FOR sq1 ...</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>You are free to use <b>IDENTITY columns</b> (1) or <b>insert triggers using SEQUENCES</b> (2).
+The first solution is faster, but does not allow explicit serial value specification in
+insert statements; the second solution is slower but allows explicit serial
+value specification. You can start to use the second solution to make unmodified
+4gl programs work on DB2, but you should update your code to use native
+IDENTITY columns for performance.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> The second method (trigseq)
+works only with DB2 version 8 and higher.</p>
+
+<p>The serial emulation type is defined by the following FGLPROFILE entry:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; dbi.database.&lt;dbname&gt;.ifxemul.datatype.serial.emulation = {&quot;native&quot;|&quot;trigseq&quot;}</font></p>
+
+<p>The '<b>native</b>' value defines the IDENTITY column technique and the '<b>trigseq</b>' defines the trigger technique.</p>
+
+<p>This entry must be used with:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; dbi.database.&lt;dbname&gt;.ifxemul.datatype.serial = {true|false}</font></p>
+
+<p>If the <font face="Courier New">datatype.serial</font> entry is set to false, the emulation method specification entry is ignored.</p>
+
+<p><b><font color="#ff0000">Warning:</font></b> When no entry is specified, the default is SERIAL
+emulation enabled with '<b>native</b>' method (IDENTITY-based).</p>
+
+<p><u>1. Using IDENTITY columns</u></p>
+
+<p>In database creation scripts, all SERIAL[(n)] data types
+must be converted by hand to INTEGER GENERATED ALWAYS AS IDENTITY[( START WITH
+n, INCREMENT BY 1)].</p>
+
+<p>Tables created from the BDL programs can use the SERIAL
+data type : When a BDL program executes a CREATE [TEMP] TABLE with a SERIAL
+column, the database interface automatically converts the
+&quot;SERIAL[(n)]&quot; data type to an IDENTITY specification.</p>
+
+<p>In BDL, the new generated SERIAL value is available from the SQLCA.SQLERRD[2] variable. This is supported by
+the database interface which performs a call to the IDENTITY_VAL_LOCAL() function.<font >
+However, SQLCA.SQLERRD[2] is defined as an INTEGER, it cannot hold values from
+BIGINT identity columns. If you are using BIGINT IDENTITY columns, you must use
+the </font>IDENTITY_VAL_LOCAL() function<font >.</font></p>
+
+<p><b><font color="#ff0000">Warning:</font></b> Since IBM DB2 does not
+allow you to specify the value of IDENTITY columns, it
+is mandatory to convert all INSERT statements to remove the SERIAL column from
+the list.<br>
+For example, the following statement:<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col1,col2) VALUES (<b>0</b>, p_value)</font><br>
+must be converted to :<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col2) VALUES (p_value)<br>
+</font>Static SQL INSERT using records defined from the schema file must also be
+reviewed :<br>
+<font face="Courier New">&nbsp;&nbsp; DEFINE rec LIKE tab.*</font><br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab VALUES ( rec.*
+)&nbsp;&nbsp; -- will use the serial column</font><br>
+must be converted to :<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab VALUES rec.* -- without
+braces, serial column is removed</font></p>
+
+<p><u>2. Using triggers with the SEQUENCE</u></p>
+
+<p>In database creation scripts, all SERIAL[(n)] data types
+must be converted to INTEGER data types and you must create a sequence and a trigger for each
+table using a SERIAL. To know how to write those triggers,&nbsp; you can create a small
+Genero program that creates a table with a SERIAL column. Set the FGLSQLDEBUG
+environment variable and run the program. The debug output will show you the
+native SQL commands to create the sequence and the trigger.</p>
+
+<p>Tables created from the BDL programs can use the SERIAL
+data type : When a BDL program executes a CREATE [TEMP] TABLE with a SERIAL
+column, the database interface automatically converts the
+&quot;SERIAL[(n)]&quot; data type to &quot;INTEGER&quot; and creates the
+sequence and the insert trigger.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> IBM DB2
+performs NOT NULL data controls before the execution of triggers. If the serial
+column must be NOT NULL (for example, because it is part of the primary key),
+you cannot specify a NULL value for that column in INSERT statements.<br>
+For example, the following statement :<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab VALUES (NULL,p_value)</font><br>
+must be converted to :<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col2) VALUES (p_value)</font></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> IBM DB2
+triggers are not automatically dropped when the corresponding table is dropped. They
+become <em><b>inoperative</b></em> instead. Database administrators must take
+care of this behavior when managing schemas.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> With IBM
+DB2, INSERT statements using NULL for the SERIAL column will produce a new serial
+value:<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab ( col_serial, col_data ) VALUES ( NULL, 'data' )</font><br>
+This behavior is mandatory in order to support INSERT statements which do not use the serial column :<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col_data) VALUES ('data')<br>
+</font>Check if your application uses tables with a SERIAL column that can contain a NULL value.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> With DB2, trigger
+creation is not allowed on temporary tables. Therefore, the &quot;<b>trigseq</b>&quot;
+method cannot work with temporary tables using serials.</p>
+
+<hr>
+
+<h2><a name="ODIDB2006">ODIDB2006 - Outer joins</a></h3>
+
+</h2>
+
+<p>The original OUTER join syntax of INFORMIX is different from the IBM DB2
+outer join syntax:</p>
+
+<p>In INFORMIX SQL, outer tables are defined in the FROM clause with the <b>OUTER</b> keyword:</p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM cust, <b><font color="#0000A0">OUTER(order)</font></b>
+ WHERE cust.key = order.custno</font></pre>
+  <pre><font face="Courier New">SELECT ... FROM cust, <b><font color="#0000A0">OUTER(order,OUTER(item))</font></b>
+ WHERE cust.key = order.custno
+   AND order.key = item.ordno
+   AND order.</font><font face="Courier New">accepted</font><font face="Courier New"> = 1</font></pre>
+</blockquote>
+
+<p>IBM DB2 supports the ANSI outer join syntax:</p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM <b><font color="#0000A0">cust LEFT OUTER JOIN order
+                     ON cust.key = order.custno</font></b></font></pre>
+  <pre><font face="Courier New">SELECT ...
+  FROM <b><font color="#0000A0">cust</font></font><font
+face="Courier New" color="#0000A0"> LEFT OUTER JOIN order
+                 LEFT OUTER JOIN item
+                 ON order.key = item.ordno
+            ON cust.key = order.</font><font
+face="Courier New"><font color="#0000A0">custno</font></font></b><font
+face="Courier New">
+ WHERE order.</font><font face="Courier New">accepted = 1</font></pre>
+</blockquote>
+
+<p>See the IBM DB2 SQL reference for a complete description of the syntax.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>For better SQL portability, you should use the ANSI outer join syntax instead
+of the old Informix OUTER syntax.</p>
+
+<p>The IBM DB2 interface can convert most INFORMIX OUTER specifications to IBM DB2 outer joins.</p>
+
+<p>Prerequisites : 
+
+<ol>
+  <li>In the FROM clause, the main table must be the first item and the outer tables must figure from left to right in the order of outer levels.<br>
+    &nbsp;&nbsp; Example which does not work : &quot;FROM OUTER(tab2), tab1&quot;.</li>
+  <li>The outer join in the WHERE clause must use the table name as prefix.<br>
+    &nbsp;&nbsp; Example : &quot;WHERE tab1.col1 = tab2.col2&quot;.</li>
+</ol>
+
+<p>Restrictions : 
+
+<ol>
+  <li>Additional conditions on outer table columns cannot be detected and therefore are not supported :<br>
+    &nbsp;&nbsp;Example : &quot;... FROM tab1, OUTER(tab2) WHERE tab1.col1 = tab2.col2 AND tab2.colx &gt; 10&quot;.</li>
+  <li>Statements composed by 2 or more SELECT instructions using OUTERs are not supported.<br>
+    &nbsp; Example : &quot;SELECT ... UNION SELECT&quot; or &quot;SELECT ... WHERE col IN (SELECT...)&quot;</li>
+</ol>
+
+<p>Remarks : 
+
+<ol>
+  <li>Table aliases are detected in OUTER expressions.<br>
+    &nbsp;&nbsp; OUTER example with table alias : &quot;OUTER( tab1 alias1)&quot;.</li>
+  <li>In the outer join, &lt;outer table&gt;.&lt;col&gt; can be placed on
+    both right or left  sides of the equal sign.<br>
+    &nbsp;&nbsp; OUTER join example with table on the left : &quot;WHERE outertab.col1 =
+    maintab.col2 &quot;.</li>
+  <li>Table names detection is not case-sensitive.<br>
+    &nbsp;&nbsp; Example : &quot;SELECT ... FROM tab1, TAB2 WHERE tab1.col1 = tab2.col2&quot;.</li>
+  <li><a href="#ODIDB2017">Temporary tables</a> are supported in OUTER specifications.</li>
+</ol>
+
+<hr>
+
+<h2><a name="ODIDB2007a">ODIDB2007a - Database concepts</a></h3>
+
+</h2>
+
+<p>As INFORMIX, an IBM DB2 database server can handle more than one database entity.
+INFORMIX servers have an ID (INFORMIXSERVER) and databases are identified by name.
+IBM DB2 instances are identified by the DB2INSTANCE environment variable and databases
+have to be cataloged as data sources (see IBM DB2 documentation for more details).</p>
+
+<hr>
+
+<h2><a name="ODIDB2008a">ODIDB2008a - Data consistency and concurrency management</a></h3>
+
+</h2>
+
+<p><b>Data consistency</b> involves readers that want to access data
+currently modified by writers and <b>concurrency data access</b> involves several writers
+accessing the same data for modification. <b>Locking granularity</b> defines the amount of
+data concerned when a lock is set (row, page, table, ...).</p>
+
+<p><u>INFORMIX</u></p>
+
+<p>INFORMIX uses a locking mechanism to manage data consistency and concurrency.
+When a process modifies data with UPDATE, INSERT or DELETE, an <u>exclusive
+lock</u> is set on the affected rows. The lock is held until the end of the transaction.
+Statements performed outside a transaction are treated as a transaction containing a
+single operation and therefore release the locks immediately after execution. SELECT
+statements can set <u>shared locks</u> according the <u>isolation  level</u>. In case
+of locking conflicts (for example, when two processes want to acquire an exclusive lock on
+the same row for modification or when a writer is trying to modify data protected by a
+shared lock), the behavior of a process can be changed by setting the <u>lock wait mode</u>.</p>
+
+<p>Control : 
+
+<ul>
+  <li>Isolation level : SET ISOLATION TO ...</li>
+  <li>Lock wait mode : SET LOCK MODE TO ...</li>
+  <li>Locking granularity : CREATE TABLE ... LOCK MODE {PAGE|ROW}</li>
+  <li>Explicit locking : SELECT ... FOR UPDATE</li>
+</ul>
+
+<p>Defaults : 
+
+<ul>
+  <li>The default isolation level is <b>read committed</b>.</li>
+  <li>The default lock wait mode is &quot;not wait&quot;.</li>
+  <li>The default locking granularity is on per page.</li>
+</ul>
+
+<p><u>IBM DB2</u></p>
+
+<p>As in INFORMIX, IBM DB2 uses locks to manage data consistency and
+concurrency. The database manager sets <u>exclusive locks</u> on the modified rows and <u>shared
+locks</u> when data is read, according to the <u>isolation level</u>. The locks are held
+until the end of the transaction. When multiple processes want to access the same data,
+the latest processes must wait until the first finishes its transaction.&nbsp; The <u>lock
+granularity</u> is at the row or table level. For more details, see DB2's Administration
+Guide, &quot;Application Consideration&quot;.</p>
+
+<p>Control : 
+
+<ul>
+  <li>Lock wait mode : Always WAIT. Only the <u>Lock Timeout</u> can be changed, but this is a global database parameter.</li>
+  <li>Isolation level : Can be set through an API function call or with a database client configuration parameter.</li>
+  <li>Locking granularity : Row level or Table level.</li>
+  <li>Explicit locking : SELECT ... FOR UPDATE</li>
+</ul>
+
+<p>Defaults : 
+
+<ul>
+  <li>The default isolation level is Cursor Stability ( readers cannot see uncommitted data, no shared lock is set when reading data ).</li>
+</ul>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+  <p>The <font size="2" face="Courier New">
+  SET ISOLATION TO ... </font>INFORMIX syntax is replaced by an ODBC API call
+  setting the SQL_ATTR_TXN_ISOLATION connection attribute. The next table shows
+  the isolation level mappings done by the database driver:</p>
+
+<div align="center">
+  <center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><font color="#0000FF"><b>SET ISOLATION
+      instruction in program</b></font></td>
+    <td width="60%" bgcolor="#C0C0C0"><font color="#0000FF"><b>ODBC
+      SQL_ATTR_TXN_ISOLATION connection attribute</b></font></td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO DIRTY READ</td>
+    <td width="60%">SQL_TXN_READ_UNCOMMITTED</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO COMMITTED READ<br>
+      &nbsp; [READ COMMITTED] [RETAIN UPDATE LOCKS]</td>
+    <td width="60%">SQL_TXN_READ_COMMITTED</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO CURSOR STABILITY</td>
+    <td width="60%">SQL_TXN_REPEATABLE_READ</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO REPEATABLE READ</td>
+    <td width="60%">SQL_TXN_SERIALIZABLE</td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<p>For portability, it is recommended that you work with INFORMIX in the read committed isolation level, to make processes wait for each other (lock mode wait) and to create tables with the &quot;lock mode row&quot; option.</p>
+
+<p>See INFORMIX and IBM DB2 documentation for more details about data consistency, concurrency and locking mechanisms.</p>
+
+<hr>
+
+<h2><a name="ODIDB2008b">ODIDB2008b - SELECT FOR UPDATE</a></h3>
+
+</h2>
+
+<p>A lot of BDL programs use pessimistic locking in order to prevent several users editing the same rows at the same time. </p>
+
+<p><font face="Courier New">&nbsp;&nbsp; DECLARE cc CURSOR FOR<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SELECT ... FROM tab WHERE ... FOR UPDATE<br>
+&nbsp;&nbsp; OPEN cc<br>
+&nbsp;&nbsp; FETCH cc &lt;-- lock is acquired<br>
+&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp; CLOSE cc &lt;-- lock is released</font></p>
+
+<p>In both INFORMIX and DB2, locks are released when closing the cursor or when the transaction ends.</p>
+
+<p>DB2's locking granularity is at the row level.</p>
+
+<p>To control the behavior of the program when locking rows, INFORMIX provides a specific instruction to set the wait mode :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; SET LOCK MODE TO { WAIT | NOT WAIT | WAIT <em>seconds</em> }</font></p>
+
+<p>The default mode is NOT WAIT. This as an INFORMIX specific SQL statement.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> DB2 has no
+equivalent for &quot;SET LOCK MODE TO NOT WAIT&quot;. The &quot;<b>Lock timeout</b>&quot;
+can be changed but this is a database parameter ( global to all processes )!</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><font color="#FF0000"><b>Warning :</b></font> The database
+interface is based on an emulation of an INFORMIX engine using transaction logging.
+Therefore, opening a SELECT ... FOR UPDATE cursor declared outside a transaction will
+raise an SQL error -255 (not in transaction).</p>
+
+<p>You must review the program logic if you use pessimistic locking because it is based on the NOT WAIT mode which is not supported by IBM DB2.</p>
+
+<hr>
+
+<h2><a name="ODIDB2009a">ODIDB2009a - Transactions handling</a></h3>
+
+</h2>
+
+<p>INFORMIX and IBM DB2 handle transactions differently. The differences in the transactional models can affect the program logic. </p>
+
+<p>INFORMIX native mode (non ANSI) : 
+
+<ul>
+  <li>DDL statements can be executed (and canceled) in transactions.</li>
+  <li>Transactions must be started with BEGIN WORK. Statements executed outside of a transaction are automatically committed.</li>
+</ul>
+
+<p>IBM DB2 : 
+
+<ul>
+  <li>DDL statements can be executed (and canceled) in transactions.</li>
+  <li>Beginning of transactions are implicit; two transactions are delimited by COMMIT or ROLLBACK.</li>
+</ul>
+
+<p>Transactions in stored procedures: avoid using transactions in stored  procedures to allow the client applications to handle transactions, in accordance with the transaction model.</p>
+
+<p>INFORMIX version 11.50 introduces savepoints with the following instructions:</p>
+
+<pre>    SAVEPOINT <i>name</i> <u>[</u>UNIQUE<u>]</u>
+    ROLLBACK <u>[</u>WORK<u>]</u> TO SAVEPOINT <u>[</u><i>name</i><u>]</u> <u>]</u>
+    RELEASE SAVEPOINT <i>name</i></pre>
+
+<p>IBM DB2 supports savepoints too. However, there are differences:</p>
+
+<ol>
+  <li>Savepoints must be declared with the ON ROLLBACK RETAIN CURSORS clause</li>
+  <li>Rollback must always specify the savepoint name</li>
+</ol>
+
+<p><b><u><em>Solution:</em></u></b> </p>
+
+<p>The INFORMIX behavior is simulated with an auto-commit mode in the IBM DB2 interface. A switch to the explicit commit mode is done when a BEGIN WORK is performed by the BDL program.</p>
+
+<p>Regarding the transaction control instructions, the BDL applications do not have to be modified in order to work with IBM DB2. </p>
+
+<p><b><font color="#FF0000">Warning:</font></b>  If you want to use savepoints,
+always specify the savepoint name in ROLLBACK TO SAVEPOINT. </p>
+
+<p>See also <a href="#ODIDB2008b">ODIDB2008b</a></p>
+
+<hr>
+
+<h2><a name="ODIDB2010">ODIDB2010 - BOOLEAN data type</a>
+
+</h2>
+
+<p>INFORMIX supports the BOOLEAN data type, which can store 't' or 'f' values.
+Genero BDL implements the BOOLEAN data type in a different way: As in other
+programming languages, Genero BOOLEAN stores integer values 1 or 0 (for TRUE or
+FALSE). The type was designed this way to assign the result of a Boolean
+expression to a BOOLEAN variable.</p>
+
+<p>IBM DB2 9.x does not implement a BOOLEAN SQL type.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The DB2 database interface converts BOOLEAN type to CHAR(1) columns and
+stores '1' or '0' values in the column.</p>
+
+<hr>
+
+<h2><a name="ODIDB2011a">ODIDB2011a - CHARACTER data types</a></h3>
+
+</h2>
+
+<p>INFORMIX supports following character data types:</p>
+<ul>
+  <li>CHAR(N) with N&lt;= 32767 bytes</li>
+  <li>VARCHAR(N[,M]) with N&lt;=255 bytes</li>
+  <li>NCHAR(N) with N&lt;= 32767 bytes</li>
+  <li>NVARCHAR(N[,M]) with N&lt;=255 bytes</li>
+  <li>LVARCHAR (not covered in this section)</li>
+</ul>
+<p>In INFORMIX, both CHAR/VARCHAR and NCHAR/ NVARCHAR data types can be used to
+store single-byte or multi-byte encoded character strings. The only difference
+between CHAR/VARCHAR and NCHAR/NVARCHAR is for sorting: N[VAR]CHAR types use the
+collation order, while [VAR]CHAR types use the byte order. The character set
+used to store strings in CHAR/VARCHAR/NCHAR/NVARCHAR columns is defined by the
+DB_LOCALE environment variable. The character set used by applications is
+defined by the CLIENT_LOCALE environment variable. Note that INFORMIX uses Byte
+Length Semantics (the size N that you specify in [VAR]CHAR(N) is expressed in
+bytes, not characters as in some other databases)</p>
+
+<p>IBM DB2 implements the following character data types:</p>
+
+<ul>
+  <li>CHAR(N) with N&lt;= 254 bytes</li>
+  <li>VARCHAR(N) with N &lt;= 32672 bytes</li>
+</ul>
+
+<p>Like INFORMIX, IBM DB2 uses Byte Length Semantics to define the length of
+CHAR/VARCHAR columns.</p>
+
+<p>The character set used by DB2 to store CHAR and VARCHAR data is defined in
+the database locale section when creating a new database with the DB2 Control
+Center.</p>
+
+<p>DB2 can automatically convert from/to the client and server characters
+sets. In the client applications, you define the character set with the DB2CODEPAGE profile variable.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>INFORMIX [VAR]CHAR(N) types can be mapped to DB2 [VAR]CHAR(N) types, as
+long as the DB2 size limit is not reached.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Check
+that your database schema does not use CHAR or VARCHAR types with a length exceeding the DB2 limits.
+Especially, the CHAR type has a very long size limit compared to INFORMIX CHAR.</p>
+
+<p>See also the section about <a href="Localization.html">Localization</a>.</p>
+
+<hr>
+
+<h2><a name="ODIDB2012">ODIDB2012 - Constraints</a></h3>
+
+</h2>
+
+<p><u>Constraint naming syntax:</u></p>
+
+<p>Both INFORMIX and BD2 support primary key, unique, foreign key, default and check
+constraints. But the constraint naming syntax is different : DB2 expects the &quot;CONSTRAINT&quot; keyword
+<b>before</b> the constraint specification, and INFORMIX expects it <b>after</b>.</p>
+
+<p>UNIQUE constraint example:</p>
+<div>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><b><font color="#0000FF">INFORMIX</font></b></td>
+    <td bgcolor="#C0C0C0" width="50%"><b><font color="#0000FF">IBM DB2</font></b></td>
+  </tr>
+  <tr>
+    <td width="50%"><font face="Courier New">CREATE TABLE scott.emp (<br>
+    ...<br>
+    empcode CHAR(10) UNIQUE<br>
+    &nbsp;&nbsp;&nbsp;<font color="#0000A0"><b>[CONSTRAINT pk_emp]</b></font>,<br>
+    ...</font></td>
+    <td width="50%"><font face="Courier New">CREATE TABLE scott.emp (<br>
+    ...<br>
+    empcode CHAR(10)<br>
+    &nbsp;&nbsp;&nbsp;<font color="#0000A0"><b>[CONSTRAINT pk_emp]</b></font>
+    UNIQUE,<br>
+    ...</font></td>
+  </tr>
+</table>
+</div>
+
+<p><b>Primary keys</b>:</p>
+
+<p>Like INFORMIX, DB2 creates an index to enforce PRIMARY KEY
+constraints (some RDBMS do not create indexes for constraints).&nbsp; Using &quot;CREATE
+UNIQUE INDEX&quot;&nbsp; to define unique constraints is obsolete
+(use primary keys or a secondary key instead). </p>
+<p><font color="#FF0000"><b>Warning:</b></font> DB2
+primary key constraints do not allow NULLs; make sure your tables do not contain NULLs in the primary key columns.</p>
+
+<p><b>Unique constraints:</b></p>
+
+<p>Like INFORMIX, DB2 creates an index to enforce UNIQUE constraints
+(some RDBMS do not create indexes for constraints). </p>
+<p><font color="#FF0000"><b>Warning:</b></font> DB2
+unique constraints do not allow NULLs; make sure your tables do not contain NULLs in the unique columns.</p>
+
+<p><b>Foreign keys:</b></p>
+
+<p>Both INFORMIX and DB2 support the ON DELETE CASCADE option.</p>
+
+<p><b>Check constraints:</b></p>
+
+<p><font color="#FF0000"><b>Warning</b></font> : The check
+condition may be any valid expression that can be evaluated to TRUE or FALSE, including
+functions and literals. You must verify that the expression is not INFORMIX specific.</p>
+
+<p><b>Null constraints:</b></p>
+
+<p>INFORMIX and DB2 support not null constraints, but INFORMIX does not allow you to give a name to &quot;NOT NULL&quot; constraints.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><u>Constraint naming syntax:</u></p>
+
+<p>The database interface does not convert constraint naming expressions when creating tables from BDL programs. Review the database creation scripts to adapt the constraint naming clauses for DB2.</p>
+
+<hr>
+
+<h2><a name="ODIDB2013">ODIDB2013 - Triggers</a></h3>
+
+</h2>
+
+<p>INFORMIX and IBM DB2 provide triggers with similar features, but the trigger creation syntax and the programming languages are totally different.</p>
+
+<p>INFORMIX triggers define which stored procedures must be called when a database event occurs (before | after&nbsp; insert | update | delete ...), while IBM DB2 triggers can hold a procedural block.</p>
+
+<p>IBM DB2 provides specific syntax to define triggers. See documentation for more details.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>INFORMIX triggers must be converted to IBM DB2 triggers &quot;by hand&quot;.</p>
+
+<hr>
+
+<h2><a name="ODIDB2014">ODIDB2014 - Stored procedures</a></h3>
+
+</h2>
+
+<p>Both INFORMIX and IBM DB2 support stored procedures and user functions, but the programming languages are totally different.</p>
+
+<p>INFORMIX implements the <b>SPL</b>
+ language, while DB2 allows you to write stored procedures or user defined functions in
+the <b>DB2 SQL</b> or with an
+external language, such as <b>JAVA</b>, <b>C</b> or <b>C++</b>.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>INFORMIX stored procedures must be converted to IBM DB2 &quot;by hand&quot;.</p>
+
+<hr>
+
+<h2><a name="ODIDB2016a">ODIDB2016a - Defining database users</a></h3>
+
+</h2>
+
+<p>INFORMIX users are defined at the operating system level, they must be members of the
+'INFORMIX' group, and the database administrator must grant CONNECT, RESOURCE or DBA privileges to those users.</p>
+
+<p>IBM DB2 users are operating system users with a specific DB2 environment. The database administrator must grant the CONNECT authority to these users.</p>
+
+<p>Database <i>authorities</i> involve actions on a database as a
+whole. When a database is created, some authorities are automatically granted to anyone
+who accesses the database. For example, CONNECT, CREATETAB, BINDADD and IMPLICIT_SCHEMA
+authorities are granted to all users. Database <i>privileges</i> involve actions on
+specific objects within the database. When a database is created, some privileges are
+automatically granted to anyone who accesses the database. For example, SELECT privilege
+is granted on catalog views and EXECUTE and BIND privilege on each successfully bound
+utility is granted to all users.</p>
+
+<p>Together, privileges and authorities act to control access to an instance and its database objects. Users can access only those objects for which they have the appropriate authorization, that is, the required privilege or authority. </p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> As in INFORMIX,
+DB2 user names that connect to the database server must be a maximum of <b>eight</b>
+characters long.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Setup the IBM DB2 environment for each user as described in the documentation.</p>
+
+<hr>
+
+<h2><a name="ODIDB2016b">ODIDB2016b - Setting privileges</a></h3>
+
+</h2>
+
+<p>INFORMIX and IBM DB2 user privileges management is quite similar.</p>
+
+<p>IBM DB2 provides user groups to define.</p>
+
+<p>INFORMIX users must have at least the CONNECT privilege to access the database:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; GRANT <font color="#0000A0"><b>CONNECT</b></font> TO (PUBLIC|user) </font></p>
+
+<p>IBM DB2 users must have at least the CONNECT authority to access the database.<br>
+font face="Courier New">&nbsp;&nbsp;&nbsp; GRANT <font color="#0000A0"><b>CONNECT</b></font> ON DATABASE TO (PUBLIC|user|group)</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Make sure DB2 users have the right privileges to access the database.</p>
+
+<p>See also <a href="#ODIDB2017">Temporary Tables</a></p>
+
+<hr>
+
+<h2><a name="ODIDB2017">ODIDB2017 - Temporary tables </a></h3>
+
+</h2>
+
+<p>INFORMIX temporary tables are created through  the <font face="Courier New" ><b> CREATE TEMP TABLE </b></font>
+DDL instruction or through a <b><font face="Courier New" >SELECT ... INTO TEMP </font></b>statement.  Temporary tables are automatically dropped when the SQL session ends, but they can also be dropped with the DROP TABLE command. There is no name conflict when several users create temporary tables with the same name.</p>
+
+<p>Remark : BDL reports create a temporary table when the rows are not sorted externally (by the source SQL statement).</p>
+
+<p>INFORMIX allows you to create indexes on temporary tables. No name conflict occurs when several users create an index on a temporary table by using the same index identifier.</p>
+
+<p>IBM DB2 7 supports the DECLARE GLOBAL TEMPORARY TABLE instruction. Native DB2 temporary tables are quite similar to
+INFORMIX temporary tables with some exceptions:</p>
+
+<ul>
+  <li>A 'user temporary table space' must exist for the database.</li>
+  <li>Users must have 'USE' privilege on a 'user temporary table space'.</li>
+  <li>For usage, the temporary table name must be prefixed by 'SESSION'.</li>
+  <li>No constraints or indexes can be created on temporary tables.</li>
+</ul>
+<p>For more details, see the DB2 documentation.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>In accordance with some prerequisites, temporary tables creation in BDL programs can be supported by the database interface.</p>
+
+<p><b>How does it work ? </b> 
+
+<ul>
+  <li>INFORMIX specific statements involving temporary table creation are automatically converted to IBM DB2 &quot;DECLARE GLOBAL TEMPORARY TABLE&quot; statements.  </li>
+  <li>Once the temporary table has been created, all other SQL statements performed in the current SQL session are parsed to add the SESSION prefix to the table name automatically.</li>
+</ul>
+
+<p><b>Prerequisites: </b> 
+
+<ul>
+  <li>DB2 prerequisites to create global temporary tables.  See DB2 documentation for more details.</li>
+</ul>
+
+<p><b>Limitations: </b> 
+
+<ul>
+  <li>Tokens matching the original table names are converted to unique
+    names in all SQL statements. Make sure you are not using a temp table name for other
+    database objects, like columns. The following example illustrates this limitation :<br>
+    <font face="Courier New">&nbsp; CREATE TEMP TABLE <b>tmp1</b> ( col1 INTEGER, col2 CHAR(20) )<br>
+    &nbsp; SELECT <b>tmp1</b> FROM table_x WHERE ... </font>
+  </li>
+</ul>
+
+<ul>
+  <li><font color="#FF0000"><b>Warning:</b></font> Only the
+    'native' serial emulation mode is supported with temporary tables. See the
+    issue about <a href="#ODIDB2005">SERIALs</a> for more details.</li>
+</ul>
+
+<hr>
+
+<h2><a name="ODIDB2018">ODIDB2018 - Substrings in SQL</a></h3>
+
+</h2>
+
+<p>INFORMIX SQL statements can use subscripts on columns defined with the character data type:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 WHERE <font color="#0000A0"><b>col1[2,3]</b></font> = 'RO' <br>
+&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 WHERE <font color="#0000A0"><b>col1[10]</b></font>&nbsp; = 'R'&nbsp;&nbsp; -- Same as col1[10,10]<br>
+&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <font color="#0000A0"><b>col1[2,3]</b></font> = 'RO' WHERE ...<br>
+&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 ORDER BY <font color="#0000A0"><b>col1[1,3]</b></font></font></p>
+
+<p>.. while IBM DB2 provides the SUBSTR( ) function, to extract a substring from a string expression:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT .... FROM tab1 WHERE <font color="#0000A0"><b>SUBSTR(col1,2,2)</b></font> = 'RO'<br>
+&nbsp;&nbsp;&nbsp; SELECT <font color="#0000A0"><b>SUBSTR('Some text',6,3)</b></font>
+FROM DUAL &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- Gives 'tex'</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>You must replace all INFORMIX col[x,y] expressions by SUBSTR(col,x,y-x+1).</p>
+
+<p><font color="#FF0000"><b>Warning</b></font> : In UPDATE
+instructions, setting column values through subscripts will produce an error with IBM DB2:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <font color="#0000A0"><b>col1[2,3]</b></font> = 'RO' WHERE ...</font><br>
+is converted to :<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <font color="#0000A0"><b>SUBSTR(col1,2,3-2+1)</b></font> = 'RO' WHERE ...</font></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Column subscripts in ORDER BY expressions produce an error with IBM DB2:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 ORDER BY <font color="#0000A0"><b>col1[1,3]</b></font></font><br>
+is converted to :<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 ORDER BY <font color="#0000A0"><b>SUBSTR(col1,1,3-1+1)</b></font></font></p>
+
+<hr>
+
+<h2><a name="ODIDB2019">ODIDB2019 - Name resolution of database objects</a></h3>
+
+</h2>
+
+<p><b>Case sensitivity in object names:</b></p>
+
+<p>INFORMIX database object names are not <b>case-sensitive</b> in non-ANSI databases.</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; CREATE TABLE <font color="#0000A0">Tab1</font> ( <font
+color="#0000A0">Key</font> INT, <font color="#0000A0">Col1</font> CHAR(20) )<br>
+&nbsp;&nbsp; SELECT <font color="#0000A0">COL1</font> FROM <font color="#0000A0">TAB1</font></font></p>
+
+<p>IBM DB2 database object names are case-sensitive. When a name is used without double quotes, it is automatically converted to uppercase letters. When using double quotes, the names are not converted:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; CREATE TABLE <font color="#0000A0">tab1</font> ( <font
+color="#0000A0">Key</font> INT, <font color="#0000A0">Col1</font> CHAR(20) )<br>
+<small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =&gt; Table name is &quot;TAB1&quot;, column
+names are &quot;KEY&quot; and &quot;COL1&quot;</small><br>
+<small><br>
+</small>&nbsp;&nbsp; CREATE TABLE &quot;<font color="#0000A0">Tab1</font>&quot; ( &quot;<font
+color="#0000A0">Key</font>&quot; INT, &quot;<font color="#0000A0">Col1</font>&quot;
+CHAR(20) )<br>
+<small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =&gt; Table name is &quot;Tab1&quot;, column
+names are &quot;Key&quot; and &quot;Col1&quot;</small></font></p>
+
+<p><b>The DB2 schema concept:</b></p>
+
+<p>With non-ANSI INFORMIX databases, you do not have to give a schema name before the tables when executing an SQL statement. </p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT ... FROM &lt;table&gt; WHERE ...</font></p>
+
+<p>In an IBM DB2 database, tables always belong to a database <b>schema</b>.
+When executing a SQL statement, a schema name must be used as the high-order part of a
+two-part object name, unless the current schema corresponds to the table's schema.</p>
+
+<p>The default (implicit) schema is the current user's name but it can be
+changed with the &quot;<b>SET SCHEMA</b>&quot; instruction.</p>
+
+<p>Example: The table &quot;TAB1&quot; belongs to the schema
+&quot;SCH1&quot;. User &quot;MARK&quot; (implicit schema is &quot;MARK&quot;) wants to
+access &quot;TAB1&quot; in a SELECT statement&nbsp;:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; SELECT ... FROM <font color="#0000A0">TAB1</font>
+WHERE ...<br>
+<small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =&gt; Error &quot;MARK&quot;.&quot;TAB1&quot;
+is an undefined name. SQLSTATE=42704<br>
+</small>&nbsp;&nbsp; SELECT ... FROM <font color="#0000A0">SCH1.TAB1</font> WHERE ...<br>
+<small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =&gt; OK.</small><br>
+&nbsp;&nbsp; SET SCHEMA SCH1<br>
+<small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =&gt; Changes the current schema to SCH1.</small><br>
+&nbsp;&nbsp; SELECT ... FROM <font color="#0000A0">TAB1</font> WHERE ...<br>
+<small>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =&gt; OK.</small></font></p>
+
+<p>DB2 provides &quot;<b>aliases</b>&quot;, but they cannot be used to make a database object name public because aliases belong to schemas also.</p>
+
+<p><b><em><u>Solution:</u></em></b> </p>
+
+<p><b>Case sensitivity in object names:</b></p>
+
+<p>Avoid the usage of double quotes around the database object names. All names will be converted to uppercase letters.</p>
+
+<p><b>The DB2 schema concept:</b></p>
+
+<p>After a connection, the database interface can automatically execute
+a &quot;SET SCHEMA &lt;<b>name</b>&gt;&quot;
+instruction if the following FGLPROFILE entry is defined:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; dbi.database.&lt;<font color="#0000A0"><b>dbname</b></font>&gt;.db2.schema
+= &quot;&lt;<font color="#0000A0"><b>name</b></font>&gt;&quot;</font></p>
+
+<p>Here &lt;<b>dbname</b>&gt;
+identifies the database name used in the BDL program ( DATABASE <b>dbname</b>
+) and &lt;<b>name</b>&gt; is the schema name to
+be used in the SET SCHEMA instruction. If this entry is not defined, no &quot;SET
+SCHEMA&quot; instruction is executed and the current schema defaults to the user's name.</p>
+
+<p>Examples:<br>
+<font face="Courier New">&nbsp;&nbsp; dbi.database.<font color="#0000A0"><b>stores</b></font>.db2.schema
+= &quot;<font color="#0000A0"><b>STORES1</b></font>&quot;<br>
+&nbsp;&nbsp; dbi.database.<font color="#0000A0"><b>accnts</b></font>.db2.schema
+= &quot;<font color="#0000A0"><b>ACCSCH</b></font>&quot;</font></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> DB2 does not
+check the schema name when the SET SCHEMA instruction is executed. Setting a wrong schema
+name results in &quot;undefined name&quot; errors when performing subsequent SQL
+instructions like SELECT, UPDATE, INSERT.</p>
+
+<p>In accordance with this automatic schema selection, you must create a DB2 schema for your application : 
+
+<ol>
+  <li>Connect as a user with the DBADM authority.</li>
+  <li>Create an administrator user dedicated to your application. For example, &quot;STORESADM&quot;. Make sure this user has the IMPLICIT_SCHEMA privilege (this is the default in DB2).</li>
+  <li>Connect as the application administrator &quot;STORESADM&quot; to create all database objects ( tables, indexes, ...). In our example, a &quot;STORESADM&quot; schema will be created implicitly and all database objects will belong to this schema.</li>
+</ol>
+
+<p>As a second option you can create a specific schema with the following SQL command :<br>
+<font face="Courier New">&nbsp; CREATE SCHEMA &quot;</font>&lt;<b>name</b>&gt;
+<font face="Courier New">&quot; AUTHORIZATION &quot;</font>&lt;<b>appadmin</b>&gt;
+<font face="Courier New">&quot;</font><br>
+See IBM DB2 manuals for more details about schemas.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> <b>Case
+sensitivity:</b> When executing the &quot;SET SCHEMA&quot; instruction, the database
+interface does not use double quotes around the schema name ( = name is converted to
+uppercase letters). Make sure that the schema name is created with uppercase letters in
+the database.</p>
+
+<hr>
+
+<h2><a name="ODIDB2020">ODIDB2020 - String delimiters</a></h3>
+
+</h2>
+
+<p>The ANSI string delimiter character is the single quote ( 'string'). Double quotes are used to delimit database object names (&quot;object-name&quot;).</p>
+
+<p><b>Example</b>:<font face="Courier New"> WHERE &quot;tabname&quot;.&quot;colname&quot; = 'a string value'</font></p>
+
+<p>INFORMIX allows double quotes as string delimiters, but IBM DB2 doesn't. This is important since many BDL programs use that character to delimit the strings in SQL commands.</p>
+
+<p>Remark : This problem concerns only double quotes within SQL statements. Double quotes used in pure BDL string expressions are not subject of SQL compatibility problems.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>The IBM DB2 database interface can automatically replace all double quotes by single quotes.</p>
+
+<p>Escaped string delimiters can be used inside strings  like the following :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; 'This is a single quote : '''<br>
+&nbsp;&nbsp;&nbsp;&nbsp; 'This is a single quote : \''<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &quot;This is a double quote : &quot;&quot;&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &quot;This is a double quote : \&quot;&quot;</font></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Database
+object names cannot be delimited by double quotes because the database interface cannot
+determine the difference between a database object name and a quoted string!</p>
+
+<p>For example, if the program executes the SQL statement:<br>
+<font face="Courier New">&nbsp;&nbsp; WHERE &quot;tabname&quot;.&quot;colname&quot; = &quot;a string value&quot;</font><br>
+replacing all double quotes by single quotes would produce:<br>
+<font face="Courier New">&nbsp;&nbsp; WHERE 'tabname'.'colname' = 'a string value'</font><br>
+This would produce an error since <font face="Courier New">'tabname'.'colname'</font> is not allowed by IBM DB2.</p>
+
+<p>Although double quotes are automatically replaced in SQL statements, you should  use only single  quotes to enforce portability.</p>
+
+<hr>
+
+<h2><a name="ODIDB2021a">ODIDB2021a - NUMERIC data types</a></h3>
+
+</h2>
+
+<p>INFORMIX provides several data types to store numbers : </p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><font color="#0000FF"><b>INFORMIX</b></font><font color="#0000FF" ><b>
+      Data Type</b></font></td>
+    <td width="60%" bgcolor="#C0C0C0"><font color="#0000FF" ><b>Description</b></font></td>
+  </tr>
+  <tr>
+    <td width="40%">SMALLINT</td>
+    <td width="60%">16 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">INT/INTEGER</td>
+    <td width="60%">32 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">BIGINT</td>
+    <td width="60%">64 bit signed integer</td>
+  </tr>
+  <tr>
+    <td width="40%">INT8</td>
+    <td width="60%">64 bit signed integer (replaced by BIGINT)</td>
+  </tr>
+  <tr>
+    <td width="40%">DEC/DECIMAL(p)</td>
+    <td width="60%">Floating-point decimal number</td>
+  </tr>
+  <tr>
+    <td width="40%">DEC/DECIMAL(p,s)</td>
+    <td width="60%">Fixed-point decimal number</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY</td>
+    <td width="60%">Equivalent to DECIMAL(16,2)</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY(p)</td>
+    <td width="60%">Equivalent to DECIMAL(p,2)</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY(p,s)</td>
+    <td width="60%">Equivalent to DECIMAL(p,s)</td>
+  </tr>
+  <tr>
+    <td width="40%">REAL/SMALLFLOAT</td>
+    <td width="60%">approx floating point (C float)</td>
+  </tr>
+  <tr>
+    <td width="40%">DOUBLE PREC./FLOAT</td>
+    <td width="60%">approx floating point (C double) </td>
+  </tr>
+</table>
+</center></div>
+
+<p>Most data types supported by IBM DB2 UDB are compatible to Informix data
+types. DB2 V 9.1 introduces the DECFLOAT(16) and DECFLOAT(34) floating point decimal
+types to store large decimals. The next table lists the Informix types and DB2
+equivalents.</p>
+
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><font color="#0000FF"><b>INFORMIX</b></font><font color="#0000FF" ><b>
+      Data Type</b></font></td>
+    <td width="60%" bgcolor="#C0C0C0"><font color="#0000FF" ><b>IBM DB2 equivalent</b></font></td>
+  </tr>
+  <tr>
+    <td width="40%">INT8</td>
+    <td width="60%">Use BIGINT instead</td>
+  </tr>
+  <tr>
+    <td width="40%">DECIMAL(p)</td>
+    <td width="60%"><font color="#FF0000">With DB2 <b>V9.1</b>, DECIMAL(p&lt;=16) can be
+      stored in DECFLOAT(16) and DECIMAL(p&gt;16) can be stored in DECFLOAT(34).<br>
+      With older versions of DB2, we can use DECIMAL(p*2,p), but with a
+      limitation of 15 for the original Informix DECIMAL precision.</font></td>
+  </tr>
+  <tr>
+    <td width="40%">DECIMAL(32,s)</td>
+    <td width="60%"><font  color="#FF0000">DB2 decimals maximum
+      precision is 31 digits!</font></td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY</td>
+    <td width="60%">DECIMAL(16,2)</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY(p)</td>
+    <td width="60%">DECIMAL(p,2)</td>
+  </tr>
+  <tr>
+    <td width="40%">MONEY(p,s)</td>
+    <td width="60%">DECIMAL(p,s)</td>
+  </tr>
+  <tr>
+    <td width="40%">SMALLFLOAT</td>
+    <td width="60%">REAL</td>
+  </tr>
+  <tr>
+    <td width="40%">FLOAT[(n)]</td>
+    <td width="60%">FLOAT[(n)]&nbsp; (DOUBLE)</td>
+  </tr>
+</table>
+</center></div>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>SQL scripts to create databases must be converted manually. Tables created from BDL programs do not have to be converted; the database interface detects the MONEY data type and uses the DECIMAL type for DB2.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> The maximum precision for DB2 decimals is 31 digits, while
+INFORMIX supports 32 digits.</p>
+
+<p><b><font color="#FF0000">Warning:</font>  When using DB2 V8 and prior: There is no DB2 equivalent
+for the INFORMIX DECIMAL(p) floating point decimal (i.e. without a scale). If
+your application is using such data types, you must review the database schema
+in order to use DB2 compatible types. To workaround the DB2 limitation, the DB2 database drivers convert
+DECIMAL(p) types
+to a DECIMAL( 2*p, p ), to store all possible
+numbers an INFORMIX DECIMAL(p) can store. However, the original INFORMIX
+precision cannot exceed 15 ((2*15) = 30), since DB2 maximum DECIMAL precision is
+31. If the original precision is bigger as 15, a CREATE TABLE statement
+executed from a Genero program
+will fail with a DB2 SQLSTATE 42611.</b></p>
+
+<p>When using DB2 <b> V9.1</b> and higher: The DECIMAL(p) data type is converted to
+DECFLOAT(16) (for p&lt;=16) or DECFLOAT(34) (for p&gt;16) to store floating
+point decimals. Note that if you create tables with DECFLOAT columns, you will
+lose the original DECIMAL precision when extracting the schema with fgldbsch,
+because IBM DB2 supports only two precision specifications (16 or 34). Note also
+the DECFLOAT(34) will be extracted as DECIMAL(32), since the Genero DECIMAL type
+has a maximum precision of 32 digits.</p>
+
+<hr>
+
+<h2><a name="ODIDB2022">ODIDB2022 - Getting one row with SELECT</a></h3>
+
+</h2>
+
+<p>With INFORMIX, you must use the system table with a condition on the table id :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; SELECT user FROM systables <b>WHERE tabid=1</b></font></p>
+
+<p>With IBM DB2, you have to do the following :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; SELECT user FROM SYSIBM.SYSTABLES <b>WHERE NAME='SYSTABLE'</b></font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Check the BDL sources for &quot;<font face="Courier New">FROM systables WHERE tabid=1</font>&quot; and use dynamic SQL to resolve this problem.</p>
+
+<hr>
+
+<h2><a name="ODIDB2024">ODIDB2024 - MATCHES and LIKE in SQL conditions</a></h3>
+
+</h2>
+
+<p>INFORMIX supports MATCHES and LIKE in SQL statements, while IBM DB2 supports the LIKE statement only.</p>
+
+<p>MATCHES allows you to use brackets to specify a set of matching characters at a given position :<br>
+<font face="Courier New">&nbsp;&nbsp; ( col MATCHES '[Pp]aris' )</font>.<br>
+<font face="Courier New">&nbsp;&nbsp; ( col MATCHES '[0-9][a-z]*' )</font>.<br>
+In this case, the LIKE statement has no equivalent feature.</p>
+
+<p>The following substitutions must be made to convert a MATCHES condition to a LIKE condition : 
+
+<ul>
+  <li>MATCHES keyword must be replaced by LIKE.</li>
+  <li>All '<font face="Courier">*</font>' characters must be replaced by '<font face="Courier">%</font>'.</li>
+  <li>All '<font face="Courier">?</font>' characters must be replaced by '<font face="Courier">_</font>'.</li>
+  <li>Remove all brackets expressions.</li>
+</ul>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> SQL statements using MATCHES expressions must be reviewed in order to use LIKE expressions.</p>
+
+<p>See also: <a href="SqlProgramming.html#PORT_MATCHES">MATCHES operator in SQL
+Programming</a>.</p>
+
+<hr>
+
+<h2><a name="ODIDB2025">ODIDB2025 - INFORMIX specific SQL statements in BDL </a>
+
+</h2>
+
+<p>The BDL&nbsp;compiler supports several INFORMIX specific SQL statements that have no meaning when using IBM DB2:&nbsp;&nbsp;</p>
+
+<ul>
+  <li>CREATE DATABASE</li>
+  <li>DROP DATABASE</li>
+  <li>START DATABASE (SE only)</li>
+  <li>ROLLFORWARD DATABASE</li>
+  <li>SET [BUFFERED] LOG</li>
+  <li>CREATE TABLE with special options (storage, lock mode, etc.)</li>
+</ul>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Review your BDL source and remove all static SQL statements that are INFORMIX
+specific.</p>
+
+<hr>
+
+<h2><a name="ODIDB2028">ODIDB2028 - INSERT cursors</a></h3>
+
+</h2>
+
+<p>INFORMIX supports insert cursors. An &quot;insert cursor&quot; is a
+special BDL cursor declared with an INSERT statement instead of a SELECT statement. When
+this kind of cursor is open, you can use the PUT instruction to add rows and the FLUSH
+instruction to insert the records into the database.</p>
+
+<p>For INFORMIX databases with transactions, OPEN, PUT and FLUSH instructions must be executed within a transaction.</p>
+
+<p>IBM DB2 does not support insert cursors.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Insert cursors are emulated by the IBM DB2 database interface.</p>
+
+<hr>
+
+<h2><a name="ODIDB2029">ODIDB2029 - SQL functions and constants</a></h3>
+
+</h2>
+
+<p>Both INFORMIX and DB2 provide numerous built-in SQL functions.  Most INFORMIX
+SQL functions have the same name and purpose in DB2 ( DAY(), MONTH(), YEAR(), UPPER(), LOWER(), LENGTH() ).</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>INFORMIX</b></font></td>
+    <td bgcolor="#C0C0C0" width="50%"><font  color="#0000FF"><b>IBM DB2</b></font></td>
+  </tr>
+  <tr>
+    <td width="50%">today</td>
+    <td width="50%">current date</td>
+  </tr>
+  <tr>
+    <td width="50%">current hour to second</td>
+    <td width="50%">current time</td>
+  </tr>
+  <tr>
+    <td width="50%">current year to fraction(5)</td>
+    <td width="50%">current timestamp</td>
+  </tr>
+  <tr>
+    <td width="50%">trim( [leading | trailing | both &quot;char&quot; FROM] &quot;string&quot;)</td>
+    <td width="50%">ltrim( ) and rtrim( )</td>
+  </tr>
+  <tr>
+    <td width="50%">pow(x,y)</td>
+    <td width="50%">power(x,y)</td>
+  </tr>
+</table>
+</center></div>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> You must review the SQL statements using TODAY / CURRENT / EXTEND expressions.
+
+<p>You can create user defined functions ( UFs ) in the DB2 database.</p>
+
+<hr>
+
+<h2><a name="ODIDB2030">ODIDB2030 - Very large data types</a></h3>
+
+</h2>
+
+<p>Both INFORMIX and IBM DB2 provide special data types to store very large texts or images.</p>
+
+<p>IBM DB2 recommends the following conversion rules :</p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="33%"><font color="#0000FF"><b>INFORMIX</b></font><font  color="#0000FF"><b>
+      Data Type</b></font></td>
+    <td bgcolor="#C0C0C0" width="33%"><font  color="#0000FF"><b>IBM DB2 Data Type</b></font></td>
+  </tr>
+  <tr>
+    <td width="33%">TEXT</td>
+    <td width="33%">LONG VARCHAR or CLOB</td>
+  </tr>
+  <tr>
+    <td width="33%">BYTE</td>
+    <td width="33%">BLOB, VARGRAPHIC or DBCLOB</td>
+  </tr>
+</table>
+</center></div>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The DB2 database interface can convert BDL TEXT data to CLOB and BYTE data to BLOB.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b>  DB2 CLOB and BLOB columns are
+created with a size of 500K.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  Genero TEXT/BYTE program
+variables have a limit of 2 gigabytes, make sure that the large object data does
+not exceed this limit.</p>
+
+<hr>
+
+<h2><a name="ODIDB2031">ODIDB2031 - Cursors WITH HOLD</a></h3>
+
+</h2>
+
+<p>INFORMIX provides the WITH HOLD option to prevent cursors being closed when a transaction ends.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> This feature is
+well supported when using the DB2 interface, except when a transaction is
+canceled with a ROLLBACK, because DB2 automatically closes all cursors when you
+rollback a transaction.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Check that your source code does not use&nbsp; WITH HOLD cursors after transactions canceled with ROLLBACK.</p>
+
+<hr>
+
+<h2><a name="ODIDB2033">ODIDB2033 - Querying system catalog tables</a></h3>
+
+</h2>
+
+<p>As in INFORMIX, IBM DB2 provides system catalog tables (systables,syscolumns,etc.) in each database, but  the table names and their structures are quite different. </p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> No automatic
+conversion of INFORMIX system tables is provided by the database interface.</p>
+
+<hr>
+
+<h2><a name="ODIDB2036">ODIDB2036 - INTERVAL data type</a></h3>
+
+</h2>
+
+<p>INFORMIX INTERVAL data type stores a value that represents a span
+of time. INTERVAL types are divided into two classes : <i>year-month
+intervals</i> and <i>day-time intervals</i>.</p>
+
+<p>DB2 does not provide a data type corresponding  the INFORMIX INTERVAL data type.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> The INTERVAL
+data type is not well supported because the database server has no equivalent
+native data type. However, BDL INTERVAL values can be stored into and retrieved from CHAR columns.</p>
+
+<hr>
+
+<h2><a name="ODIDB2039">ODIDB2039 - Data storage concepts </a></h3>
+
+</h2>
+
+<p>An attempt should be made to preserve as much of the storage information as possible when converting from
+INFORMIX to IBM DB2. Most important storage decisions made for INFORMIX database objects (like initial sizes and physical placement) can be reused for the IBM DB2 database.</p>
+
+<p>Storage concepts are quite similar in INFORMIX and in IBM DB2, but the names are different.</p>
+
+<p>The following table compares INFORMIX storage concepts to IBM DB2 storage concepts :</p>
+
+<div align="center"><center>
+
+<table border="0" width="95%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="33%"><font color="#0000FF"><b>INFORMIX</b></font></td>
+    <td bgcolor="#C0C0C0" width="33%"><font color="#0000FF"><b>IBM DB2</b></font></td>
+  </tr>
+  <tr>
+    <td width="66%" colspan="2" bgcolor="#C0C0C0"><font color="#0000FF">Physical units of storage</font></td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">The largest unit of physical disk space is
+    a &quot;<b>chunk</b>&quot;, which can be allocated either as a cooked file ( I/O
+    is controlled by the OS) or as raw device (=UNIX partition, I/O is controlled by the
+    database engine). A &quot;dbspace&quot; uses at least one &quot;chunk&quot; for storage.<br>
+    You must add &quot;chunks&quot; to &quot;dbspaces&quot; in order to increase the size of
+    the logical unit of storage.</td>
+    <td width="33%" valign="top">One or more &quot;<b>containers</b>&quot;
+    are created for each &quot;tablespace&quot; to physically store the data of all logical
+    structures. Like INFORMIX &quot;chunks&quot;,
+      &quot;containers&quot; can be an OS file
+    or a raw device.<br>
+    You can add &quot;containers&quot; to a &quot;tablespace&quot; in order to increase the
+    size of the logical unit of storage or you can define EXTEND options.</td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">A &quot;<b>page</b>&quot; is the
+    smallest physical unit of disk storage that the engine uses to read from and write to
+    databases.<br>
+    A &quot;chunk&quot; contains a certain number of &quot;pages&quot;.<br>
+    The size of a &quot;page&quot; must be equal to the operating system's block size.</td>
+    <td width="33%" valign="top">At the finest level of granularity, IBM
+    DB2 stores data in &quot;<b>data blocks</b>&quot; with size
+      corresponding to a
+    multiple of the operating system's block size. <br>
+    You set the &quot;data block&quot; size when creating the database.</td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">An &quot;<b>extent</b>&quot;
+    consists of a collection of contiguous &quot;pages&quot; that the engine uses to allocate
+    both initial and subsequent storage space for database tables.<br>
+    When creating a table, you can specify the first extent size and the size of future
+    extents with the EXTENT SIZE and NEXT EXTENT options.<br>
+    For a single table, &quot;extents&quot; can be located in different &quot;chunks&quot; of
+    the same &quot;dbspace&quot;.</td>
+    <td width="33%" valign="top">An &quot;<b>extent</b>&quot; is
+    a specific number of contiguous &quot;data blocks&quot;, obtained in a single allocation.<br>
+    When creating a table, you can specify the first extent size and the size of future
+    extents with the STORAGE() option.<br>
+    For a single table, &quot;extents&quot; can be located in different &quot;data files&quot;
+    of the same &quot;tablespace&quot;.</td>
+  </tr>
+  <tr>
+    <td width="66%" colspan="2" bgcolor="#C0C0C0" valign="top">
+    <font color="#0000FF">Logical units of storage</font></td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">A &quot;<b>table</b>&quot; is a
+    logical unit of storage that contains rows of data values.</td>
+    <td width="33%" valign="top">Same concept as INFORMIX.</td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">A &quot;<b>database</b>&quot; is
+    a logical unit of storage that contains table and index data. Each database also contains
+    a system catalog that tracks information about database elements like tables, indexes,
+    stored procedures, integrity constraints and user privileges.</td>
+    <td width="33%" valign="top">Same concept as INFORMIX.<br><br>
+    An IBM DB2 instance can manage several databases.</td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">Database tables are created in a specific
+    &quot;<b>dbspace</b>&quot;, which defines a logical place to store data.<br>
+    If no dbspace is given when creating the table, INFORMIX defaults to the current database
+    dbspace.</td>
+    <td width="33%" valign="top">Database tables are created in a specific
+    &quot;<b>tablespace</b>&quot;, which defines a logical place to store data. The
+    main difference with INFORMIX &quot;dbspaces&quot;, is that IBM DB2 tablespaces belong to
+    a&nbsp; &quot;database&quot;, while INFORMIX &quot;dbspaces&quot; are external to a
+    database.</td>
+  </tr>
+  <tr>
+    <td width="66%" colspan="2" bgcolor="#C0C0C0" valign="top">
+    <font color="#0000FF">Other concepts</font></td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">When initializing an INFORMIX engine, a
+    &quot;<b>root dbspace</b>&quot; is created to store information about all
+    databases, including storage information (chunks used, other dbspaces, etc.).</td>
+    <td width="33%" valign="top">Each IBM DB2 database uses a set of &quot;<b>control
+    files</b>&quot; to store internal information. These files are located in a
+    dedicated directory : &quot;.../$DB2INSTANCE/NODEnnnn&quot;</td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">The &quot;<b>physical log</b>&quot;
+    is a set of continuous disk pages where the engine stores &quot;before-images&quot; of
+    data that has been modified during processing.
+    <p>The &quot;<b>logical log</b>&quot; is a set of &quot;<b>logical-log files</b>&quot; used to
+    record logical operations during on-line processing. All transaction information
+    is stored in the logical log files if a database has been created with transaction log.</p>
+    <p>INFORMIX combines &quot;physical log&quot; and &quot;logical
+    log&quot; information when doing fast recovery. Saved &quot;logical logs&quot; can be
+    used to restore a database from tape.</td>
+    <td width="33%" valign="top">DB2 uses &quot;<b>database log files</b>&quot;
+    to record SQL transactions.<br>
+    </td>
+  </tr>
+</table>
+</center></div>
+
+<hr>
+
+<h2><a name="ODIDB2043">ODIDB2043 - SQL parameters limitation</a></h3>
+
+</h2>
+
+<p>The IBM DB2 SQL parser does not allow  some uses of  the '?' SQL parameter marker.</p>
+
+<p>The following SQL expressions are not supported :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; ? IS [NOT] NULL<br>
+&nbsp;&nbsp;&nbsp;&nbsp; ? &lt;operator&gt; ?<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &lt;function&gt;( ? )</font></p>
+
+<p>SQL instructions containing these expressions raise an error during the statement preparation.</p>
+
+<p><b><u><em>Solution:</em></u></b> </p>
+
+<p>Check that your BDL programs  do  not use these  kinds of conditional  expressions.</p>
+
+<p>If you really need to test a BDL variable during the execution of a
+SQL statement, you must use the CAST() function for DB2 only :<br>
+<font face="Courier New">&nbsp; &nbsp; WHERE CAST( ? AS INTEGER ) IS NULL</font><br>
+See the DB2 documentation for more details.</p>
+
+<hr>
+
+<h2><a name="ODIDB2046">ODIDB2046 -&nbsp;The LOAD and UNLOAD instructions </a>
+
+</h2>
+
+<p>INFORMIX provides two SQL instructions to export / import data from / into a database table: The UNLOAD instruction copies rows from a database table into an text file, and the LOAD instruction inserts rows from an text file into a database table.</p>
+
+<p>IBM DB2 does not provide LOAD and UNLOAD instructions.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>LOAD and UNLOAD instructions are supported.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> There
+is a difference when using DB2 TIME and TIMESTAMP columns:
+TIME columns created in the IBM DB2 database are similar to INFORMIX DATETIME HOUR TO SECOND columns. In LOAD and UNLOAD, all DB2 TIME columns are
+treated as INFORMIX DATETIME HOUR TO SECOND columns and thus will be unloaded with the
+&quot;hh:mm:ss&quot;&nbsp; format.</p>
+
+<hr>
+
+<h2><a name="ODIDB2051">ODIDB2051 -&nbsp;Setup database statistics </a>
+
+</h2>
+
+<p>INFORMIX provides a special instruction to compute database statistics in order to improve query optimization plans :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; UPDATE STATISTICS [options]</font></p>
+
+<p>IBM DB2 provides the following equivalent:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; RUNSTATS ON TABLE <small>full-qualified-table-name</small>
+[options]</font></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> RUNSTATS
+is not a SQL instruction, it is a DB2 command and therefore cannot be executed from a
+BDL program.</p>
+
+<p><u><em><b>Solution:</b></em></u></p>
+
+<p>You must execute the RUNSTATS command manually from a DB2 Command Center.</p>
+
+<hr>
+
+<h2><a name="ODIDB2052">ODIDB2052 -&nbsp;The GROUP BY clause </a>
+
+</h2>
+
+<p>INFORMIX allows you to use column numbers in the GROUP BY clause</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; SELECT ord_date,
+sum(ord_amount) FROM order <font color="#0000A0"><b>GROUP BY 1</b></font></font></p>
+
+<p>IBM DB2 does not support column numbers in the GROUP BY clause.</p>
+
+<p><u><em><b>Solution:</b></em></u></p>
+
+<p>Use column names instead:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; SELECT ord_date, sum(ord_amount) FROM
+order <b> <font color="#0000A0">GROUP BY </font></b></font><b><font color="#0000A0" face="Courier New">ord_date</font></b></p>
+
+<hr>
+
+<h2><a name="ODIDB2053">ODIDB2053 - The ALTER TABLE instruction </a></h3>
+
+</h2>
+
+<p>INFORMIX and IBM DB2 use different implementations of the ALTER TABLE instruction.</p>
+
+<p>For example:</p>
+
+<p>INFORMIX allows you to use multiple ADD clauses separated by commas. DB2 does not expect braces and the comma separator :</p>
+
+<p>INFORMIX:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; ALTER TABLE customer <font color="#0000A0"><b>ADD(col1 INTEGER), ADD(col2 CHAR(20))</b></font></font><br>
+IBM DB2:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; ALTER TABLE customer <font color="#0000A0"><b>ADD col1 INTEGER&nbsp; ADD col2 CHAR(20)</b></font></font></p>
+
+<p>Depending on the values currently stored, INFORMIX can change the data type of a column, while  DB2 only supports changing  the size of CHAR and VARCHAR columns :</p>
+
+<p>INFORMIX:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; ALTER TABLE customer <font color="#0000A0"><b>MODIFY ( col1 INTEGER )</b></font></font><br>
+IBM DB2:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; ALTER TABLE customer <font color="#0000A0"><b>ALTER COLUMN col1 SET DATA TYPE VARCHAR(200)</b></font></font></p>
+
+<p><u><em><b>Solution:</b></em></u></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> No automatic
+conversion is done by the database interface. Read the SQL documentation and review the
+SQL scripts or the BDL programs in order to use the database server specific syntax for
+ALTER TABLE.</p>
+
+<hr>
+
+<h2><a name="ODIDB2054">ODIDB2054 - The star (asterisk) in SELECT statements</a></h3>
+
+</h2>
+
+<p>INFORMIX allows you to use the star character in the select list along with other expressions :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; SELECT col1, <b>*</b> FROM tab1 ...</font></p>
+
+<p>IBM DB2 does not support this. You must use the table name as a prefix to the star :</p>
+
+<p><font face="Courier New">   &nbsp;&nbsp;   SELECT col1, <b>tab1.*</b> FROM tab1 ... </font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Always use the table name with stars. </p>
+
+<hr>
+
+<h2><a name="ODIDB2055">ODIDB2055 - The LENGTH() function</a></h3>
+
+</h2>
+
+<p>INFORMIX provides the LENGTH() function:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT
+    LENGTH(&quot;aaa&quot;), LENGTH(col1) FROM table </font></p>
+
+<p>IBM DB2 has a equivalent function with the same name, but there is some
+difference:</p>
+
+<p>INFORMIX does not count the trailing blanks neither for CHAR not for VARCHAR
+expressions, while IBM DB2 counts the trailing blanks.</p>
+
+<p>With the IBM DB2 LENGTH function, when using a CHAR column,
+values are always blank padded, so the function returns the size of the CHAR
+column.
+When using a VARCHAR column, trailing blanks are significant, and the function
+returns the number of characters, including trailing blanks.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>You must check if the trailing blanks are significant when using the LENGTH()
+function.</p>
+
+<p>If you want to count the number of character by ignoring the trailing blanks,
+you must use the RTRIM() function:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT LENGTH(RTRIM(col1)) FROM table</font></p>
+
+<hr>
+<h2><a name="ODIDB2056">ODIDB2056 -&nbsp;SQL Interruption</a>
+</h2>
+<p>With INFORMIX, it is possible to interrupt a long running query if the SQL
+INTERRUPT ON option is set by the Genero program. The database server returns
+SQLCODE -213, which can be trapped to detect a user interruption.</p>
+<p><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp; MAIN<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DEFINE n INTEGER<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DEFER INTERRUPT<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OPTIONS SQL INTERRUPT ON<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DATABASE test1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHENEVER ERROR CONTINUE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- Start long query (self join takes time)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- From now on, user can hit CTRL-C in TUI mode
+to stop the query<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SELECT COUNT(*) INTO n FROM customers a,
+customers b<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHERE a.cust_id
+&lt;&gt; b.cust_id<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IF SQLCA.SQLCODE == -213 THEN<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DISPLAY &quot;Statement was
+interrupted by user...&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EXIT PROGRAM 1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END IF<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHENEVER ERROR STOP<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp;&nbsp; END MAIN</font></p>
+
+<p>DB2 UDB 9 supports SQL Interruption in a similar way as INFORMIX. The db
+client must issue an SQLCancel() ODBC call to interrupt a query.</p>
+
+<p><u><em>Solution:</em></u></p>
+
+<p>The DB2 database driver supports SQL interruption and converts the
+native SQL error code -952 to the INFORMIX error code -213.</p>
+
+<hr>
+
+<h2><a name="ODIDB2057">ODIDB2057 -&nbsp;Scrollable Cursors</a></h2>
+
+<p>The Genero programming language supports scrollable cursors with the <b>SCROLL</b>
+keyword, as shown in the following code example:&nbsp;</p>
+
+<p>
+<font face="Courier New" size="2">
+&nbsp;&nbsp;&nbsp;DECLARE c1 <b>SCROLL</b> CURSOR FOR SELECT * FROM customers
+ORDER BY cust_name<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH FIRST c1 INTO rec_cust.*<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH NEXT c1 INTO rec_cust.*<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH LAST c1 INTO rec_cust.*</font></p>
+
+<p>DB2 UDB supports native scrollable cursors.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>The DB2 database driver uses the native DB2 scrollable cursors by setting the
+CLI statement attribute SQL_ATTR_CURSOR_TYPE to SQL_CURSOR_STATIC.</p>
+
+<hr>
+
+<h2><a name="ODIDB2100">ODIDB2100 - Data type conversion table</a>
+
+</h2>
+
+<div align="center">
+  <center><table border="0" width="80%">
+        <tr>
+          <td bgcolor="#C0C0C0"><font color="#0000FF"><b>INFORMIX</b></font><font color="#0000FF"><b>
+            Data Types</b></font></td>
+          <td bgcolor="#C0C0C0"><font color="#0000FF"><b>DB2 Data Types (V&lt;9.1)</b></font></td>
+          <td bgcolor="#C0C0C0"><font color="#0000FF"><b>DB2 Data Types
+            (V&gt;=9.1)</b></font></td>
+        </tr>
+        <tr>
+          <td height="17"><font face="Courier New">CHAR(n)</font></td>
+          <td height="17"><font face="Courier New">CHAR(n) <font color="#FF0000" size="2" face="Courier New">(limit
+            = 254c!)</font></font></td>
+          <td height="17"><font face="Courier New">CHAR(n) <font color="#FF0000" size="2" face="Courier New">(limit
+            = 254c!)</font></font></td>
+        </tr>
+        <tr>
+          <td height="18"><font face="Courier New">VARCHAR(n)</font></td>
+          <td height="18"><font face="Courier New">VARCHAR(n) <font color="#FF0000" size="2" face="Courier New">(limit
+            = 32672c!)</font></font></td>
+          <td height="18"><font face="Courier New">VARCHAR(n) <font color="#FF0000" size="2" face="Courier New">(limit
+            = 32672c!)</font></font></td>
+        </tr>
+        <tr>
+          <td height="18"><font face="Courier New">BOOLEAN</font></td>
+          <td height="18"><font face="Courier New">CHAR(1)</font></td>
+          <td height="18"><font face="Courier New">CHAR(1)</font></td>
+        </tr>
+        <tr>
+          <td height="18"><font face="Courier New">SMALLINT</font></td>
+          <td height="18"><font face="Courier New">SMALLINT</font></td>
+          <td height="18"><font face="Courier New">SMALLINT</font></td>
+        </tr>
+        <tr>
+          <td height="18"><font face="Courier New">INTEGER</font></td>
+          <td height="18"><font face="Courier New">INTEGER</font></td>
+          <td height="18"><font face="Courier New">INTEGER</font></td>
+        </tr>
+        <tr>
+          <td height="18"><font face="Courier New">BIGINT</font></td>
+          <td height="18"><font face="Courier New">BIGINT</font></td>
+          <td height="18"><font face="Courier New">BIGINT</font></td>
+        </tr>
+        <tr>
+          <td height="18"><font face="Courier New">INT8</font></td>
+          <td height="18"><font face="Courier New">BIGINT</font></td>
+          <td height="18"><font face="Courier New">BIGINT</font></td>
+        </tr>
+        <tr>
+          <td height="18"><font face="Courier New">FLOAT[(n)]</font></td>
+          <td height="18"><font face="Courier New">FLOAT[(n)] / DOUBLE</font></td>
+          <td height="18"><font face="Courier New">FLOAT[(n)] / DOUBLE</font></td>
+        </tr>
+        <tr>
+          <td height="18"><font face="Courier New">SMALLFLOAT</font></td>
+          <td height="18"><font face="Courier New">REAL</font></td>
+          <td height="18"><font face="Courier New">REAL</font></td>
+        </tr>
+        <tr>
+          <td height="18"><font face="Courier New">DECIMAL(p) <font color="#FF0000">with
+            p&lt;=15</font></font></td>
+          <td height="18"><font face="Courier New">DECIMAL(2*p,p)</font></td>
+          <td height="18"><font face="Courier New">DECFLOAT(16)</font></td>
+        </tr>
+        <tr>
+          <td height="18"><font face="Courier New">DECIMAL(p) <font color="#FF0000">with
+            p&gt;15</font></font></td>
+          <td height="18"><i><font face="Courier New" color="#FF0000">N/A</font></i></td>
+          <td height="18"><font face="Courier New">DECFLOAT(16) if p=16,<br>
+            DECFLOAT(34) if p&gt;16</font></td>
+        </tr>
+        <tr>
+          <td height="18"><font face="Courier New">DECIMAL(p,s)</font></td>
+          <td height="18"><font face="Courier New">DECIMAL(p,s) <font color="#FF0000"><small>(limit
+            = 31 digits)</small></font></font></td>
+          <td height="18"><font face="Courier New">DECIMAL(p,s) <font color="#FF0000"><small>(limit
+            = 31 digits)</small></font></font></td>
+        </tr>
+        <tr>
+          <td height="18"><font face="Courier New">MONEY(p,s)</font></td>
+          <td height="18"><font face="Courier New">DECIMAL(p,s) </font><font face="Courier New" color="#FF0000"><small>(limit
+            = 31 digits)</small></font></td>
+          <td height="18"><font face="Courier New">DECIMAL(p,s) <font color="#FF0000"><small>(limit
+            = 31 digits)</small></font></font></td>
+        </tr>
+        <tr>
+          <td height="18"><font face="Courier New">DATE</font></td>
+          <td height="18"><font face="Courier New">DATE</font></td>
+          <td height="18"><font face="Courier New">DATE</font></td>
+        </tr>
+        <tr>
+          <td height="18"><font face="Courier New">DATETIME HOUR TO SECOND</font></td>
+          <td height="18"><font face="Courier New">TIME</font></td>
+          <td height="18"><font face="Courier New">TIME</font></td>
+        </tr>
+        <tr>
+          <td height="18"><font face="Courier New">DATETIME q1 TO q2</font></td>
+          <td height="18"><font face="Courier New">TIMESTAMP</font></td>
+          <td height="18"><font face="Courier New">TIMESTAMP</font></td>
+        </tr>
+        <tr>
+          <td height="18"><font face="Courier New">INTERVAL q1 TO q2</font></td>
+          <td height="18"><font face="Courier New">CHAR(n)</font></td>
+          <td height="18"><font face="Courier New">CHAR(n)</font></td>
+        </tr>
+      </table>
+  </center>
+</div>
+
+<hr>
+
+<h2><a name="ODIDB2_OS400">Connecting to DB2 OS/400</a></h2>
+
+<p>Note : some of the following actions can be taken via the OS/400 Operations Navigator.</p>
+
+<h3><a name="ODIDB2_OS400_ARCHI"><small>DB2 Architecture on OS/400</small></a></h3>
+
+<p>On OS/400 machines, the DB2 Universal Database is integrated to the operating system.
+Therefore, some concepts change. For example, the physical organization of the database
+is quite different from UNIX or Windows platforms.</p>
+
+<p><b>Common terms:</b></p>
+<div align="center">
+  <center>
+
+<table border="0" width="80%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="34%"><font  color="#0000FF"><b>SQL Terms</b></font></td>
+    <td bgcolor="#C0C0C0" width="50%"><font  color="#0000FF"><b>DB2 OS/400 Terms</b></font></td>
+  </tr>
+  <tr>
+    <td width="34%">Table</td>
+    <td width="50%">Physical file</td>
+  </tr>
+  <tr>
+    <td width="34%">Row</td>
+    <td width="50%">Record</td>
+  </tr>
+  <tr>
+    <td width="34%">Column</td>
+    <td width="50%">Field</td>
+  </tr>
+  <tr>
+    <td width="34%">Index</td>
+    <td width="50%">Keyed logical file, access path</td>
+  </tr>
+  <tr>
+    <td width="34%">View</td>
+    <td width="50%">Non keyed logical file</td>
+  </tr>
+  <tr>
+    <td width="34%">Schema</td>
+    <td width="50%">Library, Collection, Schema (OS/400 V5R1 only)</td>
+  </tr>
+  <tr>
+    <td width="34%">Log</td>
+    <td width="50%">Journal</td>
+  </tr>
+  <tr>
+    <td width="34%">Isolation Level</td>
+    <td width="50%">Commitment control level</td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<p>A Collection is a library containing a Journal, Journal Receivers, Views on the database catalogues.</p>
+
+<h3><a name="ODIDB2_OS400_LOGIN"><small>Login to the AS/400 server</small></a></h3>
+
+<p>First, login to the AS/400 machine with a 5250 display emulation.
+All the commands are executed in the 5250 display emulation (or
+telnet connection).</p>
+
+<h3><a name="ODIDB2_OS400_COLL"><small>Collection (Schema) Creation</small></a></h3>
+
+<p>A collection or library in DB2 for OS/400 is equivalent to a schema in DB2 for UNIX.</p>
+
+<p><b>1. Launch &quot;Interactive SQL&quot;</b></p>
+<blockquote>
+  <p>STRSQL COMMIT(*NONE)</p>
+</blockquote>
+
+<p><b>2. Create a Collection</b></p>
+  
+<blockquote>
+  <p>CREATE COLLECTION<br>
+  Press F4<br>
+  Enter field values:<br>
+  &nbsp;&nbsp;&nbsp; LIBRARY : name of the collection (Schema)<br>
+  &nbsp;&nbsp;&nbsp; ASP : 1<br>
+  &nbsp;&nbsp;&nbsp; WITH DATA DICTIONARY : Y<br>
+  Press ENTER<br>
+  Press F3 to quit ( choose Option 1 (save and exit) ).&nbsp;</p>
+</blockquote>
+
+<p>Note: The name of the Schema should not begin with &#8220;Q&#8221;; libraries beginning with &#8220;Q&#8221; are system libraries. </p>
+
+<p>This procedure creates:</p>
+<ul>
+  <li>A library for your new database,</li>
+  <li>A catalog with a data dictionary,</li>
+  <li>A journal (QSQJRN),</li>
+  <li>A journal receiver (QSQJRN0001). </li>
+</ul>
+
+<h3><a name="ODIDB2_OS400_PHYS"><small>Source Physical File Creation</small></a></h3>
+
+<p>Each table in the database is stored in a Physical file. They can be created in the control center with SQL scripts (CREATE TABLE), or with OS/400 commands.</p>
+
+<p>The table creation script file must be copied in the library in the form: <i>library/sourcefile.member</i></p>
+
+<p>Creation of a physical file:</p>
+
+<blockquote>
+  <p>Type:<br>
+  &nbsp;&nbsp;&nbsp; CRTSRCPF<br>
+  Enter field values:<br>
+  &nbsp;&nbsp;&nbsp; FILE = name of the table (10 characters max).<br>
+  &nbsp;&nbsp;&nbsp; LIBRARY = name of the library in which the table is created (schema).<br>
+  &nbsp;&nbsp;&nbsp; RECORD LENGTH = length of the script creation file (in bytes)<br>
+  &nbsp;&nbsp;&nbsp; MEMBER = *FILE</p>
+</blockquote>
+   
+<p>Execution of the SQL creation script:</p>
+<blockquote>
+  <p>Type<br>
+  &nbsp;&nbsp;&nbsp; RUNSQLSTM<br>
+  Press F10 for additional parameters<br>
+  Enter field values:<br>
+  &nbsp;&nbsp;&nbsp; SOURCE FILE = name of the source file of the script creation file<br>
+  &nbsp;&nbsp;&nbsp; LIBRARY = name of the library (schema)<br>
+  &nbsp;&nbsp;&nbsp; SOURCE MEMBER = name of the member of the script creation file<br>
+  &nbsp;&nbsp;&nbsp; NAMING FIELD = *SQL (SQL Naming convention library.table)<br>
+  &nbsp;&nbsp;&nbsp; COMMITMENT CONTROL = *NONE<br>
+  &nbsp;&nbsp;&nbsp; IBM SQL FLAGGING FIELD = *FLAG</p>
+</blockquote>
+
+<p>If errors occur, you can use WRKSPLF to display error information saved in the spool file. Use option 5 in the Opt Field on the line of the script file you tried to execute.</p>
+
+<h3><a name="ODIDB2_OS400_TRIG"><small>Trigger Creation</small></a></h3>
+
+<p>With DB2 on OS/400, triggers need to be external programs written in a high level language
+such as C, COBOL, RPG, or PL/I.</p>
+
+<p>To create a trigger, use the following steps:</p>
+
+<p><b>1. Create an OS/400 Source file for the trigger programs</b></p>
+
+<p>Create a source physical file on your AS/400 for the trigger programs. Each trigger program will
+be stored in a separate member within this source file.</p>
+
+<p>Type:<br>
+&nbsp;&nbsp;&nbsp; CRTSRCPF FILE(<i>library</i>/<i>file</i>)<br>
+where:<br>
+&nbsp;&nbsp;&nbsp; - <i>library</i> : name of the library you created for your new database<br>
+&nbsp;&nbsp;&nbsp; - <i>file</i> : name you want to call the trigger source physical file</p>
+
+<p>The file name should be ten characters or fewer.</p>
+
+<p><b>2. Create a member for each trigger program</b></p>
+
+<p>Create a source file member for each trigger program. After the creation of trigger programs (in the next step), the programs will be forwarded to these members.&nbsp; </p>
+
+<p>Type:<br>
+&nbsp;&nbsp;&nbsp;&nbsp; ADDPFM<br>
+Enter field values:<br>
+&nbsp;&nbsp;&nbsp; FILE = name of the source file you just created<br>
+&nbsp;&nbsp;&nbsp; LIBRARY = name of the library you created for your database<br>
+&nbsp;&nbsp;&nbsp; MEMBER = name you want to give the trigger source member</p>
+<p>Repeat this operation for each trigger.</p>
+
+<p><b>3. Create trigger programs in an OS/400 supported high level language</b></p>
+
+<p>The OS/400-compatible languages include: ILE C/400, ILE COBOL, ILE RPG, COBOL, PL/I, and RPG.<br>
+The script creation file of the trigger should be send via FTP into <i>library/sourcefile.member,</i> where
+<i>sourcefile</i> and member are the values specified in the previous step.</p>
+
+<p><b>4. Compile the trigger programs</b></p>
+
+<p>Once the trigger programs are in AS/400 members, you can compile them. Use whichever
+compiler is appropriate for the language you used to create the trigger program.</p>
+
+<p><b>5. Bind the trigger programs</b></p>
+
+<p>After you compile the trigger programs, &quot;bind&quot; each compiled program file.
+Binding will establish a relationship between the program and any tables or views the
+program specifies.</p>
+
+<p>Type:<br>
+&nbsp;&nbsp;&nbsp; CRTPGM PGM (<i>library</i>/<i>program</i>) ACTGRP(*CALLER)<br>
+where:<br>
+&nbsp;&nbsp;&nbsp; <i>library</i> is the name of the library you created for your new database<br>
+&nbsp;&nbsp;&nbsp; <i>program</i> is the name of the compiled trigger program</p>
+
+<p>Repeat this operation for each trigger.</p>
+
+<p><b>6. Add the trigger programs to physical files</b></p>
+
+<p>The final step for migrating triggers is to add each program to a physical file. This will tie
+the trigger program to the table that calls it.</p>
+
+<p>Type:<br>
+&nbsp;&nbsp;&nbsp; ADDPFTRG<br>
+Enter field values:<br>
+&nbsp;&nbsp;&nbsp; PHYSICAL FILE = name of the table you want to attach the trigger to<br>
+&nbsp;&nbsp;&nbsp; PHYSICAL FILE LIBRARY = name of the database library<br>
+&nbsp;&nbsp;&nbsp; TRIGGER TIME = either *BEFORE or *AFTER.<br>
+&nbsp;&nbsp;&nbsp; TRIGGER EVENT = *INSERT, *DELETE, or *UPDATE.<br>
+&nbsp;&nbsp;&nbsp; PROGRAM = name of the compiled program file<br>
+&nbsp;&nbsp;&nbsp; PROGRAM LIBRARY = name of the database library.<br>
+&nbsp;&nbsp;&nbsp; REPLACE TRIGGER = *YES.<br>
+&nbsp;&nbsp;&nbsp; ALLOW REPEATED CHANGES = *YES.</p>
+
+<p>Note:: The trigger program should be in the same library as the database.</p>
+
+<p>The trigger program is now tied to the table specified in the <i>Physical File</i>
+field and will be called each time the database action you specified above
+occurs. The trigger program may be called from interactive SQL, another AS/400
+program, or an ODBC insert, delete, update, or procedure call.</p>
+
+<h3><a name="ODIDB2_OS400_PERM"><small>Permission Definition</small></a></h3>
+
+<p>On OS/400, database security is managed at the operating system level, not at the database level. When you set up permissions for the database, you determine the degree of access (read, add, delete, etc.) individual users, groups, and authorization lists may have. This operation can easily be done via Operation Navigator.</p>
+
+
+<p>The privileges must include the following system authorities:</p>
+<ul>
+  <li>
+    <p>*USE to the Create Physical File (CRTPF) command.</li>
+  <li>
+    <p>*EXECUTE and *ADD to the library into which the table is created.</li>
+  <li>
+    <p>*OBJOPR and *OBJMGT to the journal.</li>
+  <li>
+    <p>*CHANGE to the data dictionary if the library into which the table is created is an SQL collection with a data dictionary.</li>
+</ul>
+<p>To define a foreign key, the privileges must include the following on the parent table:&nbsp;</p>
+<ul>
+  <li>
+    <p>The REFERENCES privilege or object management authority for the table.</li>
+  <li>
+    <p>The REFERENCES privilege on each column of the specified parent key.</li>
+  <li>
+    <p>Ownership of the table.</li>
+</ul>
+<p>The REFERENCES privilege on a table consists of:</p>
+<ul>
+  <li>
+    <p>Being the owner of the table.</li>
+  <li>
+    <p>Having the REFERENCES privilege to the table.</li>
+  <li>
+    <p>Having the system authorities of either *OBJREF or *OBJMGT to the table.</li>
+</ul>
+<p>The REFERENCES privilege on a column consists of:</p>
+<ul>
+  <li>
+    <p>Being the owner of the table.</li>
+  <li>
+    <p>Having the REFERENCES privilege to the column.</li>
+  <li>
+    <p>Having the system authority of *OBJREF to the column or the system authority of *OBJMGT to the table.</li>
+</ul>
+<p>To EXECUTE a user-defined function, the privilege consists of:</p>
+<ul>
+  <li>
+    <p>Being owner of the user-defined function.</li>
+  <li>
+    <p>Having EXECUTE privilege to the user-defined function.</li>
+  <li>
+    Having the system authorities of *OBJOPR and *EXECUTE to the user-defined function.</li>
+</ul>
+
+<h3><a name="ODIDB2_OS400_EDIR"><small>Relational DB Directory Entry Creation</small></a></h3>
+
+<p>The relational database directory is equivalent to the database directory of the DB2 client. This is necessary to  access the database with DRDA clients (Distributed Relational Database Architecture) like DB2 client.</p>
+  
+<p>Use the WRKRDBDIRE tool to add the entry in the database directory:</p>
+<ul>
+  <li>
+    <p>Type<br>
+    WRKDBDIRE</p>
+  </li>
+  <li>
+    <p>Type Option 1 (add)</p>
+  </li>
+  <li>
+    <p>Enter field values:<br>
+    &nbsp;&nbsp;&nbsp; ADDRESS = *LOCAL<br>
+    &nbsp;&nbsp;&nbsp; TYPE = *IP</p>
+  </li>
+</ul>
+
+<p>Start the DDM server on the OS/400 which listens on the DRDA 446 port:</p>
+
+<ul>
+  <li>
+    <p>Type STRTCPSVR *DDM</p>
+  </li>
+</ul>
+
+<p>Start the database server:</p>
+<ul>
+  <li>
+    <p>Type STRHOSTSVR</p>
+  </li>
+  <li>
+    <p>Enter field values:<br>
+    &nbsp;&nbsp;&nbsp; SERVER TYPE = *DATABASE<br>
+    REQUIRED PROTOCOL : *ANY</p>
+  </li>
+</ul>
+    
+<p>The DDM/DRDA server that listens on TCP/IP port 446 handles requests from a DRDA client (examples are DB2 Connect or another AS/400).</p>
+
+<p>The database server is not needed for DRDA clients, but it is needed for Client Access.</p>
+
+<p>If a TCP/IP connection is desired, then your AS/400 server cannot have a release prior to V4R2 installed.</p>
+
+<p>To manually configure the connection via the DB2 command line, you will need to enter catalog commands:</p>
+
+<p><font face="Courier New">&gt; db2 catalog tcpip node &lt;node-name&gt;
+remote &lt;as400-adress&gt; server 446<br>
+&gt; db2 catalog db &lt;db-name-alias&gt; at node &lt;node-name&gt;
+authentication dcs<br>
+&gt; db2 catalog dcs db &lt;db-name-alias&gt; as &lt;local-RDB-name-of-AS400&gt;
+
+</font></p>
+
+<p>If you catalogue the DB2 UDB for iSeries server incorrectly, you may get an SQL5048N error message. SQL7008N is another common error in that the DB2 UDB for iSeries tables being accessed on the server are not being journaled. To correct the SQL7008N error, you need to start journaling your tables or change the isolation level to No Commit.</p>
+
+<p>The proper CCSID value (normally 37 for US English customers) is needed for any tables on the iSeries accessed via DB2 Connect. You can view the CCSID value with the DSPFD CL command or Operations Navigator.  CCSID values can be changed with the ALTER TABLE statement or CHGPF CL command.  Furthermore, to successfully connect, you may need to change one of the following: the CCSID of the job, the CCSID of the user profile used, or the system CCSID value (QCCSID) if it's the default 65535.</p>
+
+<h3><a name="ODIDB2_OS400_CLNT"><small>DB2 Client Configuration on Windows</small></a></h3>
+
+<p>To configure a DB2 client on Windows platforms, use the Client Configuration Assistant. This tool is available only under Microsoft Windows. Under
+Unix, you have to use the command line as described in the previous chapter.</p>
+
+<p>1. Source:</p>
+<blockquote>
+  <p>- Select &#8220;Manually configure a connection to a database&#8221;.</p>
+</blockquote>
+<p>2. Protocol:</p>
+<blockquote>
+  <p>- Select &#8220;TCP/IP&#8221;.</p>
+  <p>- Check &#8220;The database physically resides on a host or AS/400 System&#8221;.</p>
+</blockquote>
+<p>3. TCP/IP:</p>
+<blockquote>
+  <p>- Host Name : AS/400 system name.</p>
+  <p>- Port Number : Port where DDM/DRDA server is listening (default : 446).</p>
+</blockquote>
+<p>4. Database:</p>
+<blockquote>
+  <p>- Database name : name defined in the relational database directory entries (with WRKRDBDIRE).</p>
+</blockquote>
+<p>5. ODBC:</p>
+<blockquote>
+  <p>- You can register the database as an ODBC data source. Not needed for DRDA connection used by ODI.</p>
+</blockquote>
+<p>6. Node Options:</p>
+<blockquote>
+  <p>- Optional, but needed to  access the  database via the control center.</p>
+  <p>- System name : AS/400 system name.</p>
+  <p>- Instance name : not used for a connection to AS400 (because only one instance is running on an AS/400).</p>
+  <p>- Operating System : OS/400.</p>
+</blockquote>
+<p>7.  Security Options:</p>
+<blockquote>
+  <p>- Optional.</p>
+</blockquote>
+<p>8. Host or AS400 Options:</p>
+<blockquote>
+  <p>- Optional.</p>
+</blockquote>
+
+<h3><a name="ODIDB2_OS400_DIFF"><small>Differences Between DB2 UNIX &amp; DB2 OS/400</small></a></h3>
+
+<p>Some of the differences between DB2 for Unix/Windows and DB2 for OS/400 are:</p>
+<ul>
+  <li>
+    <p>There is only one database on a system; you can not
+    create two instances on the same database server. The database is a single
+    system-wide database. The database name used for the connect statement is
+    the name of the system. Schemas (Collections) can be used to manage
+    different logical databases on the same OS/400 machine.</li>
+  <li>
+    <p>There is no TABLESPACE concept on DB2 for iSeries. All the storage is controlled by the database manager and operating system.</li>
+  <li>
+    <p>The identity column is not supported (for serial emulation).</li>
+  <li>
+    <p>The SET SCHEMA SQL command is not supported.</li>
+  <li>
+    <p>NUMERIC data type is defined as zoned decimal on DB2 for iSeries and packed decimal on other platforms.</li>
+  <li>
+    <p>The FLOAT data type does not use the same storage. For portability across platforms, do not use FLOAT(n).</li>
+  <li>
+    <p>Not all features of the CREATE FUNCTION statement are supported on each platform (see documentation).</li>
+  <li>
+    <p>iSeries prior to V5R1 requires the statement to be processed by a special schema processor.&nbsp;&nbsp; iSeries as of V5R1 would require this only if the statement includes other DDL statements.</li>
+  <li>
+    <p>OS/400 supports &#8220;SET DEFAULT&#8221; clause ON DELETE.</li>
+  <li>
+    <p>OS/400  supports DROP statement with CASCADE behavior.</li>
+  <li>
+    <p>Syntaxes of CREATE, ALTER and RENAME TABLE are different on the two systems.</li>
+</ul>
+    
+<h3><a name="ODIDB2_OS400_NAME"><small>Naming Conventions</small></a></h3>
+
+<p>The naming convention defines how database tables are identified.</p>
+
+<p>DB2 OS/400 can use two kinds of naming conventions:</p>
+    
+<ul>
+  <li>
+    <p>The <b>*SQL</b> naming convention.<br>
+    The table has to be qualified with the name of the collection (schema)
+    which must be the same name as the user connected to the database. All
+    tables have to be in the same database.<br>
+  </li>
+  <li>
+    <p>The <b>*SYS</b> naming convention.<br>
+    If a table is unqualified, it will be  searched for in the *CURLIB collection.
+    You can change the library list with the ADDLIBLE command. You may create a small
+    CL program attached to the profile that will change the library list on sign on.
+    You can also globally change the user portion of the library list using the QUSRLIBL
+    system variable, but this would affect all users on the system.
+  </li>
+</ul>
+</body>
+</html>

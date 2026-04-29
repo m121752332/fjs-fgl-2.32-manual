@@ -1,0 +1,762 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Tree Views</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Tree Views</a></H1>
+
+<p>Summary:</p>
+
+<ul>
+  <li><a href="#BASICS">Basics</a></li>
+  <li><a href="#USAGE">Usage</a>
+  <ul>
+     <li><a href="#DEFINING_TREE_CONTAINER">Defining a TREE container</a></li>
+     <li><a href="#DEFINING_TREE_ARRAY">Defining the program array to hold TREE data</a></li>
+     <li><a href="#FILLING_ARRAY">Filling the program array with rows</a></li>
+     <li><a href="#DISPLAY_ARRAY">The DISPLAY ARRAY instruction</a></li>
+     <li><a href="#DISPLAY_ARRAY_BLOCKS">Using regular DISPLAY ARRAY control blocks</a></li>
+     <li><a href="#DYNAMIC_FILLING">Dynamic filling of very large trees</a></li>
+     <li><a href="#BUILT_IN_SORT">Built-in sort and tree-views</a></li>
+     <li><a href="#MULTI_ROW_SELECTION">Multi-row selection and tree-views</a></li>
+     <li><a href="#DRAG_AND_DROP">Drag &amp; Drop in tree-views</a></li>
+  </ul>
+  </li>
+  <li><a href="#EXAMPLES">Examples</a>
+    <ul>
+      <li><a href="#EXAMPLE_1">Static tree view (filled before dialog starts)</a></li>
+      <li><a href="#EXAMPLE_2">Dynamic tree view (filled on demand)</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p><i>See also:</i> <a href="Arrays.html">Arrays</a>, <a href="Records.html">Records</a>,
+<a href="ResultSets.html">Result
+Sets</a>, <a href="Programs.html">Programs</a>, <a href="WindowsAndForms.html">Windows</a>,
+<a href="FormSpecFiles.html">Forms</a>, <a href="DisplayArray.html">Display Array</a>,
+<a href="DragAndDrop.html">Drag andDrop</a>.</p>
+
+<HR>
+
+<h3><a name="BASICS">Basics</a></h3>
+<p>Before reading these lines, you should be familiar with form <a href="FormSpecFiles.html#FF_ITEMTYPE_TABLE">TABLE
+containers</a> and you must know how to program a singular <a href="DisplayArray.html">DISPLAY
+ARRAY</a> or a <tt>DISPLAY ARRAY</tt> sub-dialog within a <a href="MultipleDialogs.html">DIALOG
+instruction</a>.&nbsp; </p>
+
+<p>Typical GUI tree-views can be implemented with Genero by using a <tt>DISPLAY ARRAY</tt> instruction
+with a <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen-array</a> bound
+to a <a href="FormSpecFiles.html#FF_CONTAINER_TREE">TREE container</a> with
+tree-view specific attributes. TREE containers are very similar to 
+<a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE
+containers</a>, except that the first columns are used to display a tree of
+nodes on the right of the widget. </p>
+
+<p>The next screen-shot shows a typical file browser written in Genero, this
+example implements a <a href="MultipleDialogs.html">DIALOG</a> instruction with
+two <tt>DISPLAY ARRAY</tt> sub-dialogs. The first <tt>DISPLAY ARRAY</tt>
+sub-dialog controls the tree-view while the second one controls the file list on
+the right side: </p>
+
+<p align="center"><img border="0" src="../Images/TreeView01.png" width="714" height="325"> </p>
+
+<p>The data used to display tree-view nodes must be provided in a <a href="Arrays.html">program
+array</a> and controlled by a <tt>DISPLAY ARRAY</tt>. It is possible to control a tree-view
+table with a singular <tt>DISPLAY ARRAY</tt>
+or with a <tt>DISPLAY ARRAY</tt> sub-dialog within a <tt>DIALOG</tt>
+instruction. </p>
+
+<p><a name="PARENT_CHILD">In Genero</a>, a tree-view model is implemented with a flat program array (i.e. a
+list of rows), where each row defines parent/child node identifiers to describe
+the structure of the tree; so, the order of the rows matters:</p>
+
+<blockquote>
+  <blockquote>
+
+<pre><u>Tree structure                            parent-id        child-id
+</u>Node 1                                    NULL              1
+     Node 1.1                              1                1.1
+     Node 1.2                              1                1.2
+         Node 1.2.1                        1.2              1.2.1
+         Node 1.2.2                        1.2              1.2.2
+         Node 1.2.3                        1.2              1.2.3
+     Node 1.3                              1                1.3
+         Node 1.3.1                        1.3              1.3.1
+  ...                                      ...              ....</pre>
+  </blockquote>
+</blockquote>
+<p>Depending on your need, you can fill the program array with all rows
+of the tree before dialog execution, or you can fill or reduce the&nbsp;list of
+nodes dynamically upon expand / collapse action events. In the second case, you
+must provide additional information
+for each row of the program array, to indicate whether the node has children. A dynamic build of the tree-view allows you to
+implement programs displaying very large trees, for example in a bill of
+materials application, where thousands of elements can be assembled
+together.</p>
+
+
+<p>Note that tree-views can display additional columns for each node, to
+show specific row data as in a regular table:</p>
+
+
+<p align="center"><img border="0" src="../Images/TreeView02.png" width="591" height="335"></p>
+
+
+<HR>
+
+<h3><a name="USAGE">Usage</a></h3>
+
+
+<HR size="1">
+
+
+<h4><a name="DEFINING_TREE_CONTAINER">Defining a TREE container</a></h4>
+
+<p>Create a <a href="FormSpecFiles.html">form specification file</a> containing a
+<a href="FormSpecFiles.html#FF_CONTAINER_TREE">TREE container</a> bound to a <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>. The screen array
+    identifies the presentation elements to be used by the runtime system to
+    display the tree-view and the additional columns.</p>
+<p>A <tt>TREE</tt> container must be present in the <a href="FormSpecFiles.html#SECTION_LAYOUT">LAYOUT
+section</a> of the form, defining the columns of the tree-view list. The <tt>TREE</tt> container
+must hold at least one column defining the node texts (or names). This column
+will be used on the front-end side to display the tree-view widget. Additional
+columns can be added in the <tt>TREE</tt> container to display node information.
+The <tt>TREE</tt> container attributes must be declared in the <a href="FormSpecFiles.html#SECTION_ATTRIBUTES">ATTRIBUTES
+section</a>, as explained below.</p>
+<p>Secondary form fields have to be used to hold tree node information such as
+icon image, parent node id, current node id, expanded flag and parent flag.
+While these secondary fields can be defined as regular <a href="FormSpecFiles.html#FF_FORM_FIELD">form
+fields</a> and displayed in the tree-view list, we recommend that you use <a href="FormSpecFiles.html#FF_PHANTOM_FIELDS">PHANTOM
+fields</a> instead: Phantom fields can be listed in the screen-array but do not
+need to be part of the <a href="FormSpecFiles.html#SECTION_LAYOUT">LAYOUT
+section</a>. Phantom fields will only be used
+by the runtime system to build the tree of nodes.</p>
+<pre><CODE class=linenumber>01</CODE> <tt>LAYOUT</tt>
+<CODE class=linenumber>02</CODE> <tt>GRID</tt>
+<CODE class=linenumber>03</CODE> {
+<CODE class=linenumber>04</CODE> &lt;Tree tv                             &gt;
+<CODE class=linenumber>05</CODE>  Tree
+<CODE class=linenumber>06</CODE> [name                      |desc     ]
+<CODE class=linenumber>07</CODE> [name                      |desc     ]
+<CODE class=linenumber>08</CODE> [name                      |desc     ]
+<CODE class=linenumber>09</CODE> [name                      |desc     ]
+<CODE class=linenumber>10</CODE> [name                      |desc     ]
+<CODE class=linenumber>11</CODE> &lt;                                    &gt;
+<CODE class=linenumber>12</CODE> }
+<CODE class=linenumber>13</CODE> <tt>END</tt>
+<CODE class=linenumber>14</CODE> <tt>END</tt>
+<CODE class=linenumber>15</CODE> <tt>ATTRIBUTES</tt>
+<CODE class=linenumber>16</CODE> <tt>TREE</tt> tv : mytree,
+<CODE class=linenumber>17</CODE> <tt>     PARENTIDCOLUMN</tt>=parentid, <tt>IDCOLUMN</tt>=id,
+<CODE class=linenumber>18</CODE> <tt>     EXPANDEDCOLUMN</tt>=expanded, <tt>ISNODECOLUMN</tt>=isnode;
+<CODE class=linenumber>19</CODE> <tt>EDIT</tt> name = <tt>FORMONLY</tt>.name, <tt>IMAGECOLUMN</tt>=image;
+<CODE class=linenumber>20</CODE> <tt>PHANTOM</tt> <tt>FORMONLY</tt>.image;
+<CODE class=linenumber>21</CODE> <tt>PHANTOM</tt> <tt>FORMONLY</tt>.parentid;
+<CODE class=linenumber>22</CODE> <tt>PHANTOM</tt> <tt>FORMONLY</tt>.id;
+<CODE class=linenumber>23</CODE> <tt>PHANTOM</tt> <tt>FORMONLY</tt>.expanded;
+<CODE class=linenumber>24</CODE> <tt>PHANTOM</tt> <tt>FORMONLY</tt>.isnode;
+<CODE class=linenumber>25</CODE> <tt>EDIT</tt> desc = <tt>FORMONLY</tt>.description;
+<CODE class=linenumber>26</CODE> <tt>END</tt>
+<CODE class=linenumber>27</CODE> <tt>INSTRUCTIONS</tt>
+<CODE class=linenumber>28</CODE> <tt>SCREEN RECORD</tt> sr( <tt>FORMONLY</tt>.* );
+<CODE class=linenumber>29</CODE> <tt>END</tt></pre>
+
+
+<p><b><font color="#FF0000">Warning:</font> The first visual column (<i>name</i>
+in above example) must be the field defining the node names, and the widget must
+be an EDIT or LABEL.</b></p>
+
+
+<p>In the <a href="FormSpecFiles.html#SECTION_ATTRIBUTES">ATTRIBUTES section</a>,
+you must define the <a href="FormSpecFiles.html#FF_ITEMTYPE_TREE">TREE form
+element</a> with the following attributes:</p>
+
+
+<ul>
+  <li>The <tt>PARENTIDCOLUMN</tt> and <tt>IDCOLUMN</tt> attributes: These
+attributes are respectively used to identify the form field containing the
+identifiers of the parent and child nodes, defining the <a href="#PARENT_CHILD">structure
+of the tree</a>. Note that you must specify form field column names, not item
+tag identifiers (used to reference a form item in the layout section). If these
+    attributes are not specified, the parent node id and node id field names
+    default respectively to &quot;<i>parentid</i>&quot; and &quot;<i>id</i>&quot;.</li>
+  <li>The <tt>EXPANDEDCOLUMN</tt> attribute can be used to define the form field
+holding the flag indicating that a node is expanded (i.e. opened).</li>
+  <li>If the <tt>ISNODECOLUMN</tt> attribute is used, it defines the form field
+indicating that a node has children, even if the program array does not contain
+child nodes for that parent node. This attribute must be used to implement <a href="#DYNAMIC_FILLING">dynamic
+filling of tree-views</a>.</li>
+  <li>The <tt>IMAGEEXPANDED</tt>, <tt>IMAGECOLLAPSED</tt> and the <tt>IMAGELEAF</tt> attributes are
+optional attributes defining global images for expanded, collapsed and leaf
+    nodes. You should uses these attributes if you want to display the same
+    icons for all nodes.</li>
+  <li>The <tt>IMAGEEXPANDED</tt>
+    and <tt>IMAGECOLLAPSED</tt> instruct Genero to set a specific icon when a node gets expanded or collapsed.
+    The <tt>IMAGELEAF</tt> attribute defines the global icon for leaf nodes. This
+saves the programmer from writing code to display common node images.</li>
+</ul>
+
+
+<p>The other items of the <tt>ATTRIBUTES</tt> section define tree-view form
+fields grouped in a <a href="FormSpecFiles.html#FF_SCREEN_ARRAY">screen-array</a> declared in the
+<a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">INSTRUCTIONS section</a>.
+The form fields required to declare a tree-view table are the following:</p>
+
+
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="40%"><b>Fields</b></td>
+    <td bgcolor="#C0C0C0" align="center"><b>Mandatory</b></td>
+    <td bgcolor="#C0C0C0" align="center"><b>Default name</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="40%" bgcolor="#FF9999">Field #1, used to hold the node names</td>
+    <td align="center" bgcolor="#FF9999">yes</td>
+    <td align="center" bgcolor="#FF9999">N/A</td>
+    <td bgcolor="#FF9999">Defines the text to be displayed for a node</td>
+  </tr>
+  <tr>
+    <td width="40%" bgcolor="#FF9999">Field #2, with <i>fieldname</i> defined by <tt>PARENTIDCOLUMN</tt></td>
+    <td align="center" bgcolor="#FF9999">yes</td>
+    <td align="center" bgcolor="#FF9999">parentid</td>
+    <td bgcolor="#FF9999">Holds the parent node id, defaults to &quot;<i>parentid</i>&quot;
+      if the <tt>PARENTIDCOLUMN</tt> attribute is not used.</td>
+  </tr>
+  <tr>
+    <td width="40%" bgcolor="#FF9999">Field #3, with <i>fieldname</i> defined by <tt>IDCOLUMN</tt></td>
+    <td align="center" bgcolor="#FF9999">yes</td>
+    <td align="center" bgcolor="#FF9999">id</td>
+    <td bgcolor="#FF9999">Holds the id of the current node, defaults to &quot;<i>id</i>&quot;
+      if the <tt>IDCOLUMN</tt> attribute is not used.</td>
+  </tr>
+  <tr>
+    <td width="40%" bgcolor="#FFFF99">Field #3, with <i>fieldname</i> defined by <tt>IMAGECOLUMN </tt>of
+      the first field</td>
+    <td align="center" bgcolor="#FFFF99">no</td>
+    <td align="center" bgcolor="#FFFF99">N/A</td>
+    <td bgcolor="#FFFF99">Defines the icon image for a node</td>
+  </tr>
+  <tr>
+    <td width="40%" bgcolor="#FFFF99">Field #4, with <i>fieldname</i> defined by <tt>EXPANDEDCOLUMN</tt></td>
+    <td align="center" bgcolor="#FFFF99">no</td>
+    <td align="center" bgcolor="#FFFF99">no</td>
+    <td bgcolor="#FFFF99">Indicator set to 1 if the node is expanded</td>
+  </tr>
+  <tr>
+    <td width="40%" bgcolor="#FFFF99">Field #5, with <i>fieldname</i> defined by <tt>ISNODECOLUMN</tt></td>
+    <td align="center" bgcolor="#FFFF99">no</td>
+    <td align="center" bgcolor="#FFFF99">no</td>
+    <td bgcolor="#FFFF99">Indicator set to 1 if the node has children</td>
+  </tr>
+</table>
+
+
+<p><b><font color="#FF0000">Warning:</font> The first three fields (node text, parent id and node id) are
+mandatory.</b></p>
+
+
+<p>The first field can define the <a href="FSFAttributes.html#FA_IMAGECOLUMN">IMAGECOLUMN</a>
+ attribute, if you need to display node-specific images. The images will then be
+specified within the field defined by the <tt>IMAGECOLUMN</tt> attribute.
+Alternatively you can globally define images for all nodes with the 
+<a href="FSFAttributes.html#FA_IMAGEEXPANDED">IMAGEEXPANDED</a>,
+<a href="FSFAttributes.html#FA_IMAGECOLLAPSED">IMAGECOLLAPSED</a> and the
+<a href="FSFAttributes.html#FA_IMAGELEAF">IMAGELEAF</a> attributes
+of the <tt>TREE</tt> form element.</p>
+
+
+<HR size="1">
+
+
+<h4><a name="DEFINING_TREE_ARRAY">Defining the program array to hold TREE data</a></h4>
+
+<p>In the program code, you must define a <a href="Arrays.html">dynamic array of records</a> with the
+    <a href="Variables.html">DEFINE</a>  instruction. The Genero runtime system
+will use that program array as the model for the tree-view list. A tree of nodes will
+be automatically built according to the data found in the program array. The
+front-end can then render the tree of nodes in a tree-view list.</p>
+
+
+<p>The members of the program
+    array must correspond to the elements of the <a href="FormSpecFiles.html#FF_SCREEN_ARRAY"> screen-array</a> of the tree table, by number and
+    data types.</p>
+
+
+<p>The name of the array members does not matter; the purpose of each member is
+defined by the name of the corresponding screen-array members declared in the
+form file. Program array members and screen-array members are bound by position.</p>
+
+
+<p>The next code example defines a program array with a member structure
+corresponding to the screen-array defined in the form example of the <a href="#DEFINING_TREE_CONTAINER">previous
+section</a>.</p>
+
+
+<pre><CODE class=linenumber>01</CODE>    <tt> DEFINE</tt> tree_arr <tt>DYNAMIC ARRAY OF RECORD</tt>
+<CODE class=linenumber>02</CODE>            name <tt>STRING</tt>,         -- text to be displayed for the node
+<CODE class=linenumber>03</CODE>            image <tt>STRING</tt>,        -- name of the image file for the node (can be null)
+<CODE class=linenumber>04</CODE>            pid <tt>STRING</tt>,          -- id of the parent node
+<CODE class=linenumber>05</CODE>            id <tt>STRING</tt>,           -- id of the current node
+<CODE class=linenumber>06</CODE>            expanded <tt>BOOLEAN</tt>,    -- node expansion flag (TRUE/FALSE) (optional)
+<CODE class=linenumber>07</CODE>            isnode <tt>BOOLEAN</tt>,<tt>    </tt>   -- children indicator flag (TRUE/FALSE) (optional)
+<CODE class=linenumber>08</CODE>            description <tt>STRING</tt>   -- user field describing the node
+<CODE class=linenumber>09</CODE>    <tt> END RECORD</tt></pre>
+
+<p>The <i>name, image, pid, id</i> members are mandatory. These
+hold respectively the node text, icon, parent and current node identifiers
+that define the <a href="#PARENT_CHILD">structure of the tree</a>.</p>
+
+
+<p>The <i>expanded</i> member can be used to handle node expansion by program.
+You can query this member to check whether a node is expanded, or set the value to
+expand a specific node.</p>
+
+
+<p>The <i>isnode</i> member can be used to indicate whether a given node has
+children, without filling the array with rows defining the child nodes. This
+information will be used by front-ends to decorate a node as a parent, even if
+no children are present. The program should then fill the array with child nodes
+when an <i>expand</i> action is fired (see <a href="#DYNAMIC_FILLING">Dynamic
+filling of very large trees</a>).</p>
+
+
+<p>Note that the program array can hold more columns (like the <i>description</i>
+field), which can be displayed in
+regular table columns as part of a node's data.</p>
+
+
+<p>Remember the order of the program array members must match the screen-array
+members in the form file, but this order can be different from the column order
+used in the layout, with the exception of the first column defining the text of
+nodes (i.e. <i>name</i> field in above example).</p>
+
+
+<HR size="1">
+
+
+<h4><a name="FILLING_ARRAY"> Filling the program array with rows</a></h4>
+
+<p>Once the program array is defined according to the screen-array of the
+tree-view table, you must fill the rows with the correct parent/child
+relationships
+defining the <a href="#PARENT_CHILD">structure of the tree</a>.</p>
+
+<p><b><font color="#FF0000">Warning:</font>  You can safely fill the program
+array directly before the dialog execution or in </b><tt>BEFORE DISPLAY</tt><b>
+/ </b><tt>BEFORE DIALOG</tt><b> control blocks. However, once the dialog has
+started, you must use DIALOG methods such as <a href="ClassDialog.html#insertNode">insertNode()</a>
+if you want to modify the tree, otherwise secondary data information like
+multi-range selection and cell attributes will not be synchronized.</b></p>
+
+<p>The rows must be filled in the correct order, to reflect the parent/child
+relationship.</p>
+
+<p><b><font color="#FF0000">Warning:</font> If a row defines a tree-view node
+with a parent identifier that does not exist, or if the child row is inserted
+under the wrong parent row, the orphan row will become a new node at the root of
+the tree.</b></p>
+
+<p>In order to fill the program array with database rows defining the tree
+structure, you will need to write a recursive function, keeping track of the
+current level of the nodes to be created for a given parent.</p>
+
+<p>The next example shows how to fill the array with data coming from a database
+table having the following structure:</p>
+
+<pre>CREATE TABLE dbtree (
+     id SERIAL NOT NULL,
+     parentid INTEGER NOT NULL,
+     name VARCHAR(20) NOT NULL
+   )</pre>
+
+<p>The difficulty with fetching a tree from a database table is in the cursor
+management, which can not be used&nbsp;recursively. A workaround for this&nbsp;problem
+is to fetch all the children of a given node at once, then call&nbsp;the
+function recursively for each of the fetched nodes:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>TYPE</tt> tree_t <tt>RECORD</tt>
+<CODE class=linenumber>02</CODE>        id <tt>INTEGER</tt>,
+<CODE class=linenumber>03</CODE>        parentid <tt>INTEGER</tt>,
+<CODE class=linenumber>04</CODE>        name <tt>VARCHAR</tt>(20)
+<CODE class=linenumber>05</CODE>     <tt>END RECORD</tt>
+<CODE class=linenumber>06</CODE> 
+<CODE class=linenumber>07</CODE> <tt>DEFINE</tt> tree_arr tree_t
+<CODE class=linenumber>08</CODE> 
+<CODE class=linenumber>09</CODE> <tt>FUNCTION</tt> fetch_tree(pid)
+<CODE class=linenumber>10</CODE>     <tt>DEFINE</tt> pid, i, j, n <tt>INTEGER</tt>
+<CODE class=linenumber>11</CODE>     <tt>DEFINE</tt> a <tt>DYNAMIC ARRAY OF</tt> tree_t
+<CODE class=linenumber>12</CODE>     <tt>DEFINE</tt> t tree_t
+<CODE class=linenumber>13</CODE>    
+<CODE class=linenumber>14</CODE>     <tt>DECLARE</tt> cu1 <tt>CURSOR FOR SELECT</tt> * <tt>FROM</tt> dbtree <tt>WHERE</tt> parentid = pid
+<CODE class=linenumber>15</CODE>     <tt>LET</tt> n = 0
+<CODE class=linenumber>16</CODE>     <tt>FOREACH</tt> cu1 <tt>INTO</tt> t.*
+<CODE class=linenumber>17</CODE>        <tt>LET</tt> n = n + 1
+<CODE class=linenumber>18</CODE>        <tt>LET</tt> a[n].* = t.*
+<CODE class=linenumber>19</CODE>     <tt>END FOREACH</tt>
+<CODE class=linenumber>20</CODE>
+<CODE class=linenumber>21</CODE>     <tt>FOR</tt> i = 1 <tt>TO</tt> n
+<CODE class=linenumber>22</CODE>         <tt>LET</tt> j = tree_arr.getLength() + 1
+<CODE class=linenumber>23</CODE>         <tt>LET</tt> tree_arr[j].name = a[i].name
+<CODE class=linenumber>24</CODE>         <tt>LET</tt> tree_arr[j].id = a[i].id
+<CODE class=linenumber>25</CODE>         <tt>LET</tt> tree_arr[j].parentid = a[i].parentid
+<CODE class=linenumber>26</CODE>         <tt>CALL</tt> fetch_tree(a[i].id)
+<CODE class=linenumber>27</CODE>     <tt>END FOR</tt>
+<CODE class=linenumber>28</CODE>
+<CODE class=linenumber>29</CODE> <tt>END FUNCTION</tt></pre>
+
+<HR size="1">
+
+<h4><a name="DISPLAY_ARRAY"> The DISPLAY ARRAY instruction</a></h4>
+
+<p>After the program array has been filled, you must execute a <tt>DISPLAY ARRAY</tt>
+instruction. This can be a singular <a href="DisplayArray.html">DISPLAY ARRAY</a>
+or a <a href="MultipleDialogs.html#sub-dialog-DISPLAY-ARRAY">DISPLAY ARRAY
+sub-dialog</a> within a <tt>DIALOG</tt> instruction.</p>
+
+
+<p>The next code example implements a <tt>DISPLAY ARRAY</tt> binding the program
+array called <i>tree_arr</i> to the <i>sr</i>  screen-array, attaching the dialog
+to the tree table defined in the form:</p>
+
+
+<pre><CODE class=linenumber>01</CODE> <tt>   DISPLAY ARRAY</tt> tree_arr <tt>TO</tt> sr.* <tt>ATTRIBUTES(UNBUFFERED)</tt>
+<CODE class=linenumber>02</CODE>     <tt>BEFORE DISPLAY</tt>
+<CODE class=linenumber>03</CODE>     <tt>   CALL</tt> fell_tree(tree_arr)
+<CODE class=linenumber>04</CODE>     <tt>BEFORE ROW</tt>
+<CODE class=linenumber>05</CODE>     <tt>   DISPLAY</tt> &quot;Current row is: &quot;, DIALOG.getCurrentRow(&quot;sr&quot;)
+<CODE class=linenumber>06</CODE>   <tt>END DISPLAY</tt></pre>
+
+
+<p><b><font color="#FF0000">Warning:</font> It is not possible to use the <a href="DisplayArray.html#PAGEDMODE">paged
+mode</a> (ON FILL BUFFER) when the decoration is a treeview list. The dialog
+needs the complete set of open nodes with parent/child relation to handle the treeview display, with the&nbsp;
+paged mode only a given window of the dataset is known by the dialog. If you use
+a the paged mode in <tt>DISPLAY ARRAY</tt> with a treeview as decoration, the
+program will raise an error at runtime. TreeViews can be filled dynamically with
+<tt>ON EXPAND</tt> / <tt>ON COLLAPSE</tt> triggers. See <a href="#DYNAMIC_FILLING">Dynamic
+filling of very large trees</a> for more details.</b></p>
+
+
+<HR size="1">
+
+
+<h4><a name="DISPLAY_ARRAY_BLOCKS">Using regular DISPLAY ARRAY control blocks</a></h4>
+
+<p>If needed, you can implement traditional <tt> DISPLAY ARRAY</tt> control blocks like
+<tt>
+BEFORE ROW</tt> or <tt> AFTER ROW</tt>:</p>
+
+
+<pre><CODE class=linenumber>01</CODE> <tt>   DISPLAY ARRAY</tt> tree_arr <tt>TO</tt> sr.* <tt>ATTRIBUTES(UNBUFFERED)</tt>
+<CODE class=linenumber>02</CODE>     <tt>BEFORE ROW</tt>
+<CODE class=linenumber>03</CODE>     <tt>   DISPLAY</tt> &quot;BEFORE ROW - Current row is: &quot;, DIALOG.getCurrentRow(&quot;sr&quot;)
+<CODE class=linenumber>04</CODE>     <tt>AFTER ROW</tt>
+<CODE class=linenumber>05</CODE>     <tt>   DISPLAY</tt> &quot;AFTER ROW  - Current row is: &quot;, DIALOG.getCurrentRow(&quot;sr&quot;)
+<CODE class=linenumber>06</CODE>   <tt>END DISPLAY</tt></pre>
+
+
+<HR size="1">
+
+
+<h4><a name="DYNAMIC_FILLING">Dynamic filling of very large trees</a></h4>
+
+<p>When a huge tree needs to be displayed (for example, when implementing a bill
+of materials application), you should optimize tree data filling by
+creating the nodes on demand. There is no need to fill the complete program array with
+all possible nodes (down to the last leaf), when only the first levels/branches
+of the tree are displayed on the screen.</p>
+<p>To implement a dynamically filled tree, you need first to define an
+additional column in the tree-table, to indicate whether a given node has children.
+That field will be used by Genero to render a node with a [+] button, and let
+the end user click on the node to expand it, even if no child nodes are created
+yet.</p>
+<p>In the <tt>DISPLAY ARRAY</tt> code, if a node is expanded (or collapsed), the
+dialog will fire the <tt> ON EXPAND</tt> (or <tt> ON COLLAPSE</tt>) triggers, to let the program add (or
+remove) rows in the array, to adapt the tree data dynamically according
+to navigation events.</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>   DEFINE</tt> row_index <tt>INTEGER</tt>
+<CODE class=linenumber>02</CODE> <tt>   </tt>...
+<CODE class=linenumber>03</CODE> <tt>   DISPLAY ARRAY</tt> tree_arr <tt>TO</tt> sr.* <tt>ATTRIBUTES(UNBUFFERED)</tt>
+<CODE class=linenumber>04</CODE>     <tt>ON EXPAND</tt> (row_index)
+<CODE class=linenumber>05</CODE>     <tt>   DISPLAY</tt> &quot;EXPAND   - Expanded row is : &quot;, row_index
+<CODE class=linenumber>06</CODE>     <tt>   </tt>-- Fill with children nodes for tree_arr[row_index]
+<CODE class=linenumber>07</CODE>     <tt>ON COLLAPSE</tt> (row_index)
+<CODE class=linenumber>08</CODE>     <tt>   DISPLAY</tt> &quot;COLLAPSE - Collapsed row is: &quot;, row_index
+<CODE class=linenumber>09</CODE>     <tt>   </tt>-- Remove children nodes of tree_arr[row_index]
+<CODE class=linenumber>10</CODE>   <tt>END DISPLAY</tt></pre>
+
+
+<p><b><font color="#FF0000">Warning:</font>  While you can safely fill the
+program array directly before the dialog execution, once the dialog has started,
+you must use DIALOG methods such as <a href="ClassDialog.html#insertNode">insertNode()</a>
+to modify the tree, otherwise secondary data information like multi-range
+selection and cell attributes will not be synchronized. This is typically the
+case when implementing a dynamically-filled tree with </b><tt>ON EXPAND</tt><b>
+/ </b><tt>ON COLLAPSE</tt><b> triggers.</b></p>
+
+
+<p>See also <a href="#EXAMPLE_2">Example 2</a> implementing dynamic tree filling.</p>
+
+
+<HR size="1">
+
+<h4><a name="BUILT_IN_SORT">Built-in sort and tree-views</a></h4>
+
+<p>By default, the built-in sort is enabled when you use a <a href="FormSpecFiles.html#FF_CONTAINER_TREE">TREE
+container</a>;&nbsp;when the end user clicks on column headers, the runtime system
+sorts the visual representation of the program array. Tree nodes are ordered by
+levels; the children nodes are ordered inside a given parent node.</p>
+
+
+<p>This is a powerful built-in feature. However, in some cases, the tree 
+structure must be static (i.e.&nbsp; the order of the nodes must not change) and 
+you don't want the end user to sort the rows. To prevent the built-in sort, use the <a href="FSFAttributes.html#FA_UNSORTABLECOLUMNS">UNSORTABLECOLUMNS</a>
+attribute for the TREE container:</p>
+
+
+<pre><CODE class=linenumber>01</CODE> <tt>LAYOUT</tt>
+<CODE class=linenumber>02</CODE> ...
+<CODE class=linenumber>03</CODE> <tt>END</tt>
+<CODE class=linenumber>04</CODE> <tt>ATTRIBUTES</tt>
+<CODE class=linenumber>05</CODE> <tt>TREE</tt> tv : mytree, <tt>UNSORTABLECOLUMNS</tt>, ...
+<CODE class=linenumber>06</CODE> ...</pre>
+
+
+<HR size="1">
+
+<h4><a name="MULTI_ROW_SELECTION">Multi-row selection and tree-views</a></h4>
+
+<p>Multi-row selection can be used with a <tt>DISPLAY ARRAY</tt> controlling a <a href="FormSpecFiles.html#FF_CONTAINER_TREE">TREE
+container</a>. However, because of the tree-view ergonomic differences with
+simple tables, the selection of tree nodes follows some specific rules:</p>
+
+
+<ol>
+  <li>When selecting a range if nodes, only visible nodes will
+    get the selection flag. For example, if you select all nodes with control-a,
+    and if the root node is collapsed, only the root node will be selected. This
+    applies also when selecting nodes by program with <a href="ClassDialog.html#setSelectionRange">DIALOG.setSelectionRange()</a>.</li>
+  <li>Collapsing a node will de-select all children nodes.</li>
+</ol>
+<p>See also the topic discussing <a href="MultipleDialogs.html#multi-row-selection">multi-row
+selection</a>.</p>
+
+
+<HR size="1">
+
+<h4><a name="DRAG_AND_DROP">Drag and Drop in tree-views</a></h4>
+
+<p>It is possible to implement Drag and Drop with a <tt>DISPLAY ARRAY</tt> controlling a <a href="FormSpecFiles.html#FF_CONTAINER_TREE">TREE
+container</a>. The nodes can be moved around in the same tree, can be dropped
+outside the tree or can be inserted in the tree from external sources.&nbsp;</p>
+
+
+<p>For more details, see <a href="DragAndDrop.html">Drag &amp; Drop</a>.</p>
+
+
+<HR>
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+<h4><a name="EXAMPLE_1">Example 1: Static tree view (filled before dialog starts)</a></h4>
+
+<p>Form file:</p>
+
+<pre><CODE class=linenumber>01</CODE>  <tt>LAYOUT</tt> 
+<CODE class=linenumber>02</CODE>  <tt>GRID</tt>
+<CODE class=linenumber>03</CODE>  {
+<CODE class=linenumber>04</CODE>  &lt;Tree t1                       &gt;
+<CODE class=linenumber>05</CODE>   Name                   Index
+<CODE class=linenumber>06</CODE>  [c1                     |c2    ]
+<CODE class=linenumber>07</CODE>  [c1                     |c2    ]
+<CODE class=linenumber>08</CODE>  [c1                     |c2    ]
+<CODE class=linenumber>09</CODE>  [c1                     |c2    ]
+<CODE class=linenumber>10</CODE>  }
+<CODE class=linenumber>11</CODE>  <tt>END</tt> 
+<CODE class=linenumber>12</CODE>  <tt>END</tt>
+<CODE class=linenumber>13</CODE>  
+<CODE class=linenumber>14</CODE>  <tt>ATTRIBUTES</tt>
+<CODE class=linenumber>15</CODE>  <tt>LABEL </tt>c1 = <tt>FORMONLY</tt>.name;
+<CODE class=linenumber>16</CODE>  <tt>LABEL </tt>c2 = <tt>FORMONLY</tt>.idx;
+<CODE class=linenumber>17</CODE>  <tt>PHANTOM FORMONLY</tt>.pid;
+<CODE class=linenumber>18</CODE>  <tt>PHANTOM FORMONLY</tt>.id;
+<CODE class=linenumber>19</CODE>  <tt>PHANTOM FORMONLY</tt>.exp;
+<CODE class=linenumber>20</CODE>  <tt>TREE</tt> t1: tree1
+<CODE class=linenumber>21</CODE>      <tt>IMAGEEXPANDED</tt>  = &quot;open&quot;, 
+<CODE class=linenumber>22</CODE>      <tt>IMAGECOLLAPSED</tt> = &quot;folder&quot;,
+<CODE class=linenumber>23</CODE>      <tt>IMAGELEAF</tt> = &quot;file&quot;,
+<CODE class=linenumber>24</CODE>      <tt>PARENTIDCOLUMN</tt> = pid,
+<CODE class=linenumber>25</CODE>      <tt>IDCOLUMN</tt> = id,
+<CODE class=linenumber>26</CODE>      <tt>EXPANDEDCOLUMN</tt> = exp;
+<CODE class=linenumber>27</CODE>  <tt>END</tt>
+<CODE class=linenumber>28</CODE>  
+<CODE class=linenumber>29</CODE>  <tt>INSTRUCTIONS</tt>
+<CODE class=linenumber>30</CODE>  <tt>SCREEN RECORD</tt> sr_tree(name, pid, id, idx, exp);
+<CODE class=linenumber>31</CODE>  <tt>END</tt></pre>
+
+
+<p>Static tree DISPLAY ARRAY:</p>
+
+<pre><CODE class=linenumber>01</CODE>  <tt>DEFINE</tt> tree <tt>DYNAMIC ARRAY OF RECORD</tt>
+<CODE class=linenumber>02</CODE>      name <tt>STRING</tt>,
+<CODE class=linenumber>03</CODE>      pid <tt>STRING</tt>,
+<CODE class=linenumber>04</CODE>      id <tt>STRING</tt>,
+<CODE class=linenumber>05</CODE>      idx <tt>INT</tt>,
+<CODE class=linenumber>06</CODE>      expanded <tt>BOOLEAN</tt>
+<CODE class=linenumber>07</CODE>  <tt>END RECORD</tt>
+<CODE class=linenumber>08</CODE>  
+<CODE class=linenumber>09</CODE>  <tt>MAIN</tt>
+<CODE class=linenumber>10</CODE>      <tt>OPEN FORM</tt> f <tt>FROM</tt> &quot;stat-tree&quot;
+<CODE class=linenumber>11</CODE>      <tt>DISPLAY FORM</tt> f
+<CODE class=linenumber>12</CODE>      <tt>CALL</tt> fill(4)
+<CODE class=linenumber>13</CODE>      <tt>DISPLAY ARRAY</tt> tree <tt>TO</tt> sr_tree.* <tt>ATTRIBUTE</tt>(<tt>UNBUFFERED</tt>)
+<CODE class=linenumber>14</CODE>      <tt>BEFORE ROW</tt>
+<CODE class=linenumber>15</CODE>          <tt>DISPLAY</tt> &quot;Current row : &quot;, arr_curr()
+<CODE class=linenumber>16</CODE>      <tt>END DISPLAY</tt>
+<CODE class=linenumber>17</CODE>  <tt>END MAIN</tt>
+<CODE class=linenumber>18</CODE>  
+<CODE class=linenumber>19</CODE>  <tt>FUNCTION</tt> fill(max_level)
+<CODE class=linenumber>20</CODE>      <tt>DEFINE</tt> max_level, p <tt>INT</tt>
+<CODE class=linenumber>21</CODE>      <tt>CALL</tt> tree.clear()
+<CODE class=linenumber>22</CODE>      <tt>LET</tt> p = fill_tree(max_level, 1, 0, <tt>NULL</tt>)
+<CODE class=linenumber>23</CODE>  <tt>END FUNCTION</tt>
+<CODE class=linenumber>24</CODE>  
+<CODE class=linenumber>25</CODE>  <tt>FUNCTION</tt> fill_tree(max_level, level, p, pid)
+<CODE class=linenumber>26</CODE>      <tt>DEFINE</tt> max_level, level <tt>INT</tt>
+<CODE class=linenumber>27</CODE>      <tt>DEFINE</tt> p <tt>INT</tt>
+<CODE class=linenumber>28</CODE>      <tt>DEFINE</tt> i <tt>INT</tt>
+<CODE class=linenumber>29</CODE>      <tt>DEFINE</tt> id, pid <tt>STRING</tt>
+<CODE class=linenumber>30</CODE>      <tt>DEFINE</tt> name <tt>STRING</tt>
+<CODE class=linenumber>31</CODE>      <tt>IF</tt> level &lt; max_level <tt>THEN</tt>
+<CODE class=linenumber>32</CODE>          <tt>LET</tt> name = &quot;Node &quot;
+<CODE class=linenumber>33</CODE>      <tt>ELSE</tt>
+<CODE class=linenumber>34</CODE>          <tt>LET</tt> name = &quot;Leaf &quot;
+<CODE class=linenumber>35</CODE>      <tt>END IF</tt>
+<CODE class=linenumber>36</CODE>      <tt>FOR</tt> i = 1 TO level
+<CODE class=linenumber>37</CODE>          <tt>LET</tt> p = p + 1
+<CODE class=linenumber>38</CODE>          <tt>IF</tt> pid <tt>IS NULL THEN</tt>
+<CODE class=linenumber>39</CODE>              LET id = i
+<CODE class=linenumber>40</CODE>          <tt>ELSE</tt>
+<CODE class=linenumber>41</CODE>              LET id = pid || &quot;.&quot; || i
+<CODE class=linenumber>42</CODE>          <tt>END IF</tt>
+<CODE class=linenumber>43</CODE>          <tt>LET</tt> tree[p].id = id
+<CODE class=linenumber>44</CODE>          <tt>LET</tt> tree[p].pid = pid
+<CODE class=linenumber>45</CODE>          <tt>LET</tt> tree[p].idx = p
+<CODE class=linenumber>46</CODE>          <tt>LET</tt> tree[p].expanded = <tt>FALSE</tt>
+<CODE class=linenumber>47</CODE>          <tt>LET</tt> tree[p].name = name || level || '.' || i
+<CODE class=linenumber>48</CODE>          <tt>IF</tt> level &lt; max_level <tt>THEN</tt>
+<CODE class=linenumber>49</CODE>              <tt>LET</tt> p = fill_tree(max_level, level + 1, p, id)
+<CODE class=linenumber>50</CODE>          <tt>END IF</tt>
+<CODE class=linenumber>51</CODE>      <tt>END FOR</tt>
+<CODE class=linenumber>52</CODE>      <tt>RETURN</tt> p
+<CODE class=linenumber>53</CODE>  <tt>END FUNCTION</tt></pre>
+
+
+<h4><a name="EXAMPLE_2">Example 2: Dynamic tree view (filled on demand)</a></h4>
+
+<p>Form file:</p>
+
+<pre><CODE class=linenumber>01</CODE>  <tt>LAYOUT</tt> 
+<CODE class=linenumber>02</CODE>  <tt>GRID</tt>
+<CODE class=linenumber>03</CODE>  {
+<CODE class=linenumber>04</CODE>  &lt;Tree t1                       &gt;
+<CODE class=linenumber>05</CODE>   Name             Description
+<CODE class=linenumber>06</CODE>  [c1              |c2           ]
+<CODE class=linenumber>07</CODE>  [c1              |c2           ]
+<CODE class=linenumber>08</CODE>  [c1              |c2           ]
+<CODE class=linenumber>09</CODE>  [c1              |c2           ]
+<CODE class=linenumber>10</CODE>  }
+<CODE class=linenumber>11</CODE>  <tt>END</tt> 
+<CODE class=linenumber>12</CODE>  <tt>END</tt>
+<CODE class=linenumber>13</CODE>  
+<CODE class=linenumber>14</CODE>  <tt>ATTRIBUTES</tt>
+<CODE class=linenumber>15</CODE>  <tt>LABEL </tt>c1 = <tt>FORMONLY</tt>.name;
+<CODE class=linenumber>16</CODE>  <tt>PHANTOM FORMONLY</tt>.pid;
+<CODE class=linenumber>17</CODE>  <tt>PHANTOM FORMONLY</tt>.id;
+<CODE class=linenumber>18</CODE>  <tt>PHANTOM FORMONLY</tt>.hasChildren;
+<CODE class=linenumber>19</CODE>  <tt>LABEL </tt>c2 = <tt>FORMONLY</tt>.descr;
+<CODE class=linenumber>20</CODE>  <tt>TREE</tt> t1: tree1
+<CODE class=linenumber>21</CODE>      <tt>IMAGEEXPANDED</tt>  = &quot;open&quot;, 
+<CODE class=linenumber>22</CODE>      <tt>IMAGECOLLAPSED</tt> = &quot;folder&quot;,
+<CODE class=linenumber>23</CODE>      <tt>IMAGELEAF</tt> = &quot;file&quot;,
+<CODE class=linenumber>24</CODE>      <tt>PARENTIDCOLUMN</tt> = pid,
+<CODE class=linenumber>25</CODE>      <tt>IDCOLUMN</tt> = id,
+<CODE class=linenumber>26</CODE>      <tt>ISNODECOLUMN</tt> = hasChildren;
+<CODE class=linenumber>27</CODE>  <tt>END</tt>
+<CODE class=linenumber>28</CODE>  
+<CODE class=linenumber>29</CODE>  <tt>INSTRUCTIONS</tt>
+<CODE class=linenumber>30</CODE>  <tt>SCREEN RECORD</tt> sr_tree(<tt>FORMONLY</tt>.*);
+<CODE class=linenumber>31</CODE>  <tt>END</tt></pre>
+
+
+<p>Dynamic tree DISPLAY ARRAY:</p>
+
+<pre><CODE class=linenumber>01</CODE>  <tt>DEFINE</tt> tree <tt>DYNAMIC ARRAY OF RECORD</tt>
+<CODE class=linenumber>02</CODE>      name <tt>STRING</tt>,
+<CODE class=linenumber>03</CODE>      pid <tt>STRING</tt>,
+<CODE class=linenumber>04</CODE>      id <tt>STRING</tt>,
+<CODE class=linenumber>05</CODE>      hasChildren <tt>BOOLEAN</tt>,
+<CODE class=linenumber>06</CODE>      description <tt>STRING</tt>
+<CODE class=linenumber>07</CODE>  <tt>END RECORD</tt>
+<CODE class=linenumber>08</CODE>  
+<CODE class=linenumber>09</CODE>  <tt>MAIN</tt>
+<CODE class=linenumber>10</CODE>      <tt>DEFINE</tt> id <tt>INTEGER</tt>
+<CODE class=linenumber>11</CODE>  
+<CODE class=linenumber>12</CODE>      <tt>OPEN FORM</tt> f <tt>FROM</tt> &quot;dyna-tree&quot;
+<CODE class=linenumber>13</CODE>      <tt>DISPLAY FORM</tt> f
+<CODE class=linenumber>14</CODE>  
+<CODE class=linenumber>15</CODE>      <tt>LET</tt> tree[1].pid = 0
+<CODE class=linenumber>16</CODE>      <tt>LET</tt> tree[1].id = 1
+<CODE class=linenumber>17</CODE>      <tt>LET</tt> tree[1].name = &quot;Root&quot;
+<CODE class=linenumber>18</CODE>      <tt>LET</tt> tree[1].hasChildren = <tt>TRUE</tt>
+<CODE class=linenumber>19</CODE>      <tt>DISPLAY ARRAY</tt> tree <tt>TO</tt> sr_tree.* <tt>ATTRIBUTE</tt>(<tt>UNBUFFERED</tt>)
+<CODE class=linenumber>20</CODE>      <tt>BEFORE DISPLAY</tt>
+<CODE class=linenumber>21</CODE>          <tt>CALL</tt> <tt>DIALOG</tt>.setSelectionMode(&quot;sr_tree&quot;,1)
+<CODE class=linenumber>22</CODE>      <tt>ON EXPAND</tt>(id)
+<CODE class=linenumber>23</CODE>          <tt>CALL</tt> expand(<tt>DIALOG</tt>,id)
+<CODE class=linenumber>24</CODE>      <tt>ON COLLAPSE</tt>(id)
+<CODE class=linenumber>25</CODE>          <tt>CALL</tt> collapse(<tt>DIALOG</tt>,id)
+<CODE class=linenumber>26</CODE>      <tt>END DISPLAY</tt>
+<CODE class=linenumber>27</CODE>  <tt>END MAIN</tt>
+<CODE class=linenumber>28</CODE>  
+<CODE class=linenumber>29</CODE>  <tt>FUNCTION</tt> collapse(d,p)
+<CODE class=linenumber>30</CODE>      <tt>DEFINE</tt> d ui.Dialog
+<CODE class=linenumber>31</CODE>      <tt>DEFINE</tt> p <tt>INT</tt>
+<CODE class=linenumber>32</CODE>      <tt>WHILE</tt> p &lt; tree.getLength()
+<CODE class=linenumber>33</CODE>          <tt>IF</tt> tree[p + 1].pid != tree[p].id <tt>THEN EXIT WHILE END IF</tt>
+<CODE class=linenumber>34</CODE>          <tt>CALL</tt> d.deleteNode(&quot;sr_tree&quot;, p + 1)
+<CODE class=linenumber>35</CODE>      <tt>END WHILE</tt>
+<CODE class=linenumber>36</CODE>  <tt>END FUNCTION</tt>
+<CODE class=linenumber>37</CODE>  
+<CODE class=linenumber>38</CODE>  <tt>FUNCTION</tt> expand(d,p)
+<CODE class=linenumber>39</CODE>      <tt>DEFINE</tt> d ui.Dialog
+<CODE class=linenumber>40</CODE>      <tt>DEFINE</tt> p <tt>INT</tt>
+<CODE class=linenumber>41</CODE>      <tt>DEFINE</tt> id <tt>STRING</tt>
+<CODE class=linenumber>42</CODE>      <tt>DEFINE</tt> i, x <tt>INT</tt>
+<CODE class=linenumber>43</CODE>      <tt>FOR</tt> i = 1 <tt>TO</tt> 4
+<CODE class=linenumber>44</CODE>          <tt>LET</tt> x = d.appendNode(&quot;sr_tree&quot;, p)
+<CODE class=linenumber>45</CODE>          <tt>LET</tt> id = tree[p].id || &quot;.&quot; || i
+<CODE class=linenumber>46</CODE>          <tt>LET</tt> tree[x].id = id
+<CODE class=linenumber>47</CODE>          -- tree[x].pid is implicitly set by the appendNode() method...
+<CODE class=linenumber>48</CODE>          <tt>LET</tt> tree[x].name = &quot;Node &quot; || id
+<CODE class=linenumber>49</CODE>          <tt>IF</tt> i <tt>MOD</tt> 2 <tt>THEN</tt>
+<CODE class=linenumber>50</CODE>              <tt>LET</tt> tree[x].hasChildren = <tt>TRUE</tt>
+<CODE class=linenumber>51</CODE>          <tt>ELSE</tt>
+<CODE class=linenumber>52</CODE>              <tt>LET</tt> tree[x].hasChildren = <tt>FALSE</tt>
+<CODE class=linenumber>54</CODE>          <tt>END IF</tt>
+<CODE class=linenumber>55</CODE>          <tt>LET</tt> tree[x].description = &quot;This is node &quot; || tree[x].name
+<CODE class=linenumber>56</CODE>      <tt>END FOR</tt>
+<CODE class=linenumber>57</CODE>  <tt>END FUNCTION</tt></pre>
+
+
+</BODY>
+</HTML>

@@ -1,0 +1,507 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+  <title>Prompt for Values</title>
+  <meta http-equiv="Content-Type" content="text/html">
+  <link href="../FglTechRef.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+  <p><a href="../index.html">Back to Contents</a></p>
+  <hr>
+
+  <h1><a name="PAGE_HEADER" id="PAGE_HEADER">Prompt for Values</a></h1>
+
+  <p>Summary:</p>
+
+  <ul>
+    <li><a href="#BASICS">Basics</a></li>
+
+    <li><a href="#SYNTAX">Syntax</a></li>
+
+    <li>
+      <a href="#USAGE">Usage</a>
+
+      <ul>
+        <li><a href="#PROG_STEPS">Programming Steps</a></li>
+
+        <li><a href="#INSTRUCTION_CONFIG">Instruction Configuration</a></li>
+
+        <li><a href="#DEFAULT_ACTIONS">Default Actions</a></li>
+
+        <li><a href="#INTERACTION_BLOCKS">Interaction Blocks</a></li>
+      </ul>
+    </li>
+
+    <li>
+      <a href="#EXAMPLES">Examples</a>
+
+      <ul>
+        <li><a href="#EXAMPLE_1">Example 1: Simple PROMPT</a></li>
+
+        <li><a href="#EXAMPLE_2">Example 2: PROMPT with interrupt checking</a></li>
+
+        <li><a href="#EXAMPLE_3">Example 3: PROMPT with ATTRIBUTE and ON ACTION handlers</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <p><i>See also:</i> <a href="RecordInput.html">Record Input</a>, <a href="Programs.html">Programs</a>, <a href=
+  "Variables.html">Variables</a></p>
+  <hr>
+
+  <h2><a name="BASICS" id="BASICS">Basics</a></h2>
+
+  <p>The <tt>PROMPT</tt> instruction can be used to query for a single value from the user.</p>
+
+  <p>In <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a> mode, the <tt>PROMPT</tt> instruction opens a modal window with
+  an OK button and a Cancel button.</p>
+
+  <p>&nbsp;&nbsp;&nbsp;&nbsp; <img border="0" src="../Images/Prompt01.png"></p>
+  <hr>
+
+  <h2><a name="PROMPT" id="PROMPT">Syntax</a></h2>
+
+  <h3>Purpose:</h3>
+
+  <p>The <tt>PROMPT</tt> statement assigns a user-supplied value to a <a href="Variables.html">variable</a>.</p>
+
+  <h3><a name="SYNTAX" id="SYNTAX">Syntax</a>:</h3><code>PROMPT <i>question<br>
+  &nbsp;</i> <u>[</u> ATTRIBUTES ( <i>question-attribute</i> <u>[,...]</u> ) <u>]</u><br>
+  &nbsp; FOR <u>[</u>CHAR<u>[</u>ACTER<u>]]</u> <i>variable</i><br>
+  &nbsp; <u>[</u> HELP <i>number</i> <u>]</u><br>
+  &nbsp; <u>[</u> ATTRIBUTES ( <i>input-attribute</i> <u>[,...]</u> ) <u>]</u><br>
+  <u>[</u>&nbsp;<i>dialog-control-block<br>
+  &nbsp;</i> <u>[...]</u><i><br></i> END PROMPT <u>]</u></code>
+
+  <p>where <i>dialog-control-block</i> is one of :</p>
+
+  <p><code><u>{</u> ON IDLE <i>idle-seconds</i><br>
+  <u>|</u> ON ACTION <i>action-name</i><br>
+  <u>|</u> ON KEY ( <i>key-name</i> <u>[,...]</u> )<br>
+  <u>}<br></u>&nbsp; <i>statement</i><br>
+  &nbsp; <u>[...]</u></code></p>
+
+  <h4>Notes:</h4>
+
+  <ol>
+    <li><i>question</i> is a <a href="Expressions.html#EX_STRING">string expression</a> displayed as a message for the input of
+    the value.</li>
+
+    <li><i>question-attribute</i> defines the display attributes for the <i>question.</i> See below for more details.</li>
+
+    <li><i>variable</i> is the name of the <a href="Variables.html">variable</a> that receives the data typed by the user.</li>
+
+    <li>The <tt>FOR CHAR</tt> clause exits the prompt statement when the first character has been typed.</li>
+
+    <li><i>number</i> is the <a href="MessageFiles.html">help message</a> number to be displayed when the user presses the
+    <a href="Programs.html#PROGRAM_OPTIONS">help key</a>.</li>
+
+    <li><i>input-attribute</i> is a display and control attribute for the input area. See below for more details.</li>
+
+    <li><i>key-name</i> is an hot-key identifier (such as <tt>F11</tt> or <tt>Control-z</tt>).</li>
+
+    <li><i>action-name</i> identifies an <a href="InteractionModel.html">action</a> that can be executed by the user.</li>
+
+    <li><i>idle-seconds</i> is an <a href="Literals.html">integer literal</a> or <a href="Variables.html">variable</a> that
+    defines a number of seconds.</li>
+
+    <li><i>statement</i> is an instruction that is executed when the user presses the key defined by <i>key-name.</i></li>
+  </ol>
+
+  <p>The following display attributes can be used for both <i>question-attribute</i> and <i>input-attribute</i>:</p>
+
+  <div align="center">
+    <center>
+      <table border="0" cellpadding="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="30%"><b>Attribute</b></td>
+
+          <td bgcolor="#C0C0C0"><b>Description</b></td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>BLACK, BLUE, CYAN, GREEN, MAGENTA, RED, WHITE, YELLOW</tt></td>
+
+          <td>The TTY color of the displayed text.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>BOLD, DIM, INVISIBLE, NORMAL</tt></td>
+
+          <td>The TTY font attribute of the displayed text.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>REVERSE, BLINK, UNDERLINE</tt></td>
+
+          <td>The TTY video attribute of the displayed text.</td>
+        </tr>
+      </table>
+    </center>
+  </div>
+
+  <p>The following control attributes can be used for <i>input-attribute</i>:</p>
+
+  <div align="center">
+    <center>
+      <table border="0" cellpadding="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="30%"><b>Attribute</b></td>
+
+          <td bgcolor="#C0C0C0"><b>Description</b></td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>CENTURY = <i>string</i></tt></td>
+
+          <td>Specify a year format indicator as defined in the <a href="FSFAttributes.html#FA_CENTURY">CENTURY attribute of form
+          files</a>.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>FORMAT = <i>string</i></tt></td>
+
+          <td>Specify a display format as defined in the <a href="FSFAttributes.html#FA_FORMAT">FORMAT attribute of form
+          files</a>.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>PICTURE = <i>string</i></tt></td>
+
+          <td>Specify an input picture as defined in the <a href="FSFAttributes.html#FA_PICTURE">PICTURE attribute of form
+          files</a>.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>SHIFT = <i>string</i></tt></td>
+
+          <td>Specify uppercase or lowercase shift. Values can be <tt>'up'</tt> or <tt>'down'</tt>.</td>
+        </tr>
+
+        <tr>
+          <td width="30%" valign="top"><tt>WITHOUT DEFAULTS <u>[</u> =<i>bool</i><u>]</u></tt></td>
+
+          <td>Prompt must show by default the value of the program variable.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>CANCEL = <i>bool</i></tt></td>
+
+          <td>Indicates if the default <i>cancel</i> action should be added to the dialog. If not specified, the action is added
+          (<tt>CANCEL=TRUE</tt>).</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>ACCEPT = <i>bool</i></tt></td>
+
+          <td>Indicates if the default <i>accept</i> action should be added to the dialog. If not specified, the action is added
+          (<tt>ACCEPT=TRUE</tt>).</td>
+        </tr>
+      </table>
+    </center>
+  </div><br>
+  <hr>
+
+  <h2><a name="USAGE" id="USAGE">Usage</a></h2>
+
+  <p>You can use the <tt>PROMPT</tt> instruction to manage a single value input. You provide the text of the question to be
+  displayed to the user and the variable that receives the value entered by the user. The runtime system displays the question in
+  the prompt area (typically a popup window), waits for the user to enter a value, reads whatever value was entered until the
+  user validates (for example with the RETURN key), and stores this value in a response variable. The prompt dialog remains
+  visible until the user enters a response.</p>
+
+  <h4><font color="#FF0000">Warnings:</font></h4>
+
+  <ol>
+    <li>Make sure that the <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a> variable is set to <a href=
+    "Programs.html#PC_FALSE">FALSE</a> before entering the <tt>PROMPT</tt> block.</li>
+
+    <li>The <tt>ON KEY</tt> blocks are provided for backward compatibility; use <tt>ON ACTION</tt> instead.</li>
+
+    <li>The prompt finishes after <tt>ON IDLE</tt>, <tt>ON ACTION</tt>, or <tt>ON KEY</tt> block execution (to ensure backwards
+    compatibility).</li>
+  </ol>
+
+  <h3><a name="PROG_STEPS" id="PROG_STEPS">Programming Steps</a></h3>
+
+  <p>To use the <tt>PROMPT</tt> statement, you must:</p>
+
+  <ol>
+    <li>Declare a program variable with the <a href="Variables.html#VA_DEFINE">DEFINE</a> statement.</li>
+
+    <li>Set the <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a> variable to <a href="Programs.html#PC_FALSE">FALSE</a>.</li>
+
+    <li>Describe the <tt>PROMPT</tt> statement, with <i>dialog-control-blocks</i> to control the instruction.</li>
+
+    <li>After executing the <tt>PROMPT</tt>, check the <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a> variable to determine
+    whether the input was validated or canceled by the user. See <a href="#EXAMPLE_2">Example 2</a> below.</li>
+  </ol>
+  <hr size="1">
+
+  <h3><a name="INSTRUCTION_CONFIG" id="INSTRUCTION_CONFIG">Instruction Configuration</a></h3>
+
+  <h4>HELP option</h4>
+
+  <p>The <tt>HELP</tt> clause specifies the number of a <a href="MessageFiles.html">help message</a> to display if the user
+  invokes the help while executing the instruction. The predefined <i>help</i> action is automatically created by the runtime
+  system. You can bind <a href="InteractionModel.html">action views</a> to the <i>help</i> action.</p>
+
+  <h4>ACCEPT option</h4>
+
+  <p>The <tt>ACCEPT</tt> attribute can be set to <a href="Programs.html#PC_FALSE">FALSE</a> to avoid the automatic creation of
+  the <i>accept</i> default action.</p>
+
+  <h4>CANCEL option</h4>
+
+  <p>The <tt>CANCEL</tt> attribute can be set to <a href="Programs.html#PC_FALSE">FALSE</a> to avoid the automatic creation of
+  the <i>cancel</i> default action. If the <tt>CANCEL=FALSE</tt> option is set, no <a href=
+  "InteractionModel.html#XCROSS_CLOSE"><i>close action</i></a> will be created, and you must write an <tt>ON ACTION close</tt> control
+  block to create a close action.</p>
+  <hr size="1">
+
+  <h3><a name="DEFAULT_ACTIONS" id="DEFAULT_ACTIONS">Default Actions</a></h3>
+
+  <p>When an <tt>PROMPT</tt> instruction executes, the runtime system creates a set of <a href="InteractionModel.html">default
+  actions</a>.</p>
+
+  <p>The following table lists the default actions created for this dialog:</p>
+
+  <table border="0" cellpadding="0" width="90%">
+    <tr>
+      <td bgcolor="#C0C0C0" width="20%"><b>Default action</b></td>
+
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+
+    <tr>
+      <td width="20%"><tt>accept</tt></td>
+
+      <td>Validates the <tt>PROMPT</tt> dialog (validates field criterias)<br>
+      <i>Creation can be avoided with the</i> <tt>ACCEPT</tt> <i>attribute.</i></td>
+    </tr>
+
+    <tr>
+      <td width="20%"><tt>cancel</tt></td>
+
+      <td>Cancels the <tt>PROMPT</tt> dialog (no validation, int_flag is set)<br>
+      <i>Creation can be avoided with the</i> <tt>CANCEL</tt> <i>attribute.</i></td>
+    </tr>
+
+    <tr>
+      <td width="20%"><tt>close</tt></td>
+
+      <td>By default, cancels the <tt>PROMPT</tt> dialog (no validation, int_flag is set)<br>
+      Default action view is hidden. See <a href="InteractionModel.html#XCROSS_CLOSE">Windows closed by the user</a>.</td>
+    </tr>
+
+    <tr>
+      <td width="20%"><tt>help</tt></td>
+
+      <td>Shows the help topic defined by the <tt>HELP</tt> clause.<br>
+      <i>Only created when a</i> <tt>HELP</tt> <i>clause is defined.</i></td>
+    </tr>
+  </table><br>
+  <hr size="1">
+
+  <h3><a name="INTERACTION_BLOCKS" id="INTERACTION_BLOCKS">Interaction Blocks</a></h3>
+
+  <h4>ON ACTION block</h4>
+
+  <p>You can use <tt>ON ACTION</tt> blocks to execute a sequence of instructions when the user raises a specific action. This is
+  the preferred solution compared to <tt>ON KEY</tt> blocks, because <tt>ON ACTION</tt> blocks use abstract names to control user
+  interaction.</p>
+
+  <p><b><font color="#FF0000">Warning:</font> Because of backward compatibility, the prompt is finished after <tt>ON IDLE</tt>,
+  <tt>ON ACTION</tt>, <tt>ON KEY</tt> block execution.</b></p>
+
+  <p>For more details about <tt>ON ACTION</tt>, see <a href="InteractionModel.html">Interaction Model page</a>.</p>
+
+  <h4>ON IDLE block</h4>
+
+  <p>The <tt>ON IDLE <i>idle-seconds</i></tt> clause defines a set of instructions that must be executed after
+  <i>idle-seconds</i> of inactivity. The parameter <i>idle-seconds</i> must be an <a href="Literals.html">integer literal</a> or
+  <a href="Variables.html">variable</a>. If it evaluates to zero, the timeout is disabled.</p>
+
+  <p>You should not use the <tt>ON IDLE</tt> trigger with a short timeout period
+  such as 1 or 2 seconds; The purpose of this trigger is to give the control
+  back to the program after a relatively long period of inactivity (10, 30 or 60
+  seconds). This is typically the case when the end user leaves the workstation,
+  or got a phone call. The program can then execute some code before the user
+  gets the control back.</p>
+  <!-- NG REMOVED : Not yet implemented! 
+<pre><CODE class=linenumber>01</CODE> <tt>...</tt>
+<CODE class=linenumber>02</CODE>    <tt>ON IDLE</tt> 10
+<CODE class=linenumber>03</CODE>       <tt>IF</tt> ask_question(&quot;Do you want to leave the dialog?&quot;) <tt>THEN</tt>
+<CODE class=linenumber>04</CODE>          <tt>EXIT PROMPT</tt>
+<CODE class=linenumber>05</CODE>       <tt>END IF</tt>
+<CODE class=linenumber>06</CODE> <tt>...</tt></pre>
+-->
+
+  <h4>ON KEY block</h4>
+
+  <p>For backward compatibility, you can use <tt>ON KEY</tt> blocks to execute a sequence of instructions when the user presses a
+  specific key. The following key names are accepted by the compiler:</p>
+
+  <div align="center">
+    <center>
+      <table border="0" cellpadding="0" width="90%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="30%"><b>Key Name</b></td>
+
+          <td bgcolor="#C0C0C0"><b>Description</b></td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>ACCEPT</tt></td>
+
+          <td>The validation key.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>INTERRUPT</tt></td>
+
+          <td>The interruption key.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>ESC</tt> or <tt>ESCAPE</tt></td>
+
+          <td>The ESC key (not recommended, use <tt>ACCEPT</tt> instead).</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>TAB</tt></td>
+
+          <td>The TAB key (not recommended).</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>Control-<i>char</i></tt></td>
+
+          <td>A control key where <i>char</i> can be any character except A, D, H, I, J, K, L, M, R, or X.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>F1</tt> through <tt>F255</tt></td>
+
+          <td>A function key.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>DELETE</tt></td>
+
+          <td>The key used to delete a new row in an array.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>INSERT</tt></td>
+
+          <td>The key used to insert a new row in an array.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>HELP</tt></td>
+
+          <td>The help key.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>LEFT</tt></td>
+
+          <td>The left arrow key.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>RIGHT</tt></td>
+
+          <td>The right arrow key.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>DOWN</tt></td>
+
+          <td>The down arrow key.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>UP</tt></td>
+
+          <td>The up arrow key.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>PREVIOUS</tt> or <tt>PREVPAGE</tt>&nbsp;</td>
+
+          <td>The previous page key.</td>
+        </tr>
+
+        <tr>
+          <td width="30%"><tt>NEXT</tt> or <tt>NEXTPAGE</tt>&nbsp;</td>
+
+          <td>The next page key.</td>
+        </tr>
+      </table>
+    </center>
+  </div><br>
+  An <tt>ON KEY</tt> block defines one to four different action objects that will be identified by the key name in lowercase
+  (<tt>ON KEY(F5,F6) = creates Action f5 + Action f6</tt>). Each action object will get an <i>acceleratorName</i> assigned. In
+  <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a> mode, Action Defaults are applied for <tt>ON KEY</tt> actions by using
+  the name of the key. You can define secondary accelerator keys, as well as default decoration attributes like button text and
+  image, by using the key name as action identifier. Note that the action name is always in lowercase letters. See <a href=
+  "ActionDefaults.html">Action Defaults</a> for more details.
+  <p><b><font color="#FF0000">Warning:</font> Check carefully the <tt>ON KEY
+  CONTROL-?</tt> statements because they may result in having duplicate
+  accelerators for multiple actions due to the accelerators defined by <a href="ActionDefaults.html">Action
+  Defaults</a>. Additionally, <tt>ON KEY</tt> statements used with<tt> ESC</tt>,<tt>
+  TAB</tt>,<tt> UP</tt>,<tt> DOWN</tt>,<tt> LEFT</tt>,<tt> RIGHT</tt>,<tt> HELP</tt>,<tt>
+  NEXT</tt>,<tt> PREVIOUS</tt>,<tt> INSERT</tt>,<tt> CONTROL-M</tt>,<tt>
+  CONTROL-X</tt>,<tt> CONTROL-V</tt>,<tt> CONTROL-C</tt> and <tt>CONTROL-A</tt>
+  should be avoided for use in GUI programs, because it's very likely to clash
+  with default accelerators defined in the Action Defaults.</b></p>
+  <hr>
+
+  <h2><a name="EXAMPLES" id="EXAMPLES">Examples</a></h2>
+
+  <h4><a name="EXAMPLE_1" id="EXAMPLE_1">Example 1: Simple PROMPT</a></h4>
+  <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> birth <tt>DATE</tt>
+<code class="linenumber">03</code>   <tt>DEFINE</tt> chkey <tt>CHAR</tt>(1)
+<code class="linenumber">04</code>   <tt>PROMPT</tt> &quot;Please enter your birthday: &quot; <tt>FOR</tt> birth
+<code class="linenumber">05</code>   <tt>DISPLAY</tt> &quot;Your birthday is : &quot; || birth
+<code class="linenumber">06</code>   <tt>PROMPT</tt> &quot;Now press a key... &quot; <tt>FOR CHAR</tt> chkey
+<code class="linenumber">07</code>   <tt>DISPLAY</tt> &quot;You pressed: &quot; || chkey
+<code class="linenumber">08</code> <tt>END MAIN</tt>
+</pre>
+
+  <h4><a name="EXAMPLE_2" id="EXAMPLE_2">Example 2: Simple PROMPT with Interrupt Checking</a></h4>
+  <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> birth <tt>DATE</tt>
+<code class="linenumber">03</code>   <tt>LET</tt> <tt>INT_FLAG</tt> <tt>= FALSE</tt>
+<code class="linenumber">04</code>   <tt>PROMPT</tt> &quot;Please enter your birthday: &quot; <tt>FOR</tt> birth
+<code class="linenumber">05</code>   <tt>IF</tt> <tt>INT_FLAG</tt> <tt>THEN</tt>
+<code class="linenumber">06</code>   <tt>  DISPLAY</tt> &quot;Interrupt received.&quot;
+<code class="linenumber">07</code>   <tt>ELSE</tt>
+<code class="linenumber">08</code>   <tt>  DISPLAY</tt> &quot;Your birthday is : &quot; || birth
+<code class="linenumber">09</code>   <tt>END</tt> <tt>IF</tt>
+<code class="linenumber">10</code> <tt>END MAIN</tt>
+</pre>
+
+  <h4><a name="EXAMPLE_3" id="EXAMPLE_3">Example 3: PROMPT with ATTRIBUTES and ON ACTION handlers</a></h4>
+  <pre>
+<code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>   <tt>DEFINE</tt> birth <tt>DATE</tt>
+<code class="linenumber">03</code>   <tt>LET </tt>birth = <tt>TODAY</tt>
+<code class="linenumber">04</code>   <tt>PROMPT</tt> &quot;Please enter your birthday: &quot; <tt>FOR</tt> birth
+<code class="linenumber">05</code>      <tt>ATTRIBUTES</tt>(<tt>WITHOUT DEFAULTS</tt>)
+<code class="linenumber">06</code>         <tt>ON ACTION</tt> action1
+<code class="linenumber">07</code>            <tt>DISPLAY</tt> &quot;Action 1&quot;
+<code class="linenumber">08</code>   <tt>END PROMPT</tt>
+<code class="linenumber">09</code>   <tt>DISPLAY</tt> &quot;Your birthday is &quot; || birth
+<code class="linenumber">10</code> <tt>END MAIN</tt>
+</pre>
+</body>
+</html>

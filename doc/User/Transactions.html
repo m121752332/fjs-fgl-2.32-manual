@@ -1,0 +1,367 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Transactions</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Database Transactions</a></H1>
+<p> Summary:</p>
+
+<ul>
+  <li><a href="#DBTRANS">What is a database transaction?</a></li>
+  <li><a href="#TRANSMM">Transaction Management Model</a></li>
+  <li><a href="#TI_BEGIN_WORK">Starting a transaction</a> (<tt>BEGIN WORK</tt>)</li>
+  <li><a href="#TI_COMMIT_WORK">Validating a transaction</a> (<tt>COMMIT WORK</tt>)</li>
+  <li><a href="#TI_ROLLBACK_WORK">Cancelling a transaction</a> (<tt>ROLLBACK WORK</tt>)</li>
+  <li><a href="#TI_SET_ISOLATION">Setting the Isolation Level</a> (<tt>SET ISOLATION</tt>)</li>
+  <li><a href="#TI_SET_LOCK_MODE">Setting the Lock Mode</a> (<tt>SET LOCK MODE</tt>)</li>
+  <li><a href="#EXAMPLES">Examples</a></li>
+</ul>
+
+<p><i>See also:</i>
+<a href="Connections.html">Connections</a>,
+<a href="StaticSql.html">Static SQL</a>,
+<a href="DynamicSql.html">Dynamic SQL</a>,
+<a href="ResultSets.html">Result Sets</a>,
+<a href="Exceptions.html#SQLERRORS">SQL Errors</a>,
+<a href="Programs.html">Programs</a>.</p>
+
+<HR>
+
+<h3><a name="DBTRANS">What is a database transaction?</a></h3>
+
+<p>A Database Transaction delimits a set of database operations that are processed as a
+whole. Database operations included inside a transaction are validated or
+canceled as a unique operation. </p>
+
+<p align="center"><img border="0" src="../Images/DBTFig01.png" width="504" height="288"> </p>
+
+<p>The database server is in charge of <i>Data Concurrency</i> and <i>Data
+Consistency</i> control. Data Concurrency control allows the simultaneous access
+of the same data by many users, while Data Consistency control
+gives each user a consistent view of the database. </p>
+
+<p>Without adequate concurrency and consistency controls, data could be changed
+improperly, compromising data integrity. If you want to write applications that
+can work with different kinds of database servers, you must adapt the program
+logic to the behavior of the database servers regarding concurrency and consistency
+management. This requires good knowledge
+of <u>multi-user</u> application
+programming, <u>transactions</u>, <u>locking</u> mechanisms, <u>isolation levels</u>
+and <u>wait mode</u>. If you are not familiar with these concepts,  carefully
+read the documentation of each database server that covers
+this subject.</p>
+
+<p>Usually, database servers set <u> exclusive locks</u> on rows that are modified or
+deleted inside a transaction. These locks are held until the end of the
+transaction to control concurrent access to that data. Some database
+servers like Oracle implement row versioning (before modifying a row, the server
+makes a copy). This technique allows readers to see a consistent copy of the
+rows that are updated during a transaction not yet committed. When the isolation level
+is high (Repeatable Read) or when using a <tt>SELECT FOR UPDATE</tt> statement,
+the database server sets <u> shared locks</u> on read rows to prevent other
+users from changing the data fetched by the reader.
+Again, these locks are held until the end of the transaction. Some database
+servers like Informix allow read locks
+to be held regardless of the transactions
+(<tt>WITH HOLD</tt> cursor option), but this is not a standard.</p>
+
+<p>Processes accessing the database can change transaction parameters such as the
+isolation level or lock wait mode. The main problem is to find a configuration
+which results in similar behavior on every database engine. Programs using
+Informix-specific behavior must be adapted to work with other database servers.</p>
+
+<p>Here is the recommended configuration to get common behavior with all  kinds
+ of
+database engines:
+
+<ul>
+  <li>The database must support transactions;
+    this is usually the case.
+  <li>Transactions must be as short as possible (a few seconds).
+  <li>The Isolation Level must be at least &quot;Committed Read&quot; (=
+    &quot;Cursor Stability&quot;).
+  <li>The Wait Mode for locks must be &quot;WAIT&quot; or &quot;WAIT n&quot;
+    (timeout).</li>
+</ul>
+<p>When using this configuration, the locking granularity does not have to
+be set at the row level. For example, to improve performance with Informix databases, you can
+use the &quot;LOCK MODE PAGE&quot; locking level, which is the default.</p>
+<p>A lot of applications have been developed
+for old Informix SE databases that
+do not manage transaction logging. These applications often work in the default lock
+wait mode which is &quot;NOT WAIT&quot;. Additionally, applications using
+databases without transactions usually do not change the isolation level, which
+defaults to &quot;Dirty Read&quot;. You must review the program logic of these
+applications in order to conform to
+the portable configuration.</p>
+
+
+<HR>
+
+
+<h3><a name="TRANSMM">Transaction Management Model</a></h3>
+
+
+<p>To write portable SQL applications, programmers use the instructions
+described in this section to delimit transaction blocks and define concurrency
+parameters such as the isolation level and the lock wait mode. At runtime, the
+database driver generates the appropriate SQL commands to
+be used with the target
+database server.</p>
+
+
+<p>If you initiate a transaction with a <tt>BEGIN WORK</tt> statement, you must
+issue a <tt>COMMIT WORK</tt> statement at the end of the transaction. If you fail
+to issue the <tt>COMMIT WORK</tt> statement, the database server rolls
+back any modifications that the transaction made to the database. If you do not
+issue a <tt>BEGIN WORK</tt> statement to start a transaction, each statement
+executes within its own transaction. These single-statement transactions do not
+require either a <tt>BEGIN WORK</tt> statement or a <tt>COMMIT WORK</tt> statement.</p>
+
+
+<p>For historical reasons, the language is based on IBM Informix SQL language,
+which defines the transaction management instructions. IBM Informix database
+servers can work in different transaction logging modes:</p>
+
+<ol>
+  <li><b>Native</b>, without logging</li>
+  <li><b>Native</b>, non-buffered logging</li>
+  <li><b>Native</b>, buffered logging</li>
+  <li><b>ANSI</b>, buffered logging</li>
+</ol>
+
+<p>The first mode does not allow transaction management and should be avoided.
+In the second and third modes, you can use the <tt>BEGIN WORK</tt>, <tt>COMMIT WORK</tt>
+and <tt>ROLLBACK WORK</tt> statements. In <b>ANSI</b> mode, you can only use the
+<tt>COMMIT</tt> and <tt>ROLLBACK</tt> statements, because transactions are
+implicit.</p>
+
+<p>When using Informix databases, the type of logging defines the way you manage
+transactions in your programs. For example, when using an ANSI-compliant Informix
+database, you do not have to start transactions with <tt>BEGIN WORK</tt>, since
+these are implicit.</p>
+
+<p>When using the Standard Database Interface (SDI) architecture, you are free to use
+any type of transaction logging with Informix databases. When using the Open Database Interface
+(ODI) architecture you are free to use the native transaction management
+statements supported by the underlying database server, but it is recommended that
+you follow the
+default&nbsp;(native) Informix logging, by using <tt>BEGIN WORK</tt>, <tt>COMMIT
+WORK</tt> and <tt>ROLLBACK WORK</tt> to manage transactions. At runtime, the
+database drivers can  manage the
+execution of the appropriate instructions
+for the target database server. This allows you to use
+the same source code for
+different kinds of database servers.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+
+
+<p>The instructions described in this section must be executed as <a href="StaticSql.html">Static
+SQL</a> statements. Even if it is supported by the Informix API, it is not recommended
+that you use the
+<a href="DynamicSql.html">Dynamic SQL</a> instructions to <tt>PREPARE</tt> and <tt>EXECUTE</tt>
+ transaction management statements, because it can result in unexpected behavior
+when using other database servers.</p>
+
+
+<HR>
+
+<h3><a name="TI_BEGIN_WORK">BEGIN WORK</a></h3>
+
+<h4>Purpose:</h4><p>Starts a database transaction in the current <a href="Connections.html">connection</a>. </p>
+
+
+<h4>Syntax:</h4><code>BEGIN WORK</code>
+
+
+<h4>Usage:</h4>
+ Use this instruction to indicate where the database transaction starts in
+    your program. If supported by the database server, the underlying database driver
+    starts a transaction. Each row that an UPDATE, DELETE, or INSERT statement affects during a
+    transaction is locked and remains locked throughout the transaction. When
+using a non-Informix database, the ODI driver executes the native SQL statement
+corresponding to <tt>BEGIN WORK</tt>.
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>Some database servers do not support a Data Definition Language
+    statement (like <tt>CREATE TABLE</tt>) inside transactions, or even
+    auto-commit the transaction when such a statement is executed. Therefore, it is
+    strongly recommended that you avoid DDL statements inside transactions.</li>
+  <li>A transaction that contains statements that affect many rows can exceed
+    the limits that your operating system or the database server configuration
+    imposes on the maximum number of simultaneous locks.</li>
+</ol>
+
+
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li>Include a limited number of SQL operations in a transaction to execute
+    short transactions. In a standard database session configuration (wait
+    mode), it is not recommended that you have a transaction block running a long
+    time, since it may block concurrent processes which want to access the
+    same data.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="TI_COMMIT_WORK">COMMIT WORK</a></h3>
+
+<h4>Purpose:</h4><p>Validates and terminates a database transaction in the current <a href="Connections.html">connection</a>. </p>
+
+
+<h4>Syntax:</h4><code>COMMIT WORK</code>
+
+
+<h4>Usage:</h4>
+ Use this instruction to commit all modifications made to the database
+    from the beginning of a transaction. The database server takes the required steps to make sure that all
+    modifications that the transaction makes are completed correctly and saved
+    to disk. The <tt>COMMIT WORK</tt> statement releases all exclusive
+    locks. With some databases like Informix, shared locks are <u>not released</u> if the
+    <tt>FOR UPDATE</tt> cursor is declared <tt>WITH HOLD</tt> option. The <tt>COMMIT WORK</tt> statement closes all cursors not
+    declared with the <tt>WITH HOLD</tt> option. When using a non-Informix
+database, the ODI driver executes the native SQL statement corresponding to <tt>COMMIT
+WORK</tt>.
+
+
+<HR>
+
+<h3><a name="TI_ROLLBACK_WORK">ROLLBACK WORK</a></h3>
+
+<h4>Purpose:</h4><p>Cancels and terminates a database transaction in the current <a href="Connections.html">connection</a>. </p>
+
+
+<h4>Syntax:</h4><code>ROLLBACK WORK</code>
+
+
+<h4>Usage:</h4>
+ Use this instruction to cancel the current transaction and invalidate all
+    changes since the beginning of the transaction. After the execution of this instruction, the database is restored to the
+    state that it was in before the transaction began. All row and table locks that the
+canceled transaction holds are
+    released. If you issue this statement when no transaction is pending, an error
+    occurs. When using a non-Informix database, the ODI driver executes the
+native SQL statement corresponding to <tt>ROLLBACK WORK</tt>.
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>Normally, the <tt>ROLLBACK WORK</tt> statement closes all cursors <u> not
+    declared</u> with the <tt>WITH HOLD</tt> option. This is not the case with some
+    databases like IBM DB2, which closes all kind of cursors when doing a
+    <tt>ROLLBACK</tt>.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="TI_SET_ISOLATION">SET ISOLATION</a></h3>
+
+<h4>Purpose:</h4><p>Defines the transaction isolation level for the current <a href="Connections.html">connection</a>. </p>
+
+
+<h4>Syntax:</h4><code>SET ISOLATION TO<br>
+&nbsp; <u>{</u>&nbsp;DIRTY READ<br>
+&nbsp; <u>|</u>&nbsp;COMMITTED READ [LAST COMMITTED] [RETAIN UPDATE LOCKS]<br>
+&nbsp; <u>|</u>&nbsp;CURSOR STABILITY<br>
+&nbsp; <u>|</u>&nbsp;REPEATABLE READ <u>}</u></code>
+
+
+<h4>Usage:</h4>
+ Sets the isolation level for the current connection. See database concepts in
+your database server documentation for more details about isolation levels and
+concurrency management.
+<p>When using a non-Informix database, the ODI driver executes the native SQL
+statement that corresponds to the specified isolation level.</p>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>When using the <tt>DIRTY READ</tt> isolation level, the database server
+    might return a phantom row, which is an uncommitted row that was inserted or
+    modified within a transaction that has subsequently rolled back. No other
+    isolation level allows access to a phantom row.</li>
+</ol>
+
+
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li>On most database servers, the default isolation level is usually
+    <tt>COMMITTED READ</tt>, which is appropriate to portable database
+    programming. Therefore, we do not recommend
+    that you change the isolation level.</li>
+  <li>The <tt>LAST COMMITTED</tt> and <tt>RETAIN UPDATE LOCKS</tt> options have
+    been added to the language syntax for conformance with Informix IDS 11. Note
+    that the <tt>LAST COMMITTED</tt> option can be turned on implicitly with a
+    server configuration parameter, saving un-necessary code changes.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="TI_SET_LOCK_MODE">SET LOCK MODE</a></h3>
+
+<h4>Purpose:</h4><p>Defines the behavior of the program that tries to access a
+locked row or table. </p>
+
+
+<h4>Syntax:</h4><code>SET LOCK MODE TO <u>{</u> NOT&nbsp;WAIT&nbsp;<u>|</u>&nbsp;WAIT
+<u>[</u>&nbsp;<i>seconds</i> <u>]</u> <u>}</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> This instruction defines the timeout for lock acquisition for the current <a href="Connections.html">connection</a>.</li>
+  <li> When possible, the underlying database driver sets the corresponding
+    connection parameter to define the timeout for lock acquisition. But some
+    database servers may not support
+    setting the lock timeout parameter. In this
+    case, the runtime system generates an <a href="Exceptions.html">exception</a>.</li>
+  <li> When using the <tt>NOT WAIT</tt> clause, the timeout is set to zero. If
+    the resource is locked, the database server ends the operation immediately
+    and returns an <a href="Exceptions.html#SQLERRORS">SQL Error</a>.</li>
+  <li> <i>seconds</i> defines the number of seconds to wait for lock acquisition.
+    If the resource is locked, the database server ends the operation after the
+    elapsed time and returns an <a href="Exceptions.html#SQLERRORS">SQL Error</a>.</li>
+  <li> When using the <tt>WAIT</tt> clause without a number of seconds, the
+    database server waits for lock acquisition for an infinite time.</li>
+  <li> On most database servers, the default is to wait for locks to be
+    released.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>Make sure that the database server and corresponding database driver both support
+    a lock acquisition timeout
+    option, otherwise the program would generate an exception. For example, the
+    IBM DB2 V8.1 database server does not support this
+    option at the session level.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+<h4>Example 1:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN
+</tt><CODE class=linenumber>02</CODE> <tt>   DATABASE </tt>stock<tt>
+</tt><CODE class=linenumber>03</CODE> <tt>   BEGIN WORK
+</tt><CODE class=linenumber>04</CODE> <tt>   INSERT INTO </tt>items<tt> VALUES </tt>( ... )<tt>
+</tt><CODE class=linenumber>04</CODE> <tt>   UPDATE </tt>items<tt> SET </tt>...<tt>
+</tt><CODE class=linenumber>05</CODE> <tt>   COMMIT WORK
+</tt><CODE class=linenumber>06</CODE> <tt>END MAIN</tt></PRE>
+
+
+</BODY>
+</HTML>

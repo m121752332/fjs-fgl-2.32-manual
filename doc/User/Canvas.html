@@ -1,0 +1,424 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Canvas</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Canvas</a></H1>
+<p>This page describes the usage of Canvas.</p>
+
+<ul>
+  <li><a href="#WHATIS">What is Canvas?</a></li>
+  <li><a href="#DEFINITION">Basics</a></li>
+  <li><a href="#FUNCTIONS">Functions</a> </li>
+</ul>
+
+<p><i>See also:</i> <a href="FormSpecFiles.html">Forms</a>, <a href="WindowsAndForms.html">Windows</a></p>
+
+<HR>
+
+<h3><a name="WHATIS">What is Canvas?</a></h3>
+
+<p>By using Canvas, you can draw simple shapes in a specific
+area of a <a href="FormSpecFiles.html">form</a>. Canvas can draw lines,
+rectangles, ovals, circles, texts, arcs, and polygons. Keys can
+be bound to graphical elements for selection with a right or left
+mouse click. </p>
+
+
+
+
+<p>In programs, you select a given Canvas area by name and you create the shapes in
+the <a href="DynamicUI.html">Abstract User Interface tree</a> by
+using the built-in <a href="XmlUtils.html">DOM API</a>.</p>
+
+
+
+
+<p>The painted canvas is automatically displayed on the front end when an
+interactive instruction is executed (like <a href="Menus.html">MENU</a> or <a href="RecordInput.html">INPUT</a>).</p>
+
+
+
+
+<p> The canvas area represents an abstract drawing page where you define size
+and location of shapes with coordinates from (0,0) to (1000,1000). The origin point&nbsp; (0,0),
+is on
+the left-bottom of the drawing area. </p>
+
+<p align="center"> <img border="0" src="../Images/CVSFig01.png" width="504" height="288"> </p>
+
+
+
+
+<p> Each canvas element is identified by a unique number (id). You can use this
+identifier to bind mouse clicks to canvas elements. </p>
+
+<HR>
+
+<h3><a name="DEFINITION">Basics</a></h3>
+
+<h4>Purpose:</h4>
+
+<p>Use <b>Canvas</b> to draw simple shapes in a specific
+area of a <a href="FormSpecFiles.html">form</a>.&nbsp;</p>
+
+<h4>Syntax:</h4><code>&lt;Canvas colName=&quot;<i>name</i>&quot; &gt;<br>
+&nbsp; <u>{</u> &lt;CanvasArc <i>canvasitem-attribute=&quot;value&quot;</i> <u>[...]</u> /&gt;<br>
+&nbsp; <u>|</u> &lt;CanvasCircle <i>canvasitem-attribute</i>=&quot;<i>value&quot;</i>
+<u>[...]</u> /&gt;<br>
+&nbsp; <u>|</u> &lt;CanvasLine <i>canvasitem-attribute</i>=&quot;<i>value&quot;</i>
+<u>[...]</u> /&gt;<br>
+&nbsp; <u>|</u> &lt;CanvasOval <i>canvasitem-attribute</i>=&quot;<i>value&quot;</i>
+<u>[...]</u> /&gt;<br>
+&nbsp; <u>|</u> &lt;CanvasPolygon <i>canvasitem-attribute</i>=&quot;<i>value&quot;</i>
+<u>[...]</u> /&gt;<br>
+&nbsp; <u>|</u> &lt;CanvasRectangle <i>canvasitem-attribute</i>=&quot;<i>value&quot;</i>
+<u>[...]</u> /&gt;<br>
+&nbsp; <u>|</u> &lt;CanvasText <i>canvasitem-attribute</i>=&quot;<i>value&quot;</i>
+<u>[...]</u> /&gt;<br>
+&nbsp; <u>}</u>&nbsp;<u>[...]</u><br>
+&lt;/Canvas&gt;<br>
+<u>[...]</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li>You define the content of canvas areas in the Abstract User Interface tree.</li>
+  <li>If the form defines canvas areas, the Abstract User Interface tree contains empty <tt>&lt;Canvas&gt;</tt> nodes that you can fill with canvas items.</li>
+  <li>A canvas node is identified in the program by the <tt>colName</tt> attribute.</li>
+  <li>You can get the canvas <a href="ClassDomNode.html">DomNode</a> by name with the <tt>Window.getElement(<i>name</i>)</tt> method.</li>
+  <li>You cannot drop canvas nodes, as they are read-only in a form
+    definition.</li>
+</ol>
+
+
+<p> The following table describes all the types of canvas element that are supported: </p>
+
+
+
+<table border="0" width="95%">
+  <tr>
+    <td width="22%" bgcolor="#C0C0C0"><b>Name</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>CanvasArc</tt></td>
+    <td valign="top">Arc defined by the bounding square top left point, a diameter, a start angle, a end angle, and a fill color.</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>CanvasCircle</tt></td>
+    <td valign="top">Circle defined by the bounding square top left point, a diameter, and a fill
+      color.</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>CanvasLine</tt></td>
+    <td valign="top">Line defined by a start point, an end point, a width, and a
+      fill color.</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>CanvasOval</tt></td>
+    <td valign="top">Oval defined by rectangle (with start point and end point),
+      and a fill color.</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>CanvasPolygon</tt></td>
+    <td valign="top">Polygon defined by a list of points, and a fill color.</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>CanvasRectangle</tt></td>
+    <td valign="top">Rectangle defined by a start point, an end point, and a fill
+      color.</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>CanvasText</tt></td>
+    <td valign="top">Text defined by a start point, an anchor hint, the text, and
+      a fill color.</td>
+  </tr>
+</table>
+
+
+
+<p> The following table describes the attributes of canvas elements: </p>
+
+
+
+<table border="0" width="90%">
+  <tr>
+    <td width="22%" bgcolor="#C0C0C0"><b>Name</b></td>
+    <td width="25%" bgcolor="#C0C0C0"><b>Values</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>startX</tt></td>
+    <td width="25%" valign="top"><tt>INTEGER (0-&gt;1000)</tt></td>
+    <td valign="top">X position of starting point.</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>startY</tt></td>
+    <td width="25%" valign="top"><tt>INTEGER (0-&gt;1000)</tt></td>
+    <td valign="top">Y position of starting point.</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>endX</tt></td>
+    <td width="25%" valign="top"><tt>INTEGER (0-&gt;1000)</tt></td>
+    <td valign="top">X position of ending point.</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>endY</tt></td>
+    <td width="25%" valign="top"><tt>INTEGER (0-&gt;1000)</tt></td>
+    <td valign="top">Y position of ending point.</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>xyList</tt></td>
+    <td width="25%" valign="top"><tt>STRING</tt></td>
+    <td valign="top">Space-separated list of Y X coordinates. For example:
+      &quot;23 45 56 78&quot;.
+      <br/>
+      <font color="red">Warning!</font> For historical and compatibility reasons, the xyList is actually a list of (Y,X) coordinates.</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>width</tt></td>
+    <td width="25%" valign="top"><tt>INTEGER</tt></td>
+    <td valign="top">Width of the shape.&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>height</tt></td>
+    <td width="25%" valign="top"><tt>INTEGER</tt></td>
+    <td valign="top">Height of the shape.&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>diameter</tt></td>
+    <td width="25%" valign="top"><tt>INTEGER</tt></td>
+    <td valign="top">Diameter for circles and arcs.&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>startDegrees</tt></td>
+    <td width="25%" valign="top"><tt>INTEGER</tt></td>
+    <td valign="top">Beginning of the angular range occupied by an arc.</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>extentDegrees</tt></td>
+    <td width="25%" valign="top"><tt>INTEGER</tt></td>
+    <td valign="top">Size of the angular range occupied by an arc.</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>text</tt></td>
+    <td width="25%" valign="top"><tt>STRING</tt></td>
+    <td valign="top">The text to draw.</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>anchor</tt></td>
+    <td width="25%" valign="top"><tt>&quot;n&quot;,&quot;e&quot;,&quot;w&quot;,&quot;s&quot;</tt></td>
+    <td valign="top">Anchor hint to give the draw direction for texts.</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>fillColor</tt></td>
+    <td width="25%" valign="top"><tt>STRING</tt></td>
+    <td valign="top">Name of the color to be used for the element.</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>acceleratorKey1</tt></td>
+    <td width="25%" valign="top"><tt>STRING</tt></td>
+    <td valign="top">Name of the key associated to a left button click.</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top"><tt>acceleratorKey3</tt></td>
+    <td width="25%" valign="top"><tt>STRING</tt></td>
+    <td valign="top">Name of the key associated to a right button click.</td>
+  </tr>
+</table>
+
+
+<h4>Usage:</h4>
+
+<p> First, you must define a drawing area in the form file. The drawing area is
+defined by a form field declared with the attribute
+<a href="FSFAttributes.html#FA_WIDGET">WIDGET=&quot;CANVAS&quot;</a>. In the following
+example, the name of the canvas field is '<tt>canvas01</tt>'. This field name
+identifies the drawing area: </p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>DATABASE FORMONLY</tt>
+<CODE class=linenumber>02</CODE> <tt>LAYOUT</tt>
+<CODE class=linenumber>03</CODE> <tt>GRID</tt>
+<CODE class=linenumber>04</CODE> {
+<CODE class=linenumber>05</CODE>   Canvas example:
+<CODE class=linenumber>06</CODE>   [ca01                         ]
+<CODE class=linenumber>07</CODE>   [                             ]
+<CODE class=linenumber>08</CODE>   [                             ]
+<CODE class=linenumber>09</CODE>   [                             ]
+<CODE class=linenumber>10</CODE>   [                             ]
+<CODE class=linenumber>11</CODE>   [                             ]
+<CODE class=linenumber>12</CODE> }
+<CODE class=linenumber>13</CODE> <tt>END</tt>
+<CODE class=linenumber>14</CODE> <tt>END</tt>
+<CODE class=linenumber>15</CODE> <tt>ATTRIBUTES</tt>
+<CODE class=linenumber>16</CODE> <tt>CANVAS </tt>ca01 : canvas01;
+<CODE class=linenumber>17</CODE> <tt>END</tt></PRE>
+
+<p> In programs, you draw canvas shapes by creating Canvas nodes in the <a href="DynamicUI.html">Abstract User Interface tree</a>
+with the <a href="XmlUtils.html">DOM API utilities</a>. </p>
+
+<p> Define a variable to hold the DOM node of the canvas and a second to handle
+children created for shapes: </p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>DEFINE</tt> c, s om.DomNode</PRE>
+
+<p> Define a window object variable; open a window with the form containing the canvas
+area; get the current window object, and then get the canvas DOM node: </p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>DEFINE</tt> w ui.Window<CODE class=linenumber>
+02</CODE> <tt>OPEN WINDOW </tt>w1 <tt>WITH FORM</tt> &quot;form1&quot;
+<CODE class=linenumber>03</CODE> <tt>LET</tt> w = ui.Window.getCurrent()<CODE class=linenumber>
+04</CODE> <tt>LET</tt> c = w.findNode(&quot;Canvas&quot;,&quot;canvas01&quot;)</PRE>
+
+<p> Create a child node with a specific type defining the shape: </p>
+
+
+<PRE><CODE class=linenumber>01</CODE> <tt>LET</tt> s = c.createChild(&quot;CanvasRectangle&quot;)</PRE>
+
+
+
+<p> Set attributes to complete the shape definition: </p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>CALL</tt> s.setAttribute( &quot;fillColor&quot;, &quot;red&quot; )
+<CODE class=linenumber>02</CODE> <tt>CALL</tt> s.setAttribute( &quot;startX&quot;, 10 )
+<CODE class=linenumber>03</CODE> <tt>CALL</tt> s.setAttribute( &quot;startY&quot;, 20 )
+<CODE class=linenumber>04</CODE> <tt>CALL</tt> s.setAttribute( &quot;endX&quot;, 100 )
+<CODE class=linenumber>05</CODE> <tt>CALL</tt> s.setAttribute( &quot;endY&quot;, 150 )</PRE>
+
+
+<p>It is possible to bind keys / actions to Canvas items in order
+to let the end user select elements with a mouse click. You can assign a
+function key for left-button mouse clicks with the <code>acceleratorKey1</code> attribute,
+while <code>acceleratorKey2</code> is used to detect right-button mouse clicks.
+The function keys you can bind are F1 to F255. If the user
+clicks on a Canvas item bound to key actions, the corresponding action handler
+will be executed in the current dialog. Several canvas items can be bound to the
+same action keys; In order to identify what items have been selected by a mouse
+click, you can use the <tt>drawGetClickedItemId()</tt> function of <a href="#FUNCTIONS">fgldraw.4gl</a>. This method will return the AUI tree node id of the Canvas items that
+was selected (i.e. s.getId()). </p>
+
+<PRE><CODE class=linenumber>01</CODE> ... Create the Canvas item with s node variable ...<CODE class=linenumber>
+02</CODE> <tt>CALL</tt> s.setAttribute( &quot;acceleratorKey1&quot;, &quot;F50&quot; )<CODE class=linenumber>
+03</CODE> <tt>MENU</tt> &quot;test&quot;
+<CODE class=linenumber>04</CODE>    <tt>COMMAND KEY </tt>(F50)
+<CODE class=linenumber>05</CODE>       <tt>IF</tt> drawGetClickedItemId() = s.getId() <tt>THEN</tt>
+<CODE class=linenumber>06</CODE>         ...<CODE class=linenumber>
+07</CODE>       <tt>END IF</tt>
+<CODE class=linenumber>08</CODE> ...<CODE class=linenumber>
+09</CODE> <tt>END MENU</tt></PRE>
+
+
+<p> To clear a given shape in the canvas, remove the element in the canvas node: </p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>CALL</tt> c.removeChild(s)</PRE>
+
+<p> To clear the drawing area completely, remove all children of the canvas node: </p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>LET</tt> s=c.getFirstChild()
+<CODE class=linenumber>02</CODE> <tt>WHILE</tt> s <tt>IS NOT NULL</tt>
+<CODE class=linenumber>03</CODE>   <tt>CALL</tt> c.removeChild(s)
+<CODE class=linenumber>04</CODE>   <tt>LET</tt> s=c.getFirstChild()
+<CODE class=linenumber>05</CODE> <tt>END WHILE</tt></PRE>
+
+<HR>
+
+<h3><a name="FUNCTIONS">Functions</a></h3>
+
+<p> The following table describes the built-in functions provided for backward
+compatibility with version 3. This list is provided to let you search for
+existing code using these functions. You are free to use these old functions or use the
+technique described in the sections above. For more details about the functions
+listed below, see the FGLDIR/src/fgldraw.4gl source code. </p>
+
+
+
+<table border="0" width="90%">
+  <tr>
+    <td width="20%" bgcolor="#C0C0C0"><b>Name</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>drawInit()</tt></td>
+    <td valign="top">Initializes the drawing API. It is mandatory to call this
+      function at the beginning of your program, before the first display
+      instruction.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>drawSelect()</tt></td>
+    <td valign="top">Selects a canvas area for drawing.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>drawDisableColorLines()</tt></td>
+    <td valign="top">By default shapes are paint with borders. This function
+      enables/disables border drawing.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>drawLineWidth()</tt></td>
+    <td valign="top">Defines the width of lines.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>drawAnchor()</tt></td>
+    <td valign="top">Defines the anchor hint for texts.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>drawLine()</tt></td>
+    <td valign="top">Draws a line in the selected canvas.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>drawCircle()</tt></td>
+    <td valign="top">Draws a circle in the selected canvas.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>drawArc()</tt></td>
+    <td valign="top">Draws an arc in the selected canvas.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>drawRectangle()</tt></td>
+    <td valign="top">Draws a rectangle in the selected canvas.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>drawOval()</tt></td>
+    <td valign="top">Draws an oval in the selected canvas.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>drawText()</tt></td>
+    <td valign="top">Draws a text in the selected canvas.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>drawPolygon()</tt></td>
+    <td valign="top">Draws a polygon in the selected canvas.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>drawClear()</tt></td>
+    <td valign="top">Clears the selected canvas.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>drawButtonLeft()</tt></td>
+    <td valign="top">Enables left mouse click on a canvas element.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>drawButtonRight()</tt></td>
+    <td valign="top">Enables right mouse click on a canvas element.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>drawClearButton()</tt></td>
+    <td valign="top">Disables all mouse clicks on a canvas element.</td>
+  </tr>
+  <tr>
+    <td width="20%" valign="top"><tt>drawGetClickedItemId()</tt></td>
+    <td valign="top">Returns the id of the last clicked canvas element</td>
+  </tr>
+</table>
+
+
+
+</BODY>
+</HTML>

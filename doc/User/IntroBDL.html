@@ -1,0 +1,648 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Introduction</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+<p><a href="../index.html">Back to Contents</a></p>
+<hr>
+<h1>Introduction: Genero BDL Concepts</h1>
+<p>Summary:</p>
+<ul>
+  <li><a href="#Overview">Overview</a>
+    <ul>
+      <li><a href="#SepBLandUI">Separating Business Logic and User Interface</a></li>
+      <li><a href="#Portability">Portability: Write once, deploy anywhere</a></li>
+      <li><a href="#ProgTools">Advanced programming tools</a></li>
+      <li><a href="#Reports">Reports</a></li>
+      <li><a href="#Internationalization">Internationalization</a></li>
+      <li><a href="#UserExt">User Extensions</a></li>
+    </ul>
+  </li>
+  <li><a href="#Language">The Language</a>
+    <ul>
+      <li><a href="#DatabaseAccess">Database access</a></li>
+      <li><a href="#InteractiveStatements">Interactive statements</a></li>
+      <li><a href="#LanguageLibrary">Language library</a></li>
+    </ul>
+  </li>
+  <li><a href="#Forms">Forms</a></li>
+  <li><a href="#UserInterface">The User Interface</a></li>
+  <li><a href="#Compiling">Compiling a BDL Application</a></li>
+  <li><a href="#Deploying">Deploying a BDL Application</a></li>
+  <li><a href="#ResourcesforProgrammers">Resources for Programmers</a></li>
+</ul>
+<hr>
+<h2><a name="Overview">Overview</a>&nbsp;</h2>
+
+
+<p>You typically use Genero to build an <i>interactive database application</i>, 
+a program that handles the interaction between a user and a database. The 
+database schema that organizes data into relational tables gives shape to one 
+side of the program. The needs of your user shape the other side. You write the 
+program logic that bridges the gap between them.
+</p>
+
+<img border="0" src="../Images/TUT104.png" width="432" height="216">
+
+<p>An&nbsp; important feature of Genero BDL is the ease with which you can design
+applications that allow the user to access and modify data in a database. The 
+Genero BDL language contains a set of SQL statements to
+<a href="#DatabaseAccess">manipulate the database</a>, and
+<a href="#InteractiveStatements">interactive instructions</a> that provide 
+simple record input, read-only list handling, updateable list handling, and 
+query by example (to search the database) using <a href="#Forms">forms</a> to 
+facilitate interaction.</p>
+<p>Genero BDL is compiled to <i>p-code</i>, which can be interpreted
+on different platforms by the <i>Dynamic Virtual Machine</i> (the Runtime
+system).
+</p>
+<h3><b><a name="SepBLandUI">Separation of Business Logic and User Interface</a></b>
+</h3>
+<p>Genero separates business logic and the user interface to provide maximum 
+flexibility:</p>
+<ul>
+	<li>The <i>business logic</i> is written in text files (.4gl 
+source code modules). High-level interactive instructions let you write a form 
+	controller in a few lines of code. </li>
+	<li><i>Forms</i> for the user interface are designed in a
+simple-to-understand and simple-to-read <a href="FormSpecFiles.html">form definition</a> syntax.. </li>
+	<li><i>Action views</i> (buttons, menu items, toolbar icons) in the form 
+definition can trigger <i>actions</i> defined in the business logic.</li>
+	<li>Compiling a form definition file translates it into XML. The <i>XML-based 
+	presentation layer </i>ensures that user interface development is completely 
+	separated from deployment.</li>
+	<li>The user interface can be manipulated
+at runtime, as a tree of objects called the <i><a href="DynamicUI.html#ABSTRACTUI">Abstract User Interface</a></i> 
+(<i>AUI</i>).
+	</li>
+</ul>
+<h3>
+<a name="Portability">
+Portability - write once, deploy anywhere</a>
+</h3>
+<p>
+Genero provides the ability to support different kinds of display devices using the same source code. 
+One production release
+    supports all major versions of Unix, Linux, Windows NT/2000/XP and Mac OS X. 
+The same application can be displayed with a graphical device (<a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a> mode)
+as well as on a simple dumb terminal (<a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a> mode).
+</p>
+<p>
+A single code stream can be written to support HTML, Java, Windows, X.11, WML,
+    MacIntosh OS X and ASCII interfaces simultaneously.&nbsp;</p>
+<p><img border="0" src="../Images/TUT105.png" width="576" height="576"></p>
+
+
+<h3>
+  <a name="ProgTools">Advanced programming tools</a>
+</h3>
+
+
+<p>
+  Genero BDL comes with a set of useful programming tools, to help you in the
+  application development process:
+</p>
+
+
+<ul>
+  <li><a href="Debugger.html">Program debugger</a></li>
+  <li><a href="Profiler.html">Performance profiler</a></li>
+  <li><a href="AutoDoc.html">Source documentation generator</a></li>
+</ul>
+
+
+<h3>
+  <a name="Reports">
+  Reports</a>
+</h3>
+
+
+<p>
+  You can easily design and generate <a href="Reports.html">Reports</a>. The output from a report can be formatted so that the eye of the
+  reader can easily pick out the important facts. Page headers and
+  footers, with page numbers, can be defined. Data can be grouped
+  together, with&nbsp; group totals and subtotals shown. The output from a report can be sent to the screen, to a printer, 
+  to a file, or (through a pipe) to another program, and report output can even
+    be redirected to an SAX filter in order to write XML.
+</p>
+
+
+<h3><a name="Internationalization">Internationalization</a></h3>
+
+
+<p>Genero BDL supports multi-byte character sets by using the POSIX standard
+functions of the C library. Genero BDL uses byte-length-semantics to specify the length
+of a character string (i.e. CHAR(10) means 10 bytes). You must make sure that
+the database client locale matches the runtime system locale. For more details
+about internationalization support, see <a href="Localization.html">Localization</a>.</p>
+
+
+<p>The <i><a href="LocalizedStrings.html">Localized Strings</a></i> feature allows you to customize your application
+for specific subsets of your user population, whether it is for a particular language or a particular business
+segment.</p>
+
+
+<h3><a name="UserExt">User Extensions</a></h3>
+
+
+<p>When the standard Genero built-in functions and classes are not sufficient,
+you can write your own plug-ins by using the <a href="CExtensions.html">Dynamic
+C Extensions</a>. This allows you to implement specific function libraries in C,
+which can be called from the BDL modules. Typical User Extensions interface with
+C libraries to drive specific devices, such as barcode scanners or biometric
+identification devices.</p>
+
+
+<p>You can instantiate Java objects from
+Genero by using the <a href="JavaBridge.html">Java Interface</a>. This allows
+you to take benefit of the huge class library of Java.</p>
+
+
+<hr>
+
+<h2><a name="Language">The Language</a></h2>
+
+<p>Genero BDL is a high-level, fourth generation language with an open, readable syntax that encourages
+good individual or group programming style. You write your program logic in text files, or
+<i>program source modules</i>, which are compiled and linked into programs that can be executed
+by the Runtime system. Programs are easily enhanced and extended. This makes it easy for programmers
+to become productive quickly, no matter what programming languages they know.
+See <a href="Programs.html">Programs</a>, <a href="FlowControl.html">Flow Control</a>,
+<a href="Functions.html">Functions</a> for additional information.</p>
+
+<h3><a name="DatabaseAccess">Database access</a></h3>
+
+<ul>
+  <li>A set of SQL statements are included as part of the language syntax and
+    can be used directly in the source code, as a normal
+procedural instruction. The <a href="StaticSql.html">Static SQL Statements</a> are parsed and validated at
+compile time. At runtime, these SQL statements are automatically prepared and executed by the runtime system.
+Program variables are detected by the compiler
+and handled as SQL parameters.</li>
+  <li> <a href="DynamicSql.html"> Dynamic
+SQL</a> management allows you to execute any SQL statement that is valid for
+    your database version, in addition to those
+    that are included as part of the language. The statement can be hard-coded
+or created at runtime, with or without SQL parameters, returning or not
+returning a result set.</li>
+  <li>Through the native drivers of the Open Database Interface, the same
+    Genero program can open <a href="Connections.html">database connections</a> to any of the supported databases.</li>
+</ul>
+
+
+<p>For additional information, see <a href="SqlProgramming.html">SQL Programming</a>.</p>
+
+<h3><a name="InteractiveStatements">Interactive Statements</a></h3>
+<p>Writing the code for interactive database applications has been simplified 
+for you in Genero BDL; single statements automatically compile into the lines of 
+program code required for the common tasks associated with such applications. 
+These interactive statements allow the program to respond to user input. Genero
+BDL introduces
+a major improvement with the <a href="IntroBDL.html">DIALOG</a> instruction, allowing parts of a
+form that have different functionality to be handled simultaneously.&nbsp; 
+
+<h4>  Using Windows and Forms</h4>
+
+<p>In Genero, programs manipulate <a href="WindowsAndForms.html#WHAT_IS">Window and Form</a> objects
+to define display areas for interactive statements within your program. The Abstract User Interface
+(AUI) tree contains a definition of these objects. You can open as many windows and forms as
+needed, subject only to the limits of memory and the maximum number of open files on the platform
+you are using.</p>
+
+<p>The <a href="WindowsAndForms.html#OPEN_WINDOW">OPEN WINDOW</a> statement creates and opens a new
+window on the user's screen. The runtime system maintains a stack of all open windows. When you
+execute this statement to open a new window, it is added to the window stack and becomes the current
+window. You can modify the window stack with the <a href="WindowsAndForms.html#CURRENT_WINDOW">CURRENT WINDOW</a> 
+and <a href="WindowsAndForms.html#CLOSE_WINDOW">CLOSE WINDOW</a> statements. With the <a href="WindowsAndForms.html#OPEN_WINDOW">OPEN WINDOW ... WITH FORM</a> statement you open a 
+window on the screen, load a compiled form from disk into memory, and make it ready for use.</p>
+
+<h4>Displaying data and managing data input and query</h4>
+
+<p>The <a href="MessageDisplay.html#DISPLAY">DISPLAY</a> instruction allows you to display program
+variable data in the fields of a form and continue the program flow without giving control to the
+end user.</p>
+
+<p>The <a href="Menus.html">MENU</a>  instruction is typically used in <i>Text
+User Interface</i> applications to handle user choices and activate a specific
+function of the application.</p>
+
+<p>The <a href="DisplayArray.html">DISPLAY ARRAY</a>  instruction can be used to
+show a list of records. It allows the user to view the contents of a program array of records, scrolling the
+record list on
+the screen and choosing a specific record.</p>
+
+<p>The <a href="RecordInput.html"> INPUT</a> instruction is designed for simple
+record input. It enables the fields in a form for input, waits while the user types data into the fields, and proceeds
+after the user accepts or cancels the dialog.</p>
+
+<p>The <a href="InputArray.html">INPUT ARRAY</a> instruction supports record
+list input. It allows the user to alter 
+the contents of records of a program array, and to insert and delete records.</p>
+
+<p>The
+<a href="Construct.html">CONSTRUCT</a> instruction is designed to let the user
+enter search criteria for a database query. The user can enter a value or a range of values for one or several form fields, and your
+program looks up the database rows that satisfy the requirements.</p>
+
+<p>The <a href="MultipleDialogs.html">DIALOG</a> statement allows you to combine INPUT,
+DISPLAY ARRAY, INPUT ARRAY and CONSTRUCT functionality within the same
+window/form.</p>
+
+<h4>Responding to actions by the user</h4>
+
+<p>User 
+<a href="InteractionModel.html">actions</a> can fire the execution of program of
+code called <i>action handlers</i>. The actions can be displayed to the user 
+as <a href="InteractionModel.html#CTRLGACTIONS"><i>action views</i></a> - buttons,
+toolbars, or pull-down menus in the application window. When the user makes a selection, the
+corresponding action is executed.&nbsp;</p>
+ 
+<p>The interactive <a href="Menus.html">MENU</a> statement can be used to define the list of
+action handlers that can be triggered. Or, the ON ACTION clause of interactive instructions, such as
+<a href="RecordInput.html">INPUT</a>, <a href="InputArray.html">INPUT ARRAY</a>,
+<a href="DisplayArray.html">DISPLAY ARRAY</a>,
+<a href="Construct.html">CONSTRUCT</a>, and <a href="MultipleDialogs.html">DIALOG</a>, can be used to
+implement the code to
+be executed for a given action.</p>
+
+<p>Common actions, such as <b>accept</b> (dialog validation) and <b>cancel</b> (dialog
+cancellation), are already <a href="InteractionModel.html#PREDEFACTIONS">pre-defined</a> for
+you in accordance with the interactive instruction.</p>
+
+<p><a href="ActionDefaults.html"><i>Action Defaults</i></a> allow you to define default
+decoration attributes (text, image) and functional&nbsp;attributes (accelerator keys) for
+the graphical objects associated with actions.</p>
+
+<h3><a name="LanguageLibrary">Language library</a> </h3>
+
+<p>The BDL language provides <a href="BuiltInFunctions.html">built-in functions</a> 
+to perform many basic tasks, as well as <a href="BuiltInClasses.html">built-in 
+classes</a> that can be used to manipulate the user interface. Dynamic C 
+Extension libraries are part of the standard package; see
+<a href="Ext_os_Path.html">File Manipulation functions</a> and
+<a href="Ext_util_Math.html">Mathematical functions</a>.</p>
+
+<hr>
+
+<h2><a name="Forms">Forms</a></h2>
+
+
+<p>The end-user of a program does not know about the database schema or your
+  carefully designed program logic. As the user sees it, the application screens, and the menus
+  that invoke them, are the application. The arrangement of fields, labels, and
+  other form objects, and the behavior of the form as the user presses different keys or buttons and selects
+  different menu options, create the personality of the program.</p>
+
+
+<p>You can define the application screens, or<i>  </i>forms, in text-based
+<i><a href="FormSpecFiles.html">Form Specification Files</a></i> (.per) These form files are
+translated by the <a href="Tools.html#TL_FGLFORM">Form Compiler</a> to produce the 
+<i>Runtime Form Files</i>  (.42f) that are deployed in production environments.&nbsp;Since 
+form files are separate from the other parts of your program, the <i><a href="Tools.html#TL_FGLFORM">Runtime Form Files</a></i> can be used
+with different programs.</p>
+<p>Unlike
+compiled program files, the translated <i>Runtime Form Files</i> are XML documents that
+describe the form elements, enabling portability across display devices. The XML
+file can also be written directly, or it can be generated or modified from your program code
+using the methods provided with Genero <a href="BuiltInClasses.html">Built-in Classes</a>. </p>
+
+<p> You can design your form to group objects in <a href="FormSpecFiles.html#FF_CONTAINER_HBOX"> horizontal and vertical boxes</a>, 
+ display it as a <a href="FormSpecFiles.html#FF_CONTAINER_FOLDER"> folder</a> of pages, and
+ use <a href="FormSpecFiles.html#SECTION_TOPMENU">menus</a>, <a href="FormSpecFiles.html#SECTION_TOOLBAR">toolbars</a>, or
+ <a href="FormSpecFiles.html#FF_ITEMTYPE_BUTTON"> buttons</a> to trigger
+ <a href="InteractionModel.html">actions</a>.&nbsp; You can associate an <a href="Arrays.html"> array</a> of data in the program 
+ with an array of fields on the form (<a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen-array</a>), 
+so the user can see multiple rows of data on the screen. In addition to the form 
+fields and screen records, your form can contain objects such as <a href="FormSpecFiles.html#FF_ITEMTYPE_PROGRESSBAR">progressbars</a>,
+ <a href="FormSpecFiles.html#FF_ITEMTYPE_CHECKBOX">checkboxes</a>, 
+ <a href="FormSpecFiles.html#FF_ITEMTYPE_RADIOGROUP">radiogroups</a>,
+ <a href="FormSpecFiles.html#FF_ITEMTYPE_COMBOBOX">comboboxes</a>, and
+ <a href="FormSpecFiles.html#FF_ITEMTYPE_IMAGE">images</a>.
+See <a href="FormSpecFiles.html">Form Specification Files</a> for additional 
+information.
+</p>
+
+
+<p> The appearance of form objects can be standardized using <a href="PresentationStyles.html">Presentation
+Styles</a> and <a href="ActionDefaults.html">Action Defaults</a>.
+</p>
+<p> Different parts of the form can be handled simultaneously using the BDL 
+instruction <a href="MultipleDialogs.html">DIALOG</a>.&nbsp;
+</p>
+
+
+<hr>
+
+<h2><a name="UserInterface">The User Interface</a></h2>
+
+
+<p>What happens when a user executes a Genero BDL application? The Genero Runtime System creates the <a href="DynamicUI.html#ABSTRACTUI"> Abstract User Interface</a> <i>
+  </i>tree, and the Genero Front End makes this abstract tree visible on the 
+Front End Client, such as the Genero Desktop Client, Genero Web Client, and 
+Genero Java Client. When a <a href="#InteractiveStatements">user interaction 
+  statement</a> takes control of the application, the copy of the tree on the Front End is automatically synchronized 
+  with the Runtime system tree by the <i> Front End Protocol</i>, an internal protocol used by the Runtime System.</p>
+
+
+<img border="0" src="../Images/DUIFig01.png" width="504" height="288"><br clear="all"><br>
+
+
+ The
+
+Genero BDL language provides <a href="BuiltInClasses.html">Built-in Classes</a> that implement methods to manage
+  the objects on the user's screen. Methods can be invoked by passing parameters and/or returning
+  values, allowing the User Interface to be modified completely at runtime.
+
+
+<p>Default XML files describe the appearance (decoration) of some of the graphic 
+objects on the user's screen. These files may be customized, or replaced with your own versions.</p>
+
+<ul>
+  <li><b>default.4ad </b> - default decoration and accelerators for <a href="InteractionModel.html">action
+    views</a></li>
+  <li><b>default.4st</b> - default definition of <a href="PresentationStyles.html">presentation
+    style</a> attributes&nbsp;</li>
+</ul>
+
+A special <a href="StartMenus.html"> StartMenu</a>, used to start different programs on the application
+    server where the runtime system executes, can be defined in an XML file with
+    the extension <b>.4sm</b>.
+
+
+<p>A set of 
+  <a href="XmlUtils.html">XML Utilities</a> are provided to allow you to create and modify XML documents. 
+  </p>
+
+
+<hr>
+
+
+<h2><a name="Compiling">Compiling a Genero BDL Application</a></h2>
+
+
+<p>A Genero BDL program can consist of a single source code module, but
+generally it will be organized in multiple modules as well as form specification files and
+perhaps localized string files.&nbsp; Database schema files are also required, if you
+have defined program data types and variables in the terms of an existing database column 
+or table by using the <a href="Variables.html#DATABASE_TYPES"> DEFINE ... LIKE</a> statement.
+</p>
+
+
+<p>The<a href="Tools.html"> tools </a> that Genero provides to compile the various files that will make up your
+application, and the file extensions of the source code and&nbsp; corresponding compiled
+files, are listed below, and an explanation follows:</p>
+
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img border="0" src="../Images/TUT101.png" width="432" height="288">
+</p>
+
+
+<p>The compiled source code modules can be linked into a .42r program that can be
+executed by the Runtime System. Compiled modules can also be grouped together into a
+.42x library that can then be used to build .42r programs:</p>
+
+
+<p>&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img border="0" src="../Images/TUT103.png" width="432" height="288">
+</p>
+
+
+<p>It is also possible to declare what modules are needed by the current module,
+in order to define the dependency between 4gl modules. When using this language
+feature, it is no longer required to link modules together to build a program.
+For more details, see the <a href="Programs.html#IMPORT">IMPORT FGL instruction</a>.
+</p>
+
+
+<h3><a name="SchemaFiles">Database Schema Files</a> - tool fgldbsch</h3>
+
+
+<p>Database Schema Files are used during program compilation to define data types, default values, display attributes and validation rules for form fields and program variables. You must generate database schema files each time the database structure changes, before compiling any other parts of your application.
+</p>
+
+
+<p>The <a href="Programs.html#DB_SCHEMA">SCHEMA</a> statement in program source files and form files identifies the database 
+schema file to be used. The <a href="EnvironmentVariables.html#EV_FGLDBPATH"> FGLDBPATH</a> environment variable can be used 
+to define a list of directories where the compiler can find database schema files.</p>
+
+
+<p>The <a href="Tools.html#TL_FGLDBSCH">Schema Extractor</a> <a href="Tools.html#TL_FGLDBSCH"> (fgldbsch)</a> is the tool provided 
+to generate the database schema files from a real database. Database schema files are generated from the system
+  tables.</p>
+
+
+<p><b>Example:</b></p>
+
+
+<blockquote>
+
+
+<pre>fgldbsch -db &lt;<i>database_name</i>&gt;</pre>
+
+
+</blockquote>
+
+
+<p>It is important that the schema file of the development database corresponds to the production database; otherwise, the elements 
+defined in the compiled version of your modules and forms will not match the table structures of the production database.</p>
+
+
+<p>The primary file produced by the utility is:</p>
+
+
+<b><i>&nbsp;&nbsp;&nbsp;&nbsp; &lt;database&gt;.</i>sch</b> - the file containing the data type
+    definition of all columns selected during schema extraction.<h3><a name="ProgramSourceModules">Program Source Modules</a> - tools
+fglcomp, fgllink</h3>
+
+
+<p>Genero BDL provides a source code <i>compiler</i> named fglcomp, which generates hardware-independent pseudo-machine
+  code (P-code). This code is not directly executable by the operating system:
+it is interpreted by the Genero 
+  BDL <i>runtime system </i>(a program named <b>fglrun</b>, and called 
+&quot;runner&quot;). </p>
+
+
+<p>The compiled P-code modules are binary. The files are not printable or editable as text.</p>
+
+
+<ul>
+  <li><a href="Tools.html#TL_FGLCOMP">Tool fglcomp</a> - Module compiler</li>
+</ul>
+<blockquote>
+  <p>This tool compiles a program source module into a p-code version. The
+  compiled module has an extension of <b>.42m</b>.</p>
+
+  <p>If a compilation error occurs, the text file &lt;<b><i>filenam</i>e&gt;.err</b> flagging the errors is created.
+  You can display directly the compilation errors by using the -M option.</p>
+
+<p>Example:</p>
+
+<pre>fglcomp &lt;<i>modulename</i>&gt;.4gl</pre>
+
+<p>Running the program:</p>
+
+<pre>fglrun &lt;m<i>odulename&gt;.</i>42m</pre>
+  <p>If your program consists of more than one module, the modules must be
+  linked together prior to execution, by the <b>fgllink</b> tool.</p>
+</blockquote>
+<ul>
+  <li><a href="Tools.html#TL_FGLLINK">Tool fgllink</a><b>&nbsp;</b>- Module linker
+    <p>This tool assembles multiple p-code modules compiled with fglcomp into a
+    single <b>.42r</b> program or a <b>.42x</b> library.</p>
+    <p>Example to create a program:</p>
+    <pre>fgllink -o <i>&lt;programname&gt;</i>.42r <i>&lt;module1name&gt;</i>.42m <i>&lt;module2name&gt;</i>.42m  ...</pre>
+    <p>Running the program:</p>
+    <pre>fglrun <i>&lt;programname</i>&gt;.42r</pre>
+    <p>Example to create a library that can be linked into other programs:</p>
+    <pre>fgllink -o <i>&lt;libraryname&gt;</i>.42x <i>&lt;module1name&gt;</i>.42m <i>&lt;module2name&gt;</i>.42m  ...</pre>
+  </li>
+</ul>
+
+
+<h3><a name="FormSpecificationFiles">Form Specification Files</a> - tool fglform<b>&nbsp; </b></h3>
+
+
+<p>Form specification files are used by the <a href="Tools.html#TL_FGLFORM">Form Compiler (fglform)</a> to produce the
+<i><a href="Tools.html#TL_FGLFORM">Runtime Form Files</a></i> that are deployed in production environments. The form 
+files have an extension of <b>.per</b> . Unlike compiled program files, the generated Runtime Form File is an XML 
+document that describes the form elements. The Runtime Form Files have an extension of <b>.42f</b>.</p>
+
+<p>If a compilation error occurs, the text file &lt;<b><i>filenam</i>e&gt;.err</b> flagging the errors is created.
+You can directly display the compilation error by using the -M option.</p>
+
+
+<p>Example:</p>
+
+
+<pre>fglform &lt;<i>formname</i>&gt;.per</pre>
+
+
+<h3><a name="Preprocessor">C-like Source Preprocessor</a></h3>
+
+<p>The fgl preprocessor can be used with the 4gl compiler and the form compiler
+to transform your sources before compilation, based on preprocessor directives.
+It allows you to include other files, to define macros that will be expanded
+when used in the source, and to compile conditionally.</p>
+
+
+<p>See <a href="Preprocessor.html">The Genero BDL Preprocessor</a> for
+details.</p>
+
+
+<h3><a name="LocalizedStringFiles">Localized String Files</a> - tool fglmkstr</h3>
+
+
+<p><i><a href="LocalizedStrings.html#SOURCES">Source String Files</a> </i>(<i>&lt;filename&gt;</i>.str ) containing
+the text of the <a href="LocalizedStrings.html">Localized Strings</a> that are used in your application must be
+compiled to binary files in order to be used at runtime. By default the runtime system expects that the Source String 
+file will have the same filename as your program. The compiled file has an extension of<i>&nbsp;</i>  <b> .42s</b>.</p>
+
+
+
+<p>Example:</p>
+<pre>fglmkstr &lt;<i>filename</i>&gt;.str</pre>
+<p>As an assistance in creating the <i><a href="LocalizedStrings.html#SOURCES">Source String Files</a></i>, 
+the<b> -m</b> option of the <a href="Tools.html#TL_FGLCOMP"> fglcomp</a> and <a href="Tools.html#TL_FGLFORM">fglform</a>
+tools can be used to extract all the localized strings that are used in your source code modules and forms.</p>
+
+
+<p>Example:</p>
+
+
+<pre>fglcomp -m &lt;<i>modulename</i>&gt;.4gl</pre>
+
+
+<p>The output file will be <b>&lt;</b><i>modulename</i>&gt;.str . This extracted
+file can be edited to assign text to the localized strings, and combined with
+other extracted files into a single &lt;<i>programname</i>&gt;.str file.</p>
+
+
+<p><b>Note</b>: Windows or Unix-based <i>makefiles</i> may be used to
+automate the process of compiling and linking programs.</p>
+
+
+<hr>
+
+
+<h2><a name="Deploying">Deploying a Genero BDL Application</a></h2>
+
+
+<p>&nbsp;&nbsp;&nbsp; <img border="0" src="../Images/TUT102.png" width="432" height="288">
+</p>
+
+<p>The following program files must be deployed at the user site:</p>
+
+<ul>
+  <li><b>.42r</b>, <b> .42x, .42m&nbsp;</b> - Executable programs and libraries,
+    compiled modules </li>
+  <li><b>.42f</b> - Runtime Form Files </li>
+  <li><b>.42s</b> - compiled Localized String Files, if used in your applications</li>
+  <li><b>.4sm</b> - your custom Start Menu XML file, if created&nbsp;</li>
+  <li><b>.4ad</b>, <b> .4st</b> - these default XML files, provided with Genero, must be
+distributed with the runtime system files;&nbsp;if you have customized these files,
+or created your own versions, your versions must be deployed instead.</li>
+</ul>
+
+<p><a href="#UserInterface">Front-end clients</a>, such as Genero Desktop Client 
+and Genero Web Client, make the application available to the user.</p>
+<p>The <a href="FglProfile.html">FGLPROFILE</a> configuration file can be used 
+to change the behavior of programs, and <a href="EnvironmentVariables.html">
+environment variables</a> can be set for Genero BDL.</p>
+
+<hr>
+
+
+<h2><a name="ResourcesforProgrammers">Resources for Programmers</a></h2>
+
+<h3>Documentation</h3>
+<p>This <a href="../index.html">Business Development Language Manual (User Guide)</a> is a complete guide to Genero BDL language 
+features, with explanations and sample code:</p>
+<ul>
+	<li><b>Genero BDL Concepts</b>&nbsp; - the following pages may
+  be especially helpful in understanding the concepts underlying Genero BDL:
+	<ul>
+		<li><a href="DynamicUI.html">Dynamic User Interface</a></li>
+		<li><a href="WindowsAndForms.html">Windows and Forms</a></li>
+		<li><a href="Programs.html">Programs</a></li>
+		<li><a href="Connections.html">Connections</a></li>
+		<li><a href="Transactions.html">Transactions</a></li>
+		<li><a href="SqlProgramming.html">SQL Programming</a></li>
+		<li><a href="CompilingPrograms.html">Compiling Programs</a></li>
+		<li><a href="BuiltInClasses.html">Built-In Classes</a></li>
+		<li><a href="PresentationStyles.html">Presentation Styles</a></li>
+	</ul></li>
+	<li><b>The Business Development Language Tutorial </b>-
+  	contains examples of basic BDL program development, with sample code; see
+	<a href="TutIndex.html">Summary</a></li>
+	<li><b>Migrating to Genero BDL</b> -&nbsp; the following pages
+  may be especially helpful if you are migrating an application from an earlier
+  product:
+	<ul>
+		<li><a href="NewFeatures.html">New Features</a></li>
+		<li><a href="FAQList.html">Frequently Asked Questions</a></li>
+		<li><a href="Tools.html">Tools and Components</a></li>
+		<li><a href="Layout.html">Layout - Form Rendering</a></li>
+		<li><a href="Mig0000.html">I4GL/BDS Migration Issues</a></li>
+	</ul>
+	<li><b>Open Database Interface Adaptation guides</b> - these pages are 
+	provided for each relational database that Genero supports.</li>
+</ul>
+<h3>Code examples</h3>
+<ul>
+  <li>Short example programs in the <b>demo</b> subdirectory of the BDL software
+    installation directory illustrate the use of Genero BDL features. These
+    programs may be compiled and executed.</li>
+  <li>The <a href="../index.html">User Guide</a> has extensive code samples.</li>
+  <li>The <a href="TutIndex.html">Tutorial </a>has code samples for each chapter
+    with embedded comments.&nbsp;</li>
+</ul>
+<h3>Training</h3>
+<p>On-line and 
+self-paced Genero BDL training classes are offered.&nbsp; Instructor-led classes are also available; 
+please call your regional sales office
+for information.</p>
+
+</body>
+</html>

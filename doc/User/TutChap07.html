@@ -1,0 +1,832 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Tutorial: Array Display</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+<p><a href="TutIndex.html">Back to Summary</a></p>
+<hr>
+<h1>Tutorial Chapter 7: Array Display</h1>
+<p>Summary:</p>
+<ul>
+  <li><a href="#DefiningForm">Defining the Form</a>
+    <ul>
+      <li><a href="#ScreenArray">Screen Arrays</a></li>
+      <li><a href="#TABLECONTAINER">Table Container</a></li>
+      <li><a href="#INSTRUCTIONS">Instructions Section</a></li>
+    </ul>
+  </li>
+  <li><a href="#formexample">Form example: manycust.per</a></li>
+  <li><a href="#CreatingFunction">Creating the Function</a>
+    <ul>
+      <li><a href="#ProgramArray">Program Arrays</a></li>
+      <li><a href="#FOREACH">Loading the Array: FOREACH</a></li>
+      <li><a href="#DISPLAYARRAY">The DISPLAY ARRAY Statement</a></li>
+    </ul>
+  </li>
+  <li><a href="#DISPLAYARRAY">The DISPLAY ARRAY Statement</a>
+    <ul>
+      <li><a href="#COUNTattribute">The COUNT attribute</a></li>
+      <li><a href="#ARR_CURRfunction">The ARR_CURR function</a></li>
+    </ul>
+  </li>
+  <li><a href="#libexample">Example: library function to display an Array</a></li>
+  <li><a href="#Compiling">Compiling and using a library</a></li>
+  <li><a href="#PagedMode">Paged mode of DISPLAY ARRAY</a></li>
+</ul>
+<hr>
+<p>Unlike the previous programs, this example displays multiple customer records
+at once.&nbsp; The program defines a <a href="Arrays.html">program
+array</a> to hold the records, and
+displays the records in a form containing a <a href="FormSpecFiles.html#FF_CONTAINER_TABLE"> TABLE</a> and a
+<a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>.&nbsp; The user can
+scroll through the records in the table, sort the table by a specific column,
+and hide or display columns.</p>
+
+<p> This example is written as a library function so it can be used in
+multiple programs. This type of code re-use maximizes your programming
+efficiency. As you work through the examples in the other tutorial lessons, look
+for additional candidates for library functions.</p>
+
+<p><img border="0" src="../Images/TUT601.png" width="557" height="234"></p>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Display on Windows platform</p>
+
+<p> In the illustration, the table is sorted
+by City.&nbsp; A right mouse click has displayed a dropdown list of the columns,
+with check boxes allowing the user to hide or show a specific column. After the user validates the row selected, the store number and store name
+are returned to the calling function.</p>
+
+<p>To implement this type of scrolling display, the example must:</p>
+
+<ul>
+  <li>Create a <a href="FormSpecFiles.html"> form specification file</a> containing a
+    <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>
+    of screen records</li>
+  <li>Define an <a href="Arrays.html">program array</a> of records, each record having
+members that correspond to the fields of the <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS"> screen records</a>.</li>
+</ul>
+<p>The function will use the <a href="DisplayArray.html"> DISPLAY ARRAY</a> statement to display all the records in
+the <a href="Arrays.html">program array</a>&nbsp; into the rows of the
+<a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>. Typically
+the <a href="Arrays.html">program array</a> has many more rows of data than will fit on the screen.</p>
+<hr>
+
+<h2><a name="DefiningForm">Defining the Form</a></h2>
+
+<h3><a name="ScreenArray">Screen Array</a>s</h3>
+
+<p>A <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>
+is usually a repetitive array of fields in the <a href="FormSpecFiles.html#SECTION_LAYOUT">LAYOUT</a>
+section of a form specification, each containing identical groups of screen fields. Each
+“row” of a screen array is a <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS"> screen
+record</a>. Each “column” of a <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen
+array</a> consists of fields with the same <a href="TutChap03.html#LAYOUTSection">item
+tag</a> in the <a href="FormSpecFiles.html#SECTION_LAYOUT">LAYOUT</a>
+section of the
+form specification file. You must declare screen arrays in the <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS"> INSTRUCTIONS</a>
+section.</p>
+
+<h3><a name="TABLECONTAINER">TABLE Containers</a></h3>
+
+<p>The <a href="FormSpecFiles.html#FF_CONTAINER_TABLE"> TABLE</a> container in a form defines the presentation of a list of records, bound to a
+<a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>. When this layout container is used with curly braces defining the
+container area, the position
+of the static labels and <a href="TutChap03.html#LAYOUTSection">item tags</a> is automatically detected by the form
+compiler to build a graphical object displaying a list of records.</p>
+
+<p>The first line of the <a href="FormSpecFiles.html#FF_CONTAINER_TABLE"> TABLE</a>
+area&nbsp;contains text entries defining the
+column titles.&nbsp; The second&nbsp; line contains field <a href="TutChap03.html#LAYOUTSection">item
+tags</a> that define
+the columns of the table receiving the data. This line is repeated to allow the
+display of multiple records at once.</p>
+
+<p>The user can sort the rows displayed in the form table by a mouse-click on the
+title of the column that is to be used for the sort.&nbsp;This sort is performed
+on the client side only.&nbsp; The columns and the entire form can be
+stretched and re-sized.&nbsp; A right-mouse-click on a column title displays a
+dropdown list-box of column names, with radio buttons allowing the user to
+indicate whether a specific column is to be hidden or shown.</p>
+
+<h3><a name="INSTRUCTIONS">The INSTRUCTIONS section</a></h3>
+
+<p>You must declare a <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen
+array</a> in the <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS"> INSTRUCTIONS</a> section of the form&nbsp;with the <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS"> SCREEN RECORD</a> keyword.
+You can reference the names of the screen array<i> </i>in the&nbsp;<a href="DisplayArray.html">DISPLAY ARRAY</a> statement of&nbsp; the program.</p>
+
+<hr>
+<h2><a name="formexample">Form example</a>: manycust.per</h2>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="358" bgcolor="#C0C0C0" valign="top"><b>Module</b> <b>custmain.4gl</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01 </CODE><tt>SCHEMA</tt> custdemo
+<CODE class=linenumber>02</CODE>
+<CODE class=linenumber>03</CODE> <tt>LAYOUT</tt>
+<CODE class=linenumber>04</CODE>  <tt>TABLE</tt>
+<CODE class=linenumber>05</CODE>  {
+<CODE class=linenumber>06</CODE>   Id   Name           ...   Zipcode   Contact          Phone
+<CODE class=linenumber>07</CODE>  [f01][f02           ]     [f05     ][f06            ][f07         ]
+<CODE class=linenumber>08</CODE>  [f01][f02           ]     [f05     ][f06            ][f07         ]
+<CODE class=linenumber>09</CODE>  [f01][f02           ]     [f05     ][f06            ][f07         ]
+<CODE class=linenumber>10</CODE>  [f01][f02           ]     [f05     ][f06            ][f07         ]
+<CODE class=linenumber>11</CODE>  [f01][f02           ]     [f05     ][f06            ][f07         ]
+<CODE class=linenumber>12</CODE>  [f01][f02           ]     [f05     ][f06            ][f07         ]
+<CODE class=linenumber>13</CODE>  }
+<CODE class=linenumber>14</CODE>  <tt>END</tt>
+<CODE class=linenumber>15</CODE> <tt>END</tt>
+<CODE class=linenumber>16</CODE>
+<CODE class=linenumber>17</CODE> <tt>TABLES </tt>
+<CODE class=linenumber>18</CODE>   customer
+<CODE class=linenumber>19</CODE><tt> END</tt>
+<CODE class=linenumber>20</CODE>
+<CODE class=linenumber>21</CODE> <tt>ATTRIBUTES</tt>
+<CODE class=linenumber>22</CODE> <tt>EDIT</tt> f01=customer.store_num;
+<CODE class=linenumber>23</CODE> <tt>EDIT</tt> f02=customer.store_name;
+<CODE class=linenumber>24</CODE> <tt>EDIT</tt> f03=customer.city;
+<CODE class=linenumber>25</CODE> <tt>EDIT</tt> f04=customer.state;
+<CODE class=linenumber>26</CODE> <tt>EDIT</tt> f05=customer.zipcode;
+<CODE class=linenumber>27</CODE> <tt>EDIT</tt> f06=customer.contact_name;
+<CODE class=linenumber>28</CODE> <tt>EDIT</tt> f07=customer.phone;
+<CODE class=linenumber>29</CODE> <tt>END</tt>
+<CODE class=linenumber>30</CODE>
+<CODE class=linenumber>31</CODE> <tt>INSTRUCTIONS</tt>
+<CODE class=linenumber>32</CODE> <tt>SCREEN RECORD</tt> sa_cust (customer.*);
+<CODE class=linenumber>33</CODE><tt> END</tt></pre>
+
+      </td>
+    </tr>
+  </table>
+
+
+<h4>Notes:</h4>
+
+<p>In order to fit on the page, the layout section of the form is truncated, not
+displaying the city and state columns.</p>
+
+<ul>
+  <li>Line <CODE class=linenumber>
+01</CODE>          The <b> custdemo</b> schema will be used by the compiler to determine
+the <a href="DataTypes.html"> data types</a> of the <a href="FormSpecFiles.html#FF_FORM_FIELD"> form fields</a>.</li>
+  <li>Line <CODE class=linenumber>
+06</CODE>          contains the titles for the columns in the <a href="FormSpecFiles.html#FF_CONTAINER_TABLE"> TABLE</a>.</li>
+  <li>Lines <CODE class=linenumber>
+07</CODE>          thru <CODE class=linenumber>
+12</CODE>          define the display area for the <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS"> screen records</a>.&nbsp; These
+rows must be identical in a TABLE.&nbsp;(The fields for <b>city </b>and<b> state</b> are
+indicated by <b>....</b> so the layout will fit on this page.)</li>
+  <li>Line <CODE class=linenumber>
+21</CODE>          thru <CODE class=linenumber>
+29</CODE>            In the <a href="FormSpecFiles.html#SECTION_ATTRIBUTES"> ATTRIBUTES</a> section the field
+    <a href="TutChap03.html#LAYOUTSection">item tags</a> are linked to the
+field description.&nbsp;Although there are multiple occurrences of each item
+    tags in the form, the
+description is listed only once for each unique field item tag.</li>
+  <li>Line <CODE class=linenumber>
+32</CODE> defines the <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen
+    array</a> in the <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS"> INSTRUCTIONS</a> section.&nbsp;The screen
+    record must contain the same number of elements as the records in
+the TABLE container. This example defines the screen record with all fields
+    defined with the <b>customer</b> prefix, but you can list each field name
+    individually.</li>
+</ul>
+<hr>
+
+<h2><a name="CreatingFunction">Creating the Function</a></h2>
+
+<h3><a name="ProgramArray">Program Array</a>s</h3>
+
+<p>A <a href="Arrays.html">program array</a>&nbsp; is an ordered set of elements all of the same data type. You can
+create one-, two-, or three-dimensional arrays. The elements of the array can be
+simple types or they can be records.</p>
+
+<p>Arrays can be:</p>
+
+<ul>
+  <li><a href="Arrays.html">static</a>&nbsp;-&nbsp; defined with an explicit size for
+all dimensions.</li>
+  <li><a href="Arrays.html">dynamic</a> - has a variable size.&nbsp;
+    Dynamic
+    arrays have no theoretical size limit.</li>
+</ul>
+
+<p>All elements of static arrays are initialized even if the array is not used.
+Therefore, defining huge static arrays may use a lot of memory. The elements of
+dynamic arrays are allocated automatically by the
+runtime system, as needed.</p>
+
+<p>Example of a dynamic array of records definition:</p>
+<pre><CODE class=linenumber>01</CODE> <tt>DEFINE</tt> cust_arr <tt>DYNAMIC ARRAY OF RECORD</tt> 
+<CODE class=linenumber>02</CODE>                    store_num <tt>LIKE</tt> customer.store_num,
+<CODE class=linenumber>03</CODE>                    city      <tt>LIKE</tt> customer.city
+<CODE class=linenumber>04</CODE>                 <tt> END RECORD</tt></pre>
+<p>This <a href="Variables.html#STRUCTURED"> array variable</a> is named <b>cust_arr</b>; each element of the array
+contains the members <b>store_num</b> and <b>city</b>.&nbsp; The size of
+the <a href="Arrays.html">array</a> will be determined by the runtime system, based on the program logic
+that is written to fill the array.&nbsp; The first element of any array
+is indexed with
+subscript 1. You would access
+the<b> store_num</b> member of the 10th element of the array by writing <b>cust_arr[10].store_num</b>.&nbsp;</p>
+
+<h3><a name="FOREACH">Loading the Array:</a>  the FOREACH Statement</h3>
+
+<p>To load the <a href="Arrays.html">program array</a>
+in the example, you must retrieve the values from the result set of a query and
+load them into the elements of the array.&nbsp;You must <a href="ResultSets.html#RS_DECLARE">DECLARE</a> the cursor
+before the FOREACH statement can retrieve the
+rows.The
+<a href="ResultSets.html#RS_FOREACH"> FOREACH</a> statement is equivalent to using the
+<a href="ResultSets.html#RS_OPEN">OPEN</a>, <a href="ResultSets.html#RS_FETCH"> FETCH</a>
+and <a href="ResultSets.html#RS_CLOSE"> CLOSE</a> statements to retrieve and process all the rows selected by a query,
+and is especially useful when loading arrays.</p>
+
+<pre><code class="linenumber">01 </code>&nbsp;<tt>DECLARE</tt> custlist_curs <tt>CURSOR FOR 
+</tt><CODE class=linenumber>02</CODE><tt>        SELECT</tt> store_num, city <tt>FROM</tt> customer
+<code class="linenumber">03</code>  <tt>CALL</tt> cust_arr.clear()
+<code class="linenumber">04</code>&nbsp; <tt>FOREACH</tt> custlist_curs <tt>INTO</tt> cust_rec.*
+<code class="linenumber">05</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <tt>CALL</tt> cust_arr.appendElement()
+<code class="linenumber">06</code>&nbsp;&nbsp;&nbsp;&nbsp; <tt>LET</tt> cust_arr[cust_arr.getLength()].* = cust_rec.*
+<code class="linenumber">07</code>&nbsp; <tt>&nbsp;END FOREACH</tt>&nbsp;</pre>
+<p>The <a href="ResultSets.html#RS_FOREACH"> FOREACH</a> statement shown above:</p>
+<ol>
+  <li>Opens the <b>custlist_curs</b>  <a href="ResultSets.html#RESULTSET"> cursor</a>.</li>
+	<li>Clears the <b>cust_arr</b> array.</li>
+  <li>Fetches a row into the record <b>cust_rec</b>. This record must be defined 
+	as having the same structure as a single element of the <b>cust_arr</b> array (store_num, 
+	city).</li>
+  <li>Appends an empty element to the <b>cust_arr</b> array.</li>
+	<li>Copies the cust_rec record into the <a href="Variables.html#STRUCTURED"> array</a>
+    <b>cust_arr</b> using the getLength method&nbsp; to determine the index of 
+	the element that was newly appended to the array. </li>
+  <li>Repeats steps 3, 4 and 5 until no more rows are retrieved from the database
+    table (automatically checks for the <a href="Programs.html#PC_NOTFOUND"> NOTFOUND</a> 
+    condition).&nbsp;&nbsp;</li>
+  <li>Closes the cursor and exits from the
+    <a href="ResultSets.html#RS_FOREACH"> FOREACH</a> loop.</li>
+</ol>
+
+<h3><a name="DISPLAYARRAY">The DISPLAY ARRAY Statement</a></h3>
+
+<p>The <a href="DisplayArray.html"> DISPLAY ARRAY</a>
+statement lets the user view the contents of an <a href="Variables.html#STRUCTURED"> array</a>
+of
+records, scrolling through the display, but the user cannot change them.</p>
+
+<h4>The <a name="COUNTattribute">COUNT attribute</a></h4>
+<ul>
+  <li>With static arrays</li>
+</ul>
+<blockquote>
+<p>When using a static array, the number of rows to be displayed is defined by
+the <a href="DisplayArray.html"> COUNT</a>&nbsp; attribute. If you do not
+use the COUNT attribute, the runtime system cannot determine how much data to
+display, and so the <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen
+array</a> remains empty.</p>
+</blockquote>
+<ul>
+  <li>With dynamic arrays</li>
+</ul>
+<blockquote>
+<p>When using a dynamic array, the number of rows to be displayed is defined by
+the number of elements in the dynamic array; the COUNT attribute is ignored.</p>
+</blockquote>
+<h4>Example:</h4>
+<pre><CODE class=linenumber>01</CODE><tt>   DISPLAY ARRAY</tt> cust_arr <tt>TO </tt>sa_cust.*</pre>
+<p>This statement will display the <a href="Arrays.html">program
+array</a>  <b>cust_arr</b> to the&nbsp;<a href="FormSpecFiles.html#FF_FORM_FIELD">form fields</a>
+defined in the <b>sa_cust</b> <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen
+array</a> of the form.</p>
+<p>By default, the <a href="DisplayArray.html">DISPLAY ARRAY</a>
+statement does not terminate until the user accepts or
+cancels the dialog; the Accept and Cancel <a href="TutChap04.html#PredefinedActions"> actions</a> are predefined
+and display on the form. Your program can accept the dialog instead, using the <a href="DisplayArray.html#CONTROL_INSTRUCTIONS">ACCEPT
+DISPLAY</a> instruction.</p>
+<h4>The <a name="ARR_CURRfunction">ARR_CURR function</a></h4>
+<p>When the user accepts or cancels a dialog, the <a href="BuiltInFunctions.html#BF_ARR_CURR"> ARR_CURR</a> built-in function returns the index
+(subscript number) of the row in the <a href="Arrays.html">program
+array</a> that was selected (current).</p>
+<hr>
+<h3><a name="libexample">Example Library module: cust_lib.4gl</a></h3>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Module</b> <b>cust_lib.4gl</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>SCHEMA</tt> custdemo
+<CODE class=linenumber>02</CODE>
+<CODE class=linenumber>03</CODE> <tt>FUNCTION </tt>display_custarr()
+<CODE class=linenumber>04</CODE>
+<CODE class=linenumber>05</CODE>   <tt>DEFINE </tt>cust_arr <tt>DYNAMIC ARRAY OF RECORD</tt>
+<CODE class=linenumber>06</CODE>          store_num    <tt>LIKE</tt> customer.store_num,
+<CODE class=linenumber>07</CODE>          store_name   <tt>LIKE</tt> customer.store_name,
+<CODE class=linenumber>08</CODE>          city         <tt>LIKE </tt>customer.city,
+<CODE class=linenumber>09</CODE>          state        <tt>LIKE</tt> customer.state,
+<CODE class=linenumber>10</CODE>          zipcode      <tt>LIKE</tt> customer.zipcode,
+<CODE class=linenumber>11</CODE>          contact_name <tt>LIKE </tt>customer.contact_name,
+<CODE class=linenumber>12</CODE>          phone        <tt>LIKE</tt> customer.phone
+<CODE class=linenumber>13</CODE>    <tt>END RECORD,</tt>
+<CODE class=linenumber>14</CODE>   <tt> </tt>cust_rec <tt>RECORD</tt>
+<CODE class=linenumber>15</CODE>          store_num    <tt>LIKE</tt> customer.store_num,
+<CODE class=linenumber>16</CODE>          store_name   <tt>LIKE</tt> customer.store_name,
+<CODE class=linenumber>17</CODE>          city         <tt>LIKE </tt>customer.city,
+<CODE class=linenumber>18</CODE>          state        <tt>LIKE</tt> customer.state,
+<CODE class=linenumber>19</CODE>          zipcode      <tt>LIKE</tt> customer.zipcode,
+<CODE class=linenumber>20</CODE>          contact_name <tt>LIKE </tt>customer.contact_name,
+<CODE class=linenumber>21</CODE>          phone        <tt>LIKE</tt> customer.phone
+<CODE class=linenumber>22</CODE>    <tt>END RECORD,</tt>
+<CODE class=linenumber>23</CODE>    ret_num <tt>LIKE</tt> customer.store_num,
+<CODE class=linenumber>24</CODE>    ret_name <tt>LIKE</tt> customer.store_name,
+<CODE class=linenumber>25</CODE>    curr_pa <tt>SMALLINT</tt>
+<CODE class=linenumber>26</CODE>  
+<CODE class=linenumber>27</CODE>    <tt>OPEN WINDOW</tt> wcust <tt>WITH FORM</tt> &quot;manycust&quot;
+<CODE class=linenumber>28</CODE>
+<CODE class=linenumber>29 </CODE>   <tt>DECLARE </tt>custlist_curs <tt>CURSOR FOR</tt>
+<CODE class=linenumber>30</CODE>      <tt>SELECT</tt> store_num, 
+<CODE class=linenumber>31</CODE>            store_name,
+<CODE class=linenumber>32</CODE>            city, 
+<CODE class=linenumber>33</CODE>            state, 
+<CODE class=linenumber>34 </CODE>           zipcode, 
+<CODE class=linenumber>35</CODE>            contact_name, 
+<CODE class=linenumber>36</CODE>            phone
+<CODE class=linenumber>37</CODE>        <tt>FROM</tt> customer
+<CODE class=linenumber>38</CODE>        <tt>ORDER BY</tt> store_num
+<CODE class=linenumber>39</CODE>
+<CODE class=linenumber>40</CODE>  
+<CODE class=linenumber>41</CODE>  <tt> CALL</tt> cust_arr.clear()
+<CODE class=linenumber>42</CODE>   <tt>FOREACH</tt> custlist_curs <tt>INTO</tt> cust_rec.*
+<CODE class=linenumber>43</CODE>    <tt>CALL</tt> cust_arr.appendElement()
+<CODE class=linenumber>44</CODE>    <tt>LET</tt> cust_arr[cust_arr.getLength()].* = cust_rec.*
+<CODE class=linenumber>45</CODE>   <tt>END FOREACH</tt>
+<CODE class=linenumber>46</CODE>
+<CODE class=linenumber>47</CODE>   <tt>LET</tt> ret_num = 0
+<CODE class=linenumber>48</CODE>   <tt>LET</tt> ret_name = <tt>NULL</tt>
+<CODE class=linenumber>49</CODE>
+<CODE class=linenumber>50</CODE>   <tt>IF</tt> (cust_arr.getLength() &gt; 0) <tt>THEN</tt> 
+<CODE class=linenumber>51</CODE>   <tt> DISPLAY</tt> <tt>ARRAY </tt>cust_arr <tt>TO</tt> sa_cust.*
+<CODE class=linenumber>52</CODE>    <tt>IF</tt> (<tt>NOT </tt>INT_FLAG) <tt>THEN</tt>
+<CODE class=linenumber>53</CODE>   <tt>    LET</tt> curr_pa = arr_curr()
+<CODE class=linenumber>54</CODE>       <tt>LET</tt> ret_num = cust_arr[curr_pa].store_num
+<CODE class=linenumber>55</CODE>       <tt>LET</tt> ret_name = cust_arr[curr_pa].store_name
+<CODE class=linenumber>56</CODE>    <tt>END IF</tt>
+<CODE class=linenumber>57</CODE>  
+<CODE class=linenumber>58</CODE>
+<CODE class=linenumber>59</CODE>   <tt>CLOSE WINDOW</tt> wcust
+<CODE class=linenumber>60</CODE>   <tt>RETURN</tt> ret_num, ret_name
+<CODE class=linenumber>61</CODE>
+<CODE class=linenumber>62</CODE><tt> END FUNCTION</tt> </pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b> </p>
+        <ul>
+          <li>Lines
+<CODE class=linenumber>05 </CODE>thru
+<CODE class=linenumber> 13 </CODE>define a local <a href="Arrays.html">program
+            array</a>, <b>cust_arr</b>.</li>
+          <li>Lines
+<CODE class=linenumber>14 </CODE>thru <CODE class=linenumber>22 </CODE>define a local
+            <a href="Variables.html">program record</a>, <b>cust_rec</b>. This 
+			record is used as temporary storage for the row data retrieved by 
+			the FOREACH loop in line 42.</li>
+          <li>Lines <CODE class=linenumber>23 </CODE>and <CODE class=linenumber>24
+            </CODE>define local <a href="Variables.html"> variables</a> to hold the store number and name
+values to be returned to the calling function.</li>
+          <li>Line
+<CODE class=linenumber>25</CODE>  defines a <a href="Variables.html"> variable</a>
+            to store the value of the
+program array index.</li>
+          <li>Line
+<CODE class=linenumber>27</CODE>   opens a window with the form containing the <a href="Arrays.html">array</a>.</li>
+          <li>Lines
+<CODE class=linenumber>29</CODE>  thru
+<CODE class=linenumber>38</CODE>  <a href="ResultSets.html#RS_DECLARE">DECLARE</a>
+            the <a href="ResultSets.html#RESULTSET"> cursor</a> <b>custlist_curs</b> to retrieve
+the rows from the customer table.&nbsp;</li>
+          <li>Line <CODE class=linenumber>40</CODE>  sets the variable <b>idx</b> to
+            0, this variable will be incremented in the FOREACH loop.</li>
+          <li>Line
+<CODE class=linenumber>41</CODE> clear the dynamic array.</li>
+			<li>Line
+<CODE class=linenumber>42 uses </CODE>FOREACH to retrieve each row from the 
+			result set into the program record, <b>cust_rec</b>.&nbsp; </li>
+          <li>Lines
+<CODE class=linenumber>43</CODE>  thru <CODE class=linenumber>44</CODE> are 
+			executed for each row that is retrieved by the FOREACH. They append 
+			a new element to the array cust_arr, nd transfer the data from the 
+			program record into new element, using the method getLength to 
+			identify the index of the element.&nbsp; When&nbsp; the
+            <a href="ResultSets.html#RS_FOREACH"> FOREACH</a> statement has retrieved all the rows the
+            <a href="ResultSets.html#RESULTSET"> cursor</a> is
+  closed and the FOREACH is exited.</li>
+          <li>Lines
+ <CODE class=linenumber>47</CODE> and <CODE class=linenumber>48</CODE>&nbsp;
+            Initialize the variables used to return the customer number and
+            customer name.</li>
+          <li>Lines
+ <CODE class=linenumber>50</CODE> thru <CODE class=linenumber>57</CODE>&nbsp; If 
+			the length of the <b>cust_arr</b> array is greater than
+            0, the <a href="ResultSets.html#RS_FOREACH"> FOREACH</a>
+            statement did retrieve some rows.&nbsp; </li>
+          <li>
+            Line
+ <CODE class=linenumber>52</CODE> <a href="DisplayArray.html">DISPLAY ARRAY</a>
+            turns control over to the user, and waits for the user to accept or cancel the dialog.&nbsp;&nbsp;</li>
+          <li>Line
+ <CODE class=linenumber>52</CODE>    The <a href="Programs.html#PV_INT_FLAG">INT_FLAG</a> variable is tested to check if
+            the user validated the dialog.</li>
+          <li>Line
+ <CODE class=linenumber>53</CODE> If the user has validated the dialog, the built-in
+  function <a href="BuiltInFunctions.html#BF_ARR_CURR"> ARR_CURR</a>
+            is used to store the index for the <a href="Arrays.html">program
+            array</a> element the
+  user had selected (corresponding to the highlighted row in the <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen
+            array</a>) in the variable <b>curr_pa</b>.</li>
+          <li>Lines
+<CODE class=linenumber>54</CODE> and
+<CODE class=linenumber>55</CODE> The variable <b>curr_pa</b> is used&nbsp; to retrieve the current values of
+            <b> store_num</b> and <b> store_name</b> from the program array and
+  store them in the <a href="Variables.html"> variables</a> <b>ret_num</b> and
+            <b>ret_name</b>.</li>
+          <li>Line <CODE class=linenumber>59</CODE>  closes the window.</li>
+          <li>Line
+<CODE class=linenumber>60</CODE>     returns<b> ret_num</b> and <b>ret_name</b> to
+the calling function.</li>
+        </ul>
+
+
+<hr>
+<h2><a name="Compiling">Compiling and using a Library </a>
+</h2>
+<p>Since this is a <a href="Functions.html"> function</a> that could be used
+by other programs that reference
+the <b> customer</b> table, the function will be <a href="Tools.html#TL_FGLCOMP"> compiled</a> into a library.&nbsp; The
+library can then be linked into any program, and the function
+called.&nbsp; The
+function will always return <b> store_num</b> and <b>store_name</b>.&nbsp; If the
+<a href="ResultSets.html#RS_FOREACH"> FOREACH</a> fails, or returns no rows, the calling program will have a
+<b> store_num</b> of zero and
+a NULL <b>store_name</b> returned.
+</p>
+<p>The function is contained in a file named
+<b> cust_lib.4gl</b>.&nbsp; This file would
+usually contain additional <a href="Tools.html#TL_FGLCOMP"> library</a> functions.&nbsp;To compile (and link,
+if there were additional .4gl files to be included in the library):
+</p>
+<pre>     fgl2p -o cust_lib.42x cust_lib.4gl</pre>
+<p>Since a library has no <a href="Programs.html#MAIN_BLOCK"> MAIN</a> function, we will need to create a small stub
+program if we want to test the library function
+independently.&nbsp; This
+program contains the minimal functionality to test the function.
+</p>
+<h3>Example: cust_stub.4gl</h3>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="387" bgcolor="#C0C0C0" valign="top"><b>Module
+        cust_stub.4gl</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>SCHEMA</tt> custdemo
+<CODE class=linenumber>02</CODE>
+<CODE class=linenumber>03</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>04</CODE>   <tt>DEFINE</tt> store_num  <tt>LIKE</tt> customer.store_num,
+<CODE class=linenumber>05</CODE>         store_name <tt>LIKE</tt> customer.store_name
+<CODE class=linenumber>06</CODE>
+<CODE class=linenumber>07</CODE>  <tt>DEFER INTERRUPT</tt>
+<CODE class=linenumber>08</CODE>  <tt>CONNECT TO</tt> &quot;custdemo&quot;
+<CODE class=linenumber>09</CODE>  <tt>CLOSE WINDOW SCREEN</tt>
+<CODE class=linenumber>10</CODE>
+<CODE class=linenumber>11</CODE>  <tt>CALL</tt> display_custarr() <tt>
+</tt><CODE class=linenumber>12</CODE><tt>            RETURNING</tt> store_num, store_name
+<CODE class=linenumber>13</CODE>  <tt>DISPLAY</tt> store_num, store_name
+<CODE class=linenumber>14</CODE>
+<CODE class=linenumber>15</CODE>  <tt>DISCONNECT CURRENT</tt>
+<CODE class=linenumber>16</CODE>
+<CODE class=linenumber>17</CODE> <tt>END MAIN</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Lines <CODE class=linenumber>04</CODE>  and <CODE class=linenumber>
+            05</CODE>  define variables to hold the values returned by the
+            display_custarr function.</li>
+          <li>Lines <CODE class=linenumber>07</CODE> thru <CODE class=linenumber>09</CODE>
+            are
+required simply for the test program, to set the program up and connect to the
+database.</li>
+          <li>Line
+<CODE class=linenumber>11</CODE> calls the library function <b>display_custarr</b>.</li>
+          <li>Line
+<CODE class=linenumber>13</CODE> displays&nbsp; the returned values to standard
+output for the purposes of the test.</li>
+        </ul>
+
+
+<p>Now we can compile the form file and the test program, and link the library, and then test to see if
+it works properly.
+</p>
+<pre>     fglform manycust.per</pre>
+<pre>     fgl2p -o test.42r cust_stub.4gl cust_lib.42x</pre>
+<pre>     fglrun test.42r                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</pre>
+<hr>
+
+<h2><a name="PagedMode">Paged Mode of DISPLAY ARRAY</a></h2>
+<p>The previous example retrieves all the rows from the customer table into the <a href="Arrays.html">program
+array</a> prior to the data being displayed by the <a href="DisplayArray.html"> DISPLAY ARRAY</a>
+statement.&nbsp;Using this full list mode, you must copy into the array all the
+data you want to display.&nbsp; Using the DISPLAY ARRAY
+statement in &quot;<a href="DisplayArray.html#PAGEDMODE">paged</a>&quot; mode
+allows you to&nbsp;provide data rows dynamically during the dialog, using a
+dynamic array to hold one page of data.</p>
+<p>The following example modifies the program to use a&nbsp;<a href="ResultSets.html">SCROLL CURSOR</a>  
+to retrieve
+only the <b> store_num</b> values from the customer table. As the user scrolls
+thru the <a href="ResultSets.html"> result set</a>, statements in the ON FILL BUFFER clause of the
+<a href="DisplayArray.html"> DISPLAY ARRAY</a> statement are used to retrieve and display the remainder of each
+row, a page of data at a time.&nbsp; This helps to minimize the possibility that
+the rows have been changed, since the rows are re-selected immediately prior to
+the page being displayed.</p>
+<h3>What is the &quot;Paged mode&quot;?</h3>
+<p>A &quot;page&quot; of data is the total number of&nbsp; rows of data&nbsp;
+that can be displayed in the form at one time.&nbsp; The length of a page can
+change dynamically, since the user has the option of re-sizing the window
+containing the form.&nbsp; The run-time system automatically keeps track of the
+current length of a page.</p>
+<p>The <a href="DisplayArray.html#PAGEDMODE">ON FILL BUFFER</a> clause feeds the <a href="DisplayArray.html"> DISPLAY ARRAY</a>
+instruction with pages of
+data. The following <a href="BuiltInFunctions.html"> built-in functions</a> are used in the ON FILL BUFFER clause to
+provide the rows of data for the page:</p>
+<ul>
+  <li><a href="BuiltInFunctions.html#BF_FGL_DIALOG_GETBUFFERSTART">FGL_DIALOG_GETBUFFER START()</a> - retrieves the offset in the&nbsp;<a href="ResultSets.html">SCROLL CURSOR</a>   result set, and is used to determine the
+    starting point for retrieving and displaying the complete
+    rows.</li>
+  <li><a href="BuiltInFunctions.html#BF_FGL_DIALOG_GETBUFFERLENGTH">FGL_DIALOG_GETBUFFERLENGTH()</a> - retrieves the current length of the page,
+    and is used to determine the number of rows that must be
+    provided.</li>
+</ul>
+<p>The statements in the ON FILL BUFFER clause of <a href="DisplayArray.html"> DISPLAY ARRAY</a>
+are executed automatically by the
+runtime system each time a new page of data is needed.&nbsp; For example, if the
+current size of the window indicates that ten rows can be displayed at one
+time,&nbsp; the statements in the ON FILL BUFFER clause will automatically
+maintain the <a href="Arrays.html">dynamic array</a> so that the relevant ten rows are retrieved and/or
+displayed as the user scrolls up and down through the table on the form.&nbsp;
+If the window is re-sized by the user, the statements in the ON FILL BUFFER
+clause will automatically retrieve and display the new number of rows.</p>
+<h3><a name="AFTERDISPLAY">AFTER DISPLAY block</a></h3>
+<p>The <a href="DisplayArray.html"> AFTER DISPLAY</a> block is executed one time, after the user has
+accepted or
+canceled the dialog, but before executing the next statement in the
+program.&nbsp; In this program, the statements in this block determine the
+current position of the <a href="ResultSets.html#RESULTSET"> cursor</a>
+when user pressed OK or Cancel, so the correct
+store number and name can be returned to the calling <a href="Functions.html">function</a>.</p>
+<hr>
+<h2>Example of paged mode </h2>
+<p>In the first example, the records in the customer table are loaded into the <a href="Arrays.html">program
+array</a> and the user uses the form to scroll through the program
+array. In
+this example, the user is actually scrolling through the <a href="ResultSets.html"> result set</a> created by a&nbsp;
+<a href="ResultSets.html">SCROLL CURSOR</a>.&nbsp; This&nbsp; SCROLL CURSOR  
+retrieves only the store number, and another SQL <a href="StaticSql.html#SS_SELECT"> SELECT</a> statement is used to retrieve the remainder of the row as
+needed. </p>
+
+  <table border="0" width="100%">
+    <tr>
+      <td width="413" bgcolor="#C0C0C0" valign="top"><b>Module cust_lib2.4gl</b></td>
+    </tr>
+    <tr>
+      <td width="100%" valign="top">
+        <pre><CODE class=linenumber>01</CODE> <tt>SCHEMA</tt> custdemo
+<CODE class=linenumber>02</CODE>
+<CODE class=linenumber>03</CODE> <tt>FUNCTION</tt> display_custarr()
+<CODE class=linenumber>04</CODE>
+<CODE class=linenumber>05</CODE>  <tt>DEFINE</tt> cust_arr <tt>DYNAMIC ARRAY OF RECORD</tt>
+<CODE class=linenumber>06</CODE>         store_num     <tt>LIKE</tt> customer.store_num,
+<CODE class=linenumber>07</CODE>         store_name    <tt>LIKE</tt> customer.store_name,
+<CODE class=linenumber>08</CODE>         city          <tt>LIKE</tt> customer.city,
+<CODE class=linenumber>09</CODE>         state         <tt>LIKE</tt> customer.state,
+<CODE class=linenumber>10</CODE>         zipcode       <tt>LIKE</tt> customer.zipcode,
+<CODE class=linenumber>11</CODE>         contact_name  <tt>LIKE</tt> customer.contact_name,
+<CODE class=linenumber>12</CODE>         phone         <tt>LIKE</tt> customer.phone
+<CODE class=linenumber>13</CODE>     <tt>END RECORD</tt>,
+<CODE class=linenumber>14</CODE>     ret_num      <tt>LIKE</tt> customer.store_num,
+<CODE class=linenumber>15</CODE>     ret_name     <tt>LIKE</tt> customer.store_name,
+<CODE class=linenumber>16</CODE>     ofs, len, i  <tt>SMALLINT</tt>,
+<CODE class=linenumber>17      </CODE>sql_text     <tt>STRING</tt><CODE class=linenumber>,
+18      </CODE>rec_count    <tt>SMALLINT</tt>,<CODE class=linenumber>
+19      </CODE>curr_pa      <tt>SMALLINT</tt>
+<CODE class=linenumber>20</CODE>
+<CODE class=linenumber>21</CODE>  <tt>OPEN WINDOW</tt> wcust <tt>WITH FORM </tt>&quot;manycust&quot;
+<CODE class=linenumber>22</CODE>
+<CODE class=linenumber>23</CODE>  <tt>LET</tt> rec_count = 0
+<CODE class=linenumber>24</CODE>  <tt>SELECT COUNT</tt>(*)<tt> INTO</tt> rec_count <tt>FROM</tt> customer
+<CODE class=linenumber>25</CODE>  <tt>IF</tt> (rec_count == 0) <tt>THEN
+</tt><CODE class=linenumber>26 </CODE><tt>  </tt> <tt> RETURN</tt> 0, NULL
+<CODE class=linenumber>27</CODE>  <tt>END IF</tt>   
+<CODE class=linenumber>28</CODE>  
+<CODE class=linenumber>29</CODE>  <tt>LET</tt> sql_text =  
+<CODE class=linenumber>30</CODE>     &quot;<tt>SELECT </tt>store_num, store_name, city,&quot;
+<CODE class=linenumber>31</CODE>     || &quot; state, zipcode, contact_name,&quot;
+<CODE class=linenumber>32</CODE>     || &quot; phone&quot;
+<CODE class=linenumber>33</CODE>     || &quot; <tt>FROM</tt> customer <tt>WHERE</tt> store_num = ?&quot;
+<CODE class=linenumber>34</CODE>  <tt>PREPARE</tt> rec_all <tt>FROM</tt> sql_text
+<CODE class=linenumber>35
+36</CODE>  <tt>DECLARE</tt> num_curs <tt>SCROLL CURSOR FOR</tt>
+<CODE class=linenumber>37</CODE>         <tt>SELECT</tt> store_num <tt>FROM </tt>customer    
+<CODE class=linenumber>38</CODE>  <tt>OPEN</tt> num_curs
+<CODE class=linenumber>39</CODE>
+<CODE class=linenumber>40</CODE>  <tt>DISPLAY ARRAY </tt>cust_arr <tt>TO </tt>sa_cust.* <tt> </tt>
+<CODE class=linenumber>41</CODE>       <tt>ATTRIBUTES</tt>(<tt>UNBUFFERED</tt>, <tt>COUNT</tt>=rec_count)
+<CODE class=linenumber>42</CODE>
+<CODE class=linenumber>43 </CODE>   <tt> ON FILL BUFFER</tt>
+<CODE class=linenumber>44</CODE>      <tt>LET</tt> ofs = FGL_DIALOG_GETBUFFERSTART()
+<CODE class=linenumber>45</CODE>      <tt>LET</tt> len = FGL_DIALOG_GETBUFFERLENGTH()
+<CODE class=linenumber>46</CODE>      <tt>FOR</tt> i = 1 <tt>TO</tt> len
+<CODE class=linenumber>47</CODE>        <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>48</CODE>      <tt>  FETCH ABSOLUTE</tt> ofs+i-1 num_curs <tt>
+</tt><CODE class=linenumber>49</CODE><tt>                    INTO</tt> cust_arr[i].store_num
+<CODE class=linenumber>50</CODE><tt>         EXECUTE</tt> rec_all <tt>INTO</tt> cust_arr[i].* 
+<CODE class=linenumber>51</CODE>                 <tt>USING</tt> cust_arr[i].store_num
+<CODE class=linenumber>52</CODE>        <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>53</CODE>        <tt>IF</tt> (SQLCA.SQLCODE = NOTFOUND) <tt>THEN</tt>
+<CODE class=linenumber>54</CODE>          <tt>MESSAGE </tt>&quot;Row deleted&quot; by another user.&quot;
+<CODE class=linenumber>55</CODE>          <tt>CONTINUE FOR</tt>
+<CODE class=linenumber>56 </CODE>       <tt>ELSE</tt>
+<CODE class=linenumber>57</CODE>          <tt>IF</tt> (SQLCA.SQLCODE &lt; 0) <tt>THEN</tt>
+<CODE class=linenumber>58 </CODE>           <tt>ERROR</tt> SQLERRMESSAGE
+<CODE class=linenumber>59</CODE>            <tt>CONTINUE FOR</tt> 
+<CODE class=linenumber>60</CODE>          <tt>END IF</tt>
+<CODE class=linenumber>61 </CODE>       <tt>END IF</tt>
+<CODE class=linenumber>62</CODE>      <tt>END FOR</tt>
+<CODE class=linenumber>62</CODE>
+<CODE class=linenumber>64 </CODE>   <tt> AFTER DISPLAY</tt>
+<CODE class=linenumber>65</CODE>      <tt>IF</tt> (INT_FLAG) <tt>THEN</tt>
+<CODE class=linenumber>66</CODE>         <tt>LET</tt> ret_num = 0
+<CODE class=linenumber>67</CODE>         <tt>LET</tt> ret_name = <tt>NULL</tt>
+<CODE class=linenumber>68</CODE>      <tt>ELSE</tt>
+<CODE class=linenumber>69</CODE>         <tt>LET</tt> curr_pa = ARR_CURR()- ofs + 1
+<CODE class=linenumber>70</CODE>         <tt>LET</tt> ret_num = cust_arr[curr_pa].store_num 
+<CODE class=linenumber>71</CODE>         <tt>LET</tt> ret_name = cust_arr[curr_pa].store_name
+<CODE class=linenumber>72</CODE>      <tt>END IF</tt>
+<CODE class=linenumber>73</CODE>
+<CODE class=linenumber>74</CODE>  <tt>END DISPLAY</tt>
+<CODE class=linenumber>75</CODE>
+<CODE class=linenumber>76</CODE>  <tt>CLOSE</tt><CODE class=linenumber> </CODE>num_curs<CODE class=linenumber>
+77</CODE>  <tt>FREE</tt><CODE class=linenumber> </CODE>num_curs<CODE class=linenumber>
+78</CODE>  <tt>FREE</tt><CODE class=linenumber> </CODE>rec_all
+<CODE class=linenumber>79</CODE>
+<CODE class=linenumber>80</CODE>  <tt>CLOSE WINDOW</tt> wcust
+<CODE class=linenumber>81</CODE>  <tt>RETURN</tt> ret_num, ret_name
+<CODE class=linenumber>82</CODE>
+<CODE class=linenumber>83</CODE> <tt>END FUNCTION</tt></pre>
+      </td>
+    </tr>
+  </table>
+
+
+        <p><b>Notes:</b></p>
+        <ul>
+          <li>Lines
+<CODE class=linenumber>16</CODE> thru
+<CODE class=linenumber>19</CODE>  define some new <a href="Variables.html"> variables</a>
+            to be used, including
+<b>cont_disp </b>to indicate whether the function should continue.</li>
+          <li>Line
+<CODE class=linenumber>24</CODE> uses an embedded <a href="StaticSql.html"> SQL statement</a> to store the
+total number of rows in the customer table in the variable <b>rec_count</b>.</li>
+          <li>Lines
+<CODE class=linenumber>25</CODE> thru
+<CODE class=linenumber>27</CODE>  If the total number of rows is zero, function
+            returns immediately 0 and NULL.</li>
+          <li>Lines
+<CODE class=linenumber>29</CODE>  thru
+<CODE class=linenumber>33</CODE>  contain the text of an SQL <a href="StaticSql.html#SS_SELECT"> SELECT</a>
+            statement to
+  retrieve values from a single row in the <b>customer</b> table. The <b>?</b>
+  placeholder will be replaced with the store number when the statement is
+  executed.&nbsp; This text is assigned to a <a href="DataTypes.html#DT_STRING">STRING</a> 
+            variable, <b>sql_text</b>.</li>
+          <li>Line
+<CODE class=linenumber>34</CODE> uses the SQL <a href="DynamicSql.html#DS_PREPARE">PREPARE</a>
+            statement to convert the <a href="DataTypes.html#DT_STRING">STRING</a> 
+            into an executable statement, <b>rec_all</b>.&nbsp; This statement
+  will be executed when needed, to populate the rest of the values in the row of
+  the <a href="Arrays.html">program array</a>.</li>
+          <li>Lines
+<CODE class=linenumber>36</CODE>  thru
+<CODE class=linenumber>37</CODE>  <a href="ResultSets.html#RS_DECLARE">DECLARE</a>
+            a&nbsp; <a href="ResultSets.html">SCROLL CURSOR</a>   <b>num_curs</b> to
+  retrieve only the store number from the customer table.</li>
+          <li>Line
+<CODE class=linenumber>38</CODE>  opens the&nbsp; <a href="ResultSets.html">SCROLL CURSOR</a>  
+            <b>num_curs</b>.</li>
+          <li>Lines
+<CODE class=linenumber>40</CODE>  and
+<CODE class=linenumber>41</CODE>  call the <a href="DisplayArray.html"> DISPLAY ARRAY</a>
+            statement, providing the <a href="DisplayArray.html"> COUNT</a> to let the statement know the total number of rows in the SQL result
+  set.</li>
+          <li>Lines
+<CODE class=linenumber>43</CODE>  thru
+<CODE class=linenumber>62</CODE>  contain the logic for the ON FILL BUFFER clause
+            of the <a href="DisplayArray.html"> DISPLAY ARRAY</a>
+            statement.&nbsp; This control block will be executed automatically whenever a
+  new page of data is required.</li>
+          <li>Line
+<CODE class=linenumber>44</CODE>   uses the <a href="BuiltInFunctions.html"> built-in
+            function</a> to get the offset for the page, the starting point for
+            the retrieval of rows, and stores it in the <a href="Variables.html">variable</a>
+            <b>ofs</b>.</li>
+          <li>Line
+<CODE class=linenumber>45</CODE>   uses the <a href="BuiltInFunctions.html"> built-in
+            function</a> to get the page length, and stores it in the <a href="Variables.html">variable</a>
+            <b>len</b>.</li>
+          <li>Lines
+<CODE class=linenumber>46</CODE>   thru
+<CODE class=linenumber>62</CODE> contain a <a href="FlowControl.html#FC_FOR"> FOR</a>
+            loop to populate each row in the page with values from the customer
+            table.&nbsp; The <a href="Variables.html">variable</a> <b>i</b> 
+            is incremented to populate successive rows.&nbsp; The first value of<b> i </b>is
+            1.</li>
+          <li>Lines
+<CODE class=linenumber>48</CODE>  and <CODE class=linenumber>49</CODE>  use
+            the&nbsp;<a href="ResultSets.html">SCROLL CURSOR</a>   <b>num_curs</b> 
+            with the syntax <a href="ResultSets.html#RS_FETCH"> FETCH
+            ABSOLUTE</a><b>  &lt;</b><i>row_number</i><b>&gt;</b> to
+            retrieve the store number from a specified row in the <a href="ResultSets.html">result
+            set,</a> and to store it in row<b> i </b>of the <a href="Arrays.html">program
+            array</a>.&nbsp;Since <b>i </b>was started at 1, the
+            following calculation is used to determine the row number of the row to be retrieved:
+    <pre>   (Offset for the page) PLUS <b>i</b><i> </i>MINUS 1 </pre>
+          </li>
+        </ul>
+        <blockquote>
+          <p>Notice that rows 1 thru (<i>page_ length</i>) of the <a href="Arrays.html">program
+          array</a> are
+    filled each time a new page is required.</p>
+        </blockquote>
+        <ul>
+          <li>Lines
+<CODE class=linenumber>50</CODE>  and
+<CODE class=linenumber>51</CODE>  execute the <a href="DynamicSql.html#DS_PREPARE">prepared</a>
+            statement <b>rec_all</b> to retrieve the rest of the values for row <b>i</b> in the <a href="Arrays.html">program
+            array</a>,
+    using the store number retrieved by the&nbsp; <a href="ResultSets.html">SCROLL CURSOR</a>.&nbsp;
+            Although this statement is within the <a href="FlowControl.html#FC_FOR"> FOR</a>
+            loop, it was prepared
+            earlier in
+    the program, outside of the loop, to avoid unnecessary re-processing each
+    time the loop is executed.</li>
+          <li>Lines
+<CODE class=linenumber>53</CODE>  thru
+<CODE class=linenumber>61</CODE>  test whether fetching the entire row was
+    successful. If not, a message is displayed to the user, and the
+    CONTINUE FOR instruction continues the <a href="FlowControl.html#FC_FOR"> FOR</a> loop with the next iteration.</li>
+          <li>Lines
+<CODE class=linenumber>64</CODE>  thru
+<CODE class=linenumber>72</CODE>  use an <a href="DisplayArray.html"> AFTER DISPLAY</a>
+            statement to get the row number of the row in the array that the
+            user had selected.&nbsp; If the dialog was cancelled, <b>ret_num</b> is set to 0 and <b>ret_name</b>
+    is set to blanks.&nbsp; Otherwise the values of <b>ret_num</b> and <b>ret_name</b>
+    are set based on the row number.&nbsp; The row number in the&nbsp; <a href="ResultSets.html">SCROLL CURSOR</a>  
+            result set does not correlate directly to the <a href="Arrays.html">program
+            array</a> number,&nbsp; because the program
+            array was filled starting at row 1 each
+    time.&nbsp; So the following calculation is used to return the correct row
+    number of the program array:
+    <pre>  (Row number returned by ARR_CURR) MINUS 
+                  (Offset for the page) PLUS 1</pre>
+          </li>
+          <li>Line
+<CODE class=linenumber>74</CODE>  is the end of the <a href="DisplayArray.html"> DISPLAY ARRAY</a>
+            statement.</li>
+          <li>Lines
+<CODE class=linenumber> 76</CODE>   and
+<CODE class=linenumber>77</CODE>   close and free the cursor.</li>
+          <li>Line
+<CODE class=linenumber>78</CODE> frees the prepared statement.</li>
+          <li>Line
+<CODE class=linenumber>81</CODE>   closes the window.</li>
+          <li>Line
+<CODE class=linenumber>82</CODE>  returns the values of the <a href="Variables.html"> variables</a>
+            <b>ret_num</b> and <b>ret_name </b>to the calling function.</li>
+        </ul>
+
+
+</body>
+</html>

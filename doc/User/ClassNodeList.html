@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>om.NodeList</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The NodeList class</a> </H1>
+
+<p>Summary:</p>
+
+<ul>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#METHODS">Methods</a></li>
+	<li><a href="#Usage">Usage</a></li>
+  <li><a href="#EXAMPLES">Examples</a></li>
+</ul>
+<p><i>See also:</i>
+<a href="BuiltInClasses.html">Built-in Classes</a>, <a href="XmlUtils.html">XML
+Utilities</a></p>
+
+<HR>
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+<p>The <b>NodeList</b> class holds a list of <a href="ClassDomNode.html">DomNode</a>
+objects created from a selection method.</p>
+
+<h4>Syntax:</h4>
+
+<p><code>om.NodeList</code></p>
+
+<h4>Notes:</h4>
+<ol>
+  <li>A <i>NodeList</i> object is created from a <a href="ClassDomNode.html">DomNode.selectByTagName()</a>
+    or <a href="ClassDomNode.html">DomNode.selectByPath()</a> method.</li>
+</ol>
+
+
+<HR>
+
+
+<h3><a name="METHODS">Methods:</a></h3>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#66FFCC" colspan="2"><b>Object Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><b>Name</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#item">item</a>( index </code><tt>INTEGER</tt><code> )<br>
+      &nbsp; </code><tt>RETURNING</tt><code>   om.DomNode</code></td>
+    <td valign="top">Returns the DomNode object at the given position (first is 1). Returns NULL if the item does not exist.</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><code><a href="#getLength">getLength</a>( )<br>
+      &nbsp; </code><tt>RETURNING INTEGER</tt></td>
+    <td valign="top">Returns the number of items in the list.</td>
+  </tr>
+</table>
+
+
+<HR>
+
+
+<h3><a name="Usage">Usage</a></h3>
+<p>A NodeList object contains a list of the child objects of the DomNode from 
+which it was created, selected by Tag Name or Path.&nbsp; Use the DomNode methods to create the NodeList, as 
+shown in the examples below.</p>
+<p><b><font color="#FF0000">Warning:</font> The XPath syntax of the <code><a name="selectByTagName">selectByTagName</a>()</code> and <code><a name="selectByPath">selectByPath</a>()</code>
+methods of <a href="ClassDomNode.html">om.DomNode</a> class is limited to:</b></p>
+<p><code>&nbsp;&nbsp;&nbsp;&nbsp; <u>{</u> / <u>|</u> // <u>}</u> <i>TagName</i>
+<u>[</u> [@<i>AttributeName</i>=&quot;<i>Value</i>&quot;] <u>]</u> </code><code><u>[...]</u></code></p>
+<p>Once the NodeList object is created, the following Object methods are available:</p>
+<p><code><a name="item">item()</a></code> - This method returns the DomNode that is at the specified position in 
+the list. </p>
+<p><code><a name="getLength">getLength()</a></code> - This method returns the total number of DomNodes in the list.</p>
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+<h4>Example 1: Search for child nodes by tag name:</h4>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> nl om.NodeList
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> r, n om.DomNode
+<CODE class=linenumber>04</CODE>   <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<CODE class=linenumber>05</CODE>
+<CODE class=linenumber>06</CODE>   <tt>LET</tt> r = ui.Interface.getRootNode()
+<CODE class=linenumber>07</CODE>   <tt>LET</tt> nl = r.selectByTagName(&quot;Form&quot;)
+<CODE class=linenumber>08</CODE>
+<CODE class=linenumber>09</CODE>   <tt>FOR</tt> i=1 to nl.getLength()
+<CODE class=linenumber>10</CODE>     <tt>LET</tt> n = nl.item(i)
+<CODE class=linenumber>11</CODE>     <tt>DISPLAY</tt> n.getAttribute(&quot;name&quot;)
+<CODE class=linenumber>12</CODE>   <tt>END FOR</tt>
+<CODE class=linenumber>13</CODE>
+<CODE class=linenumber>14</CODE> <tt>END MAIN</tt></PRE>
+
+<h4>Example 2: Search for child nodes by XPath:</h4>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> nl om.NodeList
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> r, n om.DomNode
+<CODE class=linenumber>04</CODE>   <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<CODE class=linenumber>05</CODE>
+<CODE class=linenumber>06</CODE>   <tt>LET</tt> r = ui.Interface.getRootNode()
+<CODE class=linenumber>07</CODE>   <tt>LET</tt> nl = r.selectByPath(&quot;//Window[@name=\&quot;screen\&quot;]&quot;)
+<CODE class=linenumber>08</CODE>
+<CODE class=linenumber>09</CODE>   <tt>FOR</tt> i=1 to nl.getLength()
+<CODE class=linenumber>10</CODE>     <tt>LET</tt> n = nl.item(i)
+<CODE class=linenumber>11</CODE>     <tt>DISPLAY</tt> n.getAttribute(&quot;name&quot;)
+<CODE class=linenumber>12</CODE>   <tt>END FOR</tt>
+<CODE class=linenumber>13</CODE>
+<CODE class=linenumber>14</CODE> <tt>END MAIN</tt></PRE>
+
+</BODY>
+</HTML>

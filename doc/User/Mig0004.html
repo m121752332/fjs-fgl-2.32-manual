@@ -1,0 +1,535 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>2.2x Upgrade Guide</TITLE>
+<META http-equiv="Content-Type" content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+
+<HR>
+
+<H1>2.2x Upgrade Guide</H1>
+
+<p>This page describes product changes you must be aware of when upgrading from version <b>2.1x</b>
+to version <b>2.2x</b> of Genero BDL.</p>
+
+<p><b><font color="#FF0000">Warning:</font> This is an incremental upgrade guide
+that covers only topics related to a specific version of Genero. Also check
+prior upgrade guides if you migrate from an earlier version.</b></p>
+
+<p>Summary:</p>
+<ol>
+  <li><a href="#DesupportedPlatforms">De-supported platforms</a></li>
+  <li><a href="#FrontEndCompatibility">Front-end compatibility</a></li>
+  <li><a href="#pcode-compat">P-Code compatibility</a></li>
+  <li><a href="#NavigationActions">Navigation actions are now local actions</a></li>
+  <li><a href="#SortDuringInputArray">Sort is now possible during INPUT ARRAY</a></li>
+  <li><a href="#CellAttributesBufferedMode">Cell attributes and buffered mode</a></li>
+  <li><a href="#FieldIdentInMethods">Field methods are more strict</a></li>
+  <li><a href="#strict_sql_params">Strict variable identification in SQL statements</a></li>
+  <li><a href="#sql-warnings">SQL Warnings with non-Informix databases</a></li>
+  <li><a href="#serialreg-for-serial8">SERIALREG table for 64-bit serial emulation</a></li>
+  <li><a href="#fgldbsch">Extracting the database schema with fgldbsch</a></li>
+  <li><a href="#dbdriver-internal-error">Database driver internal error changed from -768 to -6319</a></li>
+  <li><a href="#searching-image-files">Searching for image files on the application server</a></li>
+  <li><a href="#strict-action-ident">Strict action identification in dialog methods</a></li>
+  <li><a href="#strict-field-ident">Strict field identification in dialog methods</a></li>
+  <li><a href="#strict-fglform">Form compiler checking invalid layout definition</a></li>
+  <li><a href="#db-schema-compat">Database schema compatibility</a></li>
+  <li><a href="#PGS-interval">PostgreSQL 8.4 and INTERVAL types</a></li>
+  <li><a href="#build-rdd_compiles">fglcomp --build-rdd compiles the module</a></li>
+  <li><a href="#unique_pkey_error">Unique and primary key constraint violation</a></li>
+  <li><a href="#ads_dm_indep">Driver Manager independency with Genero db</a></li>
+  <li><a href="#import_list">IMPORT with list of C-Extensions</a></li>
+  <li><a href="#init-null-dynarr">Initializing dynamic arrays to null</a></li>
+  <li><a href="#strict-screen-record">Form compiler is more strict with screen
+    record definition for tables</a></li>
+  <li><a href="#input-array-tmp-row">Controlling INPUT ARRAY temporary row
+    creation</a></li>
+  <li><a href="#predef-actions-auto-activation">Predefined actions get
+    automatically disabled according to context</a></li>
+  <li><a href="#no-before-row-if-empty-array">BEFORE ROW no longer executed when
+    array is empty</a></li>
+</ol>
+
+<HR>
+
+<h2><a name="DesupportedPlatforms">1. De-supported platforms</a></h2>
+<p>No platform is de-supported in the <b>2.2x</b> versions.</p>
+
+<p>For information about supported platforms, please refer to the <a href="Installation.html#INST_SUPPOS">Installation
+and Setup</a> section of this manual.</p>
+
+<HR>
+
+<h2><a name="FrontEndCompatibility">2. Front-end compatibility</a></h2>
+<p>Some <b>2.2x</b> bug fixes needed modifications inside the runtime system (fglrun)
+and front-ends (gdc, gwc). Therefore, if you upgrade the runtime system to the
+latest <b>2.2x</b> version, we strongly recommend that you upgrade your workstations
+with the latest front-end version <b>2.2x</b> as well.</p>
+
+<HR>
+
+<h2><a name="pcode-compat">3. P-Code Compatibility</a></h2>
+<p>As a general rule, when upgrading to a major or minor version like 2.10 to
+2.20 or 2.20 to 2.21, you must recompile all your <b>.4gl</b> modules and <b>.per</b> form
+files. Re-compilation is not required when upgrading to a new maintenance
+release like 2.20.01 to 2.20.02.</p>
+
+<p>See also <a href="Installation.html#INST_UPGRADING">Installation and Setup</a>.</p>
+
+<HR>
+
+<h2><a name="NavigationActions">4. Navigation actions are now local actions</a></h2>
+<p>Starting with version <b>2.20</b>, the navigation actions <b>prevrow</b>, <b>nextrow</b>, <b>firstrow,</b> and <b>lastrow</b>
+are now front-end local actions. In versions <b>2.1x</b>, these actions were created by the runtime system as implicit dialog actions.
+The <b>2.2x</b> runtime system will only create these actions when you use a <tt>DISPLAY
+ARRAY</tt> or <tt>INPUT ARRAY</tt> on a singular row screen record.</p>
+<p>The programs will behave as in <b>2.1x</b>.
+However, this modification makes the <b> 2.1x</b> migration issue &quot;New firstrow/lastrow implicit actions&quot;
+obsolete.</p>
+
+<p>If these navigation actions have been used in dialog methods such as <a href="ClassDialog.html#setActionActive">DIALOG.setActionActive()</a>,
+you must review the code and remove these lines; otherwise an <a href="FglErrors.html#-8089">-8089</a>
+runtime error will be raised.</p>
+
+<HR>
+
+<h2><a name="SortDuringInputArray">5. Sort is now possible during INPUT ARRAY</a></h2>
+<p>Starting with version <b>2.20</b>, the built-in sort is now available during <tt>INPUT ARRAY</tt>.
+If you want to avoid sorts in a Table, use the <a href="FSFAttributes.html#FA_UNSORTABLECOLUMNS">UNSORTABLECOLUMNS
+attribute</a>.</p>
+
+<HR>
+
+<h2><a name="CellAttributesBufferedMode">6. Cell attributes and buffered mode</a></h2>
+<p>Before version <b>2.20</b>, <a href="MultipleDialogs.html#cell-attributes">cell
+attributes</a> were synchronized quite often by the runtime system, and this was
+not very efficient. As a result, there was not much difference between using buffered or
+unbuffered mode; when changing cell attributes, the result was immediate
+even in buffered mode.&nbsp; </p>
+
+<p>Now with <b>2.20</b>, it is recommended that you use the <a href="MultipleDialogs.html#buff-unbuff-modes">UNBUFFERED
+mode</a> when setting cell attributes; otherwise, the colors will not be
+synchronized on the front-end.</p>
+
+<HR>
+
+<h2><a name="FieldIdentInMethods">7. Field methods are more strict</a></h2>
+
+<p>Starting with Genero <b>2.20</b> (or when using multiple dialogs in <b> 2.11.08</b> and higher), <a href="ClassDialog.html">DIALOG
+class</a> methods like <a href="ClassDialog.html#setFieldActive">setFieldActive()</a>
+need the correct field specification with the screen-record name prefix if the
+field was explicitly bound with the <tt>FROM</tt> clause of <tt>INPUT</tt> or <tt>INPUT
+ARRAY</tt>. In previous versions, the field was found by these methods even if
+the prefix was invalid. (Actually, the prefix was just ignored and only the
+fieldname was used.)</p>
+<p>For more details about field identification, see <a href="ClassDialog.html#ident_fields">Identifying fields with dialog class methods</a>.</p>
+
+<HR>
+
+<h2><a name="strict_sql_params">8. Strict variable identification in SQL statements</a></h2>
+
+<p>Starting with Genero BDL version <b>2.20</b>, program variable identification in
+static SQL statements is more strict than older Genero versions and Four Js BDS; 
+if you define a variable with the same name as a SQL object (i.e. table name,
+table alias), the Genero BDL compiler will raise an error because it will
+consider the program variable first. For example, if the variable name matches
+the table or alias identifier, using <i>table.column</i> in the SQL statement
+will be resolved as <i>variable.member</i>, which does not exist.</p>
+
+<p>The next code example will not compile because the program defines a
+variable using the same name as the table alias <i>c</i>: </p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DATABASE</tt> stores
+<CODE class=linenumber>03</CODE>    <tt>DEFINE</tt> c <tt>INTEGER</tt>
+<CODE class=linenumber>04</CODE>    <tt>SELECT COUNT(*) INTO</tt> c<tt> FROM</tt> customer c
+<CODE class=linenumber>05</CODE>    <tt>       WHERE</tt> c.fname<tt> IS NULL</tt>
+<CODE class=linenumber>06</CODE> <tt>END MAIN</tt></pre>
+
+<p>The above code also fails to compile with Informix 4gl 7.32, but it did
+compile with BDS and older Genero versions.</p>
+
+<p>To work around this, you must either rename the program variable, or explicitly identify
+SQL objects with the @ prefix in the SQL statement:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DATABASE</tt> stores
+<CODE class=linenumber>03</CODE>    <tt>DEFINE</tt> c <tt>INTEGER</tt>
+<CODE class=linenumber>04</CODE>    <tt>SELECT COUNT(*) INTO</tt> c<tt> FROM</tt> customer c
+<CODE class=linenumber>05</CODE>    <tt>       WHERE</tt> @c.fname<tt> IS NULL</tt>
+<CODE class=linenumber>06</CODE> <tt>END MAIN</tt></pre>
+
+<p>Just recompile all your programs to find the conflicts.</p>
+
+<HR>
+
+<h2><a name="sql-warnings">9. SQL Warnings with non-Informix databases</a></h2>
+<p>Before Genero BDL version <b>2.20</b>, is was impossible for a non-Informix
+driver to return SQL Warning information in SQLCA, SQLSTATE and SQLERRMESSAGE.
+SQL Warnings are now propagated for all database drivers, and can set the
+SQLCA.SQLAWARN, SQLSTATE and SQLERRMESSAGE registers.&nbsp; </p>
+<p>This new behavior will have no impact if you test SQL Errors with STATUS or
+SQLCA.SQLCODE, as these registers remain zero if an SQL Warning is raised.
+However, if you are using SQLSTATE to check for SQL Errors, you must now
+distinguish SQLSTATE of <u>class 01:</u> These are SQL Warnings, not SQL errors.</p>
+<p>In the next example, when connected to DB2, the SQLSTATE register will get
+the value <b>01504</b> indicating that all rows of the table have been deleted.
+As a result, testing SQLSTATE against <b>00000</b> will evaluate to false, and
+run into the error handling block, which is unexpected:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DATABASE</tt> stores
+<CODE class=linenumber>03</CODE>    <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>04</CODE>    <tt>DELETE FROM</tt> customer
+<CODE class=linenumber>05</CODE>    <tt>IF</tt> SQLSTATE &lt;&gt; &quot;00000&quot; <tt>THEN</tt>
+<CODE class=linenumber>06</CODE>       -- handle error
+<CODE class=linenumber>07</CODE>    <tt>END IF</tt>
+<CODE class=linenumber>08</CODE> <tt>END MAIN</tt></pre>
+
+<p>To check for successful SQL execution with or without warning, you can, for
+example, code:</p>
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DATABASE</tt> stores
+<CODE class=linenumber>03</CODE>    <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>04</CODE>    <tt>DELETE FROM</tt> customer
+<u><CODE class=linenumber>05</CODE>    <tt>IF NOT</tt> (SQLSTATE==&quot;00000&quot; <tt>AND </tt>SQLSTATE <tt>MATCHES</tt> &quot;01*&quot;) <tt>THEN</tt>
+</u><CODE class=linenumber>06</CODE>       -- handle error
+<CODE class=linenumber>07</CODE>    <tt>END IF</tt>
+<CODE class=linenumber>08</CODE> <tt>END MAIN</tt></pre>
+
+<p>See also <a href="Exceptions.html#SQLWARNINGS">SQL Warnings</a> for more
+details.</p>
+
+<HR>
+
+<h2><a name="serialreg-for-serial8">10. SERIALREG table for 64-bit serial emulation</a></h2>
+
+<p>The SERIALREG based serial emulation is defined by the following <a href="FglProfile.html">FGLPROFILE</a>
+ entry:</p>
+
+<pre>dbi.database.&lt;dbname&gt;.ifxemul.datatype.serial.emulation = &quot;regtable&quot;</pre>
+
+<p>Genero BDL <b>2.20</b> introduces the <a href="DataTypes.html#DT_BIGINT">BIGINT
+data type</a>, which is a 64-bit signed integer. You can use BIGSERIAL or
+SERIAL8 columns with Informix, and ODI drivers can emulate 64-bit serials in
+other database servers. However, if you are using serial emulation based on the
+SERIALREG table, you must redefine this table to change the LASTSERIAL column
+data type to a BIGINT (If the BIGINT data type is not supported by the database
+server, you can use a DECIMAL(20,0) instead): </p>
+
+<pre>  CREATE TABLE serialreg (
+     tablename VARCHAR2(50) NOT NULL,
+     lastserial BIGINT NOT NULL,
+     PRIMARY KEY ( tablename )
+  )</pre>
+
+<p><b><font color="#FF0000">Warning:</font></b> If you need to migrate an
+installed database using SERIALREG-based triggers, you will have to keep the
+current registered serials and use ALTER TABLE instead of CREATE TABLE. Next
+example shows the ALTER TABLE syntax for SQL Server. Check database server
+manuals for the exact syntax of the ALTER TABLE statement: </p>
+
+<pre>  ALTER TABLE serialreg ALTER COLUMN lastserial BIGINT NOT NULL</pre>
+
+<p>Additionally, all existing SERIALREG-based triggers must be modified, in
+order to use BIGINT instead of INTEGER variables, otherwise you will get BIGTINT
+to INTEGER overflow errors. For example, to modify existing triggers with SQL
+Server, you can use the ALTER TRIGGER statement, which can be easily generated
+from the database browser tool (there is a <i>modify</i> option in the
+contextual menu of triggers). After the existing trigger code was generated, you
+must edit the code to replace the INTEGER data type by BIGINT in the variable
+declarations, and execute the ALTER TRIGGER statement. </p>
+
+<HR>
+
+<h2><a name="fgldbsch">11. Extracting the database schema with fgldbsch</a></h2>
+<p>Because Genero BDL <b>2.20</b> implements new data types like <a href="DataTypes.html#DT_BIGINT">BIGINT</a>
+and <a href="DataTypes.html#DT_BOOLEAN">BOOLEAN</a>, the database schema
+extraction tool has been reviewed to map native database types to these new
+types when possible. You must take care when extracting a <a href="DatabaseSchema.html">.sch
+file</a> from the database. </p>
+
+<p>For example, before version 2.20, fgldbsch converted an Oracle NUMBER(20,0)
+to a DECIMAL(20,0) by default. Now, since 2.20 provides the BIGINT native FGL
+type, it can be used to store a NUMBER(20,0) from Oracle. </p>
+
+<p>You can get the previous behavior by using a conversion directive with the <b>-cv</b>
+option of fgldbsch. </p>
+
+<p>To see the new conversion rules, run the <a href="Tools.html#TL_FGLDBSCH">fgldbsch
+tool</a> with the <b>-ct</b> option. </p>
+
+<HR>
+
+<h2><a name="dbdriver-internal-error">12. Database driver internal error changed from -768 to -6319</a></h2>
+
+<p>Prior to Genero BDL <b>2.20</b>, if an unexpected error occured in a database driver, the driver
+could return error -768, which is a real Informix SQL error that instructs the user to call the IBM
+support center.</p>
+<p>To avoid any mistake, 2.20 database drivers return now the error <b><a href="FglErrors.html#-6319">-6319</a></b> if an internal error occurs,
+which is a Genero specific error message that suggests you to set the FGLSQLDEBUG environment variable to
+get detailed debug messages.</p>
+
+<HR>
+
+<h2><a name="searching-image-files">13. Searching for image files on the application
+server</a></h2>
+<p>For security reasons, the image file transfer mechanism has been slightly
+modified in version <b>2.20</b> (note that this modification has also been
+back-ported in <b>2.11.14</b>):</p>
+<p>If FGLIMAGEPATH is set, the current working directory is no longer
+searched as in previous versions. You must explicitly add &quot;.&quot; to the list of directories.
+    By default, if FGLIMAGEPATH is not defined, the runtime system still
+    searches the current directory.</p>
+<p>If FGLIMAGEPATH is defined, the image files used in IMAGE
+    form fields or in the IMAGE
+    attribute must be located below one of the directories listed in the
+environment variable. This constraint does not exist if FGLIMAGEPATH is not set
+and has been relaxed in <b>2.21.00</b> for image fields displayed by program
+(see below).</p>
+<p>Starting with <b>2.21.00</b>, images displayed by program to <a href="FormSpecFiles.html#FF_IMAGE_FIELD">IMAGE
+fields</a> are considered as valid files to be transferred to the clients
+without risk and do not follow the FGLIMAGEPATH security restrictions. Images
+are however searched according to the path list defined in FGLIMAGEPATH.</p>
+<p>For more details, see <a href="EnvironmentVariables.html#EV_FGLIMAGEPATH">FGLIMAGEPATH</a>
+ and <a href="FSFAttributes.html#FA_IMAGE">IMAGE
+    attribute</a>.</p>
+
+<HR>
+
+<h2><a name="strict-action-ident">14. Strict action identification in dialog methods</a></h2>
+<p>Starting with version <b>2.20.00</b>, the dialog class methods like <a href="ClassDialog.html#setActionActive">ui.Dialog.setActionActive()</a>
+can now raise a runtime error <b><a href="FglErrors.html#-8089">-8089</a></b> if the action name is invalid. Before
+version 2.20, the method ignored the invalid action name, and it could take
+a while for the programmer to find the mistake.</p>
+<p>You can find more details about action identification in the <a href="ClassDialog.html#ident_actions">Dialog
+Class page</a>.</p>
+
+<HR>
+
+<h2><a name="strict-field-ident">15. Strict field identification in dialog methods</a></h2>
+<p>Starting with version <b>2.20.05</b>, the dialog class methods like <a href="ClassDialog.html#setFieldTouched">ui.Dialog.setFieldTouched()</a>
+can now raise a runtime error <b><a href="FglErrors.html#-1373">-1373</a></b> if the field specified does not
+match a field in the current dialog. Before
+version 2.20.05, these methods previously ignored the invalid field specification, and it could take
+a while for the programmer to find the mistake.</p>
+<p>You can find more details about action identification in the <a href="ClassDialog.html#ident_actions">Dialog
+Class page</a>.</p>
+
+<HR>
+
+<h2><a name="strict-fglform">16. Form compiler checking invalid layout
+definition</a></h2>
+<p>Starting with version <b>2.20.05</b>, the fglform compiler performs more layout
+checking than before. Thus, existing (invalid) forms that compiled with prior
+versions of Genero may no longer compile with 2.20.05. This strict checking is
+done to detect layout mistakes during form design, instead of having the
+front-ends render invalid forms in a unknown manner at run time.</p>
+<p>For example, the following form definitions are invalid and will raise a
+compilation error with fglform:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>SCHEMA FORMONLY</tt>
+<CODE class=linenumber>02</CODE> <tt>LAYOUT</tt>
+<CODE class=linenumber>03</CODE> <tt>GRID</tt>
+<CODE class=linenumber>04</CODE> {
+<CODE class=linenumber>05</CODE>   [f01 :   |f02    ]             -- HBox layout tags in lists are denied
+<CODE class=linenumber>06</CODE>      [f01  |f02    ]
+<CODE class=linenumber>07</CODE>      [f01  |f02    ]
+<CODE class=linenumber>08</CODE>      [f01  |f02    ]
+<CODE class=linenumber>09</CODE> }
+<CODE class=linenumber>10</CODE> <tt>END</tt>
+<CODE class=linenumber>11</CODE> <tt>END</tt></pre>
+
+<pre><CODE class=linenumber>01</CODE> <tt>SCHEMA FORMONLY</tt>
+<CODE class=linenumber>02</CODE> <tt>LAYOUT</tt>
+<CODE class=linenumber>03</CODE> <tt>GRID</tt>
+<CODE class=linenumber>04</CODE> {
+<CODE class=linenumber>05</CODE>   [f01    ]  [f02    ]
+<CODE class=linenumber>06</CODE>   [f01    ]       [f02    ]      -- Misaligned field tags (vertical)
+<CODE class=linenumber>07</CODE>   [f01    ]  [f02    ]
+<CODE class=linenumber>08</CODE>   [f01    ]       [f02    ]
+<CODE class=linenumber>09</CODE> }
+<CODE class=linenumber>10</CODE> <tt>END</tt>
+<CODE class=linenumber>11</CODE> <tt>END</tt></pre>
+
+<pre><CODE class=linenumber>01</CODE> <tt>SCHEMA FORMONLY</tt>
+<CODE class=linenumber>02</CODE> <tt>LAYOUT</tt>
+<CODE class=linenumber>03</CODE> <tt>GRID</tt>
+<CODE class=linenumber>04</CODE> {
+<CODE class=linenumber>05</CODE>   [f01][f01][f01]  [f01]         -- Misaligned field tags (horizontal)
+<CODE class=linenumber>06</CODE> }
+<CODE class=linenumber>07</CODE> <tt>END</tt>
+<CODE class=linenumber>08</CODE> <tt>END</tt></pre>
+
+<HR>
+
+<h2><a name="db-schema-compat">17. Database schema compatibility</a></h2>
+<p>Version <b>2.20.06</b> fixes bug 13181 related to <a href="DatabaseSchema.html">database
+schema files</a>, which introduces a compatibility issue with older versions of
+fglcomp and fglform. If some database tables use data types that are equivalent
+to the BOOLEAN Informix type, such as the BIT type in SQL Server, you must
+re-generate the <b>.sch</b> database schema file with the fgldbsch tool. If you
+keep using the schema generated by an older version such as 2.20.04, fglcomp or
+fglform will raise the error <b><a href="FglErrors.html#-6634">-6634</a></b>.</p>
+<p>This problem will only occur if your database tables use the BOOLEAN (or
+native equivalent type). See ODI Adaptation Guides for more details about
+database specific boolean types.</p>
+
+<HR>
+
+<h2><a name="PGS-interval">18. PostgreSQL 8.4 and INTERVAL type</a></h2>
+<p>Genero BDL version <b>2.21</b> introduced support for PostgreSQL 8.4 with the
+new database driver <b>dbmpgs84x</b>. This version of PostgreSQL implements a
+native INTERVAL type that is similar to the Informix / Genero INTERVAL
+type.&nbsp;</p>
+<p>When using the dbmpgs84x (and higher) driver, Informix-style INTERVAL types
+will be mapped / translated to native PostgreSQL INTERVALs. Prior drivers will
+keep using the CHAR(50) replacement. If your application is storing INTERVAL in
+a PostgreSQL database, you will have to modify you database schema to replace
+the existing CHAR(50) column with the native INTERVAL data type of PostgreSQL 8.4.
+If you cannot migrate the database, you can still use the older dbmpgs83x driver
+using CHAR(50) for INTERVALs, but that driver requires a PostgreSQL client
+version 8.3.</p>
+<p>For more details, see the <a href="odiagpgs.html">ODI Adaptation Guide for
+PostgreSQL</a>.</p>
+
+<HR>
+
+<h2><a name="build-rdd_compiles">19. fglcomp --build-rdd compiles the module</a></h2>
+<p>Before version <b>2.21</b>, fglcomp --build-rdd only produced the .rdd data definition file. This option is now a compilation option: Both .42m and .rdd
+files are created at the same time. </p>
+
+<HR>
+
+<h2><a name="unique_pkey_error">20. Unique and primary key constraint violation</a></h2>
+<p>When a unique or primary key constraint is violated, the Informix driver
+returns <b>-268</b> if the database uses transaction logging, and <b>-239</b> if
+the database uses no logging.</p>
+<p>Regarding non-Informix drivers, all <b>2.21</b> drivers now return
+SQLCA.SQLCODE <b>-268</b> when a unique constraint or primary key constraint is
+violated. Before 2.21, the Oracle and SQL Server / Sybase drivers returned error
+<b>-239</b>, which is only returned by Informix databases without transaction
+logging. Returning error <b>-268</b> for all drivers is the best choice in a
+context of transactional databases.</p>
+<p>Check your code for <b>-239</b> error code usage and replace by <b>-268</b>.
+If you still need to test error <b>-239</b> (for example because you have
+Informix databases without transactions), we recommend that you write a function
+testing different error codes to check unique constraint violation:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> isUniqueConstraintError()
+<CODE class=linenumber>02</CODE>    <tt>IF</tt> (SQLCA.SQLCODE==-239 <tt>OR</tt> SQLCA.SQLCODE==-268)
+<CODE class=linenumber>03</CODE>    <tt>OR</tt> (SQLCA.SQLCODE==-346 <tt>AND</tt> SQLCA.SQLERRD[2]==-100)
+<CODE class=linenumber>04</CODE>    <tt>THEN</tt>
+<CODE class=linenumber>05</CODE>        <tt>RETURN TRUE</tt>
+<CODE class=linenumber>06</CODE>    <tt>ELSE</tt>
+<CODE class=linenumber>07</CODE>        <tt>RETURN FALSE</tt>
+<CODE class=linenumber>08</CODE>    <tt>END IF</tt>
+<CODE class=linenumber>09</CODE> <tt>END FUNCTION</tt></pre>
+
+<HR>
+
+<h2><a name="ads_dm_indep">21. Driver Manager independency with Genero db</a></h2>
+<p>Before version <b>2.21.00</b>, the Genero db drivers (dbmads*) were linked
+on Windows with ODBC32.LIB, using the Windows Driver Manager. With 2.21 the
+dbmads* drivers are now linked directly with AODBC.DLL to bypass the Driver
+Manager, as is done on Unix platforms. You must now set the <b> PATH</b> environment
+variable to point the the AODBC.DLL library: <u>the DLL specified in the ODBC
+data source is now ignored.</u></p>
+<p>For more details, see the <a href="odiagads.html#ODIADS_MIG02">ODI Adaptation Guide for
+Genero db</a>.</p>
+
+<HR>
+
+<h2><a name="import_list">22. IMPORT with list of C-Extensions</a></h2>
+<p>Before <b>2.21.00</b>, the <a href="Programs.html#IMPORT">IMPORT</a>
+instruction for C-Extensions was documented as allowing a comma-separated list of
+libraries:</p>
+<pre>IMPORT lib1, lib2</pre>
+<p>This compiled, but at runtime only the first library was found. Using
+elements of the other libraries raised a runtime error. </p>
+<p>With 2.21.00 and the new 42m module importation support, the compiler is now more strict and denies
+the comma-separated syntax. You must specify every library, Java class or 4gl
+module in separate lines:</p>
+<pre>IMPORT lib1
+IMPORT JAVA myclass
+IMPORT FGL mymodule</pre>
+
+<HR>
+
+<h2><a name="init-null-dynarr">23. Initializing dynamic arrays to null</a></h2>
+<p><i>(This issue was actually registered as a bug/enhancement #15128)</i></p>
+<p>Starting with <b>2.21.00</b>, the <a href="Variables.html#VA_INITIALIZE">INITIALIZE
+TO NULL</a>
+instruction clears the dynamic arrays (i.e. <a href="Arrays.html">array.getLength()</a>
+returns 0). Before this version, all elements of the dynamic where kept, and set
+to null. Since the old behavior was documented, this behavior change required a
+migration note. The new behavior is expected by most programmers.</p>
+
+<HR>
+
+<h2><a name="strict-screen-record">24. Form compiler is more strict with screen
+record definition for tables</a></h2>
+<p><i>(This issue was actually registered as a bug #15666 and #15700)</i></p>
+<p>The fglform compiler of version <b>2.21.00</b> makes now a strict checking of
+the fields used in the screen record definition for table containers and
+generates error <a href="FglErrors.html#-6819">-6819</a> if the screen record do
+not use all columns used in the table. Note that the order can be different,
+however.</p>
+
+<p>For more details, see <a href="FormSpecFiles.html#FF_CONTAINER_TABLE">Table
+containers</a>.</p>
+
+<HR>
+
+<h2><a name="input-array-tmp-row">25. Controlling INPUT ARRAY temporary row
+creation</a></h2>
+<p>The INPUT ARRAY dialog and sub-dialog provides the APPEND ROW and AUTO APPEND
+attributes to control row creation at the end of a list (a.k.a. temporary row
+creation). APPEND ROW controls <i>explicit</i> temporary row creation while AUTO
+APPEND controls <i>automatic</i> temporary row creation. Starting with version <b>2.20</b>,
+moving down after the last row (with the mouse or keyboard) or leaving the last
+column of the last row with a TAB key are now considered as events to trigger <i>automatic</i>
+temporary row creation. Before 2.20, these cases were considered as events for
+an <i>explicit</i> temporary row creation. In other words, if you want to deny
+temporary row creation in such case, it is now done with AUTO APPEND = FALSE
+while in older versions it was controlled by APPEND ROW = FALSE.</p>
+<p>For more details, see <a href="MultipleDialogs.html#temporary-rows">Handling
+temporary row creation</a>.</p>
+
+<HR>
+
+<h2><a name="predef-actions-auto-activation">26. Predefined actions get
+automatically disabled according to context</a></h2>
+<p>Starting with version <b>2.20</b>, (or with version 2.10 when FGL_USENDIALOG=1),
+the dialogs will automatically disable some predefined actions if it makes no
+sense to trigger the action in the current context. For example, during an INPUT
+ARRAY, if there are no rows to remove, the predefined <i>delete</i> action will
+be disabled automatically. Similarly, the <i>insert</i> and <i>append</i>
+actions get disabled when the array is full (this can happen with static arrays
+or when using the MAXCOUNT attribute). Note that the predefined actions will
+also be disabled if you overwrite them with your own ON ACTION handler.</p>
+
+<HR>
+
+<h2><a name="no-before-row-if-empty-array">27. BEFORE ROW no longer executed
+when array is empty</a></h2>
+<p>The BEFORE ROW control block indicates if a new row is reached in a DISPLAY
+ARRAY or INPUT ARRAY. Before version <b>2.20</b>, the BEFORE ROW block was
+always executed when entering a DISPLAY ARRAY or INPUT ARRAY dialog, even if the
+number of real data rows was zero. Starting with 2.20, when using an empty
+dynamic array or when using a static array and specifying zero data rows with a
+SET_COUNT(0) call or with the COUNT=0 attribute, the BEFORE ROW control block is
+no longer executed when the dialog starts.</p>
+<p>Note that the BEFORE ROW block will be executed when a new row is created in
+INPUT ARRAY. When entering an INPUT ARRAY with an empty array, a new temporary
+row is created by default, except if you use the AUTO APPEND = FALSE attribute.</p>
+
+</BODY>
+
+</HTML>

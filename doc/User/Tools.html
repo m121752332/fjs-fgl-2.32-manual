@@ -1,0 +1,771 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Tools and Components</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Tools and Components</a></H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#TL_FGLRUN">Runtime System Program</a> (<tt>fglrun</tt>)</li>
+  <li><a href="#TL_FGLFORM">Form Compiler</a> (<tt>fglform</tt>)</li>
+  <li><a href="#TL_FGL2P">Program Compiler</a> (<tt>fgl2p</tt>)</li>
+  <li><a href="#TL_FGLCOMP">Module Compiler</a> (<tt>fglcomp</tt>)</li>
+  <li><a href="#TL_FGLLINK">Module Linker</a> (<tt>fgllink</tt>)</li>
+  <li><a href="#TL_FGLMKMSG">Message Compiler</a> (<tt>fglmkmsg</tt>)</li>
+  <li><a href="#TL_FGLDBSCH">Database Schema Extractor</a> (<tt>fgldbsch</tt>)</li>
+  <li><a href="#TL_FGLMKSTR">Localized String File Compiler</a> (<tt>fglmkstr</tt>)</li>
+</ul>
+
+
+<p><i>See also:</i> <a href="Installation.html">Installation and Setup</a>.</p>
+
+
+<HR>
+
+<h3><a name="TL_FGLRUN">fglrun</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>fglrun</tt> tool is the runtime system program that executes p-code
+BDL programs.</p>
+
+<h4>Syntax:</h4>
+<code>fglrun <u> [</u><i>options</i><u>]</u>  <u> [</u> <i>program</i><u>[</u>.42r<u>]</u>
+<u>|</u> <i>module</i><u>[</u>.42m<u>]</u> <u>]</u> <u>[</u><i>argument</i>
+<u>[...]]</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>options</i> are described below.</li>
+  <li><i>program</i>.42r is the name of a program file linked with <a href="#TL_FGLLINK">fgllink</a>.</li>
+  <li><i>module</i>.42m is the name of a module containing the <a href="Programs.html#MAIN_BLOCK">MAIN</a>
+    routine.</li>
+  <li><i>argument</i> is a program argument passed to the program, see <a href="BuiltInFunctions.html#BF_ARG_VAL">arg_val()</a>.</li>
+  <li>Note that the <b>.42r</b> or <b>.42m</b> extension is optional: if not
+    used, fglrun will automaticall search for files with these extensions.</li>
+</ol>
+
+<h4>Options:</h4>
+<div align="center">
+  <center>
+  <table border="0" width="90%">
+    <tr>
+      <td width="25%" bgcolor="#C0C0C0"><b>Option</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-V</tt></td>
+      <td>Display version information for the tool.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-h</tt></td>
+      <td>Displays options for the tool. Short help.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-i <u>{</u> mbcs<i> </i><u>}</u></tt></td>
+      <td>Displays information. <tt>-i mbcs</tt> displays information about
+        multi-byte character set settings.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-d</tt> </td>
+      <td>Start in debug mode. See <a href="Debugger.html">Debugger</a>
+        for more details.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-e <i>extfile</i> <u>[</u><i>,...</i><u>]</u></tt></td>
+      <td>Specify a <a href="CExtensions.html#LOADEXT">C extension</a>
+        module to be loaded. This option can take a comma-separated list of
+        extensions.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-l</tt></td>
+      <td>Link pcode nodules together, see <a href="CompilingPrograms.html">Compiling
+        Programs</a>.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-o <i>outfile</i></tt></td>
+      <td>Specify the output file for the link mode (-l option).</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-b</tt> </td>
+      <td>Displays compiler version information of the module, see <a href="CompilingPrograms.html">Compiling
+        Programs</a>.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-p</tt> </td>
+      <td>Generate profiling information to stderr (UNIX only). See <a href="Profiler.html"> Profiler</a> 
+        for more details.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-s</tt> </td>
+      <td>Displays size information in bytes about the module, see <a href="Optimization.html">Optimization</a>.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-M</tt></td>
+      <td>Display a memory usage diagnostic when program ends, see <a href="Optimization.html">Optimization</a>.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-m</tt></td>
+      <td>Check for memory leaks. If leaks are found, displays memory usage
+        diagnostic and stops with status 1, see <a href="Optimization.html">Optimization</a>.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>--java-option=<i>option</i></tt></td>
+      <td>Passes Java runtime options when initializing the JNI interface.<br>
+        See <a href="JavaBridge.html#JNI_OPTIONS">Java
+        Interface</a> for more details.</td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<h4>Usage:</h4>
+
+
+<p>This tool executes BDL programs.</p>
+
+<code>fglrun myprogram.42r -x 123</code>
+
+
+<p>For more details, see <a href="Programs.html#START_FGLRUN">Executing FGL
+Programs</a>.</p>
+
+<HR>
+
+<h3><a name="TL_FGLFORM">fglform</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>fglform</tt> tool compiles <a href="FormSpecFiles.html">form specification files</a>
+into XML formatted files used by the programs.</p>
+
+<h4>Syntax:</h4>
+<code>fglform <u> [</u><i>options</i><u>]</u> <i>srcfile</i><u>[</u>.per<u>]</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>options</i> are described below.</li>
+  <li><i>srcfile</i>.per is the form specification file.</li>
+  <li>The <b>.per</b>  form file extension is optional.</li>
+</ol>
+
+<h4><font color="#FF0000">Warning:</font></h4>
+<ol>
+  <li>All <b>.per</b>  form specification files used by the program must be compiled before
+    usage.</li>
+</ol>
+
+<h4>Options:</h4>
+<div align="center">
+  <center>
+  <table border="0" width="90%">
+    <tr>
+      <td width="25%" bgcolor="#C0C0C0"><b>Option</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-V</tt></td>
+      <td>Display version information for the tool.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-h</tt></td>
+      <td>Displays options for the tool. Short help.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-i <u>{</u> mbcs<i> </i><u>}</u></tt></td>
+      <td>Displays information. <tt>-i mbcs</tt> displays information about
+        multi-byte character set settings.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-m</tt> </td>
+      <td>Extract <a href="LocalizedStrings.html">localized strings</a>.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-M</tt></td>
+      <td>Write error messages to standard output instead of creating a <b>.err</b>
+        error file.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-W <u>{</u> all<i> </i><u>}</u></tt></td>
+      <td>Display warning messages. Only <tt>-W all</tt> option is supported for
+        now.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-E</tt></td>
+      <td>Preprocess only.</td>
+    </tr>
+    <tr>
+      <td width="25%" valign="top"><tt>-p <i>option</i></tt></td>
+      <td>Preprocessing control, where <i>option</i> can be one of:<br>
+        - nopp: Disable preprocessing.<br>
+        - noli: No line number information (only with -E option).<br>
+        - fglpp: Use # syntax instead of &amp; syntax.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-I <i>path</i></tt></td>
+      <td>Provides a path to search for include files.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-D <i>ident</i></tt></td>
+      <td>Defines the macro 'ident' with the value 1.</td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<h4>Usage:</h4>
+
+
+<p>This tool compiles a <b>.per</b> <a href="FormSpecFiles.html">form specification
+file</a> into a <b>.42f</b> compiled version:</p>
+
+<code>fglform custform.per</code>
+
+<p>The <b>.42f</b> compiled version is an XML formatted file used by BDL
+programs when a form definition is loaded with the <a href="WindowsAndForms.html#OPEN_FORM">OPEN
+FORM</a> or <a href="WindowsAndForms.html#OPEN_WINDOW">OPEN WINDOW WITH FORM</a>
+instructions.</p>
+
+<HR>
+
+<h3><a name="TL_FGLMKMSG">fglmkmsg</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>fglmkmsg</tt> tool compiles <a href="MessageFiles.html">message files</a>
+into a binary version used by the BDL programs. </p>
+
+<h4>Syntax:</h4>
+<code>fglmkmsg <u> [</u><i>options</i><u>]</u> <i>srcfile </i><u>[</u><i>outfile</i><u>]</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>options</i> are described below.</li>
+  <li><i>srcfile</i> is the source message file.</li>
+  <li><i>outfile</i> is the destination file.</li>
+</ol>
+
+<h4><font color="#FF0000">Warning:</font></h4>
+<ol>
+  <li>All <b>.msg</b> message files used by the program must be compiled before
+    usage.</li>
+</ol>
+
+<h4>Options:</h4>
+<div align="center">
+  <center>
+  <table border="0" width="90%">
+    <tr>
+      <td width="25%" bgcolor="#C0C0C0"><b>Option</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-V</tt></td>
+      <td>Display version information for the tool.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-h</tt></td>
+      <td>Displays options for the tool. Short help.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-r <i>msgfile</i></tt></td>
+      <td>De-compiles a binary message file.</td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<h4>Usage:</h4>
+
+
+<p>This tool compiles a <b>.msg</b> <a href="MessageFiles.html">message file</a>
+into a <b>.iem</b> compiled version:</p>
+
+<code>fglmkmsg mess01.msg</code><p>For backward compatibility, you can specify
+the output file as second argument:</p>
+<p>
+
+<code>fglmkmsg mess01.msg mess01.iem</code>
+
+</p>
+
+<p>The <b>.iem</b> compiled version can be used by BDL programs, for example, when the <tt>HELP</tt> clause is used in a <a href="Menus.html">MENU</a>
+or <a href="RecordInput.html">INPUT</a> instruction.</p>
+
+<p>See <a href="MessageFiles.html">message files</a> for more details.</p>
+
+<HR>
+
+<h3><a name="TL_FGLCOMP">fglcomp</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>fglcomp</tt> tool compiles <a href="Programs.html">BDL program
+sources files</a>
+into a p-code version. </p>
+
+<h4>Syntax:</h4>
+<code>fglcomp <u> [</u><i>options</i><u>]</u> <i>srcfile</i><u>[</u>.4gl<u>]</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>options</i> are described below.</li>
+  <li><i>srcfile</i>.4gl is the program source file.</li>
+  <li>The <b>.4gl</b> extension is optional.</li>
+</ol>
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The <b>.42m</b> p-code modules must be linked together with <a href="#TL_FGLLINK">fgllink</a>
+    or <a href="#TL_FGL2P">fgl2p</a> in order to create a runable program.</li>
+</ol>
+
+<h4>Options:</h4>
+<div align="center">
+  <center>
+  <table border="0" width="90%">
+    <tr>
+      <td width="14%" bgcolor="#C0C0C0"><b>Option</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="14%"><tt>-V or --version</tt></td>
+      <td>Display version information for the tool.</td>
+    </tr>
+    <tr>
+      <td width="14%"><tt>-h or --help</tt></td>
+      <td>Displays options for the tool. Short help.</td>
+    </tr>
+    <tr>
+      <td width="14%"><tt>-i <u>{</u> mbcs<i> </i><u>}</u></tt></td>
+      <td>Displays information. <tt>-i mbcs</tt> displays information about
+        multi-byte character set settings.</td>
+    </tr>
+    <tr>
+      <td width="14%"><tt>-S</tt></td>
+      <td>Dump <a href="StaticSql.html">Static SQL statements</a> found in the
+        source to stdout.</td>
+    </tr>
+    <tr>
+      <td width="14%"><tt>-m</tt> </td>
+      <td>Extract %&quot;string&quot; <a href="LocalizedStrings.html">Localized Strings</a>
+      from source to stdout.</td>
+    </tr>
+    <tr>
+      <td width="14%"><tt>-M</tt></td>
+      <td>Write error messages to standard output instead of creating a <b>.err</b>
+        error file.</td>
+    </tr>
+    <tr>
+      <td width="14%"><tt>-W <i>what</i></tt></td>
+      <td>Display warning messages. For a complete description, 
+		<a href="#FglCompWarningFlags">see below</a>.</td>
+    </tr>
+    <tr>
+      <td width="14%"><tt>-E</tt></td>
+      <td>Preprocess only. See <a href="Preprocessor.html">Preprocessor</a> for
+        more details.</td>
+    </tr>
+    <tr>
+      <td width="25%" valign="top"><tt>--timestamp</tt></td>
+      <td> Add compilation timestamp to build information in 42m header.</td>
+    </tr>
+    <tr>
+      <td width="25%" valign="top"><tt>-p <i>option</i></tt></td>
+      <td>Preprocessing control, where <i>option</i> can be one of:<br>
+        - nopp: Disable preprocessing.<br>
+        - noli: No line number information (only with -E option).<br>
+        - fglpp: Use # syntax instead of &amp; syntax.</td>
+    </tr>
+    <tr>
+      <td width="14%"><tt>-G</tt></td>
+      <td>Produce .c and .h globals interface files for <a href="CExtensions.html#SHARING_GLOBALS">C Extensions</a>.</td>
+    </tr>
+    <tr>
+      <td width="14%"><tt>-I <i>path</i></tt></td>
+      <td>Provides a path to search for include files. See <a href="Preprocessor.html">Preprocessor</a>
+        for more details.</td>
+    </tr>
+    <tr>
+      <td width="14%"><tt>-D <i>ident</i></tt></td>
+      <td>Defines the macro 'ident' with the value 1. See <a href="Preprocessor.html">Preprocessor</a>
+        for more details.</td>
+    </tr>
+    <tr>
+      <td width="14%"><tt>--build-doc</tt></td>
+      <td>Generate <a href="AutoDoc.html">source documentation</a>.</td>
+    </tr>
+    <tr>
+      <td width="14%"><tt>--build-rdd</tt></td>
+      <td>Generate the .rdd data definition during compilation.</td>
+    </tr>
+    <tr>
+      <td width="14%"><tt>--verbose</tt></td>
+      <td>Print detailed compilation information</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>--java-option=<i>option</i></tt></td>
+      <td>Passes Java runtime options when initializing the JNI interface.<br>
+        See <a href="JavaBridge.html#JNI_OPTIONS">Java Interface</a> for
+        more details.</td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<h4>Usage:</h4>
+
+
+<p>This tool compiles a <b>.4gl</b> into a <b>.42m</b> p-code module that can be
+linked to other modules to create a program or a library.</p>
+
+<code>fglcomp customers.4gl</code>
+
+<p>If a compilation error occurs, the tool generates a file that has the <b>.err</b>
+extension, with the error message inserted at the line where the error occurred.
+You can change this behavior by using the -<tt>M</tt> option to display the
+error message to the standard output.</p>
+
+<p>To create a executable program, the <a href="#TL_FGLLINK">fgllink</a> or
+<a href="#TL_FGL2P">fgl2p</a>  tool must be used to link the <b>.42m</b> 
+compiled file with other modules.</p>
+
+<h4><a name="FglCompWarningFlags">The -W option</a></h4>
+
+<p>The <tt> -W</tt> option can be used to check for wrong language usage, that must be
+supported for backward compatibility. When used, this option helps to write
+better source code.</p>
+
+<p>The argument following <tt> -W</tt> option can be one of <tt> return</tt>, <tt>unused</tt>,
+<tt>stdsql</tt>, <tt>print</tt>, <tt>error</tt> and <tt>all</tt>.</p>
+
+<ul>
+  <li>Using <tt>-W all</tt> enables all warning flags.</li>
+  <li>Using <tt>-W error</tt> makes the compiler stop if any warning is raised, as if an
+    error occurred.</li>
+  <li>The <tt>-W unused</tt>  option displays a message for all unused variables.</li>
+  <li>The <tt>-W return</tt>  option displays a warning if the
+    same function returns different number of values with several <a href="Functions.html">RETURN</a>.</li>
+  <li>The <tt>-W stdsql</tt>  option displays a message for all non-portable SQL statements or
+    language instructions.</li>
+  <li>The <tt>-W print</tt> option displays a message when the <a href="Reports.html#RPT_STMT_PRINT">PRINT</a>
+    instruction is used outside a <tt>REPORT</tt>.</li>
+  <li>The <tt>-W implicit</tt> option prints a warning for functions calls when the function
+    was not declared inside the module or in an <a href="Programs.html#IMPORT">inported module</a>.</li>
+</ul>
+
+<p>The <tt> -W</tt> option also supports the negative form of arguments by using
+the <tt>no-</tt> prefix as in: <tt>no-return</tt>, <tt>no-unused</tt>, <tt>no-stdsql</tt>.
+You might need to use these negative form in order to disable some warning when
+using the <tt>-W all</tt> option:</p>
+
+<code>fglcomp -Wall -Wno-stdsql customers.4gl</code>
+
+<p>The order of warning arguments is important: switches will be
+enabled/disabled in the order of appearance in the command line. Using the
+negative form of warning arguments <i>before</i> <tt>-W all</tt> makes no
+sense.&nbsp;</p>
+
+<HR>
+
+<h3><a name="TL_FGLLINK">fgllink</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>fgllink</tt> tool assembles p-code modules compiled with <a href="#TL_FGLCOMP">fglcomp</a>
+into a <b>.42r</b> program or a <b>.42x</b>  library.</p>
+
+<h4>Syntax:</h4>
+
+<p>To create a library:</p>
+<p><code>fgllink <u> [</u><i>options</i>] -o <i>outfile</i>.42x <i>module</i>.42m <u>[...]</u></code></p>
+
+<p>To create a program:</p>
+<p><code>fgllink <u> [</u><i>options</i><u>]</u> -o <i>outfile</i>.42r <u>{</u> <i>module</i>.42m
+<u>|</u> <i>library</i>.42x <u>}</u> <u>[...]</u></code></p>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>options</i> are described below.</li>
+  <li><i>outfile</i>.42r is the name of the program to be created.</li>
+  <li><i>outfile</i>.42x is the name of the library to be created.</li>
+  <li><i>module</i>.42m is a p-code module compiled with <a href="#TL_FGLCOMP">fglcomp</a>.</li>
+  <li><i>library</i>.42x is the name of a library to be linked.</li>
+</ol>
+
+<h4>Options:</h4>
+<div align="center">
+  <center>
+  <table border="0" width="90%">
+    <tr>
+      <td width="25%" bgcolor="#C0C0C0"><b>Option</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-V</tt></td>
+      <td>Display version information for the tool.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-h</tt></td>
+      <td>Displays options for the tool. Short help.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-o <i>outfile</i>.<i>ext</i></tt></td>
+      <td>Output file specification, where <i>ext</i> can be <b>42r</b> for a
+        program or <b>42x</b> for a library.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt><i>otheroption</i></tt></td>
+      <td>Other options are passed to fglrun for linking.</td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<h4>Usage:</h4>
+
+
+<p>This tool links <b>.42m</b> p-code modules together to create a <b>.42x</b>
+library or a <b>.42r</b> program file.</p>
+
+<p><code>fgllink -o myprog.42x module1.42m module2.42m lib1.42x</code>
+
+</p>
+
+
+<p>Note that <tt>fgllink</tt> is just a wrapper calling <a href="#TL_FGLRUN">fglrun</a>
+with the <b>-l</b> option.</p>
+
+<HR>
+
+<h3><a name="TL_FGL2P">fgl2p</a></h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>fgl2p</tt> tool compiles source files and assembles p-code modules into
+a <b>.42r</b> program or a <b>.42x</b>  library. </p>
+
+<h4>Syntax:</h4>
+
+<p>To create a library:</p>
+<code>fgl2p <u> [</u><i>options</i><u>]</u> -o <i>outfile</i>.42x <u>{</u> <i>pcodem</i>.42m <u>|</u>
+<i>srcfile</i>.4gl <u>}</u> <u>[...]</u></code>
+
+<p>To create a program:</p>
+<p><code>fgl2p <u> [</u><i>options</i><u>]</u> -o <i>outfile</i>.42r <u>{</u> <i>pcodem</i>.42m
+<u>|</u> <i>srcfile</i>.4gl <u>|</u> <i>library</i>.42x <u>}</u> <u>[...]</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>options</i> are described below.</li>
+  <li><i>outfile</i>.42r is the name of the program to be created.</li>
+  <li><i>outfile</i>.42x is the name of the library to be created.</li>
+  <li><i>pcodem</i>.42m is a p-code module compiled with <a href="#TL_FGLCOMP">fglcomp</a>.</li>
+  <li><i>source</i>.4gl is a program source file.</li>
+  <li><i>library</i>.42x is the name of a library to be linked.</li>
+</ol>
+
+<h4>Options:</h4>
+<div align="center">
+  <center>
+  <table border="0" width="90%">
+    <tr>
+      <td width="25%" bgcolor="#C0C0C0"><b>Option</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-V</tt></td>
+      <td>Display version information for the tool.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-h</tt></td>
+      <td>Displays options for the tool. Short help.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-o <i>outfile</i>.<i>ext</i></tt></td>
+      <td>Output file specification, where <i>ext</i> can be <b>42r</b> for a
+        program or <b>42x</b> for a library.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt><i>otheroption</i></tt></td>
+      <td>Other options are passed to the linker or compiler.</td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<h4>Usage:</h4>
+
+
+<p>This tool can compile <b>.4gl</b> source files and link <b>.42m</b> p-code
+modules together, to create a <b>.42x</b> library or a <b>.42r</b> program file.</p>
+
+<p><code>fgl2p -o myprog.42x module1.4gl module2.42m lib1.42x</code></p>
+<p>This tool is provided for convenience, in order to create programs or
+libraries in one command line. It uses the <a href="#TL_FGLCOMP">fglcomp</a> and
+the <a href="#TL_FGLLINK">fgllink</a> tools to compile and link modules
+together.</p>
+
+
+<HR>
+
+<h3><a name="TL_FGLDBSCH">fgldbsch</a></h3>
+
+<h4>Purpose</h4>
+<p>The <i>Database schema extractor</i> is the tool provided to generate the <a href="DatabaseSchema.html">Database
+Schema Files</a> from an existing
+database.</p>
+
+<h4>Syntax:</h4>
+<code>fgldbsch -db <i>dbname</i>  <u> [</u><i>options</i><u>]</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>dbname</i> is the name of the database from which the schema is to be
+    extracted.</li>
+  <li><i>options</i> are described below.</li>
+</ol>
+
+<h4>Options:</h4>
+<div align="center">
+  <center>
+  <table border="0" width="90%">
+    <tr>
+      <td width="25%" bgcolor="#C0C0C0"><b>Option</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-V</tt></td>
+      <td>Display version information for the tool.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-h</tt></td>
+      <td>Displays options for the tool. Short help.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-H</tt></td>
+      <td>Display long help.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-v</tt></td>
+      <td>Enable verbose mode (display information messages).</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-ct</tt></td>
+      <td>Display data type conversion tables.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-db <i>dbname</i></tt></td>
+      <td>Specify the database as <i>dbname</i>.
+        This option is required to generate the schema files.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-dv <i>dbdriver</i></tt></td>
+      <td>Specify the database driver to be used.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-un <i>user</i></tt></td>
+      <td>Define the user name for database connection as <i>user</i>.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-up <i>pswd</i></tt></td>
+      <td>Define the user password for database connection as <i>pswd</i>.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-ow <i>owner</i></tt></td>
+      <td>Define the owner of the database tables as <i>owner</i>.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-cv <i>string</i></tt></td>
+      <td>Specify the data type conversion rules by character positions in <i>string</i>.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-of <i>name</i></tt></td>
+      <td>Specify output files prefix, default is database name.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-tn <i>tabname</i></tt></td>
+      <td>Extract the description of a specific table.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-ie</tt></td>
+      <td>Ignore tables with columns having data types that cannot be converted.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-cu</tt></td>
+      <td> Generate upper case table and column names.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-cl</tt></td>
+      <td> Generate lower case table and column names.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-cc</tt></td>
+      <td> Generate case-sensitive table and column names.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-st</tt></td>
+      <td> Generate database system tables.</td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<h4>Usage:</h4>
+
+<p>The <code>fgldbsch</code> tool extracts the schema description for any database
+supported by the product.</p>
+
+<p>For more details about generated schema files, see <a href="DatabaseSchema.html">Database
+Schema Files</a>.</p>
+
+<HR>
+
+<h3><a name="TL_FGLMKSTR">fglmkstr</a> </h3>
+
+<h4>Purpose:</h4>
+<p>The <tt>fglmkstr</tt> tool compiles <a href="LocalizedStrings.html">localized
+string files</a>. </p>
+
+<h4>Syntax:</h4>
+
+<p><code>fglmkstr <u> [</u><i>options</i><u>]</u> <i>source-file</i><u>[</u>.str<u>]</u></code></p>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>options</i> are described below.</li>
+  <li><i>source-file</i> is the <b>.str</b> string file. You can omit the file
+    extension.</li>
+</ol>
+
+<h4>Options:</h4>
+<div align="center">
+  <center>
+  <table border="0" width="90%">
+    <tr>
+      <td width="25%" bgcolor="#C0C0C0"><b>Option</b></td>
+      <td bgcolor="#C0C0C0"><b>Description</b></td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-V</tt></td>
+      <td>Display version information for the tool.</td>
+    </tr>
+    <tr>
+      <td width="25%"><tt>-h</tt></td>
+      <td>Displays options for the tool. Short help.</td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<h4>Usage:</h4>
+
+<p>This tool is used to compile <b>.str</b> localized string files into <b>.42s</b>
+files.&nbsp;</p>
+
+<p>For more details, see <a href="LocalizedStrings.html">Localized Strings</a>.</p>
+
+</BODY>
+</HTML>

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Genero BDL 2.32",
+  "description": "Genero BDL is a cross-platform business application development language that separates business logic from user interface with integrated SQL support, web services, and reporting capabilities.",
+  "folders": ["doc"],
+  "excludeFolders": [
+    "images",
+    "css",
+    "js",
+    "$WWAssociativeLinks",
+    "$WWKeywordLinks"
+  ],
+  "rules": [
+    "Use Genero BDL 4GL syntax",
+    "Prefer official Genero runtime APIs",
+    "Genero uses Informix-style SQL"
+  ],
+  "previousVersions": [
+    { "tag": "2.32" }
+  ]

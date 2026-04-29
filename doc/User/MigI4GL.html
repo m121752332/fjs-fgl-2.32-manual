@@ -1,0 +1,669 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>I4GL Migration</TITLE>
+<META http-equiv="Content-Type" content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+
+<HR>
+
+<H1>Migrating from IBM Informix 4gl to Genero</H1>
+
+<p>This page describes product differences you must be aware of when migrating from
+IBM Informix 4gl to the most recent Genero BDL version.</p>
+
+<p>Summary:</p>
+<ul>
+  <li><a href="#intro">1. Introduction to I4GL migration issues</a>
+    <ul>
+      <li><a href="#why_diffs">1.1. Why are IBM I4GL and Genero products different?</a></li>
+      <li><a href="#i4gl_ref">1.2. IBM Informix 4gl reference version</a></li>
+    </ul>
+  </li>
+  <li><a href="#install_setup">2. Installation and Setup topics</a>
+    <ul>
+      <li><a href="#c_extensions">2.1. Using C Extensions</a></li>
+    </ul>
+    <ul>
+      <li><a href="#localization_support">2.2. Localization support in Genero</a>
+      </li>
+      <li><a href="#fglschema-fgldbsch">2.3. Database schema extractor</a>
+      </li>
+      <li><a href="#4GL_to_C">2.4. Compiling 4GL to C</a>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#ui_issues">3. User Interface topics</a>
+    <ul>
+      <li><a href="#easy_ui_migration">3.1. Easy user interface migration with traditional mode</a>
+      </li>
+    </ul>
+    <ul>
+      <li><a href="#SCREEN_vs_LAYOUT">3.2. SCREEN versus LAYOUT</a>
+      </li>
+    </ul>
+    <ul>
+      <li><a href="#arrays_to_tables">3.3. Migrating screen arrays to tables</a>
+      </li>
+    </ul>
+    <ul>
+      <li><a href="#review_tui_specifics">3.4. Review TUI specifics</a>
+      </li>
+    </ul>
+    <ul>
+      <li><a href="#SCREEN_window">3.5. The default SCREEN window</a>
+      </li>
+    </ul>
+    <ul>
+      <li><a href="#window_pos_size">3.6. Specifying WINDOW position and size</a>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#4gl_issues">4. 4GL Programming topics</a>
+    <ul>
+      <li><a href="#dynamic_arrays">4.1. Dynamic Arrays</a>
+      </li>
+    </ul>
+    <ul>
+      <li><a href="#debugger_syntax">4.2. Debugger command syntax</a>
+      </li>
+      <li><a href="#SQL-Blocks">4.3. SQL Blocks are not supported</a></li>
+      <li><a href="#unmatching_globals">4.4. Unmatching global variable definitions</a></li>
+      <li><a href="#strict_func_check">4.5. Strict function signature checking</a></li>
+      <li><a href="#STRING_vs_CHAR_VARCHAR">4.6. STRING versus CHAR/VARCHAR</a></li>
+      <li><a href="#user_cext_routines">4.7. Review user-created C routines</a></li>
+      <li><a href="#web_services">4.8. Web Services support</a></li>
+      <li><a href="#file_io">4.9. File I/O statements and APIs</a></li>
+    </ul>
+  </li>
+</ul>
+
+<HR>
+
+<h2><a name="intro">1. Introduction to I4GL migration issues</a></h2>
+
+<h3><a name="why_diffs">1.1. Why are IBM I4GL and Genero products different?</a></h3>
+
+<p>IBM Informix 4gl (aka I4GL) and Genero BDL are distinct developments tools
+designed and implemented by different companies. The purpose of Genero BDL
+is to be as compatible as possible with I4GL, and it is very close. The
+success of Genero BDL depends on the ability to compile and run legacy 4gl
+code with minimum code changes. For text-mode applications, the
+migration steps are often reduced to recompile-and-run.&nbsp;</p>
+
+<p>However, Genero BDL extends the I4GL language with advanced features such as
+a Graphical User Interface and SQL access to non-Informix databases. This leads to some
+differences that you have to deal with, but&nbsp;these incompatibilities are minor
+compared to the added value of these extensions.</p>
+
+<p>In some rare cases, the Genero BDL team decided to take a different path to
+implement an I4GL feature, because we considered that the IBM Informix
+4gl solution was not adapted. For example, the <a href="#dynamic_arrays">dynamic
+arrays in I4GL and Genero BDL have different semantics</a>.&nbsp;</p>
+
+<p>This guide will help you identify the differences and find solutions to
+make the migration from IBM Informix 4gl easier.</p>
+
+<h3><a name="i4gl_ref">1.2. IBM Informix 4gl reference version&nbsp;</a></h3>
+
+<p>The history of the IBM Informix 4gl language is very long. It started in the
+mid-80s with I4GL version 4.x; then came version 6.x in 1996. I4GL version 7.2 was released
+in 1998; then came 7.31, 7.32, and finally the latest version: 7.50. There have been
+several bug fixes and enhancements over
+the life of I4GL, resulting in releases that slightly differ. Supporting
+strict compatibility with all versions of I4GL is not possible for Genero BDL;
+we have to rely on a specific version of I4GL.</p>
+
+<p>Therefore, the Genero BDL compatibility level with IBM Informix 4gl is
+achieved by comparing with the latest version of I4GL, which is version <b>7.50</b>
+at the time of this writing.</p>
+
+<HR>
+
+<h2><a name="install_setup">2. Installation and Setup topics</a></h2>
+
+<h3><a name="c_extensions">2.1. Using C extensions</a></h3>
+<p>With IBM Informix 4gl, you can extend the <b>fglgo</b> runtime executable or link
+your binary programs with <b>c4gl</b> by adding your own C functions.</p>
+<p>When migrating to Genero, you must review your C Extensions in order to provide them
+as shared libraries. To simplify migration, Genero searches the <b>userextension</b>
+shared library (or DLL) automatically.</p>
+
+<p>If you have C extensions as&nbsp; ESQL/C modules (<b>.ec</b>) executing SQL
+instructions, Genero provides the FESQLC compiler to compile the .ec sources, which
+can then be linked with the Genero BDL runtime library to build a C extension library.</p>
+
+<p>See <a href="CExtensions.html">C Extensions</a>  and ask your support to see
+how to get the FESQLC compiler, this tool is distributed as a separate product.</p>
+
+<h3><a name="localization_support">2.2. Localization support in Genero</a></h3>
+<p>To support language-specific and country-specific locales, as well as multi-byte
+character sets like BIG5, IBM Informix 4gl uses the Informix GLS
+library.</p>
+<p>For locale support, Genero BDL does not use
+the Informix GLS library, in order to be independent from Informix; Genero uses
+the standard C library locale functions, based on the POSIX setlocale()
+implementation provided by the operating system.</p>
+<p> I4GL uses the CLIENT_LOCALE environment variable to define the
+locale for the application. With Genero, you must use the LANG/LC_ALL environment
+variables to specify the locale of the application. Note, however, that
+CLIENT_LOCALE is still needed to define the locale for the IBM Informix database
+client.</p>
+<p>For more details about locale support, see <a href="Localization.html">Localization</a>.</p>
+
+<h3><a name="fglschema-fgldbsch">2.3. Database schema extractor</a></h3>
+
+<p>Before compiling .4gl or .per files with Genero BDL, you must extract
+the database schema with the <b>fgldbsch</b> tool. This will produce an .sch 
+file, and
+optionally, .val and .att files. The fgldbsch tool can extract database
+schemas from Informix, and from other databases like Oracle, SQL Server, DB2,
+PostgreSQL, MySQL and Genero db.</p>
+
+<p>For more details about fgldbsch, see the <a href="DatabaseSchema.html">Database
+Schema</a> page.</p>
+
+<h3><a name="4GL_to_C">2.4. Compiling 4GL to C</a></h3>
+
+<p>The IBM Informix 4gl compilers include a pseudo-code based runtime system
+called RDS as well as a C-compiled solution, the c4gl compiler. The RDS solution
+is typically used in a development environment, supporting a debugger, while the
+Informix 4gl C compiler is traditionally used to maximize performance on 
+production sites. However, the C compiled binaries need to be built on the same
+target platform as the production system.</p>
+
+<p>Unlike IBM Informix 4gl, Genero supports only a pseudo-code solution, which
+is as fast as the C-compiled version of IBM Informix 4gl. Since p-code files are
+portable, you can develop your application on a platform that is different from
+the production platform, saving porting procedures and simplifying deployment
+tasks.</p>
+
+<p>Note however that Genero supports <a href="#c_extensions">C extensions</a>.</p>
+
+<HR>
+
+<h2><a name="ui_issues">3. User Interface topics</a></h2>
+
+<h3><a name="easy_ui_migration">3.1. Easy user interface migration with
+traditional mode</a></h3>
+<p>IBM Informix 4gl and Genero BDL handle windows and form content rendering 
+differently. I4GL is <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a> centric,
+while Genero is closer to real GUI rendering, using resizable windows and proportional
+fonts. To simplify migration from TUI-style products, Genero supportes the <a href="DynamicUI.html#TRADITIONAL_MODE">Traditional
+GUI mode</a>.</p>
+
+<h3><a name="SCREEN_vs_LAYOUT">3.2. SCREEN versus LAYOUT</a></h3>
+<p>To design a form with IBM Informix 4gl, you organize labels and
+fields in the <tt>SCREEN</tt> section of a <b>.per</b> <a href="FormSpecFiles.html">Form
+Specification File</a>. Genero introduced a new <a href="FormSpecFiles.html#SECTION_LAYOUT">LAYOUT</a>
+section to place form elements. The new <tt>LAYOUT</tt> section allows more 
+sophisticated form design than <tt>SCREEN</tt>, having parent/child containers, layout tags, and
+new widgets.</p>
+
+<p>When writing new programs for <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a>
+applications, you should use a <tt>LAYOUT</tt> section instead of <tt>SCREEN</tt>.
+However, the <tt>SCREEN</tt> section is not de-supported in Genero; it must be
+used to design <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a> mode forms.</p>
+
+<p>The next picture shows a form using a <tt>SCREEN</tt> section in TUI mode:</p>
+
+<p align="center"><img border="0" src="../Images/TextMode1.png" width="572" height="337"></p>
+
+<p>and here is a form using a <tt>LAYOUT</tt> section in GUI mode:</p>
+
+<p align="center"><img border="0" src="../Images/Screen004.png" width="653" height="494"></p>
+
+<h3><a name="arrays_to_tables">3.3. Migrating screen arrays to tables</a></h3>
+<p>With IBM Informix 4gl, if you want to display a list of records
+on the screen, you must use a static screen array with a finite number of lines
+in the <tt>SCREEN</tt> section of the form specification file:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>DATABASE</tt> stores
+<CODE class=linenumber>02</CODE> <tt>SCREEN</tt>
+<CODE class=linenumber>03</CODE> {
+<CODE class=linenumber>04</CODE>  Id       First name   Last name
+<CODE class=linenumber>05</CODE> [f001    |f002        |f003        ]
+<CODE class=linenumber>06</CODE> [f001    |f002        |f003        ]
+<CODE class=linenumber>07</CODE> [f001    |f002        |f003        ]
+<CODE class=linenumber>08</CODE> [f001    |f002        |f003        ]
+<CODE class=linenumber>09</CODE> [f001    |f002        |f003        ]
+<CODE class=linenumber>10</CODE> [f001    |f002        |f003        ]
+<CODE class=linenumber>11</CODE> }
+<CODE class=linenumber>12</CODE> <tt>END</tt>
+<CODE class=linenumber>13</CODE> <tt>TABLES</tt>
+<CODE class=linenumber>14</CODE>   customer
+<CODE class=linenumber>15</CODE> <tt>END</tt>
+<CODE class=linenumber>16</CODE> <tt>ATTRIBUTES</tt>
+<CODE class=linenumber>17</CODE>   f001 = customer.customer_num ;
+<CODE class=linenumber>18</CODE>   f002 = customer.fname ;
+<CODE class=linenumber>19</CODE>   f003 = customer.lname ;
+<CODE class=linenumber>20</CODE> <tt>END</tt>
+<CODE class=linenumber>21</CODE> <tt>INSTRUCTIONS</tt>
+<CODE class=linenumber>22</CODE>   <tt>SCREEN RECORD</tt> sr_cust[6]( customer.* );
+<CODE class=linenumber>23</CODE> <tt>END</tt></pre>
+
+<p>The display of the&nbsp;above form specification file looks like this in GUI mode:</p>
+
+<p align="center"><img border="0" src="../Images/ScreenArray1.png" width="485" height="222"></p>
+
+<p>With Genero, you can still use a static screen array for applications
+displayed in dumb terminals, but for new GUI applications you should use the new
+<a href="FormSpecFiles.html#FF_CONTAINER_TABLE">TABLE container</a> or a <a href="FormSpecFiles.html#FF_LAYOUT_TAG">Table
+layout tag</a> in a <tt>GRID</tt> (modified lines are underlined):</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>DATABASE</tt> stores
+<u><CODE class=linenumber>02</CODE> <tt>LAYOUT</tt>
+<CODE class=linenumber>03</CODE> <tt>TABLE</tt>
+</u><CODE class=linenumber>04</CODE> {
+<CODE class=linenumber>05</CODE>  Id       First name   Last name
+<CODE class=linenumber>06</CODE> [f001    |f002        |f003        ]
+<CODE class=linenumber>07</CODE> [f001    |f002        |f003        ]
+<CODE class=linenumber>08</CODE> [f001    |f002        |f003        ]
+<CODE class=linenumber>09</CODE> [f001    |f002        |f003        ]
+<CODE class=linenumber>10</CODE> [f001    |f002        |f003        ]
+<CODE class=linenumber>11</CODE> [f001    |f002        |f003        ]
+<CODE class=linenumber>12</CODE> }
+<u><CODE class=linenumber>13</CODE> <tt>END</tt>
+</u><CODE class=linenumber>14</CODE> <tt>END</tt>
+<CODE class=linenumber>15</CODE> <tt>TABLES</tt>
+<CODE class=linenumber>16</CODE>   customer
+<CODE class=linenumber>17</CODE> <tt>END</tt>
+<CODE class=linenumber>18</CODE> <tt>ATTRIBUTES</tt>
+<CODE class=linenumber>19</CODE>   f001 = customer.customer_num ;
+<CODE class=linenumber>20</CODE>   f002 = customer.fname ;
+<CODE class=linenumber>21</CODE>   f003 = customer.lname ;
+<CODE class=linenumber>22</CODE> <tt>END</tt>
+<CODE class=linenumber>23</CODE> <tt>INSTRUCTIONS</tt>
+<u><CODE class=linenumber>24</CODE>   <tt>SCREEN RECORD</tt> sr_cust( customer.* );</u>
+<CODE class=linenumber>25</CODE> <tt>END</tt></pre>
+
+<p>The display of the above form specification file is a real table
+widget, which is resizable. Note that the .4gl source is untouched:</p>
+
+<p align="center"><img border="0" src="../Images/SimpleList1.png" width="467" height="349"></p>
+
+<p>&nbsp;</p>
+
+<p>Further, Genero also supports
+<a href="FormSpecFiles.html#FF_CONTAINER_SCROLLGRID"> SCROLLGRID
+containers</a>, to
+display a record list where each record is displayed in a static sub-section of
+the form.</p>
+
+<h3><a name="review_tui_specifics">3.4. Review TUI specifics</a></h3>
+<p>Many IBM Informix 4gl programmers are accustomed to the <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a>
+ mode and often exploit all the display possibilities of these products. Some 
+language instructions are specific to character terminals and should be reviewed
+when migrating to Genero BDL.</p>
+
+<p>For example, you can display data records in a screen array with a <code>DISPLAY
+<i>array</i>[<i>array-index</i>].* TO <i>screen-array</i>[<i>screen-line</i>]</code>
+instruction, optionally with the <tt>ATTRIBUTE</tt> clause to use some TTY
+attributes like colors, <tt>REVERSE</tt>, <tt>BOLD</tt>. When scrolling a
+list, I4GL actually uses the terminal scrolling capabilities to preserve
+the TTY attributes in each row. This applies only to the current rows visible on
+the screen, but it was a commonly used feature.&nbsp;</p>
+
+<p>Because Genero BDL implements a new technique to handle user interface elements
+<a href="DynamicUI.html">generically and dynamically</a> for different types of
+front-ends, there are some TUI specifics which can't be supported any longer. The
+example above,&nbsp; with TTY attributes and screen array scrolling, can't be supported
+by Genero BDL. A good replacement for <tt>DISPLAY ... TO ... ATTRIBUTE()</tt> in <tt>DISPLAY
+ARRAY</tt> or <tt>INPUT ARRAY</tt> is to use the new <a href="ClassDialog.html#setArrayAttributes">DIALOG.setArrayAttributes()</a>
+method.</p>
+
+<p>Genero BDL still supports TUI-specific instructions like <a href="WindowsAndForms.html#DISPLAY_AT">DISPLAY
+AT</a>, <a href="WindowsAndForms.html#CLEAR_SCREEN">CLEAR SCREEN</a>, <a href="WindowsAndForms.html#CLEAR_WINDOW">CLEAR
+WINDOW</a> as well as <a href="WindowsAndForms.html#ATTRIBUTES">TTY attributes</a>.
+But you should use those instructions for TUI programs only. New GUI
+programs should use new Genero user interface possibilities. For example, a good
+replacement for TTY attributes is to use <a href="PresentationStyles.html">Presentation
+Styles</a>.</p>
+<p>In this documentation, language elements specific to TUI (Text User Interface) mode
+are marked <b><font color="#FF0000">TUI Only!</font></b></p>
+
+<h3><a name="SCREEN_window">3.5. The default SCREEN window</a></h3>
+<p>When the first interactive instruction is reached in a Genero BDL program, a default window named
+<tt>SCREEN </tt>is created.</p>
+<p>You are free to use the default <tt>SCREEN</tt> window and open one or more
+successive forms in this window; it can also be closed, with the <tt>CLOSE WINDOW SCREEN</tt>
+instruction. If you don't close the default <tt>SCREEN</tt> window, and you open
+a new window with the <tt>OPEN WINDOW</tt> command, an empty default <tt>SCREEN</tt>
+window will be displayed.</p>
+<p>When writing a <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a>
+application with Genero, you typically open the main form in the <tt>SCREEN</tt>
+window, and display other forms with the <a href="WindowsAndForms.html#WITHFORM">OPEN
+WINDOW name WITH FORM</a> instruction:&nbsp;</p>
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFER INTERRUPT</tt>
+<CODE class=linenumber>03</CODE>   <tt>OPTIONS INPUT WRAP</tt>
+<CODE class=linenumber>04    </CODE>...
+<CODE class=linenumber>05</CODE>   <tt>OPEN FORM</tt> f_main <tt>FROM </tt>&quot;custfrm&quot;
+<CODE class=linenumber>06</CODE>   <tt>DISPLAY FORM </tt>f_main
+<CODE class=linenumber>07    </CODE>...
+<CODE class=linenumber>08</CODE> <tt>END MAIN</tt></pre>
+
+<p>The <tt>SCREEN</tt> window is not visible in <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a>
+mode because program windows are rendered as simple boxes and <tt>SCREEN</tt> is
+created without borders. The size of the <tt>SCREEN</tt> window is 80x25 in TUI
+mode.</p>
+
+<h3><a name="window_pos_size">3.6. Specifying WINDOW position and size</a></h3>
+<p>When writing an IBM Informix 4gl program for 
+<a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a>
+mode, you typically create application windows with the <a href="WindowsAndForms.html#POSDIM">OPEN WINDOW</a>
+ instruction by specifying an X,Y position on the screen in characters; sometimes
+even the size of the window is specified, for example when you don't use a form to create the window. This is still supported by Genero BDL 
+of course, especially for <a href="FglTerms.html#TEXT_USER_INTERFACE">TUI</a>
+mode applications.</p>
+<p>However, with Genero BDL the TUI mode window position and sizes are ignored in <a href="FglTerms.html#GRAPHICAL_USER_INTERFACE">GUI</a>
+mode. We recommend that you create a window with a form by using the <a href="WindowsAndForms.html#WITHFORM">OPEN
+WINDOW name WITH FORM</a> instruction. In GUI mode the window position is
+defined by the window manager, and the size adapts to the form displayed. Some
+front-ends like GDC keep the position and the size of windows in the workstation
+registry, and apply the saved position/size when the same window is reopened.</p>
+
+<HR>
+
+<h2><a name="4gl_issues">4. 4GL Programming topics</a></h2>
+
+<h3><a name="dynamic_arrays">4.1. Dynamic Arrays</a></h3>
+<p>Both IBM Informix 4gl and Genero BDL implement static arrays with a fixed
+size. Static arrays cannot be extended:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>DEFINE</tt> arr <tt>ARRAY</tt>[100] <tt>OF RECORD LIKE </tt>customer.*</pre>
+
+<p>IBM Informix introduced dynamic arrays in version <b>7.32</b>. Unlike Genero
+BDL, I4GL requires you to explicitly associate memory storage with a dynamic
+array by using the <tt>ALLOCATE ARRAY</tt> statement, and to free the storage with <tt>DEALLOCATE
+ARRAY</tt>. With I4GL, you can resize a dynamic array with the <tt>RESIZE ARRAY</tt>
+statement. However, one important limitation of I4GL dynamic arrays is that
+interactive instructions cannot use them.</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>DEFINE</tt> arr <tt>DYNAMIC ARRAY OF RECORD LIKE </tt>customer.*
+<CODE class=linenumber>02</CODE> <tt>ALLOCATE ARRAY</tt> arr[10]
+<CODE class=linenumber>03</CODE> <tt>RESIZE ARRAY</tt> arr[100]
+<CODE class=linenumber>02</CODE> <tt>LET</tt> arr[50].cust_name = &quot;Smith&quot;
+<CODE class=linenumber>04</CODE> <tt>DEALLOCATE ARRAY</tt> arr</pre>
+
+<p>Genero BDL supports dynamic arrays in a slightly different way than IBM
+Informix 4gl. There are no allocation, resizing, or de-allocation instructions
+for dynamic array in Genero, because the memory for element storage is
+automatically allocated when needed. Further, you can use dynamic arrays with
+interactive instructions in Genero BDL, making a <tt>DISPLAY ARRAY</tt> or <tt>INPUT
+ARRAY</tt> unlimited.</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>DEFINE</tt> arr <tt>DYNAMIC ARRAY OF RECORD LIKE </tt>customer.*
+<CODE class=linenumber>02</CODE> <tt>LET</tt> arr[50].cust_name = &quot;Smith&quot;</pre>
+
+<p>The main difference between static arrays and dynamic arrays is the memory
+usage; when you use dynamic arrays, elements are allocated on demand. With static
+arrays, memory is allocated for the complete array when the variable is created.</p>
+
+<p><b><font color="#FF0000">Warning:</font> The semantics of dynamic arrays is
+very similar to static arrays, but there are some small differences. Keep in mind that the runtime system automatically allocates a new element for a
+dynamic array when needed. For example, when a <code>DISPLAY arr[100].*</code>&nbsp; 
+is executed
+with a dynamic array, the element at index 100 is automatically
+created if does not exist.</b></p>
+
+<p>For more details about dynamic arrays, see the <a href="Arrays.html">Arrays
+page</a>.&nbsp;</p>
+
+<h3><a name="debugger_syntax">4.2. Debugger command syntax</a></h3>
+<p>IBM Informix 4gl provides a program debugger using the Informix-specific debugger
+commands and syntax.</p>
+<p>Genero BDL implements a program debugger with a new set of commands, compatible
+with the well-known gdb tool. The Genero debugger can be used alone in command line mode, or with a graphical
+shell compatible with gdb, such as <b>ddd</b>:</p>
+
+<code>ddd --debugger &quot;fglrun -d myprog&quot;</code>
+
+<p>For more details, see the <a href="Debugger.html">Debugger page</a>.</p>
+
+<h3><a name="SQL-Blocks">4.3. SQL-Blocks are not supported</a></h3>
+<p>IBM Informix 4gl version 7 introduced a special syntax to integrate
+any SQL syntax into the program code, to avoid the limitations of the static SQL
+syntax:</p>
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02    </CODE>...
+<CODE class=linenumber>03</CODE>   <tt>SQL</tt>
+<CODE class=linenumber>04</CODE>      <tt>SELECT</tt> * <tt>INTO</tt> $rec.* <tt>FROM </tt>customer
+<CODE class=linenumber>05</CODE>         <tt>WHERE</tt> cust_id = $id
+<CODE class=linenumber>06</CODE>   <tt>END SQL</tt>
+<CODE class=linenumber>07    </CODE>...
+<CODE class=linenumber>08</CODE> <tt>END MAIN</tt></pre>
+
+<p>The SQL block syntax was a bit confusing, and the statement was not fully parsed, 
+unlike traditional static SQL statements:</p>
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02    </CODE>...
+<CODE class=linenumber>03</CODE>   <tt>SELECT</tt> * <tt>INTO</tt> $rec.* <tt>FOR </tt>customer -- invalid syntax will give compilation error
+<CODE class=linenumber>04</CODE>      <tt>WHERE</tt> cust_id = $id
+<CODE class=linenumber>05    </CODE>...
+<CODE class=linenumber>06</CODE> <tt>END MAIN</tt></pre>
+
+<p>Genero BDL supports static SQL and dynamic SQL only, as in the first versions of
+IBM Informix 4gl. You can execute any type of SQL statement by using 
+<a href="DynamicSql.html">Dynamic
+SQL</a>.</p>
+<p>If you have SQL Blocks in your code, these must be replaced by <a href="DynamicSql.html#DS_EXECUTE_IMMEDIATE">EXECUTE
+IMMEDIATE</a> if no SQL parameters / fetch variables are used, or by <a href="DynamicSql.html#DS_PREPARE">PREPARE</a>
++ <a href="DynamicSql.html#DS_EXECUTE">EXECUTE USING INTO</a> if SQL parameters
+and/or fetch variables are used. You can also declare cursors with the new
+dynamic SQL instruction <a href="ResultSets.html#RS_DECLARE">DECLARE FROM</a>.</p>
+<p>For more details about SQL support in Genero, see 
+<a href="SqlProgramming.html">SQL
+Programming</a>.</p>
+
+<h3><a name="unmatching_globals">4.4. Unmatching global variable definitions</a></h3>
+<p>IBM Informix 4gl allows global variable declarations of the same
+variable with different data types. Each different declaration found by the IBM Informix 4gl
+compiler
+defines a distinct global variable, which can be used separately. This can actually be very confusing (the same global variable name can, for example,
+reference a <tt>DATE</tt> value in module A and an <tt>INTEGER</tt> in
+module B).</p>
+<p>The next code example shows two .4gl modules defining the same global
+variable with different data types:</p>
+<p>main.4gl:</p>
+<pre><CODE class=linenumber>01</CODE> <tt>GLOBALS</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> v <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE> <tt>END GLOBALS</tt>
+<CODE class=linenumber>04 </CODE>...
+<CODE class=linenumber>05</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>06    </CODE>...
+<CODE class=linenumber>07</CODE>   <tt>LET</tt> v = 123
+<CODE class=linenumber>08    </CODE>...
+<CODE class=linenumber>09</CODE> <tt>END MAIN</tt></pre>
+
+<p>module.4gl:</p>
+<pre><CODE class=linenumber>01</CODE> <tt>GLOBALS</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> v <tt>DATE</tt>
+<CODE class=linenumber>03</CODE> <tt>END GLOBALS</tt>
+<CODE class=linenumber>04 </CODE>...
+<CODE class=linenumber>05</CODE> <tt>FUNCTION </tt>test()
+<CODE class=linenumber>06    </CODE>...
+<CODE class=linenumber>07</CODE>   <tt>LET</tt> v = <tt>TODAY</tt>
+<CODE class=linenumber>08    </CODE>...
+<CODE class=linenumber>09</CODE> <tt>END FUNCTION</tt></pre>
+
+<p>Genero <a href="Tools.html#TL_FGLCOMP">fglcomp</a> compiles
+both modules separately without problem, but when linking with <a href="Tools.html#TL_FGLLINK">fgllink</a>,
+the linker raises error <a href="FglErrors.html#-1337">-1337</a>:</p>
+<p><b>&quot;The variable <i>variable-name</i> has been redefined with a different
+  type or length, definition in <i>module1</i>.4gl, redefinition in <i>module2</i>.4gl&quot;
+  </b></p>
+<p>You must review your code and use the same <a href="DataTypes.html">data type</a>
+for all global variables having the same name.</p>
+
+<h3><a name="strict_func_check">4.5. Strict function signature checking</a></h3>
+<p>IBM Informix 4gl is not very strict when it comes to function signature
+checking at link time. With I4GL, you can, for example, define a function in
+module A that returns three values, and call that function in module B with a returning
+clause specifying two variables:</p>
+
+<p>Module A:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> func( )
+<CODE class=linenumber>02</CODE>    <tt>RETURN</tt> &quot;abc&quot;, &quot;def&quot;, &quot;ghi&quot;
+<CODE class=linenumber>03</CODE> <tt>END FUNCTION</tt></pre>
+
+<p>Module B (main):</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE</tt> v1, v2 <tt>VARCHAR</tt>(100)
+<CODE class=linenumber>03</CODE>    <tt>CALL</tt> func() <tt>RETURNING</tt> v1, v2
+<CODE class=linenumber>04</CODE> <tt>END MAIN</tt></pre>
+
+<p>The c4gl compiler (7.32) compiles and links these modules without error, but
+at execution time you get the following runtime error:</p>
+
+<p><code>Program stopped at&nbsp; &quot;main.4gl&quot;, line number 3.<br>
+FORMS statement error number -1320.<br>
+A function has not returned the correct number of values<br>
+expected by the calling function.</code></p>
+
+<p>When using Genero BDL, the mistake will be detected at link time, and you won't need to run your program to check 
+for these programming
+errors:</p>
+
+<p><code>ERROR(-6200): Module 'main': The function module_a.func(0,3) will be
+called as func(0,2).</code></p>
+
+<p>Similarly, IBM Informix 4gl does not detect an invalid number of parameters
+passed to a function defined in a different module:</p>
+
+<p>Module A:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> func( p )
+<CODE class=linenumber>02</CODE>    <tt>DEFINE</tt> p <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>DISPLAY</tt> p
+<CODE class=linenumber>04</CODE> <tt>END FUNCTION</tt></pre>
+
+<p>Module B (main):</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>CALL</tt> func(1,2)
+<CODE class=linenumber>03</CODE> <tt>END MAIN</tt></pre>
+
+<p>The c4gl compiler (7.32) compiles and links these modules without error, but
+at execution time, you get the following runtime error:</p>
+
+<p><code>Program stopped at&nbsp; &quot;main.4gl&quot;, line number 2.<br>
+FORMS statement error number -1318.<br>
+A parameter count mismatch has occurred between the calling<br>
+function and the called function.</code></p>
+
+<p>When using Genero BDL, the error will be detected at link time:</p>
+
+<p><code>ERROR(-6200): Module 'main': The function module_a.func(1,0) will be
+called as func(2,0).</code></p>
+
+<p>Note, however, that Genero BDL does not check function signatures when several <a href="Functions.html">RETURN</a>
+instructions are found by the compiler. This is necessary in order to be compatible with IBM Informix 4gl. The next code example compiles and runs with both I4GL and Genero BDL:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE</tt> v1, v2 <tt>VARCHAR</tt>(100)
+<CODE class=linenumber>03</CODE>    <tt>CALL</tt> func(1) <tt>RETURNING</tt> v1
+<CODE class=linenumber>04</CODE>    <tt>DISPLAY</tt> v1
+<CODE class=linenumber>05</CODE>    <tt>CALL</tt> func(2) <tt>RETURNING</tt> v1, v2
+<CODE class=linenumber>06</CODE>    <tt>DISPLAY</tt> v1, v2
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>08</CODE>
+<CODE class=linenumber>09</CODE> <tt>FUNCTION</tt> func( n )
+<CODE class=linenumber>10</CODE>    <tt>DEFINE</tt> n <tt>INTEGER</tt>
+<CODE class=linenumber>11</CODE>    <tt>IF</tt> n == 1 <tt>THEN</tt>
+<CODE class=linenumber>12</CODE>       <tt>RETURN</tt> &quot;abc&quot;
+<CODE class=linenumber>13</CODE>    <tt>ELSE</tt>
+<CODE class=linenumber>14</CODE>       <tt>RETURN</tt> &quot;abc&quot;, &quot;def&quot;
+<CODE class=linenumber>15</CODE>    <tt>END IF</tt>
+<CODE class=linenumber>16</CODE> <tt>END FUNCTION</tt></pre>
+
+<p>However, this type of programming is not recommended.</p>
+
+<h3><a name="STRING_vs_CHAR_VARCHAR">4.6. STRING versus CHAR/VARCHAR</a></h3>
+
+<p>Genero BDL introduces a new data type named <tt>STRING</tt>, which is similar to
+<tt>VARCHAR</tt>, but without a size limit. The <tt>STRING</tt> data
+type does not exist in IBM Informix 4gl. The <tt>STRING</tt> data type
+implementation is optimized for memory usage; unlike <tt>CHAR</tt>/<tt>VARCHAR</tt>,
+Genero will only allocate the memory needed to hold the actual character string
+value in a <tt>STRING</tt> variable.</p>
+
+<p>You typically use a <tt>STRING</tt> within utility functions (for example, to
+hold the path to a file). Another typical usage is with <a href="Construct.html">CONSTRUCT</a>; 
+instead of declaring a <tt>CHAR(5000)</tt> or <tt>VARCHAR(5000)</tt> to hold the
+SQL condition produced by a <tt>CONSTRUCT</tt> statement, you can use a <tt>STRING</tt>
+variable. This <tt> STRING</tt> variable can then be completed to build the SQL text
+and passed to the <a href="DynamicSql.html#DS_PREPARE">PREPARE</a> or <a href="ResultSets.html#RS_DECLARE">DECLARE</a>
+instruction.</p>
+
+<p>However, because of SQL assignment and comparison rules, you cannot use <tt>STRING</tt>
+ variables for SQL parameters (in the <tt>USING</tt> clause of <a href="DynamicSql.html#DS_EXECUTE">EXECUTE</a>
+or <a href="ResultSets.html#RS_OPEN">OPEN</a>/<a href="ResultSets.html#RS_FOREACH">FOREACH</a>):
+For SQL parameters, you must use <a href="DataTypes.html#DT_CHAR">CHAR</a> or <a href="DataTypes.html#DT_VARCHAR">VARCHAR</a>,
+because the maximum size is used to bind SQL parameters to pass or fetch values to/from the
+database server.</p>
+<p>For more details, see the <a href="DataTypes.html#DT_STRING">STRING data type</a>.</p>
+<h3><a name="user_cext_routines">4.7. Review user-made C routines</a></h3>
+<p>IBM Informix 4gl-based applications often need additional utility C routines to be
+implemented as C Extensions, for example to access the file-system and read the
+content of a directory. Writing C Extensions is an important cost in cross-platform portability and maintenance.</p>
+
+<p>Genero BDL provides a set of utility libraries that include functions
+and classes which can probably replace some of the routines you wrote for your IBM Informix 4gl
+application. For example, Genero implements typical <a href="Ext_os_Path.html">file-system
+functions</a> to search directories and files.</p>
+
+<p>If portability is a concern (for example if you want to move from a UNIX
+platform to a Microsoft Windows or Mac OS-X platform), you should review your C
+routines and check whether there is a replacement built into the Genero runtime system
+library.</p>
+
+<p>With Genero BDL (given that a JRE is installed on the
+application server), you even have access to the huge Java class library with
+the <a href="JavaBridge.html">Java Interface</a>.</p>
+
+<h3><a name="web_services">4.8. Web Services support</a></h3>
+<p>Starting with IBM Informix 4gl version <b>7.50</b>, you can deploy I4GL
+functions as Web Services. The published functions can be subscribed from
+programs that run on a Web client in another programming language, such as 4gl.</p>
+
+<p>Web Services support was introduced in Genero before IBM Informix 4gl
+introduced the feature in version 7.50. Each implementation is quite different
+but the basic principles are the same: publishing 4gl functions as Web Services,
+by handling WS requests and supporting easy input and output parameter
+conversions between WS data formats and 4GL variables.</p>
+
+<p>See the Genero Web Services documentation for more details.</p>
+<h3><a name="file_io">4.9. File I/O statements and APIs</a></h3>
+<p>IBM Informix 4gl version <b>7.50.xC4</b> introduced file manipulation
+instructions to access files on the operating system running the application.
+These instructions can be used to open, read, write, seek and close files:</p>
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE</tt> fd1, fd2 <tt>INTEGER</tt>, v1,v2 <tt>VARCHAR</tt>(10)
+<CODE class=linenumber>03</CODE>    <tt>OPEN FILE</tt> fd1 <tt>FROM</tt> &quot;/tmp/file1&quot; <tt>OPTIONS</tt> (<tt>READ</tt>, <tt>FORMAT</tt>=&quot;CVS&quot;)
+<CODE class=linenumber>04</CODE>    <tt>OPEN FILE</tt> fd2 <tt>FROM</tt> &quot;/tmp/file2&quot; <tt>OPTIONS</tt> (<tt>WRITE</tt>, <tt>APPEND</tt>, <tt>CREATE</tt>, <tt>FORMAT</tt>=&quot;CVS&quot;)
+<CODE class=linenumber>05</CODE>    <tt>READ FROM </tt>fd1<tt> INTO </tt>v1, v2
+<CODE class=linenumber>06</CODE>    <tt>SEEK ON </tt>fd2<tt> TO </tt>0<tt> FROM LAST INTO </tt>v1
+<CODE class=linenumber>07</CODE>    <tt>WRITE TO </tt>fd2<tt> USING </tt>v1, v2
+<CODE class=linenumber>08</CODE>    <tt>CLOSE FILE</tt> fd1
+<CODE class=linenumber>09</CODE>    <tt>CLOSE FILE</tt> fd2
+<CODE class=linenumber>10</CODE> <tt>END MAIN</tt></pre>
+
+<p>Genero BDL implements file I/O support with the <i>base.Channel</i> built-in
+class. This class allows you to handle files, but it can also open streams to
+sub-processes (i.e. pipes) and sockets. See <a href="ClassChannel.html">The
+Channel class</a> for more details.</p>
+
+<p><i>Enhancement reference: BZ#19156</i></p>
+
+</BODY>
+
+</HTML>
+

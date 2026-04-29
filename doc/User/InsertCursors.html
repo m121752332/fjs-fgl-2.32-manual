@@ -1,0 +1,364 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Insert Cursors</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">SQL Insert Cursors</a></H1>
+<p> Summary:</p>
+
+<ul>
+  <li><a href="#WHAT_IS_INSCURS">What is an Insert Cursor?</a></li>
+  <li><a href="#IC_DECLARE">Declaring the Insert Cursor</a> (<tt>DECLARE</tt>)</li>
+  <li><a href="#IC_OPEN">Initializing the Insert Cursor</a> (<tt>OPEN</tt>)</li>
+  <li><a href="#IC_PUT">Adding Rows to the Buffer</a> (<tt>PUT</tt>)</li>
+  <li><a href="#IC_FLUSH">Flushing the insert Buffer</a> (<tt>FLUSH</tt>)</li>
+  <li><a href="#IC_CLOSE">Finalizing the Insert Cursor</a> (<tt>CLOSE</tt>)</li>
+  <li><a href="#IC_FREE">Freeing Allocated Resources</a> (<tt>FREE</tt>)</li>
+  <li><a href="#EXAMPLES">Examples</a></li>
+</ul>
+
+
+<p><i>See also:</i>  <a href="Transactions.html">Transactions</a>, <a href="StaticSql.html">Static SQL</a>, <a href="DynamicSql.html">Dynamic
+SQL</a>, <a href="ResultSets.html">Result Sets</a>, <a href="Exceptions.html#SQLERRORS">SQL
+Errors</a>.</p>
+
+
+<HR>
+
+<h3><a name="WHAT_IS_INSCURS">What is an Insert Cursor?</a></h3>
+
+<p>An Insert Cursor is a database cursor declared with a restricted form
+of the <a href="StaticSql.html#SS_INSERT">INSERT</a>
+ statement, designed to perform buffered row insertion in database tables. </p>
+
+<p>The insert cursor simply inserts rows of data; it cannot be used to <a href="ResultSets.html">fetch
+data</a>. When an insert cursor is opened, a buffer is created in memory to hold
+a block of rows. The buffer receives rows of data as the program executes <a href="#IC_PUT">PUT</a>
+statements. The rows are written to disk only when the buffer is full. You can
+use the <a href="#IC_CLOSE">CLOSE</a>, <a href="#IC_FLUSH">FLUSH</a>, or <a href="Transactions.html#TI_COMMIT_WORK">COMMIT
+WORK</a> statement to flush the buffer when it is less than full. You must close
+an insert cursor to insert any buffered rows into the database before the
+program ends. You can lose data if you do not close the cursor properly.</p>
+<p>When
+the database server supports buffered inserts, an insert cursor increases processing efficiency (compared with embedding the
+<tt>INSERT</tt> statement directly). This process reduces communication between the
+program and the database server and also increases the speed of the insertions.</p>
+
+<p>Before using the insert cursor, you must declare it with the <a href="#IC_DECLARE">DECLARE</a> 
+instruction using an <tt>INSERT</tt> statement: </p>
+
+<p align="center"><img border="0" src="../Images/INCFig01.png" width="504" height="288"> </p>
+
+<p>Once declared, you can open the insert cursor with the <a href="#IC_OPEN">OPEN</a>
+instruction. This instruction prepares the insert buffer. When the insert cursor
+is opened, you can add rows to the insert buffer with the <a href="#IC_PUT"> PUT</a> statement: </p>
+
+<p align="center"><img border="0" src="../Images/INCFig02.png" width="504" height="288"> </p>
+
+<p>Rows are automatically added to the database table when the insert buffer is full.
+To force row insertion in the table, you can use the <a href="#IC_FLUSH"> FLUSH</a> instruction: </p>
+
+<p align="center"><img border="0" src="../Images/INCFig03.png" width="504" height="288"> </p>
+
+<p>Finally, when all rows are added, you can <a href="#IC_CLOSE"> CLOSE</a> the cursor and if you
+no longer need
+it, you can de-allocate resources with the <a href="#IC_FREE">FREE</a>
+instruction:</p>
+
+<p align="center"><img border="0" src="../Images/INCFig04.png" width="504" height="288"></p>
+
+<p>By default, insert cursors must be opened inside a <a href="Transactions.html">transaction
+block</a>, with <tt>BEGIN WORK</tt> and <tt>COMMIT WORK</tt>, and they are automatically
+closed at the end of the transaction. If needed, you can declare insert cursors with the
+<tt>WITH HOLD</tt> clause, to allow uninterrupted row insertion across multiple
+transactions. See <a href="#EXAMPLE_3">example 3</a> at the bottom of this page.</p>
+
+
+<HR>
+
+<h3><a name="IC_DECLARE">DECLARE</a></h3>
+
+<h4>Purpose:</h4><p>Declares a new insert cursor in the <a href="Connections.html">current
+database session</a>. </p>
+
+
+<h4>Syntax:</h4><code>DECLARE cid CURSOR <u>[</u>WITH
+HOLD<u>]</u> FOR <u>{</u>  <i>insert-statement
+<u>|</u>  sid </i> <u>}</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>cid</i> is the identifier of the insert cursor.</li>
+  <li> <i>insert-statement</i> is an <tt>INSERT</tt> statement defined in <a href="StaticSql.html">Static
+    SQL</a>.</li>
+  <li> <i>sid</i> is the identifier of a <a href="DynamicSql.html#DS_PREPARE">prepared</a>
+    <tt>INSERT</tt> statement including (<tt>?</tt>) question mark placeholders
+    in the <tt>VALUES</tt> clause.</li>
+  <li> The <tt>INSERT</tt> statement is parsed, validated and the execution plan is created.</li>
+  <li> <tt>DECLARE</tt> must precede any other statement that refers to the
+    cursor during program execution.</li>
+  <li> The scope of reference of the <i>cid</i> cursor identifier is local to
+    the module where it is declared.</li>
+  <li> When declaring a cursor with a static <i>insert-statement</i>, the
+    statement can include a list of <a href="Variables.html">variables</a> in
+    the <tt>VALUES</tt> clause. These variables are automatically read by the <a href="#IC_PUT">PUT</a>
+    statement; you do not have to provide the list of variables in that
+    statement. See <a href="#EXAMPLE_1">Example 1</a> for more details.</li>
+  <li> When declaring a cursor with a prepared <i>sid</i> statement, the
+    statement can include (<tt>?</tt>) question mark placeholders for SQL
+    parameters. In this case you must provide a list of <a href="Variables.html">variables</a>
+    in the <tt>FROM</tt> clause of the <a href="#IC_PUT">PUT</a> statement.
+    See <a href="#EXAMPLE_2">Example 2</a> for more details.</li>
+  <li> Use the <tt>WITH HOLD</tt> option to declare cursors that have
+    uninterrupted inserts across multiple <a href="Transactions.html">transactions</a>.</li>
+  <li> Resources allocated by the <tt>DECLARE</tt> can be released later by
+    the <a href="ResultSets.html#RS_FREE">FREE</a> instruction.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The number of declared cursors in a single program is limited by the
+    database server and the available memory. Make sure that you <a href="ResultSets.html#RS_FREE">free</a>
+    the resources when you no longer
+    need the declared insert cursor.</li>
+  <li> The identifier of a cursor that was declared in one module cannot be referenced from another
+    module.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="IC_OPEN">OPEN</a></h3>
+
+<h4>Purpose:</h4><p>Opens an insert cursor in the <a href="Connections.html">current
+database session</a>. </p>
+
+
+<h4>Syntax:</h4><code>OPEN <i>cid</i> </code>
+
+
+<ol>
+  <li> <i>cid</i> is the identifier of the insert cursor.</li>
+  <li> A subsequent <tt>OPEN</tt> statement closes the cursor and then reopens
+    it.</li>
+  <li> With the <a href="ResultSets.html#RS_CLOSE">CLOSE</a> instruction, you can release
+    resources allocated for the <a href="#WHAT_IS_INSCURS">insert buffer</a> on
+    the database server.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>When used with an insert cursor, the <tt>OPEN</tt>&nbsp; instruction
+    cannot include a <tt>USING</tt> clause.</li>
+  <li>If the insert cursor was not declared <tt>WITH HOLD</tt> option, the <tt>OPEN</tt>
+    instruction generates an SQL error if there is no current <a href="Transactions.html">transaction</a>
+    started.</li>
+  <li>If you release cursor resources with a <a href="ResultSets.html#RS_FREE">FREE</a>
+    instruction, you cannot use the cursor unless you <a href="ResultSets.html#RS_DECLARE">declare</a>
+    the cursor again.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="IC_PUT">PUT</a></h3>
+
+<h4>Purpose:</h4><p>Adds a new row to the insert cursor buffer in the <a href="Connections.html">current
+database session</a>. </p>
+
+
+<h4>Syntax:</h4><code>PUT <i>cid</i> FROM <i>paramvar</i> <u>[,...]</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>cid</i> is the identifier of the insert cursor.</li>
+  <li> <i>paramvar</i> is a program <a href="Variables.html">variable</a>, a <a href="Records.html">record</a>
+    or an <a href="Arrays.html">array</a> used as a
+    parameter buffer to provide
+    SQL parameter values.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>If the insert cursor was not declared <tt>WITH HOLD</tt> option, the <tt>PUT</tt>
+    instruction generates an SQL error if there is no current <a href="Transactions.html">transaction</a>
+    started.</li>
+  <li> If the insert buffer has no room for the new row when the statement
+    executes, the buffered rows are written to the database in a block, and the
+    buffer is emptied. As a result, some <tt>PUT</tt> statement executions cause
+    rows to be written to the database, and some do not.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="IC_FLUSH">FLUSH</a></h3>
+
+<h4>Purpose:</h4><p>Flushes the buffer of an insert cursor in the <a href="Connections.html">current
+database session</a>. </p>
+
+
+<h4>Syntax:</h4><code>FLUSH <i>cid</i></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>cid</i> is the identifier of the insert cursor.</li>
+  <li> All buffered rows are inserted into the target table.</li>
+  <li> The insert buffer is cleared.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The insert buffer may be automatically flushed by the runtime system if there no room
+    when a new row is added with the <tt>PUT</tt>
+    instruction.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="IC_CLOSE">CLOSE</a></h3>
+
+<h4>Purpose:</h4><p>Closes an insert cursor in the <a href="Connections.html">current
+database session</a>. </p>
+
+
+<h4>Syntax:</h4><code>CLOSE <i>cid</i></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>cid</i> is the identifier of the insert cursor.</li>
+  <li> If rows are present in the insert buffer, they are inserted into the
+    target table.</li>
+  <li> The insert buffer is discarded.</li>
+  <li> This instruction releases the resources allocated for the insert buffer on
+    the database server.</li>
+  <li> After using the <tt>CLOSE</tt> instruction, you must re-open the cursor
+    with <a href="#IC_OPEN">OPEN</a> before adding new rows with
+    <a href="#IC_PUT">PUT</a> / <a href="#IC_FLUSH">FLUSH</a>.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="IC_FREE">FREE</a></h3>
+
+<h4>Purpose:</h4><p>Releases resources allocated for an insert cursor in the <a href="Connections.html">current
+database session</a>. </p>
+
+
+<h4>Syntax:</h4><code>FREE <i>cid</i></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>cid</i> is the identifier of the insert cursor.</li>
+  <li> All resources allocated to the insert cursor are released.</li>
+  <li> The cursor should be explicitly <a href="ResultSets.html#RS_CLOSE">closed</a> before it
+    is freed.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>If you release cursor resources with this
+    instruction, you cannot use the cursor unless you <a href="#IC_DECLARE">declare</a>
+    the cursor again.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+
+<h4><a name="EXAMPLE_1">Example 1</a>: Insert Cursor declared with a Static INSERT</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>DEFINE</tt> rec <tt>RECORD</tt>
+<CODE class=linenumber>04</CODE>            key <tt>INTEGER</tt>,
+<CODE class=linenumber>05</CODE>            name <tt>CHAR</tt>(30)
+<CODE class=linenumber>06</CODE>          <tt>END RECORD</tt>
+<CODE class=linenumber>07</CODE>    <tt>DATABASE</tt> stock
+<CODE class=linenumber>08</CODE>    <tt>DECLARE</tt> ic <tt>CURSOR FOR</tt>
+<CODE class=linenumber>09</CODE>      <tt>INSERT INTO</tt> item <tt>VALUES</tt> (rec.*)
+<CODE class=linenumber>10</CODE>    <tt>BEGIN WORK</tt>
+<CODE class=linenumber>11</CODE>      <tt>OPEN</tt> ic
+<CODE class=linenumber>12</CODE>      <tt>FOR</tt> i=1 <tt>TO</tt> 100
+<CODE class=linenumber>13</CODE>          <tt>LET</tt> rec.key = i
+<CODE class=linenumber>14</CODE>          <tt>LET</tt> rec.name = &quot;Item #&quot; || i
+<CODE class=linenumber>15</CODE>          <tt>PUT</tt> ic
+<CODE class=linenumber>16</CODE>          <tt>IF</tt> i <tt>MOD</tt> 50 = 0 <tt>THEN</tt>
+<CODE class=linenumber>17</CODE>              <tt>FLUSH</tt> ic
+<CODE class=linenumber>18</CODE>          <tt>END IF</tt>
+<CODE class=linenumber>19</CODE>      <tt>END FOR</tt>
+<CODE class=linenumber>20</CODE>      <tt>CLOSE</tt> ic
+<CODE class=linenumber>21</CODE>    <tt>COMMIT WORK</tt>
+<CODE class=linenumber>22</CODE>    <tt>FREE</tt> ic
+<CODE class=linenumber>23</CODE> <tt>END MAIN</tt></PRE>
+
+
+<h4><a name="EXAMPLE_2">Example 2</a>: Insert Cursor declared with a Prepared INSERT</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>DEFINE</tt> rec <tt>RECORD</tt>
+<CODE class=linenumber>04</CODE>            key <tt>INTEGER</tt>,
+<CODE class=linenumber>05</CODE>            name <tt>CHAR</tt>(30)
+<CODE class=linenumber>06</CODE>          <tt>END RECORD</tt>
+<CODE class=linenumber>07</CODE>    <tt>DATABASE</tt> stock
+<CODE class=linenumber>08</CODE>    <tt>PREPARE</tt> is <tt>FROM</tt> &quot;INSERT INTO item VALUES (?,?)&quot;
+<CODE class=linenumber>09</CODE>    <tt>DECLARE</tt> ic <tt>CURSOR FOR</tt> is
+<CODE class=linenumber>10</CODE>    <tt>BEGIN WORK</tt>
+<CODE class=linenumber>11</CODE>      <tt>OPEN</tt> ic
+<CODE class=linenumber>12</CODE>      <tt>FOR</tt> i=1 <tt>TO</tt> 100
+<CODE class=linenumber>13</CODE>          <tt>LET</tt> rec.key = i
+<CODE class=linenumber>14</CODE>          <tt>LET</tt> rec.name = &quot;Item #&quot; || i
+<CODE class=linenumber>15</CODE>          <tt>PUT</tt> ic <tt>FROM</tt> rec.*
+<CODE class=linenumber>16</CODE>          <tt>IF</tt> i <tt>MOD</tt> 50 = 0 <tt>THEN</tt>
+<CODE class=linenumber>17</CODE>              <tt>FLUSH</tt> ic
+<CODE class=linenumber>18</CODE>          <tt>END IF</tt>
+<CODE class=linenumber>19</CODE>      <tt>END FOR</tt>
+<CODE class=linenumber>20</CODE>      <tt>CLOSE</tt> ic
+<CODE class=linenumber>21</CODE>    <tt>COMMIT WORK</tt>
+<CODE class=linenumber>22</CODE>    <tt>FREE</tt> ic
+<CODE class=linenumber>23</CODE>    <tt>FREE</tt> is
+<CODE class=linenumber>24</CODE> <tt>END MAIN</tt></PRE>
+
+
+<h4><a name="EXAMPLE_3">Example 3</a>: Insert Cursor declared with 'hold' option</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE</tt> name <tt>CHAR</tt>(30)
+<CODE class=linenumber>03</CODE>    <tt>DATABASE</tt> stock
+<CODE class=linenumber>04</CODE>    <tt>DECLARE</tt> ic <tt>CURSOR WITH HOLD FOR</tt>
+<CODE class=linenumber>05</CODE>      <tt>INSERT INTO</tt> item <tt>VALUES</tt> (1,name)
+<CODE class=linenumber>06</CODE>    <tt>OPEN</tt> ic
+<CODE class=linenumber>07</CODE>    <tt>LET</tt> name = &quot;Item 1&quot;
+<CODE class=linenumber>08</CODE>    <tt>PUT</tt> ic
+<CODE class=linenumber>09</CODE>    <tt>BEGIN WORK</tt>
+<CODE class=linenumber>10</CODE>      <tt>UPDATE</tt> refs <tt>SET</tt> name=&quot;xyz&quot; <tt>WHERE</tt> key=123
+<CODE class=linenumber>11</CODE>    <tt>COMMIT WORK</tt>
+<CODE class=linenumber>12</CODE>    <tt>PUT</tt> ic
+<CODE class=linenumber>13</CODE>    <tt>PUT</tt> ic
+<CODE class=linenumber>14</CODE>    <tt>FLUSH</tt> ic
+<CODE class=linenumber>15</CODE>    <tt>CLOSE</tt> ic
+<CODE class=linenumber>16</CODE>    <tt>FREE</tt> ic
+<CODE class=linenumber>17</CODE> <tt>END MAIN</tt></PRE>
+
+
+</BODY>
+</HTML>

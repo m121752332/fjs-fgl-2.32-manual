@@ -1,0 +1,943 @@
+<!DOCTYPE HTML PUBLIC "-/*W3C/*DTD HTML 4.0 Transitional/*EN">
+<HTML>
+<HEAD>
+<TITLE>File Manipulation functions</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">File Management Class</a></H1>
+<p> Summary: </p>
+
+<ul>
+    <li><a href="#BASICS">Basics</a></li>
+    <li><a href="#SYNTAX">Syntax</a></li>
+    <li><a href="#METHODS">Methods</a></li>
+    <li><a href="#EXAMPLES">Examples</a>
+      <ul>
+        <li><a href="#EXAMPLE_1">Example 1: Extracting the parts of a file name</a></li>
+        <li><a href="#EXAMPLE_2">Example 2: Browsing directories</a></li>
+      </ul>
+    </li>
+</ul>
+
+<p><i>See also:</i>
+<a href="BuiltInFunctions.html">Built-in Functions</a> </p>
+
+<HR>
+
+<h2><a name="BASICS">Basics</a></h2>
+
+<p>The Path class provides functions to manipulate files and directories on the
+machine where the BDL program executes.</p>
+
+<p>This API is provided as a <a href="CExtensions.html">Dynamic C Extension</a>
+library; it is part of the standard package.</p>
+
+<p>To use this extension, you must import the <b>os</b> package in your program: </p>
+<pre>IMPORT os</pre>
+
+
+<p><b><font color="#FF0000">Warning: </font> In order to manipulate files, this
+API give you access to low-level system functions. Pay attention to operating
+system specific conventions like path separators. Some functions are OS
+specific, like <a href="#FILE_RWX">rwx()</a> which works only on UNIX systems. </b></p>
+
+
+<HR>
+
+
+<h2><a name="SYNTAX">Syntax</a></h2>
+
+<p>The <b>Path</b> class provides an interface to manipulate files and
+directories. </p>
+
+
+<h4>Syntax:</h4><code>os.Path</code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li>This class does not have to be instantiated; it provides class methods for
+    the current program.</li>
+</ol>
+
+
+<HR>
+
+
+<h2><a name="METHODS">Methods:</a></h2>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#3399FF" colspan="2"><b>Class Methods</b></td>
+  </tr>
+  <tr>
+      <td bgColor="#c0c0c0" width="25%"><b>Name</b></td>
+      <td bgColor="#c0c0c0"><b>Description</b></td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_SEPARATOR">separator</a></td>
+      <td vAlign="top">Returns the character used to separate path segments.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_PATHSEPARATOR">pathseparator</a></td>
+      <td vAlign="top">Returns the character used in environment variables to separate path elements.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_BASENAME">basename</a></td>
+      <td vAlign="top">Returns the last element of a path.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_DIRNAME">dirname</a></td>
+      <td vAlign="top">Returns all components of a path excluding the last one.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_ROOTNAME">rootname</a></td>
+      <td vAlign="top">Returns the file path without the file extension of the last element of the file path.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_JOIN">join</a></td>
+      <td vAlign="top">Joins two path segments adding the platform-dependent separator.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_PATHTYPE">pathtype</a></td>
+      <td vAlign="top">Checks whether a path is a relative path or an absolute path.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_EXISTS">exists</a></td>
+      <td vAlign="top">Checks if a file exists.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_EXTENSION">extension</a></td>
+      <td vAlign="top">Returns the file extension.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_READABLE">readable</a></td>
+      <td vAlign="top">Checks if a file is readable.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_WRITABLE">writable</a></td>
+      <td vAlign="top">Checks if a file is writable.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_EXECUTABLE">executable</a></td>
+      <td vAlign="top">Checks if a file is executable.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_ISFILE">isfile</a></td>
+      <td vAlign="top">Checks if a file is a regular file.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_ISDIRECTORY">isdirectory</a></td>
+      <td vAlign="top">Checks if a file is a directory.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_ISHIDDEN">ishidden</a></td>
+      <td vAlign="top">Checks if a file is hidden.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_ISLINK">islink</a></td>
+      <td vAlign="top">Checks if a file is a UNIX symbolic link.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_ISROOT">isroot</a></td>
+      <td vAlign="top">Checks if a file is a root path.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_TYPE">type</a></td>
+      <td vAlign="top">Returns the file type as a string.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_SIZE">size</a></td>
+      <td vAlign="top">Returns the file size.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_ATIME">atime</a></td>
+      <td vAlign="top">Returns the time of the last file access.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_CHOWN">chown</a></td>
+      <td vAlign="top">Changes the UNIX owner and group of a file.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_UID">uid</a></td>
+      <td vAlign="top">Returns the UNIX user id of the file.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_GID">gid</a></td>
+      <td vAlign="top">Returns the UNIX group id of the file.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_RWX">rwx</a></td>
+      <td vAlign="top">Returns the UNIX permissions on the file.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_CHRWX">chrwx</a></td>
+      <td vAlign="top">Changes the UNIX permissions of a file.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_MTIME">mtime</a></td>
+      <td vAlign="top">Returns the time of the last file modification.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_HOMEDIR">homedir</a></td>
+      <td vAlign="top">Returns the path to the HOME directory of the current user.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_ROOTDIR">rootdir</a></td>
+      <td vAlign="top">Returns the root directory of the current path.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_DIRFMASK">dirfmask</a></td>
+      <td vAlign="top">Defines the filter mask for a <a href="#FILE_DIROPEN">diropen</a>
+        call</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_DIRSORT">dirsort</a></td>
+      <td vAlign="top">Defines the sort criteria and sort order for a <a href="#FILE_DIROPEN">diropen</a>
+        call</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_DIROPEN">diropen</a></td>
+      <td vAlign="top">Opens a directory and returns an integer handle to this directory.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_DIRCLOSE">dirclose</a></td>
+      <td vAlign="top">Closes the directory referenced by the directory handle.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_DIRNEXT">dirnext</a></td>
+      <td vAlign="top">Reads the next entry of the directory referenced by the directory handle.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_PWD">pwd</a></td>
+      <td vAlign="top">Returns the current working directory.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_CHDIR">chdir</a></td>
+      <td vAlign="top">Changes the current working directory</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_VOLUMES">volumes</a></td>
+      <td vAlign="top">Returns the list of available volumes.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_CHVOLUME">chvolume</a></td>
+      <td vAlign="top">Changes the current working volume.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_MKDIR">mkdir</a></td>
+      <td vAlign="top">Creates a new directory.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_DELETE">delete</a></td>
+      <td vAlign="top">Deletes a file or a directory.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_RENAME">rename</a></td>
+      <td vAlign="top">Renames a file or a directory.</td>
+  </tr>
+  <tr>
+      <td vAlign="top" width="25%"><a href="#FILE_COPY">copy</a></td>
+      <td vAlign="top">Copies a regular file.</td>
+  </tr>
+</table>
+
+<HR>
+
+<h3><a name="FILE_SEPARATOR">os.Path.separator</a></h3>
+<h4>Purpose:</h4>
+<p>Returns the character used to separate path segments.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.separator() RETURNING <i>separator</i> STRING</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>separator</i> contains the separator.</li>
+    <li>On Unix, the separator is '/'</li>
+    <li>On Windows, the separator is '\'</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_PATHSEPARATOR">os.Path.pathseparator</a></h3>
+<h4>Purpose:</h4>
+<p>Returns the character used in environment variables to separate path elements.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.pathseparator() RETURNING <i>separator</i> STRING</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>separator</i> contains the path separator.</li>
+    <li>On Unix, the separator is ':'</li>
+    <li>On Windows, the separator is ';'</li>
+</ol>
+<h4>Usage:</h4>
+<p>You typically use this method to build a path from two components.</p>
+<HR>
+
+<h3><a name="FILE_BASENAME">os.Path.basename</a></h3>
+<h4>Purpose:</h4>
+<p>This method returns the last element of a path.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.basename(<i>filename</i> STRING) RETURNING <i>basename</i> STRING</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>filename</i> is the name of the file.</li>
+  <li><i>basename</i> is the last element of the path.</li>
+</ol>
+<h4>Usage:</h4>
+<p>This method extracts the last component of a path. For example, if you pass <tt>&quot;/root/dir1/file.ext&quot;</tt> as
+the parameter, it will
+return <tt>&quot;file.ext&quot;</tt>.</p>
+<p>See <a href="#EXAMPLE_1">Example 1</a> for more examples.</p>
+<HR>
+
+<h3><a name="FILE_DIRNAME">os.Path.dirname</a></h3>
+<h4>Purpose:</h4>
+<p>Returns all components of a path excluding the last one.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.dirname(<i>filename</i> STRING) RETURNING <i>dirname</i> STRING</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>filename</i> is the name of the file.</li>
+  <li><i>dirname</i> contains all the elements of the path excluding the last one.</li>
+</ol>
+<h4>Usage:</h4>
+<p>This method removes the last component of a path. For example, if you pass <tt>&quot;/root/dir1/file.ext&quot;</tt> as
+the parameter, it will
+return <tt>&quot;/root/dir1&quot;</tt>.</p>
+<p>See <a href="#EXAMPLE_1">Example 1</a> for more examples.</p>
+<HR>
+
+<h3><a name="FILE_ROOTNAME">os.Path.rootname</a></h3>
+<h4>Purpose:</h4>
+<p>Returns the file path without the file extension of the last element of the file path.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.rootname(<i>filename</i> STRING) RETURNING <i>rootname</i> STRING</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>filename</i> is the file path.</li>
+  <li><i>rootname</i> contains the file path without the file extension of the last element.</li>
+</ol>
+
+<h4>Usage:</h4>
+<p>This method removes the file extension from the path. For example, if you pass <tt>&quot;/root/dir1/file.ext&quot;</tt> as
+the parameter it will
+return <tt>&quot;/root/dir1/file&quot;</tt>.</p>
+<p>See <a href="#EXAMPLE_1">Example 1</a> for more examples.</p>
+
+<HR>
+
+<h3><a name="FILE_JOIN">os.Path.join</a></h3>
+<h4>Purpose:</h4>
+<p>Joins two path segments adding the platform-dependent separator.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.join(<i>begin</i> STRING, <i>end</i> STRING) RETURNING <i>newpath</i> STRING</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>begin</i> is the beginning path segment.</li>
+  <li><i>end</i> is the ending path segment.</li>
+  <li><i>newpath</i> contains the joined path segments.</li>
+</ol>
+<h4>Usage:</h4>
+<p>You typically use this method to construct a path with no system-specific
+code to use the correct path separator:</p>
+
+
+<PRE><CODE class=linenumber>01</CODE>   <tt>LET</tt> path = os.Path.join(os.Path.homedir(), name)</PRE>
+
+
+<p>This method returns the ending path segment
+if it is an absolute path.</p>
+<HR>
+
+<h3><a name="FILE_PATHTYPE">os.Path.pathtype</a></h3>
+<h4>Purpose:</h4>
+<p>Checks if a path is a relative path or an absolute path.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.pathtype(<i>path</i> STRING) RETURNING <i>pathtype</i> STRING</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>path</i> is the path to check.</li>
+    <li><i>pathtype</i> can be "absolute" if the path is an absolute path, or "relative" if 
+	the path is a relative path.</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_EXISTS">os.Path.exists</a></h3>
+<h4>Purpose:</h4>
+<p>Checks if a file exists.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.exists(<i>fname</i> STRING) RETURNING <i>result</i> INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>fname</i> is the file name.</li>
+    <li><i>result</i> is TRUE if the file exists, FALSE otherwise.</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_EXTENSION">os.Path.extension</a></h3>
+<h4>Purpose:</h4>
+<p>Returns the file extension.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.extension(<i>fname</i> STRING) RETURNING <i>extension</i> 
+STRING</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>fname</i> is the file name.</li>
+    <li><i>extension</i> is the string following the last dot found in <i>fname</i>.</li>
+    <li>If fname does not have an extension, the function returns <a href="Programs.html#PC_NULL">NULL</a>.</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_READABLE">os.Path.readable</a></h3>
+<h4>Purpose:</h4>
+<p>Checks if a file is readable.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.readable(<i>fname</i> STRING) RETURNING <i>result</i> INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>fname</i> is the file name.</li>
+    <li><i>result</i> is TRUE if the file is readable, FALSE otherwise.</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_WRITABLE">os.Path.writable</a></h3>
+<h4>Purpose:</h4>
+<p>Checks if a file is writable.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.writable(<i>fname</i> STRING) RETURNING <i>result</i> INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>fname</i> is the file name.</li>
+    <li><i>result</i> is TRUE if the file is writable, FALSE otherwise.</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_EXECUTABLE">os.Path.executable</a></h3>
+<h4>Purpose:</h4>
+<p>Checks if a file is executable.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.executable(<i>fname</i> STRING) RETURNING <i>result</i> INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>fname</i> is the file name.</li>
+    <li><i>result</i> is TRUE if the file is executable, FALSE otherwise.</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_ISFILE">os.Path.isfile</a></h3>
+<h4>Purpose:</h4>
+<p>Checks if a file is a regular file.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.isfile(<i>fname</i> STRING) RETURNING <i>result</i> INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>fname</i> is the file name.</li>
+    <li><i>result</i> is TRUE if the file is a regular file, FALSE otherwise.</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_ISDIRECTORY">os.Path.isdirectory</a></h3>
+<h4>Purpose:</h4>
+<p>Checks if a file is a directory.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.isdirectory(<i>fname</i> STRING) RETURNING <i>result</i> INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>fname</i> is the file name.</li>
+    <li><i>result</i> is TRUE if the file is a directory, FALSE otherwise.</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_ISHIDDEN">os.Path.ishidden</a></h3>
+<h4>Purpose:</h4>
+<p>Checks if a file is hidden.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.ishidden(<i>fname</i> STRING) RETURNING <i>result</i> INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>fname</i> is the file name.</li>
+    <li><i>result</i> is TRUE if the file is hidden, FALSE otherwise.</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_ISLINK">os.Path.islink</a></h3>
+<h4>Purpose:</h4>
+<p>Checks if a file is UNIX symbolic link.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.islink(<i>fname</i> STRING) RETURNING <i>result</i> INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>fname</i> is the file name.</li>
+    <li><i>result</i> is TRUE if the file is a symbolic link, FALSE otherwise.</li>
+</ol>
+<p><b><font color="#FF0000">Warning:</font> This method can only be used on
+UNIX!</b></p>
+<HR>
+
+<h3><a name="FILE_ISROOT">os.Path.isroot</a></h3>
+<h4>Purpose:</h4>
+<p>Checks if a file path is a root path.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.isroot(<i>path</i> STRING) RETURNING <i>result</i> STRING</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>path</i> is the path to check.</li>
+    <li><i>result</i> is TRUE if the path is a root path, FALSE otherwise.</li>
+    <li>On Unix the root path is '/'</li>
+    <li>On Windows the root path matches "[a-zA-Z]:\"</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_TYPE">os.Path.type</a></h3>
+<h4>Purpose:</h4>
+<p>Returns the file type as a string</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.type(<i>fname</i> STRING) RETURNING <i>ftype</i> STRING</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>fname</i> is the file name.</li>
+    <li><i>ftype</i> can be one of: 
+    <ol>
+        <li>file : the file is a regular file</li>
+        <li>directory : the file is a directory</li>
+        <li>socket : the file is a socket</li>
+        <li>fifo : the file is a fifo</li>
+        <li>block : the file is a block device</li>
+        <li>char : the file is a character device</li>
+    </ol>
+    </li>
+</ol>
+<p><b><font color="#FF0000">Warning:</font> On UNIX, this method follows symbolic
+links. You must use the islink() method to identify symbolic links.</b></p>
+<HR>
+
+<h3><a name="FILE_SIZE">os.Path.size</a></h3>
+<h4>Purpose:</h4>
+<p>Returns the size of a file.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.size(<i>fname</i> STRING) RETURNING <i>size</i> INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>fname</i> is the file name.</li>
+    <li><i>size</i> is the file size</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_ATIME">os.Path.atime</a></h3>
+<h4>Purpose:</h4>
+<p>Returns the time of the last file access.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.atime(<i>fname</i> STRING) RETURNING <i>atime</i> STRING</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>fname</i> is the name of the file.</li>
+  <li><i>atime</i> is a string containing the last access time for the specified file in the standard format 'YYYY-MM-DD HH:MM:SS'.</li>
+  <li>If the function failed, it returns NULL.</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_MTIME">os.Path.mtime</a></h3>
+<h4>Purpose:</h4>
+<p>Returns the time of the last file modification.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.mtime(<i>fname</i> STRING) RETURNING <i>mtime</i> STRING</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>fname</i> is the name of the file.</li>
+  <li><i>mtime</i> is a string containing the last modification time for the specified file in the standard format 'YYYY-MM-DD HH:MM:SS'.</li>
+  <li>If the function failed, it returns NULL.</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_RWX">os.Path.rwx</a></h3>
+<h4>Purpose:</h4>
+<p>Returns the UNIX file permissions of a file.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.rwx(<i>fname</i> STRING) RETURNING <i>mode</i> INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>fname</i> is the name of the file.</li>
+  <li><i>mode</i> is the combination of permissions for user, group and other.</li>
+  <li>Function returns -1 if it fails to get the permissions.</li>
+</ol>
+<p><b><font color="#FF0000">Warning:</font> This method can only be used on
+UNIX!</b></p>
+<h4>Usage:</h4>
+<p>The <i>mode</i> is returned as a decimal value which is the combination of read,
+write and execution bits for the user, group and other part of the UNIX file
+permission. For example, if a file has the <tt>-rwxr-xr-x</tt> permissions, you get (
+(4+2+1) * 64 + (4+1) * 8) + (4+1) ) = 493 from this method.</p>
+<HR>
+
+<h3><a name="FILE_CHRWX">os.Path.chrwx</a></h3>
+<h4>Purpose:</h4>
+<p>Changes the UNIX permissions of a file.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.chrwx(<i>fname</i>  STRING, <i>mode</i> INTEGER) RETURNING <i>res</i>
+INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>fname</i> is the name of the file.</li>
+  <li><i>mode</i> is the UNIX permission combination in decimal (not octal!).</li>
+  <li>Function returns TRUE on success, FALSE otherwise.</li>
+</ol>
+<p><b><font color="#FF0000">Warning:</font> This method can only be used on
+UNIX!</b></p>
+<h4>Usage:</h4>
+<p>The <i>mode</i> must be a decimal value which is the combination of read,
+write and execution bits for the user, group and other part of the UNIX file
+permission. Make sure to pass the <i>mode</i> as the decimal version of
+permissions, not as octal (the chrwx UNIX command takes an octal value as
+parameter). For example, to set <tt>-rw-r--r--</tt> permissions, you must pass ( ((4+2) *
+64) + (4 * 8) + 4 ) = 420 to this method.</p>
+<HR>
+
+<h3><a name="FILE_CHOWN">os.Path.chown</a></h3>
+<h4>Purpose:</h4>
+<p>Changes the UNIX owner and group of a file.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.chown(<i>fname</i>  STRING, uid INT, gui INT) RETURNING <i>res</i>
+INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>fname</i> is the name of the file.</li>
+  <li><i>uid</i> is the user id.</li>
+  <li>gui is the group id.</li>
+  <li>Function returns TRUE on success, FALSE otherwise.</li>
+</ol>
+<p><b><font color="#FF0000">Warning:</font> This method can only be used on
+UNIX!</b></p>
+<HR>
+
+<h3><a name="FILE_UID">os.Path.uid</a></h3>
+<h4>Purpose:</h4>
+<p>Returns the UNIX user id of a file.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.uid(<i>fname</i> STRING) RETURNING <i>id</i> INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>fname</i> is the name of the file.</li>
+  <li><i>id</i> is the user id.</li>
+  <li>Function returns -1 if it fails to get the user id.</li>
+</ol>
+<p><b><font color="#FF0000">Warning:</font> This method can only be used on
+UNIX!</b></p>
+<HR>
+
+<h3><a name="FILE_GID">os.Path.gid</a></h3>
+<h4>Purpose:</h4>
+<p>Returns the UNIX group id of a file.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.gid(<i>fname</i> STRING) RETURNING <i>id</i> INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+  <li><i>fname</i> is the name of the file.</li>
+  <li><i>id</i> is the group id.</li>
+  <li>Function returns -1 if it fails to get the user id.</li>
+</ol>
+<p><b><font color="#FF0000">Warning:</font> This method can only be used on
+UNIX!</b></p>
+<HR>
+
+<h3><a name="FILE_HOMEDIR">os.Path.homedir</a></h3>
+<h4>Purpose:</h4>
+<p>Returns the path to the HOME directory of the current user.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.homedir() RETURNING <i>homedir</i> STRING</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>homedir</i> Path to the HOME directory of the user.</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_ROOTDIR">os.Path.rootdir</a></h3>
+<h4>Purpose:</h4>
+<p>Returns the root directory of the current working path.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.rootdir() RETURNING <i>rootdir</i> STRING</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>rootdir</i> is the root directory of the current working path.</li>
+    <li>On Unix, it always returns '/'</li>
+    <li>On Windows it returns the current working drive as "[a-zA-Z]:\"</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_DIRFMASK">os.Path.dirfmask</a></h3>
+<h4>Purpose:</h4>
+<p>Defines a filter mask for <a href="#FILE_DIROPEN">diropen</a>.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.dirfmask(<i>mask</i> INTEGER)</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>mask</i> defines the filter mask (see below for possible values).</li>
+</ol>
+<h4>Usage:</h4>
+<p>When you call this function, you define the filter mask for
+any subsequent <a href="#FILE_DIROPEN">diropen</a> call.</p>
+<p>By default, all kinds of directory entries are selected by the <a href="#FILE_DIROPEN">diropen</a> 
+function. You can restrict the number of entries by using a filter mask.</p>
+<p>The parameter of the <tt>dirfmask</tt> function must be a combination of the following bits:</p>
+<ul>
+  <li><tt>0x01</tt> = Exclude hidden files (.*)</li>
+  <li><tt>0x02</tt> = Exclude directories</li>
+  <li><tt>0x04</tt> = Exclude symbolic links</li>
+  <li><tt>0x08</tt> = Exclude regular files</li>
+</ul>
+<p>For example, to retrieve only regular files, you must call:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>CALL</tt> os.Path.dirfmask( 1 + 2 + 4 )</PRE>
+
+
+<HR>
+
+<h3><a name="FILE_DIRSORT">os.Path.dirsort</a></h3>
+<h4>Purpose:</h4>
+<p>Defines the sort criteria and sort order for <a href="#FILE_DIROPEN">diropen</a>.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.dirsort(<i>criteria</i> STRING, <i>order</i> INTEGER)</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>criteria</i> is the sort criteria (see below for possible values).</li>
+    <li><i>order</i> defines ascending (1) or descending (-1) order.</li>
+</ol>
+<h4>Usage:</h4>
+<p>When you call this function, you define the sort criteria and sort order for
+any subsequent <a href="#FILE_DIROPEN">diropen</a> call.</p>
+<p>The <i>criteria</i> parameter must be one of the following strings:</p>
+<ul>
+  <li><tt>&quot;undefined&quot;</tt> = No sort. This is the default. Entries are
+    read as returned by the OS functions.</li>
+  <li><tt>&quot;name&quot;</tt> = Sort by file name.</li>
+  <li><tt>&quot;size&quot;</tt> = Sort by file size.</li>
+  <li><tt>&quot;type&quot;</tt> = Sort by file type (directory, link, regular
+    file).</li>
+  <li><tt>&quot;atime&quot;</tt> = Sort by access time.</li>
+  <li><tt>&quot;mtime&quot;</tt> = Sort by modification time.</li>
+  <li><tt>&quot;extension&quot;</tt> = Sort by file extension.</li>
+</ul>
+<p>When sorting by name, directory entries will be ordered according to the <a href="Localization.html">current
+locale</a>.</p>
+<p>When sorting by any criteria other than the file name, entries having the same
+value for the given criteria are ordered by name following the value of the <i>order</i>
+parameter.</p>
+<HR>
+
+<h3><a name="FILE_DIROPEN">os.Path.diropen</a></h3>
+<h4>Purpose:</h4>
+<p>Opens a directory and returns an integer handle to this directory.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.diropen(<i>dname</i> STRING) RETURNING <i>dirhandle</i> INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>dname</i> is the name of the directory.</li>
+    <li><i>dirhandle</i> is the directory handle. A dirhandle value of 0 indicates a failure when opening the directory.</li>
+</ol>
+<h4>Usage:</h4>
+<p>This function creates a list of directory</p>
+<p><i>See also:</i> <a href="#FILE_DIRFMASK">dirfmask</a>, <a href="#FILE_DIRSORT">dirsort</a></p>
+<HR>
+
+<h3><a name="FILE_DIRCLOSE">os.Path.dirclose</a></h3>
+<h4>Purpose:</h4>
+<p>Closes the directory referenced by the directory handle <i>dirhandle</i>.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.dirclose(<i>dirhandle</i> INTEGER)</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>dirhandle</i> is the directory handle of the directory to close.</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_DIRNEXT">os.Path.dirnext</a></h3>
+<h4>Purpose:</h4>
+<p>Reads the next entry in the directory.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.dirnext(<i>dirhandle</i> INTEGER) RETURNING <i>direntry</i> STRING</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>dirhandle</i> is the directory handle of the directory to read.</li>
+    <li><i>direntry</i> is the name of the entry read or NULL if all entries have been read.</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_PWD">os.Path.pwd</a></h3>
+<h4>Purpose:</h4>
+<p>Returns the current working directory.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.pwd() RETURNING <i>cwd</i> STRING</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>cwd</i> is the current working directory.</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_CHDIR">os.Path.chdir</a></h3>
+<h4>Purpose:</h4>
+<p>Changes the current working directory.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.chdir(<i>newdir</i> STRING) RETURNING <i>result</i> INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>newdir</i> is the directory to select.</li>
+    <li><i>result</i> is TRUE if the current directory could be successfully selected.</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_VOLUMES">os.Path.volumes</a></h3>
+<h4>Purpose:</h4>
+<p>Returns the available volumes.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.volumes() RETURNING <i>volumes</i> STRING</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>volumes</i> contains the list of all available volumes separated by "|".</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_CHVOLUME">os.Path.chvolume</a></h3>
+<h4>Purpose:</h4>
+<p>Changes the current working volume.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.chvolume(<i>newvolume</i> STRING) RETURNING <i>result</i> INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>newvolume</i> is the volume to select as the new current working volume.</li>
+    <li><i>result</i> is TRUE if the current working volume could be successfully changed.</li>
+    <li>Sample : CALL os.Path.chvolume(&quot;C:\\") 
+	RETURNING result</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_MKDIR">os.Path.mkdir</a></h3>
+<h4>Purpose:</h4>
+<p>Creates a new directory.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.mkdir(<i>dname</i> STRING) RETURNING <i>result</i> INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>dname</i> is the name of the directory to create</li>
+    <li><i>result</i> is TRUE if the directory has been successfully created, FALSE otherwise.</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_DELETE">os.Path.delete</a></h3>
+<h4>Purpose:</h4>
+<p>Deletes a file or a directory.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.delete(<i>dname</i> STRING) RETURNING <i>result</i> INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>fname</i> is the name of the file or directory to delete</li>
+    <li><i>result</i> is TRUE if the file or directory has been successfully deleted, FALSE otherwise.</li>
+    <li>A directory can only be deleted if it is empty.</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_RENAME">os.Path.rename</a></h3>
+<h4>Purpose:</h4>
+<p>Renames a file or a directory.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.rename(<i>oldname</i> STRING, <i>newname</i> STRING) RETURNING <i>result</i> INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>oldname</i> is the current name of the file or directory to be 
+	renamed.</li>
+    <li><i>newname</i> is the new name to assign to the file or directory.</li>
+    <li><i>result</i> is TRUE if the file or directory has been successfully renamed, FALSE otherwise.</li>
+</ol>
+<HR>
+
+<h3><a name="FILE_COPY">os.Path.copy</a></h3>
+<h4>Purpose:</h4>
+<p>Copies a regular file or.</p>
+<h4>Syntax:</h4>
+<code>CALL os.Path.copy(<i>source</i> STRING, <i>dest</i> STRING) RETURNING <i>result</i> INTEGER</code>
+<h4>Notes:</h4>
+<ol>
+    <li><i>source</i> is the name of the file to copy.</li>
+    <li><i>dest</i> is the destination name of the copied file.</li>
+    <li><i>result</i> is TRUE if the file has been successfully copied, FALSE otherwise.</li>
+</ol>
+<HR>
+
+
+<h3><a name="EXAMPLES">Examples:</a></h3>
+<HR size="1">
+
+
+<h4><a name="EXAMPLE_1">Example 1</a>: Extracting the parts of a file name</h4>
+
+
+<p>This program uses the file functions to extract the directory
+name, the base name, the root name, and the file extension:</p>
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT</tt> os
+<CODE class=linenumber>02</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>03</CODE>   <tt>DISPLAY</tt> &quot;Dir name   = &quot;, os.Path.dirname(arg_val(1))
+<CODE class=linenumber>04</CODE>   <tt>DISPLAY</tt> &quot;Base name  = &quot;, os.Path.basename(arg_val(1))
+<CODE class=linenumber>05</CODE>   <tt>DISPLAY</tt> &quot;Root name  = &quot;, os.Path.rootname(arg_val(1))
+<CODE class=linenumber>06</CODE>   <tt>DISPLAY</tt> &quot;Extension  = &quot;, os.Path.extension(arg_val(1))
+<CODE class=linenumber>07</CODE> <tt>END MAIN</tt></PRE>
+
+
+<p>Example results:</p>
+<table width="95%">
+    <tr bgColor="#c0c0c0">
+         <td><b>Path</b></td>         <td><b>os.Path.dirname</b></td>    <td><b>os.Path.basename</b></td>    <td><b>os.Path.rootname</b></td>    <td><b>os.Path.extension</b></td></tr>
+    <tr> <td><code>.</code></td>                   <td><code>.</code></td>                 <td><code>.</code></td>                  <td></td>                  <td><code>NULL</code></td></tr>
+    <tr> <td><code>..</code></td>                  <td><code>.</code></td>                 <td><code>..</code></td>                 <td><code>.</code></td>                 <td><code>NULL</code></td></tr>
+    <tr> <td><code>/</code></td>                   <td><code>/</code></td>                 <td><code>/</code></td>                  <td><code>/</code></td>                  <td><code>NULL</code></td></tr>
+    <tr> <td><code>/usr/lib</code></td>            <td><code>/usr</code></td>              <td><code>lib</code></td>                <td><code>/usr/lib</code></td>                <td><code>NULL</code></td></tr>
+    <tr> <td><code>/usr/</code></td>               <td><code>/</code></td>                 <td><code>usr</code></td>                <td><code>/usr/</code></td>                <td><code>NULL</code></td></tr>
+    <tr> <td><code>usr</code></td>                 <td><code>.</code></td>                 <td><code>usr</code></td>                <td><code>usr</code></td>                <td><code>NULL</code></td></tr>
+    <tr> <td><code>file.xx</code></td>             <td><code>.</code></td>                 <td><code>file.xx</code></td>            <td><code>file</code></td>            <td><code>xx</code></td></tr>
+    <tr> <td><code>/tmp.yy/file.xx</code></td>     <td><code>/tmp.yy</code></td>           <td><code>file.xx</code></td>            <td><code>/tmp.yy/file</code></td>            <td><code>xx</code></td></tr>
+    <tr> <td><code>/tmp.yy/file.xx.yy</code></td>  <td><code>/tmp.yy</code></td>           <td><code>file.xx.yy</code></td>         <td><code>/tmp.yy/file.xx</code></td>         <td><code>yy</code></td></tr>
+    <tr> <td><code>/tmp.yy/</code></td>            <td><code>/</code></td>                 <td><code>tmp.yy</code></td>             <td><code>/tmp.yy/</code></td>             <td><code>NULL</code></td></tr>
+    <tr> <td><code>/tmp.yy/.</code></td>           <td><code>/tmp.yy</code></td>           <td><code>.</code></td>                  <td><code>/tmp.yy/</code></td>                  <td><code>NULL</code></td></tr>
+</table>
+<p><b><font color="#FF0000">Warning:</font> The above examples use Unix file names. On Windows the result would be different, as the file name separator is '\'.</b></p>
+
+
+<HR size="1">
+
+
+<h4><a name="EXAMPLE_2">Example 2</a>: Browsing directories.</h4>
+<p>This program takes a directory path as an argument and scans the content
+recursively:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>IMPORT</tt> os
+<CODE class=linenumber>02</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>03</CODE>   <tt>CALL</tt> showDir(arg_val(1))
+<CODE class=linenumber>04</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>05</CODE> <tt>FUNCTION</tt> showDir(path)
+<CODE class=linenumber>06</CODE>   <tt>DEFINE</tt> path <tt>STRING</tt>
+<CODE class=linenumber>07</CODE>   <tt>DEFINE</tt> child <tt>STRING</tt>
+<CODE class=linenumber>08</CODE>   <tt>DEFINE</tt> h <tt>INTEGER</tt>
+<CODE class=linenumber>09</CODE>   <tt>IF NOT</tt> os.Path.exists(path) <tt>THEN</tt>
+<CODE class=linenumber>10</CODE>      <tt>RETURN</tt>
+<CODE class=linenumber>11</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>12</CODE>   <tt>IF NOT</tt> os.Path.isdirectory(path) <tt>THEN</tt>
+<CODE class=linenumber>13</CODE>      <tt>DISPLAY</tt> &quot; &quot;, os.Path.basename(path)
+<CODE class=linenumber>14</CODE>      <tt>RETURN</tt>
+<CODE class=linenumber>15</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>16</CODE>   <tt>DISPLAY</tt> &quot;[&quot;, path, &quot;]&quot;
+<CODE class=linenumber>17</CODE>   <tt>CALL</tt> os.Path.dirsort(&quot;name&quot;, 1)
+<CODE class=linenumber>18</CODE>   <tt>LET</tt> h = os.Path.diropen(path)
+<CODE class=linenumber>19</CODE>   <tt>WHILE</tt> h &gt; 0
+<CODE class=linenumber>20</CODE>      <tt>LET</tt> child = os.Path.dirnext(h)
+<CODE class=linenumber>21</CODE>      <tt>IF</tt> child <tt>IS NULL THEN EXIT WHILE END IF</tt>
+<CODE class=linenumber>22</CODE>      <tt>IF</tt> child == &quot;.&quot; OR child == &quot;..&quot; <tt>THEN CONTINUE WHILE END IF</tt>
+<CODE class=linenumber>23</CODE>      <tt>CALL</tt> showDir( os.Path.join( path, child ) )
+<CODE class=linenumber>24</CODE>   <tt>END WHILE</tt>
+<CODE class=linenumber>25</CODE>   <tt>CALL</tt> os.Path.dirclose(h)
+<CODE class=linenumber>26</CODE> <tt>END FUNCTION</tt></PRE>
+
+
+</BODY>
+</HTML>

@@ -1,0 +1,74 @@
+BODY {
+	BACKGROUND: #ffffff; FONT-FAMILY: Arial, Helvetica, sans serif; FONT-SIZE: 93%
+}
+TABLE{
+	FONT-SIZE: 96%
+}
+TABLE.summary {
+	BORDER-RIGHT: 1pt solid; BORDER-TOP: 1pt solid; BACKGROUND: #ffffff; BORDER-LEFT: 1pt solid; BORDER-BOTTOM: 1pt solid
+}
+TH.summary {
+	BORDER-RIGHT: 1pt solid; BORDER-TOP: 1pt solid; BACKGROUND: #ccccff; BORDER-LEFT: 1pt solid; BORDER-BOTTOM: 1pt solid
+}
+TD.err {
+	BACKGROUND: #ffc0c0
+}
+xTABLE {
+	BACKGROUND: #cccccc
+}
+TABLE.bnf {
+	BACKGROUND: #e0e0e0
+}
+XTH {
+	BACKGROUND: #ccccff
+}
+CITE {
+	BACKGROUND-COLOR: #ffd0d0
+}
+XXX {
+	COLOR: #000000; TEXT-DECORATION: underline
+}
+CODE {
+	COLOR: maroon
+}
+TT {
+	COLOR: green
+}
+SAMP {
+	COLOR: navy
+}
+PRE {
+	COLOR: maroon
+}
+CODE.linenumber {
+	COLOR: blue
+}
+CODE.comment {
+	COLOR: blue
+}
+/* Header for Yellow Tables*/
+.MainTableHeader  {
+	background-color: #FFFFBB; font-weight:bold
+}
+.MainTable {
+	width:90%; border:0
+}
+.AttributeTable {
+	width:100%; border:"1"
+}
+/* Header for Yellow Inner Tables. Small Size Columns*/
+.InTableHeaderS  {
+	background-color: #FFFFCC; font-weight:bold; width:5%; text-align:center
+}
+/* Header for Yellow Inner Tables. Medium Size Columns*/
+.InTableHeaderM  {
+	background-color: #FFFFCC; font-weight:bold; width:25%;
+}
+/* Header for Yellow Inner Tables. Normal Size Columns*/
+.InTableHeaderN  {
+	background-color: #FFFFCC; font-weight:bold;
+}
+/* Header for Green Inner "From" Tables. Colspan is 4 */
+.InTableFromHead {
+	background-color: #E6FFE6; font-weight:bold; vertical-align:super
+}

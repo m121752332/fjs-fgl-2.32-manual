@@ -1,0 +1,2629 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<TITLE>ODI Adaptation Guide for SQL Server</TITLE>
+<meta http-equiv="Content-Type" content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p><a href="../index.html">Back to Contents</a></p>
+
+<HR>
+
+<H1>ODI Adaptation Guide For SQL SERVER 2000, 2005, 2008</H1>
+
+<p><font color="#000080">Installation</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIMSV_PREP01">Install SQL SERVER and create a database</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV_PREP02">Prepare the runtime environment</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">Database concepts</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIMSV007a">Database concepts</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV039">Data storage concepts</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV008a">Data consistency and concurrency management</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV009">Transactions handling</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV016a">Defining database users</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV016b">Setting privileges</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">Data dictionary </font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIMSV010">BOOLEAN data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV011">CHARACTER data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV021">NUMERIC data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV001">DATE and DATETIME data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV036">INTERVAL data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV005">SERIAL data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV004">ROWIDs</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV047">Case sensitivity</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV030">Very large data types</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV053">The ALTER TABLE instruction</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV012">Constraints</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV013">Triggers</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV014">Stored procedures</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV019">Name resolution of SQL objects</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV051">Setup database statistics</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV100">Data type conversion table</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">Data manipulation</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIMSV003">Reserved words</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV006">Outer joins</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV009">Transactions handling</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV017">Temporary tables</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV018">Substrings in SQL</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV019">Name resolution of SQL objects</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV020">String delimiters</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV022">Getting one row with SELECT</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV024">MATCHES and LIKE conditions</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV033">Querying system catalog tables</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV034">Syntax of UPDATE statements</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV035">The LENGTH() function</a></td>
+  </tr>
+</table>
+</center></div>
+
+<p><font color="#000080">BDL programming</font></p>
+<div align="center"><center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="85%"><a href="#ODIMSV041">Executing SQL statements</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV005">SERIAL data type</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV025">INFORMIX specific SQL statements in BDL</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV028">INSERT cursors</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV031">Cursors WITH HOLD</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV008b">SELECT FOR UPDATE</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV046">The LOAD and UNLOAD instructions</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV054">SQL Interruption</a></td>
+  </tr>
+  <tr>
+    <td width="85%"><a href="#ODIMSV055">Scrollable Cursors</a></td>
+  </tr>
+</table>
+</center></div>
+
+<hr>
+
+<h2 align="left"><a name="ODIMSV_PREP">Runtime configuration</a></h2>
+
+<blockquote>
+  <h3 align="left"><a name="ODIMSV_PREP01">Install SQL SERVER and create a database</a></h3>
+  <ol>
+    <li><p>Install the Microsoft SQL SERVER on your computer.<br>
+      <br>
+      <b><font color="#FF0000">Warning:</font> Make sure that you select the
+      correct collation when installing SQL Server: The default collation will
+      apply to the tempdb database and will also be used for temporary tables,
+      instead of inheriting the collation of the current database. If the
+      default server collation does not match the collation of the current
+      database, you will experience character set conflicts between permanent
+      tables and temporary tables (SQL Server error message 468).</b></p>
+    </li>
+    <li><p>Create a SQL SERVER <b>database</b> entity with the SQL SERVER Management Studio.<br>
+      <br>
+      In the database properties:</p>
+      <ul>
+        <li>
+          <p> Choose the right <b> code page / collation</b> to get a case-sensitive database; this cannot be changed later.
+          Remember collation defines the character set for CHAR/VARCHAR columns,
+          while NCHAR/NVARCHAR columns are always storing UNICODE (UCS-2)
+          characters.<br>
+          Note that Informix collation order is code-set based for CHAR/VARCHAR/TEXT
+          columns. If you want to get the same sort order with SQL Server, you
+          will need to use a binary collation such as Latin1_General_BIN.</p>
+        </li>
+        <li>
+          <p>Make sure the <b>&quot;ANSI NULL Default&quot;</b> option is <b>TRUE</b> if you
+      want to have the same default NULL constraint as in INFORMIX (i.e. a
+          column created without a NULL constraint will allow null values, users
+          must specify NOT NULL to deny nulls).</p>
+        </li>
+        <li>
+          <p>Make sure the <b>&quot;Quoted Identifiers Enabled&quot;</b> option
+          is <b>FALSE</b> to
+      use database object names without quotes as in INFORMIX.</p>
+        </li>
+      </ul>
+    </li>
+    <li><p>Create and declare a database user dedicated to your
+      application: the <b>application administrator</b>.</p>
+    </li>
+    <li><p>If you plan to use SERIAL emulation based on triggers
+      using a registration table, create the SERIALREG table and create the
+      serial triggers for all tables using a SERIAL. See issue <a href="#ODIMSV005">ODIMSV005</a> for more details.</p>
+    </li>
+    <li><p>Create the <b>application tables</b>. Do
+      not forget to convert INFORMIX data types to SQL SERVER data types.
+      See&nbsp; issue <a href="#ODIMSV100">ODIMSV100</a> for more details.<br>
+      <b><font color="#FF0000">Warning:</font></b>  In order to make application
+      tables visible to all users, make sure that the tables are created with
+      the '<b>dbo</b>' owner.</p>
+    </li>
+  </ol>
+  <h3 align="left"><a name="ODIMSV_PREP02">Prepare the runtime environment</a></h3>
+  <ol>
+    <li><p> Genero BDL provides several database drivers based on different ODBC
+      clients. The list below describes each of them:</p>
+      <ul>
+        <li>
+          <p> The <b> MSV</b> database driver works with the Microsoft Data
+      Access Components (MDAC) ODBC driver (SQLSVR32.DLL), and can be used with SQL SERVER
+          2000.<br>
+          The <b> MSV</b> database driver has always been supported by Genero, but is
+          not available for SQL SERVER 2008.<br>
+          The <b> MSV</b> database driver does not support multi-byte character sets.<br>
+          This driver is provided for backward compatibility with SQL SERVER
+          2000, you must use the SNC driver for younger SQL SERVER versions.</p>
+        </li>
+        <li>
+          <p> Starting with SQL SERVER 2005, it is recommended that 
+			you
+          use the <b> SNC</b> database driver
+      based on the
+      new SQL Native Client ODBC driver (SQLNCLI.DLL). This is the new ODBC
+          driver provided by Microsoft
+      for SQL SERVER 2005 and higher.<br>
+ Note that the <b> SNC</b> database driver is not supported in a VC++ 6
+      environment.<br>
+          The <b> SNC</b> database driver is supported starting from Genero 2.10.</p>
+        </li>
+        <li>
+          <p> The <b>FTM</b> driver is based on the FreeTDS ODBC client (<a href="http://www.freetds.org">www.freetds.org</a>).
+          This driver can be used with FreeTDS to connect from a UNIX platform to
+          a Windows platform running SQL SERVER.<br>
+          You need at least FreeTDS
+          version <b>0.83</b>.<br>
+          The <b>FTM</b> driver is supported starting from Genero 2.11.</p>
+        </li>
+        <li>
+          <p>The <b>ESM</b> driver is based on the EasySoft
+          ODBC driver for SQL Server (<a href="http://www.easysoft.com">www.easysoft.com</a>).
+          This driver can be used with EasySoft to connect from a UNIX platform to
+          a Windows platform running SQL SERVER.<br>
+ You need at least EasySoft version <b>1.2.3</b>.<br>
+ The <b>ESM</b> driver is supported starting from Genero 2.21.</p>
+        </li>
+      </ul>
+    </li>
+    <li><p> Check that the Genero distribution package has installed the SQL 
+	SERVER database
+      driver you need (i.e. a &quot;<b>dbmmsv*</b>&quot;, &quot;<b>dbmsnc*</b>&quot;, &quot;<b>dbmftm</b>*&quot;
+      or &quot;<b>dbmesm</b>*&quot; driver must exist in FGLDIR/dbdrivers.</p>
+    </li>
+    <li><p> An ODBC data source must be
+      configured to allow the BDL program to establish connections to SQL SERVER.
+      Make sure you select the correct ODBC driver (<b>MSV</b> = &quot;SQL SERVER&quot;,
+      <b>SNC</b> = &quot;SQL Native Client&quot;, <b>FTM</b> = &quot;FreeTDS&quot;,
+      <b>ESM</b> = &quot;EasySoft&quot;).<br>
+      <b><font color="#FF0000">Warning:</font></b>   When using the <b>FTM</b>
+ (FreeTDS) or <b> ESM</b> (EasySoft) database driver, you have to define the ODBCINI and ODBCINST environment
+      variable to point to the odbc.ini and odbcinst.ini files.</p>
+    </li>
+    <li><p>Install and configure the database client software:</p>
+      <ul>
+        <li>
+          <p>When using the <b>MSV</b> database driver, you must have the <b>Microsoft
+          Data Access Components (MDAC)</b> installed on the computer running Genero applications.<br>
+          <br>
+          Since the MSV driver is using <b>ODBC32.DLL</b>, there is no need to
+          set the PATH environment variable to a specific database client
+          library path.<br>
+          <br>
+          The database client <b>locale</b> is defined by the regional settings
+          of the application server and must match the locale used by the BDL
+          application. If the LANG environment variable is not defined, the
+          application character set defaults to the current ANSI code page (ACP).<br>
+          <br>
+          Make sure that the ODBC data source has the &quot;Perform translation
+          for character data&quot; option checked: Character set conversions
+          between the client ANSI Code Page and the server collation must be
+          done by the MDAC ODBC client.</p>
+        </li>
+        <li>
+          <p>When using the <b>SNC</b> database driver, you must have the <b>Microsoft
+      SQL SERVER Native Client software</b>
+      installed on the computer running Genero applications.<br>
+          <br>
+          Since the SNC driver is using <b>ODBC32.DLL</b>, there is no need to
+          set the PATH environment variable to a specific database client
+          library path.<br>
+          <br>
+          The database client <b>locale</b> is defined by the regional settings
+          of the application server and must match the locale used by the BDL
+          application. Character set conversion (Current code set &lt;=&gt;
+          Wide-Char) is done by the SNC ODI driver according to the LANG
+          environment variable. If the LANG environment variable is not defined,
+          the application character set defaults to the ANSI code page (ACP).</p>
+        </li>
+      </ul>
+      <ul>
+        <li>
+          <p>When using the <b>FTM</b>
+      database driver, you must install <b>FreeTDS</b> (<a href="http://www.freetds.org">www.freetds.org</a>).<br>
+          <br>
+          Make sure the FreeTDS environment variables are properly set. Check
+          for example <b>FREETDS</b> (the path to the configuration file). See
+          FreeTDS documentation for more details.<br>
+          <br>
+          Note that with the FTM driver, there is no need to
+      install a driver manager like unixODBC: The <b>FTM</b> database driver is linked
+      directly with the <b>libtdsodbc.so</b> shared library. Verify the environment variable
+      defining the search path for that database client shared library. On UNIX platforms, the variable is specific to the operating system. 
+	For example, on Solaris and Linux systems, it is <b>LD_LIBRARY_PATH</b>, on
+      AIX it is <b>LIBPATH</b>, or HP/UX it is <b>SHLIB_PATH</b>.<br>
+          <br>
+          You
+      must create the odbc.ini and odbcinst.ini files to defined the data
+      source.<br>
+          <br>
+          Do not
+          forget to define the client character set for FreeTDS (<b>client charset</b>
+          parameter in freetds.conf or <b> ClientCharset</b>  parameter in odbc.ini). You
+      may need to link FreeTDS with the libiconv library to support character
+      set conversions.<br>
+      <b><font color="#FF0000"><br>
+      Warning:</font></b> You must set the TDS protocol
+      version according to the SQL Server version (2000, 2005, 2008, etc), by setting the <b>tds version</b> parameter in freetds.conf or
+      <b>TDS_Version</b> in odbc.ini. For example, when using SQL Server 2005
+      and 2008, you must use the TDS protocol version <b>8.0</b> or higher.<br>
+          <br>
+      See FreeTDS documentation for more details about installation and data source
+      configuration in ODBC files.</p>
+        </li>
+        <li>
+          <p>When using the <b>ESM</b> database driver, you must install <b>EasySoft
+          ODBC for SQL Server</b> (<a href="http://www.easysoft.com">www.easysoft.com</a>).<br>
+          <br>
+          Make sure the EasySoft environment variables are properly set. Check
+          for example <b>EASYSOFT_ROOT</b> (the path to the installation
+          directory). See FreeTDS documentation for more details.<br>
+          <br>
+          Note that with the ESM driver, there is no need to
+      install a driver manager like unixODBC: The <b>ESM</b> database driver is linked
+      directly with the <b>libessqlsrv.so</b> shared library. Verify the environment variable
+      defining the search path for that database client shared library. On UNIX platforms, the variable is specific to the operating system. 
+	For example, on Solaris and Linux systems, it is <b>LD_LIBRARY_PATH</b>, on
+      AIX it is <b>LIBPATH</b>, or HP/UX it is <b>SHLIB_PATH</b>.<br>
+          <br>
+          You
+      must create the odbc.ini and odbcinst.ini files to defined the data
+      source.<br>
+          <br>
+          Do not
+          forget to define the client character set for EasySoft with the <b>Client_CSet</b>
+          parameter in odbc.ini. The client character set is an iconv name and
+          must match the <a href="Localization.html">locale</a> of your Genero
+          application.<br>
+      <b><font color="#FF0000">Warning:</font></b> When using CHAR/VARCHAR types
+          in the database and when the database collation is different
+      from the client locale, you must also set the <b> Server_CSet</b> parameter to an
+      iconv name corresponding to the database collation. For example, if
+          Client_CSet=BIG5 and the db
+      collation is Chinese_Taiwan_Stroke_BIN, you must set Server_CSet=BIG5HKSCS,
+      otherwise invalid data will be returned from the server.<br>
+          <b><font color="#FF0000"><br>
+          Warning:</font></b> 
+          You must also set the following DSN parameters:<br>
+          &nbsp;&nbsp; <b>AnsiNPW=Yes<br>
+          &nbsp;&nbsp; Mars_Connection=No<br>
+          &nbsp;&nbsp; QuotedId=No</b> <br>
+          <br>
+      See EasySoft documentation for more details about installation and data source
+      configuration in ODBC files.</p>
+        </li>
+      </ul>
+    </li>
+    <li><p><b><font color="#FF0000">Warning:</font></b>  On Windows platforms, BDL programs are executed in a CONSOLE environment, not a GUI
+      environment. CONSOLE and GUI environments may use different code pages on
+      your system.&nbsp;Start the <b>SQL SERVER</b><b> Configuration Manager</b> to setup your client environment
+      and make sure no wrong character conversion occurs. See Microsoft SQL SERVER
+      documentation for more details.</p>
+    </li>
+    <li><p>Set up the <b>fglprofile</b> entries for <a href="Connections.html#DS_ODI_DBVSPEC">database
+      connections</a>.<br>
+      <br>
+      <b><font color="#FF0000">Warning:</font></b> <b>Make sure that you are
+      using the ODI driver corresponding to the database client and server
+      version. Because Informix features emulation are dependant from the
+      database server version, it is mandatory to use the same version of the
+      database client and ODI driver as the server version.</b><br>
+      <br>
+      You may want to set the <b>logintime</b> parameter to change
+      the default login timeout period, increase the <b>prefetch.rows</b>
+      parameter to get better performances with result sets, etc.<br>
+      <br>
+      With the <b>SNC</b> driver you might consider setting the <b>snc.widechar</b>
+      parameter to false if your database columns are defined with the CHAR/VARCHAR/TEXT
+      types (by default the driver is prepared to work with the
+      &quot;UNICODE&quot; types NCHAR/NVARCHAR/NTEXT). See <a href="#ODIMSV040">National character data types</a>
+      for more details.</p>
+    </li>
+  </ol>
+</blockquote>
+
+<hr>
+
+<h2><a name="ODIMSV001">ODIMSV001 - DATE and DATETIME data types</a></h3>
+
+</h2>
+
+<p>INFORMIX provides two data types to store dates and time information: 
+
+<ul>
+  <li><b>DATE</b> = for year, month and day storage.</li>
+  <li><b>DATETIME</b> = for year to fraction(1-5) storage.</li>
+</ul>
+
+<p>Microsoft SQL SERVER provides two data type to store dates: 
+
+<ul>
+  <li><b>DATETIME</b> = for year, month, day, hour, min, second,
+    fraction(3) storage (from January 1, 1753 through December 31, 9999). Values
+    are rounded to increments of .000, .003, or .007 seconds.</li>
+  <li><b>SMALLDATETIME</b> = for year, month, day, hour, minutes
+    storage (from January 1, 1900, through June 6, 2079). Values with 29.998
+    seconds or lower are rounded down to the nearest minute; values with 29.999
+    seconds or higher are rounded up to the nearest minute.</li>
+</ul>
+
+<p>Starting with Microsoft SQL SERVER 2008, following new date data types are
+available: 
+
+<ul>
+  <li><b>DATE</b> = for year, month, day storage as INFORMIX DATEs.</li>
+  <li><b>TIME(n)</b> = for hour, minute, second and fraction(7) storage. Here <b>n</b>
+    defines the precision of fractional seconds.</li>
+  <li><b>DATETIME2(n)</b> = for year, month, day, hour, minute, second and&nbsp;
+    fraction(7) storage. Here <b>n</b> defines the precision of fractional
+    seconds.</li>
+  <li><b>DATETIMEOFFSET(n)</b> = for year, month, day, hour, minute,
+    second,&nbsp; fraction(7) and time zone information storage. Here <b>n</b>
+    defines the precision of fractional seconds.</li>
+</ul>
+
+<p><b>String representing date time information:</b>
+
+<p>INFORMIX is able to convert quoted strings to DATE / DATETIME data if
+the string contents  matches environment parameters (i.e. DBDATE, GL_DATETIME).
+As in INFORMIX, Microsoft SQL SERVER can convert quoted strings to
+DATETIME data. The CONVERT( ) SQL function allows you to convert strings to dates.</p>
+
+<p><b>Date time arithmetic:</b> 
+
+<ul>
+  <li>INFORMIX supports date arithmetic on DATE and DATETIME values. The result of an arithmetic expression involving dates/times is a number of days when only DATEs are used and an INTERVAL value if a DATETIME is used in the expression.</li>
+  <li>INFORMIX automatically converts an integer to a date when the integer is used to set a value of a date column. Microsoft
+    SQL SERVER does not support this automatic conversion.</li>
+  <li>Complex DATETIME expressions ( involving INTERVAL values for example) are INFORMIX specific and have no equivalent in Microsoft
+    SQL SERVER.</li>
+  <li>Microsoft SQL SERVER does not allow direct arithmetic operations on datetimes; the date handling SQL functions must be used instead (DATEADD &amp; DATEDIFF).</li>
+  <li>The SQL SERVER provides equivalent functions for YEAR(), MONTH() and DAY(). Be careful with the DAY(<i>n</i>) function on
+    SQL SERVER because it begins from January 1, 1900 while INFORMIX begins from December 31, 1899.</li>
+</ul>
+
+<div align="center">
+  <center>
+<table border="0" width="90%" style="border-collapse: collapse" bordercolor="#111111" cellpadding="0" cellspacing="0">
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>INFORMIX</b></font></td>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>Microsoft SQL SERVER</b></font></td>
+  </tr>
+  <tr>
+    <td width="50%">
+    <p style="margin-top: 0; margin-bottom: 0"><font face="Courier New">select 
+    day(0), month(0), year(0) FROM systables WHERE tabid=1;<br>
+    ------ ------ ------ <br>
+&nbsp;&nbsp;&nbsp; 31&nbsp;&nbsp;&nbsp;&nbsp; 12&nbsp;&nbsp; 1899<br>
+    1 Row(s) affected</font></td>
+    <td width="50%">
+    <p style="margin-top: 0; margin-bottom: 0"><font face="Courier New">select 
+    day(0), month(0), year(0)<br>
+    ----------- ----------- ----------- <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1900 <br>
+    (1 row(s) affected)</font></td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<ul>
+  <li>The SQL SERVER equivalent for WEEKDAY() is
+    the DATEPART(dw,&lt;date&gt;) function. The weekday date part depends on the 
+  value set by SET DATEFIRST <i>n</i>, which sets the first day of the week 
+  (1=Monday...7=Sunday-default).</li>
+  <li>SQL SERVER uses a different basis for the day of the week. In SQL SERVER, Sunday is day 7 and Monday
+    is  day 1 while INFORMIX defines Sunday as the day 0
+    (zero) and Monday as 1.</li>
+</ul>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The SQL SERVER database drivers will automatically map INFORMIX date/time types to
+native SQL SERVER type, according the server version. Conversions are
+described in this table:</p>
+
+<table border="0" width="90%" style="border-collapse: collapse" bordercolor="#111111" cellpadding="0" cellspacing="0">
+  <tr>
+    <td bgcolor="#C0C0C0" width="25%"><font color="#0000FF"><b>INFORMIX
+      date/time type</b></font></td>
+    <td bgcolor="#C0C0C0" width="50%" colspan="2"><font color="#0000FF"><b>Microsoft
+      SQL SERVER date/time type</b></font></td>
+  </tr>
+  <tr>
+    <td width="25%" bgcolor="#C0C0C0">
+    &nbsp;</td>
+    <td width="25%" bgcolor="#C0C0C0">
+    <p style="margin-top: 0; margin-bottom: 0"><b>Before SQL SERVER 2008</b></td>
+    <td width="25%" bgcolor="#C0C0C0">
+    <b>Since SQL SERVER 2008</b></td>
+  </tr>
+  <tr>
+    <td width="25%">
+    <p style="margin-top: 0; margin-bottom: 0"><font face="Courier New">DATE</font></td>
+    <td width="25%">
+    <p style="margin-top: 0; margin-bottom: 0"><font face="Courier New">DATETIME</font></td>
+    <td width="25%">
+    <font face="Courier New">DATE</font></td>
+  </tr>
+  <tr>
+    <td width="25%">
+    <p style="margin-top: 0; margin-bottom: 0"><font face="Courier New">DATETIME
+    HOUR TO SECOND</font></td>
+    <td width="25%">
+    <p style="margin-top: 0; margin-bottom: 0"><font face="Courier New">DATETIME
+    (filled with 1900-01-01)</font></td>
+    <td width="25%">
+    <font face="Courier New">TIME(0)</font></td>
+  </tr>
+  <tr>
+    <td width="25%">
+    <p style="margin-top: 0; margin-bottom: 0"><font face="Courier New">DATETIME
+    HOUR TO FRACTION(n)</font></td>
+    <td width="25%">
+    <p style="margin-top: 0; margin-bottom: 0"><font face="Courier New">DATETIME
+    (filled with 1900-01-01)</font></td>
+    <td width="25%">
+    <font face="Courier New">TIME(n)</font></td>
+  </tr>
+  <tr>
+    <td width="25%">
+    <p style="margin-top: 0; margin-bottom: 0"><font face="Courier New">DATETIME
+    YEAR TO SECOND</font></td>
+    <td width="25%">
+    <p style="margin-top: 0; margin-bottom: 0"><font face="Courier New">DATETIME</font></td>
+    <td width="25%">
+    <font face="Courier New">DATETIME2(0)</font></td>
+  </tr>
+  <tr>
+    <td width="25%">
+    <p style="margin-top: 0; margin-bottom: 0"><font face="Courier New">Any
+    other sort of DATETIME type</font></td>
+    <td width="25%">
+    <p style="margin-top: 0; margin-bottom: 0"><font face="Courier New">DATETIME
+    (filled with 1900-01-01)</font></td>
+    <td width="25%">
+    <font face="Courier New">DATETIME2(n)</font></td>
+  </tr>
+</table>
+
+<p>With SQL SERVER 2005 and lower, INFORMIX DATETIME with any precision from YEAR to FRACTION(3)
+is stored in SQL SERVER DATETIME columns.</p>
+
+<p>For heterogeneous DATETIME types like DATETIME HOUR TO MINUTE, the database interface
+fills missing date or time parts to 1900-01-01 00:00:00.0. For example,
+when using a DATETIME HOUR TO MINUTE with the value of &quot;11:45&quot;, the SQL SERVER
+datetime value will be &quot;1900-01-01 11:45:00.0&quot;.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> SQL SERVER SMALLDATETIME
+can store dates from January 1, 1900, through June 6, 2079. Therefore, we do
+not recommend to use this data type.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  With SQL SERVER 2005 and lower,
+the fractional second part of
+a SQL SERVER DATETIME has a precision of 3 digits while INFORMIX has a precision
+up to 5 digits. Do not try to insert a datetime value in a SQL SERVER DATETIME with
+ a precision more than 3 digits or a conversion error could occur.  You can use the
+MS SUBSTRING() function to truncate the fraction part of the INFORMIX datetimes or
+another BDL solution. The fraction part of a SQL SERVER DATETIME is an approximate value. For example, when you insert a datetime
+value with a fraction of 111, the database actually stores 110. This may cause
+problems because INFORMIX  DATETIMEs with a fraction part are exact values with a
+precision up to 5 digits. Starting with SQL SERVER 2008, the DATETIME2 native
+type will be used. This new type can store fraction of seconds with a precision
+of 7 digits, so INFORMIX DATETIME values can be stored without precision lost.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  When migrating to SQL SERVER 2008, you must pay attention if the database has DATETIME columns used to store
+INFORMIX DATETIME HOUR TO SECOND or DATETIME HOUR TO FRACTION(n) types: Before
+version 2008, those types were stored in SQL SERVER DATETIME columns (filling
+missing date part with 1900-01-01). The SNC database driver for SQL SERVER 2008 maps now DATETIME HOUR TO SECOND / FRACTION(n) to a TIME data type, which is not
+compatible with an SQL SERVER DATETIME type. To solve this problem, SQL SERVER DATETIME columns used to store DATETIME HOUR TO SECOND/FRACTION(n) must be
+converted to TIME columns (ALTER TABLE).</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>  When fetching a TIME or
+DATETIME2 with a precision that is greater as 5 (the 4gl DATETIME precision
+limit), the database interface will allocate a buffer of VARCHAR(16) for the
+TIME and VARCHAR(27) for the DATETIME2 column. As a result, you can fetch such
+data into a CHAR or VARCHAR variable.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Using
+integers as a number of days in an expression with dates is not supported by SQL SERVER.
+Check your code to detect where you are using integers with DATE columns.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Literal
+DATETIME and INTERVAL expressions (i.e. DATETIME ( 1999-10-12) YEAR TO DAY) are not converted.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> It is
+strongly recommended to use BDL variables in dynamic SQL statements instead of quoted
+strings representing DATEs. For example :<br>
+<font face="Courier New">&nbsp;&nbsp; LET stmt = &quot;SELECT ... FROM customer
+WHERE creat_date &gt;'&quot;, adate,&quot;'&quot;<br>
+</font>is not portable; use a question mark place holder instead and
+OPEN the cursor USING adate:<br>
+<font face="Courier New">&nbsp;&nbsp; LET stmt = &quot;SELECT ... FROM customer WHERE creat_date &gt; ?&quot;</font></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Review the
+program logic if you are using the INFORMIX WEEKDAY()&nbsp; function because SQL SERVER
+uses a different basis for the days numbers ( Monday = 1 ).</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>
+SQL Statements using expressions with TODAY / CURRENT /&nbsp; EXTEND must be
+reviewed and adapted to the native syntax. Use the MS GETDATE() function to 
+get the system current date.</p>
+
+<hr>
+
+<h2><a name="ODIMSV003">ODIMSV003 - Reserved words</a></h3>
+
+</h2>
+
+<p>Microsoft Transact-SQL does not allow you to use reserved words as
+database object names ( tables, columns, constraint, indexes, triggers, stored procedures,
+...).&nbsp; An example of a common word which is part of SQL SERVER grammar is '<b>go</b>' 
+(see the 'Reserved keywords' section in the SQL SERVER Documentation).</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Database objects having a name which is a Transact-SQL reserved word must be renamed.</p>
+
+<p>All BDL application sources must be verified. To check if a given keyword is used in a source, you can use UNIX 'grep' or 'awk' tools. Most modifications can be automatically done with UNIX tools like 'sed' or 'awk'.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> You can use SET QUOTED_IDENTIFIER
+ON with double-quotes to enforce the use of keywords in the database objects naming, but it is not recommended.</p>
+
+<hr>
+
+<h2><a name="ODIMSV004">ODIMSV004 - ROWIDs</a></h3>
+
+</h2>
+
+<p>When creating a table, INFORMIX automatically adds a
+&quot;ROWID&quot; integer column (applies to non-fragmented tables only). The
+ROWID column is auto-filled with a unique number and can be used
+like a primary key to access a given row.</p>
+
+<p>Microsoft SQL SERVER tables have no ROWIDs.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>If the BDL application uses ROWIDs, the program logic should be reviewed in order to use the real primary keys (usually, serials which can be supported).</p>
+
+<p>However, if your existing INFORMIX application depends on using ROWID values, 
+you can use the IDENTITY property of the DECIMAL, INT, NUMERIC, SMALLINT, 
+BIGINT, or TINYINT data types, to simulate this functionality.</p>
+
+<p>All references to SQLCA.SQLERRD[6] must be removed because this
+variable will not hold the ROWID of the last INSERTed  or UPDATEd row when using the
+Microsoft SQL SERVER interface.</p>
+
+<hr>
+
+<h2><a name="ODIMSV005">ODIMSV005 - SERIAL data types</a>
+
+</h2>
+
+<p>INFORMIX supports the SERIAL, SERIAL8 and BIGSERIAL data types to produce automatic
+integer sequences. SERIAL is based on INTEGER (32 bit), while SERIAL8 and
+BIGSERIAL can store 64 bit integers: </p>
+<ul>
+	<li>The table column must be of type SERIAL, SERIAL8 or BIGSERIAL.</li>
+	<li>To generate a new serial, no value or a zero 
+	value is specified in the INSERT statement:<br>
+	<font size="2" face="Courier New">&nbsp;&nbsp; INSERT INTO tab1 ( c ) VALUES ( 'aa' )<br>
+	&nbsp;&nbsp; INSERT INTO tab1 ( k, c ) VALUES ( 0, 'aa' )</font></li>
+	<li>After INSERT, the new SERIAL value is provided in
+	<font face="Courier New" color="#FF0000">SQLCA.SQLERRD[2]</font>, while the
+      new SERIAL8 and BIGSERIAL value must be fetched with a <font face="Courier New" color="#FF0000">SELECT
+      dbinfo('bigserial')</font> query.</li>
+</ul>
+
+<p>INFORMIX allows you to insert rows with a value different from zero for
+a serial column. Using an explicit value will automatically increment the internal serial
+counter, to avoid conflicts with future INSERTs that are using a zero value:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; CREATE TABLE tab ( k SERIAL );&nbsp;
+--&gt; internal counter = 0<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 1<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 10 );&nbsp; --&gt; internal counter = 10<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 11<br>
+&nbsp;&nbsp;&nbsp; DELETE FROM tab;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; --&gt;
+internal counter = 11<br>
+&nbsp;&nbsp;&nbsp; INSERT INTO tab VALUES ( 0 );&nbsp;&nbsp; --&gt; internal counter = 12</font></p>
+
+<p>Microsoft SQL SERVER <b>IDENTITY</b> columns:</p>
+
+<ul>
+  <li>When creating a table, the IDENTITY keyword must be specified after the column data type:<br>
+    <font face="Courier New">&nbsp;&nbsp; CREATE TABLE tab1 ( k integer identity, c char(10) )</font></li>
+  <li>You can specify a start value and an increment with &quot;identity(start,incr)&quot;.<br>
+    <font face="Courier New">&nbsp;&nbsp; CREATE TABLE tab1 ( k integer identity(100,2), ...</font></li>
+  <li>A new number is automatically created when inserting a new row:<br>
+    <font face="Courier New">&nbsp;&nbsp; INSERT INTO tab1 ( c ) VALUES ( 'aaa' )</font></li>
+  <li>To get the last generated number, Microsoft SQL SERVER provides a global variable:<br>
+    <font face="Courier New">&nbsp;&nbsp; SELECT <b>@@IDENTITY</b></font></li>
+  <li>To put a specific value into a IDENTITY column, the SET command must be used:<br>
+    <font face="Courier New">&nbsp;&nbsp; SET IDENTITY_INSERT tab1 ON<br>
+    &nbsp;&nbsp; INSERT INTO tab1 ( k, c ) VALUES ( 100, 'aaa' )<br>
+    &nbsp;&nbsp; SET IDENTITY_INSERT tab1 OFF</font></li>
+</ul>
+
+<p>INFORMIX SERIALs and MS SQL SERVER IDENTITY columns are quite similar; the main difference is that MS
+SQL SERVER does not allow you to use the zero value for the identity column when inserting a new row.</p>
+
+<p>This problem cannot be resolved with triggers because Microsoft SQL SERVER does not support row-level triggers (INSERT Triggers are fired only once per INSERT statement).</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>To emulation INFORMIX serials, you can use <b>IDENTITY columns</b> (1)
+or <b>insert triggers based on the SERIALREG</b> table (2). The first
+solution is faster, but does not allow explicit serial value specification in
+insert statements; the second solution is slower but allows explicit serial
+value specification.</p>
+
+<p><b><font color="#FF0000">Warning:</font> </b> The second emulation based on
+triggers is provided to simplify the conversion to SQL SERVER. We strongly
+recommend&nbsp;you to use native IDENTITY columns instead.</p>
+
+<p>With the following fglprofile entry, you define the technique to be used for SERIAL emulation :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;
+dbi.database.&lt;dbname&gt;.ifxemul.datatype.serial.emulation = </font><font face="Courier New">{&quot;native&quot;|&quot;regtable&quot;}</font></p>
+
+<p>The '<b>native</b>' value defines the IDENTITY
+column technique and the '<b>regtable</b>' defines the trigger
+technique.</p>
+
+<p>This entry must be used with:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; dbi.database.&lt;dbname&gt;.ifxemul.datatype.serial = {true|false}</font></p>
+
+<p>If this entry is set to false, the emulation method specification entry is ignored.</p>
+
+<p><font color="#ff0000"><b>Warning:</b></font> When no entry is specified, the default is SERIAL
+emulation enabled with 'native' method (IDENTITY-based).<br><br>
+
+<u>1. Using IDENTITY columns</u></p>
+
+<p>In database creation scripts, all SERIAL[(n)] data types must be converted by hand to INTEGER IDENTITY[(n,1)] data types.</p>
+
+<p>Tables created from the BDL programs can use the SERIAL data type : When a BDL program executes a CREATE [TEMP] TABLE with a SERIAL column, the database interface automatically converts the &quot;SERIAL[(n)]&quot; data type to &quot;INTEGER IDENTITY[(n,1)]&quot;.</p>
+
+<p>In BDL, the new generated SERIAL value is available from the SQLCA.SQLERRD[2] variable. This is supported by the database interface which performs a &quot;SELECT @@IDENTITY&quot;.<font >
+However, SQLCA.SQLERRD[2] is defined as an INTEGER, it cannot hold values from
+BIGINT identity columns. If you are using BIGINT IDENTITY columns, you must use
+@@IDENTITY.</font></p>
+
+<p><b><font color="#ff0000">Warning:</font></b> By
+default (see SET IDENTITY_INSERT), MS SQL SERVER does not allow you to specify the IDENTITY
+column in INSERT statements; You must convert all INSERT statements to remove
+the identity column from the list.<br>
+For example, the following statement:<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col1,col2) VALUES (<b>0</b>, p_value)</font><br>
+must be converted to:<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col2) VALUES (p_value)<br>
+</font>Static SQL INSERT using records defined from the schema file must also be
+reviewed:<br>
+<font face="Courier New">&nbsp;&nbsp; DEFINE rec LIKE tab.*</font><br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab VALUES ( rec.*
+)&nbsp;&nbsp; -- will use the serial column</font><br>
+must be converted to :<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab VALUES rec.* -- without
+braces, serial column is removed</font></p>
+<p>Since 2.10.06, SELECT * FROM table INTO TEMP with
+original table having an IDENTITY column are supported: The database driver converts the INFORMIX SELECT INTO TEMP
+to the following sequence of statements:</p>
+
+<ol>
+  <li>SELECT &lt;<i>selection items</i>&gt;&nbsp; INTO #table FROM ... WHERE 1=2</li>
+  <li>SET IDENTITY_ INSERT #table ON</li>
+  <li> INSERT INTO #table ( <i>column-list</i> ) SELECT &lt;<i>original select
+    clauses</i>&gt;</li>
+  <li>SET IDENTITY_ INSERT #table OFF</li>
+</ol>
+<p>See also <a href="#ODIMSV017">temporary tables</a>.</p>
+
+<p><u>2. Using triggers with the SERIALREG table</u></p>
+
+<p>First, you must prepare the database and create the SERIALREG table as follows:<br><br>
+<font face="Courier New">CREATE TABLE serialreg (<br>
+&nbsp;&nbsp;&nbsp;&nbsp; tablename VARCHAR(50) NOT NULL,<br>
+&nbsp;&nbsp;&nbsp;&nbsp; lastserial BIGINT NOT NULL,<br>
+&nbsp;&nbsp;&nbsp;&nbsp; PRIMARY KEY ( tablename )<br>
+)</font></p>
+
+<p><b><font color="#ff0000">Warning:</font></b> Note that the SERIALREG table and columns
+have to be created with lower case names, since the SQL SERVER database is created with
+case sensitive names, because triggers are using this table in lower case.</p>
+
+<p>In database creation scripts, all SERIAL[(n)] data types
+must be converted to INTEGER data types and you must create one trigger for each
+table. To know how to write those triggers,&nbsp; you can create a small Genero
+program that creates a table with a SERIAL column. Set the FGLSQLDEBUG
+environment variable and run the program. The debug output will show you the
+native trigger creation command.</p>
+
+<p>Tables created from the BDL programs can use the SERIAL
+data type.&nbsp; When a BDL program executes a CREATE [TEMP] TABLE with a SERIAL
+column, the database interface automatically converts the
+&quot;SERIAL[(n)]&quot; data type to &quot;INTEGER&quot; and creates the insert
+triggers.</p>
+
+<p><b><font color="#ff0000">Warning:</font></b> This serial emulation
+is only supported with <b>SQL SERVER</b><b> 2000</b> and higher, because it is
+implemented with INSTEAD OF triggers.</p>
+
+<p><b><font color="#ff0000">Warning:</font></b> SQL SERVER does not allow
+you to create triggers on temporary tables. Therefore, you
+cannot create temp tables with a SERIAL column when using this solution.</p>
+
+<p><b><font color="#ff0000">Warning:</font></b> SELECT ... INTO TEMP
+statements using a table created with a SERIAL column do
+not automatically create the SERIAL triggers in the temporary table. The type of
+the column in the new table is INTEGER.</p>
+
+<p><b><font color="#ff0000">Warning:</font></b> When a table is dropped,
+all associated triggers are also dropped.</p>
+
+<p><b><font color="#ff0000">Warning:</font></b> INSERT statements using
+NULL for the SERIAL column will produce a new serial value, instead of using NULL:<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col1,col2) VALUES (<b>NULL</b>,'data')</font><br>
+This behavior is mandatory in order to support INSERT statements which do not use the serial column:<br>
+<font face="Courier New">&nbsp;&nbsp; INSERT INTO tab (col2) VALUES ('data')</font><br>
+Check if your application uses tables with a SERIAL column that can contain a NULL value.</p>
+
+<p><b><font color="#ff0000">Warning:</font></b> The serial production is
+based on the SERIALREG table which registers the last generated number for each table.
+If you delete rows of this table, sequences will restart at 1 and you will get unexpected data.</p>
+
+<hr>
+
+<h2><a name="ODIMSV006">ODIMSV006 - Outer joins</a></h3>
+
+</h2>
+
+<p>The original OUTER join syntax of INFORMIX is different from Microsoft SQL SERVER
+outer join syntax:</p>
+
+<p>In INFORMIX SQL, outer tables can be defined in the <b> FROM</b> clause with the <b>OUTER</b> keyword:</p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM cust, <b><font color="#0000A0">OUTER(order)</font></b>
+ WHERE cust.key = order.custno</font></pre>
+  <pre><font face="Courier New">SELECT ... FROM cust, <b><font color="#0000A0">OUTER(order,OUTER(item))</font></b>
+ WHERE cust.key = order.custno
+   AND order.key = item.ordno
+   AND order.</font><font face="Courier New">accepted = 1</font></pre>
+</blockquote>
+
+<p>Microsoft SQL SERVER supports the ANSI outer join syntax :</p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM <b><font color="#0000A0">cust LEFT OUTER JOIN order
+                     ON cust.key = order.custno</font></b></font></pre>
+  <pre><font face="Courier New">SELECT ...
+  FROM <b><font color="#0000A0">cust</font></b></font><b><font
+face="Courier New" color="#0000A0"> LEFT OUTER JOIN order
+            ON cust.key = order.</font><font color="#0000A0" face="Courier New">custno</font></b>
+<b><font face="Courier New" color="#0000A0">            LEFT OUTER JOIN item
+            ON order.key = item.ordno
+</font></b><font face="Courier New"> WHERE order.</font><font face="Courier New">accepted = 1</font></pre>
+</blockquote>
+
+<p>Remark: The old way to define outers in SQL SERVER looks  like the following : </p>
+
+<blockquote>
+  <pre><font face="Courier New">SELECT ... FROM a, b WHERE a.key <font color="#0000A0"><b>*=</b></font> b.key</font></pre>
+</blockquote>
+
+<p>See the SQL SERVER reference manual for a complete description of the syntax.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>For better SQL portability, you should use the ANSI outer join syntax instead
+of the old Informix OUTER syntax.</p>
+
+<p>The Microsoft SQL SERVER interface can convert simple INFORMIX OUTER specifications to Microsoft
+SQL SERVER ANSI outer joins.</p>
+
+<p>Prerequisites:</p>
+
+<ol>
+  <li>The outer join in the WHERE part must use the table name as prefix.<br>
+    &nbsp;&nbsp; Example : &quot;WHERE tab1.col1 = tab2.col2 &quot;.</li>
+  <li>Additional conditions on outer table columns cannot be detected and
+    therefore are not supported :<br>
+    &nbsp;&nbsp; Example : &quot;... FROM tab1, OUTER(tab2) WHERE tab1.col1 = tab2.col2 AND
+    tab2.colx &gt; 10&quot;.</li>
+  <li>Statements composed of 2 or more SELECT instructions using OUTERs are
+    not supported.<br>
+    &nbsp; Example : &quot;SELECT ... UNION SELECT&quot; or &quot;SELECT ... WHERE col IN
+    (SELECT...)&quot;</li>
+</ol>
+
+<p>Remarks:</p>
+
+<ol>
+  <li>Table aliases are detected in OUTER expressions.<br>
+    &nbsp;&nbsp; OUTER example with table alias : &quot;OUTER( tab1 alias1)&quot;.</li>
+  <li>In the outer join, &lt;outer table&gt;.&lt;col&gt; can be placed on
+    both right or left  sides of the equal sign.<br>
+    &nbsp;&nbsp; OUTER join example with table on the left : &quot;WHERE outertab.col1 =
+    maintab.col2 &quot;.</li>
+  <li>Table names detection is not case-sensitive.<br>
+    &nbsp;&nbsp; Example : &quot;SELECT ... FROM tab1, TAB2 WHERE tab1.col1 = tab2.col2&quot;.</li>
+  <li><a href="#ODIMSV017">Temporary tables</a> are supported in OUTER specifications.</li>
+</ol>
+
+<hr>
+
+<h2><a name="ODIMSV007a">ODIMSV007a - Database concepts</a></h3>
+
+</h2>
+
+<p>As in INFORMIX, an SQL SERVER engine can manage multiple database entities. When creating a database object like a table, Microsoft
+SQL SERVER allows you to use the same object name in different databases.</p>
+
+<hr>
+
+<h2><a name="ODIMSV008a">ODIMSV008a - Data consistency and concurrency management</a></h3>
+
+</h2>
+
+<p><u>Data consistency</u> involves readers which want to access data
+currently modified by writers and <u>concurrency data access</u> involves several writers
+accessing the same data for modification. <u>Locking granularity</u> defines the amount of
+data concerned when a lock is set (row, page, table, ...).</p>
+
+<p><u>INFORMIX</u></p>
+
+<p>INFORMIX uses a locking mechanism to manage data consistency and concurrency.
+When a process modifies data with UPDATE, INSERT or DELETE, an <u>exclusive
+lock</u> is set on the affected rows. The lock is held until the end of the transaction.
+Statements performed outside a transaction are treated as a transaction containing a
+single operation and therefore release the locks immediately after execution. SELECT
+statements can set <u>shared locks</u> according to the <u>isolation level</u>. In case
+of locking conflicts (for example, when two processes want to acquire an exclusive lock on
+the same row for modification or when a writer is trying to modify data protected by a
+shared lock), the behavior of a process can be changed by setting the <u>lock wait mode</u>.</p>
+
+<p>Control:</p>
+
+<ul>
+  <li>Isolation level : SET ISOLATION TO ...</li>
+  <li>Lock wait mode : SET LOCK MODE TO ...</li>
+  <li>Locking granularity : CREATE TABLE ... LOCK MODE {PAGE|ROW}</li>
+  <li>Explicit locking : SELECT ... FOR UPDATE</li>
+</ul>
+
+<p>Defaults:</p>
+
+<ul>
+  <li>The default isolation level is READ COMMITTED.</li>
+  <li>The default lock wait mode is NOT WAIT.</li>
+  <li>The default locking granularity is per page.</li>
+</ul>
+
+<p><u>SQL SERVER</u></p>
+
+<p>As in INFORMIX, SQL SERVER uses locks to manage data consistency and
+concurrency. The database manager sets <u>exclusive locks</u> on the modified rows and <u>shared
+locks</u>  or <u>update locks</u> when data is read, according to the <u>isolation level</u>.
+The locks are held
+until the end of the transaction. When multiple processes want to access the same data,
+the latest processes must wait until the first finishes its transaction or the lock
+timeout occurred. The locking strategy of SQL SERVER is row locking with 
+possible promotion to page or table locking. SQL SERVER dynamically determines 
+the appropriate level at which to place locks for each Transact-SQL statement. </p>
+
+<p>Starting with SQL Server 2005, you can enhance concurrency by turning on
+snapshot isolation level, to make SQL Server use a copy of the row when it is
+changed by a transaction. To turn this feature on, you must set the database
+property ALLOW_SNAPSHOT_ISOLATION ON. Setting the READ_COMMITTED_SNAPSHOT ON
+option allows access to versioned rows under the default READ COMMITTED
+isolation level (otherwise, snapshot isolation must be specified by every SQL
+Session).</p>
+
+<p>Control:</p>
+
+<ul>
+  <li>Lock wait mode : SET LOCK_TIMEOUT &lt;milliseconds&gt; (returns error 1222 on time out).</li>
+  <li>Isolation level : SET TRANSACTION ISOLATION LEVEL ...</li>
+  <li>Locking granularity : Row, Page or Table level (Automatic - See Dynamic Locking).</li>
+  <li>Explicit locking : SELECT ... FROM ... WITH (UPDLOCK) (See Locking Hints)</li>
+</ul>
+
+<p>Defaults:</p>
+
+<ul>
+  <li>The default isolation level is READ COMMITTED (readers cannot see uncommitted data).</li>
+  <li>The default LOCK_TIMEOUT is -1 (indicates no time-out period, wait forever).</li>
+</ul>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+  <p>The <font size="2" face="Courier New">
+  <b>
+  SET ISOLATION TO ...</b> </font>in programs is converted to <font size="2" face="Courier New">SET TRANSACTION ISOLATION LEVEL ...
+  </font>for SQL Server. The next table shows
+  the isolation level mappings done by the database driver:</p>
+
+<div align="center">
+  <center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><font color="#0000FF"><b>SET ISOLATION
+      instruction in program</b></font></td>
+    <td width="60%" bgcolor="#C0C0C0"><font color="#0000FF"><b>Native SQL
+      command</b></font></td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO DIRTY READ</td>
+    <td width="60%">SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO COMMITTED READ<br>
+      &nbsp; [READ COMMITTED] [RETAIN UPDATE LOCKS]</td>
+    <td width="60%">SET TRANSACTION ISOLATION LEVEL READ COMMITTED</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO CURSOR STABILITY</td>
+    <td width="60%">SET TRANSACTION ISOLATION LEVEL REPEATABLE READ</td>
+  </tr>
+  <tr>
+    <td width="40%">SET ISOLATION TO REPEATABLE READ</td>
+    <td width="60%">SET TRANSACTION ISOLATION LEVEL SERIALIZABLE</td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<p>For portability, it is recommended that you work with INFORMIX in the read
+committed isolation level, to make processes wait for each other (lock mode wait) and to
+create tables with the &quot;lock mode row&quot; option.</p>
+
+<p>When using <font size="2" face="Courier New"><b> SET LOCK MODE ...</b></font>
+in the programs, it will be converted to a SET LOCK_TIMEOUT instruction for SQL
+SERVER:</p>
+
+<div align="center">
+  <center>
+
+<table border="0" width="90%">
+  <tr>
+    <td width="40%" bgcolor="#C0C0C0"><font color="#0000FF"><b>SET LOC MODE instruction in program</b></font></td>
+    <td width="60%" bgcolor="#C0C0C0"><font color="#0000FF"><b>Native SQL
+      command</b></font></td>
+  </tr>
+  <tr>
+    <td width="40%">SET LOCK MODE TO WAIT</td>
+    <td width="60%">SET LOCK_TIMEOUT -1&nbsp;&nbsp; (wait forever)</td>
+  </tr>
+  <tr>
+    <td width="40%">SET LOCK MODE TO WAIT <i>seconds</i></td>
+    <td width="60%">SET LOCK_TIMEOUT <i>seconds</i> * 1000&nbsp;&nbsp; (wait N
+      milliseconds)</td>
+  </tr>
+  <tr>
+    <td width="40%">SET LOCK MODE TO NOT WAIT</td>
+    <td width="60%">SET LOCK_TIMEOUT 0&nbsp;&nbsp; (do not wait)</td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<p>See INFORMIX and SQL SERVER documentation for more details about data consistency, concurrency and locking mechanisms.</p>
+
+<hr>
+
+<h2><a name="ODIMSV008b">ODIMSV008b - SELECT FOR UPDATE</a></h3>
+
+</h2>
+
+<p>A lot of BDL programs use pessimistic locking in order to avoid several users editing the same rows at the same time. </p>
+
+<p><font face="Courier New">&nbsp; DECLARE cc CURSOR FOR<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SELECT ... FOR UPDATE<br>
+&nbsp; OPEN cc<br>
+&nbsp; FETCH cc &lt;-- lock is acquired<br>
+&nbsp; CLOSE cc &lt;-- lock is released</font> 
+
+<ul>
+  <li>A transaction must be started before opening cursors declared for update.</li>
+  <li>The row must be fetched in order to set the lock.</li>
+  <li>The lock is released when the transaction ends (if the cursor is not 
+  declared &quot;WITH HOLD&quot;) or when the cursor is closed.</li>
+</ul>
+
+<p>Microsoft SQL SERVER allows individual and exclusive row locking by using the (UPDLOCK) hint after the table names in the FROM clause :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; SELECT ... FROM tab1 WITH (UPDLOCK) WHERE ...</font></p>
+
+<p>The FOR UPDATE clause is not mandatory; the (UPDLOCK) hint is important. 
+
+<ul>
+  <li>Individual locks are acquired when fetching the rows.</li>
+  <li>When the cursor (WITH HOLD) is opened outside a transaction, locks are released when the cursor  is closed.</li>
+  <li>When the cursor is opened inside a transaction, locks are released when the transaction ends.</li>
+</ul>
+
+<p>SQL SERVER's locking granularity is at the row level, page level or table level (the level is automatically selected by the engine for optimization).</p>
+
+<p>To control the behavior of the program when locking rows, INFORMIX provides a specific instruction to set the wait mode :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; SET LOCK MODE TO { WAIT | NOT WAIT | WAIT <em>seconds</em> }</font></p>
+
+<p>The default mode is NOT WAIT. This as an INFORMIX specific SQL statement.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The SQL SERVER database driver for MS SQL SERVER uses the SCROLL LOCKS concurrency options 
+for cursors (SQL_ATTR_CONCURRENCY = SQL_CONCUR_LOCK). </p>
+
+<p>This option implements pessimistic concurrency control, in which the 
+application attempts to lock the underlying database rows at the time they are 
+read into the cursor result set. <br>
+When using server cursors, an update lock is placed on the row when it is read 
+into the cursor. <br>
+If the cursor is opened within a transaction, the transaction update lock is 
+held until the transaction is either committed or rolled back; the cursor lock 
+is dropped when the next row is fetched. <br>
+If the cursor has been opened outside a transaction, the lock is dropped when 
+the next row is fetched. <br>
+Therefore, a cursor should be opened in a transaction whenever the user wants 
+full pessimistic concurrency control. <br>
+An update lock prevents any other task from acquiring an update or exclusive 
+lock, which prevents any other task from updating the row. <br>
+An update lock, however, does not block a shared lock, so it does not prevent 
+other tasks from reading the row unless the second task is also requesting a 
+read with an update lock.</p>
+
+<p>SELECT FOR UPDATE statements are well supported in BDL as long as
+they are used inside a transaction. Avoid cursors declared WITH HOLD.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> The database
+interface is based on an emulation of an INFORMIX engine using transaction logging.
+Therefore, opening a SELECT ... FOR UPDATE cursor declared outside a transaction will
+raise an SQL error -255 (not in transaction).</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> 
+The SELECT FOR UPDATE statement cannot contain an ORDER BY clause if you want
+to perform positioned updates/deletes with WHERE CURRENT OF.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Cursors
+declared with SELECT ... FOR UPDATE using the &quot;WITH HOLD&quot; clause cannot be
+supported with SQL SERVER.</p>
+
+<p>You must review the program logic if you use pessimistic locking because it is based on the NOT WAIT mode which is not supported by
+SQL SERVER.</p>
+
+<hr>
+
+<h2><a name="ODIMSV009">ODIMSV009 - Transactions handling</a></h3>
+
+</h2>
+
+<p>INFORMIX and Microsoft SQL SERVER handle transactions in a similar manner. </p>
+
+<p>INFORMIX native mode (non ANSI):</p>
+
+<ul>
+  <li>Transactions are started with BEGIN WORK.</li>
+  <li>Transactions are validated with COMMIT WORK.</li>
+  <li>Transactions are canceled with ROLLBACK WORK.</li>
+  <li>Savepoints can be set with SAVEPOINT <i>name</i> [UNIQUE].</li>
+  <li>Transactions can be rolled back to a savepoint with ROLLBACK [WORK] TO
+    SAVEPOINT [<i>name</i>].</li>
+  <li>Savepoints can be released with RELEASE SAVEPOINT <i>name</i>.</li>
+  <li>Statements executed outside of a transaction are automatically committed.</li>
+  <li>DDL statements can be executed (and canceled) in transactions.</li>
+</ul>
+
+<p>Microsoft SQL SERVER supports named and nested transactions:</p>
+
+<ul>
+  <li>Transactions are started with BEGIN TRANSACTION [<i>name</i>]. </li>
+  <li>Transactions are validated with COMMIT TRANSACTION [<i>name</i>].</li>
+  <li>Transactions are canceled with ROLLBACK TRANSACTION [<i>name</i>].</li>
+  <li>Savepoints can be placed with SAVE TRANSACTION <i>name</i>.</li>
+  <li>Transactions can be rolled back to a savepoint with ROLLBACK TRANSACTION
+    TO <i>name</i>.</li>
+  <li>Savepoints can not be released.</li>
+  <li>Statements executed outside of a transaction are automatically committed (autocommit mode).<br>
+   This behavior can be changed with &quot;SET IMPLICIT_TRANSACTION ON&quot;.</li>
+  <li>DDL statements are not supported in transactions blocks.</li>
+</ul>
+
+<p>Transactions in stored procedures: avoid  using transactions in stored procedure to allow the client applications to handle transactions, according to the transaction model.</p>
+
+<p><b><u><em>Solution:</em></u></b> </p>
+
+<p>INFORMIX transaction handling commands are automatically converted to Microsoft
+SQL SERVER instructions to start, validate or cancel transactions.</p>
+
+<p>Regarding the transaction control instructions, the BDL applications do not have to be modified in order to work with Microsoft
+SQL SERVER. </p>
+
+<p><b><font color="#FF0000">Warning:</font></b>  If you want to use savepoints,
+do not use the UNIQUE keyword in the savepoint declaration, always specify the
+savepoint name in ROLLBACK TO SAVEPOINT, and do not drop savepoints with RELEASE
+SAVEPOINT. </p>
+
+<hr>
+
+<h2><a name="ODIMSV010">ODIMSV010 - BOOLEAN data type</a>
+
+</h2>
+
+<p>INFORMIX supports the BOOLEAN data type, which can store 't' or 'f' values.
+Genero BDL implements the BOOLEAN data type in a different way: As in other
+programming languages, Genero BOOLEAN stores integer values 1 or 0 (for TRUE or
+FALSE). The type was designed this way to assign the result of a Boolean
+expression to a BOOLEAN variable.</p>
+
+<p>SQL SERVER provides the BIT data type to store Boolean values.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>The SQL SERVER database interfaces converts BOOLEAN type to BIT columns and
+stores 1 or 0 values in the column.</p>
+
+<hr>
+
+<h2><a name="ODIMSV011">ODIMSV011 - CHARACTER data types</a></h3>
+
+</h2>
+
+<p>INFORMIX supports following character data types:</p>
+<ul>
+  <li>CHAR(N) with N&lt;= 32767 bytes</li>
+  <li>VARCHAR(N[,M]) with N&lt;=255 bytes</li>
+  <li>NCHAR(N) with N&lt;= 32767 bytes</li>
+  <li>NVARCHAR(N[,M]) with N&lt;=255 bytes</li>
+  <li>LVARCHAR (not covered in this section)</li>
+</ul>
+<p>In INFORMIX, both CHAR/VARCHAR and NCHAR/ NVARCHAR data types can be used to
+store single-byte or multi-byte encoded character strings. The only difference
+between CHAR/VARCHAR and NCHAR/NVARCHAR is for sorting: N[VAR]CHAR types use the
+collation order, while [VAR]CHAR types use the byte order. The character set
+used to store strings in CHAR/VARCHAR/NCHAR/NVARCHAR columns is defined by the
+DB_LOCALE environment variable. The character set used by applications is
+defined by the CLIENT_LOCALE environment variable. Note that INFORMIX uses Byte
+Length Semantics (the size N that you specify in [VAR]CHAR(N) is expressed in
+bytes, not characters as in some other databases)</p>
+
+<p>SQL Server provides the following data types to store character data:</p>
+
+<ul>
+  <li>CHAR(N) with N&lt;= 8000 bytes (single or multi-byte charset)</li>
+  <li>VARCHAR(N) with N&lt;= 8000 bytes (single or multi-byte charset)</li>
+  <li>VARCHAR(MAX) with a limit of 2^31-1 bytes (single or multi-byte charset)</li>
+  <li>NCHAR(N) with N&lt;= 8000 bytes (Unicode/UCS-2)</li>
+  <li>NVARCHAR(N) with N&lt;= 8000 bytes (Unicode/UCS-2)</li>
+  <li>NVARCHAR(MAX) with a limit of 2^31-1 bytes (Unicode/UCS-2)</li>
+</ul>
+
+<p>Note that to store large text data (LOBs), Microsoft SQL Server version 2005 introduced the
+VARCHAR(MAX) type as a replacement for the old TEXT type.</p>
+
+<p>The use of NCHAR, NVARCHAR character types is the same as CHAR, VARCHAR, TEXT respectively, except:</p>
+
+<ul>
+  <li>The encoding is UCS-2 (an UTF-16 sub-set). </li>
+  <li>Since each character occupies 2 bytes, twice the space is needed to store
+    the same strings as with CHAR/VARCHAR. </li>
+  <li>The maximum size of NCHAR and NVARCHAR column is 4000 characters, compared
+    to 8000 characters for CHAR/VARCHAR.</li>
+  <li>Unicode string literals are specified with a leading N. For example: N&#146;&#26085;&#26412;&#35486;&#146;</li>
+</ul>
+
+<p>Note that SQL Server uses Byte Length Semantics to define the size of CHAR/VARCHAR
+columns, while NCHAR and NVARCHAR sizes are expressed in character units.</p>
+
+<p>SQL Server defines the character encoding for CHAR and VARCHAR columns with
+the database collation. The database collation can be specified when creating a
+new database. Character strings are always stored in the UCS-2 encoding for
+NCHAR/NVARCHAR columns.</p>
+
+<p>Automatic charset conversion is supported by SQL Server between the client
+application and the server. The client charset is defined by the Windows
+operating system, in the language settings for non-Unicode applications.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>According to the character set used by your Genero application, you must
+either use CHAR/VARCHAR or NCHAR/NVARCHAR columns with SQL Server. If the
+charset is single-byte , you can use CHAR/VARCHAR columns. If the charset set is
+multi-byte or Unicode (i.e. UTF-8), you must use NCHAR/NVARCHAR columns in SQL
+Server. However, not all SQL Server ODI drivers support NCHAR/NVARCHAR.</p>
+
+<p>See also the section about <a href="Localization.html">Localization</a>.</p>
+
+<p>Make sure that the regional language settings for non-Unicode applications
+corresponds to the locale used by Genero programs.</p>
+
+<p> Check that your database schema does not use CHAR or VARCHAR types with a length
+exceeding the SQL SERVER limit.</p>
+
+<p><b><font color="#FF0000">Warning:</font>  On Windows, SQL Server national character set data types are not supported with the MSV database
+driver: You must use the SNC database driver based on
+the SQL Native Client library. On UNIX, you can use the FTM or ESM driver, both
+support SQL Server national character set data.</b></p>
+
+<p><u>Using the SNC driver</u></p>
+
+<p>The <b>SNC</b> driver can work in <i>char</i> or in <i>wide-char</i> mode.
+The character size mode can be controlled by the following FGLPROFILE entry:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; dbi.database.&lt;dbname&gt;.snc.widechar
+= <u>{</u> true <u>|</u> false <u>}</u></font></p>
+
+<p>By default the <b>SNC</b> database driver works in Wide Char mode (true).</p>
+
+<p><u><i>Using SNC driver in char mode:</i></u></p>
+
+<p>The <i>char</i> mode can be used with applications defining character string
+columns with CHAR/VARCHAR/TEXT types. It is not mandatory (i.e. the <i>wide-char</i>
+mode could be used), but it appears that SQL Server behaves in different ways
+when wide-char bindings are used for CHAR/VARCHAR/TEXT columns.</p>
+
+<p>When defining CHAR(<i>n</i>)/VARCHAR(<i>n</i>) columns in SQL Server, you
+specify <i>n</i> as a number of bytes, and this follows the byte-length
+semantics used in Genero BDL when declaring variables (i.e. SQL Server VARCHAR(10)
+column = Genero BDL VARCHAR(10) variable).</p>
+
+<p>In <i>char</i> mode, the <b>SNC</b> driver will pass the character strings of
+SQL text and SQL parameters as is to SQL Server Native Client, using the current
+character set encoding. SQL Parameters will be bound with the SQL_C_CHAR +
+SQL_CHAR/SQL_VARCHAR ODBC types, and string literals in SQL statements will not
+get the N prefix as when using the <i>wide-char</i> mode.</p>
+
+<p><u><i>Using SNC driver in wide-char mode:</i></u></p>
+
+<p>The <i>wide-char</i> mode should be used for applications defining character
+string columns with NCHAR/NVARCHAR/NTEXT types. Such types can store Unicode
+characters and it is preferable that the <b>SNC</b> driver works in <i>wide-char</i>
+mode. By the way, the Genero BDL runtime system should also work in UTF-8 mode.</p>
+
+<p>NCHAR / NVARCHAR and NTEXT SQL SERVER column data types can be used in tables. However, you must use CHAR / VARCHAR / TEXT Genero types
+for program variable to hold NCHAR, NVARCHAR and NTEXT data. Make sure the size
+of the program variables is large enough to hold all sort of UNICODE characters
+in the code page used by the program. In order to store the same strings as with
+INFORMIX databases, the SNC database driver applies the following rules:</p>
+
+<ol>
+  <li>In FGL, when declaring a [VAR]CHAR(<i>n</i>) variable to be used as SQL parameter
+    (in a USING clause for example), the length <i>n</i> is specified in bytes. The <b>SNC</b> database driver maps
+    this type to an ODBC parameter as N[VAR]CHAR with a precision of <i>n</i>, in the meaning of characters. In SQL SERVER, the target column must be defined as N[VAR]CHAR with the same size
+    <i>n</i>, to be able to store <i>n</i> ASCII characters like the INFORMIX equivalent
+    UNICODE (UTF-8) column. The SQL SERVER column can actually hold more
+    non-ASCII characters as the INFORMIX column (using byte length semantics),
+    but this is the only way to store the same strings.&nbsp;</li>
+  <li>Following the above rule, when fetching rows from SQL SERVER, the <b>SNC</b> 
+	database driver maps an N[VAR]CHAR(<i>n</i>) (with <i>n</i> as chars) to an intermediate
+    fetch buffer as [VAR]CHAR(<i>n</i>)
+    (with <i>n</i> as bytes), and the program variable will certainly be defined as [VAR]CHAR(<i>n
+    bytes</i>) from a database schema. As a result, if another application
+    has inserted in the N[VAR]CHAR(<i>n chars</i>) column more characters as can
+    fit in the [VAR]CHAR(<i>n bytes</i>) program variable, the string value will be
+    truncated.</li>
+</ol>
+
+<p>All string literals of an SQL statement are
+automatically changed to get the N prefix. Thus, you don't need to add the N
+prefix by hand in all of your programs. This solution makes your Genero code portable to other databases.</p>
+
+<p>Character string data is converted from the current Genero BDL locale
+to Wide Char (i.e. WCHAR/wchar_t 16-bit Unicode = UCS-2), before is it used in an ODBC call such as SQLPrepareW or
+SQLBindParameter(SQL_C_WCHAR). When fetching character data, the <b>SNC</b> 
+database driver converts from Wide Char to the current Genero BDL locale. The current Genero BDL locale
+is defined by LANG, and if LANG is not defined, the default is the ANSI Code
+Page of the Windows operating system.&nbsp;</p>
+
+<p><u>Using the FTM driver</u></p>
+
+<p>When using the
+<b>FTM</b>   (FreeTDS) database driver,
+string literals get the N prefix only if the current locale (LANG / LC_ALL)
+defines a multi-byte code set such as <b>.big5</b> or <b>.utf8</b>. String literals are not touched if the locale uses a single-byte
+character set.</p>
+
+<p>With the <b>FTM</b>  (FreeTDS) database driver, SQL Statements are prepared with
+SQLPrepare(), by using the current character set. FreeTDS takes in charge the
+conversion from the client charset to UCS-2 before sending the SQL text to the
+server. ODBC SQL parameters with character string data are bound (SQLBindParameter)
+with the C type SQL_C_CHAR and with the SQL type SQL_W[VAR]CHAR (=UNICODE)
+or with SQL_[VAR]CHAR, according to the current locale. The SQL_W[VAR]CHAR type
+is used if the current
+locale is a multi-byte encoding. When using a single-byte encoding, parameters are
+bound with the SQL_[VAR]CHAR type.
+As a result, the necessary character set conversion is taken in charge by FreeTDS
+and is optimized when using a single-byte character set.
+However, <u>it is critical to declare the correct client character set in FreeTDS
+configuration files</u>. The FreeTDS client character
+set is defined by the &quot;<b>client charset</b>&quot; parameter in <b>freetds.conf</b>,
+or (since 0.83 only) with &quot;<b>ClientCharset</b>&quot; parameter in <b>odbc.ini</b>.</p>
+
+<p><u>Using the ESM driver</u></p>
+
+<p>When using the <b>ESM</b>  (EasySoft) database driver,
+string literals get the N prefix only if the current locale (LANG / LC_ALL)
+defines a multi-byte code set such as <b>.big5</b> or <b>.utf8</b>. String literals are not touched if the locale uses a single-byte
+character set.</p>
+
+<p>When using the <b>ESM</b>  (EasySoft) database driver, SQL Statements are prepared with
+SQLPrepare(), by using the current character set. EasySoft takes in charge the
+conversion from the client charset to UCS-2 before sending the SQL text to the
+server. ODBC SQL parameters with character string data are bound (SQLBindParameter)
+with the C type SQL_C_CHAR and with the SQL type SQL_W[VAR]CHAR&nbsp; (=UNICODE)
+type.
+As a result, the necessary character set conversion is taken in charge by
+EasySoft.
+However, <u>it is critical to declare the correct client character set in
+EasySoft configuration files</u>. The EasySoft client character
+set is defined by the &quot;<b>Client_CSet</b>&quot; parameter in <b>odbc.ini</b>.</p>
+
+<hr>
+
+<h2><a name="ODIMSV012">ODIMSV012 - Constraints</a></h3>
+
+</h2>
+
+<p><u>Constraint naming syntax:</u></p>
+
+<p>Both INFORMIX and Microsoft SQL SERVER support primary key, unique, foreign key, default and check constraints. But the constraint naming syntax is different :
+SQL SERVER expects the &quot;CONSTRAINT&quot; keyword <b>before</b> the constraint specification and INFORMIX expects it <b>after</b>.</p>
+
+<p>UNIQUE constraint example:</p>
+<div align="center">
+
+<center>
+
+<table border="0" width="90%" style="border-collapse: collapse" bordercolor="#111111" cellpadding="0" cellspacing="0">
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>INFORMIX</b></font></td>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>Microsoft SQL SERVER</b></font></td>
+  </tr>
+  <tr>
+    <td width="50%"><font face="Courier New">CREATE TABLE scott.emp (<br>
+    ...<br>
+    empcode CHAR(10) UNIQUE<br>
+    &nbsp;&nbsp;&nbsp;<font color="#0000A0"><b>[CONSTRAINT pk_emp]</b></font>,<br>
+    ...</font></td>
+    <td width="50%"><font face="Courier New">CREATE TABLE scott.emp (<br>
+    ...<br>
+    empcode CHAR(10)<br>
+    &nbsp;&nbsp;&nbsp;<font color="#0000A0"><b>[CONSTRAINT pk_emp]</b></font>
+    UNIQUE,<br>
+    ...</font></td>
+  </tr>
+</table>
+</center>
+</div>
+
+<p><font color="#FF0000"><b>Warning:</b></font> SQL SERVER does not produce an error when using the INFORMIX syntax of constraint naming</p>
+
+<p><b>The NULL / NOT NULL constraint:</b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Microsoft SQL SERVER creates columns as <b>NOT NULL by default</b>, when no NULL constraint is specified (<b><small><font face="Courier New">colname datatype {NULL | NOT NULL}</font></small></b>). A special option is provided to invert this behavior: ANSI_NULL_DFLT_ON. This option can be enabled with the SET
+command, or in the database options of SQL SERVER Management Studio.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><b>Constraint naming syntax:</b></p>
+
+<p>The database interface does not convert constraint naming expressions when creating tables from BDL programs. Review the database creation scripts to adapt the constraint naming clauses for Microsoft
+SQL SERVER.</p>
+
+<p><b>The NULL / NOT NULL constraint:</b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Before using
+a database, you must check the &quot;ANSI NULL Default&quot; option in the database
+properties if you want to have the same default NULL constraint as in INFORMIX databases.</p>
+
+<hr>
+
+<h2><a name="ODIMSV013">ODIMSV013 - Triggers</a></h3>
+
+</h2>
+
+<p>INFORMIX and Microsoft SQL SERVER provide triggers with similar features, but the programming languages are totally different.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> Microsoft SQL SERVER does not support &quot;BEFORE&quot; triggers.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> Microsoft SQL SERVER does not support row-level triggers.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>INFORMIX triggers must be converted to Microsoft SQL SERVER triggers &quot;by hand&quot;.</p>
+
+<hr>
+
+<h2><a name="ODIMSV014">ODIMSV014 - Stored procedures</a></h3>
+
+</h2>
+
+<p>Both INFORMIX and Microsoft SQL SERVER support stored procedures, but the programming languages are totally different : 
+
+<ul>
+  <li>INFORMIX stored procedures must be written in <b>SPL</b>.</li>
+  <li>Microsoft SQL SERVER stored procedures must be written in <b> Transact-SQL</b>.</li>
+</ul>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>INFORMIX stored procedures must be converted to Microsoft SQL SERVER &quot;by hand&quot;.</p>
+
+<hr>
+
+<h2><a name="ODIMSV016a">ODIMSV016a - Defining database users</a></h3>
+
+</h2>
+
+<p>INFORMIX users are defined at the operating system level, they must be members of the 'informix' group, and the database administrator must grant CONNECT, RESOURCE or DBA privileges to those users.</p>
+
+<p>Before a user can access an SQL SERVER database, the system
+administrator (SA) must add the user's <b>login</b> to the SQL SERVER Login list
+and add a <b>user name</b> for that database. The user
+name  is a name that is
+assigned to a login ID for the purpose of allowing that user to access a specified
+database. Database users are members of a <b>user group</b>;
+the default group is 'public'.</p>
+
+<p>Microsoft SQL SERVER offers two authentication modes : The <b>SQL SERVER</b><b>
+authentication mode</b>, which requires a login name and a password, and the <b>Windows
+NT authentication mode</b>, which uses the security mechanisms within Windows NT when
+validating login connections. With this mode, user do not have to enter
+a login ID and password - their login information is taken directly from the network connection.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> SQL SERVER 2000 supports only Windows NT
+authentication by default. If you want to use SQL SERVER authentication, you must change a parameter in the server properties.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Both SQL SERVER and Windows NT authentication methods can be used to allow BDL program users to connect to Microsoft
+SQL SERVER and access a specific database.</p>
+
+<p>See SQL SERVER documentation for more details on database logins and users.</p>
+
+<hr>
+
+<h2><a name="ODIMSV016b">ODIMSV016b - Setting privileges</a></h3>
+
+</h2>
+
+<p>INFORMIX and Microsoft SQL SERVER user privileges management are quite similar.</p>
+
+<p>Microsoft SQL SERVER provides <b>user groups</b> to grant or revoke permissions to more than one user at the same time.</p>
+
+<hr>
+
+<h2><a name="ODIMSV017">ODIMSV017 - Temporary tables </a></h3>
+
+</h2>
+
+<p>INFORMIX temporary tables are created through the
+<font face="Courier New" ><b> CREATE TEMP TABLE </b></font>
+DDL instruction or through a <b><font face="Courier New" >SELECT ... INTO TEMP </font></b> statement.
+Temporary tables are automatically dropped when the SQL session ends, but they can also be
+dropped with the DROP TABLE command. There is no name conflict when several users create
+temporary tables with the same name.</p>
+
+<p>Remark : BDL reports create a temporary table when the rows are not sorted externally (by the source SQL statement).</p>
+
+<p>INFORMIX allows you to create indexes on temporary tables. No name conflict occurs when several users create an index on a temporary table by using the same index identifier.</p>
+
+<p>Microsoft SQL SERVER provides local (SQL session wide) or global (database wide) temporary tables by using the '#' or '##' characters as table name prefix.  No 'TEMP' keyword is required in CREATE TABLE, and the INTO clause can be used within a SELECT statement to create and fill a temporary table in one step :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; CREATE TABLE <b>#temp1</b>
+( kcol INTEGER, .... )<br>
+&nbsp;&nbsp;&nbsp; SELECT * <b>INTO #temp2</b> FROM
+customers WHERE ...</font></p>
+
+<p>Unfortunately, SQL Server temporary tables are created by default with the
+collation of the tempdb database, instead of inheriting the collation of the
+current database you are connected to.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>In BDL, INFORMIX temporary tables instructions are converted to generate native
+SQL SERVER temporary tables.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> Microsoft SQL SERVER does not support scroll cursors based on a temporary table.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b>  You must install SQL Server
+with the same collation as your database, see <a href="#ODIMSV_PREP01">Installation</a>
+for more details.</p>
+
+<hr>
+
+<h2><a name="ODIMSV018">ODIMSV018 - Substrings in SQL</a></h3>
+
+</h2>
+
+<p>INFORMIX SQL statements can use subscripts on columns defined with
+the character data type:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 WHERE&nbsp;
+<font color="#0000A0"><b>col1[2,3]</b></font> = 'RO' <br>
+&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 WHERE <font color="#0000A0"><b>col1[10]</b></font>&nbsp;
+= 'R'&nbsp;&nbsp; -- Same as col1[10,10]<br>
+&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <font color="#0000A0"><b>col1[2,3]</b></font> = 'RO' WHERE ...<br>
+&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 ORDER BY <font color="#0000A0"><b>col1[1,3]</b></font></font></p>
+
+<p>.. while Microsoft SQL SERVER provides the SUBSTR( ) function, to
+extract a substring from a string expression: <br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT .... FROM tab1 WHERE&nbsp;
+<font color="#0000A0"><b>SUBSTRING(col1,2,2)</b></font> = 'RO'<br>
+&nbsp;&nbsp;&nbsp; SELECT <font color="#0000A0"><b>SUBSTRING('Some text',6,3)</b></font>
+FROM tab1&nbsp; -- Gives 'tex'</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>You must replace all INFORMIX col[x,y] expressions by SUBSTRING(col,x,y-x+1).</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> In UPDATE
+instructions, setting column values through subscripts will produce an error with
+Microsoft SQL SERVER:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <font color="#0000A0"><b>col1[2,3]</b></font>
+= 'RO' WHERE ...<br>
+</font>is converted to:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE tab1 SET <font color="#0000A0"><b>SUBSTRING(col1,2,3-2+1)</b></font>
+= 'RO' WHERE ...</font></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Column
+subscripts in ORDER BY expressions are also converted and produce an error with Microsoft
+SQL SERVER:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 ORDER BY <font color="#0000A0"><b>col1[1,3]</b></font></font><br>
+is converted to:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT ... FROM tab1 ORDER BY <font color="#0000A0"><b>SUBSTRING(col1,1,3-1+1)</b></font></font></p>
+
+<hr>
+
+<h2><a name="ODIMSV019">ODIMSV019 - Name resolution of SQL objects</a></h3>
+
+</h2>
+
+<p>INFORMIX uses the following form to identify an SQL object:<br>
+<font face="Courier New">&nbsp; [database[@dbservername]:][{owner|&quot;owner&quot;}.]identifier</font></p>
+
+<p>With Microsoft SQL SERVER, an object name takes the following form:<br>
+<font face="Courier New">&nbsp; [[database.]owner.]identifier</font></p>
+
+<p>Object names are limited to 128 characters in SQL SERVER and cannot start
+with one of the following characters : @ (local variable) # (temp object).</p>
+
+<p>To support double quotes as string delimiters in SQL SERVER, switch <b>OFF</b>
+the database option &quot;Use quoted identifiers&quot; in the database properties panel.
+But quoted table and column names are not supported when this option is OFF.</p>
+
+<p><b><u><em>Solution:</em></u></b> </p>
+
+<p>Switch <b>OFF</b> the database option &quot;Use quoted
+identifiers&quot; to support double quoted strings.</p>
+
+<p>Check for single or double quoted table or column names in your source and remove them.</p>
+
+<hr>
+
+<h2><a name="ODIMSV020">ODIMSV020 - String delimiters</a></h3>
+
+</h2>
+
+<p>The ANSI string delimiter character is the single quote ('string'). Double quotes are used to delimit database object names (&quot;object-name&quot;).</p>
+
+<p><u>Example</u>:<font face="Courier New"> WHERE &quot;tabname&quot;.&quot;colname&quot; = 'a string value'</font></p>
+
+<p>INFORMIX allows double quotes as string delimiters, but SQL SERVER doesn't. This is important, since many BDL programs use that character to delimit the strings in SQL commands.</p>
+
+<p>Note: This problem concerns only double quotes within SQL statements. Double quotes used in BDL string expressions are not subject of SQL compatibility problems.</p>
+
+<p><u>National character strings:</u></p>
+
+<p>With SQL SERVER, all UNICODE strings must be prefaced with an N character:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; UPDATE cust SET cust_name =
+N'</font>&#30663;&#38316;&#38941;<font face="Courier New">' WHERE cust_id=123</font></p>
+
+<p>If you don't specify the N prefix, SQL SERVER will convert the characters
+from the current system locale to the database locale. If the string is prefixed
+with N, the server can recognize a UNICODE string and use it as is to insert
+into NCHAR or NVARCHAR columns.</p>
+
+<p><b><em><u>Solution:</u></em></b> </p>
+
+<p>The SQL SERVER database interface can automatically replace all double quotes by single quotes.</p>
+
+<p>Escaped string delimiters can be used inside strings like the following:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; 'This is a single quote : '''<br>
+&nbsp;&nbsp;&nbsp;&nbsp; 'This is a single quote : \''<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &quot;This is a double quote : &quot;&quot;&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &quot;This is a double quote : \&quot;&quot;</font></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Database
+object names cannot be delimited by double quotes because the database interface cannot
+determine the difference between a database object name and a quoted string !</p>
+
+<p>For example, if the program executes the SQL statement:<br>
+&nbsp;&nbsp;&nbsp;
+<font face="Courier New">WHERE &quot;tabname&quot;.&quot;colname&quot;
+= &quot;a string value&quot;</font><br>
+replacing all double quotes by single quotes would produce :<br>
+&nbsp;&nbsp;&nbsp;
+<font face="Courier New">WHERE 'tabname'.'colname' = 'a string value'</font><br>
+This would produce an error since
+<font face="Courier New"> 'tabname'.'colname'</font> is not allowed by ORACLE.</p>
+
+<p>Although double quotes are replaced automatically in SQL statements, you should use only single quotes to enforce portability.</p>
+
+<p><u>National character strings:</u></p>
+
+<p>When using the <b>SNC</b> database driver, all string literals of an SQL statement are
+automatically changed to get the N prefix. Thus, you don't need to add the N
+prefix by hand in all of your programs. This solution makes by the way your Genero code portable to other databases.</p>
+
+<p>With the <b>SNC</b> database driver, character string data is converted from the current Genero BDL locale to Wide Char
+(Unicode UCS-2), before is it used in an ODBC call such as SQLPrepareW
+or SQLBindParameter(SQL_C_WCHAR). When fetching character data, the <b>SNC</b> 
+database driver converts from Wide Char to the current Genero BDL locale. The current Genero BDL locale
+is defined by LANG, and if LANG is not defined, the default is the ANSI Code
+Page of the Windows operating system. See <a href="#ODIMSV040">National character data types</a>
+for more details.</p>
+
+<p>When using the <b>FTM</b>  (FreeTDS) or the <b>ESM</b> (EasySoft) database driver
+on UNIX, string literals get the N prefix
+if the current locale is a multi-byte encoding like BIG5, EUC-JP or UTF-8. If
+the current locale is a single-byte encoding like ISO-8859-1, no prefix will be
+added to the string literals.</p>
+
+<hr>
+
+<h2><a name="ODIMSV021">ODIMSV021 - NUMERIC data types</a></h3>
+
+</h2>
+
+<p>Microsoft SQL SERVER offers numeric data types which are quite similar to INFORMIX numeric data types. The table below shows general conversion rules for numeric data types :</p>
+<div align="center">
+
+<center>
+
+<table border="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>INFORMIX</b></font></td>
+    <td bgcolor="#C0C0C0" width="50%"><font color="#0000FF"><b>Microsoft SQL SERVER</b></font></td>
+  </tr>
+  <tr>
+    <td width="50%"><b>SMALLINT</b></td>
+    <td width="50%"><b>SMALLINT</b></td>
+  </tr>
+  <tr>
+    <td width="50%"><b>INTEGER</b> (synonym: INT)</td>
+    <td width="50%"><b>INTEGER</b> (synonym: INT)</td>
+  </tr>
+  <tr>
+    <td width="50%"><b>BIGINT</b></td>
+    <td width="50%"><b>BIGINT</b></td>
+  </tr>
+  <tr>
+    <td width="50%"><b>INT8</b></td>
+    <td width="50%"><b>BIGINT</b></td>
+  </tr>
+  <tr>
+    <td width="50%"><b>DECIMAL[(p[,s)]</b> (synonyms: DEC, NUMERIC)<br>
+    DECIMAL(p,s) defines a <u>fixed point</u> decimal where <b>p</b> is the total
+    number of significant digits and <b>s</b> the number of digits that fall on the
+    right of the decimal point.<br>
+    DECIMAL(p) defines a <u>floating point</u> decimal where <b>p</b> is the total
+    number of significant digits.<br>
+    The precision <b>p</b> can be from 1 to 32.<br>
+    DECIMAL is treated as DECIMAL(16).</font></td>
+    <td width="50%"><b>DECIMAL[(p[,s)]</b> (synonyms: DEC, NUMERIC)<br>
+    DECIMAL[(p[,s])] defines a <u>fixed point</u> decimal where <b>p</b> is the
+    total number of significant digits and <b>s</b> the number of digits that fall
+    on the right of the decimal point. The maximum precision is 38.<br>
+    Without any decimal storage specification, <u>the precision defaults to 18</u> and <u>the scale defaults to zero</u>:<br>
+    - DECIMAL in SQL SERVER = DECIMAL(18,0) in INFORMIX<br>
+    - DECIMAL(p) in SQL SERVER = DECIMAL(p,0) in INFORMIX</td>
+  </tr>
+  <tr>
+    <td width="50%"><b>MONEY[(p[,s])</b><br><br><br></td>
+    <td width="50%">SQL SERVER provides the MONEY and SMALLMONEY data
+    types, but the currency symbol handling is quite different. Therefore, 
+    INFORMIX MONEY columns should be implemented as <b>DECIMAL</b> columns in SQL SERVER.</td>
+  </tr>
+  <tr>
+    <td width="50%"><b>SMALLFLOAT</b>&nbsp; (synonyms: REAL)</td>
+    <td width="50%"><b>REAL</b></td>
+  </tr>
+  <tr>
+    <td width="50%"><b>FLOAT[(n)]</b> (synonyms: DOUBLE PRECISION)<br>
+    The precision (n) is ignored.</td>
+    <td width="50%"><b>FLOAT(n) </b>(synonyms: DOUBLE PRECISION)<br>
+    Where n must be from 1 to 15.</td>
+  </tr>
+</table>
+</center>
+</div>
+
+<p><b><em><u>Solution:</u></em></b> </p>
+
+<p><u>In BDL programs:</u></p>
+
+<p>When creating tables from BDL programs, the database interface automatically converts INFORMIX
+numeric data types to corresponding Microsoft
+SQL SERVER data types.</p>
+
+<p><b><font color="#FF0000">Warning:</font> There is no SQL Server equivalent
+for the INFORMIX DECIMAL(p) floating point decimal (i.e. without a scale). If
+your application is using such data types, you must review the database schema
+in order to use SQL Server compatible types. To workaround the
+SQL Server limitation, the SQL Server database drivers convert DECIMAL(p) types
+to a DECIMAL( 2*p, p ), to store all possible
+numbers an INFORMIX DECIMAL(p) can store. However, the original INFORMIX
+precision cannot exceed 19, since SQL Server maximum DECIMAL precision is 38
+(2*19). If the original precision is bigger as 19, a CREATE TABLE statement
+executed from a Genero program
+will fail with an SQL Server error 2750.</b></p>
+
+<p><u>In database creation scripts:</u> 
+
+<ul>
+  <li>SMALLINT, INTEGER and BIGINT columns do not have to use another data type in
+    SQL SERVER.</li>
+  <li>For DECIMALs, check the precision limit. Always use a precision and a scale.</li>
+  <li>Convert MONEY columns to DECIMAL(p,s) columns. Always use a precision and a scale.</li>
+  <li>Convert SMALLFLOAT columns to REAL columns.</li>
+  <li>Since FLOAT precision is ignored in INFORMIX, convert this data type to FLOAT(15).</li>
+</ul>
+
+<hr>
+
+<h2><a name="ODIMSV022">ODIMSV022 - Getting one row with SELECT</a></h3>
+
+</h2>
+
+<p>With INFORMIX, you must use the system table with a condition on the table id :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp; SELECT user FROM systables <b>WHERE tabid=1</b></font></p>
+
+<p>With SQL SERVER, you can omit the FROM clause to generate one row only:</p>
+
+<p><font face="Courier New">   &nbsp;&nbsp;   SELECT user</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Check the BDL sources for &quot;<font face="Courier New">FROM systables WHERE tabid=1</font>&quot; and use dynamic SQL to resolve this problem.</p>
+
+<hr>
+
+<h2><a name="ODIMSV024">ODIMSV024 - MATCHES and LIKE in SQL conditions</a></h3>
+
+</h2>
+
+<p>INFORMIX supports MATCHES and LIKE in SQL statements, while Microsoft SQL SERVER
+supports the LIKE statement only.</p>
+
+<p>The MATCHES operator of INFORMIX uses the star (*), question mark (?) and square braces ([ ]) wildcard characters.<br>
+The LIKE operator of SQL SERVER offers the percent (%), underscore (_) and square braces ([ ]) wildcard characters.</p>
+
+<p>The following substitutions must be made to convert a MATCHES condition to a LIKE condition : 
+
+<ul>
+  <li>MATCHES keyword must be replaced by LIKE.</li>
+  <li>All '<font face="Courier">*</font>' characters must be replaced by '</font><font face="Courier">%</font>'.</li>
+  <li>All '<font face="Courier">?</font>' characters must be replaced by '</font><font face="Courier">_</font>'.</li>
+</ul>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> SQL statements
+using MATCHES expressions must be reviewed in order to use LIKE expressions.</p>
+
+<p>See also: <a href="SqlProgramming.html#PORT_MATCHES">MATCHES operator in SQL
+Programming</a>.</p>
+
+<hr>
+
+<h2><a name="ODIMSV025">ODIMSV025 - INFORMIX specific SQL statements in BDL </a></h3>
+
+</h2>
+
+<p>The BDL compiler supports several INFORMIX specific SQL statements that have no meaning when using Microsoft
+SQL SERVER.</p>
+
+<p>Examples:</p>
+
+<ul>
+  <li>CREATE DATABASE dbname <b>IN dbspace WITH BUFFERED LOG</b></li>
+  <li><b>START DATABASE</b> (SE only)</li>
+  <li><b>ROLLFORWARD DATABASE</b></li>
+  <li>CREATE TABLE ... <b>IN dbspace WITH LOCK MODE ROW</b></li>
+</ul>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>Review your BDL source and remove all static SQL statements that are INFORMIX specific.</p>
+
+<hr>
+
+<h2><a name="ODIMSV028">ODIMSV028 - INSERT cursors</a></h3>
+
+</h2>
+
+<p>INFORMIX supports insert cursors. An &quot;insert cursor&quot; is a special BDL cursor declared with an INSERT statement instead of a SELECT statement. When this kind of cursor is open, you can use the PUT instruction to add rows and the FLUSH instruction to insert the records into the database.</p>
+
+<p>For INFORMIX database with transactions, OPEN, PUT and FLUSH instructions must be executed within a transaction.</p>
+
+<p>Microsoft SQL SERVER does not support insert cursors.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Insert cursors are emulated by the Microsoft SQL SERVER database interface.</p>
+
+<hr>
+
+<h2><a name="ODIMSV030">ODIMSV030 - Very large data types</a></h3>
+
+</h2>
+
+<p>INFORMIX and Genero support the <b>TEXT</b> and <b>BYTE</b> types. TEXT is
+used to store large text data, while BYTE is used to store large binary data
+like images or sound.</p>
+
+<p>Microsoft SQL SERVER provides <b>text</b>, <b>ntext</b> and <b>image</b> data
+types to store large data, but these data types are considered as obsolete in SQL SERVER
+2005 and will be removed in a future version. When using SQL SERVER 2005, Microsoft recommends to
+user <b>varchar(max)</b>, <b>nvarchar(max)</b> and <b>varbinary(max)</b> data
+type instead. These &quot;max&quot; data types are not supported with the <b>MSV</b>
+database driver, since it is based on MDAC ODBC. You must use the new <b>SNC</b> 
+database driver based on the SQL Native Client ODBC driver shipped with SQL SERVER 2005.</p>
+
+<p>In SQL Server 2005 and 2008, the *var*(max) types have a limit of 2 gigabytes
+(2^31 -1 actually). Old text, ntext and image types have the same limit.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+<p><font color="#FF0000"><b>Warning:</b></font> Genero TEXT/BYTE program
+variables have a limit of 2 gigabytes, make sure that the large object data does
+not exceed this limit. This is the case with SQL Server 2005 and 2008 when using
+the *var*(max) types.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font>   When using a stored procedure
+that has SET/IF statements and produces a result set with LOBs, the LOB columns must appear at
+the end of the SELECT list. If LOB columns are followed by other columns with
+regular types, fetching rows will fail. Using SET NOCOUNT ON in the stored
+procedure does not help: The reason is because the cursor type is changed from
+server cursor to a default result set cursor.</p>
+
+<p>When using the <b>MSV</b> database driver based on MDAC ODBC, the <b>TEXT</b> and <b>BYTE</b> data types
+of a static CREATE TABLE statement are converted to <b>text</b> and <b>image</b>
+SQL SERVER types.</p>
+
+<p>When using the <b>SNC, FTM or ESM</b> database drivers, the <b>TEXT</b> and <b>BYTE</b> data types
+of a static CREATE TABLE statement are converted to <b>varchar(max)</b> and <b>varbinary(max)</b>
+SQL SERVER types.</p>
+
+<p>All database drivers make the appropriate bindings to use TEXT and
+BYTE types as SQL parameters and fetch buffers.</p>
+
+<hr>
+
+<h2><a name="ODIMSV031">ODIMSV031 - Cursors WITH HOLD</a></h3>
+
+</h2>
+
+<p>INFORMIX automatically closes opened cursors when a transaction ends unless the WITH HOLD option is used in the DECLARE instruction.</p>
+
+<p>Microsoft SQL SERVER does not close cursors when a transaction ends.  You can change this 
+behavior using the SET CURSOR_CLOSE_ON_COMMIT ON.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>BDL cursors that are not declared &quot;WITH HOLD&quot; are automatically closed by the database interface when a COMMIT WORK or ROLLBACK WORK is performed by the BDL program.</p>
+
+<hr>
+
+<h2><a name="ODIMSV033">ODIMSV033 - Querying system catalog tables</a></h3>
+
+</h2>
+
+<p>As in INFORMIX, Microsoft SQL SERVER provides system catalog tables (sysobjects,syscolumns,etc) in each database, but  the table names and their structure are quite different. </p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> No automatic
+conversion of INFORMIX system tables is provided by the database interface.</p>
+
+<hr>
+
+<h2><a name="ODIMSV034">ODIMSV034 - Syntax of UPDATE statements</a></h3>
+
+</h2>
+
+<p>INFORMIX allows a  specific syntax for UPDATE statements:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET ( &lt;col-list&gt; ) = ( &lt;val-list&gt; )</font></p>
+
+<p>or</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET table.* = myrecord.*<br>
+&nbsp;&nbsp;&nbsp; UPDATE table SET * = myrecord.*</font></p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Static UPDATE statements using the above syntax are converted <b>by the compiler</b> to the standard form :<br>
+<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp; UPDATE table SET column=value [,...] </font></p>
+
+<hr>
+
+<h2><a name="ODIMSV035">ODIMSV035 - The LENGTH() function</a></h3>
+
+</h2>
+
+<p>INFORMIX provides the LENGTH() function:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT LENGTH(&quot;aaa&quot;), LENGTH(col1) FROM table</font></p>
+
+<p>Microsoft SQL SERVER has a equivalent function called LEN().</p>
+
+<p>Do not confuse LEN() with DATALEN(), which returns the data size used for storage(number of bytes).</p>
+
+<p>Both INFORMIX and SQL SERVER ignore trailing blanks when computing the length of a string.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>You must adapt the SQL statements using LENGTH() and use the LEN() function.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b>  If you create a user function in
+SQL SERVER as follows:</p>
+
+<p><font face="Courier New">create function length(@s varchar(8000))<br>
+returns integer<br>
+as<br>
+begin<br>
+ return len(@s)<br>
+end</font></p>
+
+<p>You must qualify the function with the owner name:</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp; SELECT dbo.length(col1) FROM table</font></p>
+
+<hr>
+
+<h2><a name="ODIMSV036">ODIMSV036 - INTERVAL data type</a></h3>
+
+</h2>
+
+<p>INFORMIX's INTERVAL data type stores a value that represents a span
+of time. INTERVAL types are divided into two classes : <i>year-month
+intervals </i>and <i>day-time intervals.</i></p>
+
+<p>SQL SERVER does not provide a data type corresponding to the INFORMIX INTERVAL data type.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p><b><font color="#FF0000">Warning:</font></b> The INTERVAL
+data type is not well supported because the database server has no equivalent
+native data type. However, you can store into and retrieve from CHAR columns BDL
+INTERVAL values.</p>
+
+<hr>
+
+<h2><a name="ODIMSV039">ODIMSV039 - Data storage concepts </a></h3>
+
+</h2>
+
+<p>An attempt should be made to preserve as much of the storage
+information as possible when converting from INFORMIX to Microsoft SQL SERVER. Most
+important storage decisions made for INFORMIX database objects (like initial sizes and
+physical placement) can be reused in an SQL SERVER database.</p>
+
+<p>Storage concepts are quite similar in INFORMIX and in Microsoft SQL SERVER, but the names are different.</p>
+
+<p>The following table compares INFORMIX storage concepts to Microsoft SQL SERVER
+storage concepts :</p>
+
+<div align="center"><center>
+
+<table border="0" width="95%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="48%"><font color="#0000FF"><b>INFORMIX</b></font></td>
+    <td bgcolor="#C0C0C0" width="51%"><font color="#0000FF"><b>Microsoft SQL SERVER</b></font></td>
+  </tr>
+  <tr>
+    <td width="66%" colspan="2" bgcolor="#C0C0C0" valign="top">
+    <font color="#0000FF">Physical units of storage</font></td>
+  </tr>
+  <tr>
+    <td width="48%" valign="top">The largest unit of physical disk space is
+    a &quot;<b>chunk</b>&quot;, which can be allocated either as a cooked file ( I/O
+    is controlled by the OS) or as raw device (=UNIX partition, I/O is controlled by the
+    database engine). A &quot;dbspace&quot; uses at least one &quot;chunk&quot; for storage.<br>
+    You must add &quot;chunks&quot; to &quot;dbspaces&quot; in order to increase the size of
+    the logical unit of storage.</td>
+    <td width="51%" valign="top">SQL SERVER uses &quot;<b>filegroups</b>&quot;, based
+    on Windows NT operating system files and therefore define the physical location of data.</td>
+  </tr>
+  <tr>
+    <td width="48%" valign="top">A &quot;<b>page</b>&quot; is the
+    smallest physical unit of disk storage that the engine uses to read from and write to
+    databases.<br>
+    A &quot;chunk&quot; contains a certain number of &quot;pages&quot;.<br>
+    The size of a &quot;page&quot; must be equal to the operating system's block size.</td>
+    <td width="51%" valign="top">As in INFORMIX, SQL SERVER stores data in
+    &quot;<b>pages</b>&quot; with a size fixed at 2Kb in V6.5 and 8Kb in V7 
+    and later.</td>
+  </tr>
+  <tr>
+    <td width="48%" valign="top">An &quot;<b>extent</b>&quot;
+    consists of a collection of continuous &quot;pages&quot; that the engine uses to allocate
+    both initial and subsequent storage space for database tables.<br>
+    When creating a table, you can specify the first extent size and the size of future
+    extents with the EXTENT SIZE and NEXT EXTENT options.<br>
+    For a single table, &quot;extents&quot; can be located in different &quot;chunks&quot; of
+    the same &quot;dbspace&quot;.</td>
+    <td width="51%" valign="top">An &quot;<b>extent</b>&quot; is
+    a specific number of 8 contiguous pages, obtained in a single allocation.<br>
+    Extents are allocated in the filegroup used by the database.</td>
+  </tr>
+  <tr>
+    <td width="66%" colspan="2" bgcolor="#C0C0C0" valign="top">
+    <font color="#0000FF">Logical units of storage</font></td>
+  </tr>
+  <tr>
+    <td width="48%" valign="top">A &quot;<b>table</b>&quot; is a
+    logical unit of storage that contains rows of data values.</td>
+    <td width="51%" valign="top">Same concept as INFORMIX.</td>
+  </tr>
+  <tr>
+    <td width="48%" valign="top">A &quot;<b>database</b>&quot; is
+    a logical unit of storage that contains table and index data. Each database also contains
+    a system catalog that tracks information about database elements like tables, indexes,
+    stored procedures, integrity constraints and user privileges.</td>
+    <td width="51%" valign="top">Same concept as INFORMIX.<br>
+    When creating a &quot;<b>database</b>&quot;, you must specify which
+    &quot;database devices&quot; (V6.5) or &quot;filegroup&quot; (V7) has to be used for
+    physical storage.</td>
+  </tr>
+  <tr>
+    <td width="48%" valign="top">Database tables are created in a specific
+    &quot;<b>dbspace</b>&quot;, which defines a logical place to store data.<br>
+    If no dbspace is given when creating the table, INFORMIX defaults to the current database
+    dbspace.</td>
+    <td width="51%" valign="top">Database tables are created in a database
+    based on &quot;database devices&quot; (V6.5) or a &quot;filegroup&quot; (V7), which
+    defines the physical storage.</td>
+  </tr>
+  <tr>
+    <td width="48%" valign="top">The total disk space allocated for a table
+    is the &quot;<b>tblspace</b>&quot;, which includes &quot;pages&quot; allocated
+    for data, indexes, blobs, tracking page usage within table extents..</td><td>
+	No equivalent.</td><tr>
+      <td width="51%" colspan="2" bgcolor="#C0C0C0" valign="top">
+    <font color="#0000FF">Other concepts</font></td>
+  </tr>
+  <tr>
+    <td width="48%" valign="top">When initializing an INFORMIX engine, a
+    &quot;<b>root dbspace</b>&quot; is created to store information about all
+    databases, including storage  information (chunks used, other dbspaces, etc.).</td>
+    <td width="51%" valign="top">SQL SERVER uses the &quot;<b>master</b>&quot;
+    database to hold system stored procedures, system messages, SQL SERVER logins, current
+    activity information, configuration parameters of other databases.</td>
+  </tr>
+  <tr>
+    <td width="48%" valign="top">The &quot;<b>physical log</b>&quot;
+    is a set of continuous disk pages where the engine stores &quot;before-images&quot; of
+    data that has been modified during processing.<br>
+    The &quot;<b>logical log</b>&quot; is a set of &quot;<b>logical-log files</b>&quot; used to
+    record logical operations during on-line processing. All transaction information
+    is stored in the logical log files if a database has been created with transaction log.<br>
+    INFORMIX combines &quot;physical log&quot; and &quot;logical
+    log&quot; information  when doing fast recovery. Saved &quot;logical logs&quot; can be
+    used to restore a database from tape.</td>
+    <td width="51%" valign="top">Each database has its own &quot;<b>transaction log</b>&quot;
+    that records all changes to the database. The &quot;transaction
+    log&quot; is based on a &quot;database device&quot; (V6.5) or &quot;filegroup&quot; (V7)
+    which is specified when creating the database.<br>
+      SQL SERVER checks the &quot;transaction logs&quot; for automatic recovery. </td>
+  </tr>
+</table>
+</center></div>
+
+<hr>
+
+<h2><a name="ODIMSV040">ODIMSV040 - National characters data types </a></h3>
+
+</h2>
+
+<hr>
+
+<h2><a name="ODIMSV041">ODIMSV041 -&nbsp;Executing SQL statements</a>
+
+</h2>
+
+<p>The database driver for Microsoft SQL SERVER is based on ODBC. The ODBC driver implementation provided with
+SQL SERVER uses system stored procedures to prepare and execute SQL statements (You can see this with the Profiler).</p>
+
+<p>Some Transact-SQL statements like SET DATEFORMAT have a local execution context effect (for example, when executed in a stored procedure, it is reset to the  previous values when procedure execution is finished).</p>
+
+<p>To support such statements in BDL programs, the database driver uses the SQLExecDirect() ODBC API function when the SQL statement is not a SELECT, INSERT, UPDATE or DELETE. This way the SET statement is executed 'directly', without using the system stored procedures. The result is that the SET statement has the expected effect (i.e. a permanent effect).</p>
+
+<p>However, if the SQL statement uses parameters, the ODBC driver forces the use  of system stored procedures to execute the statement.</p>
+
+<p>See the MSDN for more details about system stored procedures used by Microsoft APIs.</p>
+
+<hr>
+
+<h2><a name="ODIMSV046">ODIMSV046 -&nbsp;The LOAD and UNLOAD instructions </a>
+
+</h2>
+
+<p>INFORMIX provides two SQL instructions to export / import data from / into a database table: The UNLOAD instruction copies rows from a database table into an text file and the LOAD instruction inserts rows from an text file into a database table.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Microsoft SQL SERVER has LOAD and UNLOAD instructions, but those commands are related to database
+backup and recovery. Do not confuse with INFORMIX commands.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>LOAD and UNLOAD instructions are supported.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> The
+LOAD instruction does not work with tables using emulated SERIAL columns because the
+generated INSERT statement holds the &quot;SERIAL&quot; column which is actually a
+IDENTITY column in SQL SERVER. See the limitations of INSERT statements when using <a
+href="#ODIMSV005">SERIALs</a>.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> With Microsoft SQL SERVER versions prior to 2008,
+INFORMIX DATE data is stored in DATETIME columns, but  DATETIME columns are similar to
+INFORMIX DATETIME YEAR TO FRACTION(3) columns. Therefore, when using LOAD and UNLOAD,
+those columns are converted to text data with the format &quot;YYYY-MM-DD hh:mm:ss.fff&quot;.
+However, since SQL SERVER 2008, INFORMIX DATE data is stored in SQL SERVER DATE
+columns, so the result of a LOAD or UNLOAD statement is equivalent when using a
+DATE column with SQL SERVER 2008.</p>
+
+<p><b><font color="#FF0000">Warning:</font></b> With Microsoft SQL SERVER versions prior to 2008,
+INFORMIX DATETIME data is stored in DATETIME columns, but DATETIME columns are similar
+to INFORMIX DATETIME YEAR TO FRACTION(3) columns. Therefore, when using LOAD and UNLOAD,
+those columns are converted to text data with the format &quot;YYYY-MM-DD hh:mm:ss.fff&quot;.
+With SQL SERVER 2008, INFORMIX DATETIME data is stored in SQL SERVER DATETIME2(n&lt;=5) or TIME(n&lt;=5) columns. Concerning DATETIME2(n&lt;=5)
+columns, the result of LOAD and UNLOAD is equivalent to INFORMIX DATETIME
+columns, as long as the original INFORMIX type starts with the YEAR qualifier.
+The text data will be &quot;YYYY-MM-DD hh:mm:ss.&lt;<i>fraction-digits</i>&gt;&quot;,
+where <i>fraction-digits</i> depends on the precision (n) of the DATETIME2(n)
+column. Concerning TIME(n) columns, the type is converted to an INFORMIX
+DATETIME HOUR TO SECOND or FRACTION(n). The text data will be &quot;hh:mm:ss.&lt;<i>fraction-digits</i>&gt;&quot;,
+where <i>fraction-digits</i> depends on the precision (n) of the TIME(n) column.</p>
+
+<p><font color="#FF0000"><b>Warning: </b></font> When
+using an INFORMIX database, simple dates are unloaded with the DBDATE format (ex:
+&quot;23/12/1998&quot;). Therefore, unloading from an INFORMIX database for loading into a
+Microsoft SQL SERVER database is not supported.</p>
+
+<hr>
+
+<h2><a name="ODIMSV047">ODIMSV047 - Case sensitivity</a></h3>
+
+</h2>
+
+<p>In INFORMIX, database object names like table and column names are not case sensitive :</p>
+
+<blockquote>
+  <p><font face="Courier New">CREATE TABLE Customer ( Custno INTEGER, ... )<br>
+  SELECT CustNo FROM cuSTomer ...</font></p>
+</blockquote>
+
+<p>In SQL SERVER, database object names <b>and character data</b> are case-<b>in</b>sensitive
+ by default:</p>
+
+<blockquote>
+  <p><font face="Courier New">CREATE TABLE Customer ( Custno INTEGER, CustName CHAR(20) )<br>
+  INSERT INTO CUSTOMER VALUES ( 1, 'TECHNOSOFT' )<br>
+  SELECT CustNo FROM cuSTomer WHERE custname = 'techNOSoft'</font></p>
+</blockquote>
+
+<p>The installation program of SQL SERVER allows you to customize the <b>sort
+order</b>. The sort order specifies the rules used by SQL SERVER to collate, compare,
+and present character data. <b>It also specifies whether SQL SERVER is case-sensitive</b>.</p>
+
+<p><b><u><em>Solution:</em></u></b></p>
+
+<p>Select the case-sensitive sort order when installing SQL SERVER.</p>
+
+<hr>
+
+<h2><a name="ODIMSV051">ODIMSV051 - Setup database statistics </a></h3>
+
+</h2>
+
+<p>INFORMIX provides a special instruction to compute database statistics in order to help the optimizer find the right query execution plan :</p>
+
+<blockquote>
+  <p><font face="Courier New">UPDATE STATISTICS ...</font></p>
+</blockquote>
+
+<p>Microsoft SQL SERVER offers a similar instruction, but it uses different clauses :</p>
+
+<blockquote>
+  <p><font face="Courier New">UPDATE STATISTICS ... </font></p>
+</blockquote>
+
+<p>See SQL SERVER documentation for more details.</p>
+
+<p><u><em><b>Solution:</b></em></u></p>
+
+<p>Centralize the optimization instruction in a function.</p>
+
+<hr>
+
+<h2><a name="ODIMSV052">ODIMSV052 -&nbsp;String concatenation operator </a>
+
+</h2>
+
+<p>INFORMIX concatenation operator is the double pipe ( || ) :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; SELECT firstname || ' ' || lastname FROM employee</font></p>
+
+<p>Microsoft SQL SERVER concatenation operator is the plus sign :</p>
+
+<p><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; SELECT firstname + ' ' + lastname
+FROM employee</font></p>
+
+<p><u><em><b>Solution:</b></em></u></p>
+
+<p>The database interface detects double-pipe operators in SQL statements and converts them to a plus sign automatically.</p>
+
+<hr>
+
+<h2><a name="ODIMSV053">ODIMSV053 -&nbsp;The ALTER TABLE instruction </a>
+
+</h2>
+
+<p>INFORMIX and MS SQL SERVER use different implementations of the ALTER TABLE instruction. For example, INFORMIX allows you to use multiple ADD clauses separated by comma. This is not supported by
+SQL SERVER :</p>
+
+<p>INFORMIX:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; ALTER TABLE customer&nbsp;
+<b>ADD(col1 INTEGER), ADD(col2 CHAR(20))</b></font></p>
+
+<p>SQL SERVER:<br>
+<font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp; ALTER TABLE customer&nbsp;
+<b>ADD col1 INTEGER, col2 CHAR(20)</b></font></p>
+
+<p><u><em><b>Solution:</b></em></u></p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> No automatic
+conversion is done by the database interface. There is even no real standard for this
+instruction ( that is, no common syntax for all database servers). Read the SQL
+documentation and review the SQL scripts or the BDL programs in order to use the database
+server specific syntax for ALTER TABLE.</p>
+
+<hr>
+<h2><a name="ODIMSV054">ODIMSV054 -&nbsp;SQL Interruption</a>
+</h2>
+<p>With INFORMIX, it is possible to interrupt a long running query if the SQL
+INTERRUPT ON option is set by the Genero program. The database server returns
+SQLCODE -213, which can be trapped to detect a user interruption.</p>
+<p><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp; MAIN<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DEFINE n INTEGER<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DEFER INTERRUPT<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OPTIONS SQL INTERRUPT ON<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DATABASE test1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHENEVER ERROR CONTINUE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- Start long query (self join takes time)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- From now on, user can hit CTRL-C in TUI mode
+to stop the query<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SELECT COUNT(*) INTO n FROM customers a,
+customers b<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHERE a.cust_id
+&lt;&gt; b.cust_id<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IF SQLCA.SQLCODE == -213 THEN<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DISPLAY &quot;Statement was
+interrupted by user...&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EXIT PROGRAM 1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END IF<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHENEVER ERROR STOP<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp;&nbsp; END MAIN</font></p>
+
+<p>SQL SERVER 2005 supports SQL Interruption in a similar way as INFORMIX. The db
+client must issue an SQLCancel() ODBC call to interrupt a query.</p>
+
+<p><u><em>Solution:</em></u></p>
+
+<p>The <b>SNC</b>  and <b>ESM</b> database drivers support SQL interruption and
+return the INFORMIX error code <b>-213</b> if the statement is interrupted.</p>
+
+<p><font color="#FF0000"><b>Warning:</b></font> Make sure you have SQL SERVER 2005 or higher installed and that you use the <b>SNC</b> 
+ or <b>ESM</b> database driver.</p>
+
+<hr>
+
+<h2><a name="ODIMSV055">ODIMSV055 -&nbsp;Scrollable Cursors</a></h2>
+
+<p>The Genero programming language supports scrollable cursors with the <b>SCROLL</b>
+keyword, as shown in the following code example:&nbsp;</p>
+
+<p>
+<font face="Courier New" size="2">
+&nbsp;&nbsp;&nbsp;DECLARE c1 <b>SCROLL</b> CURSOR FOR SELECT * FROM customers
+ORDER BY cust_name<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH FIRST c1 INTO rec_cust.*<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH NEXT c1 INTO rec_cust.*<br>
+&nbsp;&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&nbsp;FETCH LAST c1 INTO rec_cust.*</font></p>
+
+<p>SQL Server supports native scrollable cursors.</p>
+
+<p><b><em><u>Solution:</u></em></b></p>
+
+<p>All the SQL SERVER database drivers uses the native SQL Server scrollable
+cursors by setting the ODBC statement attribute SQL_ATTR_CURSOR_SCROLLABLE to
+SQL_SCROLLABLE.</p>
+
+<hr>
+
+<h2><a name="ODIMSV100">ODIMSV100 -&nbsp;Data type conversion table</a></h3>
+
+</h2>
+
+<div align="center">
+  <center><table border="0" width="80%">
+        <tr>
+          <td bgcolor="#C0C0C0" width="30%"><font color="#0000FF"><b>INFORMIX Data Types</b></font></td>
+          <td bgcolor="#C0C0C0"><font color="#0000FF"><b>SQL SERVER</b></font><font color="#0000FF"><b>
+            Data Types
+            (&lt;2008)</b></font></td>
+          <td bgcolor="#C0C0C0"><font color="#0000FF"><b>SQL SERVER</b></font><font color="#0000FF"><b>
+            Data Types
+            (&gt;=2008)</b></font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">CHAR(n)</font></td>
+          <td><font face="Courier New">CHAR(n) <font color="#FF0000" size="2" face="Courier New">(limit = 8000c!)</font></font></td>
+          <td><font face="Courier New">CHAR(n) <font color="#FF0000" size="2" face="Courier New">(limit = 8000c!)</font></font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">VARCHAR(n)</font></td>
+          <td><font face="Courier New">VARCHAR(n) <font color="#FF0000" size="2" face="Courier New">(limit = 8000c!)</font></font></td>
+          <td><font face="Courier New">VARCHAR(n) <font color="#FF0000" size="2" face="Courier New">(limit = 8000c!)</font></font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">BOOLEAN</font></td>
+          <td><font face="Courier New">BIT</font></td>
+          <td><font face="Courier New">BIT</font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">SMALLINT</font></td>
+          <td><font face="Courier New">SMALLINT</font></td>
+          <td><font face="Courier New">SMALLINT</font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">INTEGER</font></td>
+          <td><font face="Courier New">INTEGER</font></td>
+          <td><font face="Courier New">INTEGER</font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">BIGINT</font></td>
+          <td><font face="Courier New">BIGINT</font></td>
+          <td><font face="Courier New">BIGINT</font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">INT8</font></td>
+          <td><font face="Courier New">BIGINT</font></td>
+          <td><font face="Courier New">BIGINT</font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">FLOAT[(n)]</font></td>
+          <td><font face="Courier New">FLOAT(n)</font></td>
+          <td><font face="Courier New">FLOAT(n)</font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">SMALLFLOAT</font></td>
+          <td><font face="Courier New">REAL</font></td>
+          <td><font face="Courier New">REAL</font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">DECIMAL(p,s)</font></td>
+          <td><font face="Courier New">DECIMAL(p,s)</font></td>
+          <td><font face="Courier New">DECIMAL(p,s)</font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">DECIMAL(p) <font color="#FF0000">with
+            p&lt;=19</font></font></td>
+          <td><font face="Courier New">DECIMAL(2*p,p)</font></td>
+          <td><font face="Courier New">DECIMAL(2*p,p)</font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">DECIMAL(p) <font color="#FF0000">with
+            p&gt;19</font></font></td>
+          <td><font face="Courier New"><i>N/A</i></font></td>
+          <td><font face="Courier New"><i>N/A</i></font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">MONEY(p,s)</font></td>
+          <td><font face="Courier New">DECIMAL(p,s)</font></td>
+          <td><font face="Courier New">DECIMAL(p,s)</font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">MONEY(p)</font></td>
+          <td><font face="Courier New">DECIMAL(p,2)</font></td>
+          <td><font face="Courier New">DECIMAL(p,2)</font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">MONEY</font></td>
+          <td><font face="Courier New">DECIMAL(16,2)</font></td>
+          <td><font face="Courier New">DECIMAL(16,2)</font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">DATE</font></td>
+          <td><font face="Courier New">DATETIME</font></td>
+          <td><font face="Courier New"> DATE</font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">DATETIME HOUR TO MINUTE</font></td>
+          <td><font face="Courier New">DATETIME</font></td>
+          <td><font face="Courier New">
+            TIME(0)</font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">DATETIME HOUR TO FRACTION(n)</font></td>
+          <td><font face="Courier New">DATETIME</font></td>
+          <td><font face="Courier New">TIME(n)</font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">DATETIME YEAR TO SECOND</font></td>
+          <td><font face="Courier New">DATETIME</font></td>
+          <td><font face="Courier New">DATETIME2(0)</font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">Other sort of DATETIME type</font></td>
+          <td><font face="Courier New">DATETIME</font></td>
+          <td><font face="Courier New">DATETIME2(n)</font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">INTERVAL q1 TO q2</font></td>
+          <td><font face="Courier New">CHAR(n)</font></td>
+          <td><font face="Courier New">CHAR(n)</font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">TEXT</font></td>
+          <td><font face="Courier New">VARCHAR(MAX)<br>
+            <i>(TEXT with MSV driver)</i></font></td>
+          <td><font face="Courier New">VARCHAR(MAX)</font></td>
+        </tr>
+        <tr>
+          <td width="30%"><font face="Courier New">BYTE</font></td>
+          <td><font face="Courier New">VARBINARY(MAX)<br>
+            <i>(IMAGE with MSV driver)</i></font></td>
+          <td><font face="Courier New">VARBINARY(MAX)</font></td>
+        </tr>
+      </table>
+  </center>
+</div>
+</body>
+</html>

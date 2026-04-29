@@ -1,0 +1,791 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Drag & Drop</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Drag &amp; Drop</a></H1>
+
+<p>Summary:</p>
+
+<ul>
+  <li><a href="#BASICS">Basics</a></li>
+  <li><a href="#USAGE">Usage</a>
+  <ul>
+     <li><a href="#DEFAULT_OPERATION">Default Drag and Drop operation</a></li>
+     <li><a href="#CTRLBLOCK_EXECUTION">Control Block Execution Order</a></li>
+     <li><a href="#on-drag_start">Detecting the beginning of a Drag &amp; Drop operation with ON DRAG_START</a></li>
+     <li><a href="#on-drag_finished">Being notified of the end of a Drag &amp; Drop
+      operation with ON DRAG_FINISHED</a></li>
+     <li><a href="#on-drag_enter">Detecting a potential drop on target dialog with ON
+      DRAG_ENTER</a></li>
+     <li><a href="#on-drag_over">Being notified when the cursor moves over the drop
+      target with ON DRAG_OVER</a></li>
+     <li><a href="#operation-change">Detecting a Drag &amp; Drop operation change</a></li>
+     <li><a href="#on-drop">Detecting the drop on target event with ON DROP</a></li>
+     <li><a href="#set-feedback">Setting the visual feedback for the drop
+      operation</a></li>
+     <li><a href="#mime-types">Handling data from/to external applications with different MIME types</a></li>
+  </ul>
+  </li>
+  <li><a href="#EXAMPLES">Examples</a>
+    <ul>
+      <li><a href="#EXAMPLE_1">Example 1</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p><i>See also:</i> <a href="Arrays.html">Arrays</a>, <a href="Records.html">Records</a>,
+<a href="ResultSets.html">Result
+Sets</a>, <a href="Programs.html">Programs</a>, <a href="WindowsAndForms.html">Windows</a>,
+<a href="FormSpecFiles.html">Forms</a>, <a href="DisplayArray.html">Display Array</a>,
+<a href="TreeViews.html">TreeViews</a>, <a href="ClassDragDrop.html">DragDrop
+class</a>.</p>
+
+<HR>
+
+<h3><a name="BASICS">Basics</a></h3>
+<p>Before reading this, you should be familiar with form <a href="FormSpecFiles.html#FF_ITEMTYPE_TABLE">TABLE
+containers</a> and <a href="FormSpecFiles.html#FF_ITEMTYPE_TREE">TREE containers</a>,
+and you must know how to program a singular <a href="DisplayArray.html">DISPLAY
+ARRAY</a> or a <tt>DISPLAY ARRAY</tt> sub-dialog within a <a href="MultipleDialogs.html">DIALOG
+instruction</a>. </p>
+
+<p> Genero BDL supports Drag &amp; Drop in
+regular lists and tree-views controlled by a <tt>DISPLAY ARRAY</tt>. Drag &amp;
+Drop is not supported in other dialog contexts like singular <tt>INPUT</tt> or <tt>INPUT
+ARRAY</tt>. </p>
+
+<p>With Drag &amp; Drop, end users can: </p>
+
+<ul>
+  <li>Move draggable objects between lists and tree-views in the same Genero
+    form/program.</li>
+  <li>Move draggable objects between lists and tree-views in different Genero
+    forms/programs.</li>
+  <li>Move draggable objects between other desktop applications and lists/
+    tree-views in Genero programs.</li>
+</ul>
+
+
+<HR>
+
+<h3><a name="USAGE">Usage</a></h3>
+
+
+<p>To enable Drag and/or Drop in a <tt>DISPLAY ARRAY</tt>, you must implement
+specific interaction blocks to handle the new events related to this feature.
+These specific blocks will be triggered when Drag and Drop events arrive from
+the front-end. </p>
+
+<p>The following new interaction blocks are available: </p>
+
+
+      <ul>
+        <li><a href="#on-drag_start">ON DRAG_START</a></li>
+        <li><a href="#on-drag_finished">ON DRAG_FINISHED</a></li>
+        <li><a href="#on-drag_enter">ON DRAG_ENTER</a></li>
+        <li><a href="#on-drag_over">ON DRAG_OVER</a></li>
+        <li><a href="#on-drop">ON DROP</a></li>
+      </ul>
+
+
+<p>Each of the above interaction blocks takes a <a href="ClassDragDrop.html">ui.DragDrop</a>
+object as a parameter. A reference variable to that object must be declared before
+the dialog. In the interaction block, the ui.DragDrop object can be used to
+configure the Drag / Drop action to take. For example, a &quot;drag enter&quot;
+event can be refused for some reason.</p>
+<p>The <tt>ON DRAG_START</tt> and <tt>ON DRAG_FINISHED</tt> triggers apply to the source
+of the Drag &amp; Drop operation, the dialog where the object was dragged. The
+other triggers provide notification to the drop target dialog, used to inform
+the program when the different drop events occur and to let the target accept or
+reject the drop action.</p>
+<p>Here is a short example to illustrate the usage of a Drag &amp; Drop
+interaction block with the ui.DragDrop control object:</p>
+<pre><u><CODE class=linenumber>01</CODE> <tt>DEFINE </tt>dnd ui.DragDrop</u>
+<CODE class=linenumber>02</CODE> ...
+<CODE class=linenumber>03</CODE> <tt>DISPLAY ARRAY</tt> arr <tt>TO </tt>sr.* ...
+<CODE class=linenumber>04</CODE> ...
+<CODE class=linenumber>05</CODE>    <tt> ON DRAG_ENTER</tt>(dnd)
+<CODE class=linenumber>06</CODE>      <tt> IF </tt>ok_to_drop <tt>THEN</tt>
+<CODE class=linenumber>07</CODE>         <tt>CALL </tt>dnd.setOperation(&quot;move&quot;)
+<CODE class=linenumber>08</CODE>      <tt> ELSE</tt>
+<CODE class=linenumber>09</CODE>         <tt>CALL </tt>dnd.setOperation(NULL)
+<CODE class=linenumber>10</CODE>      <tt> END IF</tt>
+<CODE class=linenumber>11</CODE> ...
+<code class="linenumber">12</code> <tt>END DISPLAY</tt></pre>
+
+
+<HR size="1">
+
+
+<h4><a name="DEFAULT_OPERATION">Default Drag &amp; Drop operation</a></h4>
+<p>By default, all <a href="DisplayArray.html">DISPLAY
+ARRAY</a>  dialogs implement a default Drag operation that copies all selected
+rows to the drag &amp; drop buffer as a tab-separated list of values, as if you
+would implement:</p>
+<pre><CODE class=linenumber>01</CODE> <tt>DEFINE </tt>dnd ui.DragDrop
+<CODE class=linenumber>02</CODE> ...
+<CODE class=linenumber>03</CODE> <tt>DISPLAY ARRAY</tt> arr <tt>TO </tt>sr.* ...
+<CODE class=linenumber>04</CODE> ...
+<CODE class=linenumber>05</CODE>    <tt> ON DRAG_START</tt>(dnd)
+<u><CODE class=linenumber>06</CODE>      <tt> CALL </tt>dnd.setOperation(&quot;copy&quot;)
+<code class="linenumber">07        </code> <tt>CALL</tt> dnd.setMimeType(&quot;text/plain&quot;)
+<code class="linenumber">08        </code> <tt>CALL</tt> dnd.setBuffer(DIALOG.selectionToString(&quot;sr&quot;))
+</u><CODE class=linenumber>09</CODE> ...
+<code class="linenumber">10</code> <tt>END DISPLAY</tt></pre>
+
+
+<HR size="1">
+
+
+<h4><a name="CTRLBLOCK_EXECUTION">Control Block Execution Order</a></h4>
+
+
+<p>The following table shows the order in which the runtime system executes the
+control blocks related to Drag &amp; Drop events:</p>
+<table border="0" cellpadding="0" width="90%" id="table1">
+  <tr>
+    <td bgcolor="#C0C0C0" width="30%"><b>Context / User action</b></td>
+    <td bgcolor="#C0C0C0"><b>Control Block execution order</b></td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">The user starts to drag an
+      object from the source dialog.</td>
+    <td bgcolor="#CCFFFF">
+      <ol>
+        <li><tt>ON DRAG_START </tt>(in source dialog)</li>
+      </ol>
+    </td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" bgcolor="#FFFFCC">The mouse cursor enters the
+      drop target dialog.</td>
+    <td bgcolor="#FFFFCC">
+      <ol>
+        <li><tt>ON DRAG_ENTER </tt>(in target dialog)</li>
+      </ol>
+    </td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" bgcolor="#CCFFFF">After entering the target
+      dialog, the mouse cursor moves from row to row, or user chooses to change the
+      drop operation (move or copy).</td>
+    <td bgcolor="#CCFFFF">
+      <ol>
+        <li><tt>ON DRAG_OVER </tt>(in target dialog)</li>
+      </ol>
+    </td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" bgcolor="#FFFFCC">The user releases the mouse
+      button over the target dialog.</td>
+    <td bgcolor="#FFFFCC">
+      <ol>
+        <li><tt>ON DROP </tt>(in target dialog)</li>
+        <li><tt>ON DRAG_FINISHED </tt>(in source dialog)</li>
+      </ol>
+    </td>
+  </tr>
+</table>
+
+
+<HR size="1">
+
+
+<h4><a name="on-drag_start">Detecting the beginning of a Drag &amp; Drop operation with ON DRAG_START</a> </h4>
+
+
+<p>The <tt>ON DRAG_START</tt> block is executed when the end user has begun the drag operation. If this dialog trigger has not been defined, dragging is denied for this
+dialog. </p>
+
+
+<p>In the <tt>ON DRAG_START</tt>  block, the program typically specifies the
+type of Drag &amp; Drop operation by calling
+<a href="ClassDragDrop.html#setOperation">ui.DragDrop.setOperation()</a> with
+&quot;move&quot; or &quot;copy&quot;. This call will define the default and
+unique drag operation. If needed, the program can allow another type of drag
+operation with
+<a href="ClassDragDrop.html#addPossibleOperation">ui.DragDrop.addPossibleOperation()</a>.
+The end user can then choose to move or copy the dragged object, if the Drag &amp; Drop
+target allows it. </p>
+
+
+<p>If the dragged object can be dropped outside the BDL program, you typically <a href="#mime-types">
+set the MIME type</a> and drag/drop data with 
+<a href="ClassDragDrop.html#setMimeType">ui.DragDrop.setMimeType()</a>
+and <a href="ClassDragDrop.html#setBuffer">ui.DragDrop.setBuffer()</a> methods. </p>
+
+
+<p>Example: </p>
+
+
+<pre><code class="linenumber">01</code> <tt>DEFINE </tt>dnd ui.DragDrop
+<code class="linenumber">02   </code> ...
+<code class="linenumber">03</code> <tt>DISPLAY ARRAY </tt>arr <tt>TO </tt>sr.* ...
+<code class="linenumber">04   </code> ...
+<u><code class="linenumber">05   </code> <tt>ON DRAG_START</tt> (dnd)
+</u><code class="linenumber">06      </code> <tt>CALL</tt> dnd.setOperation(&quot;move&quot;) -- Move is the default operation
+<code class="linenumber">07      </code> <tt>CALL</tt> dnd.addPossibleOperation(&quot;copy&quot;) -- User can toggle to copy if needed
+<code class="linenumber">08      </code> <tt>CALL</tt> dnd.setMimeType(&quot;text/plain&quot;)
+<code class="linenumber">09      </code> <tt>CALL</tt> dnd.setBuffer(arr[arr_curr()].cust_name)
+<code class="linenumber">10      </code> ...
+<code class="linenumber">11</code> <tt>END DISPLAY</tt></pre>
+
+
+<HR size="1">
+
+
+<h4><a name="on-drag_finished">Being notified of the end of a Drag &amp; Drop operation with ON DRAG_FINISHED</a> </h4>
+
+
+<p>Execution of the <tt>ON DRAG_FINISHED</tt> block notifies the dialog where
+the drag started that the drop operation has been completed or terminated. </p>
+
+
+<p>Call <a href="ClassDragDrop.html#getOperation">ui.DragDrop.getOperation()</a> to
+get the final type of operation of the drop. On successful completion, the method returns "move" or "copy";
+otherwise the function returns <a href="Programs.html#PC_NULL"> NULL</a>. If <tt> NULL</tt> is returned, the <tt>ON DRAG_FINISHED</tt>  trigger can be ignored. </p>
+
+
+<p>In cases of successful moves to a target out of the current <tt> DISPLAY ARRAY</tt>, the application must remove the transferred
+data from the source model. For example, if a row was moved from dialog A to B,
+dialog A will get an <tt>ON DRAG_FINISHED</tt>  execution after the row was
+dropped into B, and should remove the row from the list A. </p>
+
+<p>The <tt> ON DRAG_FINISHED</tt> interaction block is optional. </p>
+
+
+<p>Example: </p>
+
+
+<pre><code class="linenumber">01</code> <tt>DEFINE </tt>dnd ui.DragDrop
+<code class="linenumber">02   </code> ...
+<code class="linenumber">03</code> <tt>DISPLAY ARRAY </tt>arr <tt>TO </tt>sr.* ...
+<code class="linenumber">04   </code> ...
+<code class="linenumber">05   </code> <tt>ON DRAG_START</tt> (dnd)
+<code class="linenumber">06      </code> <tt>LET</tt> last_dragged_row = arr_curr()
+<code class="linenumber">07      </code> ...
+<u><code class="linenumber">08   </code> <tt>ON DRAG_FINISHED</tt> (dnd)
+</u><code class="linenumber">09      </code> <tt>IF</tt> dnd.getOperation() == &quot;move&quot; <tt>THEN</tt>
+<code class="linenumber">10         </code> <tt>CALL</tt> DIALOG.deleteRow(last_dragged_row)
+<code class="linenumber">11      </code> <tt>END IF</tt>
+<code class="linenumber">12      </code> ...
+<code class="linenumber">13</code> <tt>END DISPLAY</tt></pre>
+
+
+<HR size="1">
+
+
+<h4><a name="on-drag_enter">Detecting a potential drop on target dialog with ON
+DRAG_ENTER</a> </h4>
+
+
+<p>When <a href="#on-drop">ON DROP</a> is defined, the <tt> ON DRAG_ENTER</tt> block will be executed when the mouse cursor
+enters the visual boundaries of the drop target dialog.<br>
+<br>
+Entering the target dialog is accepted by default if no <tt> ON DRAG_ENTER</tt> block
+is defined. However, when <tt>ON DROP</tt> is defined, you should also
+define <tt>ON DRAG_ENTER</tt> to deny the drop of objects with an unsupported
+MIME type that come from other applications. </p>
+
+
+<p>The program can decide to deny or allow a specific drop
+operation with a call to <a href="ClassDragDrop.html#setOperation">ui.DragDrop.setOperation()</a>; passing a <a href="Programs.html#PC_NULL"> NULL</a>
+to the
+method will deny drop. </p>
+
+
+<p>To check what MIME type is available in the Drag &amp; Drop buffer, the
+program uses the <a href="ClassDragDrop.html#selectMimeType">ui.DragDrop.selectMimeType()</a>
+method. This method takes the MIME type as a parameter and returns <a href="Programs.html#PC_TRUE">TRUE</a>
+if the passed MIME type is used. You can call this method several times to check
+the availability of different MIME types. </p>
+
+
+<p>You may also define the visual effect when flying over the target list with <a href="ClassDragDrop.html#setFeedback">ui.DragDrop.setFeedback()</a>. </p>
+
+
+<p>Example: </p>
+
+
+<pre><code class="linenumber">01</code> <tt>DEFINE </tt>dnd ui.DragDrop
+<code class="linenumber">02   </code> ...
+<code class="linenumber">03</code> <tt>DISPLAY ARRAY </tt>arr <tt>TO </tt>sr.* ...
+<code class="linenumber">04   </code> ...
+<u><code class="linenumber">05   </code> <tt>ON DRAG_ENTER</tt> (dnd)
+</u><code class="linenumber">06      </code> <tt>IF</tt> dnd.selectMimeType(&quot;text/plain&quot;) <tt>THEN</tt>
+<code class="linenumber">07         </code> <tt>CALL</tt> dnd.setOperation(&quot;copy&quot;)
+<code class="linenumber">08         </code> <tt>CALL</tt> dnd.setFeedback(&quot;all&quot;)
+<code class="linenumber">09      </code> <tt>ELSE</tt>
+<code class="linenumber">10         </code> <tt>CALL</tt> dnd.setOperation(<tt>NULL</tt>)
+<code class="linenumber">11      </code> <tt>END IF</tt>
+<code class="linenumber">12   </code> <tt>ON DROP</tt> (dnd)
+<code class="linenumber">13      </code> ...
+<code class="linenumber">14</code> <tt>END DISPLAY</tt></pre>
+<p>Once the mouse has entered the target area, subsequent mouse cursor moves can be
+detected with the <a href="#on-drag_over">ON DRAG_OVER</a> trigger.</p>
+
+
+<HR size="1">
+
+
+<h4><a name="on-drag_over">Being notified when the cursor moves over the drop target
+with ON DRAG_OVER</a> </h4>
+
+
+<p>When <a href="#on-drop">ON DROP</a> is defined, the <tt> ON DRAG_OVER</tt> block will be executed
+after <a href="#on-drag_enter">ON DRAG_ENTER</a>, when the mouse cursor is moving over the drop
+target, or when the Drag &amp; Drop operation has changed (toggling copy/move). </p>
+
+<p>
+<tt>ON DRAG_OVER</tt> will be called only once per row, even if the mouse cursor
+moves over the row. </p>
+
+<p>In this block, the method <a href="ClassDragDrop.html#getLocationRow">ui.DragDrop.getLocationRow()</a> returns the index of
+the row in the target
+array, and can be used to allow or deny the drop. When using a <a href="TreeViews.html">TreeView</a>,
+you must also check the index returned by the <a href="ClassDragDrop.html#getLocationParent">ui.DragDrop.getLocationParent()</a>
+method to detect if the object was dropped as a <u>sibling</u> or as a <u>child</u>
+node, and allow/deny the drop operation
+accordingly. </p>
+
+<p>The program can change the drop operation at any execution of the <tt>ON
+DRAG_OVER</tt> block. You can deny or allow a specific drop
+operation with a call to <a href="ClassDragDrop.html#setOperation">ui.DragDrop.setOperation()</a>; passing a
+<a href="Programs.html#PC_NULL"> NULL</a> to the
+method will deny the drop. </p>
+
+
+<p>The current operation (<a href="ClassDragDrop.html#getOperation">ui.DragDrop.getOperation()</a>) is the value set in previous
+<tt>ON DRAG_ENTER</tt> or <tt>ON DRAG_OVER</tt>  events, or the operation
+selected by the end user, if it can toggle between copy and move. Thus, <tt>ON
+DRAG_OVER</tt> can occur even if the mouse position has not changed. </p>
+
+
+<p>If dropping has been denied
+with <code>ui.DragDrop.setOperation(NULL)</code> in the previous
+<tt>ON DRAG_OVER</tt>  event, the program can reset the operation to allow a
+drop with a call to <a href="ClassDragDrop.html#setOperation">
+ui.DragDrop.setOperation(&quot;move&quot;|&quot;copy&quot;)</a>. </p>
+
+
+<p>
+<tt>ON DRAG_OVER</tt> will not be called if drop has been disabled in <tt> ON DRAG_ENTER</tt>
+with <code> ui.DragDrop.setOperation(NULL)</code> </p>
+
+
+<p><tt>ON DRAG_OVER</tt> is optional, and must only be defined if the operation or the acceptance of the drag object depends on the target row of the drop target. </p>
+
+
+<p>Example: </p>
+
+
+<pre><code class="linenumber">01</code> <tt>DEFINE </tt>dnd ui.DragDrop
+<code class="linenumber">02   </code> ...
+<code class="linenumber">03</code> <tt>DISPLAY ARRAY </tt>arr <tt>TO </tt>sr.* ...
+<code class="linenumber">04   </code> ...
+<code class="linenumber">05   </code> <tt>ON DRAG_ENTER</tt> (dnd)
+<code class="linenumber">06      </code> ...
+<u><code class="linenumber">07   </code> <tt>ON DRAG_OVER</tt> (dnd)</u>
+<code class="linenumber">08      </code> <tt>IF</tt> arr[dnd.getLocationRow()].acceptsCopy <tt>THEN</tt>
+<code class="linenumber">09         </code> <tt>CALL</tt> dnd.setOperation(&quot;copy&quot;)
+<code class="linenumber">10      </code> <tt>ELSE</tt>
+<code class="linenumber">11         </code> <tt>CALL</tt> dnd.setOperation(<tt>NULL</tt>)
+<code class="linenumber">12      </code> <tt>END IF</tt>
+<code class="linenumber">13   </code> <tt>ON DROP</tt> (dnd)
+<code class="linenumber">14      </code> ...
+<code class="linenumber">15</code> <tt>END DISPLAY</tt></pre>
+
+
+<HR size="1">
+
+
+<h4><a name="operation-change">Detecting a Drag &amp; Drop operation
+change</a></h4>
+<p>During a Drag &amp; Drop process, the end user (or the target application) can decide to modify the type
+of the operation, to indicate whether the dragged object has to be copied or moved
+from the source to the target. For example, when using the Windows file
+explorer, by default files are moved when doing a Drag &amp; Drop on the same
+disk. To make a copy of a file, you must press the CONTROL key while doing the
+Drag &amp; Drop with the mouse.</p>
+<p>In the drop target dialog, you can detect such operation changes in the <tt>ON
+DRAG_OVER</tt> trigger and query the ui.DragDrop object for the current
+operation with <a href="ClassDragDrop.html#getOperation">ui.DragDrop.getOperation()</a>.
+In the drag source dialog, you typically check <a href="ClassDragDrop.html#getOperation">ui.DragDrop.getOperation()</a>
+in the <tt>ON DRAG_FINISHED</tt> trigger to know what sort of operation
+occurred, to keep (&quot;copy&quot; operation) or delete (&quot;move&quot;
+operation) the original dragged object.</p>
+
+
+<p>The next example tests the current operation in the drop target list and
+displays a message accordingly: </p>
+
+
+<pre><code class="linenumber">01</code> <tt>DEFINE </tt>dnd ui.DragDrop
+<code class="linenumber">02   </code> ...
+<code class="linenumber">03</code> <tt>DISPLAY ARRAY </tt>arr <tt>TO </tt>sr.* ...
+<code class="linenumber">04   </code> ...
+<code class="linenumber">05   </code> <tt>ON DRAG_ENTER</tt> (dnd)
+<code class="linenumber">06      </code> ...
+<u><code class="linenumber">07   </code> <tt>ON DRAG_OVER</tt> (dnd)
+<code class="linenumber">08      </code> <tt>CASE</tt> dnd.getOperation()
+</u><code class="linenumber">09      </code> <tt>WHEN</tt> &quot;move&quot;
+<code class="linenumber">10         </code> <tt>MESSAGE</tt> &quot;The object will be moved to row &quot;, dnd.getLocationRow()
+<code class="linenumber">11      </code> <tt>WHEN</tt> &quot;copy&quot;
+<code class="linenumber">12         </code> <tt>MESSAGE</tt> &quot;The object will be copied to row &quot;, dnd.getLocationRow()
+<code class="linenumber">13      </code> <tt>END CASE</tt>
+<code class="linenumber">14      </code> ...
+<code class="linenumber">15   </code> <tt>ON DROP</tt> (dnd)
+<code class="linenumber">16      </code> ...
+<code class="linenumber">17</code> <tt>END DISPLAY</tt></pre>
+
+
+<HR size="1">
+
+
+<h4><a name="on-drop">Detecting the drop on target event with ON DROP</a> </h4>
+
+
+<p>In order to enable drop actions on a list, you must at least define the <tt> ON
+DROP</tt> block; otherwise, the list will not accept drop actions. </p>
+
+
+<p>The <tt>ON DROP</tt> block is executed after the end user has released the
+mouse button to drop the dragged object.
+<tt>ON DROP</tt> will not occur, if drop has been denied in the previous <tt>ON
+DRAG_OVER</tt> event or in <tt>ON DRAG_ENTER</tt> with a call to <a href="ClassDragDrop.html#setOperation">ui.DragDrop.setOperation(NULL)</a>. </p>
+
+
+<p>The program might also check the MIME type
+of the dragged object with <a href="ClassDragDrop.html#getSelectedMimeType">ui.DragDrop.getSelectedMimeType()</a>,
+and then call the <a href="ClassDragDrop.html#getBuffer">ui.DragDrop.getBuffer()</a>
+method to retrieve Drag &amp; Drop data from external applications. </p>
+
+
+<p>Ideally the drop operation should be accepted (no additional call to <a href="ClassDragDrop.html#setOperation">ui.DragDrop.setOperation()</a>). </p>
+
+
+<p>In this block, the method <a href="ClassDragDrop.html#getLocationRow">ui.DragDrop.getLocationRow()</a> returns the index of
+the row in the target
+array, and can be used to execute the code to get the drop data / object into the
+row that has been chosen by the user. </p>
+
+
+<p>Example: </p>
+
+
+<pre><code class="linenumber">01</code> <tt>DEFINE </tt>dnd ui.DragDrop
+<code class="linenumber">02   </code> ...
+<code class="linenumber">03</code> <tt>DISPLAY ARRAY </tt>arr <tt>TO </tt>sr.* ...
+<code class="linenumber">04   </code> ...
+<u><code class="linenumber">05   </code> <tt>ON DROP</tt> (dnd)</u>
+<code class="linenumber">06      </code> <tt>LET</tt> arr[dnd.getLocationRow()].capacity == dnd.getBuffer() 
+<code class="linenumber">07      </code> ...
+<code class="linenumber">08</code> <tt>END DISPLAY</tt></pre>
+
+
+<p>If the Drag &amp; Drop
+operations are local to the same list or tree-view controller, you can use the <a href="ClassDragDrop.html#dropInternal">ui.DragDrop.dropInternal()</a>
+method to simplify the code: This method implements the typical move of the dragged
+rows or tree-view node. This is especially useful in case of a <a href="TreeViews.html">TreeView</a>,
+but is also the preferred way to move rows around in simple tables. </p>
+
+
+<p>Here is an <tt>ON DROP</tt> code example using the <code>dropInternal()</code>
+method: </p>
+
+
+<pre><code class="linenumber">01</code> <tt>DEFINE </tt>dnd ui.DragDrop
+<code class="linenumber">02   </code> ...
+<code class="linenumber">03</code> <tt>DISPLAY ARRAY </tt>arr_tree <tt>TO </tt>sr_tree.* ...
+<code class="linenumber">04   </code> ...
+<code class="linenumber">05   </code> <tt>ON DROP</tt> (dnd)
+<u><code class="linenumber">06      </code> <tt>CALL</tt> dnd.dropInternal()
+</u><code class="linenumber">07      </code> ...
+<code class="linenumber">08</code> <tt>END DISPLAY</tt></pre>
+
+
+<p>If you want to implement by hand the code to drop a node in a <a href="TreeViews.html">TreeView</a>,
+you must check the index returned by the <a href="ClassDragDrop.html#getLocationParent">ui.DragDrop.getLocationParent()</a>
+method to detect if the object was dropped as a <u>sibling</u> or as a <u>child</u>
+node, and execute the code corresponding to the
+drop operation: If the drop target row index returned by <code>getLocationRow()</code>
+is a
+child of the parent row index returned by <code>getLocationParent()</code>, the new row must be inserted before <code>getLocationRow()</code>;
+otherwise the new row must be added as a child of the parent node
+identified by <code>getLocationParent()</code>. </p>
+
+
+<HR>
+
+
+<h4><a name="set-feedback">Setting the visual feedback for the drop operation</a></h4>
+<p>When using a table or treeview as drop target, you can control the visual
+effect when the mouse flies over the rows, according to the type of Drag &amp; Drop
+you want to achieve.&nbsp;</p>
+<p>Basically, a dragged object can be:</p>
+<ol>
+  <li>Inserted in between two rows (visual effect must show where the object
+    will be inserted)</li>
+  <li>Copied/merged to the current row (visual effect must show the row under
+    the mouse)</li>
+  <li>Dropped somewhere on the target widget (the exact location inside the
+    widget does not matter)</li>
+</ol>
+<p>The visual effect can be defined with the <a href="ClassDragDrop.html#setFeedback">ui.DragDrop.setFeedback()</a>
+method, typically called in the <a href="#on-drag_enter">ON DRAG_ENTER block</a>.</p>
+<p>The values to pass to the setFeedback() method to get the desired visual
+effects described above are respectively:</p>
+<ol>
+  <li>insert (default)</li>
+  <li>select</li>
+  <li>all</li>
+</ol>
+
+
+<p>Example: </p>
+
+
+<pre><code class="linenumber">01</code> <tt>DEFINE </tt>dnd ui.DragDrop
+<code class="linenumber">02   </code> ...
+<code class="linenumber">03</code> <tt>DISPLAY ARRAY </tt>arr <tt>TO </tt>sr.* ...
+<code class="linenumber">04   </code> ...
+<code class="linenumber">05   </code> <tt>ON DRAG_ENTER</tt> (dnd)
+<code class="linenumber">06      </code> <tt>IF</tt> canDrop() <tt>THEN</tt>
+<code class="linenumber">07          </code> <tt>CALL</tt> dnd.setOperation(<tt>NULL</tt>)
+<code class="linenumber">08      </code> <tt>ELSE</tt>
+<u><code class="linenumber">09          </code> <tt>CALL</tt> dnd.setFeedback(&quot;select&quot;)
+</u><code class="linenumber">10      </code> <tt>END IF</tt>
+<code class="linenumber">11      </code> ...
+<code class="linenumber">12</code> <tt>END DISPLAY</tt></pre>
+
+
+<HR>
+
+
+<h4><a name="mime-types">Handling data from/to external applications with different MIME types</a> </h4>
+
+
+<p>If a Drag &amp; Drop is intended to work only in the same BDL application,
+you can pass Drag &amp; Drop data with variables in the context of the
+current program. For example, in a program using two tables where the user can
+Drag
+&amp; Drop elements between the two lists, you can easily identify the selected
+rows and update the program arrays accordingly. When Drag &amp; Drop is limited
+to the current application, you should avoid drop outside the current
+application, as described later in this section.&nbsp; </p>
+
+
+<p>When a Drag &amp; Drop operation comes from (or goes to) external applications (i.e. not
+from the same BDL program), data can be of various types/formats (plain text,
+formatted text, documents, images,
+sounds, videos). In order to handle the Drag &amp; Drop data, you must identify the type of data held in the Drag
+&amp; Drop buffer. The type of data in the buffer is identified by the <b>MIME</b>
+type. MIME stands for <b>M</b>ultiple <b>I</b>nternet <b>M</b>ail <b>E</b>xtensions. 
+It is an internet standard specification widely used. MIME type identifiers were 
+first introduced to identify the content of e-mail attachments. </p>
+
+
+<p><b><font color="#FF0000">Warning:</font> Genero BDL can only handle text data
+in Drag &amp; Drop; binary data is not supported. However, you can pass files by
+using <a href="BuiltInFunctions.html#BF_FGL_GETFILE">file transfer</a>, and
+identify the file with a URI (text-uri-list MIME type). See the demos in FGLDIR/demo/DragAndDrop
+for examples.</b></p>
+
+
+<p>Example of MIME types: </p>
+
+
+<ul>
+  <li>text/plain</li>
+  <li>text/uri-list</li>
+  <li>text/x-vcard</li>
+</ul>
+<p>You can also define your own MIME type, as long as it does not conflict with
+existing standard MIME types. For example:</p>
+
+
+<ul>
+  <li>text/my-remote-file</li>
+  <li>text/my-customer-record</li>
+</ul>
+<p>Note that if you do not specify a MIME type when the drag starts, the type defaults to <b>text/plain</b>, and
+the dialog will by default copy the data from selected rows into the Drag &amp;
+Drop buffer. To prevent Drag &amp; Drop to external applications, you must pass an
+application-specific MIME type to the <a href="ClassDragDrop.html#setMimeType">ui.DragDrop.setMimeType()</a>
+ method, to be sure that other applications do not recognize the MIME type and
+will deny the drop.</p>
+
+
+<h5>Preparing the dragged object for external targets</h5>
+
+
+<p>If the BDL program implements Drag &amp; Drop of objects that can be dropped
+to external programs, you must specify the MIME type of the object and copy the
+data to the Drag &amp; Drop buffer, so that the external application can
+identify the data format and receive it.</p>
+
+
+<p>In the <tt>ON DRAG_START</tt> block, you must call the <a href="ClassDragDrop.html#setMimeType">ui.DragDrop.setMimeType()</a>
+method to define the MIME type of the object, and copy the text data into the
+buffer with the <a href="ClassDragDrop.html#setBuffer">ui.DragDrop.setBuffer()</a>
+method.</p>
+
+
+<p>The next example shows a <tt>DISPLAY ARRAY</tt> dialog preparing the Drag
+&amp; Drop buffer to export VCard data from a dragged row:</p>
+
+
+<pre><CODE class=linenumber>01</CODE> <tt>DEFINE </tt>dnd ui.DragDrop
+<CODE class=linenumber>02</CODE> ...
+<CODE class=linenumber>03</CODE> <tt>DISPLAY ARRAY</tt> arr <tt>TO </tt>sr.* ...
+<CODE class=linenumber>04</CODE> ...
+<CODE class=linenumber>05</CODE>    <tt> ON DRAG_START</tt>(dnd)
+<CODE class=linenumber>06</CODE>      <tt> </tt>-- Define the MIME type and copy text data to DnD buffer
+<u><CODE class=linenumber>07</CODE>      <tt> CALL </tt>dnd.setMimeType(&quot;text/x-vcard&quot;)
+<CODE class=linenumber>08</CODE>      <tt> CALL </tt>dnd.setBuffer( buildVCardData( arr[arr_curr()].cid ) )
+</u><CODE class=linenumber>09</CODE>      <tt> CALL </tt>dnd.setOperation(&quot;copy&quot;)
+<CODE class=linenumber>10</CODE> ...
+<code class="linenumber">11</code> <tt>END DISPLAY</tt></pre>
+
+
+<h5>Receiving the dragged object from external sources</h5>
+
+
+<p>This describes how to handle the drop action when the target dialog
+receives an object dragged from an external source, by identifying the MIME type
+of the object.</p>
+
+
+<p>In the <tt>ON DRAG_ENTER</tt>  block, you must call the <a href="ClassDragDrop.html#selectMimeType">ui.DragDrop.selectMimeType()</a>
+method to check that data is available in a format identified by the MIME type,
+passed as a parameter. If the type of data is available in the buffer, the method
+returns <a href="Programs.html#PC_TRUE">TRUE</a>. Later, when the dragged object is
+dropped (<tt>ON DROP</tt>),&nbsp; you can get the previously selected MIME type with <a href="ClassDragDrop.html#getSelectedMimeType">ui.DragDrop.getSelectedMimeType()</a>
+before calling <a href="ClassDragDrop.html#getBuffer">ui.DragDrop.getBuffer()</a>
+to retrieve the actual data.</p>
+
+
+<p>The next example shows the usage of those methods: In <tt>ON DRAG_ENTER</tt>,
+the program checks available MIME types, and denies the drop operation if the
+buffer does not hold any of the MIME types that can be treated by the program. In <tt>ON
+DROP</tt>, the program calls <code>getSelectMimeType()</code> to check what MIME
+type was selected, retrieves the data with <code>getBuffer()</code>, then
+inserts a new row and puts the data in dedicated fields according to the MIME
+type:</p>
+<pre><CODE class=linenumber>01</CODE> <tt>DEFINE </tt>dnd ui.DragDrop
+<CODE class=linenumber>02</CODE> ...
+<CODE class=linenumber>03</CODE> <tt>DISPLAY ARRAY</tt> arr <tt>TO </tt>sr.* ...
+<CODE class=linenumber>04</CODE> ...
+<CODE class=linenumber>05</CODE>    <tt> ON DRAG_ENTER</tt>(dnd)
+<CODE class=linenumber>06</CODE>      <tt> </tt>-- Set operation to NULL if unexpected MIME type found
+<CODE class=linenumber>07</CODE>      <tt> CASE</tt>
+<u><CODE class=linenumber>08</CODE>      <tt> WHEN </tt>dnd.selectMimeType(&quot;text/plain&quot;)
+<CODE class=linenumber>09</CODE>      <tt> WHEN </tt>dnd.selectMimeType(&quot;text/uri-list&quot;)
+</u><CODE class=linenumber>10</CODE>      <tt> OTHERWISE</tt>
+<CODE class=linenumber>11</CODE>         <tt>CALL </tt>dnd.setOperation(NULL)
+<CODE class=linenumber>12</CODE>      <tt> END CASE</tt>
+<CODE class=linenumber>13</CODE> ...
+<CODE class=linenumber>14</CODE>    <tt> ON DROP</tt>(dnd)
+<CODE class=linenumber>15</CODE>      <tt> </tt>-- Select MIME type and get data from buffer
+<CODE class=linenumber>17</CODE>      <tt> LET </tt>row = dnd.getLocationRow()
+<CODE class=linenumber>18</CODE>      <tt> CALL DIALOG</tt>.insertRow(&quot;sr&quot;, row)
+<u><CODE class=linenumber>20</CODE>      <tt> IF </tt>dnd.getSelectMimeType() == &quot;text/plain&quot; <tt>THEN</tt>
+<CODE class=linenumber>21</CODE>         <tt>LET </tt>arr[row].text_data = dnd.getBuffer()
+</u><CODE class=linenumber>23</CODE>      <tt> END IF</tt>
+<CODE class=linenumber>24</CODE> ...
+<code class="linenumber">25</code> <tt>END DISPLAY</tt></pre>
+
+
+<HR>
+
+<h3><a name="EXAMPLES">Examples</a></h3>
+
+<p><i>See demo directory for more drag &amp; drop examples!</i></p>
+
+<h4><a name="EXAMPLE_1">Example 1: Two lists side-by-side with drag &amp; drop</a></h4>
+
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>     <tt>DEFINE</tt> drag_index, drop_index, i <tt>INT</tt>
+<CODE class=linenumber>03</CODE>     <tt>DEFINE</tt> drag_source, drag_value <tt>SRING</tt>
+<CODE class=linenumber>04</CODE>     <tt>DEFINE</tt> arr_left, arr_right <tt>DYNAMIC ARRAY OF STRING</tt>
+<CODE class=linenumber>05</CODE>     <tt>DEFINE</tt> dnd ui.DragDrop
+<CODE class=linenumber>06</CODE>     <tt>CONSTANT</tt> S_LEFT=&quot;sr_left&quot;
+<CODE class=linenumber>07</CODE>     <tt>CONSTANT</tt> S_RIGHT=&quot;sr_right&quot;
+<CODE class=linenumber>08</CODE>
+<CODE class=linenumber>09</CODE>     <tt>OPEN FORM</tt> f <tt>FROM</tt> &quot;dnd&quot;
+<CODE class=linenumber>10</CODE>     <tt>DISPLAY FORM</tt> f
+<CODE class=linenumber>11</CODE>
+<CODE class=linenumber>12</CODE>     <tt>FOR</tt> i = 1 <tt>TO</tt> 10
+<CODE class=linenumber>13</CODE>        <tt>LET</tt> arr_left[i] = &quot;left &quot; || i
+<CODE class=linenumber>14</CODE>         <tt>LET</tt> arr_right[i] = &quot;right&quot; || i
+<CODE class=linenumber>15</CODE>     <tt>END FOR</tt>
+<CODE class=linenumber>16</CODE>
+<CODE class=linenumber>17</CODE>     <tt>INITIALIZE</tt> drag_index <tt>TO NULL</tt>
+<CODE class=linenumber>18</CODE>
+<CODE class=linenumber>19</CODE>     <tt>DIALOG ATTRIBUTE</tt>(<tt>UNBUFFERED</tt>)
+<CODE class=linenumber>20</CODE>
+<CODE class=linenumber>21</CODE>         <tt>DISPLAY ARRAY</tt> arr_left <tt>TO</tt> sr_left.*
+<CODE class=linenumber>22</CODE>         <tt>ON DRAG_START</tt>(dnd)
+<CODE class=linenumber>23</CODE>             <tt>LET</tt> drag_source = S_LEFT
+<CODE class=linenumber>24</CODE>             <tt>LET</tt> drag_index = arr_curr()
+<CODE class=linenumber>25</CODE>             <tt>LET</tt> drag_value = arr_left[drag_index]
+<CODE class=linenumber>26</CODE>         <tt>ON DRAG_FINISHED</tt>(dnd)
+<CODE class=linenumber>27</CODE>             <tt>INITIALIZE</tt> drag_source <tt>TO NULL</tt>
+<CODE class=linenumber>28</CODE>
+<CODE class=linenumber>29</CODE>         <tt>ON DRAG_ENTER</tt>(dnd)
+<CODE class=linenumber>30</CODE>             <tt>IF</tt> drag_source <tt>IS NULL THEN</tt>
+<CODE class=linenumber>31</CODE>                 <tt>CALL</tt> dnd.setOperation(<tt>NULL</tt>)
+<CODE class=linenumber>32</CODE>             <tt>END IF</tt>
+<CODE class=linenumber>33</CODE>         <tt>ON DROP</tt>(dnd)
+<CODE class=linenumber>34</CODE>             <tt>IF</tt> drag_source == S_LEFT <tt>THEN</tt>
+<CODE class=linenumber>35</CODE>                 <tt>CALL</tt> dnd.dropInternal()
+<CODE class=linenumber>36</CODE>             <tt>ELSE</tt>
+<CODE class=linenumber>37</CODE>                 <tt>LET</tt> drop_index = dnd.getLocationRow()
+<CODE class=linenumber>38</CODE>                 <tt>CALL DIALOG</tt>.insertRow(S_LEFT, drop_index)
+<CODE class=linenumber>39</CODE>                 <tt>CALL DIALOG</tt>.setCurrentRow(S_LEFT, drop_index)
+<CODE class=linenumber>40</CODE>                 <tt>LET</tt> arr_left[drop_index] = drag_value
+<CODE class=linenumber>41</CODE>                 <tt>CALL</tt> <tt>DIALOG</tt>.deleteRow(S_RIGHT, drag_index)
+<CODE class=linenumber>42</CODE>             <tt>END IF</tt>
+<CODE class=linenumber>43</CODE>         <tt>END DISPLAY</tt>
+<CODE class=linenumber>44</CODE>
+<CODE class=linenumber>45</CODE>         <tt>DISPLAY ARRAY</tt> arr_right <tt>TO</tt> sr_right.*
+<CODE class=linenumber>46</CODE>         <tt>ON DRAG_START</tt>(dnd)
+<CODE class=linenumber>47</CODE>             <tt>LET</tt> drag_source = S_RIGHT
+<CODE class=linenumber>48</CODE>             <tt>LET</tt> drag_index = arr_curr()
+<CODE class=linenumber>49</CODE>             <tt>LET</tt> drag_value = arr_right[drag_index]
+<CODE class=linenumber>50</CODE>         <tt>ON DRAG_FINISHED</tt>(dnd)
+<CODE class=linenumber>51</CODE>             <tt>INITIALIZE</tt> drag_source <tt>TO NULL</tt>
+<CODE class=linenumber>52</CODE>
+<CODE class=linenumber>53</CODE>         <tt>ON DRAG_ENTER</tt>(dnd)
+<CODE class=linenumber>54</CODE>             <tt>IF</tt> drag_source <tt>IS NULL THEN</tt>
+<CODE class=linenumber>55</CODE>                 <tt>CALL</tt> dnd.setOperation(<tt>NULL</tt>)
+<CODE class=linenumber>56</CODE>             <tt>END IF</tt>
+<CODE class=linenumber>57</CODE>         <tt>ON DROP</tt>(dnd)
+<CODE class=linenumber>58</CODE>             <tt>IF</tt> drag_source == S_RIGHT <tt>THEN</tt>
+<CODE class=linenumber>59</CODE>                 <tt>CALL</tt> dnd.dropInternal()
+<CODE class=linenumber>60</CODE>             <tt>ELSE</tt>
+<CODE class=linenumber>61</CODE>                 <tt>LET</tt> drop_index = dnd.getLocationRow()
+<CODE class=linenumber>62</CODE>                 <tt>CALL DIALOG</tt>.insertRow(S_RIGHT, drop_index)
+<CODE class=linenumber>63</CODE>                 <tt>CALL DIALOG</tt>.setCurrentRow(S_RIGHT, drop_index)
+<CODE class=linenumber>64</CODE>                 <tt>LET</tt> arr_right[drop_index] = drag_value
+<CODE class=linenumber>65</CODE>                 <tt>CALL DIALOG</tt>.deleteRow(S_LEFT, drag_index)
+<CODE class=linenumber>66</CODE>             <tt>END IF</tt>
+<CODE class=linenumber>67</CODE>         <tt>END DISPLAY</tt>
+<CODE class=linenumber>68</CODE>
+<CODE class=linenumber>69</CODE>     <tt>ON ACTION</tt> cancel
+<CODE class=linenumber>70</CODE>         <tt>EXIT DIALOG</tt>
+<CODE class=linenumber>71</CODE>
+<CODE class=linenumber>72</CODE>     <tt>END DIALOG</tt>
+<CODE class=linenumber>73</CODE> <tt>END MAIN</tt></PRE>
+
+
+</BODY>
+</HTML>

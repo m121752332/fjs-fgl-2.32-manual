@@ -1,0 +1,312 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Dynamic SQL</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Dynamic SQL Management</a></H1>
+<p> Summary: </p>
+
+<ul>
+  <li><a href="#DYNSQL">What is Dynamic SQL Management?</a></li>
+  <li><a href="#DS_PREPARE">Preparing an SQL statement</a> (<tt>PREPARE</tt>)</li>
+  <li><a href="#DS_EXECUTE">Executing prepared statements</a> (<tt>EXECUTE</tt>)</li>
+  <li><a href="#DS_FREE">Releasing prepared statements</a> (<tt>FREE</tt>)</li>
+  <li><a href="#DS_EXECUTE_IMMEDIATE">Immediate execution</a> (<tt>EXECUTE IMMEDIATE</tt>)</li>
+</ul>
+
+
+<p><i>See also:</i>  <a href="Transactions.html">Transactions</a>, <a href="PositionedUpdates.html">Positioned
+Updates</a>, <a href="StaticSql.html">Static SQL</a>, <a href="ResultSets.html">Result Sets</a>, <a href="Exceptions.html#SQLERRORS">SQL
+Errors</a>, <a href="ResultSets.html#RS_DECLARE">Declaring a cursor</a> (<tt>DECLARE</tt>).</p>
+
+
+<HR>
+
+<h3><a name="DYNSQL">What is Dynamic SQL management?</a></h3>
+
+<p>BDL includes basic SQL instructions in the language syntax (see <a href="StaticSql.html">Static
+SQL</a>), but only a limited number of SQL instructions are supported this way. Dynamic
+SQL Management allows you to execute any kind of SQL statement, hard coded
+or created at runtime, with or without SQL parameters, returning or not
+returning a result set.&nbsp; </p>
+
+
+<p>In order to execute an SQL statement with Dynamic SQL, you must first <a href="#DS_PREPARE">prepare</a>
+the SQL statement to initialize a <u>statement handle</u>, then you <a href="#DS_EXECUTE">execute</a> the
+<u> prepared statement</u> one or more times: </p>
+
+
+<p align="center"><img border="0" src="../Images/DNSFig01.png" width="504" height="288"> </p>
+
+
+<p>When you no longer need the <u>prepared statement</u>, you can <a href="#DS_FREE">free</a> the
+statement handle to release allocated resources: </p>
+
+
+<p align="center"><img border="0" src="../Images/DNSFig02.png" width="504" height="288"> </p>
+
+
+<p>When using <a href="InsertCursors.html">insert cursors</a>
+or SQL statements that produce a result set (like <tt>SELECT</tt>),
+you must <a href="ResultSets.html#RS_DECLARE">declare</a> a cursor with a prepared statement
+handle. </p>
+
+
+<p>Prepared SQL statements can contain SQL parameters by using <tt>?</tt> placeholders
+in the SQL text. In this case, the <tt>EXECUTE</tt> or <tt>OPEN</tt> 
+instruction supplies input values in the <tt>USING</tt> clause.</p>
+
+
+<p>To increase performance efficiency, you can use the <tt>PREPARE</tt>
+ instruction, together with an <tt>EXECUTE</tt>   instruction in a loop, to eliminate overhead
+caused by redundant parsing and optimizing. For example, an <tt>UPDATE</tt>
+statement located within a <tt>WHILE</tt> loop is parsed each time the loop
+runs. If you prepare the <tt>UPDATE</tt> statement outside the loop, the
+statement is parsed only once, eliminating overhead and speeding statement
+execution.</p>
+
+
+<HR>
+
+<h3><a name="DS_PREPARE">PREPARE</a></h3>
+
+<h4>Purpose:</h4><p>This instruction prepares an SQL statement for execution in
+the current <a href="Connections.html">database connection</a>. </p>
+
+
+<h4>Syntax:</h4><code>PREPARE <i>sid</i> FROM <i>sqltext</i></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>sid</i> is an identifier to handle the prepared SQL statement.</li>
+  <li> <i>sqltext</i> is a <a href="Expressions.html#EX_STRING">string
+    expression</a> containing the SQL statement to be prepared.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+The <tt>PREPARE</tt> instruction allocates resources for an SQL statement
+handle, in the context of the <a href="Connections.html">current connection</a>.
+The SQL text is sent to the database server for parsing,
+    validation and to generate the execution plan.
+<p>Prepared SQL statements can be executed with the <a href="#DS_EXECUTE">EXECUTE</a>
+ instruction, or, when the SQL statement generates a result set, the prepared
+statement can be used to declare <a href="ResultSets.html">cursors</a>
+    with the <a href="ResultSets.html#RS_DECLARE">DECLARE</a> instruction.</p>
+<p> A statement identifier (<i>sid</i>) can represent only one SQL statement at a time.
+    You can execute a new <tt>PREPARE</tt>  instruction with an existing statement
+    identifier if you wish to assign the text of a different SQL statement to
+    the statement identifier. The scope of reference of the <i>sid</i> statement identifier
+    is local to the module where it is declared.</p>
+<p> The SQL statement can have parameter placeholders, identified by the
+    question mark (<tt>?</tt>) character.</p>
+ Resources allocated by <tt>PREPARE</tt> can be released later by
+    the <a href="#DS_FREE">FREE</a> instruction.
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>You cannot directly&nbsp;reference a <a href="Variables.html">variable</a>
+    in the text of a prepared SQL statement; you must use
+    question mark (<tt>?</tt>) placeholders instead.</li>
+  <li>The number of prepared statements in a single program is limited by the
+    database server and the available memory. Make sure that you <a href="#DS_FREE">free</a>
+    the resources when you no longer need the prepared statement.</li>
+  <li> The identifier of a statement that was prepared in one
+    module cannot be referenced from another module.</li>
+  <li> You cannot use question mark (<tt>?</tt>) placeholders for SQL
+    identifiers such as a table name or a column name; you must specify these
+    identifiers in the statement text when you prepare it.</li>
+  <li> Some database servers like Informix support multiple SQL statement
+    preparation in a unique <tt>PREPARE</tt>  instruction, but most database
+    servers avoid multiple statements.</li>
+</ol>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>FUNCTION </tt>deleteOrder(n)
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <tt>PREPARE</tt> s1 <tt>FROM</tt> &quot;DELETE FROM order WHERE key=?&quot;
+<CODE class=linenumber>04</CODE>   <tt>EXECUTE</tt> s1 <tt>USING</tt> n
+<CODE class=linenumber>05</CODE>   <tt>FREE</tt> s1
+<CODE class=linenumber>06</CODE> <tt>END FUNCTION</tt></PRE>
+
+
+<HR>
+
+<h3><a name="DS_EXECUTE">EXECUTE</a></h3>
+
+<h4>Purpose:</h4><p>This instruction runs an SQL statement previously <a href="#DS_PREPARE">prepared</a> in
+the same <a href="Connections.html">database connection</a>. </p>
+
+
+<h4>Syntax:</h4><code>EXECUTE <i>sid</i> <u>[</u> USING <i>pvar </i> <u>{</u>IN<u>|</u>OUT<u>|</u>INOUT<u>}</u>
+<u>[,...]</u>
+<u>]</u> <u>[</u> INTO <i>fvar</i> <u>[,...]</u> <u>]</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>sid</i> is an identifier to handle the <a href="#DS_PREPARE">prepared</a> 
+    SQL statement.</li>
+  <li> <i>pvar</i> is a <a href="Variables.html"> variable</a> containing an input value for an SQL parameter.</li>
+  <li> <i>fvar</i> is a <a href="Variables.html"> variable</a> used as fetch buffer, when the prepared
+    statement returns a single database row.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+The <tt>EXECUTE</tt> instruction performs the execution of a <a href="#DS_PREPARE">prepared
+SQL statement</a>. Once prepared, an SQL statement can be executed as often as needed.
+<p> If the SQL statement has (<tt>?</tt>) parameter placeholders, you must
+    specify the <tt>USING</tt> clause to provide a list of variables as parameter buffers.
+    Parameter values are assigned <u>by position</u>.</p>
+<p> If the SQL statement returns a result set <u>with one row</u>, you can
+    specify the <tt>INTO</tt> clause to provide a list of variables to receive the
+    result set column values. Fetched values are assigned <u>by position</u>. If the SQL statement returns a result set with more than one row, the
+    instruction raises an <a href="Exceptions.html">exception</a>.</p>
+<p>The <tt>IN</tt>, <tt>OUT</tt> or <tt>INOUT</tt> options can be used to call stored
+procedures having input / output parameters. Use
+the <tt>IN</tt>, <tt>OUT</tt> or <tt>INOUT</tt> options to indicate if a
+parameter is respectively for input, output or both. For more details about
+stored procedure calls, see <a href="SqlProgramming.html">SQL Programming</a>.</p>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>You cannot use strings or numeric constants in the <tt> USING</tt> or <tt> INTO</tt> list. All elements
+    must be <a href="Variables.html">program variables</a>.</li>
+  <li>You cannot&nbsp;execute a prepared SQL statement based on database tables
+    if the table structure has changed (<tt>ALTER TABLE</tt>) since the <a href="#DS_PREPARE">PREPARE</a>
+    instruction; you must re-prepare the SQL statement.</li>
+  <li>The <tt>IN</tt>, <tt>OUT</tt> or <tt>INOUT</tt> options can only be used
+    for simple variables, you cannot specify those options for a complete record
+    with the record.* notation.</li>
+</ol>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> var1 <tt>CHAR</tt>(20)
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> var2 <tt>INTEGER</tt>
+<CODE class=linenumber>04</CODE> 
+<CODE class=linenumber>05</CODE>   <tt>DATABASE</tt> stores
+<CODE class=linenumber>06</CODE> 
+<CODE class=linenumber>07</CODE>   <tt>PREPARE</tt> s1 <tt>FROM</tt> &quot;UPDATE tab SET col=? WHERE key=?&quot;
+<CODE class=linenumber>08</CODE>   <tt>LET</tt> var1 = &quot;aaaa&quot;
+<CODE class=linenumber>09</CODE>   <tt>LET</tt> var2 = 345
+<CODE class=linenumber>10</CODE>   <tt>EXECUTE</tt> s1 <tt>USING</tt> var1, var2
+<CODE class=linenumber>11</CODE> 
+<CODE class=linenumber>12</CODE>   <tt>PREPARE</tt> s2 <tt>FROM</tt> &quot;SELECT col FROM tab WHERE key=?&quot;
+<CODE class=linenumber>13</CODE>   <tt>LET</tt> var2 = 564
+<CODE class=linenumber>14</CODE>   <tt>EXECUTE</tt> s2 <tt>USING</tt> var2 <tt>INTO</tt> var1
+<CODE class=linenumber>15</CODE> 
+<CODE class=linenumber>16</CODE>   <tt>PREPARE</tt> s3 <tt>FROM</tt> &quot;CALL myproc(?,?)&quot;
+<CODE class=linenumber>17</CODE>   <tt>LET</tt> var1 = 'abc'
+<CODE class=linenumber>18</CODE>   <tt>EXECUTE</tt> s3 <tt>USING</tt> var1 <tt>IN</tt>, var2 <tt>OUT</tt>
+<CODE class=linenumber>19</CODE> 
+<CODE class=linenumber>20</CODE> <tt>END MAIN</tt></PRE>
+
+
+<HR>
+
+<h3><a name="DS_FREE">FREE</a></h3>
+
+<h4>Purpose:</h4><p> This instruction releases the resources allocated to a <a href="#DS_PREPARE"> prepared</a>
+statement. </p>
+
+
+<h4>Syntax:</h4><code>FREE <i>sid</i> </code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>sid</i> is the identifier of the <a href="#DS_PREPARE"> prepared</a> SQL statement.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+The <tt>FREE</tt> instruction takes the name of a statement as parameter.
+<p> All resources allocated to the SQL statement handle are released.</p>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>After resources are released, the statement identifier cannot be
+    referenced by a <a href="ResultSets.html">cursor</a>, or by the <a href="#DS_EXECUTE"> EXECUTE</a>
+    statement, until you <a href="#DS_PREPARE"> prepare</a> the statement again.</li>
+</ol>
+
+
+<h4><font color="#008000">Tips:</font></h4>
+<ol>
+  <li> Free the statement if it is not needed anymore, this saves resources on
+    the database client and database server side.</li>
+</ol>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>FUNCTION</tt> update_customer_name( key, name )
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> key <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> name <tt>CHAR</tt>(10)
+<CODE class=linenumber>04</CODE>   <tt>PREPARE</tt> s1 <tt>FROM</tt> &quot;UPDATE customer SET name=? WHERE customer_num=?&quot;
+<CODE class=linenumber>05</CODE>   <tt>EXECUTE</tt> s1 <tt>USING</tt> name, key
+<CODE class=linenumber>06</CODE>   <tt>FREE</tt> s1
+<CODE class=linenumber>07</CODE> <tt>END FUNCTION</tt></PRE>
+
+
+<HR>
+
+<h3><a name="DS_EXECUTE_IMMEDIATE">EXECUTE IMMEDIATE</a></h3>
+
+<h4>Purpose:</h4>This instruction performs a simple SQL execution without SQL
+parameters or result set.
+
+
+<h4>Syntax:</h4><code>EXECUTE IMMEDIATE <i>sqltext</i></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>sqltext</i> is a <a href="Expressions.html#EX_STRING">string
+    expression</a> containing the SQL statement to be executed.</li>
+</ol>
+
+
+<h4>Usage:</h4>
+<p>The <tt>EXECUTE IMMEDIATE</tt> instruction passes an SQL statement to the database
+server for execution in
+the current <a href="Connections.html">database connection</a>. </p>
+
+
+<p> The SQL statement must be a single statement without parameters,
+    returning no result set.</p>
+ This instruction performs the functions of <a href="#DS_PREPARE">PREPARE</a>,
+    <a href="#DS_EXECUTE">EXECUTE</a> and <a href="#DS_FREE">FREE</a> in one
+    step.&nbsp;
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li>The&nbsp; SQL statement cannot contain SQL parameters.</li>
+  <li>The&nbsp; SQL statement must not produce a result set.</li>
+</ol>
+
+
+<h4>Example:</h4>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>   <tt>DATABASE</tt> stores
+<CODE class=linenumber>03</CODE>   <tt>EXECUTE IMMEDIATE</tt> &quot;UPDATE tab SET col='aaa' WHERE key=345&quot;
+<CODE class=linenumber>04</CODE> <tt>END MAIN</tt></PRE>
+
+
+</BODY>
+</HTML>

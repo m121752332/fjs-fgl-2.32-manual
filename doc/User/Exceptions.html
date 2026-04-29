@@ -1,0 +1,641 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Exceptions</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Exceptions</a></H1>
+<p>Summary: </p>
+
+
+<ul>
+  <li><a href="#DEFINITION">Exceptions handling</a></li>
+  <li><a href="#EXCEPTION_ACTIONS">Exception Actions</a></li>
+  <li><a href="#EXCEPTION_TYPES">Exception Types</a></li>
+  <li><a href="#EXCEPTION_CLASSES">Exception Classes</a></li>
+  <li><a href="#WHENEVER">Exceptions handler</a> (<tt>WHENEVER</tt>)</li>
+  <li><a href="#TRYCATCH">Exception blocks</a> (<tt>TRY/CATCH</tt>)</li>
+  <li><a href="#SQLERRORS">Handling SQL Errors</a></li>
+  <li><a href="#SQLWARNINGS">Handling SQL Warnings</a></li>
+  <li><a href="#TRACE"> Tracing exceptions</a></li>
+  <li><a href="#CONFIG">Configuring exception handling</a>
+    <ul>
+      <li><a href="#mapAnyErrorToError">Controlling the default action for <tt>WHENEVER
+        ANY ERROR</tt></a></li>
+    </ul>
+  </li>
+  <li><a href="#EXAMPLES">Examples</a>
+    <ul>
+      <li><a href="#EXAMPLE_1">Example 1</a> - <tt>WHENEVER ERROR CALL</tt></li>
+      <li><a href="#EXAMPLE_2">Example 2</a> - <tt>WHENEVER ERROR CONTINUE /
+        STOP</tt></li>
+      <li><a href="#EXAMPLE_3">Example 3</a> - <tt>TRY / CATCH</tt></li>
+      <li><a href="#EXAMPLE_4">Example 4</a> - <tt>WHENEVER + TRY CATCH</tt></li>
+      <li><a href="#EXAMPLE_5">Example 5</a> - <tt>WHENEVER ERROR RAISE</tt></li>
+    </ul>
+  </li>
+</ul>
+
+
+<p><i>See also:</i> <a href="FlowControl.html">Flow Control</a>, <a href="FglErrors.html">Fgl
+Errors</a>.</p>
+
+
+<HR>
+
+<h2><a name="DEFINITION">Exception handling</a></h2>
+
+<p>If an instructions executes abnormally, the <a href="FglTerms.html#RUNTIME_SYSTEM">runtime
+system</a>  throws exceptions that can be handled by the program. <a href="#EXCEPTION_ACTIONS">Actions</a>
+can be taken based on the <a href="#EXCEPTION_CLASSES">class of the exception</a>.
+There is no way to raise
+exceptions explicitly; only the runtime system can throw exceptions. Runtime
+errors (i.e. exceptions) can be trapped by a <a href="#WHENEVER">WHENEVER</a>
+exception handler or by a <a href="#TRYCATCH">TRY / CATCH</a> block. </p>
+
+
+<HR>
+
+<h2><a name="EXCEPTION_ACTIONS">Exception Actions</a></h2>
+<p>There are five actions that can be executed if an exception is raised:</p>
+
+
+<dl>
+  <dt><tt>STOP</tt></dt>
+  <dd>The program is immediately terminated. A message is displayed to the standard
+    error with the location of the related statement, the error number,  and
+    the details of the exception.
+  <dt><tt>CONTINUE</tt></dt>
+  <dd>The program continues normally (the exception is ignored).
+  <dt><tt>CALL</tt> <i>name</i></dt>
+  <dd>The <a href="Functions.html">function</a> <i>name</i> is called by the
+    runtime system. The  function can be defined in any
+    module, and must have
+    zero parameters and zero return values. The <a href="Programs.html#PV_STATUS">STATUS</a>
+    variable will be set to the corresponding error number.
+  <dt><tt>GOTO</tt> <i>name</i></dt>
+  <dd>The program execution continues at the <a href="FlowControl.html#FC_GOTO">label</a>
+    identified by <i>name</i>.</dd>
+  <dt><tt>RAISE</tt></dt>
+  <dd>This statement instructs the DVM that an exception raised will not be handled by the local function, but 
+  by the calling function. If an exception is raised, the current function will return and the exception 
+  handling is left to the caller function.<br>
+    <b><font color="#FF0000">Warning:</font> <tt>WHENEVER [ANY] ERROR RAISE</tt>
+    is not supported in a <a href="Reports.html">REPORT routine</a>.</b></dd>
+</dl>
+
+
+<HR>
+
+<h2><a name="EXCEPTION_TYPES">Exception Types</a></h2>
+<p>There are four types of exceptions, defining the kind of errors that can
+occur:</p>
+
+
+<div align="left">
+  <table border="0" width="95%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Type</b></td>
+      <td width="40%" bgcolor="#C0C0C0"><b>Reason</b></td>
+      <td bgcolor="#C0C0C0"><b>Examples</b></td>
+    </tr>
+    <tr>
+      <td width="20%"><code>ET_STATEMENT</code></td>
+      <td width="40%">Error occurred in a statement.</td>
+      <td>DISPLAY AT invalid coordinates.</td>
+    </tr>
+    <tr>
+      <td width="20%"><code>ET_EXPRESSION</code></td>
+      <td width="40%">Expression evaluation error.</td>
+      <td>Division by zero.</td>
+    </tr>
+    <tr>
+      <td width="20%"><code>ET_NOTFOUND</code></td>
+      <td width="40%">An SQL statement returns status <a href="Programs.html#PC_NOTFOUND">NOTFOUND</a>.</td>
+      <td>FETCH when cursor is on last row.&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="20%"><code>ET_WARNING</code></td>
+      <td width="40%">An SQL statement sets <a href="Connections.html#SQLCA_RECORD">sqlca.sqlawarn</a>
+        flags.</td>
+      <td>Fetched CHAR value has been truncated.</td>
+    </tr>
+  </table>
+</div>
+
+
+<HR>
+
+<h2><a name="EXCEPTION_CLASSES">Exception Classes</a></h2>
+
+
+<p>The exception classes  indirectly define
+the <a href="#EXCEPTION_TYPES">exception
+type</a>:</p>
+
+
+<div align="left">
+  <table border="0" width="95%">
+    <tr>
+      <td width="20%" bgcolor="#C0C0C0"><b>Class</b></td>
+      <td width="25%" bgcolor="#C0C0C0"><b>Related Exception Type (defines the error reason)</b></td>
+      <td width="10%" bgcolor="#C0C0C0"><b>Default Action</b></td>
+    </tr>
+    <tr>
+      <td width="20%"><tt>ERROR (or SQLERROR)</tt></td>
+      <td width="25%"><code>ET_STATEMENT</code></td>
+      <td width="10%">STOP</td>
+    </tr>
+    <tr>
+      <td width="20%"><tt>ANY ERROR (or ANY SQLERROR)</tt></td>
+      <td width="25%"><code>ET_STATEMENT</code> or <code>ET_EXPRESSION</code></td>
+      <td width="10%">CONTINUE (1)</td>
+    </tr>
+    <tr>
+      <td width="20%"><tt>NOT FOUND</tt></td>
+      <td width="25%"><code>ET_NOTFOUND</code></td>
+      <td width="10%">CONTINUE</td>
+    </tr>
+    <tr>
+      <td width="20%"><tt>WARNING</tt></td>
+      <td width="25%"><code>ET_WARNING</code></td>
+      <td width="10%">CONTINUE</td>
+    </tr>
+  </table>
+</div>
+
+
+<p>Notes:</p>
+<ol>
+  <li>The default action can be changed, see <a href="#mapAnyErrorToError">Configuring
+    exception handling</a>.</li>
+</ol>
+
+
+<HR>
+
+
+<h2><a name="WHENEVER">WHENEVER</a> </h2>
+
+
+<p>The <tt>WHENEVER</tt> instruction defines exception handling in a
+program module, by associating an <a href="#EXCEPTION_CLASSES">exception class</a>
+with an <a href="#EXCEPTION_ACTIONS">exception action</a>. </p>
+
+
+<h4>Syntax:</h4><code>WHENEVER <i><a href="#exception-class">exception-class</a>
+<a href="#exception-action">exception-action</a></i></code>
+<p><a name="exception-class">were exception-class is one of:</a></p>
+<p><code> <u> {</u> <u> [</u>ANY<u>]</u> ERROR<br>
+ <u> |</u> <u> [</u>ANY<u>]</u>  SQLERROR<br>
+ <u> |</u>  NOT FOUND<br>
+ <u> |</u>  WARNING<br>
+<u>}</u></code></p>
+
+
+<p><a name="exception-action">and exception-action is one of:</a></p>
+
+
+<p><code> <u> {</u> CONTINUE<br>
+ <u> |</u> STOP<br>
+<u> |</u> CALL <i>function<br>
+</i> <u> |</u> RAISE<br>
+ <u> |</u> GOTO <i>label<br>
+</i>   <u>  }</u></code></p>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>function</i> can be any <a href="Functions.html">function</a> name
+    defined in the program.</li>
+  <li><i>label</i> must be a <a href="FlowControl.html#FC_GOTO">label</a> defined in the
+    current program block (main, function or report routine).</li>
+</ol>
+
+
+<h4>Usage:</h4>
+
+
+<p> The scope of a <tt> WHENEVER</tt> instruction is similar to a C pre-processor macro.
+    It is local to the module and valid until the end of the module, unless
+    a new <tt> WHENEVER</tt> instruction is encountered by the compiler.</p>
+
+
+<p>Next code example shows a typical <tt>WHENEVER</tt> instruction usage:</p>
+
+<pre><code class=linenumber>01</code> <tt>WHENEVER ERROR CONTINUE</tt>
+<code class=linenumber>02</code> <tt>DROP TABLE </tt>mytable -- SQL error will be ignored
+<code class=linenumber>03</code> <tt>CREATE TABLE </tt>mytable ( k INT, c VARCHAR(20) )
+<code class=linenumber>04</code> <tt>WHENEVER ERROR STOP</tt>
+<code class=linenumber>05</code> <tt>IF</tt> SQLCA.SQLCODE != 0 <tt>THEN</tt>
+<code class=linenumber>06</code>    <tt>ERROR </tt>&quot;Could not create the table...&quot;
+<code class=linenumber>07</code> <tt>END IF</tt></pre>
+
+
+<p>Exception classes <tt>ERROR</tt>  and <tt>SQLERROR</tt>  are synonyms
+(compatibility issue). The previous example could have used <tt>WHENEVER
+SQLERROR</tt> instead of <tt>WHENEVER ERROR</tt>.</p>
+
+
+<p>Actions for classes <tt>ERROR</tt>, <tt>WARNING</tt>  and <tt>NOT FOUND</tt>
+ can be set independently:</p>
+
+<pre><code class=linenumber>01</code> <tt>WHENEVER ERROR STOP</tt>
+<code class=linenumber>02</code> <tt>WHENEVER WARNING CONTINUE</tt>
+<code class=linenumber>03</code> <tt>WHENEVER NOT FOUND GOTO</tt> not_found_handler
+<code class=linenumber>04</code> ...</pre>
+
+
+<p>For SQL instructions that can potentially generate errors, it is recommended
+    that you define 
+    an exception handler locally; errors
+    in the rest of the program can be handled by the default exception handler.
+    See <a href="#EXAMPLE_2">example 2</a> for more details.</p>
+
+<p>The <tt>RAISE</tt> option can be used to propagate the error to the caller,
+which typically traps the error in a <a href="#TRYCATCH">TRY/CATCH block</a>.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> <tt>WHENEVER [ANY] ERROR RAISE</tt>
+is not supported in a <a href="Reports.html">REPORT routine</a>.</b></p>
+
+<HR>
+
+<h2><a name="TRYCATCH">TRY - CATCH pseudo statement</a></h2>
+<p>
+Any Genero BDL statement in the <tt>TRY</tt> block will be executed until an exception 
+is
+thrown. After an exception the program execution continues in the <tt>CATCH</tt>
+block. If no <tt>CATCH</tt> block is provided, the execution continues after <tt>END TRY</tt>.</p>
+<p>If no exception is raised by the statements between the <tt>TRY</tt> and <tt>CATCH</tt>
+keywords, the instructions in the <tt>CATCH</tt> section are ignored and the
+program flow continues after <tt>END TRY</tt>.</p>
+<p>The next code example shows a <tt>TRY</tt> block executing an SQL statement:<pre><u><code class=linenumber>01</code> <tt>TRY</tt>
+</u><code class=linenumber>02</code>     <tt>SELECT </tt>COUNT(*) <tt>INTO</tt> num_cust <tt>FROM</tt> customers <tt>WHERE</tt> ord_date &lt;= max_date
+<u><code class=linenumber>03</code> <tt>CATCH</tt>
+</u><code class=linenumber>04</code>     <tt>ERROR</tt> &quot;Error caught during SQL statement execution:&quot;, SQLCA.SQLCODE
+<u><code class=linenumber>05</code> <tt>END TRY</tt></u></pre>
+
+<p>A <tt>TRY</tt> block be compared with <tt>WHENEVER ANY ERROR GOTO</tt>. Here
+is the equivalent of the above code example:</p>
+<pre><u><code class=linenumber>01</code> <tt>WHENEVER ANY ERROR GOTO catch_error</tt>
+</u><code class=linenumber>02</code>     <tt>SELECT </tt>COUNT(*) <tt>INTO</tt> num_cust <tt>FROM</tt> customers <tt>WHERE</tt> ord_date &lt;= max_date
+<u><code class=linenumber>03</code>     <tt>GOTO</tt> no_error
+<code class=linenumber>04</code> <tt>LABEL</tt> catch_error:
+<code class=linenumber>05</code> <tt>WHENEVER ERROR STOP</tt>
+</u><code class=linenumber>06</code>     <tt>ERROR</tt> &quot;Error caught during SQL statement execution:&quot;, SQLCA.SQLCODE
+<u><code class=linenumber>07</code> <tt>LABEL</tt> no_error</u></pre>
+
+<p>The <tt>TRY</tt> statement can be nested in other <tt>TRY</tt>  statements.
+In the next example, the instruction in line #5 will be executed in case of SQL
+error:
+</p>
+
+<pre><code class=linenumber>01</code> <tt>TRY</tt>
+<u><code class=linenumber>02</code>     <tt>TRY</tt>
+</u><code class=linenumber>03</code>         <tt>SELECT </tt>COUNT(*) <tt>INTO</tt> num_cust <tt>FROM</tt> customers
+<u><code class=linenumber>04</code>     <tt>CATCH</tt>
+</u><code class=linenumber>05</code>         <tt>ERROR</tt> &quot;Try block 2: &quot;, SQLCA.SQLCODE
+<u><code class=linenumber>06</code>     <tt>END TRY</tt>
+</u><code class=linenumber>07</code> <tt>CATCH</tt>
+<code class=linenumber>08</code>     <tt>ERROR</tt> &quot;Try block 1: &quot;, SQLCA.SQLCODE
+<code class=linenumber>09</code> <tt>END TRY</tt></pre>
+
+<p>The <a href="#WHENEVER">WHENEVER ERROR RAISE</a> instruction can be used
+module-wide to define the behavior when an exception occurs in a function that
+is called from a <tt>TRY</tt> / <tt>CATCH</tt> block. If an exception occurs in
+a statement after the <tt>WHENEVER ERROR RAISE</tt> instruction, the program
+flow returns from the function and raises the exception as if it had occurred in
+the code of the caller. If the exception in thrown in the <tt>MAIN</tt> block,
+the program stops because the exception cannot be processed by a caller. In the
+following example, the instruction in line #5 will be executed if an exception
+occurs in the <i>cust_report()</i> function:</p>
+<pre><code class=linenumber>01</code> <tt>MAIN</tt>
+<code class=linenumber>02</code>     <tt>TRY</tt>
+<code class=linenumber>03</code>         <tt>CALL</tt> cust_report()
+<code class=linenumber>04</code>     <tt>CATCH</tt>
+<code class=linenumber>05</code>         <tt>ERROR</tt> &quot;An error occurred during report execution: &quot;, STATUS
+<code class=linenumber>06</code>     <tt>END TRY</tt>
+<code class=linenumber>07</code> <tt>END MAIN</tt>
+<code class=linenumber>08</code>
+<code class=linenumber>09</code> <tt>FUNCTION </tt>cust_report()
+<u><code class=linenumber>10</code>     <tt>WHENEVER ERROR RAISE</tt></u>
+<code class=linenumber>11</code>     <tt>START REPORT </tt>cust_rep ...
+<code class=linenumber>12</code>     ...
+<code class=linenumber>13</code> <tt>END FUNCTION</tt></pre>
+
+<p>Note that it is not possible to set a <a href="Debugger.html"> debugger</a> break point at <tt>TRY</tt>, <tt>CATCH</tt>
+or <tt>END TRY</tt>: The <tt>TRY</tt> statement is a pseudo statement, the compiler
+does not generate p-code for this statement.&nbsp;
+</p>
+
+
+<HR>
+
+<h2><a name="SQLERRORS">Handing SQL Errors</a></h2>
+<p>After executing an SQL statement, you can query <a href="Programs.html#PV_STATUS">STATUS</a>,
+<a href="Operators.html#OP_SQLSTATE">SQLSTATE</a>, <a href="Operators.html#OP_SQLERRMESSAGE">SQLERRMESSAGE</a>
+and the <a href="Connections.html#SQLCA_RECORD">SQLCA</a> record to get the description
+of the error. When the statement has been executed with errors, STATUS and SQLCA.SQLCODE
+contain the <b>SQL Error Code</b>. If no error occurs, STATUS and SQLCA.SQLCODE
+are set to zero.</p>
+
+<p>You control the result of an SQL statement execution by using the <a href="#DEFINITION">WHENEVER
+ERROR</a> exception handler:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>
+<CODE class=linenumber>03</CODE>   <tt>DATABASE</tt> stores
+<CODE class=linenumber>04</CODE>
+<CODE class=linenumber>05</CODE>   <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>06</CODE>   <tt>SELECT </tt>COUNT(*) <tt>FROM</tt> customer
+<CODE class=linenumber>07</CODE>   <tt>IF</tt> sqlca.sqlcode <tt>THEN</tt>
+<CODE class=linenumber>08</CODE>      <tt>ERROR</tt> &quot;SQL Error occurred:&quot;, sqlca.sqlcode
+<CODE class=linenumber>09</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>10</CODE>   <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>11</CODE>
+<CODE class=linenumber>12</CODE> <tt>END MAIN</tt></PRE>
+
+<p>The <b>SQL Error Codes</b> are not standard. For example, ORACLE returns 903 when a table name
+does not exist.</p>
+
+
+<p>By convention, the STATUS and SQLCA.SQLCODE variables always use IBM Informix SQL
+Error Codes. When using IBM Informix, both&nbsp; STATUS and SQLCA.SQLCODE variables
+contain the native Informix error code. When using other database servers, the
+database interface automatically converts native SQL Error Codes to IBM Informix
+Error Codes. If no equivalent Informix Error Code can be found, the interface returns
+<strong>-6372</strong> in SQLCA.SQLCODE.</p>
+
+
+<p>If an SQL error occurs when using IBM Informix, the SQLCA variable is filled
+with standard information as described in the Informix documentation. When
+using other database servers, the native SQL Error Code is available in the SQLCA.SQLERRD[2]
+register. SQL Error Codes in SQLCA.SQLERRD[2] are always negative, even if the database server defines
+positives SQL Error Codes. Additionally, if the target database API supports ANSI SQL
+states, the SQLSTATE code is returned in SQLCA.SQLERRM.</p>
+
+
+<p>The <a href="Programs.html#PC_NOTFOUND"> NOTFOUND</a> (100) execution status is returned after
+a <a href="ResultSets.html#RS_FETCH">FETCH</a>, when no rows are found.</p>
+
+
+<p><i>See also:</i>  <a href="Connections.html">Connections</a>.</p>
+
+
+<HR>
+
+<h2><a name="SQLWARNINGS">Handling SQL Warnings</a></h2>
+<p>Some SQL instructions can produce SQL Warnings. Compared to SQL Errors which
+do normally stop the program execution, SQL Warnings indicate a minor issue that
+can often be ignored. For example, when connecting to an IBM Informix database,
+a warning is returned to indicate that a database was opened, and an other warning might be returned if that database supports transactions. None of
+these facts are critical problems, but knowing that information can help for further program
+execution.</p>
+
+<p>If an SQL Warning is raised, SQLCA.SQLCODE / STATUS remain zero, and the
+program flow continues. To detect if an SQL Warning occurs, the <a href="Connections.html#SQLCA_RECORD">SQLCA.SQLAWARN</a>
+register must be used. SQLCA.SQLAWARN is defined as a CHAR(7) variable. If SQLCA.SQLAWARN[1] contains the <b>W</b> letter, it means
+that the last SQL instruction has returned a warning. The other character
+positions (SQLCA.SQLAWARN[2-8]) may contain W letters. Each position from 2 to 8
+has a special meaning according to the database server type, and the SQL
+instructions type.</p>
+<p>If SQLCA.SQLAWARN is set, you can also check the SQLSTATE and
+SQLCA.SQLERRD[2] registers to get more details about the warning. The
+SQLERRMESSAGE register might also contain the warning description.</p>
+
+<p>In the next example, the program connects to a database and displays the
+content of the SQLCA.SQLAWARN register. When connecting to an IBM Informix
+database with transactions, the program will display <code>[WW&nbsp; W &nbsp; ]</code>:</p>
+
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DATABASE</tt> stores
+<CODE class=linenumber>03</CODE>   <tt>DISPLAY</tt> &quot;[&quot;, sqlca.sqlawarn, &quot;]&quot;
+<CODE class=linenumber>04</CODE> <tt>END MAIN</tt>&nbsp;</PRE>
+
+<p>By default SQL Warnings do not stop the program execution. To trap SQL
+Warnings with an exception handle, use the <tt>WHENEVER WARNING</tt>
+instruction, as shown in the example below.</p>
+
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> cust_name <tt>VARCHAR</tt>(50)
+<CODE class=linenumber>03</CODE>   <tt>DATABASE</tt> stores
+<CODE class=linenumber>04</CODE>   <tt>WHENEVER WARNING STOP</tt>
+<CODE class=linenumber>05</CODE>   <tt>SELECT </tt>cust_lname, cust_address <tt>INTO</tt> cust_name
+<CODE class=linenumber>06</CODE>        <tt>FROM</tt> customer <tt>WHERE</tt> cust_id = 101
+<CODE class=linenumber>07</CODE>   <tt>WHENEVER WARNING CONTINUE</tt>
+<CODE class=linenumber>08</CODE> <tt>END MAIN</tt></PRE>
+
+<p>The <tt>SELECT</tt> statement in the above example uses two columns in the
+select list, but only one <tt>INTO</tt> variable is provided. This is legal and
+does not raise an SQL Error, however, it will set the SQLCA.SQLAWARN register to
+indicate that the number of target variables does not match the select-list
+items.</p>
+
+
+<p>See also <a href="#DEFINITION">WHENEVER
+WARNING</a> exception.</p>
+
+
+<HR>
+
+<h2><a name="TRACE">Tracing exceptions</a></h2>
+Exceptions will be automatically logged in a file by the <a href="FglTerms.html#RUNTIME_SYSTEM">runtime
+system</a> if all the following conditions are true:
+<ul>
+  <li>The <a href="BuiltInFunctions.html#BF_STARTLOG">STARTLOG</a> function has 
+	been previously called to specify the name of the exception logging file.<li>The <a href="#EXCEPTION_ACTIONS">exception action</a> is set to <tt>CALL</tt>,
+    <tt>GOTO</tt> or <tt>STOP</tt>. Exceptions are not logged when the action is <tt>CONTINUE</tt>.
+  <li>The <a href="#EXCEPTION_CLASSES">exception class</a> is  an <tt>ERROR</tt>, <tt>ANY
+    ERROR</tt> or <tt>WARNING</tt>.&nbsp;<tt> NOT FOUND</tt> exceptions cannot 
+	be logged.</li>
+</ul>
+Each log entry contains:
+<ul>
+  <li>The system-time
+  <li>The location of the related Genero BDL statement (source-file, line)
+  <li>The error-number
+  <li>The text of the error message, giving human-readable details for the 
+	exception</li>
+</ul>
+
+
+<HR>
+
+<h2><a name="CONFIG">Configuring exception handling</a></h2>
+<h3><a name="mapAnyErrorToError">Controlling the default action for WHENEVER ANY
+ERROR</a></h3>
+<p>By default, <tt>WHENEVER ANY ERROR</tt> action is to <tt>CONTINUE</tt> the
+program flow. You can force the runtime system to execute the action defined
+with <tt>WHENEVER ERROR</tt> exception class with the following <a href="FglProfile.html">FGLPROFILE</a>
+entry:</p>
+<p>&nbsp;&nbsp;&nbsp; <code>fglrun.mapAnyErrorToError = true</code></p>
+<p>When this entry is set to true, <code>ET_EXPRESSION</code> expression errors
+such as a division by zero will be trapped and execute the action defined by the
+last <tt>WHENEVER ERROR</tt> instruction, the default being <tt>STOP</tt> the
+program with error display.</p>
+<PRE><CODE class=linenumber>01</CODE> -- FGLPROFILE env var is defined to file with:
+<CODE class=linenumber>02</CODE> --  fglrun.mapAnyErrorToError = true
+<CODE class=linenumber>03</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>04</CODE>   <tt>DEFINE</tt> x <tt>INT</tt>
+<CODE class=linenumber>05</CODE>   <tt>WHENEVER ERROR CALL</tt> my_error_handler
+<CODE class=linenumber>06</CODE>   <tt>LET </tt>x = 1 / 0   -- error handler will be called here
+<CODE class=linenumber>07</CODE>   <tt>DISPLAY </tt>&quot;It continues....&quot;
+<CODE class=linenumber>08</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>09</CODE> <tt>FUNCTION</tt> my_error_handler()
+<CODE class=linenumber>10</CODE>   <tt>DISPLAY</tt> &quot;Handler: &quot;, <tt>STATUS</tt>
+<CODE class=linenumber>11</CODE> <tt>END FUNCTION</tt></PRE>
+
+
+<HR>
+
+<h2><a name="EXAMPLES">Examples</a></h2>
+
+
+<h3><a name="EXAMPLE_1">Example 1</a>: Defining a error handler function</h3>
+<p>This first code example defines an error handler function called
+my_error_handler. After connecting to the database, a <tt>SELECT</tt> statements
+tries to fetch a row from a table that does not exist, and raises SQL error -217
+when connected to Informix:</p>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<u><CODE class=linenumber>02</CODE>   <tt>WHENEVER ERROR CALL </tt>my_error_handler
+</u><CODE class=linenumber>03</CODE>   <tt>DATABASE</tt> stores
+<CODE class=linenumber>04</CODE>   <tt>SELECT</tt> dummy <tt>FROM</tt> systables <tt>WHERE</tt> tabid=1
+<CODE class=linenumber>05</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>06</CODE>
+<CODE class=linenumber>07</CODE> <tt>FUNCTION </tt>my_error_handler()
+<CODE class=linenumber>08</CODE>   <tt>DISPLAY </tt>&quot;Error:&quot;, STATUS
+<CODE class=linenumber>09</CODE>   <tt>EXIT PROGRAM </tt>1
+<CODE class=linenumber>10</CODE> <tt>END FUNCTION</tt></PRE>
+
+
+<p>Program output:</p>
+<PRE><CODE class=linenumber>01</CODE> Error:      -217</PRE>
+
+
+<h3><a name="EXAMPLE_2">Example 2</a>:</h3>
+<p>The code example below shows a typical SQL error handling block from line 9
+to 22, it uses <tt>WHENEVER ERROR CONTINUE</tt> before executing SQL statements,
+tests the <a href="Connections.html#SQLCA_RECORD">SQLCA.SQLCODE</a> register for
+errors after each SQL instruction, and resets the default exception handler with
+<tt>WHENEVER ERROR STOP</tt> after the set of SQL commands to be controlled:</p>
+<PRE><CODE class=linenumber>01</CODE> <TT>MAIN</TT>
+<CODE class=linenumber>02</CODE>   <tt>DEFINE</tt> tabname <tt>VARCHAR</tt>(50)
+<CODE class=linenumber>03</CODE>   <tt>DEFINE</tt> rowcount <tt>INTEGER</tt>
+<CODE class=linenumber>04</CODE>
+<CODE class=linenumber>05</CODE>   # In the DATABASE statement, no error should occur.
+<CODE class=linenumber>06</CODE>   <tt>DATABASE</tt> stores
+<CODE class=linenumber>07</CODE>
+<CODE class=linenumber>08</CODE>   # But in the next procedure, user may enter a wrong table.
+<u><CODE class=linenumber>09</CODE>   <tt>WHENEVER ERROR CONTINUE</tt>
+</u><CODE class=linenumber>10</CODE>   <tt>PROMPT</tt> &quot;Enter a table name:&quot; <tt>FOR</tt> tabname
+<CODE class=linenumber>11</CODE>   <tt>LET</tt> sqlstmt = &quot;SELECT COUNT(*) FROM &quot; || tabname
+<CODE class=linenumber>12</CODE>   <tt>PREPARE</tt> s <tt>FROM</tt> sqlstmt
+<CODE class=linenumber>13</CODE>   <tt>IF</tt> sqlca.sqlcode <tt>THEN</tt>
+<CODE class=linenumber>14</CODE>      <tt>DISPLAY</tt> &quot;SQL Error occurred:&quot;, sqlca.sqlcode
+<CODE class=linenumber>15</CODE>      <tt>EXIT PROGRAMY</tt> 1
+<CODE class=linenumber>16</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>17</CODE>   <tt>EXECUTE</tt> s <tt>INTO</tt> rowcount
+<CODE class=linenumber>18</CODE>   <tt>IF</tt> sqlca.sqlcode <tt>THEN</tt>
+<CODE class=linenumber>19</CODE>      <tt>DISPLAY</tt> &quot;SQL Error occurred:&quot;, sqlca.sqlcode
+<CODE class=linenumber>20</CODE>      <tt>EXIT PROGRAMY</tt> 1
+<CODE class=linenumber>21</CODE>   <tt>END IF</tt>
+<u><CODE class=linenumber>22</CODE>   <tt>WHENEVER ERROR STOP</tt>
+</u><CODE class=linenumber>24    </CODE>... (more instructions, stopping the program in case of error)
+<CODE class=linenumber>26</CODE> <tt>END MAIN</tt></PRE>
+
+<p>Program output in case of invalid table name:</p>
+<PRE><CODE class=linenumber>01</CODE> SQL Error occurred:      -217</PRE>
+
+
+<h3><a name="EXAMPLE_3">Example 3</a>:</h3>
+<p>This example uses a <tt>TRY/CATCH</tt> block to trap errors. In this case, we
+try to connect to an invalid database, which will raise an SQL error and make
+the program flow go to the line after the <tt>CATCH</tt> statement:</p>
+<pre><code class=linenumber>01</code> <tt>MAIN</tt>
+<u><code class=linenumber>02</code>     <tt>TRY</tt>
+</u><code class=linenumber>03</code>         <tt>DATABASE</tt> invalid_database_name
+<code class=linenumber>04</code>         <tt>DISPLAY</tt> &quot;Will not be displayed&quot;
+<u><code class=linenumber>05</code>     <tt>CATCH</tt>
+</u><code class=linenumber>06</code>         <tt>DISPLAY</tt> &quot;Exception caught, SQL error: &quot;, SQLCA.SQLCODE
+<u><code class=linenumber>07</code>     <tt>END TRY</tt>
+</u><code class=linenumber>08</code> <tt>END MAIN</tt></pre>
+
+<p>Program output (with Informix):</p>
+<PRE><CODE class=linenumber>01</CODE> Exception caught, SQL error:        -329</PRE>
+
+
+<h3><a name="EXAMPLE_4">Example 4</a>:</h3>
+<p>The code below illustrates the fact that a <tt>TRY/CATCH</tt> block can be
+used in conjunction with a <tt>WHENEVER</tt> instruction: The program first
+executes a <tt>WHENEVER ANY ERROR</tt> to define an error handler named <i>foo</i>
+and later it uses a <tt>TRY/CATCH</tt> block to trap expression errors. In this
+example, we intentionally force a division by zero. After the <tt>TRY/CATCH</tt>
+block we force another division by zero error, which will call the <i>foo</i>
+error handler:</p>
+<pre><code class=linenumber>01</code> <tt>MAIN</tt>
+<code class=linenumber>02</code>     <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<u><code class=linenumber>03</code>     <tt>WHENEVER ANY ERROR CALL</tt> foo
+<code class=linenumber>04</code>     <tt>TRY</tt>
+</u><code class=linenumber>05</code>         <tt>DISPLAY</tt> &quot;Next exception should be handled by the catch statement&quot;
+<code class=linenumber>06</code>         <tt>LET</tt> i = i / 0
+<u><code class=linenumber>07</code>     <tt>CATCH</tt>
+</u><code class=linenumber>08</code>         <tt>DISPLAY</tt> &quot;Exception caught, status: &quot;, <tt>STATUS</tt>
+<u><code class=linenumber>09</code>     <tt>END TRY</tt>
+</u><code class=linenumber>10</code>     -- The previous error handler is restored after the TRY - CATCH block
+<code class=linenumber>11</code>     <tt>LET</tt> status = 0
+<code class=linenumber>12</code>     <tt>DISPLAY</tt> &quot;Next exception should be handled by the foo function&quot;
+<code class=linenumber>13</code>     <tt>LET</tt> i = i / 0
+<code class=linenumber>14</code> <tt>END MAIN</tt>
+<code class=linenumber>15</code>
+<u><code class=linenumber>16</code> <tt>FUNCTION</tt> foo()
+</u><code class=linenumber>17</code>     <tt>DISPLAY</tt> &quot;Function foo called, status: &quot;, <tt>STATUS</tt>
+<code class=linenumber>18</code> <tt>END FUNCTION</tt></pre>
+
+<p>Program output:</p>
+<PRE><CODE class=linenumber>01</CODE> Next exception should be handled by the catch statement
+<CODE class=linenumber>02</CODE> Exception caught, status:      -1202
+<CODE class=linenumber>03</CODE> Next exception should be handled by the foo function
+<CODE class=linenumber>04</CODE> Function foo called, status:      -1202</PRE>
+
+
+<h3><a name="EXAMPLE_5">Example 5</a>:</h3>
+<p>The next example shows the usage of <tt>WHENEVER ... RAISE</tt> to propagate
+a potential exception to the caller. First the program defines the <i>foo</i>
+function as exception handler with <tt>WHENEVER ANY ERROR CALL foo</tt>, then it
+calls the <i>do_exception</i> function, which instructs the runtime system to
+propagate a potential error to the caller. As result, the division by zero in
+line #13 will be caught by the error handler defined in the <tt>MAIN</tt> block
+and call the <i>foo</i> function:</p>
+<pre><code class=linenumber>01</code> <tt>MAIN</tt>
+<code class=linenumber>02</code>     <tt>DEFINE</tt> i <tt>INTEGER</tt>
+<u><code class=linenumber>03</code>     <tt>WHENEVER ANY ERROR CALL</tt> foo
+</u><code class=linenumber>04</code>     <tt>DISPLAY</tt> &quot;Next function call will generate an exception&quot;
+<code class=linenumber>05</code>     <tt>DISPLAY</tt> do_exception(100, 0)
+<code class=linenumber>06</code>     <tt>WHENEVER ANY ERROR STOP </tt>-- reset default handler for rest of program
+<code class=linenumber>07</code>     ...
+<code class=linenumber>08</code> <tt>END MAIN</tt>
+<code class=linenumber>09</code>
+<code class=linenumber>10</code> <tt>FUNCTION</tt> do_exception(a, b)
+<code class=linenumber>11</code>     <tt>DEFINE</tt> a, b <tt>INTEGER</tt>
+<u><code class=linenumber>12</code>     <tt>WHENEVER ANY ERROR RAISE</tt>
+</u><code class=linenumber>13</code>     <tt>RETURN</tt> a / b
+<code class=linenumber>14</code> <tt>END FUNCTION</tt>
+<code class=linenumber>15</code>
+<u><code class=linenumber>16</code> <tt>FUNCTION</tt> foo()
+</u><code class=linenumber>17</code>     <tt>DISPLAY</tt> &quot;Exception caught, status: &quot;, <tt>STATUS</tt>
+<code class=linenumber>18</code> <tt>END FUNCTION</tt></pre>
+
+<p>Program output:</p>
+<PRE><CODE class=linenumber>01</CODE> Next function call will generate an exception
+<CODE class=linenumber>02</CODE> Exception caught, status:    -1202</PRE>
+
+
+</BODY>
+</HTML>

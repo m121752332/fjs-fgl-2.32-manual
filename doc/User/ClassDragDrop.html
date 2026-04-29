@@ -1,0 +1,395 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>ui.DragDrop</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">The DragDrop class</a> </H1>
+
+<p>Summary:</p>
+
+<ul>
+  <li><a href="#SYNTAX">Syntax</a></li>
+  <li><a href="#METHODS">Methods</a></li>
+  <li><a href="#USAGE">Usage</a>
+    <ul>
+      <li><a href="#addPossibleOperation">Defining the possible Drag &amp; Drop operations</a></li>
+      <li><a href="#getLocationRow">Getting the index of the target row where the object was
+        dropped</a></li>
+      <li><a href="#getLocationParent">Getting the index of the parent node where the
+        object was dropped</a></li>
+      <li><a href="#getOperation">Identifying the type of operation on drop</a></li>
+      <li><a href="#setOperation">Defining the type of Drag &amp; Drop operation</a></li>
+      <li><a href="#setFeedback">Defining the appearance of the target during Drag
+&amp; Drop</a></li>
+      <li><a href="#selectMimeType">Selecting the MIME type</a></li>
+      <li><a href="#getSelectedMimeType">Getting the selected MIME type before
+        getting data</a></li>
+      <li><a href="#getBuffer">Getting Drag &amp; Drop data from the buffer</a></li>
+      <li><a href="#setMimeType">Defining the MIME type of the dragged object</a></li>
+      <li><a href="#setBuffer">Setting the text data of the dragged object</a></li>
+      <li><a href="#dropInternal">Performing built-in row drop in trees</a></li>
+    </ul>
+  </li>
+</ul>
+<p><i>See also:</i>
+<a href="BuiltInClasses.html">Built-in Classes</a>, <a href="DragAndDrop.html">Drag
+&amp; Drop</a>.</p>
+
+<HR>
+
+<h3><a name="SYNTAX">Syntax</a></h3>
+
+<p>The <b>DragDrop</b> class is used to control the events related to Drag &amp;
+Drop.</p>
+
+<h4>Syntax:</h4>
+
+<p><code>ui.DragDrop</code></p>
+
+
+<HR>
+
+
+<h3><a name="METHODS">Methods:</a></h3>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#66FFCC" colspan="2"><b>Object Methods</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#C0C0C0" width="40%"><b>Name</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="40%" valign="top"><code><a href="#addPossibleOperation">addPossibleOperation</a>(
+      optype </code><tt>STRING</tt><code>  )</code></td>
+    <td valign="top">Adds a Drag &amp; Drop operation that is allowed.</td>
+  </tr>
+  <tr>
+    <td width="40%" valign="top"><code><a href="#dropInternal">dropInternal</a>()</code></td>
+    <td valign="top">Performs built-in drop when the target is the source list
+      or tree.</td>
+  </tr>
+  <tr>
+    <td width="40%" valign="top"><code><a href="#getBuffer">getBuffer</a>() </code><tt>RETURNING STRING</tt></td>
+    <td valign="top">Returns Drag &amp; Drop data as selected by the hasMimeType()
+      method.</td>
+  </tr>
+  <tr>
+    <td width="40%" valign="top"><code><a href="#getLocationParent">getLocationParent</a>(
+      ) </code><tt>RETURNING INTEGER</tt></td>
+    <td valign="top">Returns the parent node index of the child node the mouse is
+      pointing
+      to during Drag &amp; Drop.</td>
+  </tr>
+  <tr>
+    <td width="40%" valign="top"><code><a href="#getLocationRow">getLocationRow</a>(
+      ) </code><tt>RETURNING INTEGER</tt></td>
+    <td valign="top">Returns the index of the row the mouse is pointing to during Drag &amp; Drop.</td>
+  </tr>
+  <tr>
+    <td width="40%" valign="top"><code><a href="#getOperation">getOperation</a>()
+      </code><tt>RETURNING STRING</tt></td>
+    <td valign="top">Returns the current type of Drag &amp; Drop operation or
+      NULL if denied.</td>
+  </tr>
+  <tr>
+    <td width="40%" valign="top"><code><a href="#getSelectedMimeType">getSelectedMimeType</a>()
+      </code><tt>RETURNING STRING</tt></td>
+    <td valign="top">Returns the previously selected MIME type.&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="40%" valign="top"><code><a href="#selectMimeType">selectMimeType</a>(
+      mimetype </code><tt>STRING </tt><code>) </code></td>
+    <td valign="top">Selects the given MIME type if such a record is available
+      in the Drag &amp; Drop buffer.</td>
+  </tr>
+  <tr>
+    <td width="40%" valign="top"><code><a href="#setFeedback">setFeedback</a>(
+      feedback </code><tt>STRING </tt><code>) </code></td>
+    <td valign="top">Defines the appearance of the target during Drag &amp;
+      Drop.</td>
+  </tr>
+  <tr>
+    <td width="40%" valign="top"><code><a href="#setMimeType">setMimeType</a>(
+      mimetype </code><tt>STRING </tt><code>) </code></td>
+    <td valign="top">Defines the MIME type of the dragged object.</td>
+  </tr>
+  <tr>
+    <td width="40%" valign="top"><code><a href="#setBuffer">setBuffer</a>( data </code><tt>STRING </tt><code>) </code></td>
+    <td valign="top">Copies the text data of the dragged object into the Drag
+      &amp; Drop buffer.</td>
+  </tr>
+  <tr>
+    <td width="40%" valign="top"><code><a href="#setOperation">setOperation</a>(
+      optype </code><tt>STRING</tt><code> )</code></td>
+    <td valign="top">Defines the type of Drag &amp; Drop operation or denies
+      Drag &amp; Drop.</td>
+  </tr>
+</table>
+
+
+<HR>
+
+
+<h3><a name="USAGE">Usage:</a></h3>
+<p>When <a href="DragAndDrop.html">implementing Drag &amp; Drop in a dialog</a>,
+the <tt>ON DRAG*</tt> / <tt>ON DROP </tt>dialog control blocks take a <b>ui.DragDrop</b> variable as 
+a parameter to let you
+configure and control the Drag &amp; Drop procedure. The ui.DragDrop variable
+must be declared in the scope of the dialog implementing Drag &amp; Drop.</p>
+
+
+<p>In the next example, the code defines a ui.DragDrop variable named dnd, and
+implements an <tt>ON DRAG_ENTER</tt> block taking dnd as the argument:</p>
+
+
+<pre><u><CODE class=linenumber>01</CODE> <tt>DEFINE </tt>dnd ui.DragDrop</u>
+<CODE class=linenumber>02</CODE> ...
+<CODE class=linenumber>03</CODE> <tt>DISPLAY ARRAY</tt> arr <tt>TO </tt>sr.* ...
+<CODE class=linenumber>04</CODE> ...
+<CODE class=linenumber>05</CODE>    <tt> ON DRAG_ENTER</tt>(dnd)
+<CODE class=linenumber>06</CODE>      <tt> IF </tt>ok_to_drop <tt>THEN</tt>
+<CODE class=linenumber>07</CODE>         <tt>CALL </tt>dnd.setOperation(&quot;move&quot;)
+<CODE class=linenumber>08</CODE>      <tt> ELSE</tt>
+<CODE class=linenumber>09</CODE>         <tt>CALL </tt>dnd.setOperation(NULL)
+<CODE class=linenumber>10</CODE>      <tt> END IF</tt>
+<CODE class=linenumber>11</CODE> ...
+<code class="linenumber">12</code> <tt>END DISPLAY</tt></pre>
+
+
+<h4><a name="addPossibleOperation">Adding a possible operation</a></h4>
+
+
+<p>Drag &amp; Drop actions can be of different kinds; you can do a copy of the
+dragged object, or move the dragged object from the source to the destination.
+The default Drag &amp; Drop operation is defined by a call to <a href="#setOperation">setOperation()</a> in <tt>ON DRAG_START</tt>,
+you can then use the <code>addPossibleOperation()</code> method to define
+additional operations that are allowed.</p>
+
+
+<p>See <a href="#setOperation">setOperation()</a> for possible values.</p>
+
+
+<h4><a name="getLocationRow">Getting the index of the target row where the object was dropped</a></h4>
+<p>The <code>getLocationRow()</code> method returns the index of the row in the
+drop target list pointed to by the mouse cursor. This method is typically used in the <tt>ON
+DROP</tt> block to get the index of the target row to be modified or replaced by
+the dragged object. The method can also be used in <tt>ON DRAG_OVER</tt> to deny
+the drop according to the current target row returned by <code>getLocationRow()</code>.</p>
+
+
+<h4><a name="getLocationParent">Getting the index of the parent node where the object was
+dropped</a></h4>
+<p>When using a <a href="TreeViews.html">TreeView</a>, a node can be dropped as 
+a <u>sibling</u> or as a <u>child</u> 
+node to another node. In order to distinguish
+between the cases, you must use the <code>getLocationParent()</code> method, which returns the
+index of the parent node of the drop target node returned by <a href="#getLocationRow">getLocationRow()</a>.
+If both methods return the same row index, you must append the dropped row as a
+child of the target node. Otherwise, <code>getLocationParent()</code> identifies
+the parent node where the dropped row has to be added as a child, and <code>getLocationRow()</code>
+ is the index of a sibling node. In the last case the dropped node must be inserted
+before the node identified by <code>getLocationRow()</code>. These methods are typically used in the <tt>ON
+DROP</tt> block, but can also be used in <tt>ON DRAG_OVER</tt> to deny
+the drop according to the indexes returned; for example, the program might only allow 
+the drop of objects as new children
+for a given parent node.</p>
+<h4><a name="getOperation">Identifying the type of operation on drop</a></h4>
+<p>The <code>getOperation()</code> method returns the type of the current Drag
+&amp; Drop operation (i.e. copy, move, none). According to the value returned by this method, the
+program can make the appropriate changes in the data model. For example, after a
+row has been dropped into another list, the source list can remove the original
+row if the operation was a &quot;move&quot;, but keeps the original row if the
+operation was a &quot;copy&quot;. The <code>getOperation()</code> method is typically called in the <tt>ON
+DRAG_FINISHED</tt>  block.</p>
+
+
+<h4><a name="setOperation">Defining the type of Drag &amp; Drop operation</a></h4>
+
+
+<p>Use the <code>setOperation()</code>  method to
+define/force the type of Drag &amp; Drop operation or to deny/cancel the Drag &amp; Drop process.</p>
+
+
+<table border="0" cellpadding="0" width="90%" id="table1">
+  <tr>
+    <td bgcolor="#C0C0C0" width="30%" align="left"><b>setOperation() parameter</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" align="left"><code>NULL</code></td>
+    <td align="left">
+      To deny/cancel the Drag &amp; Drop process.
+    </td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" align="left"><code>copy</code></td>
+    <td align="left">
+      To allow Drag &amp; Drop as a copy of the source object.
+    </td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" align="left"><code>move</code></td>
+    <td align="left">
+      To allow Drag &amp; Drop as a move of the source object.
+    </td>
+  </tr>
+</table>
+
+
+<p align="left">The <code>setOperation()</code> method can be called in different Drag &amp;
+Drop triggers. The most common usage is to deny Drag &amp; Drop by passing <a href="Programs.html#PC_NULL"> NULL</a>
+in the <tt>ON DRAG_ENTER</tt> and/or <tt>ON DRAG_OVER</tt> blocks because the
+dragged object does not correspond to the type of objects the target can
+receive. It is also typically used in <tt>ON DRAG_START</tt> to force a
+specific type of Drag &amp; Drop operation (copy or move), or to deny drag start
+if the context does not allow a Drag &amp; Drop action. When called in the <tt> ON DRAG_ENTER</tt> block,
+the method forces a specific Drag &amp; Drop operation.</p>
+
+
+<p>See also <a href="#addPossibleOperation">addPossibleOperation()</a>.</p>
+
+
+<h4><a name="setFeedback">Defining the appearance of the target during Drag
+&amp; Drop</a></h4>
+
+
+<p>The <code>setFeedback()</code> method defines the appearance the target
+object must have during the Drag &amp; Drop
+action. For example, in a table or treeview, when the mouse is flying over rows
+in the drop target, a different visual indicator will appear according to the
+value that was passed to <code>setFeedback()</code>.</p>
+
+
+<p>Possible values for the <code>setFeedback()</code> method are:</p>
+
+
+<table border="0" cellpadding="0" width="90%" id="table1">
+  <tr>
+    <td bgcolor="#C0C0C0" width="30%" align="left"><b>setFeedback() parameter</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" align="left"><code>all</code></td>
+    <td align="left">
+      Dragged object will be dropped somewhere on the target widget, the exact
+      location does not matter.
+    </td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" align="left"><code>insert</code></td>
+    <td align="left">
+      In lists, dragged object will be inserted in between existing rows.
+    </td>
+  </tr>
+  <tr>
+    <td width="30%" valign="top" align="left"><code>select</code></td>
+    <td align="left">
+      In lists, dragged object will replace the current row under the mouse.
+    </td>
+  </tr>
+</table>
+
+
+<h4><a name="selectMimeType">Selecting the MIME type before getting the data</a></h4>
+
+
+<p>Call the <code>selectMimeType()</code> method to check that data is
+available in a format identified by the MIME type passed as parameter. If this type of data is available in the buffer, the method returns <a href="Programs.html#PC_TRUE">TRUE</a>
+and you can later get the data with <code>getBuffer()</code>.</p>
+
+
+<p>The <code>selectMimeType()</code> method is typically used in <tt>ON DRAG_ENTER</tt>,
+<tt>ON DRAG_OVER</tt> to deny the Drag &amp; Drop operation if none of the
+supported MIME types is available in the buffer.</p>
+
+
+<h4><a name="getSelectedMimeType">Getting the previously selected MIME type</a></h4>
+
+
+<p>Before retrieving data from the Drag &amp; Drop buffer with <a href="#getBuffer">getBuffer()</a>,
+you must first call the <code>getSelectedMimeType()</code> method to identify the
+data format that was previously selected by a <a href="#selectMimeType">selectMimeType()</a>
+call.</p>
+
+
+<p>The <code>getSelectedMimeType()</code> method is typically called in <tt>ON
+DROP</tt> to identity the format of the dropped object.</p>
+
+
+<h4><a name="getBuffer">Getting Drag &amp; Drop data from the buffer</a></h4>
+<p>Once the MIME type of the dropped object was identified with <a href="#getSelectedMimeType">getSelectedMimeType()</a>,
+you can call the <code>getBuffer()</code> method to get text data from the Drag &amp; Drop
+buffer.</p>
+
+
+<p>Drag &amp; Drop data is only available at <tt>ON DROP</tt> time, thus the
+<code>getBuffer()</code> method
+must be called in <tt>ON DROP</tt>  only.</p>
+
+
+<h4><a name="setMimeType">Defining the MIME type of the dragged object</a></h4>
+
+
+<p>Objects dragged from a BDL application to an external application need to be
+identified with a MIME type and the program must provide the data. The MIME type
+can be specified with the <code>setMimeType()</code> method.&nbsp;</p>
+
+
+<p>The <code>setMimeType()</code> method is typically used in an <tt>ON DRAG_START</tt>
+block in conjunction with <a href="#setBuffer">setBuffer()</a>.</p>
+
+
+<p>By default the source target will use the text/plain MIME type and copy the
+data of the selected rows into the Drag &amp; Drop buffer.</p>
+
+
+<h4><a name="setBuffer">Setting the text data of the dragged object</a></h4>
+
+
+<p>In order to provide the text data of objects dragged from a BDL application to an
+external application, you must use the <code>setBuffer()</code> method.&nbsp;</p>
+
+
+<p>The <code>setBuffer()</code> method is typically used in an <tt>ON DRAG_START</tt>
+block in conjunction with <a href="#setMimeType">setMimeType()</a>.</p>
+
+
+<p>By default, the dialog will serialize the data of the selected rows as a
+tab-separated list of values (text/plain MIME type is the default).</p>
+
+
+<h4><a name="dropInternal">Performing built-in row drop in trees</a></h4>
+<p>In order to simplify Drag &amp; Drop programming in the same list, the <code>ui.DragDrop</code>
+class provides the <code>dropInternal()</code>  utility method, to be called in the <tt>ON
+DROP</tt>
+block. This method will perform all the row changes in the
+array and move row selection as well as cell attributes.</p>
+
+
+<p>When implementing Drag &amp; Drop on a <a href="TreeViews.html">tree-view</a>,
+dropping an element on the tree requires complex code in order to handle
+parent-child relationships. Nodes can be inserted under a parent between two
+children, appended at the end of the children list, and at different levels in the
+tree hierarchy. However, the dropInternal() method can also be used when the
+decoration is a regular table.</p>
+
+
+<p><b><font color="#FF0000">Warning:</font> The call to dropInternal() will
+silently be ignored, if the drag source is not the drop target, or if the method
+is called in a different context as <tt>ON DROP</tt>.</b></p>
+
+
+<p>For more details about dropping elements in tree-views, see the usage of <a href="DragAndDrop.html#on-drop">ON
+DROP</a> in the Drag &amp; Drop page.</p>
+
+
+</BODY>
+</HTML>

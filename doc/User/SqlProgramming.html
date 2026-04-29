@@ -1,0 +1,2883 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>SQL Programming</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</head>
+
+<BODY>
+
+<P><a href="../index.html">Back to Contents</a></P>
+<HR>
+
+<H1>SQL Programming</H1>
+<P>Summary: </P>
+<UL>
+  <LI><a href="#PROG">1. Programming</a> 
+    <UL>
+      <LI><a href="#PROG_DBUTIL">1.1 Database utility library</a> </LI>
+      <LI><a href="#PROG_IMPLCONN">1.2 Implicit database connection</a> 
+      <LI><a href="#PROG_MNGTX">1.3 Managing transaction commands</a> </LI>
+      <LI><a href="#PROG_STOPROC">1.4 Executing stored procedures</a> 
+        <ul>
+          <li><a href="#SP_IFX">Stored procedure call with Informix</a></li>
+          <li><a href="#SP_GDB">Stored procedure call with Genero db</a></li>
+          <li><a href="#SP_ORA">Stored procedure call with Oracle</a></li>
+          <li><a href="#SP_DB2">Stored procedure call with DB2</a></li>
+          <li><a href="#SP_MSV">Stored procedure call with Microsoft SQL Server</a></li>
+          <li><a href="#SP_PGS">Stored procedure call with PostgreSQL</a></li>
+          <li><a href="#SP_MYS">Stored procedure call with MySQL</a></li>
+          <li><a href="#SP_ASE">Stored procedure call with Sybase ASE</a></li>
+        </ul>
+ </LI>
+      <LI><a href="#PROG_ERRIDENT">1.5 Cursors and Connections</a> </LI>
+      <LI><a href="#PROG_ERRIDENT">1.6 SQL Error identification</a></LI>
+      <LI><a href="#PROG_SCROLL_CURSORS">1.7 Optimizing scrollable cursors</a></LI>
+    </UL>
+  </LI>  
+  <LI><a href="#PERF">2. Performance</a> 
+    <UL>
+      <LI><a href="#PERF_DYNSQL">2.1 Using dynamic SQL</a> </LI>
+      <LI><a href="#PERF_USINGTX">2.2 Using transactions</a> </LI>
+      <LI><a href="#PERF_LONGTRAN">2.3 Avoiding long transactions</a> </LI>
+      <LI><a href="#PERF_DECLPREP">2.4 Declaring prepared statements</a> </LI>
+      <LI><a href="#PERF_SAVERES">2.5 Saving SQL resources</a> </LI>
+    </UL>
+  <LI><a href="#PORT">3. Portability</a> 
+    <UL>
+      <LI><a href="#PORT_DBENT">3.1 Database entities</a></LI>
+      <LI><a href="#PORT_DBUSR">3.2 Database users and security</a></LI>
+      <LI><a href="#PORT_DCS">3.3 Database creation statements</a></LI>
+      <LI><a href="#PORT_DDS">3.4 Data definition statements</a></LI>
+      <LI><a href="#PORT_DATATYPES">3.5 Using portable data types</a> </LI>
+      <LI><a href="#PORT_DML">3.6 Data manipulation statements</a> </LI>
+      <LI><a href="#PORT_CHARVARCHAR">3.7 CHAR and VARCHAR types</a></LI>
+      <LI><a href="#PORT_DATACCESS">3.8 Concurrent data access</a></LI>
+      <LI><a href="#PORT_SQLCA">3.9 The SQLCA register</a> </LI>
+      <LI><a href="#PORT_OPTLOCK">3.10 Optimistic locking</a> </LI>
+      <LI><a href="#PORT_AUTOINC">3.11 Auto-incremented columns (serials)</a> </LI>
+      <LI><A href="#PORT_IFXANSI">3.12 Informix SQL ANSI mode</A> </LI>
+      <LI><a href="#PORT_POSUD">3.13 Positioned Updates/Deletes</a> </LI>
+      <LI><a href="#PORT_WHFU">3.14 WITH HOLD and FOR UPDATE</a> </LI>
+      <LI><a href="#PORT_STRINGLIT">3.15 String literals in SQL statements</a> </LI>
+      <LI><a href="#PORT_DATETIMELIT">3.16 Date and time literals in SQL statements</a> </LI>
+      <LI><a href="#PORT_NAMOBJ">3.17 Naming database objects</a> </LI>
+      <LI><a href="#PORT_TEMPTABS">3.18 Temporary tables</a> </LI>
+      <LI><a href="#PORT_OUTERJOINS">3.19 Outer joins</a> </LI>
+      <LI><a href="#PORT_SUBSTR">3.20 Sub-string expressions</a> </LI>
+      <LI><a href="#PORT_ROWIDS">3.21 Using ROWIDs</a> </LI>
+      <LI><a href="#PORT_MATCHES">3.22 MATCHES operator</a> </LI>
+      <LI><a href="#PORT_GROUPBY">3.23 GROUP BY clause</a> </LI>
+      <LI><a href="#PORT_LENGTH">3.24 LENGTH() function</a> </LI>
+      <LI><a href="#SQL_INTERRUPTION">3.25 SQL Interruption</a> </LI>
+    </UL>
+  </LI>
+</UL>
+<P><I>See also:</I> <A href="Connections.html">Connections</A>, <A 
+href="Transactions.html">Transactions</A>, <A href="StaticSql.html">Static 
+SQL</A>, <A href="DynamicSql.html">Dynamic SQL</A>, <A 
+href="ResultSets.html">Result Sets</A>, <A href="Exceptions.html#SQLERRORS">SQL 
+Errors</A>, <A href="Programs.html">Programs</A>.</P>
+<HR>
+
+<h2>1. <a name="PROG">Programming</a></h2>
+
+<HR size="1">
+
+<H3>1,1 <a name="PROG_DBUTIL">Database utility library</a></H3>
+<P>The BDL library "<STRONG>fgldbutl.4gl</STRONG>&quot; provides several utility 
+functions. For example, this library implements a 
+function to get the type of the database engine at runtime. You will find this 
+library in the 
+<STRONG>FGLDIR/src</STRONG> directory. See the source file 
+for more details.</P>
+
+<HR size="1">
+
+<H3>1.2 <a name="PROG_IMPLCONN">Implicit database connection</a></H3>
+<P>In BDL, the <a href="Connections.html#DC_DATABASE"> DATABASE</a> statement can be used in two distinct 
+ways, depending on the context of the statement within its source module 
+:
+<UL>
+  <LI>To specify a default database :  
+  Typically used in a &quot;<a href="Globals.html">GLOBALS</a>&quot; module, to define variables with the
+    <a href="Variables.html#DEFINITION"> LIKE</a> 
+  clause, but it is also used for the <a href="Variables.html#VA_INITIALIZE"> INITIALIZE</a> and
+    <a href="Variables.html#VA_VALIDATE"> VALIDATE</a> statements. Using 
+  the DATABASE statement in this way results in that database being opened 
+  automatically at run time. 
+  <LI>To specify a current database : 
+  In <a href="Programs.html#MAIN_BLOCK"> MAIN</a> or in a <a href="Functions.html#DEFINITION">FUNCTION</a>, used to connect to a database. A variable can be 
+  used in this context ( DATABASE <i> varname</i> ). </LI></UL>
+<P>A default database is almost always used, because 
+many BDL applications contain <a href="Variables.html#DEFINITION"> DEFINE ... LIKE</a> statements. A problem occurs when 
+the production database name differs from the development database name, because 
+the default database specification will result in an automatic connection (just 
+after <a href="Programs.html#MAIN_BLOCK"> MAIN</a>):</P>
+<PRE><CODE class=linenumber>01</CODE><b> <tt>DATABASE</tt></b><b> stock_dev</b>
+<CODE class=linenumber>02</CODE> <tt>DEFINE
+</tt><CODE class=linenumber>03</CODE>    p_cust <tt>RECORD LIKE</tt> customer.*
+<CODE class=linenumber>04</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>05</CODE>    <tt>DEFINE</tt> dbname CHAR(30)
+<CODE class=linenumber>06</CODE>    <tt>LET</tt> dbname = &quot;stock1&quot;
+<CODE class=linenumber>07</CODE><b>    <tt>DATABASE</tt> dbname</b><tt>
+</tt><CODE class=linenumber>08</CODE> <tt>END MAIN</tt></PRE>
+<P>In order to avoid the implicit connection, you can use the <a href="Programs.html#DB_SCHEMA"> 
+SCHEMA</a> instruction instead of <a href="Connections.html#DC_DATABASE"> DATABASE</a>:</P>
+<PRE><CODE class=linenumber>01</CODE><STRONG> </STRONG><b><tt>SCHEMA</tt></b><b> stock_dev</b>
+<CODE class=linenumber>02</CODE> <tt>DEFINE</tt>
+<CODE class=linenumber>03</CODE>    p_cust <tt>RECORD LIKE</tt> customer.*
+<CODE class=linenumber>04 </CODE><tt>MAIN</tt><CODE class=linenumber>
+05</CODE>    <tt>DEFINE</tt> dbname CHAR(30)
+<CODE class=linenumber>06</CODE>    <tt>LET</tt> dbname = &quot;stock1&quot;
+<CODE class=linenumber>07</CODE>    <b><tt>DATABASE</tt></b><b> dbname</b>
+<CODE class=linenumber>08</CODE> <tt>END MAIN</tt></PRE>
+<P>This instruction will define the database schema for compilation only, and will not make an implicit connection at runtime.</P>
+
+<HR size="1">
+
+<H3>1.3 <a name="PROG_MNGTX">Managing transaction commands</a></H3>
+<P>A BDL program can become very complex if a lot of nested 
+functions do SQL processing. When using a database supporting <a href="Transactions.html#DBTRANS">transactions</a>, you 
+must sometimes execute all SQL statements in the same transaction 
+block. This can be done easily by centralizing transaction control commands in 
+wrapper functions.</P>
+<P>The <b>fgldbutl.4gl</b> </span>library contains special functions to manage
+the beginning and the end of a transaction with an internal counter, in order
+to implement nested function calls inside a unique transaction.</P>
+<P>Example:</P>
+    <pre><CODE class=linenumber>01</CODE> <tt>MAIN
+</tt><CODE class=linenumber>02</CODE><tt> &nbsp;&nbsp;&nbsp;</tt> <tt>IF </tt>a() &lt;&gt; 0 <tt>THEN</tt>
+<CODE class=linenumber>03</CODE> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <tt>ERROR</tt> &quot;...&quot;
+<CODE class=linenumber>04 </CODE>&nbsp;&nbsp;&nbsp; <tt>END IF</tt>
+<CODE class=linenumber>05</CODE> &nbsp;&nbsp;&nbsp; <tt>IF</tt> b() &lt;&gt; 0 <tt>THEN</tt>
+<CODE class=linenumber>06</CODE> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<tt> ERROR</tt> &quot;...&quot;
+<CODE class=linenumber>07</CODE> &nbsp;&nbsp;&nbsp; <tt>END IF</tt>
+<CODE class=linenumber>08</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>09</CODE>
+<CODE class=linenumber>10</CODE> <tt>FUNCTION</tt> a()
+<CODE class=linenumber>11</CODE>&nbsp;&nbsp; <tt>DEFINE</tt> s <tt>INTEGER</tt>
+<CODE class=linenumber>12</CODE>&nbsp;&nbsp; <tt>LET</tt> s = db_start_transaction( )
+<CODE class=linenumber>13</CODE>&nbsp;&nbsp; <tt>UPDATE</tt> ...
+<CODE class=linenumber>14</CODE>&nbsp;&nbsp; <tt>LET</tt> s = SQLCA.SQLCODE
+<CODE class=linenumber>15</CODE>&nbsp;&nbsp; <tt>IF</tt> s = 0 <tt>THEN</tt>
+<CODE class=linenumber>16</CODE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <tt>LET</tt> s = b( )
+<CODE class=linenumber>17</CODE>&nbsp;&nbsp; <tt>END IF</tt>
+<CODE class=linenumber>18&nbsp;</CODE>&nbsp; <tt>LET</tt> s = db_finish_transaction((s==0))
+<CODE class=linenumber>19</CODE>&nbsp;&nbsp; <tt>RETURN</tt> s
+<CODE class=linenumber>20</CODE> <tt>END FUNCTION</tt>
+<CODE class=linenumber>21</CODE>
+<CODE class=linenumber>22</CODE> <tt>FUNCTION</tt> b()
+<CODE class=linenumber>23</CODE> &nbsp;&nbsp; <tt>DEFINE</tt> s <tt>INTEGER</tt>
+<CODE class=linenumber>24</CODE> &nbsp;&nbsp; <tt>LET</tt> s = db_start_transaction( )
+<CODE class=linenumber>25</CODE> &nbsp;&nbsp; <tt>UPDATE</tt> ...
+<CODE class=linenumber>26</CODE> &nbsp;&nbsp; <tt>LET</tt> s = SQLCA.SQLCODE
+<CODE class=linenumber>27</CODE> &nbsp;&nbsp; <tt>LET</tt> s = db_finish_transaction((s==0))
+<CODE class=linenumber>28</CODE> &nbsp;&nbsp; <tt>RETURN</tt> s
+<CODE class=linenumber>29</CODE> <tt>END FUNCTION</tt></pre>
+
+<p>In this example, you see in the <a href="Programs.html">MAIN</a>  block that
+both functions a() and b() can be called separately. However, the <a href="Transactions.html#DBTRANS">transaction</a>
+SQL commands will be used only if needed: When function a() is called, it starts
+the transaction, then calls b(), which does not start the transaction since it
+was already started by a(). When function b() is called directly, it starts the
+transaction.</p>
+
+<p>The function <code>db_finish_transaction()</code> is called with the expression <code>(s==0)</code>,
+which is evaluated before the call. This allows you to write in one line the
+equivalent of the following <tt>IF</tt> statement:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>IF</tt> s==0 <tt>THEN</tt>
+<CODE class=linenumber>02</CODE> &nbsp;&nbsp; <tt>LET</tt> s = db_finish_transaction(1)
+<CODE class=linenumber>03</CODE> <tt>ELSE</tt>
+<CODE class=linenumber>04</CODE> &nbsp;&nbsp; <tt>LET</tt> s = db_finish_transaction(0)
+<CODE class=linenumber>05</CODE> <tt>END IF</tt></pre>
+<HR size="1">
+
+<h3>1.4 <a name="PROG_STOPROC">Executing stored procedures</a></h3>
+<h4>Specifying output parameters</h4>
+<P>With Genero BDL you can specify <a href="DynamicSql.html#DS_EXECUTE">OUTPUT
+parameters</a> to get values from stored procedures. While this new feature is
+generic, stored procedures execution needs to be addressed specifically
+according to the database type. There are different ways to execute a stored
+procedure. This section describes how to execute stored procedures on the
+supported database engines.</P>
+<P><font color="#008000"><b>Tip:</b></font> In order to write reusable code, you
+should encapsulate each stored procedure execution in a <a href="Functions.html">program
+function</a> performing database-specific SQL based on a global database
+type variable. The program function would just take the input parameters and
+return the output parameters of the stored procedure, hiding database-specific
+execution steps from the caller.</P>
+<h4>Stored procedures returning a result set</h4>
+<P>With some database servers it is possible to execute stored procedures that
+produce a result set, and fetch the rows as normal <tt>SELECT</tt> statements, by
+using <tt>DECLARE</tt>, <tt>OPEN</tt>, <tt>FETCH</tt>. Some databases can return
+multiple result sets and cursor handles declared in a stored procedure as output
+parameters, but Genero supports only unique and anonymous result sets. See below
+for examples.</P>
+<h4>Calling stored procedures with supported databases</h4>
+<ul>
+  <li><a href="#SP_IFX">Stored procedure call with Informix</a></li>
+  <li><a href="#SP_GDB">Stored procedure call with Genero db</a></li>
+  <li><a href="#SP_ORA">Stored procedure call with Oracle</a></li>
+  <li><a href="#SP_DB2">Stored procedure call with DB2 UDB</a></li>
+  <li><a href="#SP_MSV">Stored procedure call with SQL Server</a></li>
+  <li><a href="#SP_PGS">Stored procedure call with PostgreSQL</a></li>
+  <li><a href="#SP_MYS">Stored procedure call with MySQL</a></li>
+</ul>
+<HR size="1" color="#C0C0C0">
+
+<h3><a name="SP_IFX">Stored procedure call with Informix</a></h3>
+<P> Informix stored procedures are written in the SPL, C or Java programming
+languages, also known as User Defined Routines.<br>
+See Informix IDS documentation for more details.</P>
+<h4>Stored functions returning values</h4>
+<P>
+The traditional way to return values from an Informix SPL routine is to fetch
+the output values, as from a regular SELECT producing a result set.</P>
+<P>
+You must define a <i>
+stored function</i> with a <tt>RETURNING</tt> clause. Informix <i> stored procedures</i> do
+not return values.</P>
+<P>To execute a stored function with Informix, you must use the <tt>EXECUTE
+FUNCTION</tt> SQL
+instruction:</P>
+<PRE><CODE class=linenumber>14</CODE>    <tt>PREPARE</tt> stmt <tt>FROM</tt> &quot;execute function proc1(?)&quot;</PRE>
+<P>In order to retrieve returning values into program variables, you must use an
+<tt>INTO</tt> clause in the <a href="DynamicSql.html#DS_EXECUTE">EXECUTE</a> instruction.</P>
+<P>The following example shows how to call a stored function with Informix:</P>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE </tt>n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>DEFINE </tt>d <tt>DECIMAL</tt>(6,2)
+<CODE class=linenumber>04</CODE>    <tt>DEFINE </tt>c <tt>VARCHAR</tt>(200)
+<CODE class=linenumber>05</CODE>    <tt>DATABASE </tt>test1
+<CODE class=linenumber>06</CODE>    <tt>EXECUTE IMMEDIATE </tt>&quot;create function proc1( p1 integer )&quot;
+<CODE class=linenumber>07</CODE>                 || &quot; returning decimal(6,2), varchar(200);&quot;
+<CODE class=linenumber>08</CODE>                 || &quot;  define p2 decimal(6,2);&quot;
+<CODE class=linenumber>09</CODE>                 || &quot;  define p3 varchar(200);&quot;
+<CODE class=linenumber>10</CODE>                 || &quot;  let p2 = p1 + 0.23;&quot;
+<CODE class=linenumber>11</CODE>                 || &quot;  let p3 = 'Value = ' || p1;&quot;
+<CODE class=linenumber>12</CODE>                 || &quot;  return p2, p3;&quot;
+<CODE class=linenumber>13</CODE>                 || &quot; end function;&quot;
+<CODE class=linenumber>14</CODE>    <tt>PREPARE</tt> stmt <tt>FROM</tt> &quot;execute function proc1(?)&quot;
+<CODE class=linenumber>15</CODE>    <tt>LET </tt>n = 111
+<CODE class=linenumber>16</CODE>    <tt>EXECUTE</tt> stmt <tt>USING</tt> n <tt>INTO</tt> d, c
+<CODE class=linenumber>17</CODE>    <tt>DISPLAY</tt> d
+<CODE class=linenumber>18</CODE>    <tt>DISPLAY</tt> c
+<CODE class=linenumber>19</CODE> <tt>END MAIN</tt></PRE>
+<h4>Stored functions defined with output parameters</h4>
+<P>
+Starting with IDS 10.00, Informix introduced the concept of output parameters
+for stored procedures, like other database vendors.</P>
+<P>
+To retrieve the output parameters, you must execute the routine in a SELECT
+statement defining <u>Statement Locale Variables</u>. These variables will be
+listed in the SELECT clause to be fetched as regular column values.<br>
+See Informix documentation for more details.</P>
+<P>In order to retrieve returning values into program variables, you must use an
+<tt>INTO</tt> clause in the <a href="DynamicSql.html#DS_EXECUTE">EXECUTE</a> instruction.</P>
+<P>The next example shows how to call a stored procedure with output parameters
+in Informix:</P>
+<PRE><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>     <tt>DEFINE</tt> pi, pr INT
+<CODE class=linenumber>03</CODE>     <tt>DATABASE</tt> test1
+<CODE class=linenumber>04</CODE>     <tt>EXECUTE IMMEDIATE</tt> &quot;create function proc2(i INT, OUT r INT)&quot;
+<CODE class=linenumber>05</CODE>                     ||&quot; returning int;&quot;
+<CODE class=linenumber>06</CODE>                     ||&quot; let r=i+10;&quot;
+<CODE class=linenumber>07</CODE>                     ||&quot; return 1;&quot;
+<CODE class=linenumber>08</CODE>                     ||&quot; end function&quot;
+<CODE class=linenumber>09</CODE>     <tt>PREPARE</tt> s <tt>FROM</tt> &quot;select r from systables where tabid=1 and proc1(?,r#int)==1&quot;
+<CODE class=linenumber>10</CODE>     <tt>LET</tt> pi = 33
+<CODE class=linenumber>11</CODE>     <tt>EXECUTE</tt> s <tt>USING</tt> pi <tt>INTO</tt> pr
+<CODE class=linenumber>12</CODE>     <tt>DISPLAY</tt> &quot;Output value: &quot;, pr
+<CODE class=linenumber>13</CODE>     <tt>EXECUTE IMMEDIATE</tt> &quot;drop function proc2&quot;
+<CODE class=linenumber>14</CODE> <tt>END MAIN</tt></PRE>
+<HR size="1" color="#C0C0C0">
+
+<h3><a name="SP_GDB">Stored procedure call with Genero db</a></h3>
+<P>Genero db implements <i>stored procedures</i> as a group of statements that
+you can call by name. A subset of RDBMS-specific languages are supported by
+Genero db; you can write Genero db stored procedures in Informix SPL, Oracle
+PL/SQL or SQL Server Transact-SQL.</P>
+<h4>Stored procedures with output parameters</h4>
+<P>Genero db <i> stored procedures</i> must be called with the input and output parameters
+specification in the <tt>USING</tt> clause of the <a href="DynamicSql.html#DS_EXECUTE">EXECUTE</a>,
+<a href="ResultSets.html#RS_OPEN">OPEN</a> or <a href="ResultSets.html#RS_FOREACH">FOREACH</a>
+instruction. As in normal dynamic SQL, parameters
+must correspond by position, and the <tt>IN/OUT/INOUT</tt> options must match the
+parameter definition of the stored procedure.</P>
+<P>To execute the stored procedure, you must use the <tt>CALL</tt> SQL
+instruction:</P>
+<PRE><CODE class=linenumber>11  </CODE> <tt>PREPARE</tt> stmt <tt>FROM</tt> &quot;call proc1(?,?,?)&quot;</PRE>
+<P>Here is a complete example creating and calling a stored procedure:</P>
+<PRE><CODE class=linenumber>01</CODE><STRONG> </STRONG><tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE </tt>n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>DEFINE </tt>d <tt>DECIMAL</tt>(6,2)
+<CODE class=linenumber>04</CODE>    <tt>DEFINE </tt>c <tt>VARCHAR</tt>(200)
+<CODE class=linenumber>05</CODE>    <tt>DATABASE </tt>test1
+<CODE class=linenumber>06</CODE>    <tt>EXECUTE IMMEDIATE </tt>&quot;create procedure proc1( p1 in int, p2 out number(6,2), p3 in out varchar2 )&quot;
+<CODE class=linenumber>07</CODE>                 || &quot; is begin&quot;
+<CODE class=linenumber>08</CODE>                 || &quot;  p2 := p1 + 0.23;&quot;
+<CODE class=linenumber>09</CODE>                 || &quot;  p3 := 'Value = ' || p1;&quot;
+<CODE class=linenumber>10</CODE>                 || &quot;end;&quot;
+<CODE class=linenumber>11</CODE>    <tt>PREPARE</tt> stmt <tt>FROM</tt> &quot;call proc1(?,?,?)&quot;
+<CODE class=linenumber>12</CODE>    <tt>LET </tt>n = 111
+<CODE class=linenumber>13</CODE>    <tt>EXECUTE</tt> stmt <tt>USING</tt> n <tt>IN</tt>, d <tt>OUT</tt>, c <tt>INOUT</tt>
+<CODE class=linenumber>14</CODE>    <tt>DISPLAY</tt> d
+<CODE class=linenumber>15</CODE>    <tt>DISPLAY</tt> c
+<CODE class=linenumber>16</CODE> <tt>END MAIN</tt></PRE>
+<h4>Stored procedures producing a result set</h4>
+<P>With Genero db, you can execute stored procedures returning a
+result set. To do so, you must declare a cursor and fetch the rows:</P>
+<PRE><CODE class=linenumber>01</CODE><STRONG> </STRONG><tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE </tt>i, n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>DEFINE </tt>d <tt>DECIMAL</tt>(6,2)
+<CODE class=linenumber>04</CODE>    <tt>DEFINE </tt>c <tt>VARCHAR</tt>(200)
+<CODE class=linenumber>05</CODE>    <tt>DATABASE </tt>test1
+<CODE class=linenumber>06</CODE>    <tt>CREATE TABLE </tt>tab1 ( c1 <tt>INTEGER</tt>, c2 <tt>DECIMAL</tt>(6,2), c3 <tt>VARCHAR</tt>(200) )
+<CODE class=linenumber>07</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 1, 123.45, 'aaaaaa' )
+<CODE class=linenumber>08</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 2, 123.66, 'bbbbbbbbb' )
+<CODE class=linenumber>09</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 3, 444.77, 'cccccc' )
+<CODE class=linenumber>10</CODE>    <tt>EXECUTE IMMEDIATE </tt>&quot;create procedure proc2 @key integer&quot;
+<CODE class=linenumber>11</CODE>                 || &quot; as begin&quot;
+<CODE class=linenumber>12</CODE>                 || &quot;    select * from tab1 where c1 &gt; @key&quot;
+<CODE class=linenumber>13</CODE>                 || &quot;  end&quot;
+<CODE class=linenumber>14</CODE>    <tt>DECLARE</tt> curs <tt>CURSOR FROM</tt> &quot;call proc2(?)&quot;
+<CODE class=linenumber>15</CODE>    <tt>LET </tt>i = 1
+<CODE class=linenumber>16</CODE>    <tt>FOREACH</tt> curs <tt>USING</tt> i <tt>INTO</tt> n, d, c
+<CODE class=linenumber>17</CODE>        <tt>DISPLAY</tt> n, d, c
+<CODE class=linenumber>18</CODE>    <tt>END FOREACH</tt>
+<CODE class=linenumber>19</CODE> <tt>END MAIN</tt></PRE>
+<h4>Stored procedures with output parameters and result set</h4>
+<P>It is possible to execute Genero db stored procedures with output parameters
+and a result set. The output parameter values are available after the <a href="ResultSets.html#RS_OPEN">OPEN</a>
+cursor instruction:</P>
+<PRE><CODE class=linenumber>01</CODE>    <tt>OPEN</tt> curs <tt>USING</tt> n <tt>IN</tt>, d <tt>OUT</tt>, c <tt>INOUT</tt>
+<CODE class=linenumber>02</CODE>    <tt>FETCH</tt> curs <tt>INTO</tt> rec.*</PRE>
+<HR size="1" color="#C0C0C0">
+
+<h3><a name="SP_ORA">Stored procedure call with Oracle</a></h3>
+<P>Oracle supports <i>stored procedures</i> and <i>stored functions</i> as a
+group of PL/SQL statements that you can call by name. Oracle <i>stored functions</i>
+are very similar to <i>stored procedures</i>, except that a function returns a
+value to the environment in which it is called. Functions can be used in SQL
+expressions.&nbsp;&nbsp;</P>
+<h4>Stored procedures with output parameters</h4>
+<P>Oracle <i> stored procedures</i> or <i>stored functions</i> must be called with 
+the input and output parameters
+specification in the <tt>USING</tt> clause of the <a href="DynamicSql.html#DS_EXECUTE">EXECUTE</a>,
+<a href="ResultSets.html#RS_OPEN">OPEN</a> or <a href="ResultSets.html#RS_FOREACH">FOREACH</a>
+instruction. As in normal dynamic SQL, parameters
+must correspond by position, and the <tt>IN/OUT/INOUT</tt> options must match the
+parameter definition of the stored procedure.</P>
+<P>To execute the <i> stored procedure</i>, you must include the procedure in an
+anonymous PL/SQL block with <tt>BEGIN</tt> and <tt>END</tt> keywords:</P>
+<PRE><CODE class=linenumber>11</CODE>   <tt>PREPARE</tt> stmt <tt>FROM</tt> &quot;begin proc1(?,?,?); end;&quot;</PRE>
+<P>Remark: Oracle stored procedures do not specify the size of number and
+character parameters. The size of output values (especially character strings)
+are defined by the calling context (i.e. the data type of the variable used when
+calling the procedure). When you pass a CHAR(10) to the procedure, the returning
+value will be filled with blanks to reach a size of 10 bytes.</P>
+<p><b><font color="#FF0000">Warning: </font>   For technical reasons, the Oracle
+driver uses dynamic binding with OCIBindDynamic(). The Oracle Call Interface
+does not support stored procedures parameters with the CHAR data type when using
+dynamic binding. You must use VARCHAR2 instead of CHAR to define character
+string parameters for stored procedures.</b></p>
+<P>Here is a complete example creating and calling a stored procedure with
+output parameters:</P>
+<PRE><CODE class=linenumber>01</CODE><STRONG> </STRONG><tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE </tt>n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>DEFINE </tt>d <tt>DECIMAL</tt>(6,2)
+<CODE class=linenumber>04</CODE>    <tt>DEFINE </tt>c <tt>VARCHAR</tt>(200)
+<CODE class=linenumber>05</CODE>    <tt>DATABASE </tt>test1
+<CODE class=linenumber>06</CODE>    <tt>EXECUTE IMMEDIATE </tt>&quot;create procedure proc1( p1 in int, p2 in out number, p3 in out varchar2 )&quot;
+<CODE class=linenumber>07</CODE>                 || &quot; is begin&quot;
+<CODE class=linenumber>08</CODE>                 || &quot;  p2 := p1 + 0.23;&quot;
+<CODE class=linenumber>09</CODE>                 || &quot;  p3 := 'Value = ' || to_char(p1);&quot;
+<CODE class=linenumber>10</CODE>                 || &quot;end;&quot;
+<CODE class=linenumber>11</CODE>    <tt>PREPARE</tt> stmt <tt>FROM</tt> &quot;begin proc1(?,?,?); end;&quot;
+<CODE class=linenumber>12</CODE>    <tt>LET </tt>n = 111
+<CODE class=linenumber>13</CODE>    <tt>EXECUTE</tt> stmt <tt>USING</tt> n <tt>IN</tt>, d <tt>INOUT</tt>, c <tt>INOUT</tt>
+<CODE class=linenumber>14</CODE>    <tt>DISPLAY</tt> d
+<CODE class=linenumber>15</CODE>    <tt>DISPLAY</tt> c
+<CODE class=linenumber>16</CODE> <tt>END MAIN</tt></PRE>
+<h4>Stored functions with a return value</h4>
+<P>To execute the <i> stored function</i> returning a value, you must include the
+function in an
+anonymous PL/SQL block with <tt>BEGIN</tt> and <tt>END</tt>  keywords, and use
+an assignment expression to specify the place holder for the returning value:</P>
+<PRE><CODE class=linenumber>11</CODE>    <tt>PREPARE</tt> stmt <tt>FROM</tt> &quot;begin ? := func1(?,?,?); end;&quot;</PRE>
+<h4>Stored procedures producing a result set</h4>
+<P>Oracle supports result set generation from stored procedures with the concept
+of cursor variables (<tt>REF CURSOR</tt>).</P>
+<p><b><font color="#FF0000">Warning:</font> Genero does not support cursor
+references produced by Oracle stored procedures or functions.</b></p>
+<HR size="1" color="#C0C0C0">
+
+<h3><a name="SP_DB2">Stored procedure call with IBM DB2</a></h3>
+<P>IBM DB2 implements <i>stored procedures</i> as a saved collection of SQL
+statements, which can accept and return user-supplied parameters. IBM DB2 <i>stored
+procedures</i> can also produce one or more result sets. Beside <i>stored
+procedures</i>, IBM DB2 supports <i>user defined functions</i>, typically used
+to define scalar functions returning a simple value which can be part of SQL
+expressions.</P>
+<h4>Stored procedures with output parameters</h4>
+<P>IBM DB2 <i> stored procedures</i> must be called with the input and output parameters
+specification in the <tt>USING</tt> clause of the <a href="DynamicSql.html#DS_EXECUTE">EXECUTE</a>,
+<a href="ResultSets.html#RS_OPEN">OPEN</a> or <a href="ResultSets.html#RS_FOREACH">FOREACH</a>
+instruction. As in normal dynamic SQL, parameters
+must correspond by position and the <tt>IN/OUT/INOUT</tt> options must match the
+parameter definition of the stored procedure.</P>
+<P>To execute the stored procedure, you must use the <tt>CALL</tt> SQL
+instruction:</P>
+<PRE><CODE class=linenumber>11</CODE>    <tt>PREPARE</tt> stmt <tt>FROM</tt> &quot;call proc1(?,?,?)&quot;</PRE>
+<P>Here is a complete example creating and calling a stored procedure with
+output parameters:</P>
+<PRE><CODE class=linenumber>01</CODE><STRONG> </STRONG><tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE </tt>n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>DEFINE </tt>d <tt>DECIMAL</tt>(6,2)
+<CODE class=linenumber>04</CODE>    <tt>DEFINE </tt>c <tt>VARCHAR</tt>(200)
+<CODE class=linenumber>05</CODE>    <tt>DATABASE </tt>test1
+<CODE class=linenumber>06</CODE>    <tt>EXECUTE IMMEDIATE </tt>&quot;create procedure proc1( in p1 int, out p2 decimal(6,2), inout p3 varchar(20) )&quot;
+<CODE class=linenumber>07</CODE>                 || &quot; language sql begin&quot;
+<CODE class=linenumber>08</CODE>                 || &quot;  set p2 = p1 + 0.23;&quot;
+<CODE class=linenumber>09</CODE>                 || &quot;  set p3 = 'Value = ' || char(p1);&quot;
+<CODE class=linenumber>10</CODE>                 || &quot;end&quot;
+<CODE class=linenumber>11</CODE>    <tt>PREPARE</tt> stmt <tt>FROM</tt> &quot;call proc1(?,?,?)&quot;
+<CODE class=linenumber>12</CODE>    <tt>LET </tt>n = 111
+<CODE class=linenumber>13</CODE>    <tt>EXECUTE</tt> stmt <tt>USING</tt> n <tt>IN</tt>, d <tt>OUT</tt>, c <tt>INOUT</tt>
+<CODE class=linenumber>14</CODE>    <tt>DISPLAY</tt> d
+<CODE class=linenumber>15</CODE>    <tt>DISPLAY</tt> c
+<CODE class=linenumber>16</CODE> <tt>END MAIN</tt></PRE>
+<h4>Stored procedures producing a result set</h4>
+<P>With DB2 UDB, you can execute stored procedures returning a
+result set. To do so, you must declare a cursor and fetch the rows:</P>
+<PRE><CODE class=linenumber>01</CODE><STRONG> </STRONG><tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE </tt>i, n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>DEFINE </tt>d <tt>DECIMAL</tt>(6,2)
+<CODE class=linenumber>04</CODE>    <tt>DEFINE </tt>c <tt>VARCHAR</tt>(200)
+<CODE class=linenumber>05</CODE>    <tt>DATABASE </tt>test1
+<CODE class=linenumber>06</CODE>    <tt>CREATE TABLE </tt>tab1 ( c1 <tt>INTEGER</tt>, c2 <tt>DECIMAL</tt>(6,2), c3 <tt>VARCHAR</tt>(200) )
+<CODE class=linenumber>07</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 1, 123.45, 'aaaaaa' )
+<CODE class=linenumber>08</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 2, 123.66, 'bbbbbbbbb' )
+<CODE class=linenumber>09</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 3, 444.77, 'cccccc' )
+<CODE class=linenumber>10</CODE>    <tt>EXECUTE IMMEDIATE </tt>&quot;create procedure proc2( in key integer )&quot;
+<CODE class=linenumber>11</CODE>                 || &quot; result sets 1&quot;
+<CODE class=linenumber>12</CODE>                 || &quot; language sql&quot;
+<CODE class=linenumber>13</CODE>                 || &quot;  begin&quot;
+<CODE class=linenumber>14</CODE>                 || &quot;  declare c1 cursor with return for&quot;
+<CODE class=linenumber>15</CODE>                 || &quot;    select * from tab1 where c1 &gt; key;&quot;
+<CODE class=linenumber>16</CODE>                 || &quot;  open c1;&quot;
+<CODE class=linenumber>17</CODE>                 || &quot;  end&quot;
+<CODE class=linenumber>18</CODE>    <tt>DECLARE</tt> curs <tt>CURSOR FROM</tt> &quot;call proc2(?)&quot;
+<CODE class=linenumber>19</CODE>    <tt>LET </tt>i = 1
+<CODE class=linenumber>20</CODE>    <tt>FOREACH</tt> curs <tt>USING</tt> i <tt>INTO</tt> n, d, c
+<CODE class=linenumber>21</CODE>        <tt>DISPLAY</tt> n, d, c
+<CODE class=linenumber>22</CODE>    <tt>END FOREACH</tt>
+<CODE class=linenumber>23</CODE> <tt>END MAIN</tt></PRE>
+<h4>Stored procedures with output parameters and result set</h4>
+<P>It is possible to execute DB2 UDB stored procedures with output parameters
+and a result set. The output parameter values are available after the <a href="ResultSets.html#RS_OPEN">OPEN</a>
+cursor instruction:</P>
+<PRE><CODE class=linenumber>01</CODE>    <tt>OPEN</tt> curs <tt>USING</tt> n <tt>IN</tt>, d <tt>OUT</tt>, c <tt>INOUT</tt>
+<CODE class=linenumber>02</CODE>    <tt>FETCH</tt> curs <tt>INTO</tt> rec.*</PRE>
+<HR size="1" color="#C0C0C0">
+
+<h3><a name="SP_MSV">Stored procedure call with Microsoft SQL Server</a></h3>
+<P>SQL Server implements <i>stored procedures</i>, which are a saved collection
+of Transact-SQL statements that can take and return user-supplied parameters.
+SQL Server <i>stored procedures</i> can also produce one or more result sets.</P>
+<h4>Stored procedures with output parameters</h4>
+<P>SQL Server <i> stored procedures</i> must be called with the input and output parameters
+specification in the <tt>USING</tt> clause of the <a href="DynamicSql.html#DS_EXECUTE">EXECUTE</a>,
+<a href="ResultSets.html#RS_OPEN">OPEN</a> or <a href="ResultSets.html#RS_FOREACH">FOREACH</a>
+instruction. As in normal dynamic SQL, parameters
+must correspond by position and the <tt>IN/OUT/INOUT</tt> options must match the
+parameter definition of the stored procedure.</P>
+<P>To execute the stored procedure, you must use an ODBC <tt>call</tt>
+escape sequence:</P>
+<PRE>    <tt>PREPARE</tt> stmt <tt>FROM</tt> &quot;{ call proc1(?,?,?) }&quot;</PRE>
+<P>Here is a complete example creating and calling a stored procedure with
+output parameters:</P>
+<PRE><CODE class=linenumber>01</CODE><STRONG> </STRONG><tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE </tt>n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>DEFINE </tt>d <tt>DECIMAL</tt>(6,2)
+<CODE class=linenumber>04</CODE>    <tt>DEFINE </tt>c <tt>VARCHAR</tt>(200)
+<CODE class=linenumber>05</CODE>    <tt>DATABASE </tt>test1
+<CODE class=linenumber>06</CODE>    <tt>EXECUTE IMMEDIATE </tt>&quot;create procedure proc1 @v1 integer, @v2 decimal(6,2) output, @v3 varchar(20) output&quot;
+<CODE class=linenumber>07</CODE>                 || &quot; as begin&quot;
+<CODE class=linenumber>08</CODE>                 || &quot;  set @v2 = @v1 + 0.23&quot;
+<CODE class=linenumber>09</CODE>                 || &quot;  set @v3 = 'Value = ' || cast(@v1 as varchar)&quot;
+<CODE class=linenumber>10</CODE>                 || &quot;end&quot;
+<CODE class=linenumber>11</CODE>    <tt>PREPARE</tt> stmt <tt>FROM</tt> &quot;{ call proc1(?,?,?) }&quot;
+<CODE class=linenumber>12</CODE>    <tt>LET </tt>n = 111
+<CODE class=linenumber>13</CODE>    <tt>EXECUTE</tt> stmt <tt>USING</tt> n <tt>IN</tt>, d <tt>OUT</tt>, c <tt>OUT</tt>
+<CODE class=linenumber>14</CODE>    <tt>DISPLAY</tt> d
+<CODE class=linenumber>15</CODE>    <tt>DISPLAY</tt> c
+<CODE class=linenumber>16</CODE> <tt>END MAIN</tt></PRE>
+<h4>Stored procedures producing a result set</h4>
+<P>With SQL Server, you can execute stored procedures returning a
+result set. To do so, you must declare a cursor and fetch the rows.</P>
+<p><b><font color="#FF0000">Warning:</font> The following example uses a stored
+procedure with a simple SELECT statement. If the stored procedure contains additional
+Transat-SQL statements such as SET or IF (which is the case in complex stored
+procedures), SQL Server generates multiple result sets. By default the Genero
+MSV driver uses &quot;Server Cursors&quot; to support multiple active SQL
+statements. But SQL Server stored procedures generating multiple result sets
+cannot be used with Server Cursors: The Server Cursor is silently converted to a
+&quot;Default Result Set&quot; cursor by the ODBC driver. Since Default Result
+Set cursors do not support multiple active statements, you cannot use another
+SQL statement while processing the results of such stored procedure. You must
+CLOSE the cursor created for the stored procedure before continuing with other
+SQL statements.</b></p>
+<PRE><CODE class=linenumber>01</CODE><STRONG> </STRONG><tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE </tt>i, n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>DEFINE </tt>d <tt>DECIMAL</tt>(6,2)
+<CODE class=linenumber>04</CODE>    <tt>DEFINE </tt>c <tt>VARCHAR</tt>(200)
+<CODE class=linenumber>05</CODE>    <tt>DATABASE </tt>test1
+<CODE class=linenumber>06</CODE>    <tt>CREATE TABLE </tt>tab1 ( c1 <tt>INTEGER</tt>, c2 <tt>DECIMAL</tt>(6,2), c3 <tt>VARCHAR</tt>(200) )
+<CODE class=linenumber>07</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 1, 123.45, 'aaaaaa' )
+<CODE class=linenumber>08</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 2, 123.66, 'bbbbbbbbb' )
+<CODE class=linenumber>09</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 3, 444.77, 'cccccc' )
+<CODE class=linenumber>10</CODE>    <tt>EXECUTE IMMEDIATE </tt>&quot;create procedure proc2 @key integer&quot;
+<CODE class=linenumber>11</CODE>                 || &quot;  as select * from tab1 where c1 &gt; @key&quot;
+<CODE class=linenumber>12</CODE>    <tt>DECLARE</tt> curs <tt>CURSOR FROM</tt> &quot;{ call proc2(?) }&quot;
+<CODE class=linenumber>13</CODE>    <tt>LET </tt>i = 1
+<CODE class=linenumber>14</CODE>    <tt>FOREACH</tt> curs <tt>USING</tt> i <tt>INTO</tt> n, d, c
+<CODE class=linenumber>15</CODE>        <tt>DISPLAY</tt> n, d, c
+<CODE class=linenumber>16</CODE>    <tt>END FOREACH</tt>
+<CODE class=linenumber>17</CODE> <tt>END MAIN</tt></PRE>
+<p><b><font color="#FF0000">Warning:</font> It is possible to fetch large
+objects (text/image) from stored procedure generating a result set, however, if
+the stored procedure executes other statements as the SELECT (like SET/IF
+commands), the SQL Server ODBC driver will convert the server cursor to a
+regular default result set cursor, requiring the
+LOB columns to appear at the end of the SELECT list. Thus, in most cases (stored
+procedures typically use SET / IF statements), you will have to move the LOB
+columns and the end of the column list.</b></p>
+<h4>Stored procedures returning a cursor as output parameter</h4>
+<P> SQL Server supports &quot;Cursor Output Parameters&quot;: A stored procedure
+can declare/open a cursor and return a reference of the cursor to the caller.</P>
+<p><b><font color="#FF0000">Warning: </font>SQL Server stored procedures returning
+a cursor as output parameter are not supported. There are two reasons for this:
+The Genero language does not have a data type to store a server cursor
+reference, and the underlying ODBC driver does not support this anyway.</b></p>
+<h4>Stored procedures with return code</h4>
+<P> SQL Server stored procedures can return integer values. To get the return
+value of a stored procedure, you must use an assignment expression in the ODBC <tt>call</tt>
+escape sequence:&nbsp;</P>
+<PRE><CODE class=linenumber>01</CODE>    <tt>PREPARE</tt> stmt <tt>FROM</tt> &quot;{ ? = call proc3(?,?,?) }&quot; </PRE>
+<h4>Stored procedures with output parameters, return code and result set</h4>
+<p> With SQL Server you can call stored procedures with a return
+code, output parameters and producing a result set.</p>
+<p><b><font color="#FF0000">Warning: </font>Return codes and
+output parameters are the last items returned to the application by SQL Server;
+they are not returned until the last row of the result set has been fetched,
+after the SQLMoreResults() ODBC function is called.&nbsp;If output parameters
+are used, the SQL Server driver executes a SQLMoreResult() call when <u>closing</u>
+the cursor instead of SQLCloseCursor(), to get the return code and output
+parameter values from SQL Server.</b></p>
+<PRE><CODE class=linenumber>01</CODE><STRONG> </STRONG><tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE </tt>r, i, n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>DEFINE </tt>d <tt>DECIMAL</tt>(6,2)
+<CODE class=linenumber>04</CODE>    <tt>DEFINE </tt>c <tt>VARCHAR</tt>(200)
+<CODE class=linenumber>05</CODE>    <tt>DATABASE </tt>test1
+<CODE class=linenumber>06</CODE>    <tt>CREATE TABLE </tt>tab1 ( c1 <tt>INTEGER</tt>, c2 <tt>DECIMAL</tt>(6,2), c3 <tt>VARCHAR</tt>(200) )
+<CODE class=linenumber>07</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 1, 123.45, 'aaaaaa' )
+<CODE class=linenumber>08</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 2, 123.66, 'bbbbbbbbb' )
+<CODE class=linenumber>09</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 3, 444.77, 'cccccc' )
+<CODE class=linenumber>10</CODE>    <tt>EXECUTE IMMEDIATE </tt>&quot;create procedure proc3 @key integer output&quot;
+<CODE class=linenumber>11</CODE>                 || &quot;  as begin&quot;
+<CODE class=linenumber>12</CODE>                 || &quot;     set @key = @key - 1&quot;
+<CODE class=linenumber>13</CODE>                 || &quot;     select * from tab1 where c1 &gt; @key&quot;
+<CODE class=linenumber>14</CODE>                 || &quot;     return (@key * 3)&quot;
+<CODE class=linenumber>15</CODE>                 || &quot;  end&quot;
+<CODE class=linenumber>16</CODE>    <tt>DECLARE</tt> curs <tt>CURSOR FROM</tt> &quot;{ ? = call proc3(?) }&quot;
+<CODE class=linenumber>17</CODE>    <tt>LET </tt>i = 1
+<CODE class=linenumber>18</CODE>    <tt>OPEN</tt> curs <tt>USING</tt> r <tt>INOUT</tt>, i <tt>INOUT</tt>
+<CODE class=linenumber>19</CODE>    <tt>DISPLAY</tt> r, i
+<CODE class=linenumber>20</CODE>    <tt>FETCH</tt> curs <tt>INTO</tt> n, d, c
+<CODE class=linenumber>21</CODE>    <tt>FETCH</tt> curs <tt>INTO</tt> n, d, c
+<CODE class=linenumber>22</CODE>    <tt>FETCH</tt> curs <tt>INTO</tt> n, d, c
+<CODE class=linenumber>23</CODE>    <tt>DISPLAY</tt> r, i
+<CODE class=linenumber>24</CODE>    <tt>CLOSE</tt> curs
+<CODE class=linenumber>25</CODE>    <tt>DISPLAY</tt> r, i -- Now the returned values are available
+<CODE class=linenumber>26</CODE> <tt>END MAIN</tt></PRE>
+<p><b><font color="#FF0000">Warning: </font>Return code and
+output parameter variables must be defined as <tt>INOUT</tt> in the OPEN instruction.</b></p>
+<HR size="1" color="#C0C0C0">
+
+<h3><a name="SP_PGS">Stored procedure call with PostgreSQL</a></h3>
+<P>PostgreSQL implements <i>stored functions</i> that can return values. If the
+function returns more that one value, you must specify the returning values as
+function parameters with the <tt>OUT</tt> keyword. If the function returns a
+unique value, you can use the <tt>RETURNS</tt> clause.</P>
+<p><b><font color="#FF0000">Warning: </font>Pay attention to the function
+signature; PostgreSQL allows function overloading. For example, func(int) and
+func(char) are two different functions. To drop a function, you must specify the
+parameter type to identify the function signature properly.</b></p>
+<h4>Stored functions with output parameters</h4>
+<P>To execute a stored function with PostgreSQL, you must use <tt>SELECT * FROM function</tt>,
+as shown in the next line:</P>
+
+<PRE><CODE class=linenumber>14</CODE>    <tt>PREPARE</tt> stmt <tt>FROM</tt> &quot;select * from proc1(?)&quot;</PRE>
+
+<P>In order to retrieve returning values into program variables, you must use an
+<tt>INTO</tt> clause in the <a href="DynamicSql.html#DS_EXECUTE">EXECUTE</a> instruction.</P>
+<P>The following example shows how to call a stored function with PostgreSQL:</P>
+
+<PRE><CODE class=linenumber>01</CODE><STRONG> </STRONG><tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE </tt>n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>DEFINE </tt>d <tt>DECIMAL</tt>(6,2)
+<CODE class=linenumber>04</CODE>    <tt>DEFINE </tt>c <tt>VARCHAR</tt>(200)
+<CODE class=linenumber>05</CODE>    <tt>DATABASE </tt>test1
+<CODE class=linenumber>06</CODE>    <tt>EXECUTE IMMEDIATE </tt>&quot;create function proc1(p1 integer, out p2 numeric(6,2), out p3 varchar(200))&quot;
+<CODE class=linenumber>08</CODE>                 || &quot; as $$&quot;
+<CODE class=linenumber>09</CODE>                 || &quot;  begin&quot;
+<CODE class=linenumber>10</CODE>                 || &quot;    p2 := p1 + 0.23;&quot;
+<CODE class=linenumber>11</CODE>                 || &quot;    p3 := 'Value = ' || cast(p1 as text);&quot;
+<CODE class=linenumber>12</CODE>                 || &quot;  end;&quot;
+<CODE class=linenumber>13</CODE>                 || &quot; $$ language plpgsql&quot;
+<CODE class=linenumber>14</CODE>    <tt>PREPARE</tt> stmt <tt>FROM</tt> &quot;select * from proc1(?)&quot;
+<CODE class=linenumber>15</CODE>    <tt>LET </tt>n = 111
+<CODE class=linenumber>16</CODE>    <tt>EXECUTE</tt> stmt <tt>USING</tt> n <tt>INTO</tt> d, c
+<CODE class=linenumber>17</CODE>    <tt>DISPLAY</tt> d
+<CODE class=linenumber>18</CODE>    <tt>DISPLAY</tt> c
+<CODE class=linenumber>19</CODE> <tt>END MAIN</tt></PRE>
+<h4>Stored functions producing a result set</h4>
+<P>With PostgreSQL, you can execute stored procedures returning a
+result set. To do so, you must declare a cursor and fetch the rows:</P>
+<PRE><CODE class=linenumber>01</CODE><STRONG> </STRONG><tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE </tt>i, n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>DEFINE </tt>d <tt>DECIMAL</tt>(6,2)
+<CODE class=linenumber>04</CODE>    <tt>DEFINE </tt>c <tt>VARCHAR</tt>(200)
+<CODE class=linenumber>05</CODE>    <tt>DATABASE </tt>test1
+<CODE class=linenumber>06</CODE>    <tt>CREATE TABLE </tt>tab1 ( c1 <tt>INTEGER</tt>, c2 <tt>DECIMAL</tt>(6,2), c3 <tt>VARCHAR</tt>(200) )
+<CODE class=linenumber>07</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 1, 123.45, 'aaaaaa' )
+<CODE class=linenumber>08</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 2, 123.66, 'bbbbbbbbb' )
+<CODE class=linenumber>09</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 3, 444.77, 'cccccc' )
+<CODE class=linenumber>10</CODE>    <tt>EXECUTE IMMEDIATE </tt>&quot;create function proc2(integer)&quot;
+<CODE class=linenumber>11</CODE>                 || &quot; returns setof tab1&quot;
+<CODE class=linenumber>12</CODE>                 || &quot; as $$&quot;
+<CODE class=linenumber>13</CODE>                 || &quot;  select * from tab1 where c1 &gt; $1;&quot;
+<CODE class=linenumber>14</CODE>                 || &quot; $$ language sql&quot;
+<CODE class=linenumber>15</CODE>    <tt>DECLARE</tt> curs <tt>CURSOR FROM</tt> &quot;select * from proc2(?)&quot;
+<CODE class=linenumber>16</CODE>    <tt>LET </tt>i = 1
+<CODE class=linenumber>17</CODE>    <tt>FOREACH</tt> curs <tt>USING</tt> i <tt>INTO</tt> n, d, c
+<CODE class=linenumber>18</CODE>        <tt>DISPLAY</tt> n, d, c
+<CODE class=linenumber>19</CODE>    <tt>END FOREACH</tt>
+<CODE class=linenumber>20</CODE> <tt>END MAIN</tt></PRE>
+<h4>Stored functions with output parameters and result set</h4>
+<p><b><font color="#FF0000">Warning: </font>With PostgreSQL you cannot return
+output parameters and a result set from the same stored procedure; both use the
+same technique to return values to the client, in the context of result columns
+to be fetched.</b></p>
+<HR size="1" color="#C0C0C0">
+
+<h3><a name="SP_MYS">Stored procedure call with MySQL</a></h3>
+<p>MySQL implements <i>stored procedures</i> and <i>stored functions</i> as a
+collection of SQL statements that can take and return user-supplied parameters.
+Functions are very similar to procedures, except that they return a scalar value
+and can be used in SQL expressions.</p>
+<h4>Stored procedures with output parameters</h4>
+<p><b><font color="#FF0000">Warning: </font>Since MySQL C API (version 5.0) does not support 
+an output parameter
+specification, the IN / OUT / INOUT technique cannot be used.</b></p>
+<p>In order to return values from a MySQL <i>stored procedure</i> or <i>stored
+function</i>, you must use SQL variables. There are three steps to execute the
+procedure or function:</p>
+<ol>
+  <li>With the <tt>SET</tt> SQL statement, create and assign an SQL variables
+    for each parameter.</li>
+  <li><tt>CALL</tt> the stored procedure or stored function with the created SQL
+    variables.</li>
+  <li>Perform a <tt>SELECT</tt> statement to return the SQL variables to the
+    application.</li>
+</ol>
+<P>In order to retrieve returning values into program variables, you must use an
+<tt>INTO</tt> clause in the <a href="DynamicSql.html#DS_EXECUTE">EXECUTE</a> instruction.</P>
+<P>The following example shows how to call a stored procedure with output
+parameters:</P>
+<p><b><font color="#FF0000">Warning:  </font>MySQL version 5.0 does not allow you to
+prepare the CREATE PROCEDURE statement; you may need to execute this statement
+from the mysql command line tool.</b></p>
+<p><b><font color="#FF0000">Warning:  </font>MySQL version 5.0 cannot execute
+&quot;SELECT @variable&quot; with server-side cursors. Since the Genero MySQL
+driver uses server-side cursors to support multiple active result sets, it is
+not possible to execute the SELECT statement to return output parameter
+values.&nbsp;</b></p>
+<p><b><font color="#FF0000">Warning:  </font>MySQL version &gt;=5.0 evaluates
+&quot;@variable&quot; user variables assigned with a string&nbsp;as large <i>text</i>
+(CLOB) expressions. That type of values must normally be fetched into TEXT
+variable in BDL. To workaround this behavior, you can use the substring(@var,1,255)
+function to return a VARCHAR() expression from MySQL and fetch into a VARCHAR()
+BDL variable.</b></p>
+<PRE><CODE class=linenumber>01</CODE><STRONG> </STRONG><tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE </tt>n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>DEFINE </tt>d <tt>DECIMAL</tt>(6,2)
+<CODE class=linenumber>04</CODE>    <tt>DEFINE </tt>c <tt>VARCHAR</tt>(200)
+<CODE class=linenumber>05</CODE>    <tt>DATABASE </tt>test1
+<CODE class=linenumber>06</CODE>    <tt>EXECUTE IMMEDIATE </tt>&quot;create procedure proc1(p1 integer, out p2 numeric(6,2), out p3 varchar(200))&quot;
+<CODE class=linenumber>07</CODE>                 || &quot; no sql begin&quot;
+<CODE class=linenumber>08</CODE>                 || &quot;    set p2 = p1 + 0.23;&quot;
+<CODE class=linenumber>09</CODE>                 || &quot;    set p3 = concat( 'Value = ', p1 );&quot;
+<CODE class=linenumber>10</CODE>                 || &quot;  end;&quot;
+<CODE class=linenumber>11</CODE>    <tt>LET </tt>n = 111
+<CODE class=linenumber>12</CODE>    <tt>EXECUTE IMMEDIATE</tt> &quot;set @p1 = &quot;, n
+<CODE class=linenumber>13</CODE>    <tt>EXECUTE IMMEDIATE</tt> &quot;set @p2 = NULL&quot;
+<CODE class=linenumber>14</CODE>    <tt>EXECUTE IMMEDIATE</tt> &quot;set @p3 = NULL&quot;
+<CODE class=linenumber>15</CODE>    <tt>EXECUTE IMMEDIATE</tt> &quot;call proc1(@p1, @p2, @p3)&quot;
+<CODE class=linenumber>16</CODE>    <tt>PREPARE</tt> stmt <tt>FROM</tt> &quot;select @p2, substring(@p3,1,200)&quot;
+<CODE class=linenumber>17</CODE>    <tt>EXECUTE</tt> stmt <tt>INTO</tt> d, c
+<CODE class=linenumber>18</CODE>    <tt>DISPLAY</tt> d
+<CODE class=linenumber>19</CODE>    <tt>DISPLAY</tt> c
+<CODE class=linenumber>20</CODE> <tt>END MAIN</tt></PRE>
+<h4>Stored functions returning values</h4>
+<p>The following example shows how to retrieve the return value of a stored
+function with MySQL:</p>
+<p><b><font color="#FF0000">Warning:  </font>MySQL version 5.0 does not allow you to
+prepare the CREATE FUNCTION statement; you may need to execute this statement
+from the mysql command line tool.</b></p>
+<PRE><CODE class=linenumber>01</CODE><STRONG> </STRONG><tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE </tt>n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>DEFINE </tt>c <tt>VARCHAR</tt>(200)
+<CODE class=linenumber>04</CODE>    <tt>DATABASE </tt>test1
+<CODE class=linenumber>05</CODE>    <tt>EXECUTE IMMEDIATE </tt>&quot;create function func1(p1 integer)&quot;
+<CODE class=linenumber>06</CODE>                 || &quot; no sql begin&quot;
+<CODE class=linenumber>07</CODE>                 || &quot;    return concat( 'Value = ', p1 );&quot;
+<CODE class=linenumber>08</CODE>                 || &quot;  end;&quot;
+<CODE class=linenumber>09</CODE>    <tt>PREPARE</tt> stmt <tt>FROM</tt> &quot;select func1(?)&quot;
+<CODE class=linenumber>10</CODE>    <tt>LET </tt>n = 111
+<CODE class=linenumber>11</CODE>    <tt>EXECUTE</tt> stmt <tt>USING</tt> n <tt>INTO</tt> c
+<CODE class=linenumber>12</CODE>    <tt>DISPLAY</tt> c
+<CODE class=linenumber>13</CODE> <tt>END MAIN</tt></PRE>
+<h4>Stored procedures producing a result set</h4>
+<p><b><font color="#FF0000">Warning: </font>The MySQL version 5.0 stored
+procedures and stored functions cannot return a result set.</b></p>
+<HR size="1" color="#C0C0C0">
+
+<h3><a name="SP_ASE">Stored procedure call with Sybase ASE</a></h3>
+<P>Sybase ASE supports <i>stored procedures</i>, which can take and return user-supplied parameters.
+Sybase ASE <i>stored procedures</i> can also produce one or more result sets.</P>
+<h4>Stored procedures with output parameters</h4>
+<P>Sybase ASE <i>stored procedures</i> must be called with the input and output parameters
+specification in the <tt>USING</tt> clause of the <a href="DynamicSql.html#DS_EXECUTE">EXECUTE</a>,
+<a href="ResultSets.html#RS_OPEN">OPEN</a> or <a href="ResultSets.html#RS_FOREACH">FOREACH</a>
+instruction. As in normal dynamic SQL, parameters
+must correspond by position and the <tt>IN/OUT/INOUT</tt> options must match the
+parameter definition of the stored procedure.</P>
+<P>To execute the stored procedure, you must use a specific syntax to have the
+ODI driver identify the statement as an RPC call. The syntax of an RPC call must
+be:</P>
+<P>&nbsp;&nbsp;&nbsp; <tt>!rpc procedure-name ( [ @param-name [,...] ] )</tt></P>
+<P>The parameter names must be specified, with the same names as the arguments
+of the stored procedure, because the ODI driver must bind stored procedure
+parameters by name.</P>
+<P>Example:</P>
+<PRE>    <tt>PREPARE</tt> stmt <tt>FROM</tt> &quot;!rpc update_account ( @custid, @old, @new )&quot;</PRE>
+<P>Here is a complete example creating and calling a stored procedure with
+output parameters:</P>
+<PRE><CODE class=linenumber>01</CODE><STRONG> </STRONG><tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE </tt>n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>DEFINE </tt>d <tt>DECIMAL</tt>(6,2)
+<CODE class=linenumber>04</CODE>    <tt>DEFINE </tt>c <tt>VARCHAR</tt>(200)
+<CODE class=linenumber>05</CODE>    <tt>DATABASE </tt>test1
+<CODE class=linenumber>06</CODE>    <tt>EXECUTE IMMEDIATE </tt>&quot;create procedure proc1 @v1 integer, @v2 decimal(6,2) output, @v3 varchar(20) output&quot;
+<CODE class=linenumber>07</CODE>                 || &quot; as begin&quot;
+<CODE class=linenumber>08</CODE>                 || &quot;  set @v2 = @v1 + 0.23&quot;
+<CODE class=linenumber>09</CODE>                 || &quot;  set @v3 = 'Value = ' || cast(@v1 as varchar)&quot;
+<CODE class=linenumber>10</CODE>                 || &quot;end&quot;
+<CODE class=linenumber>11</CODE>    <tt>PREPARE</tt> stmt <tt>FROM</tt> &quot;!rpc proc1( @v1, @v2, @v3 ) }&quot;
+<CODE class=linenumber>12</CODE>    <tt>LET </tt>n = 111
+<CODE class=linenumber>13</CODE>    <tt>EXECUTE</tt> stmt <tt>USING</tt> n <tt>IN</tt>, d <tt>OUT</tt>, c <tt>OUT</tt>
+<CODE class=linenumber>14</CODE>    <tt>DISPLAY</tt> d
+<CODE class=linenumber>15</CODE>    <tt>DISPLAY</tt> c
+<CODE class=linenumber>16</CODE> <tt>END MAIN</tt></PRE>
+<h4>Stored procedures producing a result set</h4>
+<P>With Sybase, you can execute stored procedures returning a
+result set. To do so, you must declare a cursor and fetch the rows.</P>
+<p><b><font color="#FF0000">Warning:</font> When the stored procedure generates multiple active statements, you cannot use another
+SQL statement while processing the results of such stored procedure. You must
+CLOSE the cursor created for the stored procedure before continuing with other
+SQL statements.</b></p>
+<PRE><CODE class=linenumber>01</CODE><STRONG> </STRONG><tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE </tt>i, n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>DEFINE </tt>d <tt>DECIMAL</tt>(6,2)
+<CODE class=linenumber>04</CODE>    <tt>DEFINE </tt>c <tt>VARCHAR</tt>(200)
+<CODE class=linenumber>05</CODE>    <tt>DATABASE </tt>test1
+<CODE class=linenumber>06</CODE>    <tt>CREATE TABLE </tt>tab1 ( c1 <tt>INTEGER</tt>, c2 <tt>DECIMAL</tt>(6,2), c3 <tt>VARCHAR</tt>(200) )
+<CODE class=linenumber>07</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 1, 123.45, 'aaaaaa' )
+<CODE class=linenumber>08</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 2, 123.66, 'bbbbbbbbb' )
+<CODE class=linenumber>09</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 3, 444.77, 'cccccc' )
+<CODE class=linenumber>10</CODE>    <tt>EXECUTE IMMEDIATE </tt>&quot;create procedure proc2 @key integer&quot;
+<CODE class=linenumber>11</CODE>                 || &quot;  as select * from tab1 where c1 &gt; @key&quot;
+<CODE class=linenumber>12</CODE>    <tt>DECLARE</tt> curs <tt>CURSOR FROM</tt> &quot;!rpc proc2( @key ) }&quot;
+<CODE class=linenumber>13</CODE>    <tt>LET </tt>i = 1
+<CODE class=linenumber>14</CODE>    <tt>FOREACH</tt> curs <tt>USING</tt> i <tt>INTO</tt> n, d, c
+<CODE class=linenumber>15</CODE>        <tt>DISPLAY</tt> n, d, c
+<CODE class=linenumber>16</CODE>    <tt>END FOREACH</tt>
+<CODE class=linenumber>17</CODE> <tt>END MAIN</tt></PRE>
+<h4>Stored procedures with output parameters, return code and result set</h4>
+<p> With Sybase ASE stored procedures, you call stored procedures with a return
+code, output parameters and producing a result set.</p>
+<p><b><font color="#FF0000">Warning: </font>Return codes and
+output parameters are the last items returned to the application by Sybase;
+they are not returned until the last row of the result set has been fetched.</b></p>
+<PRE><CODE class=linenumber>01</CODE><STRONG> </STRONG><tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE </tt>r, i, n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>    <tt>DEFINE </tt>d <tt>DECIMAL</tt>(6,2)
+<CODE class=linenumber>04</CODE>    <tt>DEFINE </tt>c <tt>VARCHAR</tt>(200)
+<CODE class=linenumber>05</CODE>    <tt>DATABASE </tt>test1
+<CODE class=linenumber>06</CODE>    <tt>CREATE TABLE </tt>tab1 ( c1 <tt>INTEGER</tt>, c2 <tt>DECIMAL</tt>(6,2), c3 <tt>VARCHAR</tt>(200) )
+<CODE class=linenumber>07</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 1, 123.45, 'aaaaaa' )
+<CODE class=linenumber>08</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 2, 123.66, 'bbbbbbbbb' )
+<CODE class=linenumber>09</CODE>    <tt>INSERT INTO </tt>tab1<tt> VALUES</tt> ( 3, 444.77, 'cccccc' )
+<CODE class=linenumber>10</CODE>    <tt>EXECUTE IMMEDIATE </tt>&quot;create procedure proc3 @key integer output&quot;
+<CODE class=linenumber>11</CODE>                 || &quot;  as begin&quot;
+<CODE class=linenumber>12</CODE>                 || &quot;     set @key = @key - 1&quot;
+<CODE class=linenumber>13</CODE>                 || &quot;     select * from tab1 where c1 &gt; @key&quot;
+<CODE class=linenumber>14</CODE>                 || &quot;     return (@key * 3)&quot;
+<CODE class=linenumber>15</CODE>                 || &quot;  end&quot;
+<CODE class=linenumber>16</CODE>    <tt>DECLARE</tt> curs <tt>CURSOR FROM</tt> &quot;!rpc proc3( @key ) }&quot;
+<CODE class=linenumber>17</CODE>    <tt>LET </tt>i = 1
+<CODE class=linenumber>18</CODE>    <tt>OPEN</tt> curs <tt>USING</tt> r <tt>OUT</tt>, i <tt>OUT</tt>
+<CODE class=linenumber>19</CODE>    <tt>DISPLAY</tt> r, i
+<CODE class=linenumber>20</CODE>    <tt>FETCH</tt> curs <tt>INTO</tt> n, d, c
+<CODE class=linenumber>21</CODE>    <tt>FETCH</tt> curs <tt>INTO</tt> n, d, c
+<CODE class=linenumber>22</CODE>    <tt>FETCH</tt> curs <tt>INTO</tt> n, d, c
+<CODE class=linenumber>23</CODE>    <tt>DISPLAY</tt> r, i
+<CODE class=linenumber>24</CODE>    <tt>CLOSE</tt> curs
+<CODE class=linenumber>25</CODE>    <tt>DISPLAY</tt> r, i -- Now the returned values are available
+<CODE class=linenumber>26</CODE> <tt>END MAIN</tt></PRE>
+<HR size="1">
+
+<h3><a name="PROG_CURSCONN">1.5 Cursors and Connections</a></h3>
+<p>With Genero you can connect to several database sources from the same program
+by using the <a href="Connections.html#DC_CONNECT_TO">CONNECT</a> instruction.
+When connected, you can <a href="ResultSets.html">DECLARE</a> cursors or <a href="DynamicSql.html">PREPARE</a>
+statements, which can be used in parallel as long as you follow the rules. This
+section describes how to use SQL cursors and SQL statements in a multiple-connection program.</p>
+<p>For convenience, the term <i>Prepared SQL Statement</i> and <i>Declared
+Cursor</i> will be grouped as <i>SQL handle;</i> from an internal point of view,
+both concepts merge into a unique <i>SQL Handle,</i> an object
+provided to manipulate SQL statements.</p>
+<p>When you <tt>DECLARE</tt> a cursor or when you <tt>PREPARE</tt> a statement,
+you actually create an <i>SQL Handle</i>; the runtime system allocates
+resources for that SQL Handle before sending the SQL text to the database server
+via the <a href="Connections.html#DBSPEC">database driver</a>.</p>
+<p>The SQL Handle is created in the context of the current connection, and must
+be used in that context, until it is freed or re-created with another <tt>DECLARE</tt>
+or <tt>PREPARE</tt>. If you try to use an SQL Handle in a different connection
+context than the one for which it was created, you will get a runtime error.</p>
+<p>To change the current connection context, you must use the <a href="Connections.html#DC_SET_CONNECTION">SET
+CONNECTION</a> instruction. To set a specific connection, you must identify it
+by a name. To identify a connection, you typically use the <tt>AS</tt> clause of
+the <a href="Connections.html#DC_CONNECT_TO">CONNECT</a> instruction. If you
+don't use the <tt>AS</tt> clause, the connection gets a default name based on the data source name. 
+Since this might change as the database name changes, it is best to use an explicit name with the <tt>AS</tt> clause.</p>
+<p>This small program example illustrates the use of two cursors
+with two different connections:</p>
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE> &nbsp;&nbsp; <tt>CONNECT TO</tt> &quot;db1&quot; <tt>AS</tt> &quot;s1&quot;
+<CODE class=linenumber>03</CODE> &nbsp;&nbsp; <tt>CONNECT TO</tt> &quot;db2&quot; <tt>AS</tt> &quot;s2&quot;
+<CODE class=linenumber>04</CODE> &nbsp;&nbsp; <tt>SET CONNECTION</tt> &quot;s1&quot;
+<CODE class=linenumber>05</CODE> &nbsp;&nbsp; <tt>DECLARE</tt> c1 <tt>CURSOR FOR SELECT </tt>tab1.*<tt> FROM </tt>tab1
+<CODE class=linenumber>06</CODE> &nbsp;&nbsp; <tt>SET CONNECTION</tt> &quot;s2&quot;
+<CODE class=linenumber>07</CODE> &nbsp;&nbsp; <tt>DECLARE</tt> c2 <tt>CURSOR FOR SELECT </tt>tab1.*<tt> FROM </tt>tab1
+<CODE class=linenumber>08</CODE> &nbsp;&nbsp; <tt>SET CONNECTION</tt> &quot;s1&quot;
+<CODE class=linenumber>09</CODE> &nbsp;&nbsp; <tt>OPEN</tt> c1
+<CODE class=linenumber>10</CODE> &nbsp;&nbsp; <tt>SET CONNECTION</tt> &quot;s2&quot;
+<CODE class=linenumber>11</CODE> &nbsp;&nbsp; <tt>OPEN</tt> c2
+<CODE class=linenumber>12</CODE> &nbsp;&nbsp; ...
+<CODE class=linenumber>13</CODE> <tt>END MAIN</tt></pre>
+<p>The <tt>DECLARE</tt> and <tt>PREPARE</tt> instructions are a type of creator
+instructions; if an SQL Handle is re-created in a connection other than the
+original connection for which it was created, old resources are freed and
+new resources are allocated in the current connection context.</p>
+<p>This allows you to re-execute the same cursor code in different connection
+contexts, as in the following example:</p>
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE> &nbsp;&nbsp; <tt>CONNECT TO</tt> &quot;db1&quot; <tt>AS</tt> &quot;s1&quot;
+<CODE class=linenumber>03</CODE> &nbsp;&nbsp; <tt>CONNECT TO</tt> &quot;db2&quot; <tt>AS</tt> &quot;s2&quot;
+<CODE class=linenumber>04</CODE> &nbsp;&nbsp; <tt>SET CONNECTION</tt> &quot;s1&quot;
+<CODE class=linenumber>05</CODE> &nbsp;&nbsp; <tt>IF</tt> checkForOrders() &gt; 0 ...
+<CODE class=linenumber>06</CODE> &nbsp;&nbsp; <tt>SET CONNECTION</tt> &quot;s2&quot;
+<CODE class=linenumber>05</CODE> &nbsp;&nbsp; <tt>IF</tt> checkForOrders() &gt; 0 ...
+<CODE class=linenumber>08</CODE> &nbsp;&nbsp; ...
+<CODE class=linenumber>09</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>10</CODE>
+<CODE class=linenumber>11</CODE> <tt>FUNCTION</tt> checkForOrders(d)
+<CODE class=linenumber>12</CODE> &nbsp;&nbsp; <tt>DEFINE</tt> d <tt>DATE</tt>, i <tt>INTEGER</tt>
+<CODE class=linenumber>13</CODE> &nbsp;&nbsp; <tt>DECLARE</tt> c1 <tt>CURSOR FOR SELECT COUNT</tt>(*)<tt> FROM </tt>orders <tt>WHERE </tt>ord_date = d
+<CODE class=linenumber>14</CODE> &nbsp;&nbsp; <tt>OPEN</tt> c1
+<CODE class=linenumber>15</CODE> &nbsp;&nbsp; <tt>FETCH</tt> c1 <tt>INTO</tt> i
+<CODE class=linenumber>16</CODE> &nbsp;&nbsp; <tt>CLOSE</tt> c1
+<CODE class=linenumber>17</CODE> &nbsp;&nbsp; <tt>FREE</tt> c1
+<CODE class=linenumber>18</CODE> &nbsp;&nbsp; <tt>RETURN</tt> i
+<CODE class=linenumber>19</CODE> <tt>END FUNCTION</tt></pre>
+<p>If the SQL handle was created in a different connection, the resources used
+in the old connection context are freed automatically, and new SQL Handle
+resources are allocated in the current connection context.</p>
+<HR size="1">
+
+<h3><a name="PROG_ERRIDENT">1.6 SQL Error identification</a></h3>
+<p>You can centralize SQL error identification in a BDL function: </p>
+<pre><code class="linenumber">01</code><tt> CONSTANT </tt>SQLERR_FATAL = -1 
+<code class="linenumber">02 </code><tt>CONSTANT</tt> SQLERR_LOCK  = -2 
+<code class="linenumber">03 </code><tt>CONSTANT </tt>SQLERR_CONN  = -3 </pre>
+<p>(constants must be defined in GLOBALS) </p>
+<pre><code class="linenumber">04 </code><tt>FUNCTION </tt>identifySqlError() 
+<code class="linenumber">05</code>&nbsp;&nbsp;&nbsp; <tt>CASE </tt>
+<code class="linenumber">06</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <tt>WHEN </tt>SQLCA.SQLCODE == -201 <tt>OR</tt> SQLCA.SQLERRD[2] == ... 
+<code class="linenumber">07</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<tt> RETURN</tt> SQLERR_FATAL 
+<code class="linenumber">08</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <tt>WHEN</tt> SQLCA.SQLCODE == -263 <tt>OR</tt> SQLCA.SQLCODE == -244 <tt>OR</tt> SQLCA.SQLERRD[2] == ... 
+<code class="linenumber">09</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <tt>RETURN</tt> SQLERR_LOCK 
+<code class="linenumber">10</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... 
+<code class="linenumber">11</code>&nbsp;&nbsp;&nbsp; <tt>END CASE </tt>
+<code class="linenumber">12 </code><tt>END FUNCTION</tt></pre>
+<ul>
+  <li>The Informix-compatible error code is stored in SQLCA.SQLCODE register.</li>
+  <li>The native Database Provider error code is stored in SQLCA.SQLERRD[2] register.</li>
+</ul>
+<p>If really needed, this would also allow adding a database specific test.</p>
+<p>See also: <a href="Connections.html#ERRORINFO">SQL error registers</a>.</p>
+
+<HR size="1">
+
+<h3><a name="PROG_SCROLL_CURSORS">1.7 Optimizing scrollable cursors</a></h3>
+
+<p>Generally, when using <a href="ResultSets.html#RS_DECLARE">scrollable cursors</a>,
+the database server or the database client software (i.e. the application) will
+make a static copy of the result set produced by the <tt>SELECT</tt> statement.
+For example, when using an Informix database engine, each scrollable cursor will
+create a temporary table to hold the result set. Thus, if the <tt>SELECT</tt>
+statement returns all columns of the table(s) in the <tt>FROM</tt> clause, the
+database software will make a copy of all these values. This practice has two
+disadvantages: A lot of resources are consumed, and the data is static.</p>
+
+<p>A good programming pattern to save resources and always get fresh data from
+the database server is to declare two cursors based on the primary key usage, if
+the underlying database table has a primary key (or unique index constraint):
+The first cursor must be a scrollable cursor that executes the <tt>SELECT</tt>
+statement, but returns only the primary keys. The <tt>SELECT</tt> statement of
+this first cursor is typically assembled at runtime with the where-part produced
+by a <a href="Construct.html">CONSTRUCT</a> interactive instruction, to give a
+sub-set of the rows stored in the database. The second cursor (actually, a <tt>PREPARE</tt>/<tt>EXECUTE</tt>
+statement handle) performs a single-row <tt>SELECT</tt> statement listing all
+columns to be fetched for a given record, based on the primary key value of the
+current row in the scrollable cursor list. The second statement must use a ?
+question mark place holder to execute the single-row <tt>SELECT</tt> with the
+current primary key as SQL parameter.</p>
+
+<p>If the primary key <tt>SELECT</tt> statement needs to be ordered, check that the database engine
+allows that columns used in the <tt>ORDER
+BY</tt>  clause do not need to appear in the <tt>SELECT</tt> list. For example,
+this was the case with
+Informix servers prior to version 9.4. If needed, the <tt>SELECT</tt>
+list can be completed with the columns used in <tt>ORDER BY</tt>, you can then
+just list the variable that holds the primary key in the <tt>INTO</tt> clause of
+<tt>FETCH</tt>.</p>
+
+<p>Note also that the primary key result set is <u>static</u>. That is, if new
+rows are inserted in the database or if rows referenced by the scroll cursor are
+deleted after the scroll cursor was opened, the result set will be out-dated. In
+this case, you can refresh the primary key result set by re-executing the scroll
+cursor with <tt>CLOSE</tt>/<tt>OPEN</tt> commands.</p>
+
+<p>Next code example illustrates this programming pattern:</p>
+
+<pre><CODE class=linenumber>01</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>    <tt>DEFINE</tt> wp <tt>VARCHAR</tt>(500)
+<CODE class=linenumber>03</CODE>    <tt>DATABASE</tt> test1
+<CODE class=linenumber>04</CODE>    -- OPEN FORM / DISPLAY FORM with c_id and c_name fields
+<CODE class=linenumber>05</CODE>    ...
+<CODE class=linenumber>06</CODE>    -- CONSTRUCT generates wp string...
+<CODE class=linenumber>07</CODE>    ...
+<CODE class=linenumber>08</CODE>    <tt>LET</tt> wp = &quot;c_name LIKE 'J%'&quot;
+<CODE class=linenumber>09</CODE>    <tt>DECLARE</tt> clist <tt>SCROLL CURSOR FROM</tt> &quot;SELECT c_id FROM customer WHERE &quot; || wp
+<CODE class=linenumber>10</CODE>    <tt>PREPARE</tt> crec <tt>FROM</tt> &quot;SELECT * FROM customer WHERE c_id = ?&quot;
+<CODE class=linenumber>11</CODE>    <tt>OPEN</tt> clist
+<CODE class=linenumber>12</CODE>    <tt>MENU</tt> &quot;Test&quot;
+<CODE class=linenumber>13</CODE>         <tt>COMMAND</tt> &quot;First&quot;    <tt>CALL</tt> disp_cust(&quot;F&quot;)
+<CODE class=linenumber>14</CODE>         <tt>COMMAND</tt> &quot;Next&quot;     <tt>CALL</tt> disp_cust(&quot;N&quot;)
+<CODE class=linenumber>15</CODE>         <tt>COMMAND</tt> &quot;Previous&quot; <tt>CALL</tt> disp_cust(&quot;P&quot;)
+<CODE class=linenumber>16</CODE>         <tt>COMMAND</tt> &quot;Last&quot;     <tt>CALL</tt> disp_cust(&quot;L&quot;)
+<CODE class=linenumber>17</CODE>         <tt>COMMAND</tt> &quot;Refresh&quot;  <tt>CLOSE</tt> clist <tt>OPEN</tt> clist
+<CODE class=linenumber>18</CODE>         <tt>COMMAND</tt> &quot;Quit&quot; <tt>EXIT MENU</tt>
+<CODE class=linenumber>19</CODE>    <tt>END MENU</tt>
+<CODE class=linenumber>20</CODE>    <tt>FREE</tt> crec
+<CODE class=linenumber>21</CODE>    <tt>FREE</tt> clist
+<CODE class=linenumber>22</CODE> 
+<CODE class=linenumber>23</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>24</CODE>
+<CODE class=linenumber>25</CODE> <tt>FUNCTION</tt> disp_cust(m)
+<CODE class=linenumber>26</CODE>    <tt>DEFINE</tt> m <tt>CHAR</tt>(1)
+<CODE class=linenumber>27</CODE>    <tt>DEFINE</tt> rec <tt>RECORD</tt>
+<CODE class=linenumber>28</CODE>           c_id <tt>INTEGER</tt>,
+<CODE class=linenumber>29</CODE>           c_name <tt>VARCHAR</tt>(50)
+<CODE class=linenumber>30</CODE>       <tt>END RECORD</tt>
+<CODE class=linenumber>31</CODE>    <tt>CASE</tt> m
+<CODE class=linenumber>32</CODE>        <tt>WHEN</tt> &quot;F&quot; <tt>FETCH FIRST</tt> clist <tt>INTO</tt> rec.c_id
+<CODE class=linenumber>33</CODE>        <tt>WHEN</tt> &quot;N&quot; <tt>FETCH NEXT</tt> clist <tt>INTO</tt> rec.c_id
+<CODE class=linenumber>34</CODE>        <tt>WHEN</tt> &quot;P&quot; <tt>FETCH PREVIOUS</tt> clist <tt>INTO</tt> rec.c_id
+<CODE class=linenumber>35</CODE>        <tt>WHEN</tt> &quot;L&quot; <tt>FETCH LAST</tt> clist <tt>INTO</tt> rec.c_id
+<CODE class=linenumber>36</CODE>    <tt>END CASE</tt>
+<CODE class=linenumber>37</CODE>    <tt>INITIALIZE</tt> rec.* <tt>TO NULL</tt>
+<CODE class=linenumber>38</CODE>    <tt>IF</tt> SQLCA.SQLCODE == <tt>NOTFOUND THEN</tt>
+<CODE class=linenumber>39</CODE>       <tt>ERROR</tt> &quot;You reached to top or bottom of the result set.&quot;
+<CODE class=linenumber>40</CODE>    <tt>ELSE</tt>
+<CODE class=linenumber>41</CODE>       <tt>EXECUTE</tt> crec <tt>USING</tt> rec.c_id <tt>INTO</tt> rec.*
+<CODE class=linenumber>42</CODE>       <tt>IF</tt> SQLCA.SQLCODE == <tt>NOTFOUND THEN</tt>
+<CODE class=linenumber>43</CODE>          <tt>ERROR</tt> &quot;Row was not found in the database, refresh the result set.&quot;
+<CODE class=linenumber>44</CODE>       <tt>END IF</tt>
+<CODE class=linenumber>45</CODE>    <tt>END IF</tt>
+<CODE class=linenumber>46</CODE>    <tt>DISPLAY BY NAME</tt> rec.*
+<CODE class=linenumber>47</CODE> <tt>END FUNCTION</tt></pre>
+
+<HR>
+
+<h2><a name="PERF">2. Performance</a></h2>
+
+<HR size="1">
+
+<H3><a name="PERF_DYNSQL">2.1 Using Dynamic SQL</a></H3>
+<P>Although BDL allows you to write SQL statements directly in the 
+program source as a part of the language (<a href="StaticSql.html">Static SQL</a>),
+it is strongly recommended that you use <a href="DynamicSql.html"> Dynamic SQL</a>
+instead when you are executing SQL statements within large program
+loops.&nbsp; Dynamic SQL allows you to <a href="DynamicSql.html#DS_PREPARE">PREPARE</a>
+the SQL statements once and <a href="DynamicSql.html#DS_EXECUTE"> EXECUTE</a> N times,
+improving performance.</P>
+<P>To perform Static SQL statement execution, the database 
+interface must use the basic API functions provided by the database vendor. 
+These are usually equivalent to the <tt> PREPARE</tt> and <tt> EXECUTE</tt> instructions. So 
+when you write a Static SQL statement in your BDL program, it is actually 
+converted to a <tt> PREPARE</tt> + <tt>EXECUTE</tt>.</P>
+<P>For example, the following BDL code:</P>
+<pre><CODE class=linenumber>01</CODE> <tt>FOR</tt> n=1 <tt>TO </tt>100
+<CODE class=linenumber>02</CODE> &nbsp;&nbsp; <tt>INSERT INTO</tt> tab <tt>VALUES</tt> ( n, c )
+<CODE class=linenumber>03</CODE> <tt>END FOR</tt></pre>
+<P>is actually equivalent to:</P>
+<pre><CODE class=linenumber>01</CODE> <tt>FOR</tt> n=1 <tt>TO </tt>100
+<CODE class=linenumber>02</CODE> &nbsp;&nbsp; <tt>PREPARE</tt> s <tt>FROM</tt> &quot;INSERT INTO tab VALUES ( ?, ? )&quot;
+<CODE class=linenumber>03</CODE> &nbsp;&nbsp; <tt>EXECUTE</tt> s <tt>USING</tt> n, c
+<CODE class=linenumber>04</CODE> <tt>END FOR</tt></pre>
+<P>To improve the performance of the preceding code,&nbsp; use a <a href="DynamicSql.html#DS_PREPARE"> PREPARE</a>
+instruction before the loop and put
+an <a href="DynamicSql.html#DS_EXECUTE"> EXECUTE</a>&nbsp; instruction inside the loop:</P>
+<pre><CODE class=linenumber>01</CODE> <tt>PREPARE</tt> s <tt>FROM</tt> &quot;INSERT INTO tab VALUES ( ?, ? )&quot;
+<CODE class=linenumber>02</CODE> <tt>FOR</tt> n=1 <tt>TO </tt>100
+<CODE class=linenumber>03</CODE> &nbsp;&nbsp; <tt>EXECUTE</tt> s <tt>USING</tt> n, c
+<CODE class=linenumber>04</CODE> <tt>END FOR</tt></pre>
+
+<HR size="1">
+
+<H3><a name="PERF_USINGTX">2.2 Using transactions</a></H3>
+<P>When you use an ANSI compliant RDBMS like <b> Oracle </b> or <b>DB2</b>, the 
+database interface must perform a 
+COMMIT after each statement execution. This generates unnecessary database 
+operations and can slow down big loops. To avoid this implicit COMMIT, you can 
+control the transaction with <a href="Transactions.html#TI_BEGIN_WORK"> BEGIN WORK</a> /
+<a href="Transactions.html#TI_COMMIT_WORK"> COMMIT WORK</a> around the code
+containing a lot of SQL statement execution.</P>
+<P>For example, the following loop will generate 2000 basic SQL 
+operations ( 1000 INSERTs plus 1000 COMMITs ):</P>
+<pre><CODE class=linenumber>01</CODE> <tt>PREPARE</tt> s <tt>FROM</tt> &quot;INSERT INTO tab VALUES ( ?, ? )&quot;
+<CODE class=linenumber>01</CODE> <tt>FOR</tt> n=1 <tt>TO </tt>100
+<CODE class=linenumber>03</CODE> &nbsp;&nbsp; <tt>EXECUTE</tt> s <tt>USING</tt> n, c   -- Generates implicit COMMIT
+<CODE class=linenumber>04</CODE> <tt>END FOR</tt></pre>
+<P>You can improve performance if you put a transaction block 
+around the loop:</P>
+<pre><CODE class=linenumber>01</CODE> <tt>PREPARE</tt> s <tt>FROM</tt> &quot;INSERT INTO tab VALUES ( ?, ? )&quot;
+<CODE class=linenumber>02</CODE> <tt>BEGIN WORK</tt>
+<CODE class=linenumber>03</CODE> <tt>FOR</tt> n=1 <tt>TO </tt>100
+<CODE class=linenumber>04</CODE> &nbsp;&nbsp; <tt>EXECUTE</tt> s <tt>USING</tt> n, c   -- In transaction -&gt; no implicit COMMIT
+<CODE class=linenumber>05</CODE> <tt>END FOR</tt>
+<CODE class=linenumber>06</CODE> <tt>COMMIT WORK</tt></pre>
+<P>With this code, only 1001 basic SQL operations will be 
+executed ( 1000 INSERTs plus 1 COMMIT ).</P>
+<P>However, you must take care when generating large <a href="Transactions.html#DBTRANS">transactions</a>
+because all modifications are registered in transaction logs. This 
+can result in a lack of database server resources (INFORMIX &quot;transaction too long&quot;
+error, for example) when the number of operations is very big.&nbsp; If the 
+SQL operation does not require a unique transaction for database consistency 
+reasons, you can split the operation into several transactions, as in the 
+following example:</P>
+<pre><CODE class=linenumber>01</CODE> <tt>PREPARE</tt> s <tt>FROM</tt> &quot;INSERT INTO tab VALUES ( ?, ? )&quot;
+<CODE class=linenumber>02</CODE> <tt>BEGIN WORK</tt>
+<CODE class=linenumber>03</CODE> <tt>FOR</tt> n=1 <tt>TO </tt>100
+<CODE class=linenumber>04</CODE> &nbsp;&nbsp; <tt>IF</tt> n <tt>MOD </tt>10 == 0 <tt>THEN</tt>
+<CODE class=linenumber>05</CODE>       <tt>COMMIT WORK</tt>
+<CODE class=linenumber>06</CODE>       <tt>BEGIN WORK</tt>
+<CODE class=linenumber>07</CODE> &nbsp;&nbsp; <tt>END IF</tt>
+<CODE class=linenumber>08</CODE> &nbsp;&nbsp; <tt>EXECUTE</tt> s <tt>USING</tt> n, c   -- In transaction -&gt; no implicit COMMIT
+<CODE class=linenumber>09</CODE> <tt>END FOR</tt>
+<CODE class=linenumber>10</CODE> <tt>COMMIT WORK</tt></pre>
+
+<HR size="1">
+
+<h3>2.3 <a name="PERF_LONGTRAN">Avoiding long transactions</a> </h3>
+<p>Some BDL applications do not care about long transactions because they use an 
+Informix database without transaction logging (transactions are not stored in 
+log files for potential rollbacks). However, if a failure occurs, no rollback can be 
+made, and only some of&nbsp; the rows of a query might be updated. This could 
+result in data inconsistency !</p>
+<p>With many providers (Genero db, SQL Server, IBM DB2, Oracle…), using 
+transactions is mandatory. Every database modification is stored in a log file.</p>
+<p>BDL applications must prevent long transactions when connected to a database 
+using logging. If a table holds hundreds of thousands of rows, a 
+&quot;DELETE FROM table&quot;, for example,&nbsp; might cause problems. If the transaction log is full, no 
+other insert, update or delete could be made on the database. The activity could 
+be stopped until a backup or truncation of the log !</p>
+<p>For example, if a table holds hundreds of thousands of rows, a &quot;DELETE FROM 
+table&quot; might produce a &quot;snapshot too old&quot; error in ORACLE if the rollback 
+segments are too small.</p>
+<h4>Solution :</h4>
+<p>You must review the program logic in order to avoid long transactions:</p>
+<ul>
+  <li>keep transactions as short as possible.</li>
+  <li>access the least amount of data possible while in a transaction. If 
+  possible, avoid using a big SELECT in transaction.</li>
+  <li>split a long transaction into many short transactions. Use a loop to 
+	handle 
+  each block (see the last example below : <a href="#PERF_USINGTX">2.2 Using 
+  transactions</a>).</li>
+  <li>to delete all rows from a table use the &quot;TRUNCATE TABLE&quot; instruction 
+  instead of &quot;DELETE FROM&quot; (Not for all vendors)</li>
+</ul>
+<p>In the end, increase the size of the transaction log to avoid it filling up.</p>
+<HR size="1">
+
+<H3>2.4 <a name="PERF_DECLPREP">Declaring prepared statements</a></H3>
+<P>Line 2 of the following example shows a cursor declared with a prepared
+statement:&nbsp;</P>
+<pre><CODE class=linenumber>01</CODE> <tt>PREPARE</tt> s <tt>FROM</tt> &quot;SELECT * FROM table WHERE &quot;, condition
+<CODE class=linenumber>02</CODE> <tt>DECLARE</tt> c <tt>CURSOR FOR </tt>s</pre>
+<p>While this has no performance impact with Informix database drivers, it can
+become a bottleneck when using non-Informix databases:</p>
+<p>Statement preparation consumes a lot of&nbsp; memory and processor resources.
+Declaring a cursor with a prepared statement is a native Informix feature, which
+does consume only one real statement preparation. But non-Informix databases do
+not support this feature. So the statement is prepared twice (once for the
+PREPARE, and once for the DECLARE). When used in a big loop, such code can cause
+performance problems.</p>
+<p>To optimize such code, you can use the FROM clause in the <a href="ResultSets.html#RS_DECLARE">DECLARE</a>
+statement:</p>
+<pre><CODE class=linenumber>01</CODE> <tt>DECLARE</tt> c <tt>CURSOR FROM</tt> &quot;SELECT * FROM table WHERE &quot; || condition</pre>
+<p>By using this solution only one statement preparation will be done by the
+database server.</p>
+<p>Remark: This performance problem does not appear with <a href="ResultSets.html#RS_DECLARE">DECLARE</a>
+statements using static SQL.</p>
+<HR size="1">
+
+<H3><a name="PERF_SAVERES">&nbsp;2.5 Saving SQL resources</a></H3>
+<P>To write efficient SQL in a Genero program, you should use <a href="DynamicSql.html">Dynamic
+SQL</a> as described in <a href="#PERF_DYNSQL">2.1</a> of this
+performance section. However, when using Dynamic SQL, you allocate an SQL statement
+handle on the client and server side, consuming resources. According to the
+database type, this can be a few bytes or a significant amount of memory. For
+example, on a Linux 32b platform, a prepared statement costs about 5 Kbytes with
+an Informix CSDK 2.80 client, while it costs about 20 Kbytes with an Oracle 10g
+client. That can be a lot of memory if you have programs declaring a dozen or
+more cursors, multiplied by hundreds of user processes. When executing several <a href="StaticSql.html">Static
+SQL</a> statements, the same statement handle is reused and thus less memory is
+needed.</P>
+<P>Genero allows you to use either Static or Dynamic SQL, so it's in your hands
+to choose memory or performance. However, in some cases the same code will be
+used by different kinds of programs, needing either low resource usage or good
+performance. In many OLTP applications you can actually distinguish two type of programs:</P>
+<ul>
+  <li>Programs where memory usage is not a problem but needing good performance
+    (typically, batch programs executed as a unique instance during the night).</li>
+  <li>Programs where performance is less important but where memory usage must
+    be limited (typically, interactive programs executed as multiple instances
+    for each application user).</li>
+</ul>
+<P>To reuse the same code for interactive programs and batch programs, you can
+do the following:</P>
+<ol>
+  <li>Define a local module variable as an indicator for the prepared statement.</li>
+  <li>Write a function returning the type of program (for example, 'interactive'
+    or 'batch' mode).</li>
+  <li>Then, in a reusable function using SQL statements, you prepare and free
+    the statement according to the indicators, as shown in the next example.</li>
+</ol>
+<pre><CODE class=linenumber>01</CODE> <tt>DEFINE</tt> up_prepared <tt>INTEGER</tt>
+<CODE class=linenumber>02</CODE>
+<CODE class=linenumber>03</CODE> <tt>FUNCTION</tt> getUserPermissions( username )
+<CODE class=linenumber>04</CODE>   <tt>DEFINE</tt> username <tt>VARCHAR</tt>(20)
+<CODE class=linenumber>05</CODE>   <tt>DEFINE</tt> cre, upd, del <tt>CHAR</tt>(1)
+<CODE class=linenumber>06</CODE>
+<CODE class=linenumber>07</CODE>   <tt>IF NOT</tt> up_prepared <tt>THEN</tt>
+<CODE class=linenumber>08</CODE>      <tt>PREPARE </tt>up_stmt <tt>FROM </tt>&quot;SELECT can_create, can_update, cab_delete&quot;
+<CODE class=linenumber>09</CODE>                  <tt>      </tt>|| &quot; FROM user_perms WHERE name = ?&quot;
+<CODE class=linenumber>10</CODE>      <tt>LET</tt> up_prepared = <tt>TRUE</tt>
+<CODE class=linenumber>11</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>12</CODE>
+<CODE class=linenumber>13</CODE>   <tt>EXECUTE</tt> up_stmt <tt>USING</tt> username <tt>INTO</tt> cre, upd, del
+<CODE class=linenumber>14</CODE>
+<CODE class=linenumber>15</CODE>   <tt>IF</tt> isInteractive() <tt>THEN</tt>
+<CODE class=linenumber>16</CODE>      <tt>FREE</tt> up_stmt
+<CODE class=linenumber>17</CODE>      <tt>LET</tt> up_prepared = <tt>FALSE</tt>
+<CODE class=linenumber>18</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>19</CODE>
+<CODE class=linenumber>20</CODE>   <tt>RETURN</tt> cre, upd, del
+<CODE class=linenumber>21</CODE>
+<CODE class=linenumber>22</CODE> <tt>END FUNCTION</tt></pre>
+
+<p>The first time this function is called, the <code>up_prepared</code> value will be <a href="Programs.html#PC_FALSE">FALSE</a>,
+so the statement will be prepared in line 08. The next time the function is
+called, the statement will be re-prepared only if <code>up_prepared</code> is <a href="Programs.html#PC_TRUE">TRUE</a>.
+The statement is executed in line 13 and values are fetch into the variables
+returned in line 20. If the program is interactive, lines 15 to 18 free the
+statement and set the <code>up_prepared</code> module variable back to <a href="Programs.html#PC_FALSE">FALSE</a>, forcing statement preparation in the next call of this function.</p>
+<HR>
+
+<h2>3. <a name="PORT">Portability</a></h2>
+
+<p>Writing portable SQL is mandatory if you want to succeed with different kind
+of database servers. This section gives you some hints to solve SQL
+incompatibility problems in your programs. Read this section carefully and
+review your program source code if needed. You should also read carefully the
+ODI Adaptation Guides which contain detailed information about SQL compatibility
+issues.</p>
+
+<p> To easily detect SQL statements
+with specific syntax, you can use the -W stdsql option of <a href="Tools.html#TL_FGLCOMP">fglcomp</a>:</p>
+<pre>$ fglcomp -W stdsql orders.4gl
+module.4gl:15: SQL Statement or language instruction with specific SQL syntax.</pre>
+
+<p>Remark: This compiler option can only detect non-portable SQL syntax in <a href="StaticSql.html">Static
+SQL statements</a>.</p>
+<HR size="1">
+
+<h3> <a name="PORT_DBENT">3.1 Database entities</a></h3>
+
+<p>Most database servers can handle multiple database entities (you can
+create multiple 'databases'), but this is not possible with all engines:</p>
+<TABLE border=0 width="70%">
+  <tr>
+    <TD align=left width="25%" bgColor=#c0c0c0 height=17><b>Database Server Type</b></TD>
+    <TD align=left width="40%" bgColor=#c0c0c0 height=17><b>Multiple Database
+      Entities</b></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Genero db</TD>
+    <TD align=left width="40%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">IBM DB2 UDB (Unix)</TD>
+    <TD align=left width="40%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Informix</TD>
+    <TD align=left width="40%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Microsoft SQL Server</TD>
+    <TD align=left width="40%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">MySQL</TD>
+    <TD align=left width="40%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Oracle
+      Database Server</TD>
+    <TD align=left width="40%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">PostgreSQL</TD>
+    <TD align=left width="40%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Sybase ASA</TD>
+    <TD align=left width="40%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+</TABLE>
+<p>When using a database server that does not support multiple database
+entities, you can emulate different databases with schemas, but this requires
+you to check for the database user definition. Each database user must have privileges to access
+any schema, and to see any table of any schema without needing to set a schema
+prefix before table names in SQL statements.</p>
+<p>You can force the database driver to set a specific schema at connection
+with the following <a href="FglProfile.html">FGLPROFILE</a> entry:</p>
+  <pre>    dbi.database.&lt;dbname&gt;.schema = &quot;&lt;schema-name&gt;&quot;</pre>
+
+<p>Some databases like <b>Genero db</b> also allow you to define a default schema for
+each database user. When the user connects to the database, the default schema
+is automatically selected.</p>
+
+<HR size="1">
+
+<h3> <a name="PORT_DBUSR">3.2 Database users and security</a></h3>
+
+<p>To get the benefit of the database server security features, you should identify
+each physical user as a database user.</p>
+
+<p>According to the type of server, you must do the following steps to create a
+database user:</p>
+
+<ol>
+  <li>Define the user as an operating system user.</li>
+  <li>Declare the user in the database server.</li>
+  <li>Grant database access privileges.</li>
+</ol>
+
+<p>Each database server has its specific users management and data access
+privilege mechanisms. Check the vendor documentation for security features and
+make sure you can define the users, groups, and privileges in all database
+servers you want to use.</p>
+
+<HR size="1">
+
+<h3> <a name="PORT_DCS">3.3 Database creation statements</a></h3>
+
+<p>Database creation statements like CREATE DATABASE, CREATE DBSPACE, DROP
+DATABASE cannot be executed with <b>ODI</b> database drivers. Such high-level
+database management statements are Informix-specific and require a connection to
+the server with no current database selected, which is not supported by the ODI
+architecture and drivers. However, for compatibility, the standard Informix
+drivers (with <b>ix</b> prefix) allow the BDL programs to execute such
+statements.</p>
+
+<HR size="1">
+
+<h3> <a name="PORT_DDS">3.4 Data definition statements</a></h3>
+
+<p>When using Data Definition Statements like CREATE TABLE, ALTER TABLE, DROP
+TABLE, only a limited SQL syntax works on all database servers. Most databases
+support NOT NULL, CHECK, PRIMARY KEY, UNIQUE, FOREIGN KEY constraints, but the
+syntax for naming constraints is different.</p>
+
+<p>The following statement works with most database servers and creates a table
+with equivalent properties in all cases:</p>
+
+<pre> CREATE TABLE customer
+ (
+&nbsp; cust_id INTEGER NOT NULL,
+&nbsp; cust_name CHAR(50) NOT NULL,
+&nbsp; cust_lastorder DATE NOT NULL,
+&nbsp; cust_group INTEGER,
+&nbsp;&nbsp;&nbsp; PRIMARY KEY (cust_id),
+&nbsp;&nbsp;&nbsp; UNIQUE (cust_name),
+&nbsp;&nbsp;&nbsp; FOREIGN KEY (cust_group) REFERENCES group (group_id)
+ )   </pre>
+<p><b><font color="#FF0000">Warning: </font>Some engines like SQL Server have a
+different default behavior for NULL columns when you create a table. You may
+need to set up database properties to make sure that a column allows NULLs if the
+NOT NULL constraint is not specified.</b></p>
+
+<p>When you want to create tables in programs using non-standard clauses (for
+example to define storage options), you must use <a href="DynamicSql.html">Dynamic
+SQL</a> and adapt the statement to the target database server.</p>
+
+<HR size="1">
+
+<H3><a name="PORT_DATATYPES">3.5 Using portable data types</a></H3>
+<P>The ANSI SQL specification defines standard data types, but 
+for historical reasons most databases vendors have implemented native 
+(non-standard) data types. You can usually use a synonym for ANSI types, but the 
+database server always uses the native types behind the scenes. For example, when 
+you create a table with an <a href="DataTypes.html#DT_INTEGER"> INTEGER</a> column in
+<b>Oracle</b>, the native NUMBER data type 
+is used. In your programs, avoid BDL <a href="DataTypes.html"> data types</a> that do not have a native equivalent in the target database. This includes simple types 
+like <a href="DataTypes.html#DT_FLOAT"> floating point numbers</a>, as well as complex data types like
+<a href="DataTypes.html#DT_INTERVAL">INTERVAL</a>. Numbers 
+may cause rounding or overflow problems, because the values stored in the 
+database have different limits. For <a href="DataTypes.html#DT_DECIMAL">DECIMALs</a>, always use the same precision and 
+scale for the BDL variables and the database columns.</P>
+<P>To write portable applications, we strongly recommend using the following BDL
+data types only:</P>
+<DIV align=left>
+<TABLE border=0 cellspacing="0" cellpadding="0">
+  <TBODY>
+  <TR>
+    <TD align=left width="50%" bgColor=#c0c0c0 height=17><b>BDL Data Type</b></TD></TR>
+  <TR>
+    <TD align=left width="50%" height=18><a href="DataTypes.html#DT_CHAR">CHAR(n)</a></TD></TR>
+  <TR>
+    <TD align=left width="50%" height=18><a href="DataTypes.html#DT_VARCHAR">VARCHAR(n)</a></TD></TR>
+  <TR>
+    <TD align=left width="50%" height=18><a href="DataTypes.html#DT_INTEGER">INTEGER</a></TD></TR>
+  <TR>
+    <TD align=left width="50%" height=18><a href="DataTypes.html#DT_SMALLINT">SMALLINT</a></TD></TR>
+  <TR>
+    <TD align=left width="50%" height=18><a href="DataTypes.html#DT_DECIMAL">DECIMAL(p,s)</a></TD></TR>
+  <TR>
+    <TD align=left width="50%" height=18><a href="DataTypes.html#DT_DATE">DATE</a></TD></TR>
+  <tr>
+    <TD align=left width="50%" height=18><a href="DataTypes.html#DT_DATETIME">DATETIME
+      HOUR TO SECOND</a></TD>
+  </tr>
+  <tr>
+    <TD align=left width="50%" height=18><a href="DataTypes.html#DT_DATETIME">DATETIME
+      YEAR TO FRACTION(n)</a></TD>
+  </tr>
+  </TBODY></TABLE></DIV>
+  
+<P>See the ODI Adaptation Guides for more details about data type compatibility.</P>
+
+<HR size="1">
+
+<h3><a name="PORT_DML">3.6 Data manipulation statements</a></h3>
+<p>Genero BDL supports several SQL syntaxes for the INSERT, UPDATE and DELETE
+statements. Some of the syntaxes are Informix specific, but will be converted to
+standard SQL by the compiler.</p>
+
+<p>The following statements are standard SQL and work with all database servers:</p>
+
+<pre>  (1) INSERT INTO <i>table</i> (<i>column-list</i>) VALUES (<i>value-list</i>)
+  (2) UPDATE <i>table</i> SET <i>column</i> = <i>value</i>, ... <u>[</u>WHERE <i>condition</i><u>]</u>
+  (3) DELETE FROM <i>table</i> <u>[</u>WHERE <i>condition</i><u>]</u></pre>
+
+<p>The next statements are not standard SQL, but are converted by the compiler
+to standard SQL, working with all database servers:</p>
+
+<pre>  (4) INSERT INTO <i>table</i> VALUES <i>record</i>.*
+      -- where <i>record</i> is defined LIKE a table from db schema
+  (5) UPDATE <i>table</i> SET (<i>column-list</i>) = (<i>value-list</i>) <u>[</u>WHERE <i>condition</i><u>]</u>
+  (6) UPDATE <i>table</i> SET <u>{[</u><i>table</i>.<u>]</u>*<u>|</u>(<i>column-list</i>)<u>}</u> = <i>record</i>.* ... <u>[</u>WHERE <i>condition</i><u>]</u>
+      -- where record is defined LIKE a table from db schema</pre>
+
+<p>The next statement is not standard SQL and will not be converted by the
+compiler, so it must be reviewed:</p>
+
+<pre>  (7) UPDATE <i>table</i> SET <u>[</u><i>table</i>.<u>]</u>* = (<i>value-list</i>) <u>[</u>WHERE <i>condition</i><u>]</u></pre>
+<p>You can easily search for non-portable SQL statements in your .4gl sources by
+compiling with the <b>-Wstdall</b> fglcomp option.</p>
+<p>For maximum SQL portability, INSERT statements should be reviewed to avoid
+the SERIAL column from the value list.</p>
+<p>For example, the following statement:</p>
+<pre>   INSERT INTO tab (col1,col2) VALUES (<b>0</b>, p_value)</pre>
+<p>should be converted to :</p>
+<pre>   INSERT INTO tab (col2) VALUES (p_value)</pre>
+<p>Static SQL INSERT using records defined from the schema file should also be
+reviewed:</p>
+<pre>   DEFINE rec LIKE tab.*
+   INSERT INTO tab VALUES ( rec.* )   -- will use the serial column</pre>
+<p>should be converted to :</p>
+<pre>   INSERT INTO tab VALUES rec.* -- without braces, serial column is removed</pre>
+<p>For more details about supported SQL DML statements, see <a href="StaticSql.html">Static
+SQL</a>.</p>
+
+<HR size="1">
+
+<H3> <a name="PORT_CHARVARCHAR">3.7 CHAR and VARCHAR types</a></H3>
+<P>The <a href="DataTypes.html#DT_CHAR">CHAR</a> and <a href="DataTypes.html#DT_VARCHAR">VARCHAR</a>
+types are designed to store character strings, but all database servers do not
+have the same behavior when comparing two CHAR or VARCHAR values having trailing
+spaces.</P>
+
+<h4>CHAR and VARCHAR columns in databases</h4>
+
+<P>With all kinds of databases servers, CHAR columns are always filled with blanks up to
+the size of the column, but trailing blanks are not significant in comparisons:</P>
+
+<P><code>CHAR(&quot;abc &quot;) = CHAR(&quot;abc&quot;)</code></P>
+
+<P>With all database servers <u>except Informix</u>, trailing blanks are
+significant when comparing VARCHAR values:<br>
+<br>
+<code>VARCHAR(&quot;abc &quot;) &lt;&gt; VARCHAR(&quot;abc&quot;)</code><br>
+<br>
+This is a major issue if you mix CHAR and VARCHAR columns and variables in your
+SQL statements, because the result of an SQL query can be different depending on
+whether you are using <b>
+Informix </b> or another database server.</P>
+
+<h4>CHAR and VARCHAR variables in BDL</h4>
+
+<P>In BDL, CHAR variables are filled with blanks, even if the value used does
+not contain all spaces.</P>
+
+<P>The following example:</P>
+
+<pre><CODE class=linenumber>01</code><tt> DEFINE</tt> c <tt>CHAR</tt>(5)
+<CODE class=linenumber>02</CODE><tt> LET</tt> c = &quot;abc&quot;
+<CODE class=linenumber>03</CODE><tt> DISPLAY</tt> c || &quot;.&quot;</pre>
+
+<P>shows the value <code>&quot;abc&nbsp; .&quot;</code> (5 chars + dot).</P>
+
+<P>In BDL, VARCHAR variables are assigned with the exact value specified, with
+significant trailing blanks.</P>
+
+<P>For example, this code:</P>
+
+<pre><CODE class=linenumber>01</CODE><tt> DEFINE</tt> v <tt>VARCHA</tt>R(5)
+<CODE class=linenumber>02</CODE><tt> LET</tt> v = &quot;abc &quot;
+<CODE class=linenumber>03</CODE><tt> DISPLAY</tt> v || &quot;.&quot;</pre>
+
+<P>shows the value <code>&quot;abc .&quot;</code> (4 chars + dot).</P>
+
+<P>When comparing CHAR or VARCHAR variables in a BDL expression, the trailing
+blanks are <u>not significant</u>:</P>
+
+<pre><CODE class=linenumber>01</CODE><tt> DEFINE</tt> c <tt>CHAR</tt>(5)
+<CODE class=linenumber>02</CODE><tt> DEFIN</tt>E v1, v2 <tt>VARCHAR</tt>(5)
+<CODE class=linenumber>03</CODE><tt> LET</tt> c = &quot;abc&quot;
+<CODE class=linenumber>04</CODE><tt> LET</tt> v1 = &quot;abc &quot;
+<CODE class=linenumber>05</CODE><tt> LET</tt> v2 = &quot;abc&nbsp; &quot;
+<CODE class=linenumber>06</CODE><tt> IF</tt> c == v1 <tt>THEN DISPLAY</tt> &quot;c==v1&quot; 
+<CODE class=linenumber>07</CODE><tt> END IF</tt>
+<CODE class=linenumber>08</CODE><tt> IF</tt> c == v2 <tt>THEN DISPLAY</tt> &quot;c==v2&quot; 
+<CODE class=linenumber>09</CODE><tt> END IF</tt>
+<CODE class=linenumber>10</CODE><tt> IF</tt> v1 == v2 <tt>THEN DISPLAY</tt> &quot;v1==v2&quot; 
+<CODE class=linenumber>11</CODE><tt> END IF</tt></pre>
+<P>shows all three messages.</P>
+
+<P>Additionally, when you assign a VARCHAR variable from a CHAR, the target
+variable gets the trailing blanks of the CHAR variable:</P>
+<pre><CODE class=linenumber>01</CODE><tt> DEFINE</tt> pc <tt>CHAR</tt>(50)
+<CODE class=linenumber>02</CODE><tt> DEFINE</tt> pv <tt>VARCHAR</tt>(50)
+<CODE class=linenumber>03</CODE><tt> LET</tt> pc = &quot;abc&quot;
+<CODE class=linenumber>04</CODE><tt> LET</tt> pv = pc
+<CODE class=linenumber>05</CODE><tt> DISPLAY</tt> pv || &quot;.&quot;</pre>
+
+shows <code>&quot;abc &lt;47 spaces&gt;. &quot;</code> ( 50 chars + dot ).
+
+<P>To avoid this, you can use the <a href="Operators.html#OP_CLIPPED">CLIPPED</a>
+operator:</P>
+
+<P><tt>LET</tt><code> pv = pc </code><tt>CLIPPED</tt></P>
+
+<h4>CHAR and VARCHAR variables and columns</h4>
+
+<P>When you insert a row containing a CHAR variable into a CHAR or VARCHAR column,
+the database interface removes the trailing blanks to avoid overflow problems,
+(insert CHAR(100) into CHAR(20) when value is <code>&quot;abc&quot;</code> must
+work).</P>
+In the following example:
+<pre><CODE class=linenumber>01</CODE> <tt>DEFINE</tt> c <tt>CHAR</tt>(5)
+<CODE class=linenumber>02</CODE> <tt>LET</tt> c = &quot;abc&quot;
+<CODE class=linenumber>03</CODE> <tt>CREATE TABLE</tt> t ( v1 <tt>CHAR</tt>(10), v2 <tt>VARCHAR</tt>(10) )
+<CODE class=linenumber>04</CODE> <tt>INSERT INTO</tt> tab <tt>VALUES</tt> ( c, c )</pre>
+
+<P>The value in column v1 and v2 would be <code>&quot;abc&quot;</code> ( 3 chars in both columns ).</P>
+
+<P>When you insert a row containing a VARCHAR variable into a VARCHAR column, the
+VARCHAR value in the database gets the trailing blanks as set in the variable.
+When the column is a CHAR(N), the database server fills the value with blanks so
+that the size of the string is N characters.</P>
+
+In the following example:
+<pre><CODE class=linenumber>01</CODE> <tt>DEFINE</tt> vc <tt>VARCHAR</tt>(5)
+<CODE class=linenumber>02</CODE> <tt>LET</tt> vc = &quot;abc  &quot;  -- note 2 spaces at end of string
+<CODE class=linenumber>03</CODE> <tt>CREATE TABLE</tt> t ( v1 <tt>CHAR</tt>(10), v2 <tt>VARCHAR</tt>(10) )
+<CODE class=linenumber>04</CODE> <tt>INSERT INTO</tt> tab <tt>VALUES</tt> ( vc, vc )</pre>
+
+<P>The value in column v1 would be <code>&quot;abc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;</code> ( 10 chars ) and v2 would be <code>&quot;abc&nbsp; &quot;</code> (
+5 chars ).</P>
+
+<h4>What should you do?</h4>
+
+<P>Use VARCHAR variables for VARCHAR columns, and CHAR
+variables for CHAR columns to achieve portability across all kinds of database
+servers.&nbsp;</P>
+
+<P>See also: <a href="#PORT_LENGTH">LENGTH()</a> function.</P>
+
+<HR size="1">
+
+<h3><a name="PORT_DATACCESS">3.8 Concurrent data access</a></h3>
+
+<P>Data Concurrency is the simultaneous access 
+of the same data by many users. Data Consistency means that 
+each user sees a consistent view of the database. Without adequate concurrency 
+and consistency controls, data could be changed improperly, compromising data 
+integrity. To write interoperable BDL applications, you must adapt the program 
+logic to the behavior of the database server regarding concurrency and 
+consistency management. This issue requires good knowledge of multi-user application programming,
+<a href="Transactions.html">transactions</a>, locking 
+mechanisms, <a href="Transactions.html#TI_SET_ISOLATION"> isolation levels</a> and
+<a href="Transactions.html#TI_SET_LOCK_MODE"> wait mode</a>. If you are not 
+familiar with these concepts, carefully read the documentation of each database 
+server which covers this subject.</P>
+<P>Processes accessing the database can change transaction 
+parameters such as the isolation level. The main problem is to find a configuration 
+which results in similar behavior on every database engine. Existing BDL programs must be adapted to work with this new behavior. ALL programs accessing 
+the same database must be changed.&nbsp;</P>
+<P>The following is the best configuration to get common behavior 
+with all types of database engines:
+<UL>
+  <LI>The database must support <a href="Transactions.html">transactions</a>; this is usually 
+  the case. 
+  <LI>Transactions must be as short as possible (below a second is fine, 3 or
+    more seconds is a long transaction). 
+  <LI>The <a href="Transactions.html#TI_SET_ISOLATION"> Isolation Level</a>
+    should be set to &quot;COMMITTED READ&quot; or &quot;CURSOR STABILITY&quot;.<br>
+    Note that Informix IDS 11 has introduced the &quot;LAST COMMITTED&quot;
+    option for the COMMITTED READ isolation level, which makes IDS behave like
+    other database server using row-versioning, returning the most recently
+    committed version of the row, rather than wait for a lock to be released.
+    This option can also be turned on implicitly with the USELASTCOMMITTED
+    configuration parameter, saving code changes.&nbsp; 
+  <LI>The <a href="Transactions.html#TI_SET_LOCK_MODE"> Wait Mode</a> for locks must be "WAIT" or "WAIT n" 
+  (timeout). Wait mode can be adapted to wait for the longest transaction. </LI></UL>
+  <P>Remarks: With this configuration, the locking granularity 
+  does not have to be at the row level. To improve performance with <b> Informix</b> 
+  databases, you can use the "LOCK MODE PAGE" locking level, which is the 
+  default.</P>
+
+<HR size="1">
+
+<h3><a name="PORT_SQLCA">3.9 The SQLCA register</a></h3>
+
+<P><a href="Connections.html#SQLCA_RECORD">SQLCA</a> is the <i>SQL Communication
+Area</i> variable. SQLCA is a global record predefined by the runtime system,
+that can be queried to get SQL status information. After executing an SQL
+statement, members of this record contain execution or error data, but it is
+specific to Informix databases. For example, after inserting a row in a table
+with a SERIAL column, SQLCA.SQLERRD[2] contains the new generated serial number.</P>
+
+<P> SQLCA.SQLCODE will be set to a specific Informix SQL error code, if the database driver
+can convert the native SQL error to an Informix SQL error. Additional members
+may be set, but that depends on the database server and database driver.</P>
+
+<P>To identify SQL errors, you can also use <a href="Operators.html#OP_SQLSTATE">SQLSTATE</a>; 
+this variable holds normalized ISO SQL error codes. However, even if Genero
+database drivers are prepared to support this register, not all RDBMS&nbsp; support standard SQLSTATE error codes:</P>
+
+<TABLE border=0 width="70%">
+  <tr>
+    <TD align=left width="25%" bgColor=#c0c0c0 height=17><b>Database Server Type</b></TD>
+    <TD align=left width="35%" bgColor=#c0c0c0 height=17><b>Supports SQLSTATE
+      errors</b></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Genero db</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA">Not in version 3.61</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">IBM DB2 UDB (Unix)</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC">Yes, since version
+      7.1</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Informix</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC">Yes, since IDS 10</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Microsoft SQL Server</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC">Yes, since version 8
+      (2000)</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">MySQL</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Oracle
+      Database Server</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA">Not in version 10.2</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">PostgreSQL</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC">Yes, since version
+      7.4</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Sybase ASA</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA">Not in version 8.x</TD>
+  </tr>
+</TABLE>
+
+<p>According to the above, SQL error identification requires quite complex
+code, which can be RDBMS-specific in some cases. Therefore, it is strongly
+recommended that you centralize SQL error identification in a function. This will 
+allow you to write RDBMS-specific code, when needed, only once.</p>
+
+<HR size="1">
+
+<H3><a name="PORT_OPTLOCK">3.10 Optimistic Locking</a></H3>
+<P>This section describes how to implement <i>optimistic 
+locking</i> in BDL applications. Optimistic locking is a 
+portable solution to control simultaneous modification of the same record by 
+multiple users.</P>
+<P>Traditional Informix-based applications use a SELECT FOR UPDATE to set a lock
+on the row to be edited by the user. This is called 
+<i>pessimistic locking</i>. The SELECT FOR UPDATE is executed before 
+the interactive part of the code, as described in here:
+<OL>
+  <LI>When the end user chooses to modify a record, the program declares and
+    opens a cursor with a <a href="PositionedUpdates.html">SELECT FOR UPDATE</a>.<BR>At
+    this point, an SQL error might be raised if the record is already locked by another 
+  process.<br>
+    Otherwise, the lock is acquired and user can modify the record. 
+  <LI>The user edits the current record in the input form. 
+  <LI>The user validates the dialog. 
+  <LI>The <a href="StaticSql.html#SS_UPDATE"> UPDATE</a>  SQL instruction is executed. 
+  <LI>The <a href="Transactions.html"> transaction</a> is committed or the
+    SELECT FOR UPDATE cursor is 
+  closed.<BR>The lock is released. </LI></OL>
+<P>Note that if the Informix database was created with transaction logging, you
+must either start a <a href="Transactions.html"> transaction</a>  or define the
+SELECT FOR UPDATE cursor WITH HOLD option.</P>
+<P>Unfortunately, this is not a portable solution. The
+<a href="Transactions.html#TI_SET_LOCK_MODE"> lock wait mode </a> 
+should preferably be "WAIT" for portability reasons. Pessimistic locking is 
+based on a "NOT WAIT" mode to return control to the program if a record is 
+already locked by another process. Therefore, following the portable concurrency 
+model, the <i> pessimistic locking</i> mechanisms must be replaced by the <i>optimistic
+locking</i> technique.</P>
+<P>Basically, instead of locking the row before the user starts to modify the
+record data, the <i>optimistic locking</i> technique makes a copy of the current
+values(i.e. Before Modification Values), lets the user edit the record, and when
+it's time to write data into the database, checks if the BMVs still correspond
+to the current values in the database:</P>
+<OL>
+  <LI>A <a href="StaticSql.html"> SELECT</a> is executed to fill the record
+    variable used by the interactive instruction for modifications. 
+  <LI>The record variable is copied into a backup record to keep Before Modification Values. 
+  <LI>The user enters modifications in the input form; this 
+  updates the values in the modification record. 
+  <LI>The user validates the dialog. 
+  <LI>A transaction is started with <a href="Transactions.html">BEGIN WORK</a>. 
+  <LI>A SELECT FOR UPDATE is executed to put the current 
+  database values into a temporary record. 
+  <LI>If the SQL status is <a href="Programs.html#PC_NOTFOUND">NOTFOUND</a>, the row has been 
+  deleted by another process, and the transaction is <a href="Transactions.html#TI_ROLLBACK_WORK"> rolled
+    back</a>. 
+  <LI>Otherwise, the program <a href="Operators.html#OP_EQUAL"> compares</a> the temporary
+    record values 
+  with the backup record values <code>(rec1.*==rec2.*)</code>
+  <LI>If these values have changed, the row has 
+  been modified by another process, and the transaction is <a href="Transactions.html#TI_ROLLBACK_WORK"> rolled
+    back</a>. 
+  <LI>Otherwise, the <a href="StaticSql.html#SS_UPDATE"> UPDATE</a> statement is executed. 
+  <LI>The transaction is <a href="Transactions.html#TI_COMMIT_WORK">committed</a>. </LI></OL>
+<P>To compare 2 records, simply write:</P>
+<pre><CODE class=linenumber>01</CODE> <tt>IF</tt> new_record.* != bmv_record.* <tt>THEN</tt>
+<CODE class=linenumber>02</CODE>    <tt>LET</tt> values_have_changed = <tt>TRUE</tt>
+<CODE class=linenumber>03</CODE> <tt>END IF</tt></pre>
+<P>The optimistic locking technique could be implemented with a 
+unique SQL instruction: an UPDATE could compare the 
+column values to the BMVs directly (UPDATE ... WHERE kcol = kvar AND col1 = bmv.var1 AND 
+...). But, this is not possible when BMVs can be NULL. The database engine always 
+evaluates conditional expressions such as "col=NULL" to FALSE. Therefore, you must 
+use "col IS NULL" when the BMV is NULL. This means dynamic SQL statement 
+generation based on the DMV values. Additionally, to use the same number of 
+SQL parameters (? markers), you would have to use "col=?" when the BMV is not 
+null and "col IS NULL and ? IS NULL" when the BMV is null. Unfortunately, the 
+expression " ? IS [NOT] NULL " is not supported by all database servers (DB2 
+raises error SQL0418N).</P>
+<P>If you are designing a new database application from scratch, you can also
+use the row versioning method. Each tables of the database must have a column
+that identifies the current version of the row. The column can be a simple
+INTEGER (to hold a row version number) or it can be a timestamp (DATETIME YEAR
+TO FRACTION(5) for example). To guaranty that the version or timestamp column is
+updated each time the row is updated, you should implement a trigger to
+increment the version or set the timestamp when an UPDATE statement is issued.
+If this is in place, you just need to check that the row version or timestamp
+has not changed since the user modifications started, instead of testing all
+field of the BMV record. If you are only using one specific database type, you
+may check if the server supports a versioning column natively. For example,
+Informix IDS 11.50.xC1 introduced the ALTER TABLE ... ADD VERCOLS option to get
+a version + checksum column to a table, you can then query the table with the <i>ifx_insert_checksum</i>
+and <i>ifx_row_version</i> columns.</P>
+
+<HR size="1">
+
+<H3><a name="PORT_AUTOINC">3.11 Auto-incremented columns (serials)</a></H3>
+<P>INFORMIX provides the SERIAL, BIGSERIAL or SERIAL8 data types which can be emulated
+with ODI drivers for most non-INFORMIX database engines by using native sequence
+generators (when &quot;ifxemul.serial&quot; is true). But, this 
+requires additional configuration and maintenance tasks. If you plan to review 
+the programming pattern of sequences, you should use a portable 
+implementation instead of the serial emulation provided by the ODI drivers. This section describes
+different solutions to implement <STRONG>auto-incremented fields</STRONG>. The
+preferred implementation is the solution using SEQUENCES.</P>
+<H4><a name="AUTOINCR_DBSPEC">Solution 1: Use database specific serial generators.</a></H4>
+<P><U>Principle:</U></P>
+<P>In accordance with the target database, you must use the appropriate native serial 
+generation method. Get the database type with the <b> db_get_database_type() </b> 
+function of <b> fgldbutl.4gl </b> and use the appropriate SQL statements to insert rows with 
+serial generation.</P>
+<P><b><font color="#FF0000">Warning:</font> This solution uses the native
+auto-increment feature of the target database and is fast at execution, but is
+not very convenient as it requires to write different code for each database
+type. However, it is covered here to make you understand that each database
+vendor has it's own specific solution for auto-incremented columns. It is of
+course not realistic to use this solution in a large application with hundreds
+of tables.</b></P>
+<P><U>Implementation:</U>
+<OL>
+  <LI>Create the database objects required for serial generation in the target 
+  database (for example, create tables with SERIAL columns in Informix, tables 
+  with IDENTITY columns in <b> SQL Server</b> and SEQUENCE database objects in <b>Oracle</b>). 
+  <LI>Adapt your BDL programs to use the native sequence generators in
+    accordance with the database type. </LI></OL>
+<P><u>BDL example:</u></P>
+<pre><CODE class=linenumber>01</CODE> <tt>DEFINE</tt> dbtype <tt>CHAR</tt>(3)
+<CODE class=linenumber>02</CODE> <tt>DEFINE</tt> t1rec <tt>RECORD</tt>
+<CODE class=linenumber>03</CODE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; id&nbsp;&nbsp;&nbsp; <tt>INTEGER,</tt>
+<CODE class=linenumber>04</CODE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; name&nbsp; <tt>CHAR</tt>(50),
+<CODE class=linenumber>05</CODE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cdate <tt>DATE</tt>
+<CODE class=linenumber>06</CODE>&nbsp;&nbsp;&nbsp;&nbsp; <tt>END RECORD</tt>
+<CODE class=linenumber>07</CODE>
+<CODE class=linenumber>08</CODE> <tt>LET</tt> dbtype = db_get_database_type()
+<CODE class=linenumber>09</CODE>
+<CODE class=linenumber>10</CODE> <tt>IF</tt> dbtype = &quot;IFX&quot; <tt>THEN</tt>
+<CODE class=linenumber>11</CODE> &nbsp;&nbsp; <tt>INSERT INTO</tt> t1 ( id, name, cdate )
+<CODE class=linenumber>12</CODE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <tt>VALUES</tt> ( 0, t1rec.name, t1rec.cdate )
+<CODE class=linenumber>13</CODE> &nbsp;<tt>&nbsp; LET</tt> t1rec.id = SQLCA.SQLERRD[2]
+<CODE class=linenumber>14</CODE> <tt>END IF</tt>
+<CODE class=linenumber>15</CODE> <tt>IF</tt> dbtype = &quot;ORA&quot; <tt>THEN</tt>
+<CODE class=linenumber>16</CODE> &nbsp;&nbsp; <tt>INSERT INTO</tt> t1 ( id, name, cdate )
+<CODE class=linenumber>17</CODE> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<tt> VALUES</tt> ( t1seq.nextval, t1rec.name, t1rec.cdate )
+<CODE class=linenumber>18</CODE> &nbsp;&nbsp; <tt>SELECT </tt>t1seq.currval <tt>INTO </tt>t1rec.id FROM dual
+<CODE class=linenumber>19</CODE> <tt>END IF</tt>
+<CODE class=linenumber>20</CODE> <tt>IF</tt> dbtype = &quot;MSV&quot; <tt>THEN</tt>
+<CODE class=linenumber>21</CODE> &nbsp;&nbsp; <tt>INSERT INTO</tt> t1 ( name, cdate )
+<CODE class=linenumber>22</CODE> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <tt>VALUES</tt> ( t1rec.name, t1rec.cdate )
+<CODE class=linenumber>23</CODE> &nbsp;&nbsp; <tt>PREPARE</tt> s <tt>FROM</tt> &quot;SELECT convert(integer,@@identity)&quot;
+<CODE class=linenumber>24</CODE> &nbsp;&nbsp; <tt>EXECUTE</tt> s <tt>INTO </tt>t1rec.id
+<CODE class=linenumber>25</CODE> <tt>END IF</tt></pre>
+<H4><a name="AUTOINCR_SEQREG">Solution 2: Generate serial numbers from your own sequence table.</a></H4>
+<P><U>Purpose:</U></P>
+<P>The goal is to generate unique INTEGER or BIGINT numbers. These numbers will usually be 
+used for primary keys.</P>
+<P><U>Prerequisites:</U>
+<OL>
+  <LI>The database must use <a href="Transactions.html">transactions</a>. This is usually the case with 
+  non-INFORMIX databases, but INFORMIX databases default to auto commit mode. 
+  Make sure your INFORMIX database allows transactions. 
+  <LI>The sequence generation must be called inside a transaction (<a href="Transactions.html#TI_BEGIN_WORK">BEGIN WORK</a> /
+    <a href="Transactions.html#TI_COMMIT_WORK"> 
+  COMMIT WORK</a>). 
+  <LI>The transaction isolation level must guarantee that a row UPDATEd in a
+    transaction cannot be read or written by other db sessions until the
+    transaction has ended (typically, COMMITTED READ is ok, but some db servers
+    require a higher isolation level) 
+  <LI>The l<a href="Transactions.html#TI_SET_LOCK_MODE">ock wait mode</a> must be WAIT. This is usually the case in non-INFORMIX 
+  databases, but INFORMIX defaults to NOT WAIT. You must change the lock wait 
+  mode with "SET LOCK MODE TO WAIT" or "WAIT seconds" when using INFORMIX. 
+  <LI>Non-BDL applications or stored procedures must implement the same 
+  technique when inserting records in the table having auto-incremented columns. 
+  </LI></OL>
+<P><U>Principle:</U></P>
+<P>A dedicated table named "<STRONG>SEQREG</STRONG>" is used to register 
+sequence numbers. The key is the name of the sequence. This name will usually be 
+the table name the sequence is generated for. In short, this table contains a 
+primary key that identifies the sequence and a column containing the last 
+generated number.</P>
+<P>The uniqueness is granted by the concurrency management of the database 
+server. The first executed instruction is an UPDATE that sets an exclusive lock 
+on the SEQREG record. When two processes try to get a sequence at the same time, 
+one will wait for the other until its transaction is finished.</P>
+<P><U>Implementation:</U></P>
+<P>The "<STRONG>fgldbutl.4gl</STRONG>" utility library implements a function 
+called "<STRONG>db_get_sequence</STRONG>" which generates a new sequence. You 
+must create the SEQREG table as described in the <b> fgldbutl.4gl</b> source and make 
+sure that every user has the privileges to access and modify this table.</P>
+<P><b><font color="#FF0000">Warning:</font> In order to guarantee the uniqueness
+of the generated number, the call to db_get_sequence() must be done inside a
+transaction block that includes the INSERT statement. Concurrent db sessions
+must wait for each other in case of conflict and the transaction isolation level
+must be high enough to make sure that the row of the sequence table will not be
+read or written by other db sessions until the transaction end. Note for example
+that with Genero db, you must be in the native SERIALIZABLE isolation level,
+which can be set from the BDL program with SET ISOLATION TO REPEATABLE READ.</b></P>
+<P><U>BDL example:</U></P>
+<pre><CODE class=linenumber>01</CODE> <tt>IMPORT FGL</tt> fgldbutl
+<CODE class=linenumber>02</CODE> <tt>DEFINE</tt> rec <tt>RECORD</tt>
+<CODE class=linenumber>03</CODE> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; id&nbsp;&nbsp;&nbsp; <tt>INTEGER</tt>,
+<CODE class=linenumber>04</CODE> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; name&nbsp; <tt>CHAR</tt>(100)
+<CODE class=linenumber>05</CODE> &nbsp;&nbsp;&nbsp;&nbsp; <tt>END RECORD</tt>
+<CODE class=linenumber>06</CODE> <tt>...</tt>
+<CODE class=linenumber>07</CODE> <tt>BEGIN WORK</tt>
+<CODE class=linenumber>08</CODE> <tt>LET</tt> rec.id = db_get_sequence( &quot;CUSTID&quot; )
+<CODE class=linenumber>09 </CODE><tt>INSERT INTO</tt> CUSTOMER ( CUSTID, CUSTNAME )<tt> VALUES</tt> ( rec.* )
+<CODE class=linenumber>10</CODE> <tt>COMMIT WORK</tt></pre>
+
+<H4><a name="AUTOINCR_NATIVE">Solution 3: Use native SEQUENCE database objects.</a></H4>
+<P><U>Principle:</U></P>
+<P>More an more database engines support SEQUENCE database objects; If all
+database server types you want to use do support sequences, you should use this
+solution.</P>
+<P>Note that while writing these lines, Microsoft SQL Server (2008), MySQL (6.0)
+and SQLite (3) do not support SEQUENCE objects. You can however write stored
+procedures that emulate sequence generators (For SQL Server, search the MSDN for
+Oracle SEQUENCE migration tips).</P>
+<P><U>Implementation:</U>
+<OL>
+  <LI>Create a SEQUENCE object for each table using previously a SERIAL column
+    in the Informix database.
+  <LI>In database creation scripts (CREATE TABLE), replace all SERIAL types by
+    INTEGER (or BIGINT if you need large integers). 
+  <LI>Adapt your BDL programs to retrieve a new sequence before inserting a new
+    row. </LI></OL>
+
+<P><U>BDL example:</U></P>
+<pre><CODE class=linenumber>01</CODE> <tt>IMPORT FGL</tt> fgldbutl
+<CODE class=linenumber>02</CODE> <tt>DEFINE</tt> dbtype <tt>CHAR</tt>(3)
+<CODE class=linenumber>03</CODE> <tt>MAIN</tt>
+<CODE class=linenumber>04</CODE>     <tt>DEFINE</tt> item_rec <tt>RECORD</tt>
+<CODE class=linenumber>05</CODE>                item_num <tt>BIGINT</tt>,
+<CODE class=linenumber>06</CODE>                item_name <tt>VARCHAR</tt>(40)
+<CODE class=linenumber>07</CODE>            <tt>END RECORD</tt>
+<CODE class=linenumber>08</CODE>     <tt>DEFINE</tt> i <tt>INT</tt>
+<CODE class=linenumber>09</CODE>     <tt>DATABASE</tt> test1
+<CODE class=linenumber>10</CODE>     <tt>LET</tt> dbtype = db_get_database_type()
+<CODE class=linenumber>11</CODE>     <tt>CREATE TABLE</tt> item ( item_num <tt>BIGINT NOT NULL PRIMARY KEY</tt>, item_name <tt>VARCHAR</tt>(50) )
+<CODE class=linenumber>12</CODE>     <tt>CREATE SEQUENCE</tt> item_seq
+<CODE class=linenumber>13</CODE>     <tt>LET</tt> item_rec.item_num = new_seq(&quot;item&quot;)
+<CODE class=linenumber>14</CODE>     <tt>DISPLAY</tt> &quot;New sequence: &quot;, item_rec.item_num
+<CODE class=linenumber>15</CODE>     <tt>LET</tt> item_rec.item_name = &quot;Item#&quot;|| item_rec.item_num
+<CODE class=linenumber>16</CODE>     <tt>INSERT INTO</tt> item <tt>VALUES</tt> ( item_rec.* )
+<CODE class=linenumber>17</CODE>     <tt>DROP TABLE</tt> item
+<CODE class=linenumber>18</CODE>     <tt>DROP SEQUENCE</tt> item_seq
+<CODE class=linenumber>19</CODE> <tt>END MAIN</tt>
+<CODE class=linenumber>20</CODE>
+<CODE class=linenumber>21</CODE> <tt>FUNCTION</tt> new_seq(tabname)
+<CODE class=linenumber>22</CODE>     <tt>DEFINE</tt> tabname <tt>STRING</tt>
+<CODE class=linenumber>23</CODE>     <tt>DEFINE</tt> sql <tt>STRING</tt>
+<CODE class=linenumber>24</CODE>     <tt>DEFINE</tt> newseq <tt>BIGINT</tt>
+<CODE class=linenumber>25</CODE>     <tt>IF</tt> dbtype==&quot;PGS&quot; <tt>THEN</tt>
+<CODE class=linenumber>26</CODE>        <tt>LET</tt> sql = &quot;SELECT nextval('&quot;||tabname||&quot;_seq')&quot;||unique_row_condition()
+<CODE class=linenumber>27</CODE>     <tt>ELSE</tt>
+<CODE class=linenumber>28</CODE>         <tt>LET</tt> sql = &quot;SELECT &quot;||tabname||&quot;_seq.nextval &quot;||unique_row_condition()
+<CODE class=linenumber>29</CODE>     <tt>END IF</tt>
+<CODE class=linenumber>30</CODE>     <tt>PREPARE</tt> seq <tt>FROM</tt> sql
+<CODE class=linenumber>31</CODE>     <tt>IF</tt> SQLCA.SQLCODE!=0 <tt>THEN RETURN</tt> -1 <tt>END IF</tt>
+<CODE class=linenumber>32</CODE>     <tt>EXECUTE</tt> seq <tt>INTO</tt> newseq
+<CODE class=linenumber>33</CODE>     <tt>IF</tt> SQLCA.SQLCODE!=0 <tt>THEN RETURN</tt> -1 <tt>END IF</tt>
+<CODE class=linenumber>34</CODE>     <tt>RETURN</tt> newseq
+<CODE class=linenumber>35</CODE> <tt>END FUNCTION</tt>
+<CODE class=linenumber>36</CODE>
+<CODE class=linenumber>37</CODE> <tt>FUNCTION</tt> unique_row_condition()
+<CODE class=linenumber>38</CODE>     <tt>CASE</tt> dbtype
+<CODE class=linenumber>39</CODE>         <tt>WHEN</tt> &quot;IFX&quot; <tt>RETURN</tt> &quot; FROM systables WHERE tabid=1&quot;
+<CODE class=linenumber>40</CODE>         <tt>WHEN</tt> &quot;DB2&quot; <tt>RETURN</tt> &quot; FROM sysibm.systables WHERE name='SYSTABLES'&quot;
+<CODE class=linenumber>41</CODE>         <tt>WHEN</tt> &quot;PGS&quot; <tt>RETURN</tt> &quot; FROM pg_class WHERE relname='pg_class'&quot;
+<CODE class=linenumber>42</CODE>         <tt>WHEN</tt> &quot;ORA&quot; <tt>RETURN</tt> &quot; FROM dual&quot;
+<CODE class=linenumber>43</CODE>         <tt>WHEN</tt> &quot;ADS&quot; <tt>RETURN</tt> &quot; FROM dual&quot;
+<CODE class=linenumber>44</CODE>         <tt>OTHERWISE RETURN</tt> &quot; &quot;
+<CODE class=linenumber>45</CODE>     <tt>END CASE</tt>
+<CODE class=linenumber>46</CODE> <tt>END FUNCTION</tt></pre>
+
+<HR size="1">
+
+<H3><a name="PORT_IFXANSI">3.12 Informix SQL ANSI Mode</a></H3>
+<P>INFORMIX allows you to create databases in ANSI mode, which is supposed to be 
+closer to ANSI standard behavior. Other databases like <b> ORACLE</b> and <b> DB2</b> are 'ANSI' 
+by default.</P>
+<P>If you are not using the ANSI mode with<b> Informix</b>, we suggest you keep the 
+database as is, because turning an Informix database into ANSI mode can 
+result in unexpected behavior of the programs.</P>
+<P>Here are some ANSI mode issues extracted from the Informix books:
+<UL>
+  <LI>Some actions, like CREATE INDEX will generate a warning but will not be 
+  forbidden. 
+  <LI>Buffered logging is not allowed to enforce data recovery. (Buffered 
+  logging provides better performance) 
+  <LI>The table-naming scheme allows different users to create tables without 
+  having to worry about name conflicts. 
+  <LI>Owner specification is required in database object names ( SELECT ... FROM 
+  "owner".table ). You must quote the owner name to prevent automatic 
+  translation of the owner name into uppercase : SELECT .. FROM owner.table 
+  -&gt; SELECT .. FROM OWNER.table =&gt; table not found in database! 
+  <LI>Default privileges differ : When creating a table, the server grants
+    privileges to the 
+  table owner and the DBA only. The same thing happens for the 'Execute' privilege 
+  when creating stored procedures. 
+  <LI>Default isolation level is REPEATABLE READ. 
+  <LI>An error is generated if any character field is filled with a value that 
+  is longer than the field width. 
+  <LI>DECIMAL(p) (floating point decimals) are automatically converted to 
+  DECIMAL(p,0) (fixed point decimals). 
+  <LI>Closing a closed cursor generates an SQL error. </LI></UL>
+<P>It will take more time to adapt the programs to the INFORMIX ANSI mode than 
+using the database interface to simulate the native mode of INFORMIX.</P>
+<HR size="1">
+
+<h3><a name="PORT_WHFU">3.13 WITH HOLD and FOR UPDATE</a></h3>
+<P>Informix supports WITH HOLD cursors using the FOR UPDATE clause. Such cursors
+can remain open across transactions (when using FOR UPDATE, locks are released
+at the end of a transaction, but the WITH HOLD cursor is not closed). This kind of cursor is
+Informix-specific and not portable. The SQL standards recommend closing FOR
+UPDATE cursors and release locks at the end of a transaction. Most database servers close FOR
+UPDATE cursors when a COMMIT WORK or ROLLBACK WORK is done. All database servers
+release locks when a transaction ends.</P>
+<TABLE border=0 width="70%">
+  <tr>
+    <TD align=left width="25%" bgColor=#c0c0c0 height=17><b>Database Server Type</b></TD>
+    <TD align=left width="35%" bgColor=#c0c0c0 height=17><b>WITH HOLD FOR UPDATE
+      supported?</b></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Genero db</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC">Yes (if primary key
+      or unique index)</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">IBM DB2 UDB (Unix)</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Informix</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Microsoft SQL Server</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">MySQL</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Oracle
+      Database Server</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">PostgreSQL</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Sybase ASA</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+</TABLE><P>It is mandatory to review code using WITH HOLD cursors with a
+SELECT statement having the FOR UPDATE clause.</P>
+<P>The standard SQL solution is to declare a simple FOR UPDATE cursor
+outside the transaction and open the cursor inside the transaction:</P>
+<pre><CODE class=linenumber>01</CODE> <tt>DECLARE</tt> c1 <tt>CURSOR FOR SELECT </tt>...<tt> FOR UPDATE</tt>
+<CODE class=linenumber>02</CODE> <tt>BEGIN WORK</tt>
+<CODE class=linenumber>03</CODE>   <tt>OPEN </tt>c1
+<CODE class=linenumber>04</CODE>   <tt>FETCH </tt>c1 <tt>INTO</tt> ...
+<CODE class=linenumber>05</CODE>   <tt>UPDATE </tt>...
+<CODE class=linenumber>06</CODE> <tt>COMMIT WORK</tt></pre>
+<P>If you need to process a complete result set with many rows including updates
+of master and detail rows, you can declare a normal cursor and do a SELECT FOR
+UPDATE inside each transaction, as in the following example:</P>
+<pre><CODE class=linenumber>01</CODE> <tt>DECLARE</tt> c1 <tt>CURSOR FOR SELECT </tt>key <tt>FROM </tt>master ...
+<CODE class=linenumber>02</CODE> <tt>DECLARE</tt> c2 <tt>CURSOR FOR SELECT </tt>* <tt>FROM </tt>master <tt>WHERE </tt>key=? <tt>FOR UPDATE</tt>
+<CODE class=linenumber>03</CODE> <tt>FOREACH </tt>c1 <tt>INTO </tt>mrec.key
+<CODE class=linenumber>04</CODE>   <tt>BEGIN WORK</tt>
+<CODE class=linenumber>05</CODE>   <tt>OPEN </tt>c2 <tt>INTO</tt> mrec.key
+<CODE class=linenumber>06</CODE>   <tt>FETCH </tt>c2 <tt>INTO</tt> rec.*
+<CODE class=linenumber>07</CODE>   <tt>IF </tt>STATUS==<tt>NOTFOUND THEN</tt>
+<CODE class=linenumber>08</CODE>      <tt>ROLLBACK WORK</tt>
+<CODE class=linenumber>09</CODE>      <tt>CONTINUE FOREACH</tt>
+<CODE class=linenumber>10</CODE>   <tt>END IF</tt>
+<CODE class=linenumber>11</CODE>   <tt>UPDATE </tt>master <tt>SET </tt>... <tt>WHERE CURRENT OF </tt>c2
+<CODE class=linenumber>12</CODE>   <tt>UPDATE </tt>detail <tt>SET </tt>... <tt>WHERE </tt>mkey=mrec.key
+<CODE class=linenumber>13</CODE>   <tt>COMMIT WORK</tt>
+<CODE class=linenumber>14</CODE> <tt>END FOREACH</tt></pre>
+<HR size="1">
+
+<h3><a name="PORT_POSUD">3.14 Positioned Updates/Deletes</a></h3>
+<P>The &quot;WHERE CURRENT OF <i>cursor-name</i>&quot; clause in UPDATE and
+DELETE statements is not supported by all database engines.</P>
+<TABLE border=0 width="70%">
+  <tr>
+    <TD align=left width="25%" bgColor=#c0c0c0 height=17><b>Database Server Type</b></TD>
+    <TD align=left width="35%" bgColor=#c0c0c0 height=17><b>WHERE CURRENT OF
+      supported? </b></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Genero db</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">IBM DB2 UDB (Unix)</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Informix</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Microsoft SQL Server</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">MySQL</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">Oracle
+      Database Server</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFFFCC">No, emulated by
+      driver with ROWIDs</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">PostgreSQL</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFFFCC">No, emulated by
+      driver with OIDs</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Sybase ASA</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+</TABLE><P>Some database drivers can emulate WHERE CURRENT OF mechanisms by
+using rowids, but this requires additional processing. You should review the
+code to disable this option.</P>
+<P>The standard SQL solution is to use primary keys in all tables and write
+UPDATE / DELETE statements with a WHERE clause based on the primary key:</P>
+<pre><CODE class=linenumber>01</CODE> <tt>DEFINE</tt> rec <tt>RECORD</tt>
+<CODE class=linenumber>02</CODE> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; id&nbsp;&nbsp;&nbsp; <tt>INTEGER</tt>,
+<CODE class=linenumber>03</CODE> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; name&nbsp; <tt>CHAR</tt>(100)
+<CODE class=linenumber>04</CODE> &nbsp;&nbsp;&nbsp;&nbsp; <tt>END RECORD</tt>
+<CODE class=linenumber>05</CODE> <tt>BEGIN WORK</tt>
+<CODE class=linenumber>06</CODE>   <tt>SELECT</tt> CUSTID <tt>FROM</tt> CUSTOMER
+<CODE class=linenumber>07</CODE>          <tt>WHERE</tt> CUSTID=rec.id <tt>FOR UPDATE</tt>
+<CODE class=linenumber>08 </CODE>&nbsp; <tt>UPDATE </tt>CUSTOMER <tt>SET</tt> CUSTNAME = rec.name
+<CODE class=linenumber>09</CODE> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<tt> WHERE</tt> CUSTID = rec.id
+<CODE class=linenumber>10</CODE> <tt>COMMIT WORK</tt></pre>
+<HR size="1">
+
+<h3><a name="PORT_STRINGLIT">3.15 String literals in SQL statements</a></h3>
+<P>Some database servers like INFORMIX allow single and double quoted string literals in SQL
+statements, both are equivalent:</P>
+<P><code>SELECT COUNT(*) FROM table<br>
+&nbsp;WHERE col1 = &quot;abc'def&quot;&quot;ghi&quot;<br>
+&nbsp;&nbsp; AND col1 = 'abc''def&quot;ghi'</code></P>
+<P>Most database servers do not support this specific feature:</P>
+<TABLE border=0 width="70%">
+  <tr>
+    <TD align=left width="25%" bgColor=#c0c0c0 height=17><b>Database Server Type</b></TD>
+    <TD align=left width="25%" bgColor=#c0c0c0 height=17><b>Double quoted string
+      literals</b></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Genero db</TD>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">IBM DB2 UDB (Unix)</TD>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Informix</TD>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Microsoft SQL Server</TD>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">MySQL</TD>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Oracle
+      Database Server</TD>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">PostgreSQL</TD>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Sybase ASA</TD>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+</TABLE>
+<P>The ANSI SQL standards define doubles quotes as database object names
+delimiters, while single quotes are dedicated to string literals:</P>
+<P><code>CREATE TABLE &quot;my table&quot; ( &quot;column 1&quot; CHAR(10) )<br>
+SELECT COUNT(*) FROM &quot;my table&quot; WHERE &quot;column 1&quot; = 'abc'</code></P>
+<P>If you want to write a single quote character inside a string literal, you
+must write 2 single quotes:</P>
+<P><code>... WHERE comment = 'John''s house'</code></P>
+<P>When writing <a href="StaticSql.html"> Static SQL</a> in your programs, the
+double quoted string literals as converted to ANSI single quoted string literals
+by the <a href="Tools.html#TL_FGLCOMP">fglcomp</a> compiler. However, <a href="DynamicSql.html">Dynamic SQL</a> statements are not parsed by the compiler and
+therefore need to use single quoted string literals.</P>
+<P>We recommend that you ALWAYS use single quotes for string literals
+and, if needed, double quotes for database object names.</P>
+
+<HR size="1">
+
+<h3><a name="PORT_DATETIMELIT">3.16 Date and Time literals in SQL statements</a></h3>
+<P>INFORMIX allows you to specify date and time literals as a quoted character
+string in a specific format, depending upon DBDATE and GLS environment
+variables. For example, if DBDATE=DMY4, the following statement specifies a
+valid DATE literal:</P>
+<pre>SELECT COUNT(*) FROM table&nbsp;WHERE date_col = '24/12/2005'</pre>
+<P>Other database servers do support date/time literals as quoted character
+strings, but the date/time format specification is quite different. The
+parameter to specify the date/time format can be a database parameter, an
+environment variable, or a session option...</P>
+<p>In order to write portable SQL, just use SQL parameters instead of literals:</P>
+<pre>
+<CODE class=linenumber>01</CODE> <tt>DEFINE</tt> cnt <tt>INTEGER</tt>
+<CODE class=linenumber>02</CODE> <tt>DEFINE</tt> adate <tt>DATE</tt>
+<CODE class=linenumber>03</CODE> <tt>LET</tt> adate = MDY(12,24,2005)
+<CODE class=linenumber>04</CODE> <tt>SELECT COUNT</tt>(*) <tt>INTO</tt> cnt <tt>FROM</tt> table
+<CODE class=linenumber>05</CODE>  &nbsp;<tt>WHERE</tt> date_col = adate</pre>
+<P>Or, when using dynamic SQL:</P>
+<pre>
+<CODE class=linenumber>01</CODE> <tt>DEFINE</tt> cnt <tt>INTEGER</tt>
+<CODE class=linenumber>02</CODE> <tt>DEFINE</tt> adate <tt>DATE</tt>
+<CODE class=linenumber>03</CODE> <tt>LET</tt> adate = MDY(12,24,2005)
+<CODE class=linenumber>04</CODE> <tt>PREPARE</tt> s1 <tt>FROM</tt> &quot;SELECT COUNT(*) <tt>FROM</tt> table<tt> WHERE</tt> date_col = ?&quot;
+<CODE class=linenumber>05</CODE> <tt>EXECUTE </tt>s1 <tt>USING</tt> adate <tt>INTO</tt> cnt</pre>
+<HR size="1">
+
+<h3><a name="PORT_NAMOBJ">3.17 Naming database objects</a></h3>
+<h4>Name syntax</h4>
+<P>Each type of database server has its own naming conventions for database
+objects (i.e. tables and columns):</P>
+<TABLE border=0 width="70%">
+  <tr>
+    <TD align=left width="30%" bgColor=#c0c0c0 height=17><b>Database Server Type</b></TD>
+    <TD align=left bgColor=#c0c0c0 height=17><b>Naming Syntax</b></TD>
+  </tr>
+  <tr>
+    <TD align=left width="30%" height=18 bgcolor="#FFAAAA">Genero db</TD>
+    <TD align=left height=18 bgcolor="#FFAAAA"><code><u>[</u><i>schema</i>.<u>]</u><i>identifier</i></code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="30%" height=18 bgcolor="#FFAAAA">IBM DB2 UDB (Unix)</TD>
+    <TD align=left height=18 bgcolor="#FFAAAA"><code><u>[[</u><i>database</i>.<u>]</u><i>owner</i>.<u>]</u><i>identifier</i></code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="30%" height=18 bgcolor="#FFAAAA">Informix</TD>
+    <TD align=left height=18 bgcolor="#FFAAAA"><code><u>[</u><i>database</i><u>[</u>@<i>dbservername</i><u>]</u>:<u>][</u><i>owner</i>.<u>]</u><i>identifier</i></code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="30%" height=18 bgcolor="#FFAAAA">Microsoft SQL Server</TD>
+    <TD align=left height=18 bgcolor="#FFAAAA"><code><u>[[[</u><i>server</i><b>.</b><u>][</u><i>database</i><u>]</u><b>.</b><u>][</u><i>owner_name</i><u>]</u><b>.</b><u>]</u><i>object_name</i></code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="30%" height=18 bgcolor="#FFAAAA">MySQL</TD>
+    <TD align=left height=18 bgcolor="#FFAAAA"><code><u>[</u><i>database</i>.<u>]</u><i>identifier</i></code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="30%" height=18 bgcolor="#FFAAAA">Oracle Database Server</TD>
+    <TD align=left height=18 bgcolor="#FFAAAA"><code><u>[</u><i>schema</i>.<u>]</u><i>identifier</i><u>[</u>@<i>database-link</i><u>]</u></code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="30%" height=18 bgcolor="#FFAAAA">PostgreSQL</TD>
+    <TD align=left height=18 bgcolor="#FFAAAA"><code><u>[</u><i>owner</i>.<u>]</u><i>identifier</i></code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="30%" height=18 bgcolor="#FFAAAA">Sybase ASA</TD>
+    <TD align=left height=18 bgcolor="#FFAAAA"><code><u>[</u><i>database</i>.<u>]</u><i>identifier</i></code></TD>
+  </tr>
+</TABLE>
+<h4>Case-sensitivity</h4>
+<P>Most database engines have case-sensitive object identifiers. In most cases, when you do
+not specify identifiers in double quotes, the SQL parser automatically converts
+names to uppercase or lowercase, so that the identifiers match if the objects
+are also created without double quoted identifiers.</P>
+<P><code>CREATE TABLE Customer ( cust_ID INTEGER )</code></P>
+<P>In <b>Oracle</b>, the above statement would create a table named &quot;<code>CUSTOMER</code>&quot;
+with a &quot;<code>CUST_ID</code>&quot; column.</P>
+<P>The following table shows the behavior of each
+database engine regarding case sensitivity and double quoted identifiers:</P>
+<TABLE border=0 width="90%">
+  <tr>
+    <TD align=left width="25%" bgColor=#c0c0c0 height=17><b>Database Server Type</b></TD>
+    <TD align=left width="25%" bgColor=#c0c0c0 height=17><b>Un-quoted names</b></TD>
+    <TD align=left width="30%" bgColor=#c0c0c0 height=17><b>Double-quoted names</b></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">Genero db</TD>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">Converts to uppercase</TD>
+    <TD align=left width="30%" height=18 bgcolor="#FFFFCC">Case sensitive</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">IBM DB2 UDB (Unix)</TD>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">Converts to uppercase</TD>
+    <TD align=left width="30%" height=18 bgcolor="#FFFFCC">Case sensitive</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Informix (1)</TD>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Converts to lowercase</TD>
+    <TD align=left width="30%" height=18 bgcolor="#CCFFCC">Syntax disallowed
+      (non-ANSI mode)</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Microsoft SQL Server
+      (2)</TD>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Not converted, kept
+      as is</TD>
+    <TD align=left width="30%" height=18 bgcolor="#FFAAAA">Case sensitive</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">MySQL</TD>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Not converted, kept
+      as is</TD>
+    <TD align=left width="30%" height=18 bgcolor="#FFAAAA">Syntax disallowed</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">Oracle
+      Database Server</TD>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">Converts to uppercase</TD>
+    <TD align=left width="30%" height=18 bgcolor="#FFFFCC">Uppercase</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">PostgreSQL</TD>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">Converts to lowercase</TD>
+    <TD align=left width="30%" height=18 bgcolor="#FFFFCC">Lowercase</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Sybase ASA</TD>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Converts to lowercase</TD>
+    <TD align=left width="30%" height=18 bgcolor="#CCFFCC">Lowercase</TD>
+  </tr>
+</TABLE>
+<P>(1) If not ANSI database mode.<br>
+(2) When case-sensitive charset/collation used.</P>
+<h4><font color="#FF0000">Warning:</font> You must take care with database
+servers marked in red, because object identifiers are case sensitive and are not
+converted to uppercase or lowercase if not delimited by double-quotes. This
+means that, by error, you can create two tables with a similar name:</h4>
+<pre>CREATE TABLE customer ( cust_id INTEGER )&nbsp; -- first table
+CREATE TABLE Customer ( cust_id INTEGER )&nbsp; -- second table</pre>
+<P>According to the above facts, it is recommended to design databases with
+lowercase table and column names.</P>
+<h4>Size of identifiers</h4>
+<P>The maximum size of a table or column name depends on the database server type.
+Some database engines allow very large names (256c), while others support only
+short names (30c max). Therefore, using short names is required for writing
+portable SQL. Short names also simplify SQL programs.</P>
+<h4>How to write SQL with portable object identifiers</h4>
+<P>We recommend that you use simple and short (&lt;30c) database object names,
+without double quotes and without a schema/owner prefix:</P>
+<pre>CREATE TABLE customer ( cust_id INTEGER )
+SELECT customer.cust_id FROM table</pre>
+<P>You may need to set the database schema after connection, so that the current
+database user can see the application tables without specifying the owner/schema
+prefix each time.</P>
+<P><font color="#008000">Tip: </font>Even if all database engines do not
+required unique column names for all tables, we recommend that you define column
+names with a small table prefix (for example, CUST_ID in CUSTOMER table). </P>
+<HR size="1">
+
+<h3><a name="PORT_TEMPTABS">3.18 Temporary tables</a></h3>
+<P>Not all database servers support temporary tables. The engines supporting
+this feature often provide it with a specific table creation statement:</P>
+<TABLE border=0 width="90%">
+  <tr>
+    <TD align=left width="25%" bgColor=#c0c0c0 height=17><b>Database Server Type</b></TD>
+    <TD align=left bgColor=#c0c0c0 height=17><b>Temp table creation syntax</b></TD>
+    <TD align=left width="10%" bgColor=#c0c0c0 height=17><b>Local to SQL
+      session?</b></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Genero db</TD>
+    <TD align=left height=18 bgcolor="#CCFFCC"><code>CREATE TEMP TABLE tablename
+      ( <i>column-defs</i> )<br>
+      SELECT ... INTO TEMP tablename</code></TD>
+    <TD align=left width="10%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">IBM DB2 UDB (Unix)</TD>
+    <TD align=left height=18 bgcolor="#FFFFCC"><code>DECLARE GLOBAL TEMPORARY
+      TABLE tablename ( <i>column-defs</i> )<br>
+      DECLARE GLOBAL TEMPORARY TABLE tablename AS ( SELECT ... )</code></TD>
+    <TD align=left width="10%" height=18 bgcolor="#FFFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Informix</TD>
+    <TD align=left height=18 bgcolor="#CCFFCC"><code>CREATE TEMP TABLE tablename
+      ( <i>column-defs</i> )<br>
+      SELECT ... INTO TEMP tablename</code></TD>
+    <TD align=left width="10%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">Microsoft SQL Server</TD>
+    <TD align=left height=18 bgcolor="#FFFFCC"><code>CREATE TABLE #tablename ( <i>column-defs</i>
+      )<br>
+      SELECT <i>select-list</i> INTO #tablename FROM ...</code></TD>
+    <TD align=left width="10%" height=18 bgcolor="#FFFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">MySQL</TD>
+    <TD align=left height=18 bgcolor="#FFFFCC"><code>CREATE TEMPORARY TABLE
+      tablename ( <i>column-defs</i> )<br>
+      CREATE TEMPORARY TABLE tablename LIKE <i>other-table</i></code></TD>
+    <TD align=left width="10%" height=18 bgcolor="#FFFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Oracle
+      Database Server</TD>
+    <TD align=left height=18 bgcolor="#FFAAAA"><code>CREATE GLOBAL TEMPORARY
+      TABLE tablename ( <i>column-defs</i> )<br>
+      CREATE GLOBAL TEMPORARY TABLE tablename AS SELECT ...</code></TD>
+    <TD align=left width="10%" height=18 bgcolor="#FFAAAA">No: only data is
+      local to session</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">PostgreSQL</TD>
+    <TD align=left height=18 bgcolor="#FFFFCC"><code>CREATE TEMP TABLE tablename
+      ( <i>column-defs</i> )<br>
+      SELECT <i>select-list</i> INTO TEMP tablename FROM ...</code></TD>
+    <TD align=left width="10%" height=18 bgcolor="#FFFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">Sybase ASA</TD>
+    <TD align=left height=18 bgcolor="#FFFFCC"><code>CREATE GLOBAL TEMPORARY
+      TABLE tablename ( <i>column-defs</i> )<br>
+      CREATE TABLE #tablename ( <i>column-defs</i> )</code></TD>
+    <TD align=left width="10%" height=18 bgcolor="#FFFFCC">Yes</TD>
+  </tr>
+</TABLE>
+<P>Some databases even have a different behavior when using temporary tables. For example,
+<b> Oracle 9i</b> supports a kind of temporary
+table, but it must be created as a permanent table. The table is not specific to an SQL
+session: it is shared by all
+processes - only the data is local to a database session.</P>
+<P>You must review the programs using temporary tables, and adapt the code to
+use database-specific temporary tables.</P>
+<HR size="1">
+
+<h3><a name="PORT_OUTERJOINS">3.19 Outer joins</a></h3>
+<P>Old INFORMIX SQL outer joins specified with the OUTER keyword in the FROM
+part are not standard:</P>
+<P><code>SELECT * FROM master, OUTER ( detail )<br>
+&nbsp; WHERE master.mid = detail.mid<br>
+&nbsp;&nbsp;&nbsp; AND master.cdate IS NOT NULL</code></P>
+<TABLE border=0 width="90%">
+  <tr>
+    <TD align=left width="25%" bgColor=#c0c0c0 height=17><b>Database Server Type</b></TD>
+    <TD align=left width="20%" bgColor=#c0c0c0 height=17><b>Supports Informix
+      OUTER join syntax</b></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Genero db</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">IBM DB2 UDB (Unix)</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFFFCC">No (but translated by
+      driver)</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Informix (1)</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">Microsoft SQL Server
+      (2)</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFFFCC">No (but translated by
+      driver)</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">MySQL</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFFFCC">No (but translated by
+      driver)</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">Oracle
+      Database Server</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFFFCC">No (but translated by
+      driver)</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">PostgreSQL</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFFFCC">No (but translated by
+      driver)</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">Sybase ASA</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFFFCC">No (but translated by
+      driver)</TD>
+  </tr>
+</TABLE>
+<P>Most recent database servers now support the standard ANSI outer join
+specification:</P>
+<P><code>SELECT * FROM master LEFT OUTER JOIN detail ON (master.mid = detail.mid)<br>
+&nbsp; WHERE master.cdate IS NOT NULL</code></P>
+<P>You should use recent database servers and use ANSI outer joins only.</P>
+<HR size="1">
+
+<h3><a name="PORT_SUBSTR">3.20 Sub-string expressions</a></h3>
+<p>Only INFORMIX supports sub-string specification with square
+brackets:</p>
+<P><code>SELECT * FROM item WHERE item_code[1,4] = &quot;XBFG&quot;</code></P>
+<p>However, most database servers support a function that extracts sub-strings
+from a character string:</p>
+<TABLE border=0 width="90%">
+  <tr>
+    <TD align=left width="25%" bgColor=#c0c0c0 height=17><b>Database Server Type</b></TD>
+    <TD align=left width="15%" bgColor=#c0c0c0 height=17><b>Supports col[x,y]
+      sub-strings?</b></TD>
+    <TD align=left width="35%" bgColor=#c0c0c0 height=17><b>Provides sub-string
+      function?</b></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Genero db</TD>
+    <TD align=left width="15%" height=18 bgcolor="#CCFFCC">Yes</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC"><code>SUBSTR(expr,start,length)</code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">IBM DB2 UDB (Unix)</TD>
+    <TD align=left width="15%" height=18 bgcolor="#FFFFCC">No</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFFFCC"><code>SUBSTR(expr,start,length)</code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Informix (1)</TD>
+    <TD align=left width="15%" height=18 bgcolor="#CCFFCC">Yes</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC"><code>SUBSTR(expr,start,length)</code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">Microsoft SQL Server
+      (2)</TD>
+    <TD align=left width="15%" height=18 bgcolor="#FFFFCC">No</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFFFCC"><code>SUBSTRING(expr,start,length)</code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">MySQL</TD>
+    <TD align=left width="15%" height=18 bgcolor="#FFFFCC">No</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFFFCC"><code>SUBSTR(expr,start,length)</code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">Oracle
+      Database Server</TD>
+    <TD align=left width="15%" height=18 bgcolor="#FFFFCC">No</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFFFCC"><code>SUBSTRING(expr,start,length)</code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">PostgreSQL</TD>
+    <TD align=left width="15%" height=18 bgcolor="#FFFFCC">No</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFFFCC"><code>SUBSTRING(expr FROM
+      start FOR length )</code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">Sybase ASA</TD>
+    <TD align=left width="15%" height=18 bgcolor="#FFFFCC">No</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFFFCC"><code>SUBSTR(expr,start,length)</code></TD>
+  </tr>
+</TABLE>
+<p><b><font color="#FF0000">Warning:</font> INFORMIX allows you to update some parts
+of a [VAR]CHAR column by using the sub-string specification ( <code>UPDATE tab
+SET col[1,2] ='ab'</code> ). This is not possible with other databases.</b></p>
+<p>Review the SQL statements using sub-string expressions and use the
+database specific sub-string function.</p>
+<p>You could also create your own
+SUBSTRING() user function in all databases that do not support this function, to have a common way to extract
+sub-strings. In Microsoft <b> SQL Server</b>, when you create a user function, you must
+specify the owner as prefix when using the function. Therefore, you should
+create a SUBSTRING() user function instead of SUBSTR().</p>
+<HR size="1">
+
+<h3><a name="PORT_ROWIDS">3.21 Using ROWIDs</a></h3>
+<P>Rowids are implicit primary keys generated by the database engine. Not all
+database servers support rowids:</P>
+<TABLE border=0 width="90%">
+  <tr>
+    <TD align=left width="25%" bgColor=#c0c0c0 height=17><b>Database Server Type</b></TD>
+    <TD align=left width="35%" bgColor=#c0c0c0 height=17><b>Rowid keyword?</b></TD>
+    <TD align=left width="35%" bgColor=#c0c0c0 height=17><b>Rowid type?</b></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Genero db</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC"><code>ROWID</code></TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC"><code>INTEGER</code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">IBM DB2 UDB (Unix)</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA"><code>none</code></TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA"><code>none</code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Informix (1)</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC"><code>ROWID</code></TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC"><code>INTEGER</code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Microsoft SQL Server
+      (2)</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA"><code>none</code></TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA"><code>none</code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">MySQL</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA"><code>none</code></TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA"><code>none</code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">Oracle
+      Database Server</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFFFCC"><code>ROWID</code></TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFFFCC"><code>CHAR(18)</code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFFFCC">PostgreSQL</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFFFCC"><code>OID</code></TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFFFCC"><code>internal type</code></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Sybase ASA</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA"><code>none</code></TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA"><code>none</code></TD>
+  </tr>
+</TABLE>
+<p><b><font color="#FF0000">Warning:</font> INFORMIX fills the SQLCA.SQLERRD[3]
+register with the ROWID of the last updated row. This register is an INTEGER and
+cannot be filled with rowids having CHAR(*) type.</b></p>
+<p>Search for ROWID and SQLCA.SQLERRD[3] in your code and review the
+code to remove the usage of rowids.</p>
+<HR size="1">
+
+<h3><a name="PORT_MATCHES">3.22 MATCHES operator</a></h3>
+<p>The MATCHES operator allows you to scan a string expression:</p>
+<P><code>SELECT * FROM customer WHERE customer_name MATCHES &quot;A*[0-9]&quot;</code></P>
+<p>Here is a table listing the database servers which support the MATCHES
+operator:</p>
+<TABLE border=0 width="70%">
+  <tr>
+    <TD align=left bgColor=#c0c0c0 height=17><b>Database Server Type</b></TD>
+    <TD align=left width="35%" bgColor=#c0c0c0 height=17><b>Support for MATCHES
+      operator?</b></TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#CCFFCC">Genero db</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#FFAAAA">IBM DB2 UDB (Unix)</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#CCFFCC">Informix (1)</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#FFAAAA">Microsoft SQL Server
+      (2)</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#FFAAAA">MySQL</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#FFAAAA">Oracle
+      Database Server</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#FFAAAA">PostgreSQL</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#FFAAAA">Sybase ASA</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+</TABLE>
+<p>The MATCHES operator is specific to INFORMIX SQL and Genero db. There is an equivalent
+standard operator: LIKE. We recommend to replace MATCHES expressions in your SQL statements with a standard LIKE
+expression. MATCHES uses <code>*</code> and <code>?</code> as
+wildcards. The equivalent wildcards in the LIKE operator are <code>%</code> and <code>_</code>.
+Character ranges <code>[a-z]</code> are not supported by the LIKE operator.</p>
+<p>Remark: The BDL language provides a MATCHES operator which is part of the
+runtime system. Do not confuse this with the SQL MATCHES operator, used in SQL
+statements. There is no problem in using the MATCHES operator of the BDL language.</p>
+<p><b><font color="#FF0000">Warning:</font> A program
+variable can be used as parameter for the MATCHES or LIKE operator, but you must pay attention to blank padding
+semantics of the target database. If the program variable is defined as a CHAR(N),
+it is filled by the runtime system with trailing blanks, in order to have a size
+of N. For example, when a CHAR(10) variable is assigned with &quot;ABC%&quot;,
+it contains actually &quot;ABC%&lt;6 blanks&gt;&quot;. If this variable is used
+as LIKE parameter, the database server will search for column values matching &quot;ABC&quot;
++ some characters + 6 blanks. To avoid automatic blanks, use a
+VARCHAR(N) data type instead of CHAR(N).</b></p>
+<HR size="1">
+
+<h3><a name="PORT_GROUPBY">3.23 GROUP BY clause</a></h3>
+Some databases allow you to specify a column index in the GROUP BY clause:<P><code>SELECT
+a, b, sum(c) FROM table GROUP BY 1,2</code></P>
+<p>This is not possible with all database servers:</p>
+<TABLE border=0 width="70%">
+  <tr>
+    <TD align=left width="25%" bgColor=#c0c0c0 height=17><b>Database Server Type</b></TD>
+    <TD align=left width="35%" bgColor=#c0c0c0 height=17><b>GROUP BY colindex,
+      ... ?</b></TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Genero db</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">IBM DB2 UDB (Unix)</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">Informix (1)</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Microsoft SQL Server
+      (2)</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">MySQL</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Oracle
+      Database Server</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#CCFFCC">PostgreSQL</TD>
+    <TD align=left width="35%" height=18 bgcolor="#CCFFCC">Yes</TD>
+  </tr>
+  <tr>
+    <TD align=left width="25%" height=18 bgcolor="#FFAAAA">Sybase ASA</TD>
+    <TD align=left width="35%" height=18 bgcolor="#FFAAAA">No</TD>
+  </tr>
+</TABLE>
+<p>Search for GROUP BY in your SQL statements and use explicit column names.</p>
+<HR size="1">
+
+<h3><a name="PORT_LENGTH">3.24 LENGTH() function</a></h3>
+<P>Not all database servers support the LENGTH() function, and some have specific
+behavior:</P>
+<TABLE border=0 width="90%">
+  <tr>
+    <TD align=left bgColor=#c0c0c0 height=17><b>Database Server Type</b></TD>
+    <TD align=left width="20%" bgColor=#c0c0c0 height=17><b>Length function?</b></TD>
+    <TD align=left width="20%" bgColor=#c0c0c0 height=17><b>Counts trailing
+      blanks for CHAR() columns?</b></TD>
+    <TD align=left width="20%" bgColor=#c0c0c0 height=17><b>Return value when
+      NULL</b></TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#CCFFCC">Genero db</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">LENGTH(expr)</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">No</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">NULL</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#FFFFCC">IBM DB2 UDB (Unix)</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFFFCC">LENGTH(expr)</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFFFCC">Yes</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFFFCC">NULL</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#CCFFCC">Informix (1)</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">LENGTH(expr)</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">No</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">NULL</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#FFAAAA">Microsoft SQL Server
+      (2)</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFAAAA">LEN(expr)</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFAAAA">No</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFAAAA">NULL</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#CCFFCC">MySQL</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">LENGTH(expr)</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">No</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">NULL</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#FFFFCC">Oracle
+      Database Server</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFFFCC">LENGTH(expr)</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFFFCC">Yes</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFFFCC">NULL</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#FFFFCC">PostgreSQL</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFFFCC">LENGTH(expr)</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFFFCC">Yes</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFFFCC">NULL</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#CCFFCC">Sybase ASA</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">LENGTH(expr)</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">No</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">NULL</TD>
+  </tr>
+</TABLE>
+<p>Search for LENGTH in your SQL statements and review the code of the database-specific function. You could also define your own LEN() user function to have a
+common function in all databases. In Microsoft SQL Server, when you create a user function, you must
+specify the owner as prefix when using the function. Therefore, you should
+create a LEN() user function instead of LENGTH().</p>
+<p>Remark: The BDL language provides a LENGTH built-in function which is part of the
+runtime system. Do not confuse this with the SQL LENGTH() function, used in SQL
+statements. There is no problem in using the LENGTH() function of the BDL language. However, the LENGTH() function of
+the language returns zero when the string expression is NULL.</p>
+<HR size="1">
+
+<h3><a name="SQL_INTERRUPTION">3.25 SQL Interruption</a></h3>
+<p>With Informix, it is possible to interrupt a long-running query if the <a href="Programs.html#PROGRAM_OPTIONS"> SQL
+INTERRUPT ON </a>&nbsp;option is set by the Genero program. The database server returns
+SQLCODE -213, which can be trapped to detect a user interruption.</p>
+<pre><CODE class=linenumber>01</CODE>&nbsp;<tt>MAIN</tt>
+<CODE class=linenumber>02</CODE>&nbsp;&nbsp; <tt>DEFINE</tt> n <tt>INTEGER</tt>
+<CODE class=linenumber>03</CODE>&nbsp;&nbsp; <tt>DEFER INTERRUPT</tt>
+<CODE class=linenumber>04</CODE>&nbsp;&nbsp; <tt>OPTIONS SQL INTERRUPT ON</tt>
+<CODE class=linenumber>05</CODE>&nbsp;&nbsp; <tt>DATABASE</tt> test1
+<CODE class=linenumber>06</CODE>&nbsp;&nbsp; <tt>WHENEVER ERROR CONTINUE</tt>
+<CODE class=linenumber>07</CODE>&nbsp;&nbsp; -- Start long query (self join takes time)
+<CODE class=linenumber>08</CODE>&nbsp;&nbsp; -- From now on, user can hit CTRL-C in TUI mode to stop the query
+<CODE class=linenumber>09</CODE>&nbsp;&nbsp; <tt>SELECT COUNT</tt>(*) <tt>INTO</tt> n <tt>FROM</tt> customers a, customers b
+<CODE class=linenumber>10</CODE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <tt>WHERE</tt> a.cust_id &lt;&gt; b.cust_id
+<CODE class=linenumber>11</CODE>&nbsp;&nbsp; <tt>IF SQLCA.SQLCODE</tt><b> == -213 </b><tt>THEN</tt>
+<CODE class=linenumber>12</CODE>&nbsp;&nbsp;&nbsp; <tt>DISPLAY</tt> &quot;Statement was interrupted by user...&quot;
+<CODE class=linenumber>13</CODE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <tt>EXIT PROGRAM</tt> 1
+<CODE class=linenumber>14</CODE>&nbsp;&nbsp; <tt>END IF</tt>
+<CODE class=linenumber>15</CODE>&nbsp;&nbsp; <tt>WHENEVER ERROR STOP</tt>
+<CODE class=linenumber>16&nbsp;&nbsp; ...
+17</CODE> <tt>END MAIN</tt></pre>
+<P>When SQL Interruption is available for a database server type, Genero database drivers implement 
+it to behave as in Informix, converting the native error to the code -213. Not 
+all database servers 
+support SQL interruption:</P>
+<TABLE border=0 width="90%">
+  <tr>
+    <TD align=left bgColor=#c0c0c0 height=17><b>Database Server Type</b></TD>
+    <TD align=left width="20%" bgColor=#c0c0c0 height=17><b>SQL Interruption API</b></TD>
+    <TD align=left width="20%" bgColor=#c0c0c0 height=17><b>SQL error code for
+      interrupted query</b></TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#CCFFCC">Genero db 3.80</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">SQLCancel()</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">Native error -30005</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#CCFFCC">IBM DB2 UDB 9.x</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">SQLCancel()</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">Native error -952</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#CCFFCC">Informix</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">sqlbreak()</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">Native error -213</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#CCFFCC">Microsoft SQL Server 2005 (SNC
+      driver only)</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">SQLCancel()</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">SQLSTATE HY008</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#FFAAAA">MySQL</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFAAAA">N/A</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFAAAA">?</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#CCFFCC">Oracle
+      Database Server 8.x, 9.x, 10.x</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">OCIBreak()</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">Native error -1013</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#CCFFCC">PostgreSQL 8.x</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">PQCancel()</TD>
+    <TD align=left width="20%" height=18 bgcolor="#CCFFCC">SQLSTATE 57014</TD>
+  </tr>
+  <tr>
+    <TD align=left height=18 bgcolor="#FFAAAA">Sybase ASA</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFAAAA">N/A</TD>
+    <TD align=left width="20%" height=18 bgcolor="#FFAAAA">?</TD>
+  </tr>
+</TABLE>
+</BODY></HTML>

@@ -1,0 +1,371 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Record Display</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">Displaying Data to Forms</a></H1>
+
+<p>Summary:</p>
+
+<ul>
+  <li><a href="#HOW_TO">How to display data to form fields</a></li>
+  <li><a href="#DISPLAY_TO">Displaying data to specific form fields</a> (<tt>DISPLAY TO</tt>)</li>
+  <li><a href="#DISPLAY_BY_NAME">Displaying data to form fields by name</a> (<tt>DISPLAY BY NAME</tt>)</li>
+  <li><a href="#CLEAR_FORM">Clearing all form fields</a> (<tt>CLEAR FORM</tt>)</li>
+  <li><a href="#CLEAR_FIELD">Clearing specific form fields</a> (<tt>CLEAR <i>field</i></tt>)</li>
+</ul>
+
+<p><i>See also:</i>
+<a href="Variables.html">Variables</a>,
+<a href="Records.html">Records</a>,
+<a href="WindowsAndForms.html">Windows</a>,
+<a href="FormSpecFiles.html">Forms</a>,
+<a href="RecordInput.html">Record Input</a>,
+<a href="DisplayArray.html">Display Array</a></p>
+
+<HR>
+
+<h3><a name="HOW_TO">How to display data to form fields</a></h3>
+
+<p>Programs retrieve data from the database into <a href="Variables.html">variables</a>
+with a <a href="ResultSets.html">cursor</a> or a <a href="StaticSql.html#SS_SELECT">static
+SELECT statement</a>, and display the variable values to the <a href="WindowsAndForms.html">current
+form</a> with the <tt>DISPLAY</tt> instruction:</p>
+
+<p align="center"><img border="0" src="../Images/DRCFig01.png" width="504" height="288"></p>
+
+<HR>
+
+<h3><a name="DISPLAY_TO">DISPLAY TO</a></h3>
+
+<h4>Purpose:</h4>
+
+<p>The <tt>DISPLAY TO</tt> instruction displays data to form fields explicitly. </p>
+
+<h4>Syntax:</h4>
+
+<code>DISPLAY <i>expression</i> <u>[,...]</u>  TO <i>field-list</i> <u>[,...]</u><br>
+&nbsp;&nbsp;<u>[</u>  ATTRIBUTE ( <i>display-attribute</i> <u>[,...]</u> ) <u>]</u></code>
+
+<p>where <i>field-list</i> is :</p>
+<p><code><u>{</u> <i>field-name</i><br>
+<u>|</u> <i>table-name</i>.*<br>
+<u>|</u> <i>table-name</i>.<i>field-name</i><br>
+<u>|</u> <i>screen-array</i>[<i>line</i>].*<br>
+<u>|</u> <i>screen-array</i>[<i>line</i>].<i>field-name</i><br>
+ <u>|</u>
+<i>screen-record</i>.*<br>
+ <u>|</u>
+<i>screen-record</i>.<i>field-name</i><br>
+ <u>}</u>
+ <u>[,...]</u>
+</code></p>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>expression</i> is any <a href="Expressions.html">expression</a>
+    supported by the language.<br>
+    This is typically a list of <a href="Variables.html">variables</a>
+    or a <a href="Records.html">record</a> with the <code>.*</code>
+    notation.</li>
+  <li><i>field-name</i> is the identifier of a
+    <a href="FormSpecFiles.html#SECTION_ATTRIBUTES">field</a>
+    of the <a href="WindowsAndForms.html">current form</a>.</li>
+  <li><i>table-name</i> is the identifier of a
+    <a href="FormSpecFiles.html#SECTION_TABLES">database
+    table</a> of the <a href="WindowsAndForms.html">current form</a>.</li>
+  <li><i>screen-record</i> is the identifier of a
+    <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen
+    record</a> of the <a href="WindowsAndForms.html">current form</a>.</li>
+  <li><i>screen-array</i> is the
+    <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>
+    that will be used in the form.</li>
+  <li><i>display-attribute</i> is one of the display attributes supported
+    in this instruction. See below for more details.</li>
+</ol>
+
+<h4><font color="#FF0000">Warning: </font>The <tt>DISPLAY TO</tt>  statement changes the 'touched' status of the
+    target fields. When you modify a field value with this instruction, the 
+<a href="Operators.html#OP_FIELD_TOUCHED">FIELD_TOUCHED()</a>
+    operator returns <a href="Programs.html#PC_TRUE">TRUE</a> and the 
+<a href="RecordInput.html">ON
+    CHANGE</a> trigger may be fired if the current field value was changed with
+    a <tt>DISPLAY TO</tt>. During an <tt>INPUT</tt> or <tt>INPUT ARRAY</tt>, we
+    recommend you to use the <tt>UNBUFFERED</tt> attribute to display data
+    automatically to fields without changing the 'touched' status of fields.</h4>
+
+<h4>Usage:</h4>
+
+<p>If the variables do not have the same names as the
+<a href="FormSpecFiles.html#SECTION_ATTRIBUTES">form fields</a>, you must use the
+<tt>TO</tt> clause to explicitly map the variables to fields. You can list the
+fields individually, or you can use the <code><i>screen-record</i>.*</code>
+or <code><i>screen-record</i>[n].*</code> notation, where
+<code><i>screen-record</i>[n].*</code> specifies all the fields in line
+<code>n</code> of a screen array.</p>
+
+<p>In a <tt>DISPLAY TO</tt> statement, any screen attributes specified in the
+<tt>ATTRIBUTE</tt> clause apply to all the fields that you specify after the
+<tt>TO</tt> keyword.</p>
+
+<p>In the following example, the values in the <b>p_items</b> program record
+are displayed in the first row of the <b>s_items</b> screen array:</p>
+
+<pre><code class="linenumber">01</code> <tt>DISPLAY</tt> p_items.* <tt>TO</tt> s_items[1].*</pre>
+
+<p>The expanded list of screen fields must correspond in order and in number
+to the expanded list of identifiers after the <tt> DISPLAY</tt> keyword.
+Identifiers and their corresponding fields must have the same or compatible
+data types.
+For example, the next <tt>DISPLAY</tt> statement displays the values in the
+<b>p_customer</b> program record in fields of the <b>s_customer</b> screen
+record:</p>
+
+<pre><code class="linenumber">01</code> <tt>DISPLAY</tt> p_customer.* <tt>TO</tt> s_customer.*</pre>
+
+<p>For this example, the <b>p_customer</b> <a href="Records.html">program record</a>
+and the <b>s_customer</b> <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS"> screen record</a>
+require compatible declarations.
+The following <a href="Variables.html"> DEFINE</a> statement declares the
+<b>p_customer</b> program record:</p>
+
+<pre><code class="linenumber">01</code> <tt>DEFINE</tt> p_customer <tt>RECORD</tt>
+<code class="linenumber">02</code>   customer_num <tt>LIKE</tt> customer.customer_num,
+<code class="linenumber">03</code>   fname <tt>LIKE</tt> customer.fname,
+<code class="linenumber">04</code>   lname <tt>LIKE</tt> customer.lname,
+<code class="linenumber">05</code>   phone <tt>LIKE</tt> customer.phone
+<code class="linenumber">05</code> <tt>END RECORD</tt></pre>
+
+<p>This fragment of a form specification declares the <b> s_customer</b> screen record:</p>
+
+<pre><code class="linenumber">01</code> <tt>ATTRIBUTES</tt>
+<code class="linenumber">02</code>  f000 = customer.customer_num;
+<code class="linenumber">03</code>  f001 = customer.fname;
+<code class="linenumber">04</code>  f002 = customer.lname;
+<code class="linenumber">05</code>  f003 = customer.phone;
+<code class="linenumber">06</code> <tt>END</tt></pre>
+
+<p>The <tt>ATTRIBUTE</tt> clause
+temporarily overrides any default display attributes or any attributes specified in the
+<a href="Programs.html#PROGRAM_OPTIONS">OPTIONS</a> or <a href="WindowsAndForms.html#OPEN_WINDOW">OPEN
+WINDOW</a> statements for the fields. When the <tt>DISPLAY</tt> statement
+completes execution, the default display attributes are restored.</p>
+
+<p>The following table shows the <i>display-attributes</i> supported by the
+<tt>DISPLAY TO</tt> statement.&nbsp; The <i>display-attributes</i> affect 
+console-based applications only, they do not affect GUI-based applications.</p>
+
+<div align="center">
+  <center>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="40%"><b> Attribute</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="40%"><tt>BLACK, BLUE, CYAN, GREEN, MAGENTA, RED, WHITE, YELLOW</tt></td>
+    <td>The TTY color of the displayed data.</td>
+  </tr>
+  <tr>
+    <td width="40%"><tt>BOLD, DIM, NORMAL</tt></td>
+    <td>The TTY font attribute of the displayed data.</td>
+  </tr>
+  <tr>
+    <td width="40%"><tt>REVERSE, BLINK, UNDERLINE</tt></td>
+    <td>The TTY video attribute of the displayed data.</td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<p>The <tt>REVERSE</tt>, <tt>BLINK</tt>, <tt>INVISIBLE</tt>, and <tt>UNDERLINE</tt>
+attributes are not sensitive to the color or monochrome status of the terminal, if
+the terminal is capable of displaying these intensity modes. The <tt>ATTRIBUTE</tt> clause
+can include zero or more of the <tt>BLINK</tt>, <tt>REVERSE</tt>, and <tt>UNDERLINE</tt>
+attributes, and zero or one of the other attributes. That is, all of the attributes
+except <tt>BLINK</tt>, <tt>REVERSE</tt>, and <tt>UNDERLINE</tt> are mutually exclusive.</p>
+
+<p>The <tt>DISPLAY</tt> statement ignores the <tt>INVISIBLE</tt> attribute,
+regardless of whether you specify it in the <tt>ATTRIBUTE</tt> clause.</p>
+
+<HR>
+
+<h3><a name="DISPLAY_BY_NAME">DISPLAY BY NAME</a></h3>
+
+<h4>Purpose:</h4>
+
+<p>The <tt>DISPLAY BY NAME</tt> instruction displays data to form fields explicitly
+<i>by name</i>.</p>
+
+<h4>Syntax:</h4>
+<code>DISPLAY BY NAME <u>{</u> <i>variable <u>|</u> record</i>.* <u>}</u> <u>[,...]</u><br>
+&nbsp;&nbsp;<u>[</u>  ATTRIBUTE ( <i>display-attribute</i> <u>[,...]</u> ) <u>]</u></code>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>variable</i> is a <a href="Variables.html">program variable</a> that
+    has the same name as a form field.</li>
+  <li><i>record.*</i> is a <a href="Variables.html#STRUCTURED">record variable</a>
+    that has members with the same names as form fields. The record name prefix
+    is ignored.</li>
+  <li><i>display-attribute</i> is one of the display attributes supported in
+    this instruction. See below for more details.</li>
+</ol>
+
+<h4><font color="#FF0000">Warning: </font>The <tt>DISPLAY BY NAME</tt> statement changes the 'touched' status of the
+    target fields. When you modify a field value with this instruction, the 
+<a href="Operators.html#OP_FIELD_TOUCHED">FIELD_TOUCHED()</a>
+    operator returns <a href="Programs.html#PC_TRUE">TRUE</a> and the 
+<a href="RecordInput.html">ON
+    CHANGE</a> trigger may be fired if the current field value was changed with
+    a <tt>DISPLAY BY NAME</tt>. During an <tt>INPUT</tt> or <tt>INPUT ARRAY</tt>,
+    we recommend that you use the <tt>UNBUFFERED</tt> attribute to display data to fields
+    automatically without changing the 'touched' status of fields.</h4>
+
+<h4>Usage:</h4>
+
+<p>If the variables to be displayed have the same name as
+<a href="FormSpecFiles.html#SECTION_ATTRIBUTES">form fields</a>, you can use the
+<tt>BY NAME</tt> clause. The <tt>BY NAME</tt> clause binds the fields to
+variables.
+To use this clause, you must define variables with the same name as the form
+fields where they will be displayed.
+The language ignores any <a href="Records.html">record</a> name prefix when matching the
+names. The names must be unique and unambiguous;&nbsp; if not, this option results in
+an error, and the runtime system sets
+<a href="Programs.html#PV_STATUS">STATUS</a> to a negative value.</p>
+
+<p>For example, the following statement displays the values for the specified
+variables in the
+<a href="FormSpecFiles.html#SECTION_ATTRIBUTES">form fields</a> with corresponding names
+(<code>company</code> and <code>address1</code>):</p>
+
+<pre><code class="linenumber">01</code> <tt>DISPLAY BY NAME</tt> p_customer.company, p_customer.address1</pre>
+
+<p>This <tt> BY NAME</tt> clause displays data to the screen fields of the
+default <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS"> screen records</a>.
+The default screen records are those having the names of the tables defined
+in the <a href="FormSpecFiles.html#SECTION_TABLES"> TABLES</a> section of the
+<a href="FormSpecFiles.html"> form specification file</a>. To use a screen
+array, you define a screen array in addition to the default screen record.
+This default screen record holds only the first line of the screen array.</p>
+
+<p>For example, the following DISPLAY statement displays the <b>ordno</b>
+variable only in the first line of the screen array (the default screen record):</p>
+
+<pre><code class="linenumber">01</code> <tt>DISPLAY BY NAME</tt> p_stock[1].ordno</pre>
+
+<p>To display <b>ordno</b> in all elements of the
+<a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>, you can use the
+<a href="DisplayArray.html"> DISPLAY ARRAY</a> statement, or
+<tt>DISPLAY TO</tt>, as in the next example:</p>
+
+<pre><code class="linenumber">01</code> <tt>FOR</tt> i=1 <tt>TO</tt> 10
+<code class="linenumber">02</code>    <tt>DISPLAY</tt> p_stock[i].ordno <tt>TO</tt> sc.stock[i].ordno
+<code class="linenumber">03</code>    <tt>...</tt>
+<code class="linenumber">04</code> <tt>END FOR</tt></pre>
+
+<p> The following table shows the <i>display-attributes </i> supported by the
+<tt>DISPLAY BY NAME</tt> statement:</p>
+
+<div align="center">
+  <center>
+<table border="0" cellpadding="0" width="90%">
+  <tr>
+    <td bgcolor="#C0C0C0" width="40%"><b> Attribute</b></td>
+    <td bgcolor="#C0C0C0"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td width="40%"><tt>BLACK, BLUE, CYAN, GREEN, MAGENTA, RED, WHITE, YELLOW</tt></td>
+    <td>The color of the displayed data.</td>
+  </tr>
+  <tr>
+    <td width="40%"><tt>BOLD, DIM, NORMAL</tt></td>
+    <td>The font attribute of the displayed data.</td>
+  </tr>
+  <tr>
+    <td width="40%"><tt>REVERSE, BLINK, UNDERLINE</tt></td>
+    <td>The video attribute of the displayed data.</td>
+  </tr>
+</table>
+  </center>
+</div>
+
+<HR>
+
+<h3><a name="CLEAR_FORM">CLEAR FORM</a></h3>
+
+<h4>Purpose:</h4><p>The <tt>CLEAR FORM</tt> instruction clears all fields in the
+<a href="WindowsAndForms.html">current form</a>.</p>
+
+<h4>Syntax:</h4><code>CLEAR FORM</code>
+
+<h4>Notes:</h4>
+<ol>
+  <li>This instruction has no effect on any part of the screen display
+    except the form fields.</li>
+</ol>
+
+<h4>Example:</h4>
+
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>    <tt>OPEN WINDOW </tt>w1 <tt>AT</tt> 1,1 <tt>WITH FORM</tt> &quot;custlist&quot;
+<code class="linenumber">03</code>    <tt>CLEAR FORM</tt>
+<code class="linenumber">04</code>    <tt>CLOSE WINDOW</tt> w1
+<code class="linenumber">05</code> <tt>END FOR</tt></pre>
+
+<HR>
+
+<h3><a name="CLEAR_FIELD">CLEAR <i>field</i></a></h3>
+
+<h4>Purpose:</h4><p>The <tt>CLEAR <i>field</i></tt> instruction clears specific fields
+in the <a href="WindowsAndForms.html">current form</a>.</p>
+
+<h4>Syntax:</h4>
+<code>CLEAR <i>field-list</i></code>
+
+<p>where <i>field-list</i> is :</p>
+<p><code><u>{</u> <i>field-name</i><br>
+<u>|</u> <i>table-name</i>.*<br>
+<u>|</u> <i>table-name</i>.<i>field-name</i><br>
+<u>|</u> <i>screen-array</i>[<i>line</i>].*<br>
+<u>|</u> <i>screen-array</i>[<i>line</i>].<i>field-name</i><br>
+ <u>|</u>
+<i>screen-record</i>.*<br>
+ <u>|</u>
+<i>screen-record</i>.<i>field-name</i><br>
+ <u>}</u>
+ <u>[,...]</u>
+</code></p>
+
+<h4>Notes:</h4>
+<ol>
+  <li><i>field-name</i> is the identifier of a
+    <a href="FormSpecFiles.html#SECTION_ATTRIBUTES">field</a>
+    of the <a href="WindowsAndForms.html">current form</a>.</li>
+  <li><i>table-name</i> is the identifier of a
+    <a href="FormSpecFiles.html#SECTION_TABLES">database
+    table</a> of the <a href="WindowsAndForms.html">current form</a>.</li>
+  <li><i>screen-record</i> is the identifier of a
+    <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen
+    record</a> of the <a href="WindowsAndForms.html">current form</a>.</li>
+  <li><i>screen-array</i> is the
+    <a href="FormSpecFiles.html#SECTION_INSTRUCTIONS">screen array</a>
+    that will be used in the form.</li>
+</ol>
+
+<h4>Example:</h4>
+
+<pre><code class="linenumber">01</code> <tt>FOR</tt> i=1 <tt>TO</tt> 10
+<code class="linenumber">02</code>    <tt>CLEAR</tt> s_items[i].*
+<code class="linenumber">03</code> <tt>END FOR</tt></pre>
+
+</BODY>
+</HTML>

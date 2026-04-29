@@ -1,0 +1,227 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Positioned Updates</TITLE>
+<META http-equiv=Content-Type content="text/html">
+<LINK href="../FglTechRef.css" type=text/css rel=stylesheet>
+</HEAD>
+<BODY>
+
+<p><a href="../index.html">Back to Contents</a></p>
+<HR>
+
+<H1><a name="PAGE_HEADER">SQL Positioned Updates</a></H1>
+<p> Summary:</p>
+
+<ul>
+  <li><a href="#WHAT_IS_POSUPD">What is a Positioned Update?</a></li>
+  <li><a href="#PU_DECLARE">Declaring a cursor for update</a> (<tt>DECLARE</tt>)</li>
+  <li><a href="#PU_UPDATE">Updating a row by cursor position</a> (<tt>UPDATE ...  WHERE CURRENT OF</tt>)</li>
+  <li><a href="#PU_DELETE">Deleting a row by cursor position</a> (<tt>DELETE ...  WHERE CURRENT OF</tt>)</li>
+  <li><a href="#EXAMPLES">Examples</a></li>
+</ul>
+
+
+<p><i>See also:</i>  <a href="Transactions.html">Transactions</a>, <a href="StaticSql.html">Static SQL</a>, <a href="DynamicSql.html">Dynamic
+SQL</a>, <a href="ResultSets.html">Result Sets</a>, <a href="Exceptions.html#SQLERRORS">SQL
+Errors</a>.</p>
+
+
+<HR>
+
+<h3><a name="WHAT_IS_POSUPD">What is a Positioned Update?</a></h3>
+
+<p>When declaring a <a href="ResultSets.html">database cursor</a> with a
+<tt>SELECT</tt> statement using a unique table and including the <tt>FOR UPDATE</tt>
+keywords, you can update or delete database rows by using the <tt>WHERE CURRENT OF</tt>
+keywords in the <a href="StaticSql.html#SS_UPDATE"> UPDATE</a> or <a href="StaticSql.html#SS_DELETE"> DELETE</a> statements.
+Such an operation is called Positioned Update or Positioned Delete.</p>
+
+<p>Some database servers do not support <b>hold</b> cursors (<tt>WITH HOLD</tt>)
+declared with a <tt>SELECT</tt> statement including  the
+<tt>FOR UPDATE</tt>
+ keywords. The SQL standards require 'for update' cursors to be automatically
+closed at the end of a transaction. Therefore, it is strongly recommended
+that you use positioned updates in a <a href="Transactions.html">transaction block</a>.</p>
+
+<p>Do not confuse positioned update with the use
+ of <tt>SELECT FOR UPDATE</tt>
+statements that are not associated with a <a href="ResultSets.html">database
+cursor</a>. Executing <tt>SELECT FOR UPDATE</tt> statements is supported by the
+language, but you cannot perform positioned updates since there is
+no  cursor
+identifier associated to the result set.&nbsp;</p>
+
+<p>To perform a positioned update or delete, you must <a href="ResultSets.html#RS_DECLARE">declare</a>
+the database cursor with a <tt>SELECT FOR UPDATE</tt> statement:</p>
+
+<p align="center"><img border="0" src="../Images/PUPFig01.png" width="504" height="288"></p>
+
+<p>Then, <a href="Transactions.html#TI_BEGIN_WORK">start a transaction</a>, <a href="ResultSets.html#RS_OPEN">open
+the cursor</a> and <a href="ResultSets.html#RS_FETCH">fetch a row</a>:</p>
+
+<p align="center"><img border="0" src="../Images/PUPFig02.png" width="504" height="288"></p>
+
+<p>Finally, you <a href="StaticSql.html#SS_UPDATE">update</a> or <a href="StaticSql.html#SS_DELETE">delete</a>
+the current row and you <a href="Transactions.html#TI_COMMIT_WORK">commit</a>
+the transaction:</p>
+
+<p align="center"><img border="0" src="../Images/PUPFig03.png" width="504" height="288"></p>
+
+
+<HR>
+
+<h3><a name="PU_DECLARE">DECLARE</a></h3>
+
+<h4>Purpose:</h4>
+
+<p>Use this instruction to associate a database cursor with a <tt>SELECT</tt>  statement
+to perform positioned updates in the <a href="Connections.html">current connection</a>. </p>
+
+
+<h4>Syntax:</h4><code>DECLARE <i>cid</i> <u>[</u>SCROLL<u>]</u> CURSOR <u>[</u>WITH
+HOLD<u>]</u> FOR <u>{</u> <i>select-statement
+<u>|</u>  sid </i> <u>}</u></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>cid</i> is the identifier of the database cursor.</li>
+  <li> <i>select-statement</i> is a <tt>SELECT</tt> statement defined in <a href="StaticSql.html">Static
+    SQL</a>.</li>
+  <li> To perform <a href="#WHAT_IS_POSUPD">positioned updates</a>, the <i>select-statement</i>
+    must include the <tt>FOR UPDATE</tt> keywords.</li>
+  <li> <i>sid</i> is the identifier of a <a href="DynamicSql.html#DS_PREPARE">prepared</a>
+    <tt>SELECT</tt>  statement including the <tt>FOR UPDATE</tt> keywords.</li>
+  <li> See the <tt>DECLARE</tt> instruction description in <a href="ResultSets.html">Result
+    Sets Processing</a>.</li>
+  <li> <tt>DECLARE</tt> must precede any other statement that refers to the
+    cursor during program execution.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li> The scope of reference of the <i>cid</i> cursor identifier is local to
+    the module where it is declared. Therefore, you
+    must execute the <tt>DECLARE</tt>, <tt>UPDATE</tt> or <tt>DELETE</tt>
+    instructions in the same module.</li>
+  <li> Use the <tt>WITH HOLD</tt> option carefully, because this feature is
+    specific to IBM Informix servers. Other database servers do not behave
+    as Informix does with such cursors. For example, if the <tt>SELECT</tt> is not
+    declared <tt>FOR UPDATE</tt>, most database servers keep cursors open after
+    the end of a <a href="Transactions.html"> transaction</a>, but IBM DB2
+    automatically closes all cursors when the transaction is
+    <a href="Transactions.html#TI_ROLLBACK_WORK"> rolled back</a>.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="PU_UPDATE">UPDATE ... WHERE CURRENT OF</a></h3>
+
+<h4>Purpose:</h4><p>Updates the current row in a result set of a database cursor
+declared for update. </p>
+
+
+<h4>Syntax:</h4><code>UPDATE <i>table-specification<br>
+</i>&nbsp;&nbsp; SET<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <i>column</i>
+ = <u>{</u> <i>variable</i> <u>|</u> <i>literal</i> <u>|</u> NULL <u>}</u>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<u>[,...]</u> <br>
+&nbsp;&nbsp; WHERE CURRENT OF <i>cid</i></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>table-specification</i> identifies the target table (see <a href="StaticSql.html#SS_UPDATE">UPDATE</a>
+    for more details).</li>
+  <li> <i>column</i> is a name of a table column.</li>
+  <li> <i>variable</i> is a program <a href="Variables.html">variable</a>, a <a href="Records.html">record</a>
+    or an <a href="Arrays.html">array</a> used as a
+    parameter buffer to provide values.</li>
+  <li> <i>literal</i> is any <a href="Literals.html">literal expression</a>
+    supported by the language.</li>
+  <li> <i>cid</i> is the identifier of the database cursor declared <a href="#PU_DECLARE">for
+    update</a>.</li>
+  <li> The <tt>UPDATE</tt> statement does not advance the cursor to the next row, so the
+current row position remains unchanged.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li> The scope of reference of the <i>cid</i> cursor identifier is local to
+    the module where it is declared. Therefore, you must execute the <tt>DECLARE</tt>,
+    <tt>UPDATE</tt> or <tt>DELETE</tt> instructions in the same module.</li>
+  <li>There must be a current row in the result set. Make sure that the SQL
+    status returned by the last <a href="ResultSets.html#RS_FETCH">FETCH</a> is
+    equal to zero.</li>
+  <li>If the <tt>DECLARE</tt> statement that created the cursor specified one or more
+    columns in the <tt>FOR UPDATE</tt> clause, you are restricted to updating only those
+    columns in a subsequent <tt>UPDATE ... WHERE CURRENT OF</tt> statement.</li>
+</ol>
+
+
+<HR>
+
+<h3><a name="PU_DELETE">DELETE ... WHERE CURRENT OF</a></h3>
+
+<h4>Purpose:</h4><p>Deletes the current row in a result set of a database cursor
+declared for update. </p>
+
+
+<h4>Syntax:</h4><code>DELETE FROM <i>table-specification<br>
+</i>
+&nbsp;&nbsp; WHERE CURRENT OF <i>cid</i></code>
+
+
+<h4>Notes:</h4>
+<ol>
+  <li> <i>table-specification</i> identifies the target table (see <a href="StaticSql.html#SS_DELETE">DELETE</a>
+    for more details).</li>
+  <li> <i>cid</i> is the identifier of the database cursor declared <a href="#PU_DECLARE">for
+    update</a>.</li>
+  <li> After the deletion, no current row exists; you cannot use the cursor to
+    delete or update a row until you re-position the cursor with a <a href="ResultSets.html#RS_FETCH">FETCH</a>
+    statement.</li>
+</ol>
+
+
+<h4><font color="#FF0000">Warnings:</font></h4>
+<ol>
+  <li> The scope of reference of the <i>cid</i> cursor identifier is local to
+    the module</a> where it is declared. Therefore, you must execute the
+    <tt>DECLARE</tt>, <tt>UPDATE</tt> or <tt>DELETE</tt> instructions in the
+    same module.</li>
+  <li>There must be a current row in the result set. Make sure that the SQL
+    status returned by the last <a href="ResultSets.html#RS_FETCH">FETCH</a> is
+    equal to zero.</li>
+</ol>
+
+
+<hr width="100%">
+<h3><a name="EXAMPLES">Examples</a></h3>
+<h4><a name="EXAMPLE_1">Example 1</a>:</h4>
+<pre><code class="linenumber">01</code> <tt>MAIN</tt>
+<code class="linenumber">02</code>    <tt>DEFINE</tt> pname <tt>CHAR</tt>(30)
+<code class="linenumber">03</code>    <tt>DATABASE</tt> stock
+<code class="linenumber">04</code>    <tt>DECLARE</tt> uc <tt>CURSOR FOR</tt>
+<code class="linenumber">05</code>      <tt>SELECT </tt>name <tt>FROM</tt> item<tt> WHERE</tt> key=123 <tt>FOR UPDATE</tt>
+<code class="linenumber">06</code>    <tt>BEGIN WORK</tt>
+<code class="linenumber">07</code>      <tt>OPEN</tt> uc
+<code class="linenumber">08</code>      <tt>FETCH</tt> uc <tt>INTO</tt> pname
+<code class="linenumber">09</code>      <tt>IF</tt> sqlca.sqlcode=0 <tt>THEN</tt>
+<code class="linenumber">10</code>         <tt>LET</tt> pname = &quot;Dummy&quot;
+<code class="linenumber">11</code>         <tt>UPDATE</tt> item <tt>SET</tt> name=pname <tt>WHERE CURRENT OF</tt> uc
+<code class="linenumber">12</code>      <tt>END IF</tt>
+<code class="linenumber">13</code>      <tt>CLOSE</tt> uc
+<code class="linenumber">14</code>    <tt>COMMIT WORK</tt>
+<code class="linenumber">15</code>    <tt>FREE</tt> uc
+<code class="linenumber">16</code> <tt>END MAIN</tt></pre>
+
+
+</BODY>
+</HTML>
